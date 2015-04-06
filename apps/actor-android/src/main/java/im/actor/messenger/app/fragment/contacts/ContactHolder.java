@@ -1,6 +1,7 @@
 package im.actor.messenger.app.fragment.contacts;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -44,17 +45,23 @@ public class ContactHolder extends BindedViewHolder {
 
         int padding = Screen.dp(16);
 
-        fl.setBackgroundColor(context.getResources().getColor(R.color.bg_main));
+        fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64)));
 
         cont = new FrameLayout(context);
-
+        cont.setBackgroundResource(R.drawable.selector_fill);
         {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(64));
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.leftMargin = Screen.dp(40);
             fl.addView(cont, layoutParams);
         }
 
-        cont.setBackgroundResource(R.drawable.selector);
+        View fastBg = new View(context);
+        fastBg.setBackgroundColor(context.getResources().getColor(R.color.bg_main));
+        {
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(Screen.dp(40), ViewGroup.LayoutParams.MATCH_PARENT);
+            fl.addView(fastBg, layoutParams);
+        }
 
         avatar = new AvatarView(context);
         avatar.init(52, 24);
@@ -105,7 +112,7 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         View div = new View(context);
-        div.setBackgroundColor(context.getResources().getColor(R.color.divider));
+        div.setBackgroundColor(context.getResources().getColor(R.color.contacts_divider));
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     context.getResources().getDimensionPixelSize(R.dimen.div_size));
@@ -125,7 +132,6 @@ public class ContactHolder extends BindedViewHolder {
         }
 
         avatar.bind(data);
-        title.setText(data.getName());
 
         if (query.length() > 0) {
             title.setText(SearchHighlight.highlightQuery(data.getName(), query, 0xff0277bd));

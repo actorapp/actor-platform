@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Basic UI -->
+
+    <!-- Root colors -->
 
     <color name="primary">#4b6e99</color>
-    <color name="primary_dark">#415f84</color>
-    <color name="primary_light">#6b85a6</color>
+    <color name="primary_hovered">#415f84</color>
+    <color name="primary_pressed">#6b85a6</color>
     <color name="primary_text">#ffffff</color>
 
     <color name="primary_alt">#4ca665</color>
-    <color name="primary_alt_dark">#ff3d8652</color>
-    <color name="primary_alt_light">#ff5cca7b</color>
+    <color name="primary_alt_hovered">#ff3d8652</color>
+    <color name="primary_alt_pressed">#ff5cca7b</color>
 
     <color name="accent">#d94335</color>
-    <color name="accent_selected">#ca4a3f</color>
+    <color name="accent_hovered">#b3372c</color>
+    <color name="accent_pressed">#ca4a3f</color>
+
+    <color name="action">@color/primary</color>
+    <color name="action_hovered">@color/primary_hovered</color>
+    <color name="action_pressed">@color/primary_pressed</color>
 
     <color name="secondary">#eeeeee</color>
     <color name="secondary_selected">#33999999</color>
     <color name="secondary_pressed">#66999999</color>
+
+    <color name="bg_main">#fffffc</color>
+    <color name="bg_backyard">#eeeeee</color>
+
+    <!-- Root text colors -->
 
     <color name="text_primary">#DE000000</color>
     <color name="text_secondary">#8A000000</color>
@@ -27,6 +38,8 @@
     <color name="text_secondary_inv">#8Affffff</color>
     <color name="text_hint_inv">#42ffffff</color>
     <color name="text_subheader_inv">#8Fffffff</color>
+
+    <!-- Selector & divider colors -->
 
     <color name="selector_selected">#66999999</color>
     <color name="selector_hover">#33999999</color>
@@ -40,8 +53,13 @@
     <color name="divider">#1e000000</color>
     <color name="divider_inv">#1effffff</color>
 
-    <color name="bg_main">#fffffc</color>
-    <color name="bg_backyard">#eeeeee</color>
+    <!-- Base UI colors -->
+
+    <color name="list_action">@color/primary</color>
+
+    <color name="section_title">@color/primary</color>
+    <color name="section_icon_small">#b5b6b7</color>
+    <color name="section_icon_large">@color/primary</color>
 
     <!-- Main screen -->
     <color name="main_tab_selected">#fffffc</color>
@@ -57,7 +75,7 @@
     <color name="chats_title">@color/text_primary</color>
     <color name="chats_text">@color/text_primary</color>
     <color name="chats_time">@color/text_subheader</color>
-    <color name="chats_counter">#ffffff</color>
+    <color name="chats_counter">@color/text_primary_inv</color>
     <color name="chats_counter_bg">@color/primary_alt</color>
     <color name="chats_typing">@color/primary</color>
 
@@ -70,14 +88,15 @@
 
     <!-- Contacts -->
     <color name="contacts_fast">@color/primary</color>
-    <color name="contacts_action">@color/primary</color>
+    <color name="contacts_action">@color/list_action</color>
+    <color name="contacts_action_share">@color/contacts_action</color>
+    <color name="contacts_action_add">@color/contacts_action</color>
+    <color name="contacts_divider">@color/divider</color>
 
-    <!-- Conversation screen -->
-
+    <!-- Conversation -->
     <color name="conv_send_enabled">@color/primary</color>
     <color name="conv_send_disabled">#42000000</color>
 
-    <color name="conv_bg">#e8e3d8</color>
     <color name="conv_date_line">#14000000</color>
     <color name="conv_date_text">#ffffff</color>
     <color name="conv_date_bg">#99000000</color>
@@ -101,14 +120,20 @@
     <color name="conv_media_state_warring">#ffed534b</color>
 
     <!-- Settings -->
-    <color name="settings_title">@color/primary</color>
-    <color name="settings_icon">#b5b6b7</color>
+    <color name="settings_main_title">@color/section_title</color>
+
+    <color name="settings_icon">@color/section_icon_small</color>
+    <color name="settings_title">@color/text_primary</color>
+    <color name="settings_subtitle">@color/text_secondary</color>
 
     <!-- Profile -->
     <color name="profile_title">@color/text_primary_inv</color>
     <color name="profile_subtitle">@color/text_secondary_inv</color>
-    <color name="profile_icon">@color/primary</color>
+    <color name="profile_icon">@color/section_icon_large</color>
 
-    <!-- Misc -->
-    <color name="light_gray">#bbbbbb</color>
+    <!-- Group Profile -->
+    <color name="group_admin">@color/accent</color>
+    <color name="group_action_add_icon">@color/list_action</color>
+    <color name="group_action_add_text">@color/list_action</color>
+
 </resources>

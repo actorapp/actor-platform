@@ -97,7 +97,7 @@
                         android:gravity="center_vertical|left"
                         android:paddingLeft="72dp"
                         android:text="@string/settings_header"
-                        android:textColor="@color/settings_title"
+                        android:textColor="@color/settings_main_title"
                         android:textSize="16sp" />
 
                     <LinearLayout
@@ -118,7 +118,7 @@
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
                             android:text="@string/settings_help"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/settings_title"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -147,7 +147,7 @@
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
                             android:text="@string/settings_notifications"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/settings_title"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -176,7 +176,7 @@
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
                             android:text="@string/settings_chat"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/settings_title"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -205,7 +205,7 @@
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
                             android:text="@string/settings_security"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/settings_title"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -220,7 +220,7 @@
                     android:layout_marginTop="214dp"
                     android:visibility="gone"
                     app:fab_colorNormal="@color/accent"
-                    app:fab_colorPressed="@color/accent_selected"
+                    app:fab_colorPressed="@color/accent_pressed"
                     app:fab_icon="@drawable/ic_share_white_24dp" />
 
             </FrameLayout>

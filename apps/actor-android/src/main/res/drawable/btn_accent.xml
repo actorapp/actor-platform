@@ -3,19 +3,19 @@
     <item android:state_selected="true">
         <shape android:shape="rectangle">
             <corners android:radius="2dp" />
-            <solid android:color="@color/accent_selected" />
+            <solid android:color="@color/accent_pressed" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="2dp" />
-            <solid android:color="@color/accent_selected" />
+            <solid android:color="@color/accent_pressed" />
         </shape>
     </item>
     <item android:state_hovered="true">
         <shape android:shape="rectangle">
             <corners android:radius="2dp" />
-            <solid android:color="@color/accent_selected" />
+            <solid android:color="@color/accent_hovered" />
         </shape>
     </item>
     <item>

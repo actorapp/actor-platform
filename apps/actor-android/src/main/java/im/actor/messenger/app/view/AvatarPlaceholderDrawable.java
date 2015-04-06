@@ -17,10 +17,13 @@ import im.actor.messenger.R;
  */
 public class AvatarPlaceholderDrawable extends Drawable {
 
-    private String title;
+    private static TextPaint TEXT_PAINT;
+    private static Paint CIRCLE_PAINT;
+    private static int[] COLORS;
 
-    private Paint circlePaint;
-    private TextPaint textPaint;
+    private String title;
+    private int color;
+
     private int textX;
     private int textY;
 
@@ -34,39 +37,45 @@ public class AvatarPlaceholderDrawable extends Drawable {
             title = title.substring(0, 1).toUpperCase();
         }
 
-        int[] colors = new int[]{
-                context.getResources().getColor(R.color.placeholder_0),
-                context.getResources().getColor(R.color.placeholder_1),
-                context.getResources().getColor(R.color.placeholder_2),
-                context.getResources().getColor(R.color.placeholder_3),
-                context.getResources().getColor(R.color.placeholder_4),
-                context.getResources().getColor(R.color.placeholder_5),
-                context.getResources().getColor(R.color.placeholder_6),
-        };
-        int color = colors[Math.abs(id) % colors.length];
+        if (COLORS == null) {
+            COLORS = new int[]{
+                    context.getResources().getColor(R.color.placeholder_0),
+                    context.getResources().getColor(R.color.placeholder_1),
+                    context.getResources().getColor(R.color.placeholder_2),
+                    context.getResources().getColor(R.color.placeholder_3),
+                    context.getResources().getColor(R.color.placeholder_4),
+                    context.getResources().getColor(R.color.placeholder_5),
+                    context.getResources().getColor(R.color.placeholder_6),
+            };
+        }
+
+        if (CIRCLE_PAINT == null) {
+            CIRCLE_PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
+            CIRCLE_PAINT.setStyle(Paint.Style.FILL);
+        }
+
+        if (TEXT_PAINT == null) {
+            TEXT_PAINT = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+            TEXT_PAINT.setTypeface(Fonts.regular());
+            TEXT_PAINT.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontSize, context.getResources().getDisplayMetrics()));
+            TEXT_PAINT.setColor(Color.WHITE);
+        }
 
         if (id == 0) {
-            color = context.getResources().getColor(R.color.placeholder_empty);
+            this.color = context.getResources().getColor(R.color.placeholder_empty);
+        } else {
+            this.color = COLORS[Math.abs(id) % COLORS.length];
         }
 
         this.title = title;
-
-        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setTypeface(Fonts.load(context, "Regular"));
-        textPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontSize, context.getResources().getDisplayMetrics()));
-        textPaint.setColor(Color.WHITE);
-
-        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circlePaint.setColor(color);
-        circlePaint.setStyle(Paint.Style.FILL);
     }
 
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
         Rect bounds = new Rect();
-        textX = (int) ((right - left - textPaint.measureText(title, 0, title.length())) / 2);
-        textPaint.getTextBounds(title, 0, title.length(), bounds);
+        textX = (int) ((right - left - TEXT_PAINT.measureText(title, 0, title.length())) / 2);
+        TEXT_PAINT.getTextBounds(title, 0, title.length(), bounds);
         textY = (int) ((bottom - top - bounds.top - bounds.bottom) / 2);
     }
 
@@ -74,9 +83,10 @@ public class AvatarPlaceholderDrawable extends Drawable {
     public void draw(Canvas canvas) {
         Rect bounds = getBounds();
 
-        canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, circlePaint);
+        CIRCLE_PAINT.setColor(color);
+        canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, CIRCLE_PAINT);
 
-        canvas.drawText(title, textX, textY, textPaint);
+        canvas.drawText(title, textX, textY, TEXT_PAINT);
     }
 
     @Override

@@ -1,18 +1,16 @@
 package im.actor.messenger.app.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import net.hockeyapp.android.UpdateManager;
 
 import im.actor.messenger.BuildConfig;
-import im.actor.messenger.R;
+import im.actor.messenger.app.Core;
 import im.actor.messenger.app.activity.base.ControllerActivity;
 import im.actor.messenger.app.activity.controllers.MainBaseController;
 import im.actor.messenger.app.activity.controllers.MainPhoneController;
 import im.actor.messenger.app.fragment.tour.TourActivity;
-import im.actor.messenger.app.Core;
 import im.actor.model.AuthState;
 import im.actor.model.entity.Dialog;
 
@@ -37,7 +35,8 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
             return;
         }
 
-        getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_main)));
+        // getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_main)));
+        getWindow().setBackgroundDrawable(null);
     }
 
     public void onDialogClicked(Dialog item) {
