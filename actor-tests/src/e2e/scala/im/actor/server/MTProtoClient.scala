@@ -97,7 +97,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
       HandshakeCodec.decode(newBuffer) match {
         case Attempt.Successful(DecodeResult(hs, remainder)) =>
           caller ! MTConnected
-          context.become(receiving(connection, remainder, Seq.empty), discardOld = true)
+          context.become(receiving(connection, remainder, Seq.empty, Seq.empty), discardOld = true)
         case Attempt.Failure(_) =>
           context.become(handshaking(caller, connection, newBuffer), discardOld = true)
       }
@@ -105,15 +105,16 @@ class MTProtoClientActor extends Actor with ActorLogging {
       log.error("Command failed while handshaking {}", cmd)
   }
 
-  def receiving(connection: ActorRef, buffer: BitVector, tps: Seq[TransportPackage]): Receive = {
+  def receiving(connection: ActorRef, buffer: BitVector, tps: Seq[TransportPackage], consumers: Seq[ActorRef]): Receive = {
     case Send(p: MTTransport) =>
       send(connection, p)
     case GetTransportPackage =>
-      val tpOpt = tps.headOption
-      sender() ! tpOpt
+      if (tps.isEmpty || !consumers.isEmpty) {
+        context.become(receiving(connection, buffer, tps, consumers :+ sender()), discardOld = true)
+      } else {
+        sender() ! tps.headOption
 
-      if (tpOpt.isDefined) {
-        context.become(receiving(connection, buffer, tps.tail), discardOld = true)
+        context.become(receiving(connection, buffer, tps.tail, consumers), discardOld = true)
       }
     case Received(bs) =>
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
@@ -121,14 +122,30 @@ class MTProtoClientActor extends Actor with ActorLogging {
       transportPackageList.decode(newBuffer).recover {
         case _ => DecodeResult(Seq.empty, newBuffer)
       } match {
-        case Attempt.Successful(DecodeResult(newTps, remainder)) =>
-          context.become(receiving(connection, remainder, tps ++ newTps), discardOld = true)
+        case Attempt.Successful(DecodeResult(decodedTps, remainder)) =>
+          if (!consumers.isEmpty) {
+            val newTps = tps ++ decodedTps
+
+            consumers.head ! newTps.headOption
+
+            context.become(receiving(connection, buffer, newTps.tail, consumers.tail), discardOld = true)
+          } else {
+            context.become(receiving(connection, buffer, tps ++ decodedTps, consumers), discardOld = true)
+          }
         case Attempt.Failure(e) => // should never happen
           log.error("Failed to decode TransportPackage: {}", e)
           throw new Exception("Failed to decode TransportPackage")
       }
     case CommandFailed(w: Write) =>
       log.error("Failed to write {}", w.data)
+  }
+
+  private def deliverTps(connection: ActorRef, buffer: BitVector, tps: Seq[TransportPackage], consumers: Seq[ActorRef]): Unit = {
+    if (!tps.isEmpty && !consumers.isEmpty) {
+      consumers.head ! tps.headOption
+    }
+
+    context.become(receiving(connection, buffer, tps, consumers), discardOld = true)
   }
 
   private def sendHandshake(connection: ActorRef): Unit = {

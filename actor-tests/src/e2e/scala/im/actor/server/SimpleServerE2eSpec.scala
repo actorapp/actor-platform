@@ -2,6 +2,9 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
+import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.{Promise, Future, Await}
+
 import akka.stream.ActorFlowMaterializer
 import akka.testkit._
 import org.specs2.matcher.ThrownExpectations
@@ -103,27 +106,11 @@ class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpe
 
   private def receiveMessageBox()(implicit client: MTProtoClient): MessageBox = {
     val mtp = receiveMTPackage()
-
     MessageBoxCodec.decode(mtp.messageBytes).require.value
   }
 
   private def receiveMTPackage()(implicit client: MTProtoClient): MTPackage = {
-    def receive(waitMax: Long, waited: Long): Option[TransportPackage] = {
-      val waitStep = 200L
-
-      client.receiveTransportPackage() match {
-        case s @ Some(_) => s
-        case None =>
-          if (waited >= waitMax) {
-            None
-          } else {
-            Thread.sleep(waitStep)
-            receive(waitMax, waited + waitStep)
-          }
-      }
-    }
-
-    val body = receive(5000, 0) match {
+    val body = client.receiveTransportPackage() match {
       case Some(TransportPackage(_, body)) => body
       case None => throw new Exception("Transport package not received")
     }
