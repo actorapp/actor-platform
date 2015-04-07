@@ -1,52 +1,51 @@
 package im.actor.server.push
 
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent._, duration._
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.util.{ Failure, Success }
 
 import akka.actor._
-import akka.contrib.pattern.ClusterSharding
-import akka.contrib.pattern.ShardRegion
-import akka.pattern.ask
+import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
 import slick.dbio.DBIO
+import slick.driver.PostgresDriver.api._
 
 import im.actor.api.{ rpc => api }
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.{ models, persist => p }
 
 object SeqUpdatesManager {
-
-  sealed trait Message
-
-  @SerialVersionUID(1L)
-  private[push] case object GetSeq extends Message
-
-  @SerialVersionUID(1L)
-  private[push] case class PushUpdate(upd: api.Update) extends Message
-
-  @SerialVersionUID(1L)
-  private[push] case class PushUpdateGetSeq(upd: api.Update) extends Message
 
   @SerialVersionUID(1L)
   private[push] case class Envelope(authId: Long, payload: Message)
 
-  @SerialVersionUID(1L)
-  private[push] case object Stop
+  sealed trait Message
 
-  type SeqVal = Int
-  type SeqValState = (Int, Array[Byte])
+  @SerialVersionUID(1L)
+  private[push] case object GetSequenceState extends Message
+
+  @SerialVersionUID(1L)
+  private[push] case class PushUpdate(header: Int, serializedData: Array[Byte]) extends Message
+
+  @SerialVersionUID(1L)
+  private[push] case class PushUpdateGetSequenceState(header: Int, serializedData: Array[Byte]) extends Message
+
+  type Sequence = Int
+  type SequenceState = (Int, Array[Byte])
 
   private[push] sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
-  private[push] case class SeqChanged(value: Int) extends PersistentEvent
+  private[push] case class SeqChanged(sequence: Int) extends PersistentEvent
 
   private[push] val noop1: Any => Unit = _ => ()
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env@Envelope(authId, payload) => (authId.toString, env)
+    case env @ Envelope(authId, payload) => (authId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
@@ -61,78 +60,70 @@ object SeqUpdatesManager {
   )
 
   // TODO: configurable
-  val GetSeqTimeout = Timeout(5.seconds)
-  val PushGetSeqTimeout = Timeout(5.seconds)
+  private val OperationTimeout = Timeout(5.seconds)
 
-  def startRegion()(implicit system: ActorSystem): ActorRef = startRegion(Some(Props[SeqUpdatesManager]))
+  def startRegion()(implicit system: ActorSystem, db: Database): ActorRef = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
 
-  def getSeqState(region: ActorRef, authId: Long)(implicit ec: ExecutionContext): DBIO[(SeqVal, Array[Byte])] = {
+  def getSeqState(region: ActorRef, authId: Long)(implicit ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
     for {
-      seq <- DBIO.from(region.ask(Envelope(authId, GetSeq))(GetSeqTimeout).mapTo[SeqVal])
-      state <- persist.sequence.SeqUpdate.find(authId).headOption.map(optU => optU.map(_.ref.toByteArray).getOrElse(Array.empty[Byte]))
-    } yield (seq, state)
+      seqstate <- DBIO.from(region.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
+    } yield seqstate
   }
 
-  def pushUpdate(region: ActorRef, authId: Long, update: api.Update): Unit = {
-    region ! Envelope(authId, PushUpdate(update))
-  }
-
-  def persistAndPushUpdate(region: ActorRef, authId: Long, update: api.Update)(implicit ec: ExecutionContext): DBIO[SeqValState] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-
-    DBIO.from(pushUpdateGetSeq(region, authId, update)).flatMap(persistAndPushUpdate(region, authId, _, header, serializedData))
-  }
-
-  def persistAndPushUpdate(region: ActorRef, authId: Long, seq: Int, header: Int, serializedData: Array[Byte])(implicit ec: ExecutionContext): DBIO[SeqValState] = {
-    val seqUpdate = models.sequence.SeqUpdate(authId, seq, header, serializedData)
-
-    for {
-      _ <- persist.sequence.SeqUpdate.create(seqUpdate)
-    } yield (seq, seqUpdate.ref.toByteArray)
+  def persistAndPushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte])(implicit ec: ExecutionContext): DBIO[SequenceState] = {
+    DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData))
   }
 
   def broadcastUserUpdate(region: ActorRef,
                           userId: Int,
-                          update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SeqValState]] = {
+                          update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     for {
-      authIds <- persist.AuthId.findIdByUserId(userId)
-      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(region, _, update)))
+      authIds <- p.AuthId.findIdByUserId(userId)
+      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(region, _, header, serializedData)))
     } yield seqstates
   }
 
   def broadcastClientUpdate(region: ActorRef, update: api.Update)(
     implicit
     client: api.AuthorizedClientData, ec: ExecutionContext
-    ): DBIO[SeqValState] = {
+    ): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     for {
-      otherAuthIds <- persist.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, update)))
-      ownseqstate <- persistAndPushUpdate(region, client.authId, update)
+      otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
+      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, header, serializedData)))
+      ownseqstate <- persistAndPushUpdate(region, client.authId, header, serializedData)
     } yield ownseqstate
   }
 
-  private def pushUpdateGetSeq(region: ActorRef, authId: Long, update: api.Update): Future[SeqVal] = {
-    region.ask(Envelope(authId, PushUpdateGetSeq(update)))(PushGetSeqTimeout).mapTo[SeqVal]
+  private def pushUpdateGetSeqState(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte]): Future[SequenceState] = {
+    region.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData)))(OperationTimeout).mapTo[SequenceState]
+  }
+
+  private def pushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte]): Unit = {
+    region ! Envelope(authId, PushUpdate(header, serializedData))
   }
 }
 
-class SeqUpdatesManager extends PersistentActor {
+class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with ActorLogging {
 
-  import SeqUpdatesManager._
   import ShardRegion.Passivate
 
-  context.setReceiveTimeout(
-    context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
-  )
+  import SeqUpdatesManager._
+
+  @SerialVersionUID(1L)
+  private case class Initiated(authId: Long, timestamp: Long)
+
+  // FIXME: move to props
+  val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
+
+  context.setReceiveTimeout(receiveTimeout)
 
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
@@ -141,55 +132,117 @@ class SeqUpdatesManager extends PersistentActor {
   // it is needed to prevent divizion by zero in pushUpdate
 
   private[this] var seq: Int = 0
+  private[this] var lastTimestamp: Long = 0 // TODO: feed this value from db on actor startup
 
-  override def receiveCommand: Receive = {
-    case Envelope(_, GetSeq) =>
-      sender() ! seq
-    case Envelope(_, PushUpdate(upd)) =>
-      pushUpdate(upd)
-    case Envelope(_, PushUpdateGetSeq(upd)) =>
+  def receiveInitiated: Receive = {
+    case Envelope(_, GetSequenceState) =>
+      sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
+    case Envelope(authId, PushUpdate(header, updBytes)) =>
+      pushUpdate(authId, header, updBytes)
+    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData)) =>
       val replyTo = sender()
 
-      pushUpdate(upd, { newSeq =>
-        replyTo ! newSeq
+      pushUpdate(authId, header, serializedData, { seqstate: SequenceState =>
+        replyTo ! seqstate
       })
-    case ReceiveTimeout => context.parent ! Passivate(stopMessage = Stop)
-    case Stop => context.stop(self)
+    case ReceiveTimeout => context.parent ! Passivate(stopMessage = PoisonPill)
   }
+
+  def stashing: Receive = {
+    case Initiated(authId, timestamp) =>
+      lastTimestamp = timestamp
+
+      unstashAll()
+      context.become(receiveInitiated)
+    case msg => stash()
+  }
+
+  def waitingForEnvelope: Receive = {
+    case env @ Envelope(authId, _) =>
+      stash()
+      context.become(stashing)
+
+      // TODO: pinned diepstcher?
+      implicit val ec = context.dispatcher
+
+      val timestampFuture: Future[Long] = for {
+        seqUpdOpt <- db.run(p.sequence.SeqUpdate.find(authId).headOption)
+      } yield {
+          seqUpdOpt.map(_.timestamp).getOrElse(0)
+        }
+
+      timestampFuture.onFailure {
+        case e =>
+          log.error(e, "Failed loading last update")
+          context.parent ! Passivate(stopMessage = PoisonPill)
+      }
+
+      timestampFuture.map(Initiated(authId, _)).pipeTo(self)
+    case msg => stash()
+  }
+
+  override def receiveCommand: Receive = waitingForEnvelope
 
   override def receiveRecover: Receive = {
     case SeqChanged(value) =>
       seq = value
     case RecoveryCompleted =>
-      recoveryCompleted()
+      seq += IncrementOnStart - 1
   }
 
-  private def recoveryCompleted(): Unit = {
-    seq += IncrementOnStart
-
-    persist(SeqChanged(seq))(noop1)
+  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte]): Unit = {
+    pushUpdate(authId, header, serializedData, noop1)
   }
 
-  private def pushUpdate(upd: api.Update): Unit = {
-    pushUpdate(upd, noop1)
-  }
+  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], cb: SequenceState => Unit): Unit = {
+    // TODO: pinned dispatcher?
+    implicit val ec = context.dispatcher
 
-  private def pushUpdate(upd: api.Update, cb: Int => Unit): Unit = {
-    def push(): Unit = {
+    def push(seq: Int, timestamp: Long): Future[Unit] = {
       // TODO: push it
+
+      db.run(p.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData)))
+        .map(_ => ())
+        .andThen {
+        case Success(_) => log.debug("Pushed update seq: {}", seq)
+        case Failure(err) => log.error(err, "Failed to push update") // TODO: throw exception?
+      }
     }
 
     seq += 1
+    val timestamp = newTimestamp()
 
+    log.debug("new timestamp {}", timestamp)
+
+    // TODO: DRY this
     if (seq % (IncrementOnStart / 2) == 0) {
-      persist(SeqChanged(seq)) {
-        case SeqChanged(newSeq) =>
-          push()
-          cb(newSeq)
+      persist(SeqChanged(seq)) { _ =>
+        push(seq, timestamp) foreach (_ => cb(sequenceState(seq, timestampToBytes(timestamp))))
       }
     } else {
-      push()
-      cb(seq)
+      push(seq, timestamp) foreach (_ => cb(sequenceState(seq, timestampToBytes(timestamp))))
     }
   }
+
+  private def newTimestamp(): Long = {
+    val timestamp = System.currentTimeMillis()
+
+    if (timestamp > lastTimestamp) {
+      lastTimestamp = timestamp
+      lastTimestamp
+    } else {
+      lastTimestamp = lastTimestamp + 1
+      lastTimestamp
+    }
+  }
+
+  private def timestampToBytes(timestamp: Long): Array[Byte] = {
+    ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
+  }
+
+  private def sequenceState(sequence: Int, timestamp: Long): SequenceState =
+    sequenceState(sequence, timestampToBytes(timestamp))
+
+  private def sequenceState(sequence: Int, state: Array[Byte]): SequenceState =
+    (sequence, state)
 }

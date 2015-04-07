@@ -5,6 +5,8 @@ import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
 import im.actor.server.push.SeqUpdatesManager
 
+import scala.concurrent.duration._
+
 class MessagingServiceSpec extends BaseServiceSpec {
   def is = sequential ^ s2"""
   SendMessage handler should
@@ -32,8 +34,8 @@ class MessagingServiceSpec extends BaseServiceSpec {
 
       def sendMessage = {
         service.handleSendMessage(user2Peer, 1L, api.messaging.TextMessage("Hi Shiva", 0, None).toMessageContent) must beOkLike {
-          case api.misc.ResponseSeqDate(1002, _, _) => ok
-        }.await(retries = 3)
+          case api.misc.ResponseSeqDate(1001, _, _) => ok
+        }.await(retries = 3, timeout = 1.seconds)
       }
     }
 

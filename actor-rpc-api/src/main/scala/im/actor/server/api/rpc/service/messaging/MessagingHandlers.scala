@@ -3,7 +3,6 @@ package im.actor.server.api.rpc.service.messaging
 import scala.concurrent._
 
 import org.joda.time.DateTime
-import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._, im.actor.api.rpc.messaging._, im.actor.api.rpc.misc._, im.actor.api.rpc.peers._, Implicits._
@@ -42,10 +41,12 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
 
             // TODO: write history messages
 
+            val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
+
             for {
               _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
               _ <- broadcastUserUpdate(seqUpdManagerRegion, outPeer.id, outUpdate)
-              seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, UpdateMessageSent(outPeer.asPeer, randomId, dateMillis))
+              seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update.header, update.toByteArray)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
