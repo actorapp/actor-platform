@@ -61,13 +61,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="center"
             android:text="@string/tour_welcome_subtitle"
             android:textColor="@color/text_primary_inv"
             android:textSize="16sp" />
     </LinearLayout>
 
     <im.actor.messenger.app.fragment.tour.PagerContainer
+        android:id="@+id/pager_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -104,6 +104,7 @@
         android:id="@+id/login_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
         android:layout_below="@+id/welcome_text"
         android:gravity="center_horizontal"
         android:orientation="vertical">
