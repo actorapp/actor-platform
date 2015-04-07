@@ -4570,7 +4570,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2537F8531A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorApp" */;
 			buildPhases = (
-				25C9C39A1A9FE7F70061780E /* Run Script Build Number Increment */,
 				6DAFB7212B826813ECA4122E /* Check Pods Manifest.lock */,
 				2537F8291A966B9D004A02E9 /* Sources */,
 				2537F82A1A966B9D004A02E9 /* Frameworks */,
@@ -4700,20 +4699,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorClient/Pods-ActorClient-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		25C9C39A1A9FE7F70061780E /* Run Script Build Number Increment */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script Build Number Increment";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"";
 		};
 		6DAFB7212B826813ECA4122E /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -5534,6 +5519,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "";
 			};
 			name = ReleaseDev1;
 		};
@@ -5623,6 +5609,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "";
 			};
 			name = ReleaseDev2;
 		};
@@ -5712,6 +5699,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "";
 			};
 			name = ReleaseLlectro;
 		};
@@ -5807,6 +5795,7 @@
 				PRODUCT_NAME = Actor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "";
 			};
 			name = Debug;
 		};
@@ -5844,6 +5833,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "";
 			};
 			name = Release;
 		};
