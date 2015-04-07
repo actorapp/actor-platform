@@ -12,11 +12,13 @@ object Testing {
   )
 
   private lazy val itSettings = inConfig(IntegrationTest)(Defaults.testSettings) ++ Seq(
-    scalaSource in IntegrationTest := baseDirectory.value / "src/it/scala"
+    scalaSource in IntegrationTest := baseDirectory.value / "src/it/scala",
+    resourceDirectory in EndToEndTest := baseDirectory.value / "src/it/resources"
   )
 
   private lazy val e2eSettings = inConfig(EndToEndTest)(Defaults.testSettings) ++ Seq(
     scalaSource in EndToEndTest := baseDirectory.value / "src/e2e/scala",
+    resourceDirectory in EndToEndTest := baseDirectory.value / "src/e2e/resources",
     fork in EndToEndTest := true
   )
 
