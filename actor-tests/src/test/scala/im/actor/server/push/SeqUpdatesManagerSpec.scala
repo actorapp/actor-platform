@@ -55,7 +55,7 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     for (a <- 1 to 600)
       probe.send(region, Envelope(authId, PushUpdate(update.header, update.toByteArray)))
 
-    probe.expectNoMsg(2.seconds)
+    probe.expectNoMsg(4.seconds)
 
     {
       probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray)))
