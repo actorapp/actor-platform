@@ -49,6 +49,11 @@ public class CoverAvatarView extends SimpleDraweeView {
     }
 
     private void init() {
+
+        if (isInEditMode()) {
+            return;
+        }
+
         GenericDraweeHierarchyBuilder builder =
                 new GenericDraweeHierarchyBuilder(getResources());
 
