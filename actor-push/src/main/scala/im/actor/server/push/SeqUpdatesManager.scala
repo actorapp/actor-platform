@@ -5,18 +5,18 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
 import akka.actor._
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import akka.pattern.{ ask, pipe }
+import akka.contrib.pattern.{ClusterSharding, ShardRegion}
+import akka.pattern.{ask, pipe}
 import akka.persistence._
 import akka.util.Timeout
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.{ rpc => api }
-import im.actor.server.{ models, persist => p }
+import im.actor.api.{rpc => api}
+import im.actor.server.{models, persist => p}
 
 object SeqUpdatesManager {
 
@@ -29,10 +29,10 @@ object SeqUpdatesManager {
   private[push] case object GetSequenceState extends Message
 
   @SerialVersionUID(1L)
-  private[push] case class PushUpdate(header: Int, serializedData: Array[Byte]) extends Message
+  private[push] case class PushUpdate(header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]) extends Message
 
   @SerialVersionUID(1L)
-  private[push] case class PushUpdateGetSequenceState(header: Int, serializedData: Array[Byte]) extends Message
+  private[push] case class PushUpdateGetSequenceState(header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]) extends Message
 
   type Sequence = Int
   type SequenceState = (Int, Array[Byte])
@@ -45,7 +45,7 @@ object SeqUpdatesManager {
   private[push] val noop1: Any => Unit = _ => ()
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) => (authId.toString, env)
+    case env@Envelope(authId, payload) => (authId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
@@ -61,6 +61,7 @@ object SeqUpdatesManager {
 
   // TODO: configurable
   private val OperationTimeout = Timeout(5.seconds)
+  private val MaxDifferenceUpdates = 100
 
   def startRegion()(implicit system: ActorSystem, db: Database): ActorRef = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
 
@@ -72,8 +73,8 @@ object SeqUpdatesManager {
     } yield seqstate
   }
 
-  def persistAndPushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte])(implicit ec: ExecutionContext): DBIO[SequenceState] = {
-    DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData))
+  def persistAndPushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])(implicit ec: ExecutionContext): DBIO[SequenceState] = {
+    DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData, userIds, groupIds))
   }
 
   def broadcastUserUpdate(region: ActorRef,
@@ -81,10 +82,11 @@ object SeqUpdatesManager {
                           update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
+    val (userIds, groupIds) = updateRefs(update)
 
     for {
       authIds <- p.AuthId.findIdByUserId(userId)
-      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(region, _, header, serializedData)))
+      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(region, _, header, serializedData, userIds, groupIds)))
     } yield seqstates
   }
 
@@ -94,20 +96,113 @@ object SeqUpdatesManager {
     ): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
+    val (userIds, groupIds) = updateRefs(update)
 
     for {
       otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, header, serializedData)))
-      ownseqstate <- persistAndPushUpdate(region, client.authId, header, serializedData)
+      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, header, serializedData, userIds, groupIds)))
+      ownseqstate <- persistAndPushUpdate(region, client.authId, header, serializedData, userIds, groupIds)
     } yield ownseqstate
   }
 
-  private def pushUpdateGetSeqState(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte]): Future[SequenceState] = {
-    region.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData)))(OperationTimeout).mapTo[SequenceState]
+  def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext) = {
+    val timestamp = bytesToTimestamp(state)
+    for (updates <- p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1))
+      yield {
+        if (updates.length > MaxDifferenceUpdates) {
+          (updates.take(updates.length - 1), true)
+        } else {
+          (updates, false)
+        }
+      }
   }
 
-  private def pushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte]): Unit = {
-    region ! Envelope(authId, PushUpdate(header, serializedData))
+  def updateRefs(update: api.Update): (Set[Int], Set[Int]) = {
+    def peerRefs(peer: api.peers.Peer): (Set[Int], Set[Int]) = {
+      if (peer.`type` == api.peers.PeerType.Private) {
+        (Set(peer.id), Set.empty)
+      } else {
+        (Set.empty, Set(peer.id))
+      }
+    }
+
+    val empty = (Set.empty[Int], Set.empty[Int])
+    def singleUser(userId: Int): (Set[Int], Set[Int]) = (Set(userId), Set.empty)
+    def singleGroup(groupId: Int): (Set[Int], Set[Int]) = (Set.empty, Set(groupId))
+    def users(userIds: Seq[Int]): (Set[Int], Set[Int]) = (userIds.toSet, Set.empty)
+
+    update match {
+      case _: api.misc.UpdateConfig => empty
+      case api.messaging.UpdateChatClear(peer) => (Set.empty, Set(peer.id))
+      case api.messaging.UpdateChatDelete(peer) => (Set.empty, Set(peer.id))
+      case api.messaging.UpdateEncryptedMessage(peer, senderUserId, _, _, _, _) =>
+        val refs = peerRefs(peer)
+        refs.copy(_1 = refs._1 + senderUserId)
+      case api.messaging.UpdateMessage(peer, senderUserId, _, _, _) =>
+        val refs = peerRefs(peer)
+        refs.copy(_1 = refs._1 + senderUserId)
+      case api.messaging.UpdateEncryptedRead(peer, _, _) => peerRefs(peer)
+      case api.messaging.UpdateEncryptedReadByMe(peer, _) => peerRefs(peer)
+      case api.messaging.UpdateEncryptedReceived(peer, _, _) => peerRefs(peer)
+      case api.messaging.UpdateMessageDelete(peer, _) => peerRefs(peer)
+      case api.messaging.UpdateMessageRead(peer, _, _) => peerRefs(peer)
+      case api.messaging.UpdateMessageReadByMe(peer, _) => peerRefs(peer)
+      case api.messaging.UpdateMessageReceived(peer, _, _) => peerRefs(peer)
+      case api.messaging.UpdateMessageSent(peer, _, _) => peerRefs(peer)
+      case api.groups.UpdateGroupAvatarChanged(groupId, userId, _, _, _) => (Set(userId), Set(groupId))
+      case api.groups.UpdateGroupInvite(groupId, inviteUserId, _, _) => (Set(inviteUserId), Set(groupId))
+      case api.groups.UpdateGroupMembersUpdate(groupId, members) => (members.map(_.userId).toSet ++ members.map(_.inviterUserId).toSet, Set(groupId)) // TODO: #perf use foldLeft
+      case api.groups.UpdateGroupTitleChanged(groupId, userId, _, _, _) => (Set(userId), Set(groupId))
+      case api.groups.UpdateGroupUserAdded(groupId, userId, inviterUserId, _, _) => (Set(userId, inviterUserId), Set(groupId))
+      case api.groups.UpdateGroupUserKick(groupId, userId, kickerUserId, _, _) => (Set(userId, kickerUserId), Set(groupId))
+      case api.groups.UpdateGroupUserLeave(groupId, userId, _, _) => (Set(userId), Set(groupId))
+      case api.contacts.UpdateContactRegistered(userId, _, _) => singleUser(userId)
+      case api.contacts.UpdateContactsAdded(userIds) => users(userIds)
+      case api.contacts.UpdateContactsRemoved(userIds) => users(userIds)
+      case api.contacts.UpdateEmailContactRegistered(_, userId) => singleUser(userId)
+      case api.users.UpdateEmailMoved(_, userId) => singleUser(userId)
+      case _: api.users.UpdateEmailTitleChanged => empty
+      case api.users.UpdatePhoneMoved(_, userId) => singleUser(userId)
+      case _: api.users.UpdatePhoneTitleChanged => empty
+      case api.users.UpdateUserAvatarChanged(userId, _) => singleUser(userId)
+      case api.users.UpdateUserContactsChanged(userId, _, _) => singleUser(userId)
+      case api.users.UpdateUserEmailAdded(userId, _) => singleUser(userId)
+      case api.users.UpdateUserEmailRemoved(userId, _) => singleUser(userId)
+      case api.users.UpdateUserLocalNameChanged(userId, _) => singleUser(userId)
+      case api.users.UpdateUserNameChanged(userId, _) => singleUser(userId)
+      case api.users.UpdateUserPhoneAdded(userId, _) => singleUser(userId)
+      case api.users.UpdateUserPhoneRemoved(userId, _) => singleUser(userId)
+      case api.users.UpdateUserStateChanged(userId, _) => singleUser(userId)
+      case api.encryption.UpdateNewDevice(userId, _, _, _) => singleUser(userId)
+      case api.encryption.UpdateRemovedDevice(userId, _) => singleUser(userId)
+      case api.weak.UpdateGroupOnline(groupId, _) => singleGroup(groupId)
+      case api.weak.UpdateTyping(peer, userId, _) =>
+        val refs = peerRefs(peer)
+        refs.copy(_1 = refs._1 + userId)
+      case api.weak.UpdateUserLastSeen(userId, _) => singleUser(userId)
+      case api.weak.UpdateUserOffline(userId) => singleUser(userId)
+      case api.weak.UpdateUserOnline(userId) => singleUser(userId)
+    }
+  }
+
+  protected def bytesToTimestamp(bytes: Array[Byte]): Long = {
+    if (bytes.isEmpty) {
+      0L
+    } else {
+      ByteBuffer.wrap(bytes).getLong
+    }
+  }
+
+  protected def timestampToBytes(timestamp: Long): Array[Byte] = {
+    ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
+  }
+
+  private def pushUpdateGetSeqState(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Future[SequenceState] = {
+    region.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)))(OperationTimeout).mapTo[SequenceState]
+  }
+
+  private def pushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
+    region ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds))
   }
 }
 
@@ -137,12 +232,12 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   def receiveInitiated: Receive = {
     case Envelope(_, GetSequenceState) =>
       sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
-    case Envelope(authId, PushUpdate(header, updBytes)) =>
-      pushUpdate(authId, header, updBytes)
-    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData)) =>
+    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds)) =>
+      pushUpdate(authId, header, updBytes, userIds, groupIds)
+    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)) =>
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, { seqstate: SequenceState =>
+      pushUpdate(authId, header, serializedData, userIds, groupIds, { seqstate: SequenceState =>
         replyTo ! seqstate
       })
     case ReceiveTimeout => context.parent ! Passivate(stopMessage = PoisonPill)
@@ -158,11 +253,11 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   }
 
   def waitingForEnvelope: Receive = {
-    case env @ Envelope(authId, _) =>
+    case env@Envelope(authId, _) =>
       stash()
       context.become(stashing)
 
-      // TODO: pinned diepstcher?
+      // TODO: pinned dispatcher?
       implicit val ec = context.dispatcher
 
       val timestampFuture: Future[Long] = for {
@@ -190,18 +285,18 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       seq += IncrementOnStart - 1
   }
 
-  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte]): Unit = {
-    pushUpdate(authId, header, serializedData, noop1)
+  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
+    pushUpdate(authId, header, serializedData, userIds, groupIds, noop1)
   }
 
-  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], cb: SequenceState => Unit): Unit = {
+  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int], cb: SequenceState => Unit): Unit = {
     // TODO: pinned dispatcher?
     implicit val ec = context.dispatcher
 
     def push(seq: Int, timestamp: Long): Future[Unit] = {
       // TODO: push it
 
-      db.run(p.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData)))
+      db.run(p.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)))
         .map(_ => ())
         .andThen {
         case Success(_) => log.debug("Pushed update seq: {}", seq)
@@ -234,10 +329,6 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       lastTimestamp = lastTimestamp + 1
       lastTimestamp
     }
-  }
-
-  private def timestampToBytes(timestamp: Long): Array[Byte] = {
-    ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
   }
 
   private def sequenceState(sequence: Int, timestamp: Long): SequenceState =
