@@ -5547,6 +5547,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5637,6 +5638,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5727,6 +5729,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5862,6 +5865,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = "";
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5900,6 +5904,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
+				HOCKEY = 55a4a60200c0ace4b7a42599079c406b;
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
