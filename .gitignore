@@ -3,3 +3,4 @@ application.conf
 .ensime_cache
 application.conf
 actor-tests/journal
+actor-tests/snapshots
