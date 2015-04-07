@@ -267,8 +267,9 @@ public class PhotoHolder extends MessageHolder {
                     MVVMEngine.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Activity activity = getAdapter().getMessagesFragment().getActivity();
-                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                            Intents.showPhoto(getAdapter().getMessagesFragment().getActivity(), previewView, reference.getDescriptor(), currentMessage.getSenderId());
+                            /*Activity activity = getAdapter().getMessagesFragment().getActivity();
+                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));*/
                         }
                     });
                 }

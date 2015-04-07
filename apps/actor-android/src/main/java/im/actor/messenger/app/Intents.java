@@ -1,11 +1,17 @@
 package im.actor.messenger.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -13,11 +19,13 @@ import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.fragment.group.GroupInfoActivity;
 import im.actor.messenger.app.fragment.media.DocumentsActivity;
+import im.actor.messenger.app.fragment.media.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Peer;
+import im.actor.model.modules.file.entity.Downloaded;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -229,6 +237,36 @@ public class Intents {
             return new Intent(Intent.ACTION_PICK).setType("*/*");
         } else {
             return com.droidkit.pickers.Intents.pickFile(context);
+        }
+    }
+
+    public static void showPhoto(Activity activity, View photoView, String path, int senderId) {
+        PictureActivity.launchPhoto(activity, photoView, path, senderId);
+    }
+
+    public static void savePicture(Context context, Bitmap bitmap) {
+
+        File actorPicturesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        actorPicturesFolder = new File(actorPicturesFolder, "Actor");
+        actorPicturesFolder.mkdirs();
+        try {
+            File pictureFile = new File(actorPicturesFolder, System.currentTimeMillis()+".jpg");
+            pictureFile.createNewFile();
+
+
+            FileOutputStream ostream = new FileOutputStream(pictureFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+            ostream.close();
+
+
+
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            Uri contentUri = Uri.fromFile(pictureFile);
+            mediaScanIntent.setData(contentUri);
+            context.sendBroadcast(mediaScanIntent);
+            Log.d("Picture saving", "Saved as " + pictureFile.getPath());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

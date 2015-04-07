@@ -25,6 +25,7 @@
 
     <string name="menu_share">Share</string>
     <string name="menu_save">Save to Phone</string>
+    <string name="menu_saved">Saved</string>
     <string name="menu_next">Next</string>
 
     <string name="invite_message">Hi! Let\'s switch to Actor! https://actor.im/dl</string>
