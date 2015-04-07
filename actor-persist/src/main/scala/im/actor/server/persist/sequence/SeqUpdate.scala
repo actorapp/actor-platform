@@ -15,7 +15,26 @@ class SeqUpdateTable(tag: Tag) extends Table[models.sequence.SeqUpdate](tag, "se
 
   def serializedData = column[Array[Byte]]("serialized_data")
 
-  def * = (authId, timestamp, seq, header, serializedData) <>(models.sequence.SeqUpdate.tupled, models.sequence.SeqUpdate.unapply)
+  def userIds = column[String]("user_ids_str")
+
+  def groupIds = column[String]("group_ids_str")
+
+  def * = (authId, timestamp, seq, header, serializedData, userIds, groupIds) <> ((toModel _).tupled, fromModel)
+
+  private def toModel(authId: Long, timestamp: Long, seq: Int, header: Int, serializedData: Array[Byte], userIdsStr: String, groupIdsStr: String): models.sequence.SeqUpdate = {
+    models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, toIntSet(userIdsStr), toIntSet(groupIdsStr))
+  }
+
+  private def fromModel(update: models.sequence.SeqUpdate) =
+    Some((update.authId, update.timestamp, update.seq, update.header, update.serializedData, update.userIds.mkString(","), update.groupIds.mkString(",")))
+
+  private def toIntSet(str: String): Set[Int] = {
+    if (str.isEmpty) {
+      Set.empty
+    } else {
+      str.split(',').map(x => x.toInt).toSet
+    }
+  }
 }
 
 object SeqUpdate {
@@ -31,4 +50,7 @@ object SeqUpdate {
 
   def find(authId: Long) =
     updates.filter(_.authId === authId).sortBy(_.timestamp.desc).result
+
+  def findAfter(authId: Long, timestamp: Long, limit: Int) =
+    updates.filter(u => u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).take(limit).result
 }

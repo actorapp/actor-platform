@@ -42,11 +42,12 @@ private[messaging] trait MessagingHandlers extends PeerHelpers {
             // TODO: write history messages
 
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
+            val (userIds, groupIds) = updateRefs(update)
 
             for {
               _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
               _ <- broadcastUserUpdate(seqUpdManagerRegion, outPeer.id, outUpdate)
-              seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update.header, update.toByteArray)
+              seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update.header, update.toByteArray, userIds, groupIds)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
