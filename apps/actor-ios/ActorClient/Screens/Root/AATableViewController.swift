@@ -33,6 +33,12 @@ class AATableViewController: AAViewController {
     
     // MARK: -
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
+    }
+    
     override func loadView() {
         super.loadView()
         

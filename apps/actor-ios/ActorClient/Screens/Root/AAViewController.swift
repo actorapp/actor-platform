@@ -26,6 +26,14 @@ class AAViewController: UIViewController {
     }
     
     // MARK: -
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
+    }
+    
+    // MARK: -
     // MARK: Navigation
     
     func dismiss() {

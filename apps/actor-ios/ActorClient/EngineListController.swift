@@ -34,6 +34,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     }
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
             self.displayList.addListenerWithAMDisplayList_Listener(self)
