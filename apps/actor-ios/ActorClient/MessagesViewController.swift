@@ -164,11 +164,9 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         super.viewDidAppear(animated)
         
         if count(navigationController!.viewControllers) > 2 {
-            if let tabBarController = navigationController!.viewControllers[0] as? MainTabController,
+            if let firstController = navigationController!.viewControllers[0] as? UIViewController,
                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? MessagesViewController {
-                println("\(navigationController!.viewControllers)")
-                navigationController!.setViewControllers([tabBarController, currentController], animated: false)
-                println("\(navigationController!.viewControllers)")
+                navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
         }
     }
@@ -177,9 +175,11 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
             let userInfoController = AAUserInfoController(uid: id)
+            userInfoController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(userInfoController, animated: true)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = AAConversationGroupInfoController(gid: id)
+            groupInfoController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(groupInfoController, animated: true)
         }
     }
@@ -209,7 +209,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         super.didPressLeftButton(sender)
         
         var actionShit = ABActionShit()
-        actionShit.buttonTitles = ["Take Photo","Record Video", "Media Library", "Document"]
+        actionShit.buttonTitles = ["Take Photo", "Media Library"]
         actionShit.cancelButtonTitle = "Cancel"
         actionShit.delegate = self
         actionShit.showWithCompletion(nil)
@@ -227,16 +227,16 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
             pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
             self.presentViewController(pickerController, animated: true, completion: nil)
         } else if (buttonIndex == 1) {
-            var pickerController = UIImagePickerController()
-            pickerController.sourceType = UIImagePickerControllerSourceType.Camera
-            pickerController.mediaTypes = [kUTTypeVideo, kUTTypeMovie]
-            pickerController.view.backgroundColor = UIColor.blackColor()
-            pickerController.navigationBar.tintColor = Resources.TintColor
-            pickerController.delegate = self
-            pickerController.navigationBar.tintColor = UIColor.whiteColor()
-            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-            self.presentViewController(pickerController, animated: true, completion: nil)
-        } else if (buttonIndex == 2) {
+//            var pickerController = UIImagePickerController()
+//            pickerController.sourceType = UIImagePickerControllerSourceType.Camera
+//            pickerController.mediaTypes = [kUTTypeVideo, kUTTypeMovie]
+//            pickerController.view.backgroundColor = UIColor.blackColor()
+//            pickerController.navigationBar.tintColor = Resources.TintColor
+//            pickerController.delegate = self
+//            pickerController.navigationBar.tintColor = UIColor.whiteColor()
+//            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
+//            self.presentViewController(pickerController, animated: true, completion: nil)
+//        } else if (buttonIndex == 2) {
             var pickerController = UIImagePickerController()
             pickerController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
             pickerController.mediaTypes = [kUTTypeImage, kUTTypeVideo, kUTTypeMovie]
@@ -246,11 +246,11 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
             pickerController.navigationBar.tintColor = UIColor.whiteColor()
             pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
             self.presentViewController(pickerController, animated: true, completion: nil)
-        } else if (buttonIndex == 3) {
-            var documentView = UIDocumentPickerViewController(documentTypes: [kUTTypeText as NSString, "com.apple.iwork.pages.pages", "com.apple.iwork.numbers.numbers", "com.apple.iwork.keynote.key"], inMode: UIDocumentPickerMode.Import)
-            documentView.delegate = self
-            documentView.view.backgroundColor = UIColor.whiteColor()
-            self.presentViewController(documentView, animated: true, completion: nil)
+//        } else if (buttonIndex == 3) {
+//            var documentView = UIDocumentPickerViewController(documentTypes: [kUTTypeText as NSString, "com.apple.iwork.pages.pages", "com.apple.iwork.numbers.numbers", "com.apple.iwork.keynote.key"], inMode: UIDocumentPickerMode.Import)
+//            documentView.delegate = self
+//            documentView.view.backgroundColor = UIColor.whiteColor()
+//            self.presentViewController(documentView, animated: true, completion: nil)
         }
     }
     
