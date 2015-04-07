@@ -134,7 +134,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
     }
 
     private def expectRpcResult(): RpcResult = {
-      Option(probe.receiveOne(1.second)) match {
+      Option(probe.receiveOne(5.seconds)) match {
         case Some(MTPackage(authId, sessionId, mbBytes)) =>
           MessageBoxCodec.decode(mbBytes).require.value.body match {
             case RpcResponseBox(messageId, rpcResultBytes) =>
