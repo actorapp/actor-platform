@@ -73,7 +73,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
       implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
-      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1001) = {
+      def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1000) = {
         service.handleAddContact(user2.id, user2AccessHash) must beOkLike {
           case api.misc.ResponseSeq(seq, state) if seq == expectedUpdSeq => ok
         }.await
@@ -90,7 +90,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
       def remove = {
         service.handleRemoveContact(user2.id, user2AccessHash) must beOkLike {
-          case api.misc.ResponseSeq(1003, state) => ok
+          case api.misc.ResponseSeq(1002, state) => ok
         }.await
 
         service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
@@ -98,7 +98,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
         ).await
       }
 
-      def addAfterRemove = add(firstRun = false, expectedUpdSeq = 1004)
+      def addAfterRemove = add(firstRun = false, expectedUpdSeq = 1003)
     }
 
   }
