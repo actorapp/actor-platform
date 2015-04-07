@@ -719,6 +719,11 @@
 		06BFDB551AB1D14900F16E43 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB521AB1D06B00F16E43 /* Roboto-Bold.ttf */; };
 		06BFDB561AB1D14900F16E43 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB531AB1D06B00F16E43 /* Roboto-Medium.ttf */; };
 		06BFDB571AB1D14900F16E43 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB541AB1D06B00F16E43 /* Roboto-Regular.ttf */; };
+		06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */; };
+		06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */; };
+		06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */; };
+		06CCE93F1AD4A67D00A17705 /* Pods-ActorApp.releasellectro.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE93A1AD4A67C00A17705 /* Pods-ActorApp.releasellectro.xcconfig */; };
+		06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */; };
 		06D1D77F1ACAD9ED00AC22ED /* mapping.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06D1D77D1ACAD9ED00AC22ED /* mapping.properties */; };
 		06D1D7801ACAD9ED00AC22ED /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06D1D77E1ACAD9ED00AC22ED /* prefixes.properties */; };
 		06D1D7851ACAE31000AC22ED /* AppText_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06D1D7811ACAE31000AC22ED /* AppText_Ru.properties */; };
@@ -756,7 +761,7 @@
 		2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86B1A9762F6004A02E9 /* ABPhoneFieldCodes.txt */; };
 		25C9C3841A9D4A900061780E /* CocoaLocale.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9C3831A9D4A900061780E /* CocoaLocale.m */; };
 		25FAD8B31A9FF38E004F5E19 /* CocoaPhoneBookProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */; };
-		494FCA96F490BCF15D1DF9C7 /* libPods-ActorClient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B939F305AF573D79345536 /* libPods-ActorClient.a */; };
+		593617CB99210C20660D44C4 /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B117098A374A503ABA90DFD /* libPods-ActorApp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2139,6 +2144,11 @@
 		06BFDB521AB1D06B00F16E43 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		06BFDB531AB1D06B00F16E43 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		06BFDB541AB1D06B00F16E43 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
+		06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev1.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev1.xcconfig"; sourceTree = "<group>"; };
+		06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev2.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev2.xcconfig"; sourceTree = "<group>"; };
+		06CCE93A1AD4A67C00A17705 /* Pods-ActorApp.releasellectro.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasellectro.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasellectro.xcconfig"; sourceTree = "<group>"; };
+		06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		06D1D77D1ACAD9ED00AC22ED /* mapping.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = mapping.properties; sourceTree = "<group>"; };
 		06D1D77E1ACAD9ED00AC22ED /* prefixes.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = prefixes.properties; sourceTree = "<group>"; };
 		06D1D7811ACAE31000AC22ED /* AppText_Ru.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = AppText_Ru.properties; path = "../../../../../../library/actor-common/src/main/resources/AppText_Ru.properties"; sourceTree = "<group>"; };
@@ -2171,7 +2181,6 @@
 		06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLogProvider.swift; sourceTree = "<group>"; };
 		06FCF1771AB60BFC00422FEC /* CocoaMainThreadProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMainThreadProvider.swift; sourceTree = "<group>"; };
 		06FCF1791AB61D3800422FEC /* FMDBList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBList.swift; sourceTree = "<group>"; };
-		08B939F305AF573D79345536 /* libPods-ActorClient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorClient.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F82D1A966B9D004A02E9 /* ActorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F8311A966B9D004A02E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2537F8321A966B9D004A02E9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -2189,9 +2198,8 @@
 		25C9C3831A9D4A900061780E /* CocoaLocale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaLocale.m; sourceTree = "<group>"; };
 		25FAD8B11A9FF38E004F5E19 /* CocoaPhoneBookProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaPhoneBookProvider.h; sourceTree = "<group>"; };
 		25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaPhoneBookProvider.m; sourceTree = "<group>"; };
-		53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorClient.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorClient/Pods-ActorClient.release.xcconfig"; sourceTree = "<group>"; };
+		2B117098A374A503ABA90DFD /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		DB5A2C3EB0E63D94843300E3 /* Pods-ActorClient.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorClient.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorClient/Pods-ActorClient.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2199,7 +2207,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				494FCA96F490BCF15D1DF9C7 /* libPods-ActorClient.a in Frameworks */,
+				593617CB99210C20660D44C4 /* libPods-ActorApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4374,6 +4382,18 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		06CCE9411AD4A68200A17705 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */,
+				06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */,
+				06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */,
+				06CCE93A1AD4A67C00A17705 /* Pods-ActorApp.releasellectro.xcconfig */,
+				06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		06CDF50A1AD1EBCC0001A712 /* ActorModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -4410,7 +4430,6 @@
 				2537F82F1A966B9D004A02E9 /* ActorClient */,
 				2537F84C1A966B9D004A02E9 /* ActorClientTests */,
 				2537F82E1A966B9D004A02E9 /* Products */,
-				5ECF8802A848CEB880DD2E81 /* Pods */,
 				E2A36FB6A30EED3811CC45C6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -4434,6 +4453,7 @@
 				06E4842C1AB78D7E00AA272F /* Utils */,
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
+				06CCE9411AD4A68200A17705 /* Pods */,
 				2537F8401A966B9D004A02E9 /* Images.xcassets */,
 				2537F8421A966B9D004A02E9 /* LaunchScreen.xib */,
 				065A51C51ABA0BA200B48088 /* ActorClient.entitlements */,
@@ -4546,19 +4566,10 @@
 			path = "../../actor-model/actor-common/src/main/resources";
 			sourceTree = "<group>";
 		};
-		5ECF8802A848CEB880DD2E81 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				DB5A2C3EB0E63D94843300E3 /* Pods-ActorClient.debug.xcconfig */,
-				53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		E2A36FB6A30EED3811CC45C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				08B939F305AF573D79345536 /* libPods-ActorClient.a */,
+				2B117098A374A503ABA90DFD /* libPods-ActorApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -4655,22 +4666,27 @@
 			buildActionMask = 2147483647;
 			files = (
 				06D1D7851ACAE31000AC22ED /* AppText_Ru.properties in Resources */,
+				06CCE93F1AD4A67D00A17705 /* Pods-ActorApp.releasellectro.xcconfig in Resources */,
 				06D1D7861ACAE31000AC22ED /* AppText.properties in Resources */,
 				06D1D7871ACAE31000AC22ED /* Months_Ru.properties in Resources */,
 				06D1D7881ACAE31000AC22ED /* Months.properties in Resources */,
 				06BFDB551AB1D14900F16E43 /* Roboto-Bold.ttf in Resources */,
+				06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */,
 				06BFDB561AB1D14900F16E43 /* Roboto-Medium.ttf in Resources */,
 				06BFDB571AB1D14900F16E43 /* Roboto-Regular.ttf in Resources */,
 				06E281DF1AAEDDB00070EE18 /* DialogsViewController.xib in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
 				06ABC77F1AAF458B00C1B932 /* ContactsViewController.xib in Resources */,
+				06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */,
 				06A907D11AB7AE8200E087EA /* notification.aiff in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
 				069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */,
 				065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */,
 				06D1D77F1ACAD9ED00AC22ED /* mapping.properties in Resources */,
 				06D1D7801ACAD9ED00AC22ED /* prefixes.properties in Resources */,
+				06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */,
 				2537F8441A966B9D004A02E9 /* LaunchScreen.xib in Resources */,
+				06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */,
 				2537F8411A966B9D004A02E9 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4697,7 +4713,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorClient/Pods-ActorClient-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6DAFB7212B826813ECA4122E /* Check Pods Manifest.lock */ = {
@@ -4712,7 +4728,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "echo \"Pods: ${PODS_ROOT}\"\n\ndiff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -5487,6 +5503,7 @@
 /* Begin XCBuildConfiguration section */
 		06CDF4F81AD048D20001A712 /* ReleaseDev1 */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -5525,7 +5542,6 @@
 		};
 		06CDF4F91AD048D20001A712 /* ReleaseDev1 */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5578,6 +5594,7 @@
 		};
 		06CDF4FB1AD048DC0001A712 /* ReleaseDev2 */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -5616,7 +5633,6 @@
 		};
 		06CDF4FC1AD048DC0001A712 /* ReleaseDev2 */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5669,6 +5685,7 @@
 		};
 		06CDFD011AD30B2A0001A712 /* ReleaseLlectro */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06CCE93A1AD4A67C00A17705 /* Pods-ActorApp.releasellectro.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -5707,7 +5724,6 @@
 		};
 		06CDFD021AD30B2A0001A712 /* ReleaseLlectro */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5760,6 +5776,7 @@
 		};
 		2537F8511A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -5804,6 +5821,7 @@
 		};
 		2537F8521A966B9D004A02E9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -5842,7 +5860,6 @@
 		};
 		2537F8541A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DB5A2C3EB0E63D94843300E3 /* Pods-ActorClient.debug.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5882,7 +5899,6 @@
 		};
 		2537F8551A966B9D004A02E9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
