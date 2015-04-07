@@ -34,6 +34,7 @@ import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
+import im.actor.messenger.app.fragment.media.DocumentsActivity;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
@@ -123,6 +124,8 @@ public class GroupInfoFragment extends BaseFragment {
             });
         }
 
+        // Settings
+
         final SwitchCompat isNotificationsEnabled = (SwitchCompat) header.findViewById(R.id.enableNotifications);
         isNotificationsEnabled.setChecked(messenger().isNotificationsEnabled(Peer.group(chatId)));
         isNotificationsEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -138,6 +141,42 @@ public class GroupInfoFragment extends BaseFragment {
             }
         });
 
+
+        // Media
+        int docsCount = 10;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        if (docsCount == 0) {
+            header.findViewById(R.id.docsContainer).setVisibility(View.GONE);
+        } else {
+            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+            header.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.openDocs(Peer.group(groupInfo.getId()), getActivity()));
+                }
+            });
+            ((TextView) header.findViewById(R.id.docCount)).setText(
+                    "" + docsCount
+            );
+        }
+
+        int mediaCount = 10;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        if (mediaCount == 0) {
+            header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
+        } else {
+            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+            header.findViewById(R.id.mediaContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.openDocs(Peer.group(groupInfo.getId()), getActivity()));
+                }
+            });
+            header.findViewById(R.id.mediaCount).setVisibility(View.VISIBLE);
+            ((TextView) header.findViewById(R.id.mediaCount)).setText(
+                    "" + mediaCount
+            );
+        }
+
+        //Members
         ((TextView) header.findViewById(R.id.membersCount)).setText(
                 getString(R.string.group_members_count)
                         .replace("{0}", groupInfo.getMembersCount() + "")
