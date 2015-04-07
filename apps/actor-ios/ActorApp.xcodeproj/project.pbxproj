@@ -2188,15 +2188,15 @@
 		06FCF1771AB60BFC00422FEC /* CocoaMainThreadProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMainThreadProvider.swift; sourceTree = "<group>"; };
 		06FCF1791AB61D3800422FEC /* FMDBList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBList.swift; sourceTree = "<group>"; };
 		08B939F305AF573D79345536 /* libPods-ActorClient.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorClient.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2537F82D1A966B9D004A02E9 /* ActorClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2537F82D1A966B9D004A02E9 /* ActorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F8311A966B9D004A02E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2537F8321A966B9D004A02E9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2537F8401A966B9D004A02E9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2537F8431A966B9D004A02E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		2537F8491A966B9D004A02E9 /* ActorClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActorClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2537F8491A966B9D004A02E9 /* ActorAppAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActorAppAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F84E1A966B9D004A02E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2537F84F1A966B9D004A02E9 /* ActorClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActorClientTests.m; sourceTree = "<group>"; };
-		2537F85A1A972CA0004A02E9 /* ActorClient-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Prefix.pch"; sourceTree = "<group>"; };
+		2537F85A1A972CA0004A02E9 /* ActorApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ActorApp-Prefix.pch"; sourceTree = "<group>"; };
 		2537F8651A9753DD004A02E9 /* ABPhoneField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABPhoneField.h; sourceTree = "<group>"; };
 		2537F8661A9753DD004A02E9 /* ABPhoneField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABPhoneField.m; sourceTree = "<group>"; };
 		2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = PhoneFormats.dat; sourceTree = "<group>"; };
@@ -4434,8 +4434,8 @@
 		2537F82E1A966B9D004A02E9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2537F82D1A966B9D004A02E9 /* ActorClient.app */,
-				2537F8491A966B9D004A02E9 /* ActorClientTests.xctest */,
+				2537F82D1A966B9D004A02E9 /* ActorApp.app */,
+				2537F8491A966B9D004A02E9 /* ActorAppAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4466,7 +4466,7 @@
 				06BFDB521AB1D06B00F16E43 /* Roboto-Bold.ttf */,
 				06BFDB531AB1D06B00F16E43 /* Roboto-Medium.ttf */,
 				06BFDB541AB1D06B00F16E43 /* Roboto-Regular.ttf */,
-				2537F85A1A972CA0004A02E9 /* ActorClient-Prefix.pch */,
+				2537F85A1A972CA0004A02E9 /* ActorApp-Prefix.pch */,
 				2537F8311A966B9D004A02E9 /* Info.plist */,
 				2537F8321A966B9D004A02E9 /* main.m */,
 				B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */,
@@ -4582,9 +4582,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2537F82C1A966B9D004A02E9 /* ActorClient */ = {
+		2537F82C1A966B9D004A02E9 /* ActorApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2537F8531A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorClient" */;
+			buildConfigurationList = 2537F8531A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorApp" */;
 			buildPhases = (
 				25C9C39A1A9FE7F70061780E /* Run Script Build Number Increment */,
 				6DAFB7212B826813ECA4122E /* Check Pods Manifest.lock */,
@@ -4597,14 +4597,14 @@
 			);
 			dependencies = (
 			);
-			name = ActorClient;
+			name = ActorApp;
 			productName = ActorClient;
-			productReference = 2537F82D1A966B9D004A02E9 /* ActorClient.app */;
+			productReference = 2537F82D1A966B9D004A02E9 /* ActorApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2537F8481A966B9D004A02E9 /* ActorClientTests */ = {
+		2537F8481A966B9D004A02E9 /* ActorAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2537F8561A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorClientTests" */;
+			buildConfigurationList = 2537F8561A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorAppTests" */;
 			buildPhases = (
 				2537F8451A966B9D004A02E9 /* Sources */,
 				2537F8461A966B9D004A02E9 /* Frameworks */,
@@ -4615,9 +4615,9 @@
 			dependencies = (
 				2537F84B1A966B9D004A02E9 /* PBXTargetDependency */,
 			);
-			name = ActorClientTests;
+			name = ActorAppTests;
 			productName = ActorClientTests;
-			productReference = 2537F8491A966B9D004A02E9 /* ActorClientTests.xctest */;
+			productReference = 2537F8491A966B9D004A02E9 /* ActorAppAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -4633,6 +4633,9 @@
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = WBZ2456W25;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 1;
 							};
@@ -4644,7 +4647,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2537F8281A966B9D004A02E9 /* Build configuration list for PBXProject "ActorClient" */;
+			buildConfigurationList = 2537F8281A966B9D004A02E9 /* Build configuration list for PBXProject "ActorApp" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -4657,8 +4660,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2537F82C1A966B9D004A02E9 /* ActorClient */,
-				2537F8481A966B9D004A02E9 /* ActorClientTests */,
+				2537F82C1A966B9D004A02E9 /* ActorApp */,
+				2537F8481A966B9D004A02E9 /* ActorAppTests */,
 			);
 		};
 /* End PBXProject section */
@@ -5504,7 +5507,7 @@
 /* Begin PBXTargetDependency section */
 		2537F84B1A966B9D004A02E9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2537F82C1A966B9D004A02E9 /* ActorClient */;
+			target = 2537F82C1A966B9D004A02E9 /* ActorApp */;
 			targetProxy = 2537F84A1A966B9D004A02E9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -5551,6 +5554,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Actor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -5567,11 +5571,12 @@
 				API_URL = "tls://mtproto-api-dev1.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.app.dev1;
+				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5583,10 +5588,11 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a3d86fb0-96b3-4437-8c57-a48ac97c6089";
+				PRODUCT_NAME = ActorApp;
+				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
@@ -5602,7 +5608,7 @@
 				);
 				INFOPLIST_FILE = ActorClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ActorAppAppTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
 			};
 			name = ReleaseDev1;
@@ -5637,6 +5643,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Actor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -5653,11 +5660,12 @@
 				API_URL = "tls://mtproto-api-dev2.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.app.dev2;
+				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5669,10 +5677,11 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a3d86fb0-96b3-4437-8c57-a48ac97c6089";
+				PRODUCT_NAME = ActorApp;
+				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
@@ -5688,10 +5697,99 @@
 				);
 				INFOPLIST_FILE = ActorClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ActorAppAppTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
 			};
 			name = ReleaseDev2;
+		};
+		06CDFD011AD30B2A0001A712 /* ReleaseLlectro */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Actor;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = ReleaseLlectro;
+		};
+		06CDFD021AD30B2A0001A712 /* ReleaseLlectro */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 53958141732573CD5EF08D97 /* Pods-ActorClient.release.xcconfig */;
+			buildSettings = {
+				API_ID = 1;
+				API_KEY = "??";
+				API_PUSH_ID = 1;
+				API_URL = "tls://mtproto-api.actor.im:443";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				BUNDLE_ID = im.actor.messenger.llectro;
+				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/J2ObjC\"",
+					"\"${PODS_ROOT}/Headers/Public/RMPhoneFormat\"",
+					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
+					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
+				);
+				INFOPLIST_FILE = ActorClient/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = ActorApp;
+				PROVISIONING_PROFILE = "";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 1;
+				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
+			};
+			name = ReleaseLlectro;
+		};
+		06CDFD031AD30B2A0001A712 /* ReleaseLlectro */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ActorClientTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = ActorAppAppTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
+			};
+			name = ReleaseLlectro;
 		};
 		2537F8511A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -5730,6 +5828,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = Actor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -5765,6 +5864,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = Actor;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -5781,12 +5881,13 @@
 				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.app.debug;
+				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
-				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
+				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5798,8 +5899,9 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a3d86fb0-96b3-4437-8c57-a48ac97c6089";
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = ActorApp;
+				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -5818,11 +5920,12 @@
 				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.app;
+				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				GCC_PREFIX_HEADER = "ActorClient/ActorClient-Prefix.pch";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5834,10 +5937,11 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a3d86fb0-96b3-4437-8c57-a48ac97c6089";
+				PRODUCT_NAME = ActorApp;
+				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
@@ -5857,7 +5961,7 @@
 				);
 				INFOPLIST_FILE = ActorClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ActorAppAppTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
 			};
 			name = Debug;
@@ -5872,7 +5976,7 @@
 				);
 				INFOPLIST_FILE = ActorClientTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ActorAppAppTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ActorClient.app/ActorClient";
 			};
 			name = Release;
@@ -5880,33 +5984,36 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2537F8281A966B9D004A02E9 /* Build configuration list for PBXProject "ActorClient" */ = {
+		2537F8281A966B9D004A02E9 /* Build configuration list for PBXProject "ActorApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2537F8511A966B9D004A02E9 /* Debug */,
 				2537F8521A966B9D004A02E9 /* Release */,
+				06CDFD011AD30B2A0001A712 /* ReleaseLlectro */,
 				06CDF4FB1AD048DC0001A712 /* ReleaseDev2 */,
 				06CDF4F81AD048D20001A712 /* ReleaseDev1 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2537F8531A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorClient" */ = {
+		2537F8531A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2537F8541A966B9D004A02E9 /* Debug */,
 				2537F8551A966B9D004A02E9 /* Release */,
+				06CDFD021AD30B2A0001A712 /* ReleaseLlectro */,
 				06CDF4FC1AD048DC0001A712 /* ReleaseDev2 */,
 				06CDF4F91AD048D20001A712 /* ReleaseDev1 */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2537F8561A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorClientTests" */ = {
+		2537F8561A966B9D004A02E9 /* Build configuration list for PBXNativeTarget "ActorAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2537F8571A966B9D004A02E9 /* Debug */,
 				2537F8581A966B9D004A02E9 /* Release */,
+				06CDFD031AD30B2A0001A712 /* ReleaseLlectro */,
 				06CDF4FD1AD048DC0001A712 /* ReleaseDev2 */,
 				06CDF4FA1AD048D20001A712 /* ReleaseDev1 */,
 			);

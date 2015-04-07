@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2537F8481A966B9D004A02E9"
-               BuildableName = "ActorClientTests.xctest"
-               BlueprintName = "ActorClientTests"
-               ReferencedContainer = "container:ActorClient.xcodeproj">
+               BuildableName = "ActorAppAppTests.xctest"
+               BlueprintName = "ActorAppTests"
+               ReferencedContainer = "container:ActorApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -26,16 +26,16 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "Debug">
+      buildConfiguration = "ReleaseDev1">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2537F8481A966B9D004A02E9"
-               BuildableName = "ActorClientTests.xctest"
-               BlueprintName = "ActorClientTests"
-               ReferencedContainer = "container:ActorClient.xcodeproj">
+               BuildableName = "ActorAppAppTests.xctest"
+               BlueprintName = "ActorAppTests"
+               ReferencedContainer = "container:ActorApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2537F8481A966B9D004A02E9"
-            BuildableName = "ActorClientTests.xctest"
-            BlueprintName = "ActorClientTests"
-            ReferencedContainer = "container:ActorClient.xcodeproj">
+            BuildableName = "ActorAppAppTests.xctest"
+            BlueprintName = "ActorAppTests"
+            ReferencedContainer = "container:ActorApp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -54,7 +54,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
+      buildConfiguration = "ReleaseDev1"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2537F8481A966B9D004A02E9"
-            BuildableName = "ActorClientTests.xctest"
-            BlueprintName = "ActorClientTests"
-            ReferencedContainer = "container:ActorClient.xcodeproj">
+            BuildableName = "ActorAppAppTests.xctest"
+            BlueprintName = "ActorAppTests"
+            ReferencedContainer = "container:ActorApp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -74,23 +74,23 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Release"
+      buildConfiguration = "ReleaseDev1"
       debugDocumentVersioning = "YES">
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2537F8481A966B9D004A02E9"
-            BuildableName = "ActorClientTests.xctest"
-            BlueprintName = "ActorClientTests"
-            ReferencedContainer = "container:ActorClient.xcodeproj">
+            BuildableName = "ActorAppAppTests.xctest"
+            BlueprintName = "ActorAppTests"
+            ReferencedContainer = "container:ActorApp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Debug">
+      buildConfiguration = "ReleaseDev1">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "ReleaseDev1"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
