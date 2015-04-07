@@ -190,9 +190,10 @@ public class PictureActivity extends ActionBarActivity {
             onBackPressed();
             return true;
         } else if (i == R.id.share) {
-
-            startActivity(new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(Uri.parse(path), "image/jpeg"));
+            startActivity(Intents.shareDoc("picture.jpeg", path));
+            /*startActivity(new Intent(Intent.ACTION_SEND)
+                    .setType("image/jpeg")
+                    .putExtra(Intent.EXTRA_STREAM,Uri.parse(path)));*/
             return true;
         } else if (i == R.id.save) {
             getImageLoader().createReceiver(new ReceiverCallback() {
@@ -302,6 +303,8 @@ public class PictureActivity extends ActionBarActivity {
 
             UserVM owner = users().get(sender);
 
+            ownerAvatarView.init(Screen.dp(48), 18);
+            ownerAvatarView.bind(owner);
             /*ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, getActivity()));
             Avatar avatar = owner.getAvatar().getValue();
             if (avatar != null) {

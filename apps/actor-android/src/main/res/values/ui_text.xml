@@ -176,6 +176,7 @@
     <string name="profile_title">Profile</string>
     <string name="profile_shared_header">Shared</string>
     <string name="profile_shared_files">Documents</string>
+    <string name="profile_shared_media">Media</string>
     <string name="profile_settings_header">Settings</string>
     <string name="profile_settings_notifications">Notifications</string>
 

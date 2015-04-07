@@ -176,6 +176,7 @@
     <string name="profile_title">Профиль</string>
     <string name="profile_shared_header">Общее</string>
     <string name="profile_shared_files">Документы</string>
+    <string name="profile_shared_media">Медиа</string>
     <string name="profile_settings_header">Настройки</string>
     <string name="profile_settings_notifications">Оповещения</string>
 
