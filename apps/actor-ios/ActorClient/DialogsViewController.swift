@@ -38,10 +38,6 @@ class DialogsViewController: EngineListController {
         return MSG.getDialogsGlobalList()
     }
     
-    func toggleEdit() {
-        self.tableView.setEditing(!self.tableView.editing, animated: true);
-    }
-    
     func isTableEditing() -> Bool {
         return self.tableView.editing;
     }
@@ -81,6 +77,10 @@ class DialogsViewController: EngineListController {
         bindTable(tableView);
         
         super.viewDidLoad();
+        
+        navigationItem.title = "Chats"; // Localize
+        navigationItem.leftBarButtonItem = editButtonItem()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -88,6 +88,23 @@ class DialogsViewController: EngineListController {
         
         MSG.onDialogsOpen();
     }
+    
+    // MARK: -
+    // MARK: Setters
+    
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
+        
+        if editing == true {
+            navigationItem.rightBarButtonItem = nil
+        } else {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
+        }
+    }
+    
+    // MARK: -
+    // MARK: UITableView
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
@@ -118,10 +135,26 @@ class DialogsViewController: EngineListController {
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var dialog = objectAtIndexPath(indexPath) as! AMDialog;
-        self.navigationController?.pushViewController(MessagesViewController(peer: dialog.getPeer()), animated: true);
+        navigateToMessagesWithPeer(dialog.getPeer())
     }
     
     override func viewDidDisappear(animated: Bool) {
         MSG.onDialogsClosed();
     }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    func navigateToCompose() {
+        let composeController = ComposeController()
+        composeController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(composeController, animated: true)
+    }
+    
+    private func navigateToMessagesWithPeer(peer: AMPeer) {
+        let messagesController = MessagesViewController(peer: peer)
+        messagesController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(messagesController, animated: true);
+    }
+    
 }

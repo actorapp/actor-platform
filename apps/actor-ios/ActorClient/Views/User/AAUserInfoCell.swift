@@ -34,6 +34,8 @@ class AAUserInfoCell: AATableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        selectionStyle = UITableViewCellSelectionStyle.None
+        
         userAvatarView = AvatarView(frameSize: 65)
         contentView.addSubview(userAvatarView)
         
