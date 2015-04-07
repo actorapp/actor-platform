@@ -79,6 +79,12 @@ import Foundation
             rootController.presentViewController(loginNavigation, animated: false, completion: nil)
         }
         
+        if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
+            if (hockey.trim().size() > 0) {
+                BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
+            }
+        }
+        
         return true;
     }
     
