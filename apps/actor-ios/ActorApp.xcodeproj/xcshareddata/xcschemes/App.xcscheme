@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0610"
+   LastUpgradeVersion = "0630"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2537F82C1A966B9D004A02E9"
-               BuildableName = "ActorClient.app"
-               BlueprintName = "ActorClient"
-               ReferencedContainer = "container:ActorClient.xcodeproj">
+               BuildableName = "ActorApp.app"
+               BlueprintName = "ActorApp"
+               ReferencedContainer = "container:ActorApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,6 +29,15 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "2537F82C1A966B9D004A02E9"
+            BuildableName = "ActorApp.app"
+            BlueprintName = "ActorApp"
+            ReferencedContainer = "container:ActorApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -44,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2537F82C1A966B9D004A02E9"
-            BuildableName = "ActorClient.app"
-            BlueprintName = "ActorClient"
-            ReferencedContainer = "container:ActorClient.xcodeproj">
+            BuildableName = "ActorApp.app"
+            BlueprintName = "ActorApp"
+            ReferencedContainer = "container:ActorApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -58,6 +67,16 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "2537F82C1A966B9D004A02E9"
+            BuildableName = "ActorApp.app"
+            BlueprintName = "ActorApp"
+            ReferencedContainer = "container:ActorApp.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
