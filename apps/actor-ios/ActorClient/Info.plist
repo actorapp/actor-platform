@@ -10,6 +10,8 @@
 	<string>${API_PUSH_ID}</string>
 	<key>API_URL</key>
 	<string>${API_URL}</string>
+	<key>HOCKEY</key>
+	<string>${HOCKEY}</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
