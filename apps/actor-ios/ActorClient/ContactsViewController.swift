@@ -10,9 +10,15 @@ import UIKit
 
 class ContactsViewController: ContactsBaseController {
     
+    // MARK: -
+    // MARK: Public vars
+    
     @IBOutlet var rootView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var emptyView: UIView!
+    
+    // MARK: -
+    // MARK: Constructors
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -24,24 +30,17 @@ class ContactsViewController: ContactsBaseController {
         initCommon();
     }
     
-    func initCommon(){
-        var icon = UIImage(named: "ic_users_blue_24")!;
-        tabBarItem = UITabBarItem(title: nil,
-            image: icon.tintImage(Resources.BarTintUnselectedColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: icon);
-        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
-    }
+    // MARK: -
     
     override func viewDidLoad() {
         bindTable(tableView);
         
-        tableView.contentInset = UIEdgeInsetsMake(64, 0, 0, 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(64, 0, 0, 0)
-        
         emptyView.hidden = true;
     
         super.viewDidLoad();
+        
+        navigationItem.title = "People";
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -53,8 +52,39 @@ class ContactsViewController: ContactsBaseController {
         }
     }
     
+    // MARK: -
+    // MARK: Methods
+    
+    func initCommon(){
+        var icon = UIImage(named: "ic_users_blue_24")!;
+        tabBarItem = UITabBarItem(title: nil,
+            image: icon.tintImage(Resources.BarTintUnselectedColor)
+                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
+            selectedImage: icon);
+        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+    }
+    
+    func doAddContact() {
+        var alertView = UIAlertView(title: "Add Contact", message: "Please, specify phone number", delegate: nil, cancelButtonTitle: "Cancel")
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.show()
+    }
+    
+    // MARK: -
+    // MARK: UITableView Delegate
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var contact = objectAtIndexPath(indexPath) as! AMContact;
-        self.navigationController?.pushViewController(MessagesViewController(peer: AMPeer.userWithInt(contact.getUid())), animated: true);
+        navigateToMessagesWithUid(contact.getUid())
     }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    private func navigateToMessagesWithUid(uid: jint) {
+        let messagesController = MessagesViewController(peer: AMPeer.userWithInt(uid))
+        messagesController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(messagesController, animated: true);
+    }
+    
 }
