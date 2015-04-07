@@ -679,6 +679,9 @@
 		05B1A4701AD01311005F691D /* AAAddParticipantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */; };
 		05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */; };
 		05C402FC1AD16AAA0075F256 /* AAUserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C402FB1AD16AAA0075F256 /* AAUserInfoCell.swift */; };
+		05E706461AD1F665009F09D8 /* AASettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706451AD1F665009F09D8 /* AASettingsController.swift */; };
+		05E706491AD3EDE0009F09D8 /* AASettingsPrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */; };
+		05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
@@ -708,13 +711,7 @@
 		06ABC7831AAF57A000C1B932 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7821AAF57A000C1B932 /* MainTabController.swift */; };
 		06ABC7851AB05C0600C1B932 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7841AB05C0600C1B932 /* MessagesViewController.swift */; };
 		06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */; };
-		06B356EB1AB8BFD700405472 /* AvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356E91AB8BFD700405472 /* AvatarCell.swift */; };
-		06B356EC1AB8BFD700405472 /* AvatarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06B356EA1AB8BFD700405472 /* AvatarCell.xib */; };
-		06B356F31AB8C50500405472 /* ContactRecordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F11AB8C50500405472 /* ContactRecordCell.swift */; };
-		06B356F41AB8C50500405472 /* ContactRecordCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06B356F21AB8C50500405472 /* ContactRecordCell.xib */; };
 		06B356F61AB8C7BB00405472 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F51AB8C7BB00405472 /* ContactCell.swift */; };
-		06B356F91AB8CF5700405472 /* MenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F71AB8CF5700405472 /* MenuItemCell.swift */; };
-		06B356FA1AB8CF5700405472 /* MenuItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06B356F81AB8CF5700405472 /* MenuItemCell.xib */; };
 		06B99A131ABF45DA0066CA08 /* UIButtonTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */; };
 		06BC45151AB87ECB0003F59E /* BubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45141AB87ECB0003F59E /* BubbleMediaCell.swift */; };
 		06BC45171AB889110003F59E /* CircullarProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45161AB889110003F59E /* CircullarProgress.swift */; };
@@ -745,12 +742,7 @@
 		06F6B7101AB0CE9600A7DB91 /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */; };
 		06F6B7121AB0F53400A7DB91 /* Binder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B7111AB0F53400A7DB91 /* Binder.swift */; };
 		06F6B7141AB0F56300A7DB91 /* Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B7131AB0F56300A7DB91 /* Wrappers.swift */; };
-		06FA655D1AB10D7F00BE0A41 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FA655B1AB10D7F00BE0A41 /* SettingsViewController.swift */; };
-		06FA655E1AB10D7F00BE0A41 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06FA655C1AB10D7F00BE0A41 /* SettingsViewController.xib */; };
-		06FA65611AB1982800BE0A41 /* DiscoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FA655F1AB1982800BE0A41 /* DiscoverViewController.swift */; };
-		06FA65621AB1982800BE0A41 /* DiscoverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06FA65601AB1982800BE0A41 /* DiscoverViewController.xib */; };
 		06FA65641AB19DE000BE0A41 /* Imaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FA65631AB19DE000BE0A41 /* Imaging.swift */; };
-		06FA65661AB1A3E000BE0A41 /* PlaceHolderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FA65651AB1A3E000BE0A41 /* PlaceHolderController.swift */; };
 		06FCF1741AB6042200422FEC /* UDPreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FCF1731AB6042200422FEC /* UDPreferencesStorage.swift */; };
 		06FCF1761AB60B0F00422FEC /* CocoaLogProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */; };
 		06FCF1781AB60BFC00422FEC /* CocoaMainThreadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FCF1771AB60BFC00422FEC /* CocoaMainThreadProvider.swift */; };
@@ -2102,6 +2094,9 @@
 		05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAddParticipantController.swift; path = Conversation/Info/AAAddParticipantController.swift; sourceTree = "<group>"; };
 		05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthCountryCell.swift; path = Views/Auth/AAAuthCountryCell.swift; sourceTree = "<group>"; };
 		05C402FB1AD16AAA0075F256 /* AAUserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAUserInfoCell.swift; path = Views/User/AAUserInfoCell.swift; sourceTree = "<group>"; };
+		05E706451AD1F665009F09D8 /* AASettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsController.swift; path = Settings/AASettingsController.swift; sourceTree = "<group>"; };
+		05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsPrivacyController.swift; path = Settings/AASettingsPrivacyController.swift; sourceTree = "<group>"; };
+		05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsNotificationsController.swift; path = Settings/AASettingsNotificationsController.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
 		06047D071ABF8611002091CC /* CocoaTcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTcpConnection.m; sourceTree = "<group>"; };
@@ -2136,13 +2131,7 @@
 		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
 		06ABC7841AB05C0600C1B932 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineSlackListController.swift; sourceTree = "<group>"; };
-		06B356E91AB8BFD700405472 /* AvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarCell.swift; sourceTree = "<group>"; };
-		06B356EA1AB8BFD700405472 /* AvatarCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AvatarCell.xib; sourceTree = "<group>"; };
-		06B356F11AB8C50500405472 /* ContactRecordCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactRecordCell.swift; sourceTree = "<group>"; };
-		06B356F21AB8C50500405472 /* ContactRecordCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContactRecordCell.xib; sourceTree = "<group>"; };
 		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
-		06B356F71AB8CF5700405472 /* MenuItemCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuItemCell.swift; sourceTree = "<group>"; };
-		06B356F81AB8CF5700405472 /* MenuItemCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuItemCell.xib; sourceTree = "<group>"; };
 		06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonTable.swift; sourceTree = "<group>"; };
 		06BC45141AB87ECB0003F59E /* BubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleMediaCell.swift; sourceTree = "<group>"; };
 		06BC45161AB889110003F59E /* CircullarProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarProgress.swift; sourceTree = "<group>"; };
@@ -2177,12 +2166,7 @@
 		06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resouces.swift; sourceTree = "<group>"; };
 		06F6B7111AB0F53400A7DB91 /* Binder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Binder.swift; sourceTree = "<group>"; };
 		06F6B7131AB0F56300A7DB91 /* Wrappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Wrappers.swift; sourceTree = "<group>"; };
-		06FA655B1AB10D7F00BE0A41 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		06FA655C1AB10D7F00BE0A41 /* SettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SettingsViewController.xib; sourceTree = "<group>"; };
-		06FA655F1AB1982800BE0A41 /* DiscoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverViewController.swift; sourceTree = "<group>"; };
-		06FA65601AB1982800BE0A41 /* DiscoverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DiscoverViewController.xib; sourceTree = "<group>"; };
 		06FA65631AB19DE000BE0A41 /* Imaging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Imaging.swift; sourceTree = "<group>"; };
-		06FA65651AB1A3E000BE0A41 /* PlaceHolderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaceHolderController.swift; sourceTree = "<group>"; };
 		06FCF1731AB6042200422FEC /* UDPreferencesStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDPreferencesStorage.swift; sourceTree = "<group>"; };
 		06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLogProvider.swift; sourceTree = "<group>"; };
 		06FCF1771AB60BFC00422FEC /* CocoaMainThreadProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMainThreadProvider.swift; sourceTree = "<group>"; };
@@ -2243,6 +2227,7 @@
 		050E99B01ACB4D410052C06B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				05E706441AD1F5FD009F09D8 /* Settings */,
 				054A25251AD06D030013FAAA /* User */,
 				0541A0551ACDA5210028E983 /* Conversation */,
 				050B22671ACC010200A0E904 /* Auth */,
@@ -4298,6 +4283,16 @@
 			name = Auth;
 			sourceTree = "<group>";
 		};
+		05E706441AD1F5FD009F09D8 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				05E706451AD1F665009F09D8 /* AASettingsController.swift */,
+				05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */,
+				05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		06047D031ABF85CD002091CC /* network */ = {
 			isa = PBXGroup;
 			children = (
@@ -4359,18 +4354,7 @@
 				06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */,
 				06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */,
 				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
-				06FA655B1AB10D7F00BE0A41 /* SettingsViewController.swift */,
-				06FA655C1AB10D7F00BE0A41 /* SettingsViewController.xib */,
-				06FA655F1AB1982800BE0A41 /* DiscoverViewController.swift */,
-				06FA65601AB1982800BE0A41 /* DiscoverViewController.xib */,
-				06FA65651AB1A3E000BE0A41 /* PlaceHolderController.swift */,
 				06BFDB501AB1AD3800F16E43 /* DialogCell.swift */,
-				06B356E91AB8BFD700405472 /* AvatarCell.swift */,
-				06B356EA1AB8BFD700405472 /* AvatarCell.xib */,
-				06B356F11AB8C50500405472 /* ContactRecordCell.swift */,
-				06B356F21AB8C50500405472 /* ContactRecordCell.xib */,
-				06B356F71AB8CF5700405472 /* MenuItemCell.swift */,
-				06B356F81AB8CF5700405472 /* MenuItemCell.xib */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -4448,8 +4432,8 @@
 				069FE6CA1AC017AA00C6C033 /* ScreensOld */,
 				2563889E1A99C09D00A5E0E3 /* Model */,
 				06E4842C1AB78D7E00AA272F /* Utils */,
-				2537F8301A966B9D004A02E9 /* Supporting Files */,
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
+				2537F8301A966B9D004A02E9 /* Supporting Files */,
 				2537F8401A966B9D004A02E9 /* Images.xcassets */,
 				2537F8421A966B9D004A02E9 /* LaunchScreen.xib */,
 				065A51C51ABA0BA200B48088 /* ActorClient.entitlements */,
@@ -4673,20 +4657,15 @@
 				06D1D7871ACAE31000AC22ED /* Months_Ru.properties in Resources */,
 				06D1D7881ACAE31000AC22ED /* Months.properties in Resources */,
 				06BFDB551AB1D14900F16E43 /* Roboto-Bold.ttf in Resources */,
-				06B356FA1AB8CF5700405472 /* MenuItemCell.xib in Resources */,
 				06BFDB561AB1D14900F16E43 /* Roboto-Medium.ttf in Resources */,
 				06BFDB571AB1D14900F16E43 /* Roboto-Regular.ttf in Resources */,
-				06FA65621AB1982800BE0A41 /* DiscoverViewController.xib in Resources */,
 				06E281DF1AAEDDB00070EE18 /* DialogsViewController.xib in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
 				06ABC77F1AAF458B00C1B932 /* ContactsViewController.xib in Resources */,
-				06B356EC1AB8BFD700405472 /* AvatarCell.xib in Resources */,
 				06A907D11AB7AE8200E087EA /* notification.aiff in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
-				06FA655E1AB10D7F00BE0A41 /* SettingsViewController.xib in Resources */,
 				069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */,
 				065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */,
-				06B356F41AB8C50500405472 /* ContactRecordCell.xib in Resources */,
 				06D1D77F1ACAD9ED00AC22ED /* mapping.properties in Resources */,
 				06D1D7801ACAD9ED00AC22ED /* prefixes.properties in Resources */,
 				2537F8441A966B9D004A02E9 /* LaunchScreen.xib in Resources */,
@@ -4930,6 +4909,7 @@
 				0514DABB1AD1ED8A00F6C3BB /* AsymmetricCipherKeyPairGenerator.m in Sources */,
 				0514DA5B1AD1ED8A00F6C3BB /* DisplayList.m in Sources */,
 				0514D9FE1AD1ED8A00F6C3BB /* JavaAtomicInteger.m in Sources */,
+				05E706491AD3EDE0009F09D8 /* AASettingsPrivacyController.swift in Sources */,
 				0514D9821AD1ED8A00F6C3BB /* AbstractDispatcher.m in Sources */,
 				0514DA981AD1ED8A00F6C3BB /* PhoneBookProvider.m in Sources */,
 				0514D8B11AD1ED8A00F6C3BB /* EncryptedDocumentV1VExideo.m in Sources */,
@@ -4956,7 +4936,6 @@
 				0514DA4A1AD1ED8A00F6C3BB /* MessagesHistoryLoaded.m in Sources */,
 				0514DA1C1AD1ED8A00F6C3BB /* Delete.m in Sources */,
 				0514D95F1AD1ED8A00F6C3BB /* ConfigurationBuilder.m in Sources */,
-				06B356F91AB8CF5700405472 /* MenuItemCell.swift in Sources */,
 				0514D91E1AD1ED8A00F6C3BB /* ServiceExUserLeft.m in Sources */,
 				0514DA341AD1ED8A00F6C3BB /* OwnPresenceActor.m in Sources */,
 				0514D9D81AD1ED8A00F6C3BB /* ServiceGroupAvatarChanged.m in Sources */,
@@ -5091,7 +5070,6 @@
 				065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */,
 				063BCF311AB7AC0F00D469AB /* iOSNotificationProvider.swift in Sources */,
 				2537F8331A966B9D004A02E9 /* main.m in Sources */,
-				06FA65661AB1A3E000BE0A41 /* PlaceHolderController.swift in Sources */,
 				0514D9A21AD1ED8A00F6C3BB /* TaskRequest.m in Sources */,
 				06FCF1741AB6042200422FEC /* UDPreferencesStorage.swift in Sources */,
 				0514DA9F1AD1ED8A00F6C3BB /* Base64Utils.m in Sources */,
@@ -5191,6 +5169,7 @@
 				0514D99A1AD1ED8A00F6C3BB /* AskCallback.m in Sources */,
 				0514DAC81AD1ED8A00F6C3BB /* SHA256Digest.m in Sources */,
 				0514DA261AD1ED8A00F6C3BB /* UnreadMessage.m in Sources */,
+				05E706461AD1F665009F09D8 /* AASettingsController.swift in Sources */,
 				0514D93C1AD1ED8A00F6C3BB /* UpdateMessageRead.m in Sources */,
 				0514D95C1AD1ED8A00F6C3BB /* Command.m in Sources */,
 				0514D9B61AD1ED8A00F6C3BB /* ContainerHelpers.m in Sources */,
@@ -5282,6 +5261,7 @@
 				0514D8A41AD1ED8A00F6C3BB /* DocumentExUnsupported.m in Sources */,
 				0514D90E1AD1ED8A00F6C3BB /* ResponseLoadDialogs.m in Sources */,
 				0514D9691AD1ED8A00F6C3BB /* BcAesCipher.m in Sources */,
+				05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */,
 				0514DB191AD1ED8B00F6C3BB /* BigIntegers.m in Sources */,
 				0514DB151AD1ED8B00F6C3BB /* Nat256.m in Sources */,
 				0514DA301AD1ED8A00F6C3BB /* PendingNotification.m in Sources */,
@@ -5305,7 +5285,6 @@
 				0514DADC1AD1ED8A00F6C3BB /* ParametersWithSBox.m in Sources */,
 				0514DA2D1AD1ED8A00F6C3BB /* SenderActor.m in Sources */,
 				0514DA081AD1ED8A00F6C3BB /* AppStateModule.m in Sources */,
-				06B356F31AB8C50500405472 /* ContactRecordCell.swift in Sources */,
 				0514D8C51AD1ED8A00F6C3BB /* UpdatesParser.m in Sources */,
 				0514DA881AD1ED8A00F6C3BB /* UnsentResponse.m in Sources */,
 				0514D9071AD1ED8A00F6C3BB /* ResponseEditGroupAvatar.m in Sources */,
@@ -5326,7 +5305,6 @@
 				0514DAAA1AD1ED8A00F6C3BB /* DownloadCallback.m in Sources */,
 				0514D8991AD1ED8A00F6C3BB /* Avatar.m in Sources */,
 				0514DA441AD1ED8A00F6C3BB /* ContactsLoaded.m in Sources */,
-				06B356EB1AB8BFD700405472 /* AvatarCell.swift in Sources */,
 				0514D9DA1AD1ED8A00F6C3BB /* ServiceGroupTitleChanged.m in Sources */,
 				0514DA5F1AD1ED8A00F6C3BB /* MVVMCollection.m in Sources */,
 				0514D95B1AD1ED8A00F6C3BB /* CocoaThreadingProvider.m in Sources */,
@@ -5390,7 +5368,6 @@
 				0514DB0C1AD1ED8B00F6C3BB /* GF2Polynomial.m in Sources */,
 				0514DB071AD1ED8B00F6C3BB /* ZTauElement.m in Sources */,
 				0514DAF51AD1ED8A00F6C3BB /* LongArray.m in Sources */,
-				06FA65611AB1982800BE0A41 /* DiscoverViewController.swift in Sources */,
 				0514D91B1AD1ED8A00F6C3BB /* ServiceExUnsupported.m in Sources */,
 				25FAD8B31A9FF38E004F5E19 /* CocoaPhoneBookProvider.m in Sources */,
 				0514DAD91AD1ED8A00F6C3BB /* ParametersWithIV.m in Sources */,
@@ -5424,7 +5401,6 @@
 				0514D9181AD1ED8A00F6C3BB /* ServiceExChangedTitle.m in Sources */,
 				065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */,
 				0514DAD71AD1ED8A00F6C3BB /* AsymmetricKeyParameter.m in Sources */,
-				06FA655D1AB10D7F00BE0A41 /* SettingsViewController.swift in Sources */,
 				0514DA3F1AD1ED8A00F6C3BB /* OwnTypingActor.m in Sources */,
 				0514DAC71AD1ED8A00F6C3BB /* SHA1Digest.m in Sources */,
 				0514DA331AD1ED8A00F6C3BB /* Notifications.m in Sources */,

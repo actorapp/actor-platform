@@ -65,7 +65,7 @@ import Foundation
         //        [CocoaMessenger messenger];
 
         
-        var rootController = UINavigationController(rootViewController: MainTabController());
+        var rootController = MainTabController()
     
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.rootViewController = rootController;
@@ -77,8 +77,6 @@ import Foundation
             var loginNavigation = AANavigationController(rootViewController: phoneController)
             loginNavigation.makeBarTransparent()
             rootController.presentViewController(loginNavigation, animated: false, completion: nil)
-//            var controller = UIStoryboard(name: "Auth", bundle: nil).instantiateInitialViewController() as! UIViewController;
-//            rootController.presentViewController(controller, animated: false, completion: nil)
         }
         
         return true;
