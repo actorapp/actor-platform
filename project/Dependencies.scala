@@ -6,6 +6,7 @@ object Dependencies {
     val akkaExperimental = "1.0-M5"
     val scalaz = "7.1.1"
     val slick = "3.0.0-RC3"
+    val scalatest = "2.2.4"
   }
 
   object Compile {
@@ -60,6 +61,7 @@ object Dependencies {
 
     val scalacheck      = "org.scalacheck"                %% "scalacheck"                    % "1.12.2" % "test"
     val specs2          = "org.specs2"                    %% "specs2-core"                   % "3.0" % "test,e2e"
+    val scalatest       = "org.scalatest"                 %% "scalatest"                     % V.scalatest % "test"
     val slickTestkit    = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick % "test"
 
     val jfairy          = "io.codearte.jfairy"            %  "jfairy"                        % "0.3.1" % "test"
@@ -102,7 +104,7 @@ object Dependencies {
   )
 
   val tests = common ++ Seq(
-    jfairy, scalacheck, specs2, slickTestkit, utilTesting, akkaPersistenceInmem,
+    jfairy, scalacheck, specs2, scalatest, slickTestkit, utilTesting, akkaPersistenceInmem,
     akkaTestkit
   )
 }

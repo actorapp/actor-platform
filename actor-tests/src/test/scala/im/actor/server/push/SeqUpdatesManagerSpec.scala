@@ -31,15 +31,16 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
   def e1 = {
     val authId = util.Random.nextLong()
     val update = api.contacts.UpdateContactsAdded(Vector(1, 2, 3))
+    val (userIds, groupIds) = updateRefs(update)
 
     {
-      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray)))
+      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SequenceState]
       msg._1 must be_==(1001)
     }
 
     {
-      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray)))
+      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 must be_==(1002)
     }
@@ -47,18 +48,18 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     probe.expectNoMsg(1.5.seconds)
 
     {
-      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray)))
+      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 must be_==(2001)
     }
 
     for (a <- 1 to 600)
-      probe.send(region, Envelope(authId, PushUpdate(update.header, update.toByteArray)))
+      probe.send(region, Envelope(authId, PushUpdate(update.header, update.toByteArray, userIds, groupIds)))
 
     probe.expectNoMsg(4.seconds)
 
     {
-      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray)))
+      probe.send(region, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 must be_==(3500)
     }
