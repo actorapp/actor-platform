@@ -12,6 +12,9 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.PhotoContent;
+import im.actor.model.entity.content.VideoContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
@@ -30,6 +33,7 @@ public class ConversationActor extends ModuleActor {
 
     private Peer peer;
     private ListEngine<Message> messages;
+    private ListEngine<Message> media;
     private OutUnreadMessagesStorage messagesStorage;
     private ActorRef dialogsActor;
     private SyncKeyValue pendingKeyValue;
@@ -43,6 +47,7 @@ public class ConversationActor extends ModuleActor {
     @Override
     public void preStart() {
         messages = messages(peer);
+        media = media(peer);
         messagesStorage = new OutUnreadMessagesStorage();
         byte[] data = pendingKeyValue.get(peer.getUnuqueId());
         if (data != null) {
@@ -66,6 +71,13 @@ public class ConversationActor extends ModuleActor {
 
         // Adding message
         messages.addOrUpdateItem(message);
+        if(message.getContent() instanceof PhotoContent || message.getContent() instanceof VideoContent){
+            media.addOrUpdateItem(message);
+        } else{
+            if(message.getContent() instanceof DocumentContent){
+                // todo docs?
+            }
+        }
 
         // Updating dialog
         dialogsActor.send(new DialogsActor.InMessage(peer, message));
@@ -75,6 +87,7 @@ public class ConversationActor extends ModuleActor {
             messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
             savePending();
         }
+
     }
 
     @Verified
@@ -86,8 +99,15 @@ public class ConversationActor extends ModuleActor {
         }
 
         // Updating message
-        messages.addOrUpdateItem(message.changeContent(content));
-
+        Message updatedMsg = message.changeContent(content);
+        messages.addOrUpdateItem(updatedMsg);
+        if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+            media.addOrUpdateItem(updatedMsg);
+        } else{
+            if(updatedMsg.getContent() instanceof DocumentContent){
+                // todo docs?
+            }
+        }
         // Updating dialog
         dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
     }
@@ -110,10 +130,17 @@ public class ConversationActor extends ModuleActor {
             savePending();
 
             // Updating message
-            messages.addOrUpdateItem(msg
+            Message updatedMsg = msg
                     .changeDate(date)
-                    .changeState(MessageState.SENT));
-
+                    .changeState(MessageState.SENT);
+            messages.addOrUpdateItem(updatedMsg);
+            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                media.addOrUpdateItem(updatedMsg);
+            } else{
+                if(updatedMsg.getContent() instanceof DocumentContent){
+                    // todo docs?
+                }
+            }
             // Updating dialog
             dialogsActor.send(new DialogsActor.MessageSent(peer, rid, date));
         }
@@ -127,8 +154,16 @@ public class ConversationActor extends ModuleActor {
                 msg.getMessageState() == MessageState.SENT)) {
 
             // Updating message
-            messages.addOrUpdateItem(msg
-                    .changeState(MessageState.ERROR));
+            Message updatedMsg = msg
+                    .changeState(MessageState.ERROR);
+            messages.addOrUpdateItem(updatedMsg);
+            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                media.addOrUpdateItem(updatedMsg);
+            } else{
+                if(updatedMsg.getContent() instanceof DocumentContent){
+                    // todo docs?
+                }
+            }
 
             // Updating dialog
             dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
@@ -149,8 +184,16 @@ public class ConversationActor extends ModuleActor {
                         msg.getMessageState() == MessageState.RECEIVED)) {
 
                     // Updating message
-                    messages.addOrUpdateItem(msg
-                            .changeState(MessageState.READ));
+                    Message updatedMsg = msg
+                            .changeState(MessageState.READ);
+                    messages.addOrUpdateItem(updatedMsg);
+                    if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                        media.addOrUpdateItem(updatedMsg);
+                    } else{
+                        if(updatedMsg.getContent() instanceof DocumentContent){
+                            // todo docs?
+                        }
+                    }
 
                     // Updating dialog
                     dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
@@ -178,8 +221,16 @@ public class ConversationActor extends ModuleActor {
                 if (msg != null && msg.getMessageState() == MessageState.SENT) {
 
                     // Updating message
-                    messages.addOrUpdateItem(msg
-                            .changeState(MessageState.RECEIVED));
+                    Message updatedMsg = msg
+                            .changeState(MessageState.RECEIVED);
+                    messages.addOrUpdateItem(updatedMsg);
+                    if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                        media.addOrUpdateItem(updatedMsg);
+                    } else{
+                        if(updatedMsg.getContent() instanceof DocumentContent){
+                            // todo docs?
+                        }
+                    }
 
                     // Updating dialog
                     dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
@@ -197,9 +248,16 @@ public class ConversationActor extends ModuleActor {
         if (msg != null && msg.getMessageState() == MessageState.SENT) {
 
             // Update message
-            messages.addOrUpdateItem(msg
-                    .changeState(MessageState.RECEIVED));
-
+            Message updatedMsg = msg
+                    .changeState(MessageState.RECEIVED);
+            messages.addOrUpdateItem(updatedMsg);
+            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                media.addOrUpdateItem(updatedMsg);
+            } else{
+                if(updatedMsg.getContent() instanceof DocumentContent){
+                    // todo docs?
+                }
+            }
             // Update dialog
             dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
                     MessageState.RECEIVED));
@@ -214,9 +272,16 @@ public class ConversationActor extends ModuleActor {
                 msg.getMessageState() == MessageState.RECEIVED)) {
 
             // Update message
-            messages.addOrUpdateItem(msg
-                    .changeState(MessageState.READ));
-
+            Message updatedMsg = msg
+                    .changeState(MessageState.READ);
+            messages.addOrUpdateItem(updatedMsg);
+            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                media.addOrUpdateItem(updatedMsg);
+            } else{
+                if(updatedMsg.getContent() instanceof DocumentContent){
+                    // todo docs?
+                }
+            }
             // Update dialog
             dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
                     MessageState.READ));
@@ -234,6 +299,8 @@ public class ConversationActor extends ModuleActor {
             rids2[i] = rids.get(i);
         }
         messages.removeItems(rids2);
+        media.removeItems(rids2);
+        // todo docs?
 
         // Updating dialog
         Message topMessage = messages.getHeadValue();
@@ -243,12 +310,16 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onClearConversation() {
         messages.clear();
+        media.clear();
+        // todo docs?
         dialogsActor.send(new DialogsActor.ChatClear(peer));
     }
 
     @Verified
     private void onDeleteConversation() {
         messages.clear();
+        media.clear();
+        // todo docs?
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
     }
 
@@ -284,6 +355,19 @@ public class ConversationActor extends ModuleActor {
         // Updating messages
         if (updated.size() > 0) {
             messages.addOrUpdateItems(updated);
+            ArrayList<Message> updatedMedia = new ArrayList<Message>();
+            ArrayList<Message> updatedDoc = new ArrayList<Message>();
+            for (Message updatedMsg : updated) {
+                if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                    updatedMedia.add(updatedMsg);
+                } else{
+                    if(updatedMsg.getContent() instanceof DocumentContent){
+                        // todo docs?
+                    }
+                }
+            }
+            media.addOrUpdateItems(updatedMedia);
+
         }
 
         // No need to update dialogs: all history messages are always too old
