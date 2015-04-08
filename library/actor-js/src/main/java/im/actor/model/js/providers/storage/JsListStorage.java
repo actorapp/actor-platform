@@ -5,6 +5,7 @@ import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.engine.ListEngineRecord;
 import im.actor.model.droidkit.engine.ListStorage;
+import im.actor.model.js.providers.JsLogProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,13 +45,16 @@ public class JsListStorage implements ListStorage {
                 DataInput dataInput = new DataInput(data, 0, data.length);
                 int count = dataInput.readInt();
                 for (int i = 0; i < count; i++) {
-                    index.add(new Index(dataInput.readLong(), dataInput.readLong()));
+                    long id = dataInput.readLong();
+                    long order = dataInput.readLong();
+                    index.add(new Index(id, order));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
+
+        updateIndex();
     }
 
     @Override
@@ -62,7 +66,7 @@ public class JsListStorage implements ListStorage {
                 break;
             }
         }
-        index.add(new Index(record.getKey(), record.getKey()));
+        index.add(new Index(record.getKey(), record.getOrder()));
         updateIndex();
 
         // Save record
@@ -79,7 +83,7 @@ public class JsListStorage implements ListStorage {
                     break;
                 }
             }
-            index.add(new Index(record.getKey(), record.getKey()));
+            index.add(new Index(record.getKey(), record.getOrder()));
         }
         updateIndex();
 
@@ -147,6 +151,11 @@ public class JsListStorage implements ListStorage {
     }
 
     @Override
+    public boolean isEmpty() {
+        return getCount() == 0;
+    }
+
+    @Override
     public int getCount() {
         return index.size();
     }
@@ -175,10 +184,12 @@ public class JsListStorage implements ListStorage {
         Collections.sort(index, comparator);
         DataOutput dataOutput = new DataOutput();
         dataOutput.writeInt(index.size());
+
         for (Index i : index) {
             dataOutput.writeLong(i.getId());
             dataOutput.writeLong(i.getSortKey());
         }
+
         storage.setItem("list_" + prefix + "_index", toBase64(dataOutput.toByteArray()));
     }
 

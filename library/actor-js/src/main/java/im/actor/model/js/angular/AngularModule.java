@@ -34,7 +34,7 @@ public class AngularModule extends BaseModule {
     public AngularList<JsDialog, Dialog> getDialogsList() {
         if (dialogsList == null) {
             dialogsList = new AngularList<JsDialog, Dialog>((JsListEngine<Dialog>) modules().getMessagesModule().getDialogsEngine(),
-                    JsDialog.CONVERTER, messenger);
+                    false, JsDialog.CONVERTER, messenger);
         }
         return dialogsList;
     }
@@ -42,7 +42,8 @@ public class AngularModule extends BaseModule {
     public AngularList<JsMessage, Message> getMessagesList(Peer peer) {
         if (!messagesList.containsKey(peer)) {
             messagesList.put(peer, new AngularList<JsMessage, Message>(
-                    (JsListEngine<Message>) modules().getMessagesModule().getConversationEngine(peer), JsMessage.CONVERTER, messenger));
+                    (JsListEngine<Message>) modules().getMessagesModule().getConversationEngine(peer),
+                    true, JsMessage.CONVERTER, messenger));
         }
         return messagesList.get(peer);
     }
