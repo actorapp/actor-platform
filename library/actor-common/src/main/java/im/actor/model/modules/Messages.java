@@ -56,6 +56,7 @@ public class Messages extends BaseModule {
     private ActorRef deletionsActor;
 
     private final HashMap<Peer, ListEngine<Message>> conversationEngines = new HashMap<Peer, ListEngine<Message>>();
+    private final HashMap<Peer, ListEngine<Message>> conversationMediaEngines = new HashMap<Peer, ListEngine<Message>>();
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
@@ -184,6 +185,16 @@ public class Messages extends BaseModule {
                 conversationEngines.put(peer, storage().createMessagesList(peer, storage));
             }
             return conversationEngines.get(peer);
+        }
+    }
+
+    public ListEngine<Message> getMediaEngine(Peer peer) {
+        synchronized (conversationMediaEngines) {
+            if (!conversationMediaEngines.containsKey(peer)) {
+                ListStorage storage = storage().createList(STORAGE_CHAT_MEDIA_PREFIX + peer.getUnuqueId());
+                conversationMediaEngines.put(peer, storage().createMessagesList(peer, storage));
+            }
+            return conversationMediaEngines.get(peer);
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -19,6 +20,7 @@ import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.fragment.group.GroupInfoActivity;
 import im.actor.messenger.app.fragment.media.DocumentsActivity;
+import im.actor.messenger.app.fragment.media.MediaActivity;
 import im.actor.messenger.app.fragment.media.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
@@ -240,7 +242,11 @@ public class Intents {
         }
     }
 
-    public static void showPhoto(Activity activity, View photoView, String path, int senderId) {
+    public static Intent openMedias(Peer peer, Context context){
+        return MediaActivity.getIntent(peer, context);
+    }
+
+    public static void openMedia(Activity activity, View photoView, String path, int senderId) {
         PictureActivity.launchPhoto(activity, photoView, path, senderId);
     }
 
@@ -269,4 +275,6 @@ public class Intents {
             e.printStackTrace();
         }
     }
+
+
 }

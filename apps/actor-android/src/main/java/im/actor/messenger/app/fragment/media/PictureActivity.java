@@ -93,7 +93,7 @@ public class PictureActivity extends ActionBarActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowCustomEnabled(false);
-        getSupportActionBar().setTitle("Picture");
+        getSupportActionBar().setTitle(R.string.media_picture);
 
         int statbarHeight = Screen.getStatusBarHeight();
         if (Build.VERSION.SDK_INT >= 19) {
