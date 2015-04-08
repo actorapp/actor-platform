@@ -1,5 +1,7 @@
 package im.actor.server.db
 
+import javax.sql.DataSource
+
 import com.typesafe.config._
 import java.sql.{ Connection, PreparedStatement }
 import org.flywaydb.core.Flyway
@@ -7,9 +9,9 @@ import org.flywaydb.core.api.callback.FlywayCallback
 import org.flywaydb.core.api.MigrationInfo
 
 trait FlywayInit {
-  def initFlyway(sqlConfig: Config) = {
+  def initFlyway(ds: DataSource) = {
     val flyway = new Flyway()
-    flyway.setDataSource(sqlConfig.getString("url"), sqlConfig.getString("user"), sqlConfig.getString("password"))
+    flyway.setDataSource(ds)
     flyway.setLocations("sql.migration")
     flyway.setCallbacks(new BeforeCleanCallback())
     flyway
