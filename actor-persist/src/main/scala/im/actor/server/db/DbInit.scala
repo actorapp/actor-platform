@@ -7,7 +7,9 @@ import slick.driver.PostgresDriver.api.Database
 import slick.jdbc.{ JdbcDataSource, HikariCPJdbcDataSource }
 
 trait DbInit {
-  def initDs(sqlConfig: Config): JdbcDataSource = HikariCPJdbcDataSource.forConfig(sqlConfig, null, "")
+  def initDs(sqlConfig: Config): HikariCPJdbcDataSource = {
+    HikariCPJdbcDataSource.forConfig(sqlConfig, null, "")
+  }
 
   def initDb(source: JdbcDataSource) =
     Database.forSource(source)

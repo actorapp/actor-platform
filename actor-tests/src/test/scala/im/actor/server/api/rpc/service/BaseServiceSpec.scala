@@ -23,6 +23,7 @@ trait BaseServiceSpec
     super.map(fragments) ^ step(closeDb())
 
   def closeDb() = {
+    db.close()
     ds.close()
   }
 }
@@ -42,6 +43,7 @@ trait BaseServiceSuite
 
   override def afterAll(): Unit = {
     super.afterAll()
+    db.close()
     ds.close()
   }
 }

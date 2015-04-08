@@ -10,17 +10,12 @@ trait SqlSpecHelpers extends FlywayInit with DbInit {
   final val sqlConfig = ConfigFactory.load().getConfig("actor-server.persist.sql")
 
   def migrateAndInitDb(): (JdbcDataSource, Database) = {
-    val flyway = initFlyway(sqlConfig)
+    val ds = initDs(sqlConfig)
+
+    val flyway = initFlyway(ds.ds)
     flyway.clean()
     flyway.migrate()
-    val ds = initDs(sqlConfig)
+
     (ds, initDb(ds))
-  }
-
-  trait sqlDb extends Scope {
-    val flyway = initFlyway(sqlConfig)
-
-    flyway.clean
-    flyway.migrate
   }
 }
