@@ -41,6 +41,10 @@ public class BaseMessenger extends Messenger {
         return displayLists.buildNewChatList(peer, false);
     }
 
+    public BindedDisplayList<Message> buildMediaList(Peer peer){
+        return displayLists.buildMediaList(peer);
+    }
+
     public BindedDisplayList<Contact> getContactsGlobalList() {
         return displayLists.getContactsGlobalList();
     }

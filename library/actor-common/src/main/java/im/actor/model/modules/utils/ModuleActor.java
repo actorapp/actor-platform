@@ -104,7 +104,9 @@ public class ModuleActor extends Actor {
     public ListEngine<Message> messages(Peer peer) {
         return modules.getMessagesModule().getConversationEngine(peer);
     }
-
+    public ListEngine<Message> media(Peer peer){
+        return modules.getMessagesModule().getMediaEngine(peer);
+    }
     public int myUid() {
         return modules.getAuthModule().myUid();
     }

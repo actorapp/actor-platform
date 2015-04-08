@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import im.actor.images.common.ImageLoadException;
 import im.actor.images.ops.ImageLoading;
+import im.actor.images.util.BitmapUtil;
 import im.actor.messenger.app.view.FastBitmapDrawable;
 import im.actor.model.mvvm.MVVMEngine;
 
@@ -23,9 +24,21 @@ public class FastThumbLoader {
     private int currentRequest = 0;
     private byte[] data;
     private boolean isActive = false;
+    private boolean blur = false;
+    private int blurRadius = 0;
 
     public FastThumbLoader(SimpleDraweeView preview) {
         this.preview = preview;
+    }
+
+    public void setBlur(int radius) {
+        if (radius > 0) {
+            blur = true;
+            blurRadius = radius;
+        } else {
+            blur = false;
+            blurRadius = 0;
+        }
     }
 
     public void cancel() {
@@ -62,7 +75,7 @@ public class FastThumbLoader {
                 d = data;
             }
             try {
-                final Bitmap res = ImageLoading.loadBitmap(d);
+                final Bitmap res = blur ? BitmapUtil.fastBlur(ImageLoading.loadBitmap(d), blurRadius) : ImageLoading.loadBitmap(d);
                 MVVMEngine.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

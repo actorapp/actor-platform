@@ -39,8 +39,12 @@ import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.GroupMember;
+import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.modules.Messages;
+import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
@@ -159,7 +163,9 @@ public class GroupInfoFragment extends BaseFragment {
             );
         }
 
-        int mediaCount = 10;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        Peer peer = Peer.group(groupInfo.getId());
+        ListEngine<Message> media = messenger().getMedia(peer);
+        int mediaCount = media.getCount();//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
         if (mediaCount == 0) {
             header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
         } else {
@@ -167,7 +173,7 @@ public class GroupInfoFragment extends BaseFragment {
             header.findViewById(R.id.mediaContainer).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(Intents.openDocs(Peer.group(groupInfo.getId()), getActivity()));
+                    startActivity(Intents.openMedias(Peer.group(groupInfo.getId()), getActivity()));
                 }
             });
             header.findViewById(R.id.mediaCount).setVisibility(View.VISIBLE);

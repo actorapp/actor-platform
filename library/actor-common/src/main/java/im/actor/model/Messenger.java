@@ -11,9 +11,11 @@ import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
+import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
+import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
@@ -284,6 +286,10 @@ public class Messenger {
     public void sendDocument(Peer peer, String fileName, String mimeType, FileSystemReference fileSystemReference,
                              FastThumb fastThumb) {
         modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileSystemReference);
+    }
+
+    public ListEngine<Message> getMedia(Peer peer){
+        return modules.getMessagesModule().getMediaEngine(peer);
     }
 
     public Command<Boolean> editMyName(final String newName) {

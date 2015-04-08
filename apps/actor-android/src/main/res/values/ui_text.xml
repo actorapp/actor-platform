@@ -315,6 +315,10 @@
     <string name="alert_invite_text">"{0}" is not registered in Actor. Invite him to actor?</string>
     <string name="alert_invite_yes">Invite</string>
 
+    <!-- Media -->
+    <string name="media">Media</string>
+    <string name="media_picture">Picture</string>
+
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Are you sure want to exit group "%1$s"?</string>
     <string name="alert_leave_group_yes">Exit</string>

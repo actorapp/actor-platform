@@ -1,20 +1,737 @@
 package im.actor.messenger.app.fragment.media;
 
-import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.TextView;
 
+import im.actor.images.loading.view.ImageKitView;
+import im.actor.messenger.R;
+import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
+import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.model.droidkit.engine.ListEngine;
+import im.actor.model.entity.Message;
+import im.actor.model.entity.Peer;
+import im.actor.model.mvvm.BindedDisplayList;
+
+import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
 
 /**
  * Created by Jesus Christ. Amen.
  */
-public class MediaActivity extends Activity {
-    public View transitionBackgroundView;
+public class MediaActivity extends BaseActivity {
+    private static final String EXTRA_PEER_UNIQ_ID = "arg_peer_uniq_id";
+
     public Toolbar toolbar;
+    private ActionBar actionBar;
+
+
+    private boolean uiIsHidden = false;
+
+
+    //region Arguments
+    private static final String ARG_PATH = "arg_absolute_path";
+    private static final String ARG_OWNER = "arg_owner";
+    private static final String ARG_TIMER = "arg_timer";
+    private static final String ARG_IMAGE_TOP = "arg_image_top";
+    private static final String ARG_IMAGE_LEFT = "arg_image_left";
+    private static final String ARG_IMAGE_WIDTH = "arg_image_width";
+    private static final String ARG_IMAGE_HEIGHT = "arg_image_height";
+    private static final String ARG_FILEID = "arg_fileid";
+    private static final String ARG_FILENAME = "arg_filename";
+    private static final String ARG_FILESIZE = "arg_filesize";
+    //endregion
+
+    //region Image animation
+    protected View transitionBackgroundView;
+    private ImageKitView transitionImageView;
+    //endregion
+
+
+
+    //region grid
+    private static final java.lang.String ARG_VIEW_TYPE = "ARG_VIEW_TYPE";
+    private static final int VIEW_TYPE_GRID = 1;
+    private static final int VIEW_TYPE_PICTURE = 2;
+    private static final String ARG_CHAT_TYPE = "ARG_CHAT_TYPE";
+    private static final String ARG_CHAT_ID = "ARG_CHAT_ID";
+
+
+    private int chatType;
+    private int chatId;
+    private ListEngine<Message> engine;
+    //private EngineUiList<Message> mediaEngineList;
+    private RecyclerView listView;
+    private MediaAdapter adapter;
+    private View bbemptyView;
+    private boolean isInit = true;
+    private Intent activityIntent;
+    private View emptyView;
+    //endregion
+
+
+    private AvatarView ownerAvatarView;
+    private TextView ownerNameView;
+
+    //region pager
+    private boolean showingPager = false;
+    private ViewPager viewPager;
+    private int selectedIndex;
+    private Peer peer;
+    //endregion
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= 19) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        setContentView(R.layout.activity_media);
+        activityIntent = getIntent();
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(false);
+        getSupportActionBar().setTitle("Media");
+
+        int statbarHeight = Screen.getStatusBarHeight();
+        if (Build.VERSION.SDK_INT >= 19) {
+            toolbar.setPadding(0, statbarHeight, 0, 0);
+        }
+
+
+        transitionBackgroundView = findViewById(R.id.fullscreenBackground);
+        transitionImageView = (ImageKitView) findViewById(R.id.image);
+        ownerAvatarView = (AvatarView) findViewById(R.id.avatar);
+        ownerNameView = (TextView) findViewById(R.id.name);
+        listView = (RecyclerView) findViewById(R.id.mediaList);
+        emptyView = findViewById(R.id.noMedia);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+
+        showGrid();
+
+        /*
+        switch (activityIntent.getIntExtra(ARG_VIEW_TYPE, 0)) {
+            case VIEW_TYPE_GRID:
+                break;
+            case VIEW_TYPE_PICTURE:
+                showPicture();
+                break;
+            // case VIEW_TYPE_PAGER: break; ?
+        }
+        showView();*/
+    }
+
+
+
+
+    /*private void showPicture() {
+
+
+        Bundle bundle = activityIntent.getExtras();
+        String path = bundle.getString(ARG_PATH);
+        *//*fileId = bundle.getLong(ARG_FILEID, 0);
+        fileName = bundle.getString(ARG_FILENAME);
+        fileSize = bundle.getInt(ARG_FILESIZE, 0);*//*
+        int sender = bundle.getInt(ARG_OWNER, 0);
+        final UserVM owner = users().get(sender);
+
+        showingPager = true;
+        viewPager.setAlpha(1);
+        showView(viewPager, false);
+        toolbar.setTitle(R.string.media);
+        viewPager.setAdapter(new SingleMediaFakePagerAdapter(path, owner));
+        //viewPager.setCurrentItem(selectedIndex, false);
+
+
+        //showPager();
+
+        *//*ownerContainer.setAlpha(1);
+        transitionImageView.setAlpha(1L);
+        showView(ownerContainer, false);
+        showView(transitionImageView, false);
+        showView(ownerContainer, false);*//*
+
+        setPictureActionbar();
+
+
+        actionBar.setTitle("Picture");
+
+
+
+        final int navbarHeight = Screen.getNavbarHeight();
+        if(Build.VERSION.SDK_INT>=19) {
+            if (navbarHeight > 0) {
+                // ownerContainer.setPadding(0, 0, 0, navbarHeight);
+            }
+        }
+
+
+        *//*transitionTop = bundle.getInt(ARG_IMAGE_TOP, 0);
+        transitionLeft = bundle.getInt(ARG_IMAGE_LEFT, 0);
+        transitionWidth = bundle.getInt(ARG_IMAGE_WIDTH, 0);
+        transitionHeight = bundle.getInt(ARG_IMAGE_HEIGHT, 0);
+        *//*// ViewCompat.setTransitionName(imageView, TRANSIT_IMAGE);
+        // transitionBackgroundView.setAlpha(0);
+
+
+
+        // animateImage(transitionTop, transitionLeft, transitionHeight, transitionWidth);
+
+        *//* Move to fragment?
+        ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, this));
+        Avatar avatar = owner.getAvatar().getValue();
+        if (avatar != null) {
+            ownerAvatarView.bindAvatar(32, avatar);
+        } else {
+            ownerAvatarView.unbind();
+        }
+        ownerNameView.setText(owner.getName());
+
+        ownerContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(Intents.openProfile(owner.getId(), MediaActivity.this));
+            }
+        });*//*
+
+        //decorView.setOnSystemUiVisibilityChangeListener(this);
+        *//*transitionImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+            @Override
+            public void onViewTap(View view, float x, float y) {
+            }
+        });*//*
+        *//*transitionImageView.setOnDoubleClick(new GestureDetector.OnDoubleTapListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if (!uiIsHidden) {
+                    hideSystemUi();
+                } else {
+                    showSystemUi();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (!uiIsHidden)
+                    hideSystemUi();
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                return true;
+            }
+        });
+        transitionBackgroundView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!uiIsHidden) {
+                    hideSystemUi();
+                } else {
+                    showSystemUi();
+                }
+            }
+        });*//*
+
+    }*/
+
+
+    private void setPictureActionbar() {
+        setTitle(R.string.media_picture);
+        invalidateOptionsMenu();
+    }
+
+    private void showGrid() {
+
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        emptyView.setAlpha(1);
+        listView.setAlpha(1);
+        goneView(emptyView, false);
+        showView(listView, false);
+
+        chatType = activityIntent.getIntExtra(ARG_CHAT_TYPE, 0);
+        chatId = activityIntent.getIntExtra(ARG_CHAT_ID, 0);
+        peer = Peer.fromUniqueId(activityIntent.getLongExtra(EXTRA_PEER_UNIQ_ID, 0));
+        setGridActionbar();
+
+
+        emptyView.setVisibility(View.GONE);
+        BindedDisplayList<Message> displayList = messenger().buildMediaList(peer);
+        adapter = new MediaAdapter(displayList,new OnItemClickedListener<Message>() {
+            @Override
+            public void onClicked(Message item) {
+
+            }
+
+            @Override
+            public boolean onLongClicked(Message item) {
+                return false;
+            }
+        }, this);
+
+        // View footer = inflater.inflate(R.layout.adapter_doc_footer, listView, false);
+        // listView.addFooterView(footer, null, false);
+        toolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                int toolbarHeight = toolbar.getHeight();
+                listView.setPadding(0, toolbarHeight, 0, Screen.getNavbarHeight());
+            }
+        });
+        listView.setLayoutManager(new GridLayoutManager(this,getResources().getInteger(R.integer.gallery_items_count)));
+        listView.setAdapter(adapter);
+        /*viewPager.setAdapter(new MediaPagerAdapter(mediaEngineList, groups().get(chatId).getRaw().getMembers()));
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                final Media item = engine.getValue(id);
+
+                //transitionImageView.setVisibility(View.VISIBLE);
+                transitionImageView.setExtraReceiver(new ReceiverCallback() {
+                    @Override
+                    public void onImageLoaded(BitmapReference bitmapRef) {
+                        Bitmap bitmap = bitmapRef.getBitmap();
+                        //bitmap = fastBlur(bitmap, 5);
+                        int[] location = new int[2];
+                        view.getLocationInWindow(location);
+                        MediaFullscreenAnimationUtils.animateForward(transitionImageView, bitmap, location[0],location[1],view.getWidth(), view.getHeight());
+                        MediaFullscreenAnimationUtils.animateBackgroundForward(transitionBackgroundView);
+                        transitionImageView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                selectedIndex = position;
+                                showPager();
+
+                            }
+                        }, 450* MediaFullscreenAnimationUtils.animationMultiplier + MediaFullscreenAnimationUtils.startDelay);
+                    }
+
+                    @Override
+                    public void onImageCleared() {
+
+                    }
+
+                    @Override
+                    public void onImageError() {
+
+                    }
+                });
+                final String path = downloaded().get(item.fileLocation.getFileId()).getDownloadedPath();
+                transitionImageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        transitionImageView.request(new RawFileTask(path));
+                    }
+                });
+                // todo transformation from blur?
+                *//*
+                Media media = (Media) parent.getItemAtPosition(position);
+                hideListView();
+                new MediaDialog.Builder(MediaActivity.this)
+                        .setUsers(groups().get(chatId).getRaw().getMembers())
+                        .setMedia(mediaEngineList)
+                        .setSelected(position)
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                showListView();
+                            }
+                        })
+                        .show();
+                *//*
+                // Downloaded d = downloaded().get(doc.getFileLocation().getFileId());
+
+                *//**//*if (d != null) {
+                    // String fileName = d.fileName;
+
+                    getActivity().startActivity(Intents.openDoc(d));
+                }*//*
+            }
+        });*/
+
+        /*isInit = true;
+        getBinder().bind(mediaEngineList.getListState(), new Listener<ListState>() {
+            @Override
+            public void onUpdated(ListState listState) {
+                switch (listState.getState()) {
+                    case LOADING_EMPTY:
+                        break;
+                    case LOADED_EMPTY:
+                        showView(emptyView, !isInit, false);
+                        goneView(listView, !isInit, false);
+                        break;
+                    case LOADED:
+                    default:
+                        goneView(emptyView, !isInit, false);
+                        showView(listView, !isInit, false);
+                        break;
+                }
+            }
+        });
+        isInit = false;*/
+    }
+
+    private void setGridActionbar() {
+        toolbar.setTitle(R.string.profile_shared_media);
+        invalidateOptionsMenu();
+    }
+
+    private void showListView() {
+        /*if(listView.getVisibility()!=View.VISIBLE) {
+            listView.setVisibility(View.VISIBLE);
+            listView.clearAnimation();
+            listView.animate().alpha(1).scaleX(1).scaleY(1).setDuration(300).setListener(null).start();
+        }*/
+    }
+
+    private void hideListView() {
+        /*if(listView.getVisibility()!=View.GONE) {
+            listView.clearAnimation();
+            listView.animate().alpha(0).scaleX(0.75f).scaleY(0.75f).setDuration(300)
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            listView.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    })
+                    .start();
+        }*/
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        /*if (mediaEngineList != null) {
+            mediaEngineList.release();
+            mediaEngineList = null;
+        }
+        if (adapter != null) {
+            adapter.dispose();
+            adapter = null;
+        }
+        listView = null;
+        emptyView = null;*/
+    }
+
+    public static Intent openGrid(Context context, int chatType, int chatId) {
+        Intent intent = new Intent(context, MediaActivity.class);
+        intent.putExtra(ARG_CHAT_TYPE, chatType);
+        intent.putExtra(ARG_CHAT_ID, chatId);
+        intent.putExtra(ARG_VIEW_TYPE, VIEW_TYPE_GRID);
+        return intent;
+    }
+
+    private void showSystemUi() {
+        uiIsHidden = false;
+        syncUiState();
+    }
+
+    private void hideSystemUi() {
+        uiIsHidden = true;
+        syncUiState();
+    }
+
+    private int getAbarHeight() {
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
+    }
+
+
+
+
+    private void syncUiState() {
+
+/*
+        toolbar.clearAnimation();
+        ownerContainer.clearAnimation();
+        if (uiIsHidden) {
+            if(firstHiding) {
+                firstHiding = false;
+                // костыль
+                toolbar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        toolbar.animate()
+                                .setInterpolator(new MaterialInterpolator())
+                                .y(-toolbar.getHeight())
+                                .alpha(0)
+                                .setStartDelay(280)
+                                .setDuration(300*animationMultiplier)
+                                .start();
+                        ownerContainer.animate()
+                                .setInterpolator(new MaterialInterpolator())
+                                .alpha(0)
+                                .setStartDelay(280)
+                                .setDuration(300*animationMultiplier)
+                                .start();
+                    }
+                });
+                return;
+            }
+
+            toolbar.animate()
+                    .setInterpolator(new MaterialInterpolator())
+                    .y(-toolbar.getHeight())
+                    .alpha(0)
+                    .setStartDelay(0)
+                    .setDuration(300*animationMultiplier)
+                    .start();
+            ownerContainer.animate()
+                    .setInterpolator(new MaterialInterpolator())
+                    .alpha(0)
+                    .setStartDelay(0)
+                    .setDuration(300*animationMultiplier)
+                    .start();
+        } else {
+            toolbar.animate()
+                    .setInterpolator(new MaterialInterpolator())
+                    .y(0)
+                    .alpha(1)
+                    .setStartDelay(120)
+                    .setDuration(420*animationMultiplier)
+                    .start();
+            ownerContainer.animate()
+                    .setInterpolator(new MaterialInterpolator())
+                    .alpha(1)
+                    .setStartDelay(120)
+                    .setDuration(420*animationMultiplier)
+                    .start();
+        }*/
+    }
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (showingPager) {
+            getMenuInflater().inflate(R.menu.medias_picture, menu);
+            return true;
+        } else {
+            getMenuInflater().inflate(R.menu.medias, menu);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (i == R.id.share) {
+            String path = downloaded().get(adapter.getItem(viewPager.getCurrentItem()).id).getDownloadedPath();
+
+            startActivity(new Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(Uri.parse(path), "image/jpeg"));
+            return true;
+        } else if(i == R.id.save){
+            String path = downloaded().get(adapter.getItem(viewPager.getCurrentItem()).id).getDownloadedPath();
+            core().getImageLoader().createReceiver(new ReceiverCallback() {
+                @Override
+                public void onImageLoaded(BitmapReference bitmap) {
+                    Intents.savePicture(getBaseContext(), bitmap.getBitmap());
+                }
+
+                @Override
+                public void onImageCleared() {
+
+                }
+
+                @Override
+                public void onImageError() {
+
+                }
+            }).request(new RawFileTask(path));
+
+            item.setEnabled(false);
+            item.setTitle(R.string.menu_saved);
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onSystemUiVisibilityChange(int visibility) {
+
+        // todo should we make fulscreen for sdk 19>
+        *//*if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) {
+            uiIsHidden = true;
+        } else {
+            uiIsHidden = false;
+        }
+        syncUiState();*//*
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        if (activityIntent.getIntExtra(ARG_VIEW_TYPE, 0)==VIEW_TYPE_PICTURE) {
+            finish();
+            overridePendingTransition(0, 0);
+            *//*float finishScaleWidth = (float) transitionWidth / bitmapWidth;
+            float finishScaleHeight = (float) transitionHeight / bitmapHeight;
+
+            float screenWidth = Screen.getWidth();
+            float screenHeight = Screen.getHeight() + Build.VERSION.SDK_INT >= 19 ? Screen.getNavbarHeight() : 0;
+            uiIsHidden = true;
+            syncUiState();
+            transitionImageView.animate()
+                    .setInterpolator(new MaterialInterpolator())
+                    .setDuration(300*animationMultiplier)
+                    .x(transitionLeft + (bitmapWidth * (finishScaleWidth - 1) / 2))
+                    .y(transitionTop + (bitmapHeight * (finishScaleHeight - 1) / 2))
+                    .scaleX(finishScaleWidth)
+                    .scaleY(finishScaleHeight)
+                    .start();
+
+            fullscreenBackgroundView.animate()
+                    .setInterpolator(new MaterialInterpolator())
+                    .setDuration(300*animationMultiplier)
+                    .alpha(0)
+                    .start();
+            transitionImageView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                    overridePendingTransition(0, 0);
+                }
+            }, 300 * animationMultiplier);*//*
+        }else{
+            if(showingPager){
+                hidePager();
+            } else{
+                finish();
+            }
+        }
+    }
+
+    private void showPager(){
+
+        transitionImageView.clear();
+        transitionImageView.setAlpha(0f);
+        //transitionImageView.setVisibility(View.GONE);
+        showingPager = true;
+        viewPager.setAlpha(1);
+        showView(viewPager, false);
+        toolbar.setTitle(getString(R.string.picture_pager, selectedIndex + 1, engine.getCount()));
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                selectedIndex = position;
+                toolbar.setTitle(getString(R.string.picture_pager, position + 1, engine.getCount()));
+                listView.smoothScrollToPosition(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        viewPager.setCurrentItem(selectedIndex, false);
+    }
+    private void hidePager() {
+
+        Media media = (Media) listView.getItemAtPosition(selectedIndex);
+        transitionImageView.setAlpha(1f);
+        transitionImageView.setExtraReceiver(new ReceiverCallback() {
+            @Override
+            public void onImageLoaded(BitmapReference bitmap) {
+
+                toolbar.setTitle("Media");
+                showingPager = false;
+                int firstVisiblePosition = listView.getFirstVisiblePosition();
+                View selectedView = listView.getChildAt(selectedIndex - firstVisiblePosition);
+
+                int[] location = new int[2];
+                selectedView.getLocationInWindow(location);
+                transitionImageView.setExtraReceiver(null);
+                MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap.getBitmap(), location[0], location[1], selectedView.getWidth(), selectedView.getHeight());
+                MediaFullscreenAnimationUtils.animateBackgroundBack(transitionBackgroundView);
+                viewPager.setAlpha(0);
+                goneView(viewPager, false);
+                transitionImageView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        transitionImageView.clear();
+                        transitionImageView.setAlpha(0f);
+                    }
+                }, 300 * MediaFullscreenAnimationUtils.animationMultiplier);
+
+            }
+
+            @Override
+            public void onImageCleared() {
+
+            }
+
+            @Override
+            public void onImageError() {
+
+            }
+        });
+        transitionImageView.request(new RawFileTask(downloaded().get(media.fileLocation.getFileId()).getDownloadedPath()));
+        //setGridActionbar();
+    }*/
+
+    public static Intent getIntent(Peer peer, Context context) {
+        Intent intent = new Intent(context, MediaActivity.class);
+        intent.putExtra(EXTRA_PEER_UNIQ_ID, peer.getUnuqueId());
+        return intent;
+    }
 
     public static class MediaFullscreenAnimationUtils {
 

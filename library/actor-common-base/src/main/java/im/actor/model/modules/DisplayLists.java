@@ -135,6 +135,19 @@ public class DisplayLists extends BaseModule {
         return chatList;
     }
 
+    public BindedDisplayList<Message> buildMediaList(final Peer peer) {
+        MVVMEngine.checkMainThread();
+
+        ListEngine<Message> mediaEngine = modules().getMessagesModule().getMediaEngine(peer);
+        if (!(mediaEngine instanceof ListEngineDisplayExt)) {
+            throw new RuntimeException("Media ListEngine must implement ListEngineDisplayExt for using global list");
+        }
+
+        BindedDisplayList<Message> mediaList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) mediaEngine,
+                false, LOAD_PAGE, LOAD_GAP, null);
+        mediaList.initTop(false);
+        return mediaList;
+    }
 
     public BindedDisplayList<SearchEntity> buildNewSearchList(boolean isGlobalList) {
         MVVMEngine.checkMainThread();
