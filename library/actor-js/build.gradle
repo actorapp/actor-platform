@@ -23,6 +23,10 @@ task cleanGenResources(type: Delete) {
     delete "${projectDir}/src/gen/resources/"
 }
 
+task cleanWebAppSources(type: Delete) {
+    delete "${projectDir}/src/main/webapp/"
+}
+
 task copyGenSources(type: Copy, dependsOn: ['cleanGenSources']) {
     from fileTree("${projectDir}/../actor-common/src/main/java/")
     from fileTree("${projectDir}/../actor-bc/src/main/java/")
@@ -36,10 +40,19 @@ task copyGenResources(type: Copy, dependsOn: ['cleanGenSources']) {
     into "${projectDir}/src/gen/resources/"
 }
 
+task copyWebAppSources(type: Copy, dependsOn: ['cleanWebAppSources']) {
+    from fileTree("${projectDir}/../../apps/actor-web/")
+
+    exclude "ActorMessenger/**"
+    into "${projectDir}/src/main/webapp/"
+}
+
 tasks.compileJava.dependsOn(copyGenResources)
 tasks.compileJava.dependsOn(copyGenSources)
+tasks.compileJava.dependsOn(copyWebAppSources)
 tasks.clean.dependsOn(cleanGenSources)
 tasks.clean.dependsOn(cleanGenResources)
+tasks.clean.dependsOn(cleanWebAppSources)
 
 dependencies {
     providedCompile 'com.google.gwt:gwt-user:2.7.0'

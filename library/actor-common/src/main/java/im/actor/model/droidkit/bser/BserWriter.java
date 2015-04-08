@@ -140,6 +140,7 @@ public class BserWriter {
     }
 
     private void writeTag(int fieldNumber, int wireType) throws IOException {
+        fieldNumber = (fieldNumber & 0xFFFF);
         if (fieldNumber <= 0) {
             throw new IllegalArgumentException("fieldNumber can't be less or eq to zero");
         }
@@ -170,15 +171,15 @@ public class BserWriter {
 
 
     private void writeVarInt(long value) throws IOException {
-        stream.writeVarInt(value);
+        stream.writeVarInt(value & 0xFFFFFFFF);
     }
 
     private void writeLong(long v) throws IOException {
-        stream.writeLong(v);
+        stream.writeLong(v & 0xFFFFFFFF);
     }
 
     private void writeInt(long v) throws IOException {
-        stream.writeInt((int) v);
+        stream.writeInt((int) (v & 0xFFFF));
     }
 
     private void writeBytes(byte[] data) throws IOException {
