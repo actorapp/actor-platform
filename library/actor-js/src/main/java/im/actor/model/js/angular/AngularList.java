@@ -8,8 +8,10 @@ import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.js.JsMessenger;
 import im.actor.model.js.entity.JsEntityConverter;
+import im.actor.model.js.providers.JsLogProvider;
 import im.actor.model.js.providers.storage.JsListEngine;
 import im.actor.model.js.providers.storage.JsListEngineCallback;
+import im.actor.model.log.Log;
 
 import java.util.ArrayList;
 
@@ -20,6 +22,7 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
 
     private final JsMessenger messenger;
     private final JsListEngine<V> listEngine;
+    private final boolean isInverted;
     private final JsEntityConverter<V, T> entityConverter;
 
     private ArrayList<AngularListCallback<T>> callbacks = new ArrayList<AngularListCallback<T>>();
@@ -27,10 +30,11 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
     private ArrayList<V> values;
     private JsArray<T> jsValues;
 
-    public AngularList(JsListEngine<V> listEngine, JsEntityConverter<V, T> entityConverter, JsMessenger messenger) {
+    public AngularList(JsListEngine<V> listEngine, boolean isInverted, JsEntityConverter<V, T> entityConverter, JsMessenger messenger) {
         this.messenger = messenger;
         this.listEngine = listEngine;
         this.entityConverter = entityConverter;
+        this.isInverted = isInverted;
 
         this.values = new ArrayList<V>();
         this.jsValues = JavaScriptObject.createArray().cast();
@@ -38,8 +42,13 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         long[] rids = listEngine.getOrderedIds();
         for (long rid : rids) {
             V item = listEngine.getValue(rid);
-            values.add(item);
-            jsValues.push(entityConverter.convert(item, messenger));
+            if (isInverted) {
+                insert(jsValues, 0, entityConverter.convert(item, messenger));
+                values.add(0, item);
+            } else {
+                values.add(item);
+                jsValues.push(entityConverter.convert(item, messenger));
+            }
         }
         listEngine.addListener(this);
     }
@@ -68,11 +77,21 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
                 }
             }
 
-            for (int i = 0; i < values.size(); i++) {
-                if (values.get(i).getEngineSort() < sortKey) {
-                    values.add(i, item);
-                    insert(jsValues, i, entityConverter.convert(item, messenger));
-                    return;
+            if (isInverted) {
+                for (int i = values.size() - 1; i >= 0; i--) {
+                    if (values.get(i).getEngineSort() > sortKey) {
+                        values.add(i, item);
+                        insert(jsValues, i, entityConverter.convert(item, messenger));
+                        return;
+                    }
+                }
+            } else {
+                for (int i = 0; i < values.size(); i++) {
+                    if (values.get(i).getEngineSort() < sortKey) {
+                        values.add(i, item);
+                        insert(jsValues, i, entityConverter.convert(item, messenger));
+                        return;
+                    }
                 }
             }
 
