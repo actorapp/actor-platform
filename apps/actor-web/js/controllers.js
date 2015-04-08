@@ -34,7 +34,7 @@ angular.module('actor.controllers', [])
 			
 	
 	})
-	.controller('AppLoginController', function($scope, $routeParams, $location) {  
+	.controller('AppLoginController', function($scope, $routeParams, $location, focus) {  
 
 		if( messenger == undefined){
 			$location.path('/'); 
@@ -42,6 +42,8 @@ angular.module('actor.controllers', [])
 		if(messenger.isLoggedIn() == true){ 
 				$location.path('/im'); 
 		} 
+
+		focus('phone_number');
 
 		$scope.codeHide = true; 
 		
@@ -53,6 +55,7 @@ angular.module('actor.controllers', [])
 					$scope.$apply(function() {
 						$scope.codeHide = false;  
 				        $scope.phoneHide = true;
+				        focus('activation_code');
 					}); 
 		        } 
 		    }, function(tag, message, canTryAgain, state) { 
@@ -75,7 +78,7 @@ angular.module('actor.controllers', [])
 			}, function(tag, message, canTryAgain, state) { 
 			    alert(message); 
 			});
-		}
+		} 
   })
 	.controller('AppIMController', function($scope, $location,  $routeParams) { 
 		if( messenger == undefined ){
@@ -127,19 +130,28 @@ angular.module('actor.controllers', [])
 	})
 
 	.controller('AppIMChat', function($scope, $location, $timeout) {    
-		$scope.$on('selectPeer', function(event, peerid) {
+		$scope.historyHide = true;
+
+		$scope.$on('selectPeer', function(event, peerid) {  
 			$scope.uid = messenger.getUid();
 			$scope.peer = peerid;
+			$scope.historyHide = false;
 			messenger.bindChat({peerType: "user", peerId: peerid}, renderMessages);
 		}); 
 
-		$scope.sendMessage = function(peer, message){
-			console.log(peer);
-			console.log(message);
-			messenger.sendMessage({peerType:"user", peerId: peer}, message.text); 
-		}
+		$scope.sendMessage = function(peer,message, $event){
+			console.log($event);
+			if ($event.which == 13 && $event.shiftKey == false) {
+				console.log(1);
+				messenger.sendMessage({peerType:"user", peerId: peer}, message.text); 
+				
+				$scope.message.text  = ""; 
+				console.log($scope.message);
+			} 
+			//messenger.sendMessage({peerType:"user", peerId: peer}, message.text); 
+		} 
 		function renderMessages(messages){
-			console.log(messages);
+			//console.log(messages);
 			$timeout(function() { 
 				$scope.$apply(function($scope) { 
 					messages.forEach(function(message){
