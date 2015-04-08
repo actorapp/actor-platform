@@ -1,0 +1,26 @@
+
+<div class="login_view_wrap"> 
+	<div class="login_view">
+		<div class="login_wrap">
+			<div class="login_form_wrap">
+				<div class="login_form">
+					<div ng-hide="phoneHide" id="login_phone">
+						<div class="login_header">Enter your phone to get started.</div>
+					    <input type="text" class="login_input" placeholder="Phone number" ng-model="user.phone">
+					    <button type="button" class="login_button" ng-click="sendPhone(user)">Sign in</button>
+					</div>  
+					<div ng-hide="codeHide" id="login_code">
+						<div class="login_header">Enter code.</div>
+					    <input type="text" class="login_input" placeholder="Activation code" ng-model="user.activation_code">
+					    <button type="button" class="login_button" ng-click="sendCode(user)">Sign in</button>
+					</div> 						
+				</div>
+				
+			</div> 
+
+		</div>
+	</div> 
+</div>    
+
+    
+    
