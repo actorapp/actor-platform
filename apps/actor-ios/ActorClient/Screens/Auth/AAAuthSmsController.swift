@@ -109,7 +109,7 @@ class AAAuthSmsController: AAViewController {
         SVProgressHUD.showWithMaskType(SVProgressHUDMaskType.Black)
         
         let messenger = CocoaMessenger.messenger().sendCodeWithInt(jint(codeTextField.text.toInt()!))
-        messenger.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
+        messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
             if let state = val as? AMAuthStateEnum {
                 let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
                 if state.ordinal() == loggedInState {
