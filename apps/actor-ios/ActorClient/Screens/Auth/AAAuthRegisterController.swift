@@ -194,7 +194,7 @@ class AAAuthRegisterController: AAViewController {
             
             SVProgressHUD.showWithStatus("Saving profile")
             let messenger = CocoaMessenger.messenger().signUpWithNSString(fullName, withNSString: "/tmp/avatar.jpg", withBoolean: true)
-            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
+            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
                 SVProgressHUD.dismiss()
                 self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
                 }, error: { (exception) -> () in
