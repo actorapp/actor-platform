@@ -77,7 +77,7 @@
 					</div> 
 				</div> 
 			</div>		
-				<div class="im_history_wrap" ng-controller="AppIMChat">
+				<div class="im_history_wrap" ng-hide="historyHide" ng-controller="AppIMChat">
 					<div class="im_history_chat_wrap" scroll-glue>
 						<div class="im_history_chat">
 							<div ng-repeat="message in messages" class="im_message">
@@ -95,7 +95,7 @@
 				<div class="im_bottom_panel_wrap"> 
 					<div class="im_send_panel_wrap"> 
 						<div class="im_send_field_wrap">
-							<div ng-model="message.text" class="im_message_field"  contenteditable="true" placeholder="Write a message..."></div>
+							<textarea  ng-keypress="sendMessage(peer, message, $event)" ng-model="message.text" class="im_message_field" placeholder="Write a message..."> </textarea>
 						</div>
 						<div class="im_send_bottom_wrap">
 							<div class="im_message_send_btn_wrap" ng-mousedown="sendMessage(peer, message);">
@@ -111,7 +111,10 @@
 						</div>
 					</div>
 				</div>
-			</div>					
+			</div>	
+			<div class="im_history_not_selected_wrap">
+				<div class="im_history_not_selected"> Please select a chat to start messaging </div>	
+			</div>				
 		</div>
 	</div>
 </div> 
