@@ -82,6 +82,9 @@ import Foundation
         if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
             if (hockey.trim().size() > 0) {
                 BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
+                BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
+                BITHockeyManager.sharedHockeyManager().startManager()
+                BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
             }
         }
         
