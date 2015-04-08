@@ -8,7 +8,7 @@ var App = angular.module('App', [
 	'phonecatControllers',
 	'actor.controllers',
 	'ngSanitize',
-	'luegg.directives'
+	'luegg.directives' 
 ]);
 App.config(['$routeProvider',
 function($routeProvider) { 

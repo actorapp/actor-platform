@@ -16,6 +16,11 @@ html, body { height: 100%; width: 100%; margin: 0;  }
 	  width: 100%!important;
 	}
 }
+@media (max-width: 1010px){
+	.im_chats_wrap{ 
+		height: calc(100vh - 114px)!important; 
+	}
+}
 .login_view_wrap{ 
 	-webkit-box-align: center;
 	-moz-box-align: center;
@@ -343,7 +348,24 @@ body {
 	width: 12px;
 	margin: 5px 10px;
 }
+.im_history_wrap.ng-hide, .top_right_wrap{
+	display: none;
+}
+.im_history_not_selected_wrap{
+	width: 100%;
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+}
+.im_history_not_selected{
+	padding-top: 151px; 
+	width: 286px;
+	height: 23px;
+
+	display: inline-block;  
+}
 .im_message_field{ 
+	width: calc(100% - 32px);
 	padding: 16px;
 	height: 30px; 
 	overflow-x: auto;
@@ -397,7 +419,7 @@ body {
 	text-overflow: ellipsis;
 }
 .im_chats_wrap{ 
-	height: calc(100vh - 200px);
+	height: calc(100vh - 130px);
 	overflow: hidden;
 }
 .im_dialog{
