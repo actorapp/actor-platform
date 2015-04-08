@@ -307,7 +307,7 @@ class AAConversationGroupInfoController: AATableViewController {
             askSetPhoto()
         } else if indexPath.section == 2 {
             let groupMembersCount = Int(groupMembers!.length())
-            if indexPath.row < groupMembersCount - 1 {
+            if indexPath.row < groupMembersCount {
                 
                 if let groupMember = groupMembers!.objectAtIndex(UInt(indexPath.row)) as? AMGroupMember,
                    let user = MSG.getUsers().getWithLong(jlong(groupMember.getUid())) as? AMUserVM {

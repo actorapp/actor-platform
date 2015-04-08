@@ -51,7 +51,21 @@ class AASettingsController: AATableViewController {
         
         tableView.tableFooterView = UIView()
         
+        binder.bind(user!.getName()!, closure: { (value: String?) -> () in
+            if value == nil {
+                return
+            }
+            
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+                cell.setUsername(value!)
+            }
+        })
+        
         binder.bind(user!.getAvatar(), closure: { (value: AMAvatar?) -> () in
+            if value == nil {
+                return
+            }
+            
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                 cell.userAvatarView.bind(self.user!.getName().get() as! String, id: jint(self.uid), avatar: value)
             }
@@ -65,6 +79,22 @@ class AASettingsController: AATableViewController {
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             selectedImage: icon);
         tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+    }
+    
+    // MARK: -
+    // MARK: Methods
+    
+    private func askSetPhoto() {
+        var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo") // TODO: Localize
+        actionSheet.addButtonWithTitle("Delete Photo")
+        actionSheet.destructiveButtonIndex = 3
+        actionSheet.showInView(view)
+    }
+    
+    private func changeAvatarToImage(image: UIImage) {
+        let avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
+        UIImageJPEGRepresentation(image, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
+        MSG.changeAvatarWithNSString("/tmp/avatar.jpg")
     }
     
     // MARK: -
@@ -149,13 +179,19 @@ class AASettingsController: AATableViewController {
         return UITableViewCell()
     }
     
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.section == 0 && indexPath.row == 0
+    }
+    
     // MARK: -
     // MARK: UITableView Delegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        if indexPath.section == 1 && indexPath.row == 0 {
+        if indexPath.section == 0 && indexPath.row == 1 {
+            askSetPhoto()
+        } else if indexPath.section == 1 && indexPath.row == 0 {
             navigateToNotificationsSettings()
         } else if indexPath.section == 1 && indexPath.row == 1 {
             navigateToPrivacySettings()
@@ -186,9 +222,68 @@ class AASettingsController: AATableViewController {
     }
     
     private func navigateToPrivacySettings() {
-        let privacySettingsController = AASettingsPrivacyController()
+        let privacySettingsController = AASettingsPrivacyController(user: user)
         privacySettingsController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(privacySettingsController, animated: true)
     }
+    
+}
+
+// MARK: -
+// MARK: UIActionSheet Delegate
+
+extension AASettingsController: UIActionSheetDelegate {
+    
+    func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
+        let title = actionSheet.buttonTitleAtIndex(buttonIndex)
+        
+        // TODO: Localize
+        if title == "Choose Photo" || title == "Take Photo" {
+            let takePhoto = (title == "Take Photo")
+            var picker = UIImagePickerController()
+            picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+            picker.delegate = self
+            self.navigationController!.presentViewController(picker, animated: true, completion: nil)
+            
+        } else if title == "Delete Photo" {
+            MSG.removeAvatar() // TODO: Why request is not working?
+        }
+    }
+    
+}
+
+// MARK: -
+// MARK: UIImagePickerController Delegate
+
+extension AASettingsController: UIImagePickerControllerDelegate {
+    
+    // TODO: Allow to crop rectangle
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        
+        changeAvatarToImage(image)
+        
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        
+        changeAvatarToImage(image)
+        
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+}
+
+// MARK: -
+// MARK: UINavigationController Delegate
+
+extension AASettingsController: UINavigationControllerDelegate {
+    
+    
     
 }

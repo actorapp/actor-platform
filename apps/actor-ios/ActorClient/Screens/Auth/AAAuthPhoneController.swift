@@ -145,7 +145,7 @@ class AAAuthPhoneController: AAViewController {
             SVProgressHUD.showWithMaskType(SVProgressHUDMaskType.Black)
             
             let messenger = CocoaMessenger.messenger().requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue))
-            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
+            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
                 self.navigateToSms()
                 SVProgressHUD.dismiss()
                 }, error: { (exception) -> () in

@@ -134,4 +134,8 @@
 #import "im/actor/model/concurrency/Command.h"
 #import "im/actor/model/concurrency/CommandCallback.h"
 
+// API
+
+#import "im/actor/model/api/AuthSession.h"
+
 #endif
