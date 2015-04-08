@@ -5,7 +5,7 @@ import scala.util.Random
 
 import akka.actor._
 import akka.stream.ActorFlowMaterializer
-import akka.testkit.TestProbe
+import akka.testkit.{TestKit, TestProbe}
 import org.specs2.matcher.ThrownExpectations
 import org.specs2.specification.core.Fragments
 import scodec.bits._
@@ -192,6 +192,9 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
   override def map(fragments: => Fragments) =
     super.map(fragments) ^ step(closeDb())
 
-  private def closeDb(): Unit =
+  private def closeDb(): Unit = {
+    TestKit.shutdownActorSystem(actorSystem = system, verifySystemShutdown = true)
+    db.close()
     ds.close()
+  }
 }

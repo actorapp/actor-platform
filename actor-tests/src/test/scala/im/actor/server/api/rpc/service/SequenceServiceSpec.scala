@@ -5,13 +5,14 @@ import scala.concurrent.duration._
 
 import slick.dbio.DBIO
 
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
 import im.actor.server.push.SeqUpdatesManager
 
 class SequenceServiceSpec extends BaseServiceSuite {
+
   behavior of "Sequence service"
 
   it should "get state" in e1

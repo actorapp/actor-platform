@@ -10,16 +10,17 @@ import im.actor.server.db.{ DbInit, FlywayInit }
 class ApiKernel extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
+  val sqlConfig = serverConfig.getConfig("sql")
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
   implicit val materializer = ActorFlowMaterializer()
-  val sqlConfig = serverConfig.getConfig("sql")
+
   val ds = initDs(sqlConfig)
   implicit val db = initDb(ds)
 
   def startup() = {
-    val flyway = initFlyway(config.getConfig("jdbc"))
+    val flyway = initFlyway(ds.ds)
     flyway.migrate()
 
     Tcp.start(serverConfig)

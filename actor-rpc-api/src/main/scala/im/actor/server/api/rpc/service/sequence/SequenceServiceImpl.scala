@@ -5,7 +5,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import akka.actor.{ActorRef, ActorSystem}
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.ClientData
+import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ResponseSeq, ResponseVoid}
 import im.actor.api.rpc.peers.{GroupOutPeer, UserOutPeer}
 import im.actor.api.rpc.sequence.{DifferenceUpdate, ResponseGetDifference, SequenceService}
