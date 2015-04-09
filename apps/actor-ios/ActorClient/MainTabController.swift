@@ -10,7 +10,15 @@ import Foundation
 import UIKit
 
 class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDelegate {
+    
+    // MARK: -
+    // MARK: Private vars
+    
+    private var appIsSyncingPlaceholder = AAPlaceholderView()
 
+    // MARK: -
+    // MARK: Public vars
+    
     var centerButton:UIButton? = nil;
     var isInited = false;
     
@@ -62,4 +70,31 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
             navigationController?.pushViewController(GroupMembersController(), animated: true)
         }
     }
+    
+    // MARK: -
+    // MARK: Placeholder
+    
+    func showAppIsSyncingPlaceholder() {
+        if appIsSyncingPlaceholder.superview == nil {
+            appIsSyncingPlaceholder.frame = view.bounds
+            appIsSyncingPlaceholder.setImage(nil, title: "Please wait", subtitle: "Application is syncing some data..") // TODO: Localize
+            view.addSubview(appIsSyncingPlaceholder)
+        }
+    }
+    
+    func hideAppIsSyncingPlaceholder() {
+        if appIsSyncingPlaceholder.superview != nil {
+            appIsSyncingPlaceholder.removeFromSuperview()
+        }
+    }
+    
+    // MARK: -
+    // MARK: Layout
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        appIsSyncingPlaceholder.frame = view.bounds
+    }
+    
 }

@@ -17,6 +17,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     var searchDisplay: UISearchDisplayController?
     var searchSource: AADialogsListSearchSource?
     
+    var binder = Binder()
+    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
         
@@ -119,6 +121,17 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         navigationItem.title = "Chats"; // Localize
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
+        
+        placeholder.setImage(nil, title: "Empty", subtitle: "Your dialog list is empty. You can start chat by pressing top right button.")
+        binder.bind(MSG.getAppState().getIsDialogsEmpty(), closure: { (value: Any?) -> () in
+            if let empty = value as? JavaLangBoolean {
+                if Bool(empty.booleanValue()) == true {
+                    self.showPlaceholder()
+                } else {
+                    self.hidePlaceholder()
+                }
+            }
+        })
     }
     
     override func viewDidAppear(animated: Bool) {
