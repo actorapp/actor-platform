@@ -93,7 +93,8 @@ class AASettingsController: AATableViewController {
     
     private func changeAvatarToImage(image: UIImage) {
         let avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
-        UIImageJPEGRepresentation(image, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
+        var thumb = image.resizeSquare(200, maxH: 200);
+        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
         MSG.changeAvatarWithNSString("/tmp/avatar.jpg")
     }
     
@@ -160,7 +161,7 @@ class AASettingsController: AATableViewController {
         case 0:
             return 2
         case 1:
-            return 2
+            return 1
         default:
             return 0
         }
@@ -172,8 +173,8 @@ class AASettingsController: AATableViewController {
         } else if indexPath.section == 0 && indexPath.row == 1 {
             return setProfilePhotoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
-            return notificationsCell(indexPath)
-        } else if indexPath.section == 1 && indexPath.row == 1 {
+//            return notificationsCell(indexPath)
+//        } else if indexPath.section == 1 && indexPath.row == 1 {
             return privacyCell(indexPath)
         }
         return UITableViewCell()
@@ -192,8 +193,8 @@ class AASettingsController: AATableViewController {
         if indexPath.section == 0 && indexPath.row == 1 {
             askSetPhoto()
         } else if indexPath.section == 1 && indexPath.row == 0 {
-            navigateToNotificationsSettings()
-        } else if indexPath.section == 1 && indexPath.row == 1 {
+//            navigateToNotificationsSettings()
+//        } else if indexPath.section == 1 && indexPath.row == 1 {
             navigateToPrivacySettings()
         }
     }
