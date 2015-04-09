@@ -183,8 +183,8 @@ android {
                     output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-llectro.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-module.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Module-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-modul.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Modul-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
