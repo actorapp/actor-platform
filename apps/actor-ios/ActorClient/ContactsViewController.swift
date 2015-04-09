@@ -21,6 +21,8 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     var searchDisplay: UISearchDisplayController?
     var searchSource: ContactsSource?
     
+    var binder = Binder()
+    
     // MARK: -
     // MARK: Constructors
     
@@ -78,6 +80,17 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         
         navigationItem.title = "People";
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
+        
+        placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add friends by pressing top right button.")
+        binder.bind(MSG.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
+            if let empty = value as? JavaLangBoolean {
+                if Bool(empty.booleanValue()) == true {
+                    self.showPlaceholder()
+                } else {
+                    self.hidePlaceholder()
+                }
+            }
+        })
     }
     
     override func viewWillAppear(animated: Bool) {

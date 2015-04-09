@@ -11,6 +11,11 @@ import UIKit
 class AAViewController: UIViewController {
     
     // MARK: -
+    // MARK: Public vars
+    
+    var placeholder = AAPlaceholderView()
+    
+    // MARK: -
     // MARK: Constructors
     
     init() {
@@ -31,6 +36,31 @@ class AAViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
+    }
+    
+    // MARK: -
+    // MARK: Placeholder
+    
+    func showPlaceholder() {
+        if placeholder.superview == nil {
+            placeholder.frame = view.bounds
+            view.addSubview(placeholder)
+        }
+    }
+    
+    func hidePlaceholder() {
+        if placeholder.superview != nil {
+            placeholder.removeFromSuperview()
+        }
+    }
+    
+    // MARK: -
+    // MARK: Layout
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        placeholder.frame = view.bounds
     }
     
     // MARK: -
