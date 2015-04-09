@@ -20,7 +20,7 @@ object Session {
   import SessionMessage._
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env@Envelope(authId, sessionId, payload) => (authId.toString + "-" + sessionId.toString, env)
+    case env @ Envelope(authId, sessionId, payload) => (authId.toString + "-" + sessionId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
@@ -50,7 +50,7 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
   def receive = receiveAnonymous
 
   def receiveAnonymous: Receive = {
-    case env@Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
+    case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
       val client = sender()
 
       recordClient(client)
@@ -85,7 +85,7 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
   }
 
   def receiveResolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
-    case env@Envelope(eauthId, esessionId, msg) =>
+    case env @ Envelope(eauthId, esessionId, msg) =>
       val client = sender()
 
       recordClient(client)
