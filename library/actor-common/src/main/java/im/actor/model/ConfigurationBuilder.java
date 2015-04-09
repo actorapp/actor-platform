@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import im.actor.model.network.ConnectionEndpoint;
 
 /**
- * Created by ex3ndr on 16.02.15.
+ * Configuration builder for starting up messenger object
  */
 public class ConfigurationBuilder {
 
@@ -38,78 +38,175 @@ public class ConfigurationBuilder {
 
     private ApiConfiguration apiConfiguration;
 
+    /**
+     * Set API Configuration
+     *
+     * @param apiConfiguration API Configuration
+     * @return this
+     */
     public ConfigurationBuilder setApiConfiguration(ApiConfiguration apiConfiguration) {
         this.apiConfiguration = apiConfiguration;
         return this;
     }
 
+    /**
+     * Set Notification provider
+     *
+     * @param notificationProvider Notification provider
+     * @return this
+     */
     public ConfigurationBuilder setNotificationProvider(NotificationProvider notificationProvider) {
         this.notificationProvider = notificationProvider;
         return this;
     }
 
+    /**
+     * Set File System provider
+     *
+     * @param fileSystemProvider File system provider
+     * @return this
+     */
     public ConfigurationBuilder setFileSystemProvider(FileSystemProvider fileSystemProvider) {
         this.fileSystemProvider = fileSystemProvider;
         return this;
     }
 
+    /**
+     * Set Enable contacts logging
+     *
+     * @param enableContactsLogging Enable contacts logging flag
+     * @return this
+     */
     public ConfigurationBuilder setEnableContactsLogging(boolean enableContactsLogging) {
         this.enableContactsLogging = enableContactsLogging;
         return this;
     }
 
+    /**
+     * Set Enable Network logging
+     *
+     * @param enableNetworkLogging Enable network logging
+     * @return this
+     */
     public ConfigurationBuilder setEnableNetworkLogging(boolean enableNetworkLogging) {
         this.enableNetworkLogging = enableNetworkLogging;
         return this;
     }
 
+    /**
+     * Set Enable file operations loggging
+     *
+     * @param enableFilesLogging Enable files logging
+     * @return this
+     */
     public ConfigurationBuilder setEnableFilesLogging(boolean enableFilesLogging) {
         this.enableFilesLogging = enableFilesLogging;
         return this;
     }
 
+    /**
+     * Set Cryptography provider
+     *
+     * @param cryptoProvider Cryptography provider
+     * @return this
+     */
     public ConfigurationBuilder setCryptoProvider(CryptoProvider cryptoProvider) {
         this.cryptoProvider = cryptoProvider;
         return this;
     }
 
+    /**
+     * Set Phone Book provider
+     *
+     * @param phoneBookProvider phone book provider
+     * @return this
+     */
     public ConfigurationBuilder setPhoneBookProvider(PhoneBookProvider phoneBookProvider) {
         this.phoneBookProvider = phoneBookProvider;
         return this;
     }
 
+    /**
+     * Set Log provider
+     *
+     * @param log log provider
+     * @return this
+     */
     public ConfigurationBuilder setLog(LogProvider log) {
         this.log = log;
         return this;
     }
 
+    /**
+     * Set Network provider
+     *
+     * @param networkProvider network provider
+     * @return this
+     */
     public ConfigurationBuilder setNetworkProvider(NetworkProvider networkProvider) {
         this.networkProvider = networkProvider;
         return this;
     }
 
+    /**
+     * Set Threading provider
+     *
+     * @param threadingProvider threading provider
+     * @return this
+     */
     public ConfigurationBuilder setThreadingProvider(ThreadingProvider threadingProvider) {
         this.threadingProvider = threadingProvider;
         return this;
     }
 
+    /**
+     * Set storage provider
+     *
+     * @param storageProvider Storage provider
+     * @return this
+     */
     public ConfigurationBuilder setStorage(StorageProvider storageProvider) {
         this.enginesFactory = storageProvider;
         return this;
     }
 
+    /**
+     * Set Locale provider
+     *
+     * @param localeProvider locale provider
+     * @return this
+     */
     public ConfigurationBuilder setLocale(LocaleProvider localeProvider) {
         this.localeProvider = localeProvider;
         return this;
     }
 
+    /**
+     * Set callback dispatcher provider
+     *
+     * @param dispatcherProvider dispatcher provider
+     * @return this
+     */
     public ConfigurationBuilder setDispatcherProvider(DispatcherProvider dispatcherProvider) {
         this.dispatcherProvider = dispatcherProvider;
         return this;
     }
 
+
+    /**
+     * Adding Endpoint for API
+     * Valid URLs are:
+     * tcp://[host]:[port]
+     * tls://[host]:[port]
+     * ws://[host]:[port]
+     * wss://[host]:[port]
+     *
+     * @param url endpoint url
+     * @return this
+     */
     public ConfigurationBuilder addEndpoint(String url) {
         // Manual baggy parsing for GWT
+        // TODO: Correct URL parsing
         String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
         String host = url.substring(url.indexOf("://") + "://".length());
         if (host.endsWith("/")) {
@@ -148,11 +245,22 @@ public class ConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Setting MainThread provider
+     *
+     * @param mainThreadProvider main thread provider
+     * @return this
+     */
     public ConfigurationBuilder setMainThreadProvider(MainThreadProvider mainThreadProvider) {
         this.mainThreadProvider = mainThreadProvider;
         return this;
     }
 
+    /**
+     * Build configuration
+     *
+     * @return result configuration
+     */
     public Configuration build() {
         if (networkProvider == null) {
             throw new RuntimeException("Networking is not set");
