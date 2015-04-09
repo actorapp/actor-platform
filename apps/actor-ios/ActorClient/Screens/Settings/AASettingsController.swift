@@ -62,10 +62,6 @@ class AASettingsController: AATableViewController {
         })
         
         binder.bind(user!.getAvatar(), closure: { (value: AMAvatar?) -> () in
-            if value == nil {
-                return
-            }
-            
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                 cell.userAvatarView.bind(self.user!.getName().get() as! String, id: jint(self.uid), avatar: value)
             }
@@ -247,7 +243,7 @@ extension AASettingsController: UIActionSheetDelegate {
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
             
         } else if title == "Delete Photo" {
-            MSG.removeAvatar() // TODO: Why request is not working?
+            MSG.removeAvatar()
         }
     }
     
