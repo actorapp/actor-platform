@@ -93,6 +93,7 @@
 #import "im/actor/model/entity/Contact.h"
 #import "im/actor/model/entity/ContentType.h"
 #import "im/actor/model/entity/Dialog.h"
+#import "im/actor/model/entity/SearchEntity.h"
 #import "im/actor/model/entity/FileReference.h"
 #import "im/actor/model/entity/Message.h"
 #import "im/actor/model/entity/MessageState.h"
@@ -127,6 +128,7 @@
 #import "im/actor/model/viewmodel/UploadFileVM.h"
 #import "im/actor/model/viewmodel/DownloadCallback.h"
 #import "im/actor/model/viewmodel/UploadCallback.h"
+#import "im/actor/model/viewmodel/AppStateVM.h"
 
 // Misc
 
