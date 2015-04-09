@@ -103,7 +103,7 @@ public class GroupVM extends BaseValueModel<Group> {
     }
 
     private void notifyChange() {
-        MVVMEngine.getMainThreadProvider().runOnUiThread(new Runnable() {
+        MVVMEngine.getMainThreadProvider().postToMainThread(new Runnable() {
             @Override
             public void run() {
                 for (ModelChangedListener<GroupVM> l : listeners.toArray(new ModelChangedListener[0])) {

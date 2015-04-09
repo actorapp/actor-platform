@@ -13,7 +13,7 @@ public class AndroidMainThreadProvider implements MainThreadProvider {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
-    public void runOnUiThread(Runnable runnable) {
+    public void postToMainThread(Runnable runnable) {
         handler.post(runnable);
     }
 
