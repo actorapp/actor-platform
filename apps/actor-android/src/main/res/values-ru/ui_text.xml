@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Actor</string>
+    <string name="app_locale">Ru</string>
+
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Отмена</string>
     <string name="dialog_yes">Да</string>
@@ -88,6 +90,9 @@
     <string name="main_menu_help">Помощь</string>
     <string name="main_menu_search">Поиск</string>
 
+    <string name="main_bar_chats">ЧАТЫ</string>
+    <string name="main_bar_contacts">КОНТАКТЫ</string>
+
     <string name="main_fab_compose">Написать</string>
     <string name="main_fab_new_group">Новая группа</string>
     <string name="main_fab_add_contact">Добавить контакт</string>
@@ -137,6 +142,8 @@
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
     <string name="contacts_empty_short">Еще нет контактов</string>
+    <string name="contacts_share">Рассказать друзьям об Акторе</string>
+    <string name="contacts_add">Добавить друга...</string>
 
     <string name="contacts_menu_remove">Удалить {0} из контактов</string>
     <string name="contacts_menu_remove_progress">Удаление…</string>
@@ -171,6 +178,8 @@
     <string name="chat_doc_send">Отправить</string>
     <string name="chat_doc_stop">Отменить</string>
     <string name="chat_doc_download">Загрузить</string>
+
+    <string name="chat_not_member">Вы не участник этой группы</string>
 
     <!-- Profile -->
     <string name="profile_title">Профиль</string>
@@ -216,6 +225,8 @@
     <string name="group_shared_files">Документы</string>
 
     <string name="group_add_member">Добавить в группу</string>
+
+    <string name="group_not_member">Вы не участник данной группы</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">Ваше фото</string>
@@ -312,7 +323,7 @@
     <string name="alert_group_remove_text">Вы уверены, что хотите исключить {0} из группы?</string>
     <string name="alert_group_remove_yes">Исключить</string>
 
-    <string name="alert_invite_text">"{0}" на зарегистрирован в Акторе. Выслать ему приглашение?</string>
+    <string name="alert_invite_text">"{0}" не зарегистрирован в Акторе. Выслать ему приглашение?</string>
     <string name="alert_invite_yes">Пригласить</string>
 
     <!-- Dialogs -->

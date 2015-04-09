@@ -69,7 +69,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
             footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
             addFooterView(footer);
         } else {
-            addFooterAction(R.color.contacts_action_share, R.drawable.ic_share_white_24dp, "Tell friends about Actor", false, new Runnable() {
+            addFooterAction(R.color.contacts_action_share, R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
                 @Override
                 public void run() {
                     String inviteMessage = getResources().getString(R.string.invite_message);
@@ -80,7 +80,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 }
             });
 
-            addFooterAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, "Add friend...", true, new Runnable() {
+            addFooterAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_add, true, new Runnable() {
                 @Override
                 public void run() {
                     startActivity(new Intent(getActivity(), AddContactActivity.class));
@@ -114,7 +114,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         return res;
     }
 
-    private void addFooterAction(int color, int icon, String text, boolean isLast, final Runnable action) {
+    private void addFooterAction(int color, int icon, int text, boolean isLast, final Runnable action) {
         FrameLayout container = new FrameLayout(getActivity());
         container.setBackgroundColor(getResources().getColor(R.color.bg_main));
         {

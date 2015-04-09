@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Actor</string>
+    <string name="app_locale">En</string>
+
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_yes">Yes</string>
@@ -88,6 +90,9 @@
     <string name="main_menu_help">Help</string>
     <string name="main_menu_search">Search</string>
 
+    <string name="main_bar_chats">CHATS</string>
+    <string name="main_bar_contacts">CONTACTS</string>
+
     <string name="main_fab_compose">Compose</string>
     <string name="main_fab_new_group">Create group</string>
     <string name="main_fab_add_contact">Add contact</string>
@@ -136,6 +141,8 @@
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty_short">No contacts yet</string>
+    <string name="contacts_share">Tell friends about Actor</string>
+    <string name="contacts_add">Add friend...</string>
 
     <string name="contacts_empty_title">Invite your friends</string>
     <string name="contacts_empty_invite_hint">None of your contacts use Actor. Use button below to invite them.</string>
@@ -170,6 +177,8 @@
     <string name="chat_doc_send">Send</string>
     <string name="chat_doc_stop">Stop</string>
     <string name="chat_doc_download">Download</string>
+
+    <string name="chat_not_member">You is not member of this group</string>
 
     <!-- Profile -->
     <string name="profile_title">Profile</string>
@@ -214,6 +223,8 @@
     <string name="group_shared_files">Documents</string>
 
     <string name="group_add_member">Add a member</string>
+
+    <string name="group_not_member">You is not member of this group</string>
 
     <!-- Avatar -->
     <string name="avatar_title_your">Your photo</string>
