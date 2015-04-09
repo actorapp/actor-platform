@@ -15,9 +15,9 @@ Repo is separated to main library projects and app projects. Library contains al
 * ```actor-android-base```: extension of actor-jvm that adds some android-specific implementations (main thread, log, file system, crypto provider, better sending)
 
 ### Application projects
-# ```actor-android```: Android Client of Actor Messenger
-# ```actor-ios```: iOS Client of Actor Messenger
-# ```actor-web```: Web Client of Actor Messenger
+* ```actor-android```: Android Client of Actor Messenger
+* ```actor-ios```: iOS Client of Actor Messenger
+* ```actor-web```: Web Client of Actor Messenger
 
 ## Using repo
 For working with repo you need to pull all sources and follow instructions in folder of project you need.
