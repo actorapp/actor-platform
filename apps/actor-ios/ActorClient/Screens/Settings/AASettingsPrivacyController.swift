@@ -39,18 +39,18 @@ class AASettingsPrivacyController: AATableViewController {
         
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
         
-        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
-        let messenger = CocoaMessenger.messenger().loadSessions()
-        messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
-            
-            // TODO: Which class returned? ImActorModelApiAuthSession?
-            
-            self.tableView.reloadData()
-            MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-            }, error: { (exception) -> () in
-                println("\(exception)")
-                MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-        }))
+//        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
+//        let messenger = CocoaMessenger.messenger().loadSessions()
+//        messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
+//            
+//            // TODO: Which class returned? ImActorModelApiAuthSession?
+//            
+//            self.tableView.reloadData()
+//            MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
+//            }, error: { (exception) -> () in
+//                println("\(exception)")
+//                MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
+//        }))
     }
     
     // MARK: -
