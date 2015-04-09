@@ -1,7 +1,5 @@
-package im.actor.model.droidkit.actors.debug;
+package im.actor.model.droidkit.actors;
 
-import im.actor.model.droidkit.actors.Actor;
-import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 
 /**

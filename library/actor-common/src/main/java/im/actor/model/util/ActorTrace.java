@@ -2,7 +2,7 @@ package im.actor.model.util;
 
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
-import im.actor.model.droidkit.actors.debug.TraceInterface;
+import im.actor.model.droidkit.actors.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.log.Log;
 

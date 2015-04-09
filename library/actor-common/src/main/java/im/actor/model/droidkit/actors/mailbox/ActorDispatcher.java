@@ -1,14 +1,18 @@
 package im.actor.model.droidkit.actors.mailbox;
 
-import im.actor.model.droidkit.actors.*;
+import java.util.HashMap;
+
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorContext;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorScope;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.ActorTime;
+import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatcher;
-import im.actor.model.droidkit.actors.extensions.ActorExtension;
 import im.actor.model.droidkit.actors.messages.DeadLetter;
-import im.actor.model.droidkit.actors.messages.Ping;
 import im.actor.model.droidkit.actors.messages.PoisonPill;
 import im.actor.model.droidkit.actors.messages.StartActor;
-
-import java.util.HashMap;
 
 /**
  * Abstract Actor Dispatcher, used for dispatching messages for actors
@@ -67,9 +71,6 @@ public abstract class ActorDispatcher {
     }
 
     public final void killGracefully(ActorScope scope) {
-        for (ActorExtension e : scope.getActor().getExtensions()) {
-            e.postStop();
-        }
         scope.getActor().postStop();
         scope.onActorDie();
 
@@ -149,9 +150,6 @@ public abstract class ActorDispatcher {
             try {
                 Actor actor = scope.getProps().create();
                 actor.initActor(scope.getPath(), new ActorContext(scope), scope.getMailbox());
-                for (ActorExtension e : actor.getExtensions()) {
-                    e.preStart();
-                }
                 actor.preStart();
                 scope.onActorCreated(actor);
             } catch (Exception e) {
@@ -167,14 +165,8 @@ public abstract class ActorDispatcher {
             if (envelope.getMessage() == StartActor.INSTANCE) {
                 // Already created actor
                 return;
-            } else if (envelope.getMessage() == Ping.INSTANCE) {
-                // No op
-                return;
             } else if (envelope.getMessage() == PoisonPill.INSTANCE) {
                 isDisconnected = true;
-                for (ActorExtension e : scope.getActor().getExtensions()) {
-                    e.postStop();
-                }
                 scope.getActor().postStop();
                 scope.onActorDie();
                 for (Envelope e : scope.getMailbox().allEnvelopes()) {
@@ -190,10 +182,9 @@ public abstract class ActorDispatcher {
                 }
             } else {
                 scope.setSender(envelope.getSender());
-                for (ActorExtension e : scope.getActor().getExtensions()) {
-                    if (e.onReceive(envelope.getMessage())) {
-                        return;
-                    }
+                if (envelope.getMessage() instanceof Runnable) {
+                    ((Runnable) envelope.getMessage()).run();
+                    return;
                 }
                 scope.getActor().onReceive(envelope.getMessage());
             }
