@@ -105,6 +105,13 @@ android {
             buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
+        module {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Module)\""
+            applicationIdSuffix ".module"
+            signingConfig signingConfigs.release
+            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
+        }
+
         mchs {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (МЧС)\""
             applicationIdSuffix ".mchs"
@@ -176,6 +183,8 @@ android {
                     output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-llectro.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-module.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Module-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
@@ -189,12 +198,17 @@ android {
 
         debug {
             // res.srcDirs = ['src/themes/dev',  'src/themes/dark',  'src/material-icons']
-            res.srcDirs = ['src/themes/dev', 'src/material-icons']
+            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         llectro {
             res.srcDirs = ['src/themes/main', 'src/themes/dark', 'src/material-icons']
+            java.srcDirs = ['src/play/java']
+        }
+
+        module {
+            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
