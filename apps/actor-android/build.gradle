@@ -341,6 +341,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:palette-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
+
     releaseCompile 'com.google.android.gms:play-services:6.+'
     playCompile 'com.google.android.gms:play-services:6.+'
     debugCompile 'com.google.android.gms:play-services:6.+'
@@ -349,6 +350,7 @@ dependencies {
     dev2Compile 'com.google.android.gms:play-services:6.+'
     mchsCompile 'com.google.android.gms:play-services:6.+'
     llectroCompile 'com.google.android.gms:play-services:6.+'
+    modulCompile 'com.google.android.gms:play-services:6.+'
 
     // Integration
     compile files('libs/HockeySDK-3.0.2.jar')
