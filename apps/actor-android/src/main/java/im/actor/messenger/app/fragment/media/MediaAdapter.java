@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 
@@ -35,10 +36,10 @@ import static im.actor.messenger.app.Core.messenger;
 public class MediaAdapter extends BindedListAdapter<Message, MediaAdapter.MediaHolder> {
     private static final int tileSize = Screen.getWidth() / AppContext.getContext().getResources().getInteger(R.integer.gallery_items_count);
     private final Context context;
-    private final OnItemClickedListener<Message> onItemClickListener;
+    private final OnMediaClickListener onItemClickListener;
 
     public MediaAdapter(BindedDisplayList<Message> mediaDisplayList,
-                        OnItemClickedListener<Message> onItemClickedListener,
+                        OnMediaClickListener onItemClickedListener,
                         Context context) {
         super(mediaDisplayList);
         this.context = context;
@@ -53,18 +54,12 @@ public class MediaAdapter extends BindedListAdapter<Message, MediaAdapter.MediaH
     }
 
     @Override
-    public void onBindViewHolder(MediaHolder mediaHolder, int index, final Message item) {
+    public void onBindViewHolder(final MediaHolder mediaHolder, int index, final Message item) {
         mediaHolder.bind(item, index, context);
         mediaHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onClicked(item);
-            }
-        });
-        mediaHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return onItemClickListener.onLongClicked(item);
+                onItemClickListener.onClick(mediaHolder, item);
             }
         });
     }

@@ -25,13 +25,6 @@
 
 
 
-    <!-- Pager -->
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
-        android:visibility="gone"
-        android:alpha="0"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 
 
@@ -42,6 +35,13 @@
         android:alpha="0"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <!-- Pager -->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:visibility="gone"
+        android:alpha="0"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <!--<RelativeLayout
         android:id="@+id/transitionContainer"
         android:layout_width="match_parent"

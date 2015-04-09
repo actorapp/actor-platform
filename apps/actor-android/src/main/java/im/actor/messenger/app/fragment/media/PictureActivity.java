@@ -3,7 +3,6 @@ package im.actor.messenger.app.fragment.media;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.droidkit.progress.CircularView;
 
 import im.actor.images.cache.BitmapReference;
 import im.actor.images.loading.ReceiverCallback;
@@ -29,26 +31,27 @@ import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
+import im.actor.model.files.FileSystemReference;
+import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.viewmodel.DownloadCallback;
 import im.actor.model.viewmodel.UserVM;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-import static im.actor.messenger.app.Core.core;
 import static im.actor.messenger.app.Core.getImageLoader;
+import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 
 
 public class PictureActivity extends ActionBarActivity {
 
-    private static final String ARG_PATH = "arg_absolute_path";
+    private static final String ARG_FILE_PATH = "arg_file_path";
+    private static final String ARG_FILE_ID = "arg_file_id";
     private static final String ARG_OWNER = "arg_owner";
     private static final String ARG_TIMER = "arg_timer";
     private static final String ARG_IMAGE_TOP = "arg_image_top";
     private static final String ARG_IMAGE_LEFT = "arg_image_left";
     private static final String ARG_IMAGE_WIDTH = "arg_image_width";
     private static final String ARG_IMAGE_HEIGHT = "arg_image_height";
-    private static final String ARG_FILE_PATH = "arg_file_path";
-    private static final String ARG_FILENAME = "arg_filename";
-    private static final String ARG_FILESIZE = "arg_filesize";
     private static int animationMultiplier = 1;
     private ImageKitView transitionView;
     private Bitmap bitmap;
@@ -65,7 +68,7 @@ public class PictureActivity extends ActionBarActivity {
     public static void launchPhoto(Activity activity, View transitionView, String path, int senderId) {
 
         Intent intent = new Intent(activity, PictureActivity.class);
-        intent.putExtra(ARG_PATH, path);
+        intent.putExtra(ARG_FILE_PATH, path);
         intent.putExtra(ARG_OWNER, senderId);
 
         int[] location = new int[2];
@@ -101,7 +104,7 @@ public class PictureActivity extends ActionBarActivity {
         }
 
         final Bundle bundle = getIntent().getExtras();
-        path = bundle.getString(ARG_PATH);
+        path = bundle.getString(ARG_FILE_PATH);
         int sender = bundle.getInt(ARG_OWNER, 0);
 
         toolbar.setVisibility(View.GONE);
@@ -189,34 +192,6 @@ public class PictureActivity extends ActionBarActivity {
         if (i == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (i == R.id.share) {
-            startActivity(Intents.shareDoc("picture.jpeg", path));
-            /*startActivity(new Intent(Intent.ACTION_SEND)
-                    .setType("image/jpeg")
-                    .putExtra(Intent.EXTRA_STREAM,Uri.parse(path)));*/
-            return true;
-        } else if (i == R.id.save) {
-            getImageLoader().createReceiver(new ReceiverCallback() {
-                @Override
-                public void onImageLoaded(BitmapReference bitmap) {
-                    Intents.savePicture(getBaseContext(), bitmap.getBitmap());
-                }
-
-                @Override
-                public void onImageCleared() {
-
-                }
-
-                @Override
-                public void onImageError() {
-
-                }
-            }).request(new RawFileTask(path));
-
-            item.setEnabled(false);
-            item.setTitle(R.string.menu_saved);
-
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -232,6 +207,10 @@ public class PictureActivity extends ActionBarActivity {
         private Toolbar toolbar;
         private boolean firstShowing = true;
         private PhotoViewAttacher attacher;
+        private String path;
+        private long fileId;
+        private CircularView circularView;
+        private View backgroundView;
 
         public PictureFragment() {
         }
@@ -248,9 +227,11 @@ public class PictureActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_media_picture, container, false);
 
             final Bundle bundle = getArguments();
-            String path = bundle.getString(ARG_PATH);
+            path = bundle.getString(ARG_FILE_PATH);
+            fileId = bundle.getLong(ARG_FILE_ID);
             int sender = bundle.getInt(ARG_OWNER, 0);
-
+            circularView = (CircularView) rootView.findViewById(R.id.progress);
+            circularView.setValue(50);
             imageView = (ImageKitView) rootView.findViewById(R.id.image);
             imageView.setExtraReceiverCallback(new ReceiverCallback() {
                 @Override
@@ -291,7 +272,33 @@ public class PictureActivity extends ActionBarActivity {
 
                 }
             });
-            imageView.request(new RawFileTask(path));
+            if(path==null){
+                messenger().requestState( fileId, new DownloadCallback() {
+                    @Override
+                    public void onNotDownloaded() {
+                        //messenger().startDownloading(location);
+                        Toast.makeText(getActivity(), "File is not loaded :O", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onDownloading(float progress) {
+
+                    }
+
+                    @Override
+                    public void onDownloaded(final FileSystemReference reference) {
+                        MVVMEngine.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                path = reference.getDescriptor();
+                                imageView.request(new RawFileTask(path));
+                            }
+                        });
+                    }
+                });
+            } else {
+                imageView.request(new RawFileTask(path));
+            }
 
             ownerAvatarView = (AvatarView) rootView.findViewById(R.id.avatar);
             ownerNameView = (TextView) rootView.findViewById(R.id.name);
@@ -314,7 +321,7 @@ public class PictureActivity extends ActionBarActivity {
             }*/
             ownerNameView.setText(owner.getName().get());
 
-            View backgroundView = null;
+            backgroundView = null;
 
             Activity activity = getActivity();
             if (activity instanceof PictureActivity) {
@@ -345,11 +352,48 @@ public class PictureActivity extends ActionBarActivity {
         public void onDestroyView() {
             super.onDestroyView();
             attacher.cleanup();
+            if(backgroundView!=null){
+                backgroundView.setOnClickListener(null);
+            }
         }
 
         @Override
         public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             inflater.inflate(R.menu.media_picture, menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            if (item.getItemId() == R.id.share) {
+                startActivity(Intents.shareDoc("picture.jpeg", path));
+            /*startActivity(new Intent(Intent.ACTION_SEND)
+                    .setType("image/jpeg")
+                    .putExtra(Intent.EXTRA_STREAM,Uri.parse(path)));*/
+                return true;
+            } else if (item.getItemId() == R.id.save) {
+                getImageLoader().createReceiver(new ReceiverCallback() {
+                    @Override
+                    public void onImageLoaded(BitmapReference bitmap) {
+                        Intents.savePicture(getActivity(), bitmap.getBitmap());
+                    }
+
+                    @Override
+                    public void onImageCleared() {
+
+                    }
+
+                    @Override
+                    public void onImageError() {
+
+                    }
+                }).request(new RawFileTask(path));
+
+                item.setEnabled(false);
+                item.setTitle(R.string.menu_saved);
+
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
         }
 
         private void showSystemUi() {
@@ -439,6 +483,25 @@ public class PictureActivity extends ActionBarActivity {
                         .start();
             }
 
+        }
+
+        public static Fragment getInstance(String path, int senderId) {
+
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_FILE_PATH, path);
+            bundle.putInt(ARG_OWNER, senderId);
+            Fragment fragment = new PictureFragment();
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+
+        public static Fragment getInstance(long fileId, int senderId) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(ARG_FILE_ID, fileId);
+            bundle.putInt(ARG_OWNER, senderId);
+            Fragment fragment = new PictureFragment();
+            fragment.setArguments(bundle);
+            return fragment;
         }
     }
 }
