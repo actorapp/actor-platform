@@ -95,7 +95,7 @@
                 android:layout_height="match_parent"
                 android:clickable="true"
                 android:gravity="center"
-                android:text="You is not member of this group"
+                android:text="@string/chat_not_member"
                 android:textAllCaps="true"
                 android:textColor="@color/primary"
                 android:textSize="18sp" />

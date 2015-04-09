@@ -105,9 +105,9 @@ android {
             buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
-        module {
+        modul {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Module)\""
-            applicationIdSuffix ".module"
+            applicationIdSuffix ".modul"
             signingConfig signingConfigs.release
             buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
@@ -207,7 +207,7 @@ android {
             java.srcDirs = ['src/play/java']
         }
 
-        module {
+        modul {
             res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
@@ -355,6 +355,6 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleModul']) {
 
 }

@@ -193,7 +193,7 @@ public class GroupInfoFragment extends BaseFragment {
                                     } else if (which == 1) {
                                         final ArrayList<UserPhone> phones = userVM.getPhones().get();
                                         if (phones.size() == 0) {
-                                            Toast.makeText(getActivity(), "Now phones available", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "No phones available", Toast.LENGTH_SHORT).show();
                                         } else if (phones.size() == 1) {
                                             startActivity(Intents.call(phones.get(0).getPhone()));
                                         } else {

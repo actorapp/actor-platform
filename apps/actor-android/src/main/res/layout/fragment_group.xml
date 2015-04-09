@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="You is not member of group"
+            android:text="@string/group_not_member"
             android:textColor="@color/text_primary"
             android:textSize="21sp" />
     </FrameLayout>
