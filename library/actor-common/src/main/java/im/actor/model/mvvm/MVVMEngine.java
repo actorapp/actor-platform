@@ -26,6 +26,6 @@ public class MVVMEngine {
     }
 
     public static void runOnUiThread(Runnable runnable) {
-        mainThreadProvider.runOnUiThread(runnable);
+        mainThreadProvider.postToMainThread(runnable);
     }
 }
