@@ -20,14 +20,14 @@ class AASettingsNotificationsController: AATableViewController {
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-        
-        navigationItem.title = "Notifications and Sounds" // TODO: Localize
     }
     
     // MARK: -
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.title = "Notifications and Sounds" // TODO: Localize
     }
     
     // MARK: - 

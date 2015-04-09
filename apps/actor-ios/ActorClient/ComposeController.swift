@@ -35,14 +35,15 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchView!.searchBarStyle = UISearchBarStyle.Default
         searchView!.barStyle = UIBarStyle.Default
         searchView!.translucent = false
-        
-        searchView?.setSearchFieldBackgroundImage(Imaging.imageWithColor(Resources.SearchBgColor, size: CGSize(width: 1, height: 28)), forState: UIControlState.Normal)
+
+        let image = UIImage(named: "SearchBarBg")!
+        searchView?.setSearchFieldBackgroundImage(image.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
 
         // Enabled color
         searchView!.barTintColor = UIColor.whiteColor()
         
         // Disabled color
-        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 1))
+        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 320, height: 44))
         searchView!.backgroundColor = UIColor.whiteColor()
         
         // Enabled Cancel button color
