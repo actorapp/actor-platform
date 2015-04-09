@@ -77,6 +77,15 @@ import Foundation
             var loginNavigation = AANavigationController(rootViewController: phoneController)
             loginNavigation.makeBarTransparent()
             rootController.presentViewController(loginNavigation, animated: false, completion: nil)
+        } else {
+            if application.respondsToSelector("registerUserNotificationSettings:") {
+                let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+                let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+                application.registerUserNotificationSettings(settings)
+                application.registerForRemoteNotifications()
+            } else {
+                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+            }
         }
         
         if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
@@ -97,6 +106,18 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
+    }
+    
+    // MARK: -
+    // MARK: Notifications
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
+        MSG.registerApplePushWithInt(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withNSString: tokenString)
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        println("\(userInfo)")
     }
     
 }
