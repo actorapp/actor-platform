@@ -317,8 +317,9 @@
     <string name="alert_invite_yes">Пригласить</string>
 
     <!-- Media -->
-    <string name="media">Media</string>
-    <string name="media_picture">Picture</string>
+    <string name="media">Медиа</string>
+    <string name="media_picture">Изображение</string>
+    <string name="media_pager" formatted="false">%d из %d</string>
 
     <!-- Dialogs -->
     <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
