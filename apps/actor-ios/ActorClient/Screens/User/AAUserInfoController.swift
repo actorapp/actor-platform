@@ -87,6 +87,16 @@ class AAUserInfoController: AATableViewController {
         // TODO: Allow cancellation
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        MSG.onProfileOpen(jint(uid))
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        MSG.onProfileClosed(jint(uid))
+    }
+    
     // MARK: -
     // MARK: Getters
     
