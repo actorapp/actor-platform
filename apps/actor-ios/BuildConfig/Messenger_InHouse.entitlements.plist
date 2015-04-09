@@ -6,5 +6,7 @@
 <string>5AC7B9PZ6W.im.actor.messenger</string>
 <key>get-task-allow</key>
 <false/>
+<key>aps-environment</key>
+<string>production</string>
 </dict>
 </plist>
