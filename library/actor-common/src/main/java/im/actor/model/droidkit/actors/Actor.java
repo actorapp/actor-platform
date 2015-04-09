@@ -1,14 +1,7 @@
 package im.actor.model.droidkit.actors;
 
-import im.actor.model.droidkit.actors.extensions.ActorExtension;
-import im.actor.model.droidkit.actors.extensions.RunnableExtension;
 import im.actor.model.droidkit.actors.mailbox.Mailbox;
 import im.actor.model.droidkit.actors.messages.DeadLetter;
-import im.actor.model.droidkit.actors.tasks.ActorAskImpl;
-import im.actor.model.droidkit.actors.tasks.AskCallback;
-import im.actor.model.droidkit.actors.tasks.AskFuture;
-
-import java.util.ArrayList;
 
 /**
  * Actor object
@@ -21,9 +14,6 @@ public class Actor {
 
     private ActorContext context;
     private Mailbox mailbox;
-
-    private ActorAskImpl askPattern;
-    private ArrayList<ActorExtension> extensions = new ArrayList<ActorExtension>();
 
     public Actor() {
 
@@ -41,18 +31,6 @@ public class Actor {
         this.path = path;
         this.context = context;
         this.mailbox = mailbox;
-        this.askPattern = new ActorAskImpl(self());
-        this.extensions.add(askPattern);
-        this.extensions.add(new RunnableExtension());
-    }
-
-    /**
-     * Current actor extensions
-     *
-     * @return extensions list
-     */
-    public ArrayList<ActorExtension> getExtensions() {
-        return extensions;
     }
 
     /**
@@ -160,116 +138,5 @@ public class Actor {
             system().getTraceInterface().onDrop(sender(), message, this);
         }
         reply(new DeadLetter(message));
-    }
-
-    /**
-     * Combine multiple asks to single one
-     *
-     * @param futures futures from ask
-     * @return future
-     */
-    public AskFuture combine(AskFuture... futures) {
-        return askPattern.combine(futures);
-    }
-
-    /**
-     * Combine multiple asks to single one
-     *
-     * @param callback asks callback
-     * @param futures  futures from ask
-     * @return future
-     */
-    public AskFuture combine(AskCallback<Object[]> callback, AskFuture... futures) {
-        AskFuture future = combine(futures);
-        future.addListener(callback);
-        return future;
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param selection ActorSelection of task
-     * @return Future
-     */
-    public AskFuture ask(ActorSelection selection) {
-        return askPattern.ask(system().actorOf(selection), 0, null);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param selection ActorSelection of task
-     * @param timeout   timeout of task
-     * @return Future
-     */
-    public AskFuture ask(ActorSelection selection, long timeout) {
-        return askPattern.ask(system().actorOf(selection), timeout, null);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param selection ActorSelection of task
-     * @param callback  callback for ask
-     * @return Future
-     */
-    public <T> AskFuture<T> ask(ActorSelection selection, AskCallback<T> callback) {
-        return askPattern.ask(system().actorOf(selection), 0, callback);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param selection ActorSelection of task
-     * @param timeout   timeout of task
-     * @param callback  callback for ask
-     * @return Future
-     */
-    public <T> AskFuture<T> ask(ActorSelection selection, long timeout, AskCallback<T> callback) {
-        return askPattern.ask(system().actorOf(selection), timeout, callback);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param ref ActorRef of task
-     * @return Future
-     */
-    public AskFuture ask(ActorRef ref) {
-        return askPattern.ask(ref, 0, null);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param ref     ActorRef of task
-     * @param timeout timeout of task
-     * @return Future
-     */
-    public AskFuture ask(ActorRef ref, long timeout) {
-        return askPattern.ask(ref, timeout, null);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param ref      ActorRef of task
-     * @param callback callback for ask
-     * @return Future
-     */
-    public AskFuture ask(ActorRef ref, AskCallback callback) {
-        return askPattern.ask(ref, 0, callback);
-    }
-
-    /**
-     * Ask TaskActor for result
-     *
-     * @param ref      ActorRef of task
-     * @param timeout  timeout of task
-     * @param callback callback for ask
-     * @return Future
-     */
-    public AskFuture ask(ActorRef ref, long timeout, AskCallback callback) {
-        return askPattern.ask(ref, timeout, callback);
     }
 }

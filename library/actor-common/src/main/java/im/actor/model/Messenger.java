@@ -23,13 +23,13 @@ import im.actor.model.mvvm.ValueModel;
 import im.actor.model.util.ActorTrace;
 import im.actor.model.util.Timing;
 import im.actor.model.viewmodel.AppStateVM;
-import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.FileCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupAvatarVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.OwnAvatarVM;
-import im.actor.model.viewmodel.UploadCallback;
+import im.actor.model.viewmodel.UploadFileCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 import im.actor.model.viewmodel.UserVM;
@@ -690,7 +690,7 @@ public class Messenger {
      * @param isAutoStart   automatically start download
      * @param callback      file state callback
      */
-    public void bindRawFile(FileReference fileReference, boolean isAutoStart, DownloadCallback callback) {
+    public void bindRawFile(FileReference fileReference, boolean isAutoStart, FileCallback callback) {
         modules.getFilesModule().bindFile(fileReference, isAutoStart, callback);
     }
 
@@ -701,7 +701,7 @@ public class Messenger {
      * @param isAutoCancel automatically cancel download
      * @param callback     file state callback
      */
-    public void unbindRawFile(long fileId, boolean isAutoCancel, DownloadCallback callback) {
+    public void unbindRawFile(long fileId, boolean isAutoCancel, FileCallback callback) {
         modules.getFilesModule().unbindFile(fileId, callback, isAutoCancel);
     }
 
@@ -711,7 +711,7 @@ public class Messenger {
      * @param rid      randomId of uploading file
      * @param callback file state callback
      */
-    public void bindRawUploadFile(long rid, UploadCallback callback) {
+    public void bindRawUploadFile(long rid, UploadFileCallback callback) {
         modules.getFilesModule().bindUploadFile(rid, callback);
     }
 
@@ -721,7 +721,7 @@ public class Messenger {
      * @param rid      randomId of uploading file
      * @param callback file state callback
      */
-    public void unbindRawUploadFile(long rid, UploadCallback callback) {
+    public void unbindRawUploadFile(long rid, UploadFileCallback callback) {
         modules.getFilesModule().unbindUploadFile(rid, callback);
     }
 
@@ -731,7 +731,7 @@ public class Messenger {
      * @param fileId   file id
      * @param callback file state callback
      */
-    public void requestState(long fileId, final DownloadCallback callback) {
+    public void requestState(long fileId, final FileCallback callback) {
         modules.getFilesModule().requestState(fileId, callback);
     }
 
@@ -741,7 +741,7 @@ public class Messenger {
      * @param rid      file's random id
      * @param callback file state callback
      */
-    public void requestUploadState(long rid, UploadCallback callback) {
+    public void requestUploadState(long rid, UploadFileCallback callback) {
         modules.getFilesModule().requestUploadState(rid, callback);
     }
 

@@ -1,7 +1,7 @@
 package im.actor.model.viewmodel;
 
 /**
- * Created by ex3ndr on 04.03.15.
+ * Avatar upload state
  */
 public class AvatarUploadState {
     private String descriptor;
@@ -12,10 +12,20 @@ public class AvatarUploadState {
         this.isUploading = isUploading;
     }
 
+    /**
+     * Uploading descriptor
+     *
+     * @return file system descriptor
+     */
     public String getDescriptor() {
         return descriptor;
     }
 
+    /**
+     * Is upload in progress
+     *
+     * @return is uploading
+     */
     public boolean isUploading() {
         return isUploading;
     }
