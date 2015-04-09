@@ -8,25 +8,81 @@ import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.util.ThreadLocalCompat;
 
 /**
- * Created by ex3ndr on 16.02.15.
+ * Provider for multithreading support. Contains all required methods for performing asynchronous operations.
  */
 public interface ThreadingProvider {
 
+    /**
+     * Time in ms from some fixed point in time and that not relied to local time changes.
+     *
+     * @return time in ms
+     */
     public long getActorTime();
 
+    /**
+     * Current unix-time of system
+     *
+     * @return time in ms
+     */
     public long getCurrentTime();
 
+    /**
+     * Synchronized time by NTP. Used for more accurate timing of messages.
+     * Return value from getCurrentTime() if not supported.
+     *
+     * @return time in ms
+     */
     public long getSyncedCurrentTime();
 
+    /**
+     * Number of computing cores in environment
+     *
+     * @return cores count
+     */
     public int getCoresCount();
 
+    /**
+     * Creating compatable AtomicInteger object
+     *
+     * @param value initial value of AtomicInteger
+     * @return the AtomicInteger
+     */
     public AtomicIntegerCompat createAtomicInt(int value);
 
+    /**
+     * Creating compatable AtomicLong object
+     *
+     * @param value initial value of AtomicLong
+     * @return the AtomicLong
+     */
     public AtomicLongCompat createAtomicLong(long value);
 
+    /**
+     * Creating compatable ThreadLocal object
+     *
+     * @param <T> type of container
+     * @return the ThreadLocal object
+     */
     public <T> ThreadLocalCompat<T> createThreadLocal();
 
+    /**
+     * Creating of Actor Dispatcher for dispatching of actor's Envelopes
+     *
+     * @param name         name of dispatcher
+     * @param threadsCount desired thread count
+     * @param priority     priority of dispatcher
+     * @param actorSystem  ActorSystem for dispatcher
+     * @return created dispatcher
+     */
     public ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem);
 
+    /**
+     * Creating dispatcher with default configuration
+     *
+     * @param name     name of dispatcher
+     * @param priority priority of dispatcher
+     * @param system   ActorSystem of dispatcher
+     * @return created dispatcher
+     */
     public ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem system);
 }

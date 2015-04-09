@@ -58,7 +58,7 @@ public class ValueModel<T> {
     }
 
     private void notify(final T value) {
-        MVVMEngine.getMainThreadProvider().runOnUiThread(new Runnable() {
+        MVVMEngine.getMainThreadProvider().postToMainThread(new Runnable() {
             @Override
             public void run() {
                 for (ValueChangedListener<T> listener :
