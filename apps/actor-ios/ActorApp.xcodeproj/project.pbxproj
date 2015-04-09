@@ -679,6 +679,9 @@
 		05B1A4701AD01311005F691D /* AAAddParticipantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */; };
 		05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */; };
 		05C402FC1AD16AAA0075F256 /* AAUserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C402FB1AD16AAA0075F256 /* AAUserInfoCell.swift */; };
+		05C890561AD71DDA002BD07A /* AADialogsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C890551AD71DDA002BD07A /* AADialogsListCell.swift */; };
+		05C890581AD71DED002BD07A /* AADialogsListSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */; };
+		05C8905B1AD71EAC002BD07A /* AADialogsListSearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */; };
 		05E706461AD1F665009F09D8 /* AASettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706451AD1F665009F09D8 /* AASettingsController.swift */; };
 		05E706491AD3EDE0009F09D8 /* AASettingsPrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */; };
 		05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */; };
@@ -2099,6 +2102,9 @@
 		05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAddParticipantController.swift; path = Conversation/Info/AAAddParticipantController.swift; sourceTree = "<group>"; };
 		05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthCountryCell.swift; path = Views/Auth/AAAuthCountryCell.swift; sourceTree = "<group>"; };
 		05C402FB1AD16AAA0075F256 /* AAUserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAUserInfoCell.swift; path = Views/User/AAUserInfoCell.swift; sourceTree = "<group>"; };
+		05C890551AD71DDA002BD07A /* AADialogsListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListCell.swift; path = Views/DialogsList/AADialogsListCell.swift; sourceTree = "<group>"; };
+		05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListSearchCell.swift; path = Views/DialogsList/AADialogsListSearchCell.swift; sourceTree = "<group>"; };
+		05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListSearchSource.swift; path = SearchSources/AADialogsListSearchSource.swift; sourceTree = "<group>"; };
 		05E706451AD1F665009F09D8 /* AASettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsController.swift; path = Settings/AASettingsController.swift; sourceTree = "<group>"; };
 		05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsPrivacyController.swift; path = Settings/AASettingsPrivacyController.swift; sourceTree = "<group>"; };
 		05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsNotificationsController.swift; path = Settings/AASettingsNotificationsController.swift; sourceTree = "<group>"; };
@@ -2199,7 +2205,12 @@
 		25FAD8B11A9FF38E004F5E19 /* CocoaPhoneBookProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaPhoneBookProvider.h; sourceTree = "<group>"; };
 		25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaPhoneBookProvider.m; sourceTree = "<group>"; };
 		2B117098A374A503ABA90DFD /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D890431BAB17750EE5196FE /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
+		621432654C9C141E2C648B87 /* Pods-ActorApp.releasellectro.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasellectro.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasellectro.xcconfig"; sourceTree = "<group>"; };
+		83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
+		9AB684CC2BD8F95F4CCD9F14 /* Pods-ActorApp.releasedev1.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev1.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev1.xcconfig"; sourceTree = "<group>"; };
 		B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		BE2E69EA7F7C74A0E35F50F5 /* Pods-ActorApp.releasedev2.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev2.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev2.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4275,6 +4286,7 @@
 		05B432941ACC08810073BA69 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				05C890541AD71DB0002BD07A /* DialogsList */,
 				054A25291AD1648E0013FAAA /* User */,
 				0541A0591ACDA5890028E983 /* Conversation */,
 				05B432951ACC088C0073BA69 /* Auth */,
@@ -4289,6 +4301,23 @@
 				05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */,
 			);
 			name = Auth;
+			sourceTree = "<group>";
+		};
+		05C890541AD71DB0002BD07A /* DialogsList */ = {
+			isa = PBXGroup;
+			children = (
+				05C890551AD71DDA002BD07A /* AADialogsListCell.swift */,
+				05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */,
+			);
+			name = DialogsList;
+			sourceTree = "<group>";
+		};
+		05C890591AD71E7D002BD07A /* SearchSources */ = {
+			isa = PBXGroup;
+			children = (
+				05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */,
+			);
+			name = SearchSources;
 			sourceTree = "<group>";
 		};
 		05E706441AD1F5FD009F09D8 /* Settings */ = {
@@ -4431,6 +4460,7 @@
 				2537F84C1A966B9D004A02E9 /* ActorClientTests */,
 				2537F82E1A966B9D004A02E9 /* Products */,
 				E2A36FB6A30EED3811CC45C6 /* Frameworks */,
+				F3BE6A9B4E0BA3054C00DD85 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -4446,6 +4476,7 @@
 		2537F82F1A966B9D004A02E9 /* ActorClient */ = {
 			isa = PBXGroup;
 			children = (
+				05C890591AD71E7D002BD07A /* SearchSources */,
 				05B432941ACC08810073BA69 /* Views */,
 				050E99B01ACB4D410052C06B /* Screens */,
 				069FE6CA1AC017AA00C6C033 /* ScreensOld */,
@@ -4572,6 +4603,18 @@
 				2B117098A374A503ABA90DFD /* libPods-ActorApp.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F3BE6A9B4E0BA3054C00DD85 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2D890431BAB17750EE5196FE /* Pods-ActorApp.debug.xcconfig */,
+				83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */,
+				621432654C9C141E2C648B87 /* Pods-ActorApp.releasellectro.xcconfig */,
+				BE2E69EA7F7C74A0E35F50F5 /* Pods-ActorApp.releasedev2.xcconfig */,
+				9AB684CC2BD8F95F4CCD9F14 /* Pods-ActorApp.releasedev1.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4908,6 +4951,8 @@
 				0514D90D1AD1ED8A00F6C3BB /* ResponseImportContacts.m in Sources */,
 				0514D94E1AD1ED8A00F6C3BB /* UpdateUserPhoneAdded.m in Sources */,
 				0514DAC11AD1ED8A00F6C3BB /* DerivationParameters.m in Sources */,
+				05C8905B1AD71EAC002BD07A /* AADialogsListSearchSource.swift in Sources */,
+				05C890581AD71DED002BD07A /* AADialogsListSearchCell.swift in Sources */,
 				0514D8C11AD1ED8A00F6C3BB /* MessageState.m in Sources */,
 				0514DB1E1AD1ED8B00F6C3BB /* Pack.m in Sources */,
 				0514DABB1AD1ED8A00F6C3BB /* AsymmetricCipherKeyPairGenerator.m in Sources */,
@@ -5306,6 +5351,7 @@
 				0514D96D1AD1ED8A00F6C3BB /* RandomProvider.m in Sources */,
 				0514DABE1AD1ED8A00F6C3BB /* CipherParameters.m in Sources */,
 				0514D9CC1AD1ED8A00F6C3BB /* Avatar.m in Sources */,
+				05C890561AD71DDA002BD07A /* AADialogsListCell.swift in Sources */,
 				0514DAAA1AD1ED8A00F6C3BB /* DownloadCallback.m in Sources */,
 				0514D8991AD1ED8A00F6C3BB /* Avatar.m in Sources */,
 				0514DA441AD1ED8A00F6C3BB /* ContactsLoaded.m in Sources */,
@@ -5542,6 +5588,7 @@
 		};
 		06CDF4F91AD048D20001A712 /* ReleaseDev1 */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9AB684CC2BD8F95F4CCD9F14 /* Pods-ActorApp.releasedev1.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5568,7 +5615,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = ActorApp;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b8143473-027c-4316-bc7e-a354212a38fb";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -5633,6 +5680,7 @@
 		};
 		06CDF4FC1AD048DC0001A712 /* ReleaseDev2 */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BE2E69EA7F7C74A0E35F50F5 /* Pods-ActorApp.releasedev2.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5659,7 +5707,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = ActorApp;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b8143473-027c-4316-bc7e-a354212a38fb";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -5724,6 +5772,7 @@
 		};
 		06CDFD021AD30B2A0001A712 /* ReleaseLlectro */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 621432654C9C141E2C648B87 /* Pods-ActorApp.releasellectro.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5750,7 +5799,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = ActorApp;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b8143473-027c-4316-bc7e-a354212a38fb";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -5860,6 +5909,7 @@
 		};
 		2537F8541A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2D890431BAB17750EE5196FE /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5867,8 +5917,8 @@
 				API_URL = "tls://mtproto-api.actor.im:443";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.messenger;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				BUNDLE_ID = im.actor.app;
+				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5888,7 +5938,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = ActorApp;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b8143473-027c-4316-bc7e-a354212a38fb";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -5899,6 +5949,7 @@
 		};
 		2537F8551A966B9D004A02E9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5925,7 +5976,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = ActorApp;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "b8143473-027c-4316-bc7e-a354212a38fb";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

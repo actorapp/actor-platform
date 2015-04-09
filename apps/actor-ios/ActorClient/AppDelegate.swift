@@ -10,7 +10,16 @@ import Foundation
 
 @objc class AppDelegate : UIResponder,  UIApplicationDelegate {
     
+    // MARK: -
+    // MARK: Private vars
+    
     private var window : UIWindow?;
+    private var binder = Binder()
+    
+    private var appIsSyncingPlaceholder = AAPlaceholderView()
+    private var appIsSyncingPlaceholderWindow = UIWindow()
+    
+    // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
@@ -27,8 +36,8 @@ import Foundation
 //        
 
         
-        var textFieldAppearance = UITextField.appearance();
-        textFieldAppearance.tintColor = Resources.TintColor;
+//        var textFieldAppearance = UITextField.appearance();
+//        textFieldAppearance.tintColor = Resources.TintColor;
         
         //var searchBarAppearance = UISearchBar.appearance();
         //searchBarAppearance.tintColor = Resources.TintColor;
@@ -97,6 +106,16 @@ import Foundation
             }
         }
         
+        binder.bind(MSG.getAppState().getIsAppLoaded(), closure: { (value: Any?) -> () in
+            if let loaded = value as? JavaLangBoolean {
+                if Bool(loaded.booleanValue()) == true {
+                    self.hideAppIsSyncingPlaceholder()
+                } else {
+                    self.showAppIsSyncingPlaceholder()
+                }
+            }
+        })
+        
         return true;
     }
     
@@ -118,6 +137,27 @@ import Foundation
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         println("\(userInfo)")
+    }
+    
+    // MARK: -
+    // MARK: Placeholders
+    
+    private func showAppIsSyncingPlaceholder() {
+        if appIsSyncingPlaceholder.superview == nil {
+            appIsSyncingPlaceholderWindow.frame = UIScreen.mainScreen().bounds
+            appIsSyncingPlaceholder.setImage(nil, title: "Please wait", subtitle: "Application is syncing some data..") // TODO: Localize
+            appIsSyncingPlaceholder.frame = appIsSyncingPlaceholderWindow.frame
+            appIsSyncingPlaceholderWindow.addSubview(appIsSyncingPlaceholder)
+        }
+        if appIsSyncingPlaceholderWindow.keyWindow == false {
+            appIsSyncingPlaceholderWindow.makeKeyAndVisible()
+        }
+    }
+    
+    private func hideAppIsSyncingPlaceholder() {
+        if appIsSyncingPlaceholderWindow.keyWindow == true {
+            appIsSyncingPlaceholderWindow.resignKeyWindow()
+        }
     }
     
 }
