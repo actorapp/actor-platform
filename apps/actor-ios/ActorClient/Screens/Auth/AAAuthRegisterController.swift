@@ -196,7 +196,17 @@ class AAAuthRegisterController: AAViewController {
             let messenger = CocoaMessenger.messenger().signUpWithNSString(fullName, withNSString: "/tmp/avatar.jpg", withBoolean: true)
             messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
                 SVProgressHUD.dismiss()
-                self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
+                self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+                    let application = UIApplication.sharedApplication()
+                    if application.respondsToSelector("registerUserNotificationSettings:") {
+                        let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+                        let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+                        application.registerUserNotificationSettings(settings)
+                        application.registerForRemoteNotifications()
+                    } else {
+                        application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+                    }
+                })
                 }, error: { (exception) -> () in
                     SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
             }))
