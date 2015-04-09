@@ -1,9 +1,9 @@
 package im.actor.server.session
 
 import akka.actor._
-import akka.stream.FlowShape
-import akka.stream.actor.{ActorPublisher, ActorSubscriber}
+import akka.stream.actor.{ ActorPublisher, ActorSubscriber }
 import akka.stream.scaladsl._
+import akka.stream.{ FlowShape, OverflowStrategy }
 import scodec.bits._
 
 import im.actor.api.rpc.ClientData
@@ -35,10 +35,11 @@ private[session] object SessionStream {
 
       // @formatter:off
 
+      // TODO: think about buffer sizes and overflow strategies
       discriminator.in
-      discriminator.outRpc ~> rpcRequestSubscriber
-      discriminator.outSubscribe ~> Sink.ignore
-      discriminator.outUnmatched ~> Sink.ignore
+      discriminator.outRpc.buffer(100, OverflowStrategy.backpressure) ~> rpcRequestSubscriber
+      discriminator.outSubscribe.buffer(100, OverflowStrategy.backpressure) ~> Sink.ignore
+      discriminator.outUnmatched.buffer(100, OverflowStrategy.backpressure) ~> Sink.ignore
 
       // @formatter:on
 

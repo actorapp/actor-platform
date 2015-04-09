@@ -76,7 +76,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333334L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
