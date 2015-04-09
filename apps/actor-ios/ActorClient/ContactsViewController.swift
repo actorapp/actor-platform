@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MessageUI
 
 class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISearchDisplayDelegate {
     
@@ -81,7 +82,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         navigationItem.title = "People";
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
         
-        placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add friends by pressing top right button.")
+        placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add friends by pressing top right button or invite them by pressing button below.", actionTitle: "Invite friends", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
         binder.bind(MSG.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
@@ -138,10 +139,32 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     // MARK: Navigation
     
+    func showSmsInvitation() {
+        if MFMessageComposeViewController.canSendText() {
+            let messageComposeController = MFMessageComposeViewController()
+            messageComposeController.messageComposeDelegate = self
+            messageComposeController.body = "Hi! Let's switch to Actor! https://actor.im/dl" // TODO: Localize
+            presentViewController(messageComposeController, animated: true, completion: nil)
+        } else {
+            UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
+        }
+    }
+    
     private func navigateToMessagesWithUid(uid: jint) {
         let messagesController = MessagesViewController(peer: AMPeer.userWithInt(uid))
         messagesController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(messagesController, animated: true);
+    }
+    
+}
+
+// MARK: -
+// MARK: MFMessageComposeViewController Delegate
+
+extension ContactsViewController: MFMessageComposeViewControllerDelegate {
+    
+    func messageComposeViewController(controller: MFMessageComposeViewController!, didFinishWithResult result: MessageComposeResult) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
 }
