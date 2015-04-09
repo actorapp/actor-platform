@@ -8,7 +8,7 @@ import im.actor.images.ops.ImageLoading;
 import im.actor.android.AndroidFileSystemReference;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
-import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.FileCallback;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -17,7 +17,7 @@ import static im.actor.messenger.app.Core.messenger;
  */
 public class FullAvatarActor extends BasicTaskActor<FullAvatarTask> {
 
-    private DownloadCallback fileCallback = new ActorFileCallback();
+    private FileCallback fileCallback = new ActorFileCallback();
     private FileReference location;
 
     public FullAvatarActor(FullAvatarTask task, ImageLoader loader) {
@@ -57,7 +57,7 @@ public class FullAvatarActor extends BasicTaskActor<FullAvatarTask> {
         }
     }
 
-    private class ActorFileCallback implements DownloadCallback {
+    private class ActorFileCallback implements FileCallback {
 
         @Override
         public void onNotDownloaded() {

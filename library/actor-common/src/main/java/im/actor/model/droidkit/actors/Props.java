@@ -11,22 +11,18 @@ import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
  * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public final class Props<T extends Actor> {
-    private static final int TYPE_DEFAULT = 1;
-    private static final int TYPE_CREATOR = 2;
 
     private final Class<T> aClass;
     private final Object[] args;
-    private final int type;
     private final ActorCreator<T> creator;
     private final MailboxCreator mailboxCreator;
 
     private final String dispatcher;
 
-    private Props(Class<T> aClass, Object[] args, int type, String dispatcher, ActorCreator<T> creator,
+    private Props(Class<T> aClass, Object[] args, String dispatcher, ActorCreator<T> creator,
                   MailboxCreator mailboxCreator) {
         this.aClass = aClass;
         this.args = args;
-        this.type = type;
         this.creator = creator;
         this.mailboxCreator = mailboxCreator;
         this.dispatcher = dispatcher;
@@ -72,7 +68,7 @@ public final class Props<T extends Actor> {
      * @return this
      */
     public Props<T> changeDispatcher(String dispatcher) {
-        return new Props<T>(aClass, args, type, dispatcher, creator, mailboxCreator);
+        return new Props<T>(aClass, args, dispatcher, creator, mailboxCreator);
     }
 
     /**
@@ -84,7 +80,7 @@ public final class Props<T extends Actor> {
      * @return Props object
      */
     public static <T extends Actor> Props<T> create(Class<T> clazz, ActorCreator<T> creator) {
-        return new Props<T>(clazz, null, TYPE_CREATOR, null, creator, null);
+        return new Props<T>(clazz, null, null, creator, null);
     }
 
     /**
@@ -96,6 +92,6 @@ public final class Props<T extends Actor> {
      * @return Props object
      */
     public static <T extends Actor> Props<T> create(Class<T> clazz, ActorCreator<T> creator, MailboxCreator mailboxCreator) {
-        return new Props<T>(clazz, null, TYPE_CREATOR, null, creator, mailboxCreator);
+        return new Props<T>(clazz, null, null, creator, mailboxCreator);
     }
 }

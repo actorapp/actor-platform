@@ -4,19 +4,29 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.AsyncVM;
 
 /**
- * Created by ex3ndr on 03.03.15.
+ * Value Model handler for Uploading File.
+ * <p></p>
+ * Create by calling method in Messenger object and ALWAYS release by calling detach method.
  */
 public class UploadFileVM extends AsyncVM {
     private long rid;
     private Modules modules;
     private UploadFileVMCallback vmCallback;
-    private UploadCallback callback;
+    private UploadFileCallback callback;
 
+    /**
+     * <p>INTERNAL API</p>
+     * Create UploadFileVM
+     *
+     * @param rid        file random id
+     * @param vmCallback file value model callback
+     * @param modules    modules reference
+     */
     public UploadFileVM(long rid, UploadFileVMCallback vmCallback, Modules modules) {
         this.rid = rid;
         this.modules = modules;
         this.vmCallback = vmCallback;
-        this.callback = new UploadCallback() {
+        this.callback = new UploadFileCallback() {
             @Override
             public void onNotUploading() {
                 post(new NotUploading());
@@ -46,6 +56,10 @@ public class UploadFileVM extends AsyncVM {
         }
     }
 
+    /**
+     * Detach UploadFileVM from Messenger.
+     * Don't use object after detaching.
+     */
     @Override
     public void detach() {
         super.detach();

@@ -3,16 +3,27 @@ package im.actor.model.viewmodel;
 import im.actor.model.mvvm.ValueModel;
 
 /**
- * Created by ex3ndr on 26.03.15.
+ * Group Avatar View Model
  */
 public class GroupAvatarVM {
     private ValueModel<AvatarUploadState> uploadState;
 
+    /**
+     * <p>INTERNAL API</p>
+     * Create Group Avatar View Model
+     *
+     * @param gid group's id
+     */
     public GroupAvatarVM(int gid) {
         uploadState = new ValueModel<AvatarUploadState>(
                 "avatar.group." + gid, new AvatarUploadState(null, false));
     }
 
+    /**
+     * Get Upload state Value Model
+     *
+     * @return Upload state Value Model
+     */
     public ValueModel<AvatarUploadState> getUploadState() {
         return uploadState;
     }

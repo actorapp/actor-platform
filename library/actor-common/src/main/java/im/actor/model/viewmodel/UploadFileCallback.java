@@ -1,13 +1,13 @@
 package im.actor.model.viewmodel;
 
 /**
- * Upload file View Model callback. Methods always called on Main thread.
+ * Upload file callback. Methods always called on background thread.
  */
-public interface UploadFileVMCallback {
+public interface UploadFileCallback {
     /**
      * On File not uploading
      */
-    public void onNotUploaded();
+    public void onNotUploading();
 
     /**
      * On File upload in progress
