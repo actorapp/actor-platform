@@ -1,46 +1,47 @@
 package im.actor.server.session
 
-import akka.actor._
-import akka.event.LoggingReceive
-import akka.stream.actor._
-
-import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.mtproto.protocol.{ MessageAck, RpcResponseBox }
-
-import scala.concurrent.duration._
+import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.language.postfixOps
-import scala.util.{ Success, Failure }
 
+import akka.actor._
+import akka.stream.actor._
 import scodec.bits._
 
+import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.mtproto.protocol.{MessageAck, ProtoMessage, RpcResponseBox}
+
 object RpcRequestHandler {
-  private[session] def props(
-    rpcApiService:      ActorRef,
-    rpcResponseManager: ActorRef
-  ) = Props(classOf[RpcRequestHandler], rpcApiService, rpcResponseManager)
+  private[session] def props(rpcApiService: ActorRef) = Props(classOf[RpcRequestHandler], rpcApiService)
 }
 
-class RpcRequestHandler(rpcApiService: ActorRef, protoMessagePublisher: ActorRef) extends ActorSubscriber with ActorLogging {
+class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
+
+  import ActorPublisherMessage._
   import ActorSubscriberMessage._
+
   import SessionStream._
 
   implicit val ec = context.dispatcher
 
-  val MaxRequestQueueSize = 10 // TODO: configurable
-  var requestQueue = Map.empty[Long, BitVector]
-
-  override val requestStrategy = new MaxInFlightRequestStrategy(max = MaxRequestQueueSize) {
-    override def inFlightInternally: Int = requestQueue.size
+  def receive = subscriber.orElse(publisher).orElse {
+    case unmatched =>
+      log.error("Unmatched msg {}", unmatched)
   }
 
-  def receive = LoggingReceive {
+  // Subscriber-related
+
+  // TODO: configurable
+  private[this] val MaxRequestQueueSize = 10
+  private[this] var requestQueue = Map.empty[Long, BitVector]
+
+  def subscriber: Receive = {
     case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) =>
       requestQueue += (messageId -> requestBytes)
       assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
       log.debug("Publishing acknowledge for messageId: {}", messageId)
-      protoMessagePublisher ! MessageAck(Vector(messageId))
+      enqueueProtoMessage(MessageAck(Vector(messageId)))
 
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
@@ -48,11 +49,40 @@ class RpcRequestHandler(rpcApiService: ActorRef, protoMessagePublisher: ActorRef
       requestQueue -= messageId
 
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
-      protoMessagePublisher ! RpcResponseBox(messageId, responseBytes)
-    case OnError(cause) =>
-      log.error(cause, "Received OnError, sending PoisonPill to ResponseManager")
-      protoMessagePublisher ! PoisonPill
-    case unmatched =>
-      log.error("Unmatched msg {}", unmatched)
+      enqueueProtoMessage(RpcResponseBox(messageId, responseBytes))
+  }
+
+  override val requestStrategy = new MaxInFlightRequestStrategy(max = MaxRequestQueueSize) {
+    override def inFlightInternally: Int = requestQueue.size
+  }
+
+  // publisher-related
+  private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
+
+  def publisher: Receive = {
+    case Request(_) =>
+      deliverBuf()
+    case Cancel =>
+      context.stop(self)
+  }
+
+  private def enqueueProtoMessage(message: ProtoMessage): Unit = {
+    if (protoMessageQueue.isEmpty && totalDemand > 0) {
+      onNext(message)
+    } else {
+      protoMessageQueue = protoMessageQueue.enqueue(message)
+      deliverBuf()
+    }
+  }
+
+  @tailrec final def deliverBuf(): Unit = {
+    if (isActive && totalDemand > 0)
+      protoMessageQueue.dequeueOption match {
+        case Some((el, q)) =>
+          protoMessageQueue = q
+          onNext(el)
+          deliverBuf()
+        case None =>
+      }
   }
 }
