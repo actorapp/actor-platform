@@ -1,16 +1,16 @@
 package im.actor.server.session
 
 import akka.actor._
+import akka.stream.FlowShape
+import akka.stream.actor.{ActorPublisher, ActorSubscriber}
 import akka.stream.scaladsl._
-import akka.stream.actor.{ ActorPublisher, ActorSubscriber }
+import scodec.bits._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol._
-import im.actor.server.api.rpc.RpcApiService
-
-import scodec.bits._
 
 private[session] object SessionStream {
+
   trait SessionStreamMessage
 
   @SerialVersionUID(1L)
@@ -22,23 +22,26 @@ private[session] object SessionStream {
   @SerialVersionUID(1L)
   case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
 
-  def graph(in: Source[SessionStreamMessage, _], rpcApiService: ActorRef, protoMessagePublisher: ActorRef)(implicit system: ActorSystem): RunnableFlow[_] =
-    FlowGraph.closed() { implicit builder =>
+  def graph(rpcApiService: ActorRef)(implicit system: ActorSystem) =
+    FlowGraph.partial() { implicit builder =>
       import FlowGraph.Implicits._
 
       val discriminator = builder.add(new SessionMessageDiscriminator)
 
-      val rpcRequestHandlerActor = system.actorOf(RpcRequestHandler.props(rpcApiService, protoMessagePublisher))
+      val rpcRequestHandlerActor = system.actorOf(RpcRequestHandler.props(rpcApiService))
 
-      val rpcRequestHandler = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandlerActor)))
+      val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandlerActor)))
+      val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcRequestHandlerActor)))
 
       // @formatter:off
 
-      in ~> discriminator.in
-            discriminator.outRpc ~> rpcRequestHandler
-            discriminator.outSubscribe ~> Sink.ignore
-            discriminator.outUnmatched ~> Sink.ignore
+      discriminator.in
+      discriminator.outRpc ~> rpcRequestSubscriber
+      discriminator.outSubscribe ~> Sink.ignore
+      discriminator.outUnmatched ~> Sink.ignore
 
       // @formatter:on
+
+      FlowShape(discriminator.in, rpcResponsePublisher)
     }
 }
