@@ -20,17 +20,17 @@ import Foundation
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
-//        application.statusBarStyle = UIStatusBarStyle.LightContent
-//        
-//        var navAppearance = UINavigationBar.appearance();
-//        navAppearance.tintColor = UIColor.whiteColor();
-//        navAppearance.barTintColor = UIColor.whiteColor();
-//        navAppearance.backgroundColor = Resources.TintColor;
-//        navAppearance.setBackgroundImage(Imaging.imageWithColor(Resources.TintColor, size: CGSize(width: 1, height: 46)), forBarMetrics: UIBarMetrics.Default)
-//        navAppearance.shadowImage = UIImage(named: "CardBottom2")
-//        navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-//        navAppearance.translucent = false;
-//        
+        application.statusBarStyle = UIStatusBarStyle.LightContent
+
+        var navAppearance = UINavigationBar.appearance();
+        navAppearance.tintColor = UIColor.whiteColor();
+        navAppearance.barTintColor = Resources.PrimaryColor;
+//        navAppearance.backgroundColor = Resources.PrimaryColor;
+//        navAppearance.setBackgroundImage(Imaging.imageWithColor(Resources.PrimaryColor, size: CGSize(width: 1, height: 46)), forBarMetrics: UIBarMetrics.Default)
+        navAppearance.shadowImage = UIImage(named: "CardBottom2")
+        navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
+        navAppearance.translucent = true;
+//
 
         
 //        var textFieldAppearance = UITextField.appearance();
@@ -40,12 +40,13 @@ import Foundation
         //searchBarAppearance.tintColor = Resources.TintColor;
         
 
+//         273c52
         
         UITabBar.appearance().translucent = false
         UITabBar.appearance().tintColor = Resources.BarTintColor;
-        UITabBar.appearance().backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 46))
+//        UITabBar.appearance().backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 46))
         UITabBar.appearance().shadowImage = UIImage(named: "CardTop2");
-        UITabBar.appearance().selectionIndicatorImage = Imaging.imageWithColor(UIColor(red: 0xeb/255.0, green: 0xed/255.0, blue: 0xf2/255.0, alpha: 1), size: CGSize(width: 1, height: 46)).resizableImageWithCapInsets(UIEdgeInsetsZero);
+//        UITabBar.appearance().selectionIndicatorImage = Imaging.imageWithColor(UIColor(red: 0xeb/255.0, green: 0xed/255.0, blue: 0xf2/255.0, alpha: 1), size: CGSize(width: 1, height: 46)).resizableImageWithCapInsets(UIEdgeInsetsZero);
         
         //        setTitleTextAttributes(NSForegroundColorAttributeName, );
         
