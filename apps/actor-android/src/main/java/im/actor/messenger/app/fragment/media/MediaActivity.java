@@ -13,8 +13,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import im.actor.images.cache.BitmapReference;
@@ -34,6 +39,7 @@ import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.files.FileSystemReference;
+import im.actor.model.log.Log;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.viewmodel.DownloadCallback;
@@ -105,6 +111,7 @@ public class MediaActivity extends BaseActivity {
     private int selectedIndex;
     private Peer peer;
     private BindedDisplayList<Message> displayList;
+    private MediaPagerAdapter pagerAdapter;
     //endregion
 
     @Override
@@ -142,29 +149,20 @@ public class MediaActivity extends BaseActivity {
 
         showGrid();
 
-        /*
-        switch (activityIntent.getIntExtra(ARG_VIEW_TYPE, 0)) {
-            case VIEW_TYPE_GRID:
-                break;
-            case VIEW_TYPE_PICTURE:
-                showPicture();
-                break;
-            // case VIEW_TYPE_PAGER: break; ?
-        }
-        showView();*/
     }
 
 
 
 
-    /*private void showPicture() {
+    /**
+    private void showPicture() {
 
 
         Bundle bundle = activityIntent.getExtras();
         String path = bundle.getString(ARG_PATH);
-        *//*fileId = bundle.getLong(ARG_FILEID, 0);
+        fileId = bundle.getLong(ARG_FILEID, 0);
         fileName = bundle.getString(ARG_FILENAME);
-        fileSize = bundle.getInt(ARG_FILESIZE, 0);*//*
+        fileSize = bundle.getInt(ARG_FILESIZE, 0);
         int sender = bundle.getInt(ARG_OWNER, 0);
         final UserVM owner = users().get(sender);
 
@@ -178,11 +176,11 @@ public class MediaActivity extends BaseActivity {
 
         //showPager();
 
-        *//*ownerContainer.setAlpha(1);
+        ownerContainer.setAlpha(1);
         transitionImageView.setAlpha(1L);
         showView(ownerContainer, false);
         showView(transitionImageView, false);
-        showView(ownerContainer, false);*//*
+        showView(ownerContainer, false);
 
         setPictureActionbar();
 
@@ -199,18 +197,18 @@ public class MediaActivity extends BaseActivity {
         }
 
 
-        *//*transitionTop = bundle.getInt(ARG_IMAGE_TOP, 0);
+        transitionTop = bundle.getInt(ARG_IMAGE_TOP, 0);
         transitionLeft = bundle.getInt(ARG_IMAGE_LEFT, 0);
         transitionWidth = bundle.getInt(ARG_IMAGE_WIDTH, 0);
         transitionHeight = bundle.getInt(ARG_IMAGE_HEIGHT, 0);
-        *//*// ViewCompat.setTransitionName(imageView, TRANSIT_IMAGE);
+        // ViewCompat.setTransitionName(imageView, TRANSIT_IMAGE);
         // transitionBackgroundView.setAlpha(0);
 
 
 
         // animateImage(transitionTop, transitionLeft, transitionHeight, transitionWidth);
 
-        *//* Move to fragment?
+         Move to fragment?
         ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, this));
         Avatar avatar = owner.getAvatar().getValue();
         if (avatar != null) {
@@ -225,15 +223,15 @@ public class MediaActivity extends BaseActivity {
             public void onClick(View v) {
                 startActivity(Intents.openProfile(owner.getId(), MediaActivity.this));
             }
-        });*//*
+        });
 
         //decorView.setOnSystemUiVisibilityChangeListener(this);
-        *//*transitionImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+        transitionImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
             }
-        });*//*
-        *//*transitionImageView.setOnDoubleClick(new GestureDetector.OnDoubleTapListener() {
+        });
+        transitionImageView.setOnDoubleClick(new GestureDetector.OnDoubleTapListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (!uiIsHidden) {
@@ -265,7 +263,7 @@ public class MediaActivity extends BaseActivity {
                     showSystemUi();
                 }
             }
-        });*//*
+        });
 
     }*/
 
@@ -297,6 +295,7 @@ public class MediaActivity extends BaseActivity {
             @Override
             public void onClick(final MediaAdapter.MediaHolder holder, Message item) {
 
+                viewPager.setAdapter(pagerAdapter);
                 final View view = holder.itemView;
                 //transitionImageView.setVisibility(View.VISIBLE);
                 transitionImageView.setExtraReceiverCallback(new ReceiverCallback() {
@@ -372,7 +371,7 @@ public class MediaActivity extends BaseActivity {
 
 
                 // todo transformation from blur?
-                /**//*
+                /*
                 hideListView();
                 new MediaDialog.Builder(MediaActivity.this)
                         .setUsers(groups().get(chatId).getRaw().getMembers())
@@ -385,16 +384,16 @@ public class MediaActivity extends BaseActivity {
                             }
                         })
                         .show();
-                *//**//*
+                
                 // Downloaded d = downloaded().get(doc.getFileLocation().getFileId());
 
-                *//**//**//**//*if (d != null) {
+                if (d != null) {
                 // String fileName = d.fileName;
 
                 startActivity(Intents.openDoc(d));*/
             }
         }, this);
-
+        pagerAdapter = new MediaPagerAdapter(displayList, this);
         // View footer = inflater.inflate(R.layout.adapter_doc_footer, recyclerView, false);
         // recyclerView.addFooterView(footer, null, false);
         toolbar.post(new Runnable() {
@@ -406,7 +405,7 @@ public class MediaActivity extends BaseActivity {
         });
         recyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.gallery_items_count)));
         recyclerView.setAdapter(adapter);
-        viewPager.setAdapter(new MediaPagerAdapter(displayList, this));
+        viewPager.setAdapter(pagerAdapter);
         /*adapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
@@ -588,17 +587,20 @@ public class MediaActivity extends BaseActivity {
                     .start();
         }*/
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (showingPager) {
-            getMenuInflater().inflate(R.menu.medias_picture, menu);
-            return true;
-        } else {
-            getMenuInflater().inflate(R.menu.medias, menu);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
             return true;
         }
+        return false;
     }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return !showingPager;
+    }
+    /*@Override
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -644,12 +646,12 @@ public class MediaActivity extends BaseActivity {
     public void onSystemUiVisibilityChange(int visibility) {
 
         // todo should we make fulscreen for sdk 19>
-        *//*if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) {
+        if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) {
             uiIsHidden = true;
         } else {
             uiIsHidden = false;
         }
-        syncUiState();*//*
+        syncUiState();
     }
 
 
@@ -665,6 +667,7 @@ public class MediaActivity extends BaseActivity {
     }
     private void showPager(){
 
+        transitionImageView.setExtraReceiverCallback(null);
         transitionImageView.clear();
         transitionImageView.setAlpha(0f);
         //transitionImageView.setVisibility(View.GONE);
@@ -691,14 +694,16 @@ public class MediaActivity extends BaseActivity {
         viewPager.setCurrentItem(selectedIndex, false);
     }
     private void hidePager() {
-
+        if(transitionBackgroundView!=null){
+            transitionBackgroundView.setOnClickListener(null);
+        }
         Message media = displayList.getItem(selectedIndex);
         transitionImageView.setAlpha(1f);
         transitionImageView.setExtraReceiverCallback(new ReceiverCallback() {
             @Override
             public void onImageLoaded(BitmapReference bitmap) {
 
-                toolbar.setTitle("Media");
+                toolbar.setTitle(R.string.media);
                 showingPager = false;
                 viewPager.setAlpha(0);
                 viewPager.setVisibility(View.GONE);
@@ -715,8 +720,12 @@ public class MediaActivity extends BaseActivity {
                 transitionImageView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        invalidateOptionsMenu();
                         transitionImageView.clear();
                         transitionImageView.setAlpha(0f);
+                        transitionBackgroundView.setAlpha(0f);
+                        transitionBackgroundView.setOnClickListener(null);
+                        viewPager.setAdapter(null);
                     }
                 }, 300 * MediaFullscreenAnimationUtils.animationMultiplier);
 
@@ -724,12 +733,12 @@ public class MediaActivity extends BaseActivity {
 
             @Override
             public void onImageCleared() {
-
+                Log.d("Media Activity", "cleared");
             }
 
             @Override
             public void onImageError() {
-
+                Log.d("Media Activity", "error");
             }
         });
         final DocumentContent document = (DocumentContent) media.getContent();
@@ -750,12 +759,11 @@ public class MediaActivity extends BaseActivity {
                     MVVMEngine.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
-                            transitionImageView.request(new RawFileTask(reference.getDescriptor()));
                             // why that post to?
                             transitionImageView.post(new Runnable() {
                                 @Override
                                 public void run() {
+                                    transitionImageView.request(new RawFileTask(reference.getDescriptor()));
                                 }
 
                             });
@@ -780,7 +788,7 @@ public class MediaActivity extends BaseActivity {
 
     public static class MediaFullscreenAnimationUtils {
 
-        public static final int animationMultiplier = 1;
+        public static final int animationMultiplier = 10;
         public static int startDelay = 60;
 
         public static void animateForward(final View transitionView, Bitmap bitmap,
@@ -890,7 +898,7 @@ public class MediaActivity extends BaseActivity {
                 yPadding = (bitmapHeight * (endScale - 1)) / 2;
             }
 
-            transitionView.animate()
+            /*transitionView.animate()
                     .setInterpolator(new MaterialInterpolator())
                     .setStartDelay(0)
                     .setDuration(0)
@@ -899,10 +907,13 @@ public class MediaActivity extends BaseActivity {
                     .y(yPadding)
                     .scaleX(endScale)
                     .scaleY(endScale)
-                    .start();
+                    .start();*/
+
             final float finalBitmapWidth = bitmapWidth;
             final float finalBitmapHeight = bitmapHeight;
-            transitionView.post(new Runnable() {
+            final float finalXPadding = xPadding;
+            final float finalYPadding = yPadding;
+            /*transitionView.post(new Runnable() {
                 @Override
                 public void run() {
                     transitionView.animate()
@@ -915,8 +926,20 @@ public class MediaActivity extends BaseActivity {
                             .scaleY(finishScaleHeight)
                             .start();
                 }
-            });
+            });*/
 
+            AnimationSet animation = new AnimationSet(true);
+            animation.setStartOffset(startDelay);
+            animation.setInterpolator(new MaterialInterpolator());
+            animation.setDuration(300 * animationMultiplier);
+            TranslateAnimation translateAnimation = new TranslateAnimation(
+                    finalXPadding, transitionLeft + (finalBitmapWidth * (finishScaleWidth - 1) / 2),
+                    finalYPadding, transitionTop + (finalBitmapHeight * (finishScaleHeight - 1) / 2)
+            );
+            ScaleAnimation scaleAnimation = new ScaleAnimation(endScale, finishScaleWidth, endScale, finishScaleHeight);
+            animation.addAnimation(translateAnimation);
+            animation.addAnimation(scaleAnimation);
+            transitionView.startAnimation(animation);
         }
 
         public static void animateBackgroundForward(View backgroundView) {
