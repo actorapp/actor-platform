@@ -130,8 +130,10 @@ class AAAuthSmsController: AAViewController {
     // MARK: Navigate
     
     private func navigateToRegistration() {
-        let registerController = AAAuthRegisterController()
-        navigationController!.pushViewController(registerController, animated: true)
+        dispatch_async(dispatch_get_main_queue(), {
+            let registerController = AAAuthRegisterController()
+            self.navigationController!.pushViewController(registerController, animated: true)
+        })
     }
 }
 
