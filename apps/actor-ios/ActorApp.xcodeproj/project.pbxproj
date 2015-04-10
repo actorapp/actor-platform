@@ -702,6 +702,7 @@
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0671592E1ABC830E00D95719 /* CocoaNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592D1ABC830E00D95719 /* CocoaNetworking.swift */; };
 		0672A2381ABE56E900E6E42E /* BubbleUnsupportedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672A2371ABE56E900E6E42E /* BubbleUnsupportedCell.swift */; };
+		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
@@ -756,7 +757,6 @@
 		06FCF1781AB60BFC00422FEC /* CocoaMainThreadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FCF1771AB60BFC00422FEC /* CocoaMainThreadProvider.swift */; };
 		06FCF17A1AB61D3800422FEC /* FMDBList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06FCF1791AB61D3800422FEC /* FMDBList.swift */; };
 		2537F8331A966B9D004A02E9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2537F8321A966B9D004A02E9 /* main.m */; };
-		2537F8411A966B9D004A02E9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2537F8401A966B9D004A02E9 /* Images.xcassets */; };
 		2537F8441A966B9D004A02E9 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2537F8421A966B9D004A02E9 /* LaunchScreen.xib */; };
 		2537F8501A966B9D004A02E9 /* ActorClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2537F84F1A966B9D004A02E9 /* ActorClientTests.m */; };
 		2537F8671A9753DD004A02E9 /* ABPhoneField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2537F8661A9753DD004A02E9 /* ABPhoneField.m */; };
@@ -2128,6 +2128,7 @@
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
 		0671592D1ABC830E00D95719 /* CocoaNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaNetworking.swift; sourceTree = "<group>"; };
 		0672A2371ABE56E900E6E42E /* BubbleUnsupportedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleUnsupportedCell.swift; sourceTree = "<group>"; };
+		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -2190,7 +2191,6 @@
 		2537F82D1A966B9D004A02E9 /* ActorApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActorApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F8311A966B9D004A02E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2537F8321A966B9D004A02E9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2537F8401A966B9D004A02E9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2537F8431A966B9D004A02E9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		2537F8491A966B9D004A02E9 /* ActorAppAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActorAppAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F84E1A966B9D004A02E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -4485,8 +4485,8 @@
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
 				06CCE9411AD4A68200A17705 /* Pods */,
-				2537F8401A966B9D004A02E9 /* Images.xcassets */,
 				2537F8421A966B9D004A02E9 /* LaunchScreen.xib */,
+				0692F6EC1AD77AA300D61AFB /* Images.xcassets */,
 				065A51C51ABA0BA200B48088 /* ActorClient.entitlements */,
 				06D1D77D1ACAD9ED00AC22ED /* mapping.properties */,
 				06D1D77E1ACAD9ED00AC22ED /* prefixes.properties */,
@@ -4709,6 +4709,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				06D1D7851ACAE31000AC22ED /* AppText_Ru.properties in Resources */,
+				0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */,
 				06CCE93F1AD4A67D00A17705 /* Pods-ActorApp.releasellectro.xcconfig in Resources */,
 				06D1D7861ACAE31000AC22ED /* AppText.properties in Resources */,
 				06D1D7871ACAE31000AC22ED /* Months_Ru.properties in Resources */,
@@ -4730,7 +4731,6 @@
 				06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */,
 				2537F8441A966B9D004A02E9 /* LaunchScreen.xib in Resources */,
 				06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */,
-				2537F8411A966B9D004A02E9 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5594,7 +5594,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api-dev1.actor.im:443";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconModul;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
@@ -5614,6 +5614,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
@@ -5686,7 +5687,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api-dev2.actor.im:443";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconModul;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
@@ -5706,6 +5707,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
@@ -5778,7 +5780,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconModul;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger.llectro;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
@@ -5798,6 +5800,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
@@ -5915,7 +5918,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconModul;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.app;
 				CODE_SIGN_ENTITLEMENTS = "";
@@ -5937,6 +5940,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
@@ -5955,7 +5959,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconModul;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
@@ -5975,6 +5979,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;

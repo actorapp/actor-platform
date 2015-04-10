@@ -70,11 +70,12 @@ class AASettingsController: AATableViewController {
     
     func initCommon(){
         var icon = UIImage(named: "ic_settings_blue_24")!;
-        tabBarItem = UITabBarItem(title: nil,
+//        tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarSystemItem.TopRated, tag: 0)
+        tabBarItem = UITabBarItem(title: "Settings",
             image: icon.tintImage(Resources.BarTintUnselectedColor)
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             selectedImage: icon);
-        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
     }
     
     // MARK: -
@@ -204,7 +205,9 @@ class AASettingsController: AATableViewController {
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            return CGFloat.min
+            if (!Resources.IsDarkTheme) {
+                return CGFloat.min
+            }
         }
         return tableView.sectionHeaderHeight
     }

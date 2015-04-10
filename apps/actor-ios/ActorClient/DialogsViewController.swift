@@ -33,11 +33,11 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     func initCommon(){
         var icon = UIImage(named: "ic_letter_blue_24")!;
-        tabBarItem = UITabBarItem(title: nil,
+        tabBarItem = UITabBarItem(title: "Chats",
             image: icon.tintImage(Resources.BarTintUnselectedColor)
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             selectedImage: icon);
-        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {

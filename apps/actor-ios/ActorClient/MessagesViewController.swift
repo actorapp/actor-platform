@@ -50,7 +50,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         titleView.frame = CGRectMake(0, 4, 190, 20)
         titleView.font = UIFont(name: "HelveticaNeue-Medium", size: 17)!
         titleView.adjustsFontSizeToFitWidth = false;
-        titleView.textColor = UIColor.blackColor();
+        titleView.textColor = Resources.PrimaryLightText
         titleView.textAlignment = NSTextAlignment.Center;
         titleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         titleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
@@ -58,7 +58,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         subtitleView.frame = CGRectMake(0, 22, 190, 20);
         subtitleView.font = UIFont.systemFontOfSize(13);
         subtitleView.adjustsFontSizeToFitWidth=false;
-        subtitleView.textColor = Resources.SecondaryDarkText
+        subtitleView.textColor = Resources.SecondaryLightText
         subtitleView.textAlignment = NSTextAlignment.Center;
         subtitleView.lineBreakMode = NSLineBreakMode.ByTruncatingTail;
         subtitleView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
