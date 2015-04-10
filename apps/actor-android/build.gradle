@@ -354,7 +354,7 @@ dependencies {
     modulCompile 'com.google.android.gms:play-services:6.+'
 
     // Integration
-    compile files('libs/HockeySDK-3.0.2.jar')
+    compile files('libs/HockeySDK-3.5.0.jar')
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
