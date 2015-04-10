@@ -28,7 +28,7 @@ import im.actor.model.entity.PhoneBookPhone;
 public class AndroidPhoneBook implements PhoneBookProvider {
 
     private static final int PRELOAD_DELAY = 3000;
-    private static final int READ_ITEM_DELAY = 100;
+    private static final int READ_ITEM_DELAY = 10;
     private static final boolean DISABLE_PHONE_BOOK = false;
     private static final String TAG = "PhoneBookLoader";
     private static PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
