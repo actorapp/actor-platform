@@ -5975,7 +5975,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = 55a4a60200c0ace4b7a42599079c406b;
+				HOCKEY = 4f3a3a595a9ba75c3bf57e959b1a02fd;
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
