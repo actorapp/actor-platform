@@ -58,6 +58,7 @@ android {
     def HOCKEY_DEV1 = "\"e2fb9a8444e1d8a5d90dba0e0c9ed534\""
     def HOCKEY_DEV2 = "\"0280d81114489bc0f306f5d94a38def1\""
     def HOCKEY_LLECTRO = "\"95bd155a24b62dceb159444f8bfda949\""
+    def HOCKEY_MODUL = "\"a86c3991f26b932064caf0848bc003a0\""
 
     def MINT_MAIN = "\"4345135a\""
 
@@ -106,10 +107,10 @@ android {
         }
 
         modul {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Module)\""
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Modul)\""
             applicationIdSuffix ".modul"
             signingConfig signingConfigs.release
-            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
+            buildConfigField STRING, HOCKEY, HOCKEY_MODUL
         }
 
         mchs {
