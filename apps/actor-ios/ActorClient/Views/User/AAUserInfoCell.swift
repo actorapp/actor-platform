@@ -49,7 +49,7 @@ class AAUserInfoCell: AATableViewCell {
         
         presenceLabel = UILabel()
         presenceLabel.backgroundColor = UIColor.whiteColor()
-        presenceLabel.textColor = Resources.PrimaryDarkText
+        presenceLabel.textColor = Resources.SecondaryDarkText
         presenceLabel.font = UIFont.systemFontOfSize(14)
         presenceLabel.text = " "
         presenceLabel.sizeToFit()

@@ -101,8 +101,8 @@ import Foundation
     
     static let SelectorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 60/255.0)
     
-    static let PrimaryDarkText = UIColor(red: 1, green: 1, blue: 1, alpha: 0xDE/255.0)
-    static let SecondaryDarkText = UIColor(red: 1, green: 1, blue: 1, alpha: 0x8A/255.0)
+    static let PrimaryDarkText = UIColor(red: 0, green: 0, blue: 0, alpha: 0.9)
+    static let SecondaryDarkText = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
     
     static let PlaceholderText = UIColor(red: 200/255.0, green: 200/255.0, blue: 200/255.0, alpha: 1.0)
 }

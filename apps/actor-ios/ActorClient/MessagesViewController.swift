@@ -108,15 +108,15 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = MSG.getFormatter().formatTyping();
-                    self.subtitleView.textColor = Resources.PrimaryDarkText
+                    self.subtitleView.textColor = Resources.PrimaryLightText
                 } else {
                     var stateText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: user.getSex())
                     self.subtitleView.text = stateText;
                     var state = UInt(presence!.getState().ordinal())
                     if (state == AMUserPresence_State.ONLINE.rawValue) {
-                        self.subtitleView.textColor = Resources.PrimaryDarkText
+                        self.subtitleView.textColor = Resources.PrimaryLightText
                     } else {
-                        self.subtitleView.textColor = Resources.SecondaryDarkText
+                        self.subtitleView.textColor = Resources.SecondaryLightText
                     }
                 }
             })
@@ -133,7 +133,7 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
             })
             binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (value1:IOSIntArray?, value2:JavaUtilHashSet?, value3:JavaLangInteger?) -> () in
                 if (value1!.length() > 0) {
-                    self.subtitleView.textColor = Resources.PrimaryDarkText
+                    self.subtitleView.textColor = Resources.PrimaryLightText
                     if (value1!.length() == 1) {
                         var uid = value1!.intAtIndex(0);
                         var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
@@ -144,13 +144,13 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
                 } else {
                     var membersString = MSG.getFormatter().formatGroupMembersWithInt(value2!.size())
                     if (value3 == nil || value3!.integerValue == 0) {
-                        self.subtitleView.textColor = Resources.SecondaryDarkText
+                        self.subtitleView.textColor = Resources.SecondaryLightText
                         self.subtitleView.text = membersString;
                     } else {
                         membersString = membersString + ", ";
                         var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(value3!.intValue());
                         var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryDarkText, range: NSMakeRange(membersString.size(), onlineString.size()))
+                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
                         self.subtitleView.attributedText = attributedString
                     }
                 }

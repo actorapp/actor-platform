@@ -66,6 +66,15 @@ class AASettingsController: AATableViewController {
                 cell.userAvatarView.bind(self.user!.getName().get() as! String, id: jint(self.uid), avatar: value)
             }
         })
+        
+        binder.bind(user!.getPresence(), closure: { (presence: AMUserPresence?) -> () in
+            var presenceText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: self.user!.getSex())
+            if presenceText != nil {
+                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+                    cell.setPresence(presenceText)
+                }
+            }
+        })
     }
     
     func initCommon(){
@@ -76,6 +85,16 @@ class AASettingsController: AATableViewController {
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             selectedImage: icon);
 //        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        MSG.onProfileOpen(jint(uid))
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        MSG.onProfileClosed(jint(uid))
     }
     
     // MARK: -
