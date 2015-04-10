@@ -82,7 +82,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         navigationItem.title = "People";
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
         
-        placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add friends by pressing top right button or invite them by pressing button below.", actionTitle: "Invite friends", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
+        placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add coworkers by pressing top right button or invite them by pressing button below.", actionTitle: "Invite coworkers", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
         binder.bind(MSG.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
@@ -143,7 +143,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
-            messageComposeController.body = "Hi! Let's switch to Actor! https://actor.im/dl" // TODO: Localize
+            messageComposeController.body = "Hi! Let's switch to Connector! https://actor.im/mdl" // TODO: Localize
             presentViewController(messageComposeController, animated: true, completion: nil)
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
