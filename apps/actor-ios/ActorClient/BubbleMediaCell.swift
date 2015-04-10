@@ -10,24 +10,6 @@ import Foundation
 
 class BubbleMediaCell : BubbleCell {
     
-    private class func measureMedia(w: Int, h: Int) -> CGSize {
-        var screenScale = UIScreen.mainScreen().scale;
-        var scaleW = 240 / CGFloat(w)
-        var scaleH = 340 / CGFloat(h)
-        var scale = min(scaleW, scaleH)
-        return CGSize(width: scale * CGFloat(w), height: scale * CGFloat(h))
-    }
-    
-    class func measureMediaHeight(message: AMMessage) -> CGFloat {
-        var content = message.getContent() as! AMDocumentContent;
-        if (message.getContent() is AMPhotoContent){
-            var photo = message.getContent() as! AMPhotoContent;
-            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 8;
-        }
-        
-        fatalError("???")
-    }
-    
     let bubble = UIImageView();
     let preview = UIImageView();
     let circullarNode = CircullarNode()
@@ -49,6 +31,9 @@ class BubbleMediaCell : BubbleCell {
     
     var generation = 0;
     
+    // MARK: -
+    // MARK: Constructors
+    
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
         
@@ -64,6 +49,8 @@ class BubbleMediaCell : BubbleCell {
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: -
     
     override func bind(message: AMMessage, reuse: Bool) {
         if (!reuse) {
@@ -242,27 +229,57 @@ class BubbleMediaCell : BubbleCell {
         })
     }
     
+    // MARK: -
+    // MARK: Getters
+    
+    private class func measureMedia(w: Int, h: Int) -> CGSize {
+        var screenScale = UIScreen.mainScreen().scale;
+        var scaleW = 240 / CGFloat(w)
+        var scaleH = 340 / CGFloat(h)
+        var scale = min(scaleW, scaleH)
+        return CGSize(width: scale * CGFloat(w), height: scale * CGFloat(h))
+    }
+    
+    class func measureMediaHeight(message: AMMessage) -> CGFloat {
+        if (message.getContent() is AMPhotoContent) {
+            var photo = message.getContent() as! AMPhotoContent;
+            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height;
+        }
+        
+        fatalError("???")
+    }
+    
+    class func bubbleTopPadding() -> CGFloat {
+        return 3
+    }
+    
+    class func bubbleBottomPadding() -> CGFloat {
+        return 3
+    }
+    
+    // MARK: -
+    // MARK: Layout
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        let padding = CGFloat(10)
         
-        var width = contentView.frame.width
-        var height = contentView.frame.height
+        var bubbleTopPadding = BubbleMediaCell.bubbleTopPadding()
+        var bubbleBottomPadding = BubbleMediaCell.bubbleBottomPadding()
         
-        var bubbleHeight = height - 8
-        var bubbleWidth = bubbleHeight * CGFloat(contentWidth) / CGFloat(contentHeight)
+        var contentWidth = self.contentView.frame.width
+        var contentHeight = self.contentView.frame.height
+        
+        var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
+        var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
         
         if (self.isOut) {
-            self.bubble.frame = CGRectMake(width - bubbleWidth - padding, 4, bubbleWidth, bubbleHeight)
+            bubble.frame = CGRectMake(contentWidth - bubbleWidth - bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
         } else {
-            self.bubble.frame = CGRectMake(padding, 4, bubbleWidth, bubbleHeight)
+            bubble.frame = CGRectMake(bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
         }
         
         preview.frame = CGRectMake(bubble.frame.origin.x + 1, bubble.frame.origin.y + 1, bubble.frame.width - 2, bubble.frame.height - 2);
         
-        circullarNode.frame = CGRectMake(
-                        preview.frame.origin.x + preview.frame.width/2 - 32,
-                        preview.frame.origin.y + preview.frame.height/2 - 32,
-                        64, 64)
+        circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
     }
 }

@@ -81,8 +81,8 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     // MARK: Navigation
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
-        var messagesController = MessagesViewController(peer: AMPeer.userWithInt(peerId))
-        navigationController!.pushViewController(messagesController, animated: true)
+        var conversationController = AAConversationController(peer: AMPeer.userWithInt(peerId))
+        navigationController!.pushViewController(conversationController, animated: true)
     }
 
 }

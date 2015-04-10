@@ -151,9 +151,9 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     }
     
     private func navigateToMessagesWithUid(uid: jint) {
-        let messagesController = MessagesViewController(peer: AMPeer.userWithInt(uid))
-        messagesController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(messagesController, animated: true);
+        let conversationController = AAConversationController(peer: AMPeer.userWithInt(uid))
+        conversationController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(conversationController, animated: true);
     }
     
 }
