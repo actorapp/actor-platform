@@ -91,7 +91,7 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
     }
 
     public void clear() {
-
+        receiver.clear();
     }
 
     @Override

@@ -352,9 +352,6 @@ public class PictureActivity extends ActionBarActivity {
         public void onDestroyView() {
             super.onDestroyView();
             attacher.cleanup();
-            if(backgroundView!=null){
-                backgroundView.setOnClickListener(null);
-            }
         }
 
         @Override
