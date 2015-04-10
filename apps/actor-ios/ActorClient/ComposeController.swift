@@ -70,17 +70,19 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
             var contact = objectAtIndexPath(indexPath) as! AMContact
-            var controllers = NSMutableArray(array: navigationController!.viewControllers)
-            controllers.removeLastObject()
-            controllers.addObject(MessagesViewController(peer: AMPeer.userWithInt(contact.getUid())))
-            navigationController!.setViewControllers(controllers as [AnyObject], animated: true)
+            navigateToMessagesWithPeerId(contact.getUid())
         } else {
             var contact = searchSource!.objectAtIndexPath(indexPath) as! AMContact
-            var controllers = NSMutableArray(array: navigationController!.viewControllers)
-            controllers.removeLastObject()
-            controllers.addObject(MessagesViewController(peer: AMPeer.userWithInt(contact.getUid())))
-            navigationController!.setViewControllers(controllers as [AnyObject], animated: true)
+            navigateToMessagesWithPeerId(contact.getUid())
         }
+    }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    private func navigateToMessagesWithPeerId(peerId: jint) {
+        var messagesController = MessagesViewController(peer: AMPeer.userWithInt(peerId))
+        navigationController!.pushViewController(messagesController, animated: true)
     }
 
 }
