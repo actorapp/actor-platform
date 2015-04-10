@@ -273,8 +273,8 @@ class AAUserInfoController: AATableViewController {
     // MARK: Navigation
     
     private func navigateToMessages() {
-        let messagesController = MessagesViewController(peer: AMPeer.userWithInt(jint(uid)))
-        navigationController?.pushViewController(messagesController, animated: true);
+        let conversationController = AAConversationController(peer: AMPeer.userWithInt(jint(uid)))
+        navigationController?.pushViewController(conversationController, animated: true);
     }
 
 }
