@@ -58,7 +58,7 @@ class AADialogsListSearchCell: AATableViewCell {
         let padding = CGFloat(14);
         
         avatarView.frame = CGRectMake(padding, padding, 48, 48);
-        titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - /*paddingRight*/(padding + 50), contentView.bounds.size.height);
+        titleView.frame = CGRectMake(leftPadding, 0, width - leftPadding - (padding + 50), contentView.bounds.size.height);
         separatorView.frame = CGRectMake(leftPadding, 75.5, width, 0.5);
     }
 
