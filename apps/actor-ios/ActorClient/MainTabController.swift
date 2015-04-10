@@ -45,6 +45,9 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
                 let settingsNavigation = AANavigationController(rootViewController: AASettingsController())
+                contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
                 
                 selectedIndex = 1;
