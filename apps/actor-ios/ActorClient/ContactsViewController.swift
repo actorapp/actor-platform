@@ -108,11 +108,11 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     
     func initCommon(){
         var icon = UIImage(named: "ic_users_blue_24")!;
-        tabBarItem = UITabBarItem(title: nil,
+        tabBarItem = UITabBarItem(title: "People",
             image: icon.tintImage(Resources.BarTintUnselectedColor)
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             selectedImage: icon);
-        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+        // tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
     }
     
     func doAddContact() {
