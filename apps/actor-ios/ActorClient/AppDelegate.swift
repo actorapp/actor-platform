@@ -82,6 +82,7 @@ import Foundation
         if (MSG.isLoggedIn() == false) {
             let phoneController = AAAuthPhoneController()
             var loginNavigation = AANavigationController(rootViewController: phoneController)
+            loginNavigation.navigationBar.tintColor = Resources.BarTintColor
             loginNavigation.makeBarTransparent()
             rootController.presentViewController(loginNavigation, animated: false, completion: nil)
         } else {
