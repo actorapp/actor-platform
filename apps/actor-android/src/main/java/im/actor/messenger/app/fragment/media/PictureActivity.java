@@ -120,7 +120,12 @@ public class PictureActivity extends ActionBarActivity {
         transitionView = (ImageKitView) findViewById(R.id.transition);
         backgroundView = findViewById(R.id.background);
         containerView = findViewById(R.id.container);
-
+        containerView.setAlpha(0);
+        fragment = new PictureFragment();
+        fragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, fragment)
+                .commit();
         transitionView.setExtraReceiverCallback(new ReceiverCallback() {
             @Override
             public void onImageLoaded(BitmapReference bitmapRef) {
@@ -129,15 +134,11 @@ public class PictureActivity extends ActionBarActivity {
                         new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                fragment = new PictureFragment();
-                                fragment.setArguments(bundle);
-                                getSupportFragmentManager().beginTransaction()
-                                        .add(R.id.container, fragment)
-                                        .commit();
 
+                                containerView.setAlpha(1);
                                 transitionView.setExtraReceiverCallback(null);
-                                //transitionView.clear();
-                                //transitionView.setAlpha(0f);
+                                // transitionView.setImageBitmap(null);
+                                transitionView.setAlpha(0f);
                                 //transitionView.setVisibility(View.GONE);
                             }
                         });
@@ -166,11 +167,13 @@ public class PictureActivity extends ActionBarActivity {
 
     @Override
     public void finish() {
-        transitionView.setVisibility(View.VISIBLE);
-        transitionView.setAlpha(1f);
-        transitionView.request(new RawFileTask(path));
-        transitionView.post(new Runnable() {
-            // View cant animate() immidiately after the visibility changing
+        // transitionView.setVisibility(View.VISIBLE);
+        transitionView.animate()
+                .setStartDelay(0)
+                .setDuration(0)
+                .alpha(1)
+                .start();
+        transitionView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 getSupportFragmentManager().beginTransaction()
@@ -181,12 +184,31 @@ public class PictureActivity extends ActionBarActivity {
                         new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                superFinish();
+                                PictureActivity.super.finish();
                             }
                         });
                 MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView);
+
+            }
+        },50);
+        /*
+        transitionView.setExtraReceiverCallback(new ReceiverCallback() {
+            @Override
+            public void onImageLoaded(BitmapReference bitmap) {
+
+            }
+
+            @Override
+            public void onImageCleared() {
+
+            }
+
+            @Override
+            public void onImageError() {
+
             }
         });
+        transitionView.request(new RawFileTask(path));*/
     }
 
     private void superFinish() {
@@ -333,13 +355,14 @@ public class PictureActivity extends ActionBarActivity {
             backgroundView = null;
 
             Activity activity = getActivity();
-            if (activity instanceof PictureActivity) {
+            /*if (activity instanceof PictureActivity) {
                 backgroundView = ((PictureActivity) activity).backgroundView;
             } else {
                 if (activity instanceof MediaActivity) {
                     backgroundView = ((MediaActivity) activity).transitionBackgroundView;
                 }
-            }
+            }*/
+            backgroundView = rootView.findViewById(R.id.background);
             if (backgroundView != null)
                 backgroundView.setOnClickListener(new View.OnClickListener() {
                     @Override

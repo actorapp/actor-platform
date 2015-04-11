@@ -692,9 +692,6 @@ public class MediaActivity extends BaseActivity {
         viewPager.setCurrentItem(selectedIndex, false);
     }
     private void hidePager() {
-        if(transitionBackgroundView!=null){
-            transitionBackgroundView.setOnClickListener(null);
-        }
         Message media = displayList.getItem(selectedIndex);
         transitionImageView.setAlpha(1f);
         transitionImageView.setExtraReceiverCallback(new ReceiverCallback() {
@@ -786,7 +783,7 @@ public class MediaActivity extends BaseActivity {
 
     public static class MediaFullscreenAnimationUtils {
 
-        public static final int animationMultiplier = 1;
+        public static final int animationMultiplier = 10;
         public static int startDelay = 60;
 
         public static void animateForward(final View transitionView, Bitmap bitmap,
