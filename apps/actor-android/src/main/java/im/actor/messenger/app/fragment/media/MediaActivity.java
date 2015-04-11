@@ -792,6 +792,7 @@ public class MediaActivity extends BaseActivity {
         public static void animateForward(final View transitionView, Bitmap bitmap,
                                           int transitionLeft, int transitionTop,
                                           int transitionWidth, int transitionHeight, final Animator.AnimatorListener listener) {
+            transitionView.clearAnimation();
             float bitmapWidth = bitmap.getWidth();
             float bitmapHeight = bitmap.getHeight();
 
@@ -863,6 +864,7 @@ public class MediaActivity extends BaseActivity {
         public static void animateBack(final View transitionView, Bitmap bitmap,
                                        final int transitionLeft, final int transitionTop,
                                        int transitionWidth, int transitionHeight, final Animator.AnimatorListener listener) {
+            transitionView.clearAnimation();
             float bitmapWidth = bitmap.getWidth();
             float bitmapHeight = bitmap.getHeight();
 
