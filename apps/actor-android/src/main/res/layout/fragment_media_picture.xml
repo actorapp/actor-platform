@@ -4,6 +4,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <View
+        android:id="@+id/background"
+        android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <im.actor.images.loading.view.ImageKitView
         android:id="@+id/image"
         android:scaleType="centerInside"
