@@ -1,5 +1,7 @@
 package im.actor.messenger.app.fragment.media;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -121,24 +123,22 @@ public class PictureActivity extends ActionBarActivity {
             @Override
             public void onImageLoaded(BitmapReference bitmapRef) {
                 bitmap = bitmapRef.getBitmap();
-                transitionView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (savedInstanceState == null) {
-                            fragment = new PictureFragment();
-                            fragment.setArguments(bundle);
-                            getSupportFragmentManager().beginTransaction()
-                                    .add(R.id.container, fragment)
-                                    .commit();
-                        }
-                        transitionView.setExtraReceiverCallback(null);
-                        transitionView.clear();
-                        transitionView.setAlpha(0f);
-                        transitionView.setVisibility(View.GONE);
-                    }
-                }, 450 * MediaActivity.MediaFullscreenAnimationUtils.animationMultiplier
-                        + MediaActivity.MediaFullscreenAnimationUtils.startDelay * 2);
-                MediaActivity.MediaFullscreenAnimationUtils.animateForward(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight);
+                MediaActivity.MediaFullscreenAnimationUtils.animateForward(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                fragment = new PictureFragment();
+                                fragment.setArguments(bundle);
+                                getSupportFragmentManager().beginTransaction()
+                                        .add(R.id.container, fragment)
+                                        .commit();
+
+                                transitionView.setExtraReceiverCallback(null);
+                                transitionView.clear();
+                                transitionView.setAlpha(0f);
+                                transitionView.setVisibility(View.GONE);
+                            }
+                        });
                 MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundForward(backgroundView);
 
 
@@ -170,14 +170,14 @@ public class PictureActivity extends ActionBarActivity {
         transitionView.request(new RawFileTask(path));
         transitionView.setAlpha(1f);
         transitionView.setVisibility(View.VISIBLE);
-        MediaActivity.MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight);
+        MediaActivity.MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+                new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        superFinish();
+                    }
+                });
         MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView);
-        transitionView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                superFinish();
-            }
-        }, 300 * MediaActivity.MediaFullscreenAnimationUtils.animationMultiplier);
     }
 
     private void superFinish() {
