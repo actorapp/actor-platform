@@ -20,7 +20,7 @@ private let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}
 //private let bubbleFont = UIFont(name: "Roboto", size: 16)!
 private let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
 
-private let maxTextWidth = 240
+private let maxTextWidth = 210
 
 private let textPaddingTop: CGFloat = 4
 private let textPaddingBottom: CGFloat = 5
@@ -41,10 +41,10 @@ private func measureText(message: String, isOut: Bool) -> CGRect {
 class BubbleTextCell : BubbleCell {
     
     let textPaddingStartOutgoing: CGFloat = 11.0;
-    let textPaddingEndOutgoing: CGFloat = 8.0;
+    let textPaddingEndOutgoing: CGFloat = 10.0;
     
     let textPaddingStartIncoming: CGFloat = 17.0;
-    let textPaddingEndIncoming: CGFloat = 8.0;
+    let textPaddingEndIncoming: CGFloat = 10.0;
     
     let bubble = UIImageView();
     let messageText = UILabel();
@@ -135,7 +135,9 @@ class BubbleTextCell : BubbleCell {
             var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
             
             self.messageText.frame = textBounds;
-//            self.messageText.sizeToFit()
+            println("\(self.messageText.frame)")
+            self.messageText.sizeToFit()
+            println("\(self.messageText.frame)")
             
             var textWidth = round(textBounds.width);
             var textHeight = round(textBounds.height);
