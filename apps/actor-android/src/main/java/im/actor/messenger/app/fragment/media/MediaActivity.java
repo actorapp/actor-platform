@@ -1,5 +1,7 @@
 package im.actor.messenger.app.fragment.media;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,9 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import im.actor.images.cache.BitmapReference;
@@ -305,16 +304,15 @@ public class MediaActivity extends BaseActivity {
                         //bitmap = fastBlur(bitmap, 5);
                         int[] location = new int[2];
                         view.getLocationInWindow(location);
-                        MediaFullscreenAnimationUtils.animateForward(transitionImageView, bitmap, location[0], location[1], view.getWidth(), view.getHeight());
+                        MediaFullscreenAnimationUtils.animateForward(transitionImageView, bitmap, location[0], location[1], view.getWidth(), view.getHeight(),
+                                new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        selectedIndex = holder.getPosition();
+                                        showPager();
+                                    }
+                                });
                         MediaFullscreenAnimationUtils.animateBackgroundForward(transitionBackgroundView);
-                        transitionImageView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                selectedIndex = holder.getPosition();
-                                showPager();
-
-                            }
-                        }, 450 * MediaFullscreenAnimationUtils.animationMultiplier + MediaFullscreenAnimationUtils.startDelay);
                     }
 
                     @Override
@@ -713,21 +711,21 @@ public class MediaActivity extends BaseActivity {
                 int[] location = new int[2];
                 selectedView.getLocationInWindow(location);
                 transitionImageView.setExtraReceiverCallback(null);
-                MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap.getBitmap(), location[0], location[1], selectedView.getWidth(), selectedView.getHeight());
+                MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap.getBitmap(), location[0], location[1], selectedView.getWidth(), selectedView.getHeight(),
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                invalidateOptionsMenu();
+                                transitionImageView.clear();
+                                transitionImageView.setAlpha(0f);
+                                transitionBackgroundView.setAlpha(0f);
+                                transitionBackgroundView.setOnClickListener(null);
+                                viewPager.setAdapter(null);
+                            }
+                        });
                 MediaFullscreenAnimationUtils.animateBackgroundBack(transitionBackgroundView);
                 viewPager.setAlpha(0);
                 goneView(viewPager, false);
-                transitionImageView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        invalidateOptionsMenu();
-                        transitionImageView.clear();
-                        transitionImageView.setAlpha(0f);
-                        transitionBackgroundView.setAlpha(0f);
-                        transitionBackgroundView.setOnClickListener(null);
-                        viewPager.setAdapter(null);
-                    }
-                }, 300 * MediaFullscreenAnimationUtils.animationMultiplier);
 
             }
 
@@ -788,12 +786,12 @@ public class MediaActivity extends BaseActivity {
 
     public static class MediaFullscreenAnimationUtils {
 
-        public static final int animationMultiplier = 10;
+        public static final int animationMultiplier = 1;
         public static int startDelay = 60;
 
         public static void animateForward(final View transitionView, Bitmap bitmap,
                                           int transitionLeft, int transitionTop,
-                                          int transitionWidth, int transitionHeight) {
+                                          int transitionWidth, int transitionHeight, final Animator.AnimatorListener listener) {
             float bitmapWidth = bitmap.getWidth();
             float bitmapHeight = bitmap.getHeight();
 
@@ -855,14 +853,16 @@ public class MediaActivity extends BaseActivity {
                             .y(finalYPadding)
                             .scaleX(finalEndScale)
                             .scaleY(finalEndScale)
+                            .setListener(listener)
                             .start();
                 }
             });
+
         }
 
         public static void animateBack(final View transitionView, Bitmap bitmap,
                                        final int transitionLeft, final int transitionTop,
-                                       int transitionWidth, int transitionHeight) {
+                                       int transitionWidth, int transitionHeight, final Animator.AnimatorListener listener) {
             float bitmapWidth = bitmap.getWidth();
             float bitmapHeight = bitmap.getHeight();
 
@@ -898,7 +898,7 @@ public class MediaActivity extends BaseActivity {
                 yPadding = (bitmapHeight * (endScale - 1)) / 2;
             }
 
-            /*transitionView.animate()
+            transitionView.animate()
                     .setInterpolator(new MaterialInterpolator())
                     .setStartDelay(0)
                     .setDuration(0)
@@ -907,13 +907,13 @@ public class MediaActivity extends BaseActivity {
                     .y(yPadding)
                     .scaleX(endScale)
                     .scaleY(endScale)
-                    .start();*/
+                    .start();
 
             final float finalBitmapWidth = bitmapWidth;
             final float finalBitmapHeight = bitmapHeight;
             final float finalXPadding = xPadding;
             final float finalYPadding = yPadding;
-            /*transitionView.post(new Runnable() {
+            transitionView.post(new Runnable() {
                 @Override
                 public void run() {
                     transitionView.animate()
@@ -924,22 +924,10 @@ public class MediaActivity extends BaseActivity {
                             .y(transitionTop + (finalBitmapHeight * (finishScaleHeight - 1) / 2))
                             .scaleX(finishScaleWidth)
                             .scaleY(finishScaleHeight)
+                            .setListener(listener)
                             .start();
                 }
-            });*/
-
-            AnimationSet animation = new AnimationSet(true);
-            animation.setStartOffset(startDelay);
-            animation.setInterpolator(new MaterialInterpolator());
-            animation.setDuration(300 * animationMultiplier);
-            TranslateAnimation translateAnimation = new TranslateAnimation(
-                    finalXPadding, transitionLeft + (finalBitmapWidth * (finishScaleWidth - 1) / 2),
-                    finalYPadding, transitionTop + (finalBitmapHeight * (finishScaleHeight - 1) / 2)
-            );
-            ScaleAnimation scaleAnimation = new ScaleAnimation(endScale, finishScaleWidth, endScale, finishScaleHeight);
-            animation.addAnimation(translateAnimation);
-            animation.addAnimation(scaleAnimation);
-            transitionView.startAnimation(animation);
+            });
         }
 
         public static void animateBackgroundForward(View backgroundView) {
