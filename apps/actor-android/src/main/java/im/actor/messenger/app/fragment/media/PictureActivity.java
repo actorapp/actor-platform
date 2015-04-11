@@ -66,6 +66,7 @@ public class PictureActivity extends ActionBarActivity {
     private String path;
     private boolean uiIsHidden;
     private Toolbar toolbar;
+    private View containerView;
 
     public static void launchPhoto(Activity activity, View transitionView, String path, int senderId) {
 
@@ -118,6 +119,7 @@ public class PictureActivity extends ActionBarActivity {
 
         transitionView = (ImageKitView) findViewById(R.id.transition);
         backgroundView = findViewById(R.id.background);
+        containerView = findViewById(R.id.container);
 
         transitionView.setExtraReceiverCallback(new ReceiverCallback() {
             @Override
@@ -134,9 +136,9 @@ public class PictureActivity extends ActionBarActivity {
                                         .commit();
 
                                 transitionView.setExtraReceiverCallback(null);
-                                transitionView.clear();
-                                transitionView.setAlpha(0f);
-                                transitionView.setVisibility(View.GONE);
+                                //transitionView.clear();
+                                //transitionView.setAlpha(0f);
+                                //transitionView.setVisibility(View.GONE);
                             }
                         });
                 MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundForward(backgroundView);
@@ -164,20 +166,27 @@ public class PictureActivity extends ActionBarActivity {
 
     @Override
     public void finish() {
-        getSupportFragmentManager().beginTransaction()
-                .remove(fragment)
-                .commit();
-        transitionView.request(new RawFileTask(path));
-        transitionView.setAlpha(1f);
         transitionView.setVisibility(View.VISIBLE);
-        MediaActivity.MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
-                new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        superFinish();
-                    }
-                });
-        MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView);
+        transitionView.setAlpha(1f);
+        transitionView.request(new RawFileTask(path));
+        transitionView.post(new Runnable() {
+            // View cant animate() immidiately after the visibility changing
+            @Override
+            public void run() {
+                getSupportFragmentManager().beginTransaction()
+                        .remove(fragment)
+                        .commit();
+                containerView.setVisibility(View.GONE);
+                MediaActivity.MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                superFinish();
+                            }
+                        });
+                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView);
+            }
+        });
     }
 
     private void superFinish() {
