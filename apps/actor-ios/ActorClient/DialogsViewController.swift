@@ -209,9 +209,9 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     private func navigateToMessagesWithPeer(peer: AMPeer) {
-        let messagesController = MessagesViewController(peer: peer)
-        messagesController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(messagesController, animated: true);
+        let conversationController = AAConversationController(peer: peer)
+        conversationController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(conversationController, animated: true);
     }
     
 }

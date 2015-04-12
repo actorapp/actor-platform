@@ -1,7 +1,10 @@
 package im.actor.messenger.app.emoji;
 
 import android.app.Application;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,16 +13,22 @@ import android.text.Spannable;
 import android.text.TextPaint;
 import android.text.style.ReplacementSpan;
 import android.util.TypedValue;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import im.actor.images.common.ImageMetadata;
 import im.actor.images.ops.ImageLoading;
 import im.actor.images.sources.FileSource;
 import im.actor.messenger.app.util.Logger;
 import im.actor.messenger.app.util.io.IOUtils;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -85,6 +94,7 @@ public class EmojiProcessor {
     private static final int LAYOUT_15X_2 = 3;
     private static final int LAYOUT_2X_1 = 4;
     private static final int LAYOUT_2X_2 = 5;
+    private static EmojiProcessor instance;
 
     // protected Bitmap emojiImages;
     protected HashMap<Integer, Bitmap> emojiMap;
@@ -326,34 +336,34 @@ public class EmojiProcessor {
                     int[] tmpColors = new int[rectSize * SECTION_SIDE * rectSize * SECTION_SIDE];
 
                     int[] order = new int[]{8, 9, 10, 11, 4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15};
-
+                    int stride = rectSize * SECTION_SIDE;
                     for (int ordinal : order) {
                         int col = ordinal % SECTION_COL_COUNT;
                         int row = ordinal / SECTION_COL_COUNT;
 
-                        int leftOffset = col * SECTION_SIDE * rectSize;
-                        int topOffset = row * SECTION_SIDE * rectSize;
-                        int width = SECTION_SIDE * rectSize;
-                        int height = SECTION_SIDE * rectSize;
+                        int leftOffset = col * stride;
+                        int topOffset = row * stride;
+                        int width = stride;
+                        int height = stride;
                         if (row == SECTION_ROW_COUNT - 1) {
                             height = colorsBitmap.getHeight() - topOffset;
                         }
 
-                        colorsBitmap.getPixels(resultColors, 0, rectSize * SECTION_SIDE, leftOffset, topOffset, width, height);
+                        colorsBitmap.getPixels(tmpColors, 0, stride, leftOffset, topOffset, width, height);
                         for (int ind = 0; ind < resultColors.length; ind++) {
                             resultColors[ind] = 0xFFFFFF & tmpColors[ind];
-                            resultColors[ind] = 0xFFFFFF & tmpColors[ind];
                         }
-                        alphaBitmap.getPixels(tmpColors, 0, rectSize * SECTION_SIDE, leftOffset, topOffset, width, height);
+                        alphaBitmap.getPixels(tmpColors, 0, stride, leftOffset, topOffset, width, height);
                         for (int ind = 0; ind < resultColors.length; ind++) {
                             resultColors[ind] = resultColors[ind] | ((tmpColors[ind] & 0xFF) << 24);
                         }
+                        // todo alpha does not work?
 
                         Bitmap section = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                        // Canvas canvas = new Canvas(section);
-//                        canvas.drawBitmap(colorsBitmap, new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height),
-//                                new Rect(0, 0, width, height), new Paint());
-                        section.setPixels(resultColors, 0, rectSize * SECTION_SIDE, 0, 0, width, height);
+                        /*Canvas canvas = new Canvas(section);
+                        canvas.drawBitmap(colorsBitmap, new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height),
+                                new Rect(0, 0, width, height), new Paint());*/
+                        section.setPixels(resultColors, 0, stride, 0, 0, width, height);
                         emojiMap.put(ordinal, section);
 
                         Logger.d(TAG, "emoji region loaded in " + (System.currentTimeMillis() - start) + " ms");
@@ -392,6 +402,11 @@ public class EmojiProcessor {
         }
 
         return id;
+    }
+
+
+    public Bitmap getBitmap(String emojiString){
+        return getSection(emojiString.charAt(0));
     }
 
     private class SpanDescription {
@@ -589,6 +604,7 @@ public class EmojiProcessor {
     }
 
     public Spannable processEmojiMutable(String s, int mode) {
+
         long prev = 0;
         long prevLong = 0;
         int prevLongCount = 0;
@@ -817,7 +833,6 @@ public class EmojiProcessor {
                 fm.top = originalMetrics.top;
                 fm.bottom = originalMetrics.bottom;
             }
-
             return size + padding * 2;
         }
 

@@ -1,12 +1,15 @@
 package im.actor.messenger.app.fragment.tour;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
@@ -20,6 +23,7 @@ public class TourActivity extends ActionBarActivity {
     private static final int SIGNIN = 1;
     private static final int SIGNUP = 3;
     private int lastPageIndex = 3;
+    private int contentTopPadding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +202,30 @@ public class TourActivity extends ActionBarActivity {
 
             }
         });
+        if (Build.VERSION.SDK_INT >= 19) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            contentTopPadding = Screen.getStatusBarHeight();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) findViewById(R.id.pager_container).getLayoutParams();
+            params.topMargin = contentTopPadding;
+            findViewById(R.id.pager_container).setLayoutParams(params);
+
+            params = (RelativeLayout.LayoutParams) backToTopArrow.getLayoutParams();
+            params.topMargin = contentTopPadding + params.topMargin;
+            backToTopArrow.setLayoutParams(params);
+
+            params = (RelativeLayout.LayoutParams) welcomeImage.getLayoutParams();
+            params.topMargin = contentTopPadding+params.topMargin;
+            welcomeImage.setLayoutParams(params);
+
+            params = (RelativeLayout.LayoutParams) welcomeText.getLayoutParams();
+            params.topMargin = contentTopPadding+params.topMargin;
+            welcomeText.setLayoutParams(params);
+
+            params = (RelativeLayout.LayoutParams) backToTopText.getLayoutParams();
+            params.topMargin = contentTopPadding+params.topMargin;
+            backToTopText.setLayoutParams(params);
+        }
 
     }
 }
