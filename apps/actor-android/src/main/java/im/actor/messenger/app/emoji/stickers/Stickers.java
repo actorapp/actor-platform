@@ -7,7 +7,7 @@ import im.actor.messenger.R;
  */
 public class Stickers {
     public static int[] animalPack = {
-            R.drawable.panda1,
+            R.drawable.panda,
             R.drawable.doge,
             R.drawable.bear,
             R.drawable.koala,

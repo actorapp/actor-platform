@@ -282,7 +282,7 @@ public class EmojiKeyboardPopup extends PopupWindow
         @Override
         public int getPageIconResId(int position) {
             if(position==1){
-                return R.drawable.panda1;
+                return R.drawable.panda;
             }
 
             return R.drawable.button_emoji;
