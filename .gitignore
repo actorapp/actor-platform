@@ -10,6 +10,12 @@ apps/actor-ios/Pods
 apps/actor-ios/ActorClient.xcworkspace
 Podfile.lock
 apps/actor-ios/ActorApp.xcworkspace
+
+*.iml
+.idea
+.gradle
+local.properties
+
 library/actor-js/war
 library/actor-js/src/main/webapp
 library/actor-js/src/gen
