@@ -14,7 +14,11 @@ class AABubbleDocumentCell: BubbleCell {
     // MARK: Private vars
     
     private let bubble = UIImageView()
-    private let dateText = UILabel()
+    
+    private let titleLabel = UILabel()
+    private let sizeLabel = UILabel()
+    
+    private let dateLabel = UILabel()
     private let statusView = UIImageView()
     
     private var isOut: Bool = false
@@ -26,16 +30,31 @@ class AABubbleDocumentCell: BubbleCell {
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
         
-        dateText.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
-        dateText.lineBreakMode = .ByClipping
-        dateText.numberOfLines = 1
-        dateText.contentMode = UIViewContentMode.TopLeft
-        dateText.textAlignment = NSTextAlignment.Right
+        dateLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
+        dateLabel.lineBreakMode = .ByClipping
+        dateLabel.numberOfLines = 1
+        dateLabel.contentMode = UIViewContentMode.TopLeft
+        dateLabel.textAlignment = NSTextAlignment.Right
         
         statusView.contentMode = UIViewContentMode.Center
         
+        titleLabel.font = UIFont.systemFontOfSize(16.0)
+        titleLabel.textColor = UIColor.RGB(0x3faa3c)
+        titleLabel.text = " "
+        titleLabel.sizeToFit()
+        titleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingMiddle
+        
+        sizeLabel.font = UIFont.systemFontOfSize(13.0)
+        sizeLabel.textColor = UIColor.RGB(0x74b56e)
+        sizeLabel.text = " "
+        sizeLabel.sizeToFit()
+        
         contentView.addSubview(bubble)
-        contentView.addSubview(dateText)
+        
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(sizeLabel)
+        
+        contentView.addSubview(dateLabel)
         contentView.addSubview(statusView)
         
         backgroundColor = UIColor.clearColor()
@@ -49,6 +68,8 @@ class AABubbleDocumentCell: BubbleCell {
     // MARK: Bind
     
     override func bind(message: AMMessage, reuse: Bool) {
+        let document = message.getContent() as! AMDocumentContent
+        
         if (!reuse) {
             isOut = message.getSenderId() == MSG.myUid()
             if (isOut) {
@@ -56,18 +77,37 @@ class AABubbleDocumentCell: BubbleCell {
             } else {
                 bubble.image =  UIImage(named: "BubbleIncomingFull")
             }
+            
+            titleLabel.text = document.getName()
+            
+            let source = document.getSource()
+            let kb = Int(source.getSize()) / 1024
+            if kb >= 1024 {
+                let mb = kb / 1024
+                if mb >= 1024 {
+                    let gb = mb / 1024
+                    sizeLabel.text = "\(gb)Gb"
+                } else {
+                    sizeLabel.text = "\(mb)Mb"
+                }
+            } else {
+                sizeLabel.text = "\(kb)Kb"
+            }
         }
         
         // Always update date and state
-        dateText.text = formatDate(message.getDate())
+        dateLabel.text = formatDate(message.getDate())
         messageState = UInt(message.getMessageState().ordinal())
     }
+    
+    // MARK: -
+    // MARK: Methods
     
     // MARK: -
     // MARK: Getters
     
     class func measureServiceHeight(message: AMMessage) -> CGFloat {
-        return 91
+        return 81
     }
     
     class func bubbleTopPadding() -> CGFloat {
@@ -94,20 +134,25 @@ class AABubbleDocumentCell: BubbleCell {
             var contentHeight = self.contentView.frame.height
             
             var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
-            var bubbleWidth = CGFloat(221)
+            var bubbleWidth = CGFloat(201)
             
             if (self.isOut) {
                 self.bubble.frame = CGRectMake(contentWidth - bubbleWidth - self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
                 
-                self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-                self.dateText.textColor = self.dateColorOut
+                self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+                self.dateLabel.textColor = self.dateColorOut
+                
+                self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 25.0, width: bubbleWidth - 76.0 - 8.0 - 6.0, height: self.titleLabel.bounds.height)
+                self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
             } else {
                 self.bubble.frame = CGRectMake(self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
                 
-                self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-                self.dateText.textColor = self.dateColorIn
+                self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+                self.dateLabel.textColor = self.dateColorIn
+                
+                self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 25.0, width: bubbleWidth - 82.0 - 8.0, height: self.titleLabel.bounds.height)
+                self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
             }
-            
             
             if (self.isOut) {
                 self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26)
