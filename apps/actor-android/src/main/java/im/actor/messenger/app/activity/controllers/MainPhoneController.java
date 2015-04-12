@@ -459,9 +459,9 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    return "Chats";
+                    return getActivity().getString(R.string.main_bar_chats);
                 case 1:
-                    return "Contacts";
+                    return getActivity().getString(R.string.main_bar_contacts);
             }
         }
     }

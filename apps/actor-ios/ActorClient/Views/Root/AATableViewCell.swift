@@ -15,6 +15,7 @@ enum AATableViewCellStyle {
     case Switch
     case Blue
     case Green
+    case Navigation
 }
 
 class AATableViewCell: UITableViewCell {
@@ -55,33 +56,45 @@ class AATableViewCell: UITableViewCell {
         switch (style) {
         case .Normal:
             textLabel!.textColor = UIColor.blackColor()
+            textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
             break
         case .DestructiveCentered:
             textLabel!.textColor = UIColor.redColor()
             textLabel!.textAlignment = NSTextAlignment.Center
             switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
             break
         case .Destructive:
             textLabel!.textColor = UIColor.redColor()
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
             break
         case .Switch:
             textLabel!.textColor = UIColor.blackColor()
             setupSwitchIfNeeded()
             switcher?.hidden = false
+            accessoryType = UITableViewCellAccessoryType.None
             break
         case .Blue:
             textLabel!.textColor = UIColor.RGB(0x007ee5)
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
             break
         case .Green:
             textLabel!.textColor = UIColor(red: 76/255.0, green: 216/255.0, blue: 100/255.0, alpha: 1.0) // TODO: Change color
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
             break
+        case .Navigation:
+            textLabel!.textColor = UIColor.blackColor()
+            textLabel!.textAlignment = NSTextAlignment.Left
+            switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
         default:
             break
         }

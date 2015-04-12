@@ -1,7 +1,7 @@
 package im.actor.model;
 
 /**
- * Created by ex3ndr on 07.03.15.
+ * API Configuration for accessing Actor Platform servers
  */
 public class ApiConfiguration {
 
@@ -13,6 +13,15 @@ public class ApiConfiguration {
     private final String deviceTitle;
     private final String deviceString;
 
+    /**
+     * Construct API Configuration
+     *
+     * @param appTitle     title of application
+     * @param appId        app id for API
+     * @param appKey       app key for API
+     * @param deviceTitle  device title
+     * @param deviceString device unique key
+     */
     public ApiConfiguration(String appTitle, int appId, String appKey, String deviceTitle, String deviceString) {
         this.appTitle = appTitle;
         this.appId = appId;
@@ -21,22 +30,47 @@ public class ApiConfiguration {
         this.deviceString = deviceString;
     }
 
+    /**
+     * Get App Title
+     *
+     * @return the App Title
+     */
     public String getAppTitle() {
         return appTitle;
     }
 
+    /**
+     * Get App API Id
+     *
+     * @return the App Id
+     */
     public int getAppId() {
         return appId;
     }
 
+    /**
+     * Get App API Key
+     *
+     * @return the App Key
+     */
     public String getAppKey() {
         return appKey;
     }
 
+    /**
+     * Get Device Title
+     *
+     * @return the Device Title
+     */
     public String getDeviceTitle() {
         return deviceTitle;
     }
 
+    /**
+     * Get Device unique string
+     *
+     * @return the Unique String
+     */
     public String getDeviceString() {
         return deviceString;
     }

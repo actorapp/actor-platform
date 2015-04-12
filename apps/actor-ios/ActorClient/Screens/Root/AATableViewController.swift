@@ -16,8 +16,6 @@ class AATableViewController: AAViewController {
     var tableView: UITableView!
     var tableViewStyle: UITableViewStyle!
     
-    var placeholderView: AAPlaceholderView?
-    
     // MARK: - 
     // MARK: Constructors
     
@@ -32,6 +30,12 @@ class AATableViewController: AAViewController {
     }
     
     // MARK: -
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
+    }
     
     override func loadView() {
         super.loadView()
@@ -48,19 +52,8 @@ class AATableViewController: AAViewController {
     // MARK: Methods
     
     func showPlaceholderWithImage(image: UIImage?, title: String?, subtitle: String?) {
-        if self.placeholderView == nil {
-            self.placeholderView = AAPlaceholderView()
-        }
-        
-        self.placeholderView!.frame = placeholderViewFrame()
-        self.placeholderView!.setImage(image, title: title, subtitle: subtitle)
-        view.addSubview(self.placeholderView!)
-    }
-    
-    func hidePlaceholder() {
-        if self.placeholderView != nil {
-            self.placeholderView!.removeFromSuperview()
-        }
+        placeholder.setImage(image, title: title, subtitle: subtitle)
+        super.showPlaceholder()
     }
     
     // MARK: -

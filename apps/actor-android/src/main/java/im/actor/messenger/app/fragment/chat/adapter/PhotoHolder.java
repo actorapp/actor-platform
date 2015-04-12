@@ -37,10 +37,10 @@ import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.VideoContent;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.FileCallback;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
-import im.actor.model.viewmodel.UploadCallback;
+import im.actor.model.viewmodel.UploadFileCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
@@ -250,7 +250,7 @@ public class PhotoHolder extends MessageHolder {
         if (document.getSource() instanceof FileRemoteSource) {
             FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
             final FileReference location = remoteSource.getFileReference();
-            messenger().requestState(location.getFileId(), new DownloadCallback() {
+            messenger().requestState(location.getFileId(), new FileCallback() {
                 @Override
                 public void onNotDownloaded() {
                     messenger().startDownloading(location);
@@ -274,7 +274,7 @@ public class PhotoHolder extends MessageHolder {
                 }
             });
         } else if (document.getSource() instanceof FileLocalSource) {
-            messenger().requestUploadState(currentMessage.getRid(), new UploadCallback() {
+            messenger().requestUploadState(currentMessage.getRid(), new UploadFileCallback() {
                 @Override
                 public void onNotUploading() {
                     messenger().resumeUpload(currentMessage.getRid());

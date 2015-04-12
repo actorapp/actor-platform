@@ -73,7 +73,8 @@ class AAConversationGroupInfoController: AATableViewController {
             if value != nil {
                 self.groupMembers = value!.toArray()
                 
-                self.tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: UITableViewRowAnimation.None)
+                self.tableView.reloadData()
+//                self.tableView.reloadSections(NSIndexSet(index: 2), withRowAnimation: UITableViewRowAnimation.None)
             }
         })
         
@@ -90,7 +91,7 @@ class AAConversationGroupInfoController: AATableViewController {
             }
         })
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
+        // TODO: Allow cancellation
     }
     
     // MARK: -
@@ -219,7 +220,8 @@ class AAConversationGroupInfoController: AATableViewController {
     
     private func changeAvatarToImage(image: UIImage) {
         let avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
-        UIImageJPEGRepresentation(image, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
+        var thumb = image.resizeSquare(200, maxH: 200);
+        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
         MSG.changeGroupAvatarWithInt(jint(gid), withNSString: "/tmp/avatar.jpg")
     }
     
@@ -306,18 +308,15 @@ class AAConversationGroupInfoController: AATableViewController {
             askSetPhoto()
         } else if indexPath.section == 2 {
             let groupMembersCount = Int(groupMembers!.length())
-            if indexPath.row < groupMembersCount - 1 {
+            if indexPath.row < groupMembersCount {
                 
                 if let groupMember = groupMembers!.objectAtIndex(UInt(indexPath.row)) as? AMGroupMember,
                    let user = MSG.getUsers().getWithLong(jlong(groupMember.getUid())) as? AMUserVM {
-                    let userInfoController = AAUserInfoController(uid: Int(user.getId()))
-                    navigationController!.pushViewController(userInfoController, animated: true)
+                    navigateToUserInfoWithUid(Int(user.getId()))
                 }
                 
             } else {
-                let addParticipantController = AAAddParticipantController(gid: gid)
-                let navigationController = AANavigationController(rootViewController: addParticipantController)
-                presentViewController(navigationController, animated: true, completion: nil)
+                showAddParticipants()
             }
         } else if indexPath.section == 3 {
             execute(MSG.leaveGroupWithInt(jint(gid)))
@@ -341,6 +340,21 @@ class AAConversationGroupInfoController: AATableViewController {
             return CGFloat.min
         }
         return tableView.sectionHeaderHeight
+    }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    private func navigateToUserInfoWithUid(uid: Int) {
+        let userInfoController = AAUserInfoController(uid: uid)
+        userInfoController.hidesBottomBarWhenPushed = true
+        navigationController!.pushViewController(userInfoController, animated: true)
+    }
+    
+    private func showAddParticipants() {
+        let addParticipantController = AAAddParticipantController(gid: gid)
+        let navigationController = AANavigationController(rootViewController: addParticipantController)
+        presentViewController(navigationController, animated: true, completion: nil)
     }
 
 }

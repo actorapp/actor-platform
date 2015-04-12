@@ -34,6 +34,7 @@ public class SignUpFragment extends BaseAuthFragment {
         keyboardHelper = new KeyboardHelper(getActivity());
         avatarView = (AvatarView) v.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(96), 24);
+        avatarView.getHierarchy().setPlaceholderImage(R.drawable.circle_placeholder);
 
         ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
 

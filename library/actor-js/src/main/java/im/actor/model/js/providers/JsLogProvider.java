@@ -26,19 +26,19 @@ public class JsLogProvider implements LogProvider {
         info("[V]" + tag + ":" + message);
     }
 
-    private native void error(String message) /*-{
+    public static native void error(String message) /*-{
         window.console.error(message);
     }-*/;
 
-    private native void warn(String message) /*-{
+    public static native void warn(String message) /*-{
         window.console.warn(message);
     }-*/;
 
-    private native void info(String message) /*-{
+    public static native void info(String message) /*-{
         window.console.info(message);
     }-*/;
 
-    private native void log(String message) /*-{
+    public static native void log(String message) /*-{
         window.console.log(message);
     }-*/;
 }

@@ -30,6 +30,11 @@ public class JsThreadingProvider implements ThreadingProvider {
     }
 
     @Override
+    public long getSyncedCurrentTime() {
+        return getCurrentTime();
+    }
+
+    @Override
     public int getCoresCount() {
         return 1;
     }

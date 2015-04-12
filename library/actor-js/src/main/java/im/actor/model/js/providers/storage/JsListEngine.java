@@ -6,6 +6,8 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.droidkit.engine.ListEngineRecord;
+import im.actor.model.js.providers.JsLogProvider;
+import im.actor.model.log.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,7 +119,9 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
         ListEngineRecord record = storage.loadItem(key);
         if (record != null) {
             try {
-                return Bser.parse(creator.createInstance(), record.getData());
+                T res = Bser.parse(creator.createInstance(), record.getData());
+                cache.put(key, res);
+                return res;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -133,6 +137,11 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
             return getValue(id);
         }
         return null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return getCount() == 0;
     }
 
     @Override

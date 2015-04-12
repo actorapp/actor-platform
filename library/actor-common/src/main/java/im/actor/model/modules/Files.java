@@ -7,10 +7,10 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
-import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.FileCallback;
 import im.actor.model.modules.file.DownloadManager;
 import im.actor.model.modules.file.entity.Downloaded;
-import im.actor.model.viewmodel.UploadCallback;
+import im.actor.model.viewmodel.UploadFileCallback;
 import im.actor.model.modules.file.UploadManager;
 import im.actor.model.modules.utils.BaseKeyValueEngine;
 import im.actor.model.droidkit.engine.KeyValueEngine;
@@ -67,16 +67,16 @@ public class Files extends BaseModule {
         return downloadedEngine;
     }
 
-    public void bindFile(FileReference fileReference, boolean isAutostart, DownloadCallback callback) {
+    public void bindFile(FileReference fileReference, boolean isAutostart, FileCallback callback) {
         downloadManager.send(new DownloadManager.BindDownload(fileReference, isAutostart, callback));
     }
 
-    public void unbindFile(long fileId, DownloadCallback callback, boolean cancel) {
+    public void unbindFile(long fileId, FileCallback callback, boolean cancel) {
         downloadManager.send(new DownloadManager.UnbindDownload(fileId, cancel, callback));
     }
 
-    public void requestState(long fileId, final DownloadCallback callback) {
-        downloadManager.send(new DownloadManager.RequestState(fileId, new DownloadCallback() {
+    public void requestState(long fileId, final FileCallback callback) {
+        downloadManager.send(new DownloadManager.RequestState(fileId, new FileCallback() {
             @Override
             public void onNotDownloaded() {
                 runOnUiThread(new Runnable() {
@@ -119,11 +119,11 @@ public class Files extends BaseModule {
 
     // Upload
 
-    public void bindUploadFile(long rid, UploadCallback uploadCallback) {
-        uploadManager.send(new UploadManager.BindUpload(rid, uploadCallback));
+    public void bindUploadFile(long rid, UploadFileCallback uploadFileCallback) {
+        uploadManager.send(new UploadManager.BindUpload(rid, uploadFileCallback));
     }
 
-    public void unbindUploadFile(long rid, UploadCallback callback) {
+    public void unbindUploadFile(long rid, UploadFileCallback callback) {
         uploadManager.send(new UploadManager.UnbindUpload(rid, callback));
     }
 
@@ -135,7 +135,7 @@ public class Files extends BaseModule {
         uploadManager.send(new UploadManager.StopUpload(rid));
     }
 
-    public void requestUploadState(long rid, UploadCallback callback) {
+    public void requestUploadState(long rid, UploadFileCallback callback) {
         uploadManager.send(new UploadManager.RequestState(rid, callback));
     }
 

@@ -22,6 +22,7 @@
     ABAddressBookRequestAccessWithCompletion(ab, ^(bool granted, CFErrorRef error) {
         if (!granted) {
             NSLog(@"Access to AddressBook denied");
+              [callback onLoadedWithJavaUtilList:[[JavaUtilVector alloc] init]];
             return;
         }
         

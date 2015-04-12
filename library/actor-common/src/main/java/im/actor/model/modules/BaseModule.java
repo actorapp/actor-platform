@@ -46,7 +46,7 @@ public class BaseModule {
     }
 
     public void runOnUiThread(Runnable runnable) {
-        modules.getConfiguration().getMainThreadProvider().runOnUiThread(runnable);
+        modules.getConfiguration().getMainThreadProvider().postToMainThread(runnable);
     }
 
     public ActorRef sendActor() {

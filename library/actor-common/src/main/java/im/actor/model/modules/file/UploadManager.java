@@ -14,7 +14,7 @@ import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.entity.Downloaded;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
-import im.actor.model.viewmodel.UploadCallback;
+import im.actor.model.viewmodel.UploadFileCallback;
 
 /**
  * Created by ex3ndr on 03.03.15.
@@ -65,7 +65,7 @@ public class UploadManager extends ModuleActor {
                 queueItem.isStarted = false;
             }
             queue.remove(queueItem);
-            for (final UploadCallback callback : queueItem.callbacks) {
+            for (final UploadFileCallback callback : queueItem.callbacks) {
                 Environment.dispatchCallback(new Runnable() {
                     @Override
                     public void run() {
@@ -77,7 +77,7 @@ public class UploadManager extends ModuleActor {
         checkQueue();
     }
 
-    public void bindUpload(long rid, final UploadCallback callback) {
+    public void bindUpload(long rid, final UploadFileCallback callback) {
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
             Environment.dispatchCallback(new Runnable() {
@@ -107,14 +107,14 @@ public class UploadManager extends ModuleActor {
         }
     }
 
-    public void unbindUpload(long rid, UploadCallback callback) {
+    public void unbindUpload(long rid, UploadFileCallback callback) {
         QueueItem queueItem = findItem(rid);
         if (queueItem != null) {
             queueItem.callbacks.remove(callback);
         }
     }
 
-    public void requestState(long rid, final UploadCallback callback) {
+    public void requestState(long rid, final UploadFileCallback callback) {
         QueueItem queueItem = findItem(rid);
         if (queueItem == null) {
             Environment.dispatchCallback(new Runnable() {
@@ -153,7 +153,7 @@ public class UploadManager extends ModuleActor {
                 queueItem.isStopped = false;
             }
             queueItem.progress = 0;
-            for (final UploadCallback callback : queueItem.callbacks) {
+            for (final UploadFileCallback callback : queueItem.callbacks) {
                 Environment.dispatchCallback(new Runnable() {
                     @Override
                     public void run() {
@@ -174,7 +174,7 @@ public class UploadManager extends ModuleActor {
                 queueItem.isStarted = false;
             }
             queueItem.isStopped = true;
-            for (final UploadCallback callback : queueItem.callbacks) {
+            for (final UploadFileCallback callback : queueItem.callbacks) {
                 Environment.dispatchCallback(new Runnable() {
                     @Override
                     public void run() {
@@ -207,7 +207,7 @@ public class UploadManager extends ModuleActor {
         queueItem.isStopped = true;
         queueItem.isStarted = false;
 
-        for (final UploadCallback callback : queueItem.callbacks) {
+        for (final UploadFileCallback callback : queueItem.callbacks) {
             Environment.dispatchCallback(new Runnable() {
                 @Override
                 public void run() {
@@ -237,7 +237,7 @@ public class UploadManager extends ModuleActor {
 
         queueItem.progress = progress;
 
-        for (final UploadCallback fileCallback : queueItem.callbacks) {
+        for (final UploadFileCallback fileCallback : queueItem.callbacks) {
             Environment.dispatchCallback(new Runnable() {
                 @Override
                 public void run() {
@@ -268,7 +268,7 @@ public class UploadManager extends ModuleActor {
         modules().getFilesModule().getDownloadedEngine().addOrUpdateItem(new Downloaded(fileReference.getFileId(),
                 fileReference.getFileSize(), reference.getDescriptor()));
 
-        for (final UploadCallback fileCallback : queueItem.callbacks) {
+        for (final UploadFileCallback fileCallback : queueItem.callbacks) {
             Environment.dispatchCallback(new Runnable() {
                 @Override
                 public void run() {
@@ -349,7 +349,7 @@ public class UploadManager extends ModuleActor {
         private ActorRef taskRef;
         private ActorRef requestActor;
         private String fileName;
-        private ArrayList<UploadCallback> callbacks = new ArrayList<UploadCallback>();
+        private ArrayList<UploadFileCallback> callbacks = new ArrayList<UploadFileCallback>();
 
         private QueueItem(long rid, String fileDescriptor, String fileName, ActorRef requestActor) {
             this.rid = rid;
@@ -426,9 +426,9 @@ public class UploadManager extends ModuleActor {
 
     public static class BindUpload {
         private long rid;
-        private UploadCallback callback;
+        private UploadFileCallback callback;
 
-        public BindUpload(long rid, UploadCallback callback) {
+        public BindUpload(long rid, UploadFileCallback callback) {
             this.rid = rid;
             this.callback = callback;
         }
@@ -437,16 +437,16 @@ public class UploadManager extends ModuleActor {
             return rid;
         }
 
-        public UploadCallback getCallback() {
+        public UploadFileCallback getCallback() {
             return callback;
         }
     }
 
     public static class UnbindUpload {
         private long rid;
-        private UploadCallback callback;
+        private UploadFileCallback callback;
 
-        public UnbindUpload(long rid, UploadCallback callback) {
+        public UnbindUpload(long rid, UploadFileCallback callback) {
             this.rid = rid;
             this.callback = callback;
         }
@@ -455,7 +455,7 @@ public class UploadManager extends ModuleActor {
             return rid;
         }
 
-        public UploadCallback getCallback() {
+        public UploadFileCallback getCallback() {
             return callback;
         }
     }
@@ -558,9 +558,9 @@ public class UploadManager extends ModuleActor {
 
     public static class RequestState {
         private long rid;
-        private UploadCallback callback;
+        private UploadFileCallback callback;
 
-        public RequestState(long rid, UploadCallback callback) {
+        public RequestState(long rid, UploadFileCallback callback) {
             this.rid = rid;
             this.callback = callback;
         }
@@ -569,7 +569,7 @@ public class UploadManager extends ModuleActor {
             return rid;
         }
 
-        public UploadCallback getCallback() {
+        public UploadFileCallback getCallback() {
             return callback;
         }
     }

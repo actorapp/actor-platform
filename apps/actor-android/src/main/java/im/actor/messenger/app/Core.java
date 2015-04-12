@@ -14,6 +14,7 @@ import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.R;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
 import im.actor.messenger.app.service.KeepAliveService;
@@ -98,7 +99,9 @@ public class Core {
         this.imageLoader = new ImageLoader(clasificator, application);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
-        AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(application);
+        AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(
+                application.getResources().getString(R.string.app_locale),
+                application);
         if (BuildConfig.ENABLE_PHONE_BOOK) {
             builder.setPhoneBookProvider(new AndroidPhoneBook());
         } else {

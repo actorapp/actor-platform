@@ -14,12 +14,8 @@ public class UserTypingVM {
         this.userTyping = new ValueModel<Boolean>("user." + uid + ".typing", false);
     }
 
-    public void onTypingStart() {
-        userTyping.change(true);
-    }
-
-    public void onTypingEnd() {
-        userTyping.change(false);
+    public int getUid() {
+        return uid;
     }
 
     public ValueModel<Boolean> getTyping() {

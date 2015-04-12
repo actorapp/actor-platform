@@ -9,7 +9,8 @@ import im.actor.model.jvm.JvmConfigurationBuilder;
  */
 public class AndroidConfigurationBuilder extends JvmConfigurationBuilder {
 
-    public AndroidConfigurationBuilder(Context context) {
+    public AndroidConfigurationBuilder(String locale, Context context) {
+        super(locale);
         setMainThreadProvider(new AndroidMainThreadProvider());
         setThreadingProvider(new AndroidThreadingProvider("europe.pool.ntp.org", context));
         setLog(new AndroidLog());

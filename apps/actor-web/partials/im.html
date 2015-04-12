@@ -1,0 +1,120 @@
+
+<div class="main_head_bg"></div>
+
+<div class="im_page">
+	<div class="im_page_head">
+		<div class="im_page_nav">
+			<div class="top_home_link">
+				<i class="icon home_logo"></i><div class="home_title">Actor</div>
+			</div>
+			<div class="top_nav_link active" id="head_chats">
+				Chats
+			</div>
+			<div class="top_nav_link" id="head_contacts">
+				Contscts
+			</div>			
+			<div class="top_nav_link" id="head_settings">
+				Settings
+			</div>			
+		</div>		
+		<div class="top_user_wrap">
+			<div class="top_user_pic_wrap">
+				<img class="top_user_pic" src="https://pp.vk.me/c623217/v623217287/18f6e/40PGwIa5MSE.jpg">
+			</div>
+			
+			<div class="top_user_name">Narek Abovyan</div>
+		</div>
+	</div>
+	<div class="im_page_wrap">
+		<div class="im_top_controls">
+
+			<div class="top_left_wrap">
+				<div class="chats_search_wrap">
+					<div class="top_search_wrap">
+						<div class="controls_ico top_search"></div>
+					</div>
+					<span class="all_chats_title">Search</span> 
+					<div class="top_new_chat_wrap">
+						<div class="controls_ico top_new_chat"></div>		
+					</div> 
+				</div>					
+			</div>
+			<div class="top_right_wrap">
+				<div class="chats_title_wrap">
+					<div class="chats_title">
+						<span class="chat_name">Test</span>
+						<span class="chat_members_status">21 members, 4 online</span> 						
+					</div>
+
+					<div class="top_btns_wrap">
+						<div class="add_person_wrap">
+							<div class="controls_ico add_person"></div>
+						</div>
+						<div class="volume_off_wrap">
+							<div class="controls_ico volume_off"></div>	
+						</div>
+						<div class="more_opt_wrap">
+							<div class="controls_ico more_opt"></div>			
+						</div>		
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="im_chats_wrap">
+			<div class="im_dialogs_wrap" ng-controller="AppImDialogsController">
+				<div ng-repeat="dialog in dialogs">
+					<div class="im_dialog_wrap" ng-mousedown="dialogSelect(dialog.peer.peer.id);">
+						<div class="im_dialog">
+							<div class="im_dialog_meta">{{dialog.date}}</div>
+							<div class="im_dialog_photo" ng-bind-html="dialog.pic"> 
+							</div>
+							<div class="im_dialog_message_wrap">
+								<div class="im_diaog_peer">{{dialog.peer.title}}</div>
+								<div class="im_dialog_message">{{dialog.text}}</div> 
+							</div>							
+						</div>
+					</div> 
+				</div> 
+			</div>		
+				<div class="im_history_wrap" ng-hide="historyHide" ng-controller="AppIMChat">
+					<div class="im_history_chat_wrap" scroll-glue>
+						<div class="im_history_chat">
+							<div ng-repeat="message in messages" class="im_message">
+								<div class="im_message_meta">{{message.date}}</div>
+								<div class="im_message_photo" ng-bind-html="message.pic"> 
+								</div>
+								<div class="im_message_wrap">
+									<div class="im_message_peer">{{message.sender.title}}</div>
+									<div class="im_message_text">{{message.content.text}} </div> 
+								</div>		
+								
+							</div>
+						</div>
+					</div>
+				<div class="im_bottom_panel_wrap"> 
+					<div class="im_send_panel_wrap"> 
+						<div class="im_send_field_wrap">
+							<textarea  ng-keypress="sendMessage(peer, message, $event)" ng-model="message.text" class="im_message_field" placeholder="Write a message..."> </textarea>
+						</div>
+						<div class="im_send_bottom_wrap">
+							<div class="im_message_send_btn_wrap" ng-mousedown="sendMessage(peer, message);">
+								<div class="im_message_send_btn">Send</div>
+							</div> 
+							<div class="im_send_constrols_wrap">
+								<div class="im_attach_wrap">
+									<div class="im_attach_btn">
+										
+									</div>
+								</div>
+							</div> 
+						</div>
+					</div>
+				</div>
+			</div>	
+			<div class="im_history_not_selected_wrap">
+				<div class="im_history_not_selected"> Please select a chat to start messaging </div>	
+			</div>				
+		</div>
+	</div>
+</div> 
