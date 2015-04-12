@@ -22,10 +22,6 @@ import im.actor.messenger.app.emoji.EmojiProcessor;
  */
 public class EmojiPackView extends View {
 
-    public interface OnEmojiClickedListener {
-        public void onEmojiClicked(long smileId);
-    }
-
     private int rowCount;
     private int countInRow;
     private EmojiProcessor processor;
@@ -39,7 +35,7 @@ public class EmojiPackView extends View {
     private Rect rect = new Rect();
     private Rect sectionRect = new Rect();
     private Paint paint = new Paint();
-    private OnEmojiClickedListener onEmojiClickedListener;
+    private OnEmojiClickListener onEmojiClickListener;
     private float touchX, touchY;
 
     public EmojiPackView(Context context, EmojiProcessor processor,
@@ -72,12 +68,12 @@ public class EmojiPackView extends View {
         setMeasuredDimension(smileySize * countInRow, smileySize * rowCount);
     }
 
-    public OnEmojiClickedListener getOnEmojiClickedListener() {
-        return onEmojiClickedListener;
+    public OnEmojiClickListener getOnEmojiClickListener() {
+        return onEmojiClickListener;
     }
 
-    public void setOnEmojiClickedListener(OnEmojiClickedListener onEmojiClickedListener) {
-        this.onEmojiClickedListener = onEmojiClickedListener;
+    public void setOnEmojiClickListener(OnEmojiClickListener onEmojiClickListener) {
+        this.onEmojiClickListener = onEmojiClickListener;
     }
 
     @Override
@@ -96,9 +92,9 @@ public class EmojiPackView extends View {
                         int col = (int) ((touchX - offsetLeft) / smileySize);
                         int index = row * countInRow + col;
                         if (index >= 0 && index < smileyIds.length) {
-                            if (onEmojiClickedListener != null) {
+                            if (onEmojiClickListener != null) {
                                 playSoundEffect(SoundEffectConstants.CLICK);
-                                onEmojiClickedListener.onEmojiClicked(smileyIds[index]);
+                                onEmojiClickListener.onEmojiClicked(smileyIds[index]);
                             }
                         }
                     }

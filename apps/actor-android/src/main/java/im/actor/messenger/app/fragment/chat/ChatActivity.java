@@ -42,7 +42,7 @@ import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.emoji.keyboard.EmojiKeyboardPopup;
-import im.actor.messenger.app.emoji.keyboard.EmojiPackView;
+import im.actor.messenger.app.emoji.keyboard.OnEmojiClickListener;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
@@ -316,7 +316,7 @@ public class ChatActivity extends BaseActivity {
         final EmojiKeyboardPopup emojiKeyboard = new EmojiKeyboardPopup(rootView, this);
 
 
-        emojiKeyboard.setOnEmojiClickedListener(new EmojiPackView.OnEmojiClickedListener() {
+        emojiKeyboard.setOnEmojiClickListener(new OnEmojiClickListener() {
             @Override
             public void onEmojiClicked(long smileId) {
                 String smile = null;
