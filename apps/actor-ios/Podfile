@@ -1,9 +1,9 @@
 platform :ios, '7.0'
 workspace 'ActorApp'
-xcodeproj 'ActorClient.xcodeproj'
+xcodeproj 'ActorApp.xcodeproj'
 
-target 'ActorClient' do
-	xcodeproj 'ActorClient.xcodeproj'
+target 'ActorApp' do
+	xcodeproj 'ActorApp.xcodeproj'
 
 	# ABPhoneField dependency
 	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'

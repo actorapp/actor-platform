@@ -58,6 +58,7 @@ android {
     def HOCKEY_DEV1 = "\"e2fb9a8444e1d8a5d90dba0e0c9ed534\""
     def HOCKEY_DEV2 = "\"0280d81114489bc0f306f5d94a38def1\""
     def HOCKEY_LLECTRO = "\"95bd155a24b62dceb159444f8bfda949\""
+    def HOCKEY_MODUL = "\"a86c3991f26b932064caf0848bc003a0\""
 
     def MINT_MAIN = "\"4345135a\""
 
@@ -103,6 +104,13 @@ android {
             applicationIdSuffix ".llectro"
             signingConfig signingConfigs.release
             buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
+        }
+
+        modul {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Modul)\""
+            applicationIdSuffix ".modul"
+            signingConfig signingConfigs.release
+            buildConfigField STRING, HOCKEY, HOCKEY_MODUL
         }
 
         mchs {
@@ -176,6 +184,8 @@ android {
                     output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-llectro.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-modul.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Modul-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
@@ -189,12 +199,17 @@ android {
 
         debug {
             // res.srcDirs = ['src/themes/dev',  'src/themes/dark',  'src/material-icons']
-            res.srcDirs = ['src/themes/dev', 'src/material-icons']
+            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         llectro {
             res.srcDirs = ['src/themes/main', 'src/themes/dark', 'src/material-icons']
+            java.srcDirs = ['src/play/java']
+        }
+
+        modul {
+            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
@@ -327,6 +342,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:palette-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
+
     releaseCompile 'com.google.android.gms:play-services:6.+'
     playCompile 'com.google.android.gms:play-services:6.+'
     debugCompile 'com.google.android.gms:play-services:6.+'
@@ -335,12 +351,13 @@ dependencies {
     dev2Compile 'com.google.android.gms:play-services:6.+'
     mchsCompile 'com.google.android.gms:play-services:6.+'
     llectroCompile 'com.google.android.gms:play-services:6.+'
+    modulCompile 'com.google.android.gms:play-services:6.+'
 
     // Integration
-    compile files('libs/HockeySDK-3.0.2.jar')
+    compile files('libs/HockeySDK-3.5.0.jar')
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleMchs']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleModul']) {
 
 }

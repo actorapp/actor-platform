@@ -34,6 +34,8 @@ class AAUserInfoCell: AATableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        selectionStyle = UITableViewCellSelectionStyle.None
+        
         userAvatarView = AvatarView(frameSize: 65)
         contentView.addSubview(userAvatarView)
         
@@ -47,7 +49,7 @@ class AAUserInfoCell: AATableViewCell {
         
         presenceLabel = UILabel()
         presenceLabel.backgroundColor = UIColor.whiteColor()
-        presenceLabel.textColor = Resources.PrimaryDarkText
+        presenceLabel.textColor = Resources.SecondaryDarkText
         presenceLabel.font = UIFont.systemFontOfSize(14)
         presenceLabel.text = " "
         presenceLabel.sizeToFit()

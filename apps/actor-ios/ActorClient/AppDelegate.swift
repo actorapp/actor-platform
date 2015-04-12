@@ -10,36 +10,43 @@ import Foundation
 
 @objc class AppDelegate : UIResponder,  UIApplicationDelegate {
     
+    // MARK: -
+    // MARK: Private vars
+    
     private var window : UIWindow?;
+    private var binder = Binder()
+    
+    // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         
-//        application.statusBarStyle = UIStatusBarStyle.LightContent
-//        
-//        var navAppearance = UINavigationBar.appearance();
-//        navAppearance.tintColor = UIColor.whiteColor();
-//        navAppearance.barTintColor = UIColor.whiteColor();
-//        navAppearance.backgroundColor = Resources.TintColor;
-//        navAppearance.setBackgroundImage(Imaging.imageWithColor(Resources.TintColor, size: CGSize(width: 1, height: 46)), forBarMetrics: UIBarMetrics.Default)
-//        navAppearance.shadowImage = UIImage(named: "CardBottom2")
-//        navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-//        navAppearance.translucent = false;
-//        
+        application.statusBarStyle = UIStatusBarStyle.LightContent
+
+        var navAppearance = UINavigationBar.appearance();
+        navAppearance.tintColor = UIColor.whiteColor();
+        navAppearance.barTintColor = Resources.PrimaryColor;
+//        navAppearance.backgroundColor = Resources.PrimaryColor;
+//        navAppearance.setBackgroundImage(Imaging.imageWithColor(Resources.PrimaryColor, size: CGSize(width: 1, height: 46)), forBarMetrics: UIBarMetrics.Default)
+        navAppearance.shadowImage = UIImage(named: "CardBottom2")
+        navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
+        navAppearance.translucent = true;
+//
 
         
-        var textFieldAppearance = UITextField.appearance();
-        textFieldAppearance.tintColor = Resources.TintColor;
+//        var textFieldAppearance = UITextField.appearance();
+//        textFieldAppearance.tintColor = Resources.TintColor;
         
         //var searchBarAppearance = UISearchBar.appearance();
         //searchBarAppearance.tintColor = Resources.TintColor;
         
 
+//         273c52
         
         UITabBar.appearance().translucent = false
         UITabBar.appearance().tintColor = Resources.BarTintColor;
-        UITabBar.appearance().backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 46))
+//        UITabBar.appearance().backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 46))
         UITabBar.appearance().shadowImage = UIImage(named: "CardTop2");
-        UITabBar.appearance().selectionIndicatorImage = Imaging.imageWithColor(UIColor(red: 0xeb/255.0, green: 0xed/255.0, blue: 0xf2/255.0, alpha: 1), size: CGSize(width: 1, height: 46)).resizableImageWithCapInsets(UIEdgeInsetsZero);
+//        UITabBar.appearance().selectionIndicatorImage = Imaging.imageWithColor(UIColor(red: 0xeb/255.0, green: 0xed/255.0, blue: 0xf2/255.0, alpha: 1), size: CGSize(width: 1, height: 46)).resizableImageWithCapInsets(UIEdgeInsetsZero);
         
         //        setTitleTextAttributes(NSForegroundColorAttributeName, );
         
@@ -65,7 +72,7 @@ import Foundation
         //        [CocoaMessenger messenger];
 
         
-        var rootController = UINavigationController(rootViewController: MainTabController());
+        var rootController = MainTabController()
     
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.rootViewController = rootController;
@@ -75,11 +82,38 @@ import Foundation
         if (MSG.isLoggedIn() == false) {
             let phoneController = AAAuthPhoneController()
             var loginNavigation = AANavigationController(rootViewController: phoneController)
+            loginNavigation.navigationBar.tintColor = Resources.BarTintColor
             loginNavigation.makeBarTransparent()
             rootController.presentViewController(loginNavigation, animated: false, completion: nil)
-//            var controller = UIStoryboard(name: "Auth", bundle: nil).instantiateInitialViewController() as! UIViewController;
-//            rootController.presentViewController(controller, animated: false, completion: nil)
+        } else {
+            if application.respondsToSelector("registerUserNotificationSettings:") {
+                let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+                let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+                application.registerUserNotificationSettings(settings)
+                application.registerForRemoteNotifications()
+            } else {
+                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+            }
         }
+        
+        if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
+            if (hockey.trim().size() > 0) {
+                BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
+                BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
+                BITHockeyManager.sharedHockeyManager().startManager()
+                BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
+            }
+        }
+        
+        binder.bind(MSG.getAppState().getIsAppLoaded(), closure: { (value: Any?) -> () in
+            if let loaded = value as? JavaLangBoolean {
+                if Bool(loaded.booleanValue()) == true {
+                    rootController.hideAppIsSyncingPlaceholder()
+                } else {
+                    rootController.showAppIsSyncingPlaceholder()
+                }
+            }
+        })
         
         return true;
     }
@@ -90,6 +124,18 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
+    }
+    
+    // MARK: -
+    // MARK: Notifications
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
+        MSG.registerApplePushWithInt(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withNSString: tokenString)
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        println("\(userInfo)")
     }
     
 }

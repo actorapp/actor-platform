@@ -26,6 +26,8 @@ public class DataOutput {
             expand(offset + 8);
         }
 
+        v = v & 0xFFFFFFFF;
+
         data[offset++] = (byte) ((v >> 56) & 0xFF);
         data[offset++] = (byte) ((v >> 48) & 0xFF);
         data[offset++] = (byte) ((v >> 40) & 0xFF);

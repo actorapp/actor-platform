@@ -35,7 +35,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.FileCallback;
 import im.actor.model.viewmodel.UserVM;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -300,7 +300,7 @@ public class PictureActivity extends ActionBarActivity {
                 }
             });
             if(path==null){
-                messenger().requestState( fileId, new DownloadCallback() {
+                messenger().requestState( fileId, new FileCallback() {
                     @Override
                     public void onNotDownloaded() {
                         //messenger().startDownloading(location);

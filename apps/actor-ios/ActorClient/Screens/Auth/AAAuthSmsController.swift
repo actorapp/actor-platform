@@ -106,32 +106,31 @@ class AAAuthSmsController: AAViewController {
     // MARK: Methods
     
     func nextButtonPressed() {
-        SVProgressHUD.showWithMaskType(SVProgressHUDMaskType.Black)
-        
-        let messenger = CocoaMessenger.messenger().sendCodeWithInt(jint(codeTextField.text.toInt()!))
-        messenger.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
+        execute(MSG.sendCodeWithInt(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
             if let state = val as? AMAuthStateEnum {
                 let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
                 if state.ordinal() == loggedInState {
-                    SVProgressHUD.showSuccessWithStatus("Logged in")
                     self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
                 } else {
-                    SVProgressHUD.showSuccessWithStatus(state.description())
+//                    SVProgressHUD.showSuccessWithStatus(state.description())
                     self.navigateToRegistration()
                 }
             }
-            SVProgressHUD.dismiss()
-            }, error: { (exception) -> () in
-                SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
-        }))
+            }, failureBlock: { (val) -> () in
+                if let exception = val as? JavaLangException {
+                    println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+                }
+        })
     }
     
     // MARK: -
     // MARK: Navigate
     
     private func navigateToRegistration() {
-        let registerController = AAAuthRegisterController()
-        navigationController!.pushViewController(registerController, animated: true)
+        dispatch_async(dispatch_get_main_queue(), {
+            let registerController = AAAuthRegisterController()
+            self.navigationController!.pushViewController(registerController, animated: true)
+        })
     }
 }
 

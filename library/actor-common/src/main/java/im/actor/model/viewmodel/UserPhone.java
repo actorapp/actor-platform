@@ -1,21 +1,38 @@
 package im.actor.model.viewmodel;
 
 /**
- * Created by ex3ndr on 25.02.15.
+ * User's Phone record
  */
 public class UserPhone {
     private long phone;
     private String title;
 
+    /**
+     * <p>INTERNAL API</p>
+     * Create User phone
+     *
+     * @param phone phone in international format
+     * @param title title of phone
+     */
     public UserPhone(long phone, String title) {
         this.phone = phone;
         this.title = title;
     }
 
+    /**
+     * Get Phone number
+     *
+     * @return phone number in international format
+     */
     public long getPhone() {
         return phone;
     }
 
+    /**
+     * Get Phone title
+     *
+     * @return phone title
+     */
     public String getTitle() {
         return title;
     }

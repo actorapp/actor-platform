@@ -3,21 +3,37 @@ package im.actor.model.viewmodel;
 import im.actor.model.mvvm.ValueModel;
 
 /**
- * Created by ex3ndr on 19.02.15.
+ * User Typing View Model
  */
 public class GroupTypingVM {
     private int gid;
     private ValueModel<int[]> active;
 
+    /**
+     * <p>INTERNAL API</p>
+     * Create Group Typing View Model
+     *
+     * @param gid group id
+     */
     public GroupTypingVM(int gid) {
         this.gid = gid;
         this.active = new ValueModel<int[]>("groups." + gid + ".typing", new int[0]);
     }
 
+    /**
+     * Get Value Model's Group Id
+     *
+     * @return Group Id
+     */
     public int getGid() {
         return gid;
     }
 
+    /**
+     * Get Value Model of active typing users
+     *
+     * @return ValueModel of int[] with user ids
+     */
     public ValueModel<int[]> getActive() {
         return active;
     }

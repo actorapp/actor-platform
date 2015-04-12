@@ -1,7 +1,7 @@
 package im.actor.model;
 
 /**
- * Created by ex3ndr on 08.02.15.
+ * State of Authentication
  */
 public enum AuthState {
     AUTH_START,

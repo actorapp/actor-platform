@@ -15,8 +15,8 @@ class AAUserInfoController: AATableViewController {
     
     private let WhiteHeaderIdentifier = "WhiteHeaderIdentifier"
     private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
-    private let TitledCellIdentifier = "TitledCellIdentifier"
     private let CellIdentifier = "CellIdentifier"
+    private let TitledCellIdentifier = "TitledCellIdentifier"
     
     // MARK: -
     // MARK: Public vars
@@ -46,9 +46,9 @@ class AAUserInfoController: AATableViewController {
         
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
-        tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
-        tableView.registerClass(AAUserInfoTitledCell.self, forCellReuseIdentifier: TitledCellIdentifier) // TODO: Do we display phone numbers or no? 
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
+        tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.registerClass(AAUserInfoTitledCell.self, forCellReuseIdentifier: TitledCellIdentifier) // TODO: Do we display phone numbers or no?
         
         tableView.reloadData()
         
@@ -82,8 +82,19 @@ class AAUserInfoController: AATableViewController {
             self.tableView.reloadSections(NSIndexSet(index: 3), withRowAnimation: UITableViewRowAnimation.None)
         })
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
         navigationItem.rightBarButtonItem = editButtonItem()
+        
+        // TODO: Allow cancellation
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        MSG.onProfileOpen(jint(uid))
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        MSG.onProfileClosed(jint(uid))
     }
     
     // MARK: -
@@ -262,8 +273,8 @@ class AAUserInfoController: AATableViewController {
     // MARK: Navigation
     
     private func navigateToMessages() {
-        let messagesController = MessagesViewController(peer: AMPeer.userWithInt(jint(uid)))
-        navigationController?.pushViewController(messagesController, animated: true);
+        let conversationController = AAConversationController(peer: AMPeer.userWithInt(jint(uid)))
+        navigationController?.pushViewController(conversationController, animated: true);
     }
 
 }

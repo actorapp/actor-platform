@@ -18,6 +18,7 @@
 #import <AsyncDisplayKit/ASDisplayNode+Subclasses.h>
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <VENTokenField/VENTokenField.h>
+#import <HockeySDK/HockeySDK.h>
 #import "SVProgressHUD.h"
 #import "MMAnonymousClass.h"
 

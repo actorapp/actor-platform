@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ActorClient-Swift.h"
+#import "ActorApp-Swift.h"
 
 int main(int argc, char * argv[]) {
     @autoreleasepool {
