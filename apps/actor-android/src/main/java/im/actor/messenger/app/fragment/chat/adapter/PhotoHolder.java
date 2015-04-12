@@ -1,6 +1,5 @@
 package im.actor.messenger.app.fragment.chat.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -267,8 +266,9 @@ public class PhotoHolder extends MessageHolder {
                     MVVMEngine.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Activity activity = getAdapter().getMessagesFragment().getActivity();
-                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                            Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), previewView, reference.getDescriptor(), currentMessage.getSenderId());
+                            /*Activity activity = getAdapter().getMessagesFragment().getActivity();
+                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));*/
                         }
                     });
                 }

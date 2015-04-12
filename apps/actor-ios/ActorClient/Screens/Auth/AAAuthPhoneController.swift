@@ -142,15 +142,14 @@ class AAAuthPhoneController: AAViewController {
         if (numberLength != numberRequiredLength) {
             SVProgressHUD.showErrorWithStatus("Wrong phone length")
         } else {
-            SVProgressHUD.showWithMaskType(SVProgressHUDMaskType.Black)
             
-            let messenger = CocoaMessenger.messenger().requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue))
-            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
+            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)), successBlock: { (val) -> () in
                 self.navigateToSms()
-                SVProgressHUD.dismiss()
-                }, error: { (exception) -> () in
-                    SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
-            }))
+                }, failureBlock: { (val) -> () in
+                    if let exception = val as? JavaLangException {
+                        println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+                    }
+            })
 
         }
     }

@@ -1,8 +1,8 @@
 //
-//  MessagesViewController.swift
-//  ActorClient
+//  AAConversationController.swift
+//  ActorApp
 //
-//  Created by Stepan Korshakov on 11.03.15.
+//  Created by Danil Gontovnik on 4/10/15.
 //  Copyright (c) 2015 Actor LLC. All rights reserved.
 //
 
@@ -10,16 +10,31 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegate, ABActionShitDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
+class AAConversationController: EngineSlackListController {
+    
+    // MARK: -
+    // MARK: Private vars
+    
+    private let BubbleTextIdentifier = "BubbleTextIdentifier"
+    private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
+    private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
+    private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
+    private let BubbleUnsupportedIdentifier = "BubbleUnsupportedIdentifier"
+    
+    private let titleView: UILabel = UILabel();
+    private let subtitleView: UILabel = UILabel();
+    private let navigationView: UIView = UIView();
+    
+    private let avatarView = BarAvatarView(frameSize: 36)
+    
+    // MARK: -
+    // MARK: Public vars
+    
     var peer: AMPeer!;
     let binder: Binder = Binder();
     
-    let titleView: UILabel = UILabel();
-    let subtitleView: UILabel = UILabel();
-    let navigationView: UIView = UIView();
-    
-    let avatarView = BarAvatarView(frameSize: 36)
+    // MARK: -
+    // MARK: Constructors
     
     init(peer: AMPeer) {
         super.init(isInverted: true);
@@ -79,17 +94,21 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: -
+    
     override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated);
-        textView.text = MSG.loadDraft(peer);
-        var image = UIImage(named: "ChatBackground");
-        var bg = UIImageView(image: UIImage(named: "ChatBackground"));
-        view.insertSubview(bg, atIndex: 0);
+        super.viewWillAppear(animated)
+        
+        textView.text = MSG.loadDraft(peer)
+        
+        var image = UIImage(named: "ChatBackground")!
+        var chatBackground = UIImageView(image: image)
+        view.insertSubview(chatBackground, atIndex: 0)
         
         // Installing bindings
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
@@ -160,16 +179,24 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         MSG.onConversationOpen(peer)
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        MSG.onConversationClosed(peer)
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         if count(navigationController!.viewControllers) > 2 {
             if let firstController = navigationController!.viewControllers[0] as? UIViewController,
-               let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? MessagesViewController {
-                navigationController!.setViewControllers([firstController, currentController], animated: false)
+                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? AAConversationController {
+                    navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
         }
     }
+    
+    // MARK: -
+    // MARK: Methods
     
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
@@ -182,12 +209,6 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
             groupInfoController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(groupInfoController, animated: true)
         }
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        MSG.onConversationClosed(peer)
     }
     
     override func textWillUpdate() {
@@ -215,102 +236,42 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
         actionShit.showWithCompletion(nil)
     }
     
-    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
-        if (buttonIndex == 0) {
-            var pickerController = UIImagePickerController()
-            pickerController.sourceType = UIImagePickerControllerSourceType.Camera
-            pickerController.mediaTypes = [kUTTypeImage]
-            pickerController.view.backgroundColor = UIColor.blackColor()
-            pickerController.navigationBar.tintColor = Resources.TintColor
-            pickerController.delegate = self
-            pickerController.navigationBar.tintColor = UIColor.whiteColor()
-            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-            self.presentViewController(pickerController, animated: true, completion: nil)
-        } else if (buttonIndex == 1) {
-//            var pickerController = UIImagePickerController()
-//            pickerController.sourceType = UIImagePickerControllerSourceType.Camera
-//            pickerController.mediaTypes = [kUTTypeVideo, kUTTypeMovie]
-//            pickerController.view.backgroundColor = UIColor.blackColor()
-//            pickerController.navigationBar.tintColor = Resources.TintColor
-//            pickerController.delegate = self
-//            pickerController.navigationBar.tintColor = UIColor.whiteColor()
-//            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-//            self.presentViewController(pickerController, animated: true, completion: nil)
-//        } else if (buttonIndex == 2) {
-            var pickerController = UIImagePickerController()
-            pickerController.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-            pickerController.mediaTypes = [kUTTypeImage, kUTTypeVideo, kUTTypeMovie]
-            pickerController.view.backgroundColor = UIColor.blackColor()
-            pickerController.navigationBar.tintColor = Resources.TintColor
-            pickerController.delegate = self
-            pickerController.navigationBar.tintColor = UIColor.whiteColor()
-            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-            self.presentViewController(pickerController, animated: true, completion: nil)
-//        } else if (buttonIndex == 3) {
-//            var documentView = UIDocumentPickerViewController(documentTypes: [kUTTypeText as NSString, "com.apple.iwork.pages.pages", "com.apple.iwork.numbers.numbers", "com.apple.iwork.keynote.key"], inMode: UIDocumentPickerMode.Import)
-//            documentView.delegate = self
-//            documentView.view.backgroundColor = UIColor.whiteColor()
-//            self.presentViewController(documentView, animated: true, completion: nil)
-        }
-    }
-    
-    // Image picker
-    
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
-        
-        MSG.sendUIImage(image, peer: peer!)
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
-        
-        MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer!)
-    }
-    
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    // Document picker
-    
-    func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
-        var path = url.path;
-        
-        // TODO: Implement
-    }
+    // MARK: -
+    // MARK: UITableView
     
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
         
         var message = (item as! AMMessage);
         
         if (message.getContent() is AMTextContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier("bubble_text") as! BubbleTextCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! BubbleTextCell?
             if (cell == nil) {
-                cell = BubbleTextCell(reuseId: "bubble_text")
+                cell = BubbleTextCell(reuseId: BubbleTextIdentifier)
             }
             return cell!
         } else if (message.getContent() is AMPhotoContent || message.getContent() is AMVideoContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier("bubble_media") as! BubbleMediaCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! BubbleMediaCell?
             if (cell == nil) {
-                cell = BubbleMediaCell(reuseId: "bubble_media")
+                cell = BubbleMediaCell(reuseId: BubbleMediaIdentifier)
             }
             return cell!
             
         } else if (message.getContent() is AMServiceContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier("bubble_service") as! BubbleServiceCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! BubbleServiceCell?
             if (cell == nil) {
-                cell = BubbleServiceCell(reuseId: "bubble_service")
+                cell = BubbleServiceCell(reuseId: BubbleServiceIdentifier)
+            }
+            return cell!
+        } else if (message.getContent() is AMDocumentContent) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
+            if cell == nil {
+                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier)
             }
             return cell!
         } else {
-            var cell = tableView.dequeueReusableCellWithIdentifier("bubble_unsupported") as! BubbleUnsupportedCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleUnsupportedIdentifier) as! AABubbleUnsupportedCell?
             if (cell == nil) {
-                cell = BubbleUnsupportedCell(reuseId: "bubble_unsupported")
+                cell = AABubbleUnsupportedCell(reuseId: BubbleUnsupportedIdentifier)
             }
             return cell!
         }
@@ -333,13 +294,85 @@ class MessagesViewController: EngineSlackListController, UIDocumentPickerDelegat
     override func getDisplayList() -> AMBindedDisplayList {
         return MSG.getMessagesGlobalListWithAMPeer(peer)
     }
+    
 }
+
+// MARK: -
+// MARK: UIDocumentPicker Delegate
+
+extension AAConversationController: UIDocumentPickerDelegate {
+    
+    func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+        var path = url.path;
+        
+        // TODO: Implement
+    }
+    
+}
+
+// MARK: -
+// MARK: UIImagePickerController Delegate
+
+extension AAConversationController: UIImagePickerControllerDelegate {
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+        
+        MSG.sendUIImage(image, peer: peer!)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+        
+        MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer!)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+}
+
+// MARK: -
+// MARK: UINavigationController Delegate
+
+extension AAConversationController: UINavigationControllerDelegate {
+    
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        
+    }
+    
+}
+
+// MARK: -
+// MARK: ABActionShit Delegate
+
+extension AAConversationController: ABActionShitDelegate {
+    
+    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
+        if (buttonIndex == 0 || buttonIndex == 1) {
+            var pickerController = UIImagePickerController()
+            pickerController.sourceType = (buttonIndex == 0 ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+            pickerController.mediaTypes = [kUTTypeImage]
+            pickerController.view.backgroundColor = UIColor.blackColor()
+            pickerController.navigationBar.tintColor = Resources.TintColor
+            pickerController.delegate = self
+            pickerController.navigationBar.tintColor = UIColor.whiteColor()
+            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+            self.presentViewController(pickerController, animated: true, completion: nil)
+        }
+    }
+    
+}
+
+// MARK: -
+// MARK: BarAvatarView
 
 class BarAvatarView : AvatarView {
     override init(frameSize: Int) {
         super.init(frameSize: frameSize)
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

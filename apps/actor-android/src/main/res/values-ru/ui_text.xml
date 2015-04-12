@@ -185,6 +185,7 @@
     <string name="profile_title">Профиль</string>
     <string name="profile_shared_header">Общее</string>
     <string name="profile_shared_files">Документы</string>
+    <string name="profile_shared_media">Медиа</string>
     <string name="profile_settings_header">Настройки</string>
     <string name="profile_settings_notifications">Оповещения</string>
 
@@ -326,8 +327,12 @@
     <string name="alert_invite_text">"{0}" не зарегистрирован в Акторе. Выслать ему приглашение?</string>
     <string name="alert_invite_yes">Пригласить</string>
 
-    <!-- Dialogs -->
+    <!-- Media -->
+    <string name="media">Медиа</string>
+    <string name="media_picture">Изображение</string>
+    <string name="media_pager" formatted="false">%d из %d</string>
 
+    <!-- Dialogs -->
     <string name="alert_leave_group_message">Вы уверены, что хотите выйти из группы "%1$s"?</string>
     <string name="alert_leave_group_yes">Выйти</string>
 

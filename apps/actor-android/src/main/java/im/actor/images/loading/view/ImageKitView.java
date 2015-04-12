@@ -20,6 +20,7 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
     private ImageReceiver receiver;
     private boolean isCallbackBlocked = false;
     private boolean isInternal = false;
+    private ReceiverCallback extraReceiver;
 
     public ImageKitView(Context context) {
         super(context);
@@ -90,7 +91,7 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
     }
 
     public void clear() {
-
+        receiver.clear();
     }
 
     @Override
@@ -99,6 +100,9 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
             isInternal = true;
             setImageBitmap(bitmap.getBitmap());
             isInternal = false;
+        }
+        if(extraReceiver!=null){
+            extraReceiver.onImageLoaded(bitmap);
         }
     }
 
@@ -109,6 +113,9 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
             setImageBitmap(null);
             isInternal = false;
         }
+        if(extraReceiver!=null){
+            extraReceiver.onImageCleared();
+        }
     }
 
     @Override
@@ -118,5 +125,11 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
             setImageBitmap(null);
             isInternal = false;
         }
+        if(extraReceiver!=null){
+            extraReceiver.onImageError();
+        }
+    }
+    public void setExtraReceiverCallback(ReceiverCallback receiverCallback){
+        this.extraReceiver = receiverCallback;
     }
 }

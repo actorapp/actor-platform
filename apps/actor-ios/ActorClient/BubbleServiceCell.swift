@@ -21,16 +21,18 @@ private func measureText(message: String) -> CGRect {
     return CGRectMake(0, 0, round(rect.width), round(rect.height))
 }
 
+// MARK: -
+
 class BubbleServiceCell : BubbleCell {
     
-    class func measureServiceHeight(message: AMMessage) -> CGFloat {
-        var text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent);
-        return measureText(text).height + 16
-    }
-
+    // MARK: -
+    // MARK: Private vars
     
-    var serviceText = UILabel()
-    var serviceBg = UIImageView()
+    private let serviceText = UILabel()
+    private let serviceBackground = UIImageView()
+    
+    // MARK: -
+    // MARK: Constructors
     
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
@@ -42,9 +44,9 @@ class BubbleServiceCell : BubbleCell {
         serviceText.textAlignment = NSTextAlignment.Center
         serviceText.font = serviceBubbleFont;
         
-        serviceBg.image = UIImage(named: "bubble_service_bg");
+        serviceBackground.image = UIImage(named: "bubble_service_bg");
 
-        self.contentView.addSubview(serviceBg)
+        self.contentView.addSubview(serviceBackground)
         self.contentView.addSubview(serviceText)
         
         self.backgroundColor = UIColor.clearColor();
@@ -53,17 +55,46 @@ class BubbleServiceCell : BubbleCell {
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: -
+    // MARK: Bind
 
     override func bind(message: AMMessage, reuse: Bool) {
         serviceText.text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent)
     }
     
+    // MARK: -
+    // MARK: Getters
+    
+    class func measureServiceHeight(message: AMMessage) -> CGFloat {
+        var text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent);
+        return measureText(text).height + 3 + 3 // 3 text top 3 text bottom
+    }
+    
+    class func bubbleTopPadding() -> CGFloat {
+        return 3
+    }
+    
+    class func bubbleBottomPadding() -> CGFloat {
+        return 3
+    }
+    
+    // MARK: -
+    // MARK: Layout
+    
     override func layoutSubviews() {
-        serviceText.frame = CGRectMake((self.contentView.frame.width - CGFloat(maxServiceTextWidth)) / 2.0, 0.0, CGFloat(maxServiceTextWidth), self.contentView.frame.height);
-        serviceText.sizeToFit()
-        serviceText.frame = CGRectMake( (self.contentView.frame.width - serviceText.frame.width) / 2, (self.contentView.frame.height - serviceText.frame.height) / 2, serviceText.frame.width, serviceText.frame.height)
         
-        serviceBg.frame = CGRectMake(serviceText.frame.origin.x - 8, serviceText.frame.origin.y - 3,
-                                    serviceText.frame.width + 16, serviceText.frame.height + 6)
+        var bubbleTopPadding = BubbleServiceCell.bubbleTopPadding()
+        var bubbleBottomPadding = BubbleServiceCell.bubbleBottomPadding()
+        
+        var contentWidth = self.contentView.frame.width
+        var contentHeight = self.contentView.frame.height
+        
+        var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
+        var bubbleWidth = CGFloat(maxServiceTextWidth)
+        
+        let serviceTextSize = serviceText.sizeThatFits(CGSize(width: bubbleWidth, height: CGFloat.max))
+        serviceText.frame = CGRectMake((contentWidth - serviceTextSize.width) / 2.0, bubbleTopPadding + 3, serviceTextSize.width, bubbleHeight - 6);
+        serviceBackground.frame = CGRectMake(serviceText.frame.origin.x - 8, serviceText.frame.origin.y - 3, serviceText.frame.width + 16, serviceText.frame.height + 6)
     }
 }

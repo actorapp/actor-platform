@@ -20,7 +20,6 @@ class AAAuthRegisterController: AAViewController {
     private var avatarImageView: UIImageView!
     
     private var firstNameField: UITextField!
-    private var lastNameField: UITextField!
     
     private var hintLabel: UILabel!
     
@@ -105,30 +104,15 @@ class AAAuthRegisterController: AAViewController {
         firstNameField.font = UIFont.systemFontOfSize(20)
         firstNameField.keyboardType = UIKeyboardType.Default
         firstNameField.returnKeyType = UIReturnKeyType.Next
-        firstNameField.placeholder = "First name" // TODO: Localize
+        firstNameField.placeholder = "Username" // TODO: Localize
         firstNameField.delegate = self
         firstNameField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        firstNameField.frame = CGRectMake(135.0, navigationBarSeparator.frame.origin.y + 8.0, screenSize.width - 134.0 - 8.0, 56.0)
+        firstNameField.frame = CGRectMake(135.0, navigationBarSeparator.frame.origin.y + 34.0, screenSize.width - 134.0 - 8.0, 56.0)
         view.addSubview(firstNameField)
         
         var firstNameFieldSeparator = UIView(frame: CGRect(x: 134.0, y: firstNameField.frame.origin.y + firstNameField.bounds.size.height, width: screenSize.width - 134.0 - 8.0, height: separatorHeight))
         firstNameFieldSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
         view.addSubview(firstNameFieldSeparator)
-        
-        lastNameField = UITextField()
-        lastNameField.backgroundColor = UIColor.whiteColor()
-        lastNameField.font = UIFont.systemFontOfSize(20)
-        lastNameField.placeholder = "Last name" // TODO: Localize
-        lastNameField.keyboardType = UIKeyboardType.Default
-        lastNameField.returnKeyType = UIReturnKeyType.Done
-        lastNameField.delegate = self
-        lastNameField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        lastNameField.frame = CGRectMake(135.0, firstNameFieldSeparator.frame.origin.y + 1, screenSize.width - 134.0 - 8.0, 56.0)
-        view.addSubview(lastNameField)
-        
-        var lastNameFieldSeparator = UIView(frame: CGRect(x: 134.0, y: lastNameField.frame.origin.y + lastNameField.bounds.size.height, width: screenSize.width - 134.0 - 8.0, height: separatorHeight))
-        lastNameFieldSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
-        view.addSubview(lastNameFieldSeparator)
         
         if (isWidescreen) {
             hintLabel = UILabel()
@@ -156,7 +140,7 @@ class AAAuthRegisterController: AAViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        if !firstNameField.isFirstResponder() && !lastNameField.isFirstResponder() {
+        if !firstNameField.isFirstResponder() {
             firstNameField.becomeFirstResponder()
         }
     }
@@ -175,16 +159,11 @@ class AAAuthRegisterController: AAViewController {
     }
     
     func nextButtonPressed() {
-        let firstName = firstNameField.text
+        let username = firstNameField.text
         
-        if count(firstName) == 0 {
+        if count(username) == 0 {
             shakeView(firstNameField, originalX: 135.0)
         } else {
-            var fullName: String = firstName
-            if count(lastNameField.text) > 0 {
-                fullName = fullName + " \(lastNameField.text)"
-            }
-            
             var avatarPath: String = ""
             
             if avatarImageView.image != nil {
@@ -194,10 +173,7 @@ class AAAuthRegisterController: AAViewController {
                 UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
-            SVProgressHUD.showWithStatus("Saving profile")
-            let messenger = CocoaMessenger.messenger().signUpWithNSString(fullName, withNSString: "/tmp/avatar.jpg", withBoolean: true)
-            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
-                SVProgressHUD.dismiss()
+            execute(MSG.signUpWithNSString(username, withNSString: "/tmp/avatar.jpg", withBoolean: true), successBlock: { (val) -> Void in
                 self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: { () -> Void in
                     let application = UIApplication.sharedApplication()
                     if application.respondsToSelector("registerUserNotificationSettings:") {
@@ -209,9 +185,12 @@ class AAAuthRegisterController: AAViewController {
                         application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
                     }
                 })
-                }, error: { (exception) -> () in
-                    SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
-            }))
+            }, failureBlock: { (val) -> Void in
+
+                if let exception = val as? JavaLangException {
+                    println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+                }
+            })
             
         }
     }
@@ -250,8 +229,6 @@ extension AAAuthRegisterController: UITextFieldDelegate {
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         if textField == firstNameField {
-            lastNameField.becomeFirstResponder()
-        } else if textField == lastNameField {
             nextButtonPressed()
         }
         

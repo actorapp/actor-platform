@@ -104,15 +104,7 @@ class AASettingsPrivacyController: AATableViewController {
         
         if indexPath.section == 0 {
             
-            MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
-            let messenger = CocoaMessenger.messenger().terminateAllSessions()
-            messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
-                println("\(val)")
-                MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-                }, error: { (exception) -> () in
-                    println("\(exception)")
-                    MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-            }))
+            execute(MSG.terminateAllSessions())
         }
     }
 

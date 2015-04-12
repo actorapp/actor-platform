@@ -11,17 +11,21 @@ import Foundation
 extension UIViewController {
     
     func execute(command: AMCommand) {
-        execute(command, completion: nil)
+        execute(command, successBlock: nil, failureBlock: nil)
     }
     
-    func execute(command: AMCommand, completion: (() -> Void)?) {
+    func execute(command: AMCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
         command.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
-            MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-            completion?()
-            }, error: { (val) -> () in
+            dispatch_async(dispatch_get_main_queue(), {
                 MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-                completion?()
+                successBlock?(val: val)
+            })
+            }, error: { (val) -> () in
+                dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
+                    failureBlock?(val: val)
+                })
         }))
     }
     

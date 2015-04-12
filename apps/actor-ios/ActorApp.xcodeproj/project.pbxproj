@@ -674,6 +674,8 @@
 		0541A0651ACDA7A20028E983 /* AATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541A0641ACDA7A20028E983 /* AATableViewCell.swift */; };
 		054A25271AD06D250013FAAA /* AAUserInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054A25261AD06D250013FAAA /* AAUserInfoController.swift */; };
 		054A252B1AD164BD0013FAAA /* AAUserInfoTitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054A252A1AD164BD0013FAAA /* AAUserInfoTitledCell.swift */; };
+		0564F9E31AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0564F9E21AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift */; };
+		0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */; };
 		056911F01ACF321300D4D209 /* CocoaExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056911EF1ACF321300D4D209 /* CocoaExecution.swift */; };
 		05B1A46D1AD0015B005F691D /* AAPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */; };
 		05B1A4701AD01311005F691D /* AAAddParticipantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */; };
@@ -685,6 +687,7 @@
 		05E706461AD1F665009F09D8 /* AASettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706451AD1F665009F09D8 /* AASettingsController.swift */; };
 		05E706491AD3EDE0009F09D8 /* AASettingsPrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */; };
 		05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */; };
+		05FCE8911AD80340002F0398 /* AABubbleDocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
@@ -701,7 +704,6 @@
 		067144521AB0947000364820 /* BubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067144511AB0947000364820 /* BubbleTextCell.swift */; };
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0671592E1ABC830E00D95719 /* CocoaNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592D1ABC830E00D95719 /* CocoaNetworking.swift */; };
-		0672A2381ABE56E900E6E42E /* BubbleUnsupportedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672A2371ABE56E900E6E42E /* BubbleUnsupportedCell.swift */; };
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
@@ -713,7 +715,6 @@
 		06ABC77F1AAF458B00C1B932 /* ContactsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
 		06ABC7831AAF57A000C1B932 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7821AAF57A000C1B932 /* MainTabController.swift */; };
-		06ABC7851AB05C0600C1B932 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7841AB05C0600C1B932 /* MessagesViewController.swift */; };
 		06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */; };
 		06B356F61AB8C7BB00405472 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F51AB8C7BB00405472 /* ContactCell.swift */; };
 		06B99A131ABF45DA0066CA08 /* UIButtonTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */; };
@@ -2097,6 +2098,8 @@
 		0541A0641ACDA7A20028E983 /* AATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATableViewCell.swift; path = Views/Root/AATableViewCell.swift; sourceTree = "<group>"; };
 		054A25261AD06D250013FAAA /* AAUserInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAUserInfoController.swift; path = User/AAUserInfoController.swift; sourceTree = "<group>"; };
 		054A252A1AD164BD0013FAAA /* AAUserInfoTitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAUserInfoTitledCell.swift; path = Views/User/AAUserInfoTitledCell.swift; sourceTree = "<group>"; };
+		0564F9E21AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AABubbleUnsupportedCell.swift; path = Views/Bubbles/AABubbleUnsupportedCell.swift; sourceTree = "<group>"; };
+		0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAConversationController.swift; path = Conversation/AAConversationController.swift; sourceTree = "<group>"; };
 		056911EF1ACF321300D4D209 /* CocoaExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExecution.swift; sourceTree = "<group>"; };
 		05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAPlaceholderView.swift; path = Views/Root/AAPlaceholderView.swift; sourceTree = "<group>"; };
 		05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAddParticipantController.swift; path = Conversation/Info/AAAddParticipantController.swift; sourceTree = "<group>"; };
@@ -2108,6 +2111,7 @@
 		05E706451AD1F665009F09D8 /* AASettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsController.swift; path = Settings/AASettingsController.swift; sourceTree = "<group>"; };
 		05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsPrivacyController.swift; path = Settings/AASettingsPrivacyController.swift; sourceTree = "<group>"; };
 		05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsNotificationsController.swift; path = Settings/AASettingsNotificationsController.swift; sourceTree = "<group>"; };
+		05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AABubbleDocumentCell.swift; path = Views/Bubbles/AABubbleDocumentCell.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
 		06047D071ABF8611002091CC /* CocoaTcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTcpConnection.m; sourceTree = "<group>"; };
@@ -2127,7 +2131,6 @@
 		067144511AB0947000364820 /* BubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleTextCell.swift; sourceTree = "<group>"; };
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
 		0671592D1ABC830E00D95719 /* CocoaNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaNetworking.swift; sourceTree = "<group>"; };
-		0672A2371ABE56E900E6E42E /* BubbleUnsupportedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleUnsupportedCell.swift; sourceTree = "<group>"; };
 		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
@@ -2141,7 +2144,6 @@
 		06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContactsViewController.xib; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
-		06ABC7841AB05C0600C1B932 /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineSlackListController.swift; sourceTree = "<group>"; };
 		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonTable.swift; sourceTree = "<group>"; };
@@ -4226,6 +4228,7 @@
 		0541A0551ACDA5210028E983 /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
+				0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */,
 				0541A0561ACDA5730028E983 /* Info */,
 			);
 			name = Conversation;
@@ -4286,6 +4289,7 @@
 		05B432941ACC08810073BA69 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				05FCE88F1AD80320002F0398 /* Bubbles */,
 				05C890541AD71DB0002BD07A /* DialogsList */,
 				054A25291AD1648E0013FAAA /* User */,
 				0541A0591ACDA5890028E983 /* Conversation */,
@@ -4330,6 +4334,15 @@
 			name = Settings;
 			sourceTree = "<group>";
 		};
+		05FCE88F1AD80320002F0398 /* Bubbles */ = {
+			isa = PBXGroup;
+			children = (
+				05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */,
+				0564F9E21AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift */,
+			);
+			name = Bubbles;
+			sourceTree = "<group>";
+		};
 		06047D031ABF85CD002091CC /* network */ = {
 			isa = PBXGroup;
 			children = (
@@ -4360,12 +4373,10 @@
 		069FE6D11AC0201000C6C033 /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
-				06ABC7841AB05C0600C1B932 /* MessagesViewController.swift */,
 				0671444F1AB089B000364820 /* BubbleCell.swift */,
 				067144511AB0947000364820 /* BubbleTextCell.swift */,
 				06BC45141AB87ECB0003F59E /* BubbleMediaCell.swift */,
 				065A51CB1ABB441E00B48088 /* BubbleServiceCell.swift */,
-				0672A2371ABE56E900E6E42E /* BubbleUnsupportedCell.swift */,
 			);
 			name = Conversation;
 			sourceTree = "<group>";
@@ -4843,6 +4854,7 @@
 				0514DAE81AD1ED8A00F6C3BB /* ECCurve.m in Sources */,
 				0514DAAE1AD1ED8A00F6C3BB /* GroupTypingVM.m in Sources */,
 				25C9C3841A9D4A900061780E /* CocoaLocale.m in Sources */,
+				0564F9E31AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift in Sources */,
 				0514D9F81AD1ED8A00F6C3BB /* FileSystemProvider.m in Sources */,
 				0514DA541AD1ED8A00F6C3BB /* BaseKeyValueEngine.m in Sources */,
 				0514D9121AD1ED8A00F6C3BB /* ResponseSeq.m in Sources */,
@@ -5017,6 +5029,7 @@
 				0514D9481AD1ED8A00F6C3BB /* UpdateUserEmailRemoved.m in Sources */,
 				0514D9E91AD1ED8A00F6C3BB /* Message.m in Sources */,
 				06E484311AB7933100AA272F /* LruCache.swift in Sources */,
+				05FCE8911AD80340002F0398 /* AABubbleDocumentCell.swift in Sources */,
 				0514DA631AD1ED8A00F6C3BB /* ValueModel.m in Sources */,
 				0514D8D81AD1ED8A00F6C3BB /* RequestEditName.m in Sources */,
 				0514DAE01AD1ED8A00F6C3BB /* RSAPrivateCrtKeyParameters.m in Sources */,
@@ -5025,7 +5038,6 @@
 				0514D8BD1AD1ED8A00F6C3BB /* GroupOutPeer.m in Sources */,
 				0514D89E1AD1ED8A00F6C3BB /* WeakUpdate.m in Sources */,
 				0514D9A41AD1ED8A00F6C3BB /* TaskStart.m in Sources */,
-				06ABC7851AB05C0600C1B932 /* MessagesViewController.swift in Sources */,
 				0514D9F31AD1ED8A00F6C3BB /* Sex.m in Sources */,
 				0514DA311AD1ED8A00F6C3BB /* PendingStorage.m in Sources */,
 				0514DA691AD1ED8A00F6C3BB /* Connection.m in Sources */,
@@ -5060,6 +5072,7 @@
 				0514D95E1AD1ED8A00F6C3BB /* Configuration.m in Sources */,
 				0514DA3B1AD1ED8A00F6C3BB /* SearchModule.m in Sources */,
 				0514DADE1AD1ED8A00F6C3BB /* RSAKeyGenerationParameters.m in Sources */,
+				0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */,
 				0514DA051AD1ED8A00F6C3BB /* LogProvider.m in Sources */,
 				0514D9611AD1ED8A00F6C3BB /* ASN1.m in Sources */,
 				0514D8951AD1ED8A00F6C3BB /* MainThread.m in Sources */,
@@ -5316,7 +5329,6 @@
 				0514DA301AD1ED8A00F6C3BB /* PendingNotification.m in Sources */,
 				0514DA681AD1ED8A00F6C3BB /* AuthKeyStorage.m in Sources */,
 				0514DB141AD1ED8B00F6C3BB /* Nat224.m in Sources */,
-				0672A2381ABE56E900E6E42E /* BubbleUnsupportedCell.swift in Sources */,
 				0514D9031AD1ED8A00F6C3BB /* ResponseAuth.m in Sources */,
 				0514D98C1AD1ED8A00F6C3BB /* EnvelopeCollection.m in Sources */,
 				0514DA401AD1ED8A00F6C3BB /* TypingActor.m in Sources */,
