@@ -142,7 +142,7 @@ public class PictureActivity extends ActionBarActivity {
                                 //transitionView.setVisibility(View.GONE);
                             }
                         });
-                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundForward(backgroundView);
+                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundForward(backgroundView, null);
 
 
             }
@@ -168,11 +168,7 @@ public class PictureActivity extends ActionBarActivity {
     @Override
     public void finish() {
         // transitionView.setVisibility(View.VISIBLE);
-        transitionView.animate()
-                .setStartDelay(0)
-                .setDuration(0)
-                .alpha(1)
-                .start();
+        transitionView.setAlpha(1f);
         transitionView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -187,7 +183,7 @@ public class PictureActivity extends ActionBarActivity {
                                 PictureActivity.super.finish();
                             }
                         });
-                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView);
+                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView, null);
 
             }
         },50);

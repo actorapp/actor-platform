@@ -10,3 +10,6 @@ apps/actor-ios/Pods
 apps/actor-ios/ActorClient.xcworkspace
 Podfile.lock
 apps/actor-ios/ActorApp.xcworkspace
+
+.idea
+local.properties
