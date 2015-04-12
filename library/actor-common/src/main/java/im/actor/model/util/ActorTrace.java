@@ -7,11 +7,12 @@ import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.log.Log;
 
 /**
- * Created by ex3ndr on 09.04.15.
+ * Actor System Trace Interface implementation for logging problems
  */
 public class ActorTrace implements TraceInterface {
 
     private static final String TAG = "ACTOR_SYSTEM";
+
     private static final int PROCESS_THRESHOLD = 300;
 
     @Override

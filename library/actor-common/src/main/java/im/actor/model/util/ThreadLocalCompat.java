@@ -1,12 +1,25 @@
 package im.actor.model.util;
 
 /**
- * Created by ex3ndr on 09.02.15.
+ * Abstract ThreadLocal implementation
  */
 public abstract class ThreadLocalCompat<T> {
+    /**
+     * Return value for current Thread
+     *
+     * @return value
+     */
     public abstract T get();
 
+    /**
+     * Set value for current Thread
+     *
+     * @param v new value
+     */
     public abstract void set(T v);
 
+    /**
+     * Remove value for current Thread
+     */
     public abstract void remove();
 }

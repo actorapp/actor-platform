@@ -20,7 +20,7 @@ public class Profile extends BaseModule {
         ownAvatarVM = new OwnAvatarVM();
         avatarChangeActor = system().actorOf(Props.create(OwnAvatarChangeActor.class, new ActorCreator<OwnAvatarChangeActor>() {
             @Override
-            public OwnAvatarChangeActor create() {
+             public OwnAvatarChangeActor create() {
                 return new OwnAvatarChangeActor(modules);
             }
         }), "actor/avatar/my");
