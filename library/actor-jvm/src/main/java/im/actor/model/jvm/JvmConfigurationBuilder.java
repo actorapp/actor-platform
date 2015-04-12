@@ -6,10 +6,10 @@ import im.actor.model.BaseConfigurationBuilder;
  * Created by ex3ndr on 27.03.15.
  */
 public class JvmConfigurationBuilder extends BaseConfigurationBuilder {
-    
-    public JvmConfigurationBuilder() {
+
+    public JvmConfigurationBuilder(String locale) {
         setLog(new JavaLog());
         setNetworkProvider(new JavaNetworkProvider());
-        setLocale(new JavaLocale("En"));
+        setLocale(new JavaLocale(locale));
     }
 }

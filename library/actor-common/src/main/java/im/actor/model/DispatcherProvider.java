@@ -1,8 +1,14 @@
 package im.actor.model;
 
 /**
- * Created by ex3ndr on 23.03.15.
+ * Provider for executing callbacks
  */
 public interface DispatcherProvider {
+
+    /**
+     * Dispatch Runnable on Callbacks thread
+     *
+     * @param runnable Runnable
+     */
     public void dispatch(Runnable runnable);
 }

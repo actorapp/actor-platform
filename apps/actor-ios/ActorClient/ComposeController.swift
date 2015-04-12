@@ -35,14 +35,15 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchView!.searchBarStyle = UISearchBarStyle.Default
         searchView!.barStyle = UIBarStyle.Default
         searchView!.translucent = false
-        
-        searchView?.setSearchFieldBackgroundImage(Imaging.imageWithColor(Resources.SearchBgColor, size: CGSize(width: 1, height: 28)), forState: UIControlState.Normal)
+
+        let image = UIImage(named: "SearchBarBg")!
+        searchView?.setSearchFieldBackgroundImage(image.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
 
         // Enabled color
         searchView!.barTintColor = UIColor.whiteColor()
         
         // Disabled color
-        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 1))
+        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 320, height: 44))
         searchView!.backgroundColor = UIColor.whiteColor()
         
         // Enabled Cancel button color
@@ -69,17 +70,19 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
             var contact = objectAtIndexPath(indexPath) as! AMContact
-            var controllers = NSMutableArray(array: navigationController!.viewControllers)
-            controllers.removeLastObject()
-            controllers.addObject(MessagesViewController(peer: AMPeer.userWithInt(contact.getUid())))
-            navigationController!.setViewControllers(controllers as [AnyObject], animated: true)
+            navigateToMessagesWithPeerId(contact.getUid())
         } else {
             var contact = searchSource!.objectAtIndexPath(indexPath) as! AMContact
-            var controllers = NSMutableArray(array: navigationController!.viewControllers)
-            controllers.removeLastObject()
-            controllers.addObject(MessagesViewController(peer: AMPeer.userWithInt(contact.getUid())))
-            navigationController!.setViewControllers(controllers as [AnyObject], animated: true)
+            navigateToMessagesWithPeerId(contact.getUid())
         }
+    }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    private func navigateToMessagesWithPeerId(peerId: jint) {
+        var conversationController = AAConversationController(peer: AMPeer.userWithInt(peerId))
+        navigationController!.pushViewController(conversationController, animated: true)
     }
 
 }

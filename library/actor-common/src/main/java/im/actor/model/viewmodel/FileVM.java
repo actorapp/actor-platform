@@ -6,20 +6,31 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.AsyncVM;
 
 /**
- * Created by ex3ndr on 26.02.15.
+ * Value Model handler for File.
+ * <p></p>
+ * Create by calling method in Messenger object and ALWAYS release by calling detach method.
  */
 public class FileVM extends AsyncVM {
     private Modules modules;
     private FileReference location;
-    private DownloadCallback callback;
+    private FileCallback callback;
     private FileVMCallback vmCallback;
 
+    /**
+     * <p>INTERNAL API</p>
+     * Create FileVM
+     *
+     * @param location    file reference
+     * @param isAutostart is perform autostart
+     * @param modules     modules reference
+     * @param vmCallback  View Model callback
+     */
     public FileVM(FileReference location, boolean isAutostart, Modules modules,
                   FileVMCallback vmCallback) {
         this.modules = modules;
         this.location = location;
         this.vmCallback = vmCallback;
-        this.callback = new DownloadCallback() {
+        this.callback = new FileCallback() {
             @Override
             public void onNotDownloaded() {
                 post(new OnNotDownloaded());
@@ -49,6 +60,10 @@ public class FileVM extends AsyncVM {
         }
     }
 
+    /**
+     * Detach FileVM from Messenger.
+     * Don't use object after detaching.
+     */
     @Override
     public void detach() {
         super.detach();

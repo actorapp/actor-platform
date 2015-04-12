@@ -1,25 +1,15 @@
 package im.actor.messenger.app.fragment.media;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.view.View;
 
-import im.actor.images.loading.tasks.RawFileTask;
-import im.actor.messenger.app.util.Logger;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileLocalSource;
 import im.actor.model.entity.content.FileRemoteSource;
-import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
-import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.viewmodel.DownloadCallback;
-
-import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by Jesus Christ. Amen.

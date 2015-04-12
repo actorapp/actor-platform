@@ -3,6 +3,7 @@ package im.actor.model.viewmodel;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import im.actor.model.annotation.MainThread;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.GroupMember;
@@ -12,7 +13,7 @@ import im.actor.model.mvvm.ModelChangedListener;
 import im.actor.model.mvvm.ValueModel;
 
 /**
- * Created by ex3ndr on 23.02.15.
+ * Group View Model
  */
 public class GroupVM extends BaseValueModel<Group> {
 
@@ -27,6 +28,12 @@ public class GroupVM extends BaseValueModel<Group> {
 
     private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<ModelChangedListener<GroupVM>>();
 
+    /**
+     * <p>INTERNAL API</p>
+     * Create Group View Model
+     *
+     * @param rawObj initial value of Group
+     */
     public GroupVM(Group rawObj) {
         super(rawObj);
         this.id = rawObj.getGroupId();
@@ -39,38 +46,83 @@ public class GroupVM extends BaseValueModel<Group> {
         this.presence = new ValueModel<Integer>("group." + id + ".presence", 0);
     }
 
+    /**
+     * Get Group Id
+     *
+     * @return Group Id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Get Group Access Hash
+     *
+     * @return Group Access Hash
+     */
     public long getHash() {
         return hash;
     }
 
+    /**
+     * Get Group creator user id
+     *
+     * @return creator user id
+     */
     public long getCreatorId() {
         return creatorId;
     }
 
+    /**
+     * Get Group members count
+     *
+     * @return members count
+     */
     public int getMembersCount() {
         return members.get().size();
     }
 
+    /**
+     * Get Name Value Model
+     *
+     * @return Value Model of String
+     */
     public ValueModel<String> getName() {
         return name;
     }
 
+    /**
+     * Get Avatar Value Model
+     *
+     * @return Value Model of Avatar
+     */
     public ValueModel<Avatar> getAvatar() {
         return avatar;
     }
 
+    /**
+     * Get membership Value Model
+     *
+     * @return Value Model of Boolean
+     */
     public ValueModel<Boolean> isMember() {
         return isMember;
     }
 
+    /**
+     * Get members Value Model
+     *
+     * @return Value Model of HashSet of GroupMember
+     */
     public ValueModel<HashSet<GroupMember>> getMembers() {
         return members;
     }
 
+    /**
+     * Get Online Value Model
+     *
+     * @return Value Model of Integer
+     */
     public ValueModel<Integer> getPresence() {
         return presence;
     }
@@ -88,8 +140,14 @@ public class GroupVM extends BaseValueModel<Group> {
         }
     }
 
-    // We expect that subscribe will be called only on UI Thread
+    /**
+     * Subscribe for GroupVM updates
+     *
+     * @param listener Listener for updates
+     */
+    @MainThread
     public void subscribe(ModelChangedListener<GroupVM> listener) {
+        MVVMEngine.checkMainThread();
         if (listeners.contains(listener)) {
             return;
         }
@@ -97,13 +155,19 @@ public class GroupVM extends BaseValueModel<Group> {
         listener.onChanged(this);
     }
 
-    // We expect that subscribe will be called only on UI Thread
+    /**
+     * Unsubscribe from GroupVM updates
+     *
+     * @param listener Listener for updates
+     */
+    @MainThread
     public void unsubscribe(ModelChangedListener<GroupVM> listener) {
+        MVVMEngine.checkMainThread();
         listeners.remove(listener);
     }
 
     private void notifyChange() {
-        MVVMEngine.getMainThreadProvider().runOnUiThread(new Runnable() {
+        MVVMEngine.getMainThreadProvider().postToMainThread(new Runnable() {
             @Override
             public void run() {
                 for (ModelChangedListener<GroupVM> l : listeners.toArray(new ModelChangedListener[0])) {

@@ -1,6 +1,7 @@
 package im.actor.model.jvm;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -20,7 +21,7 @@ public class JavaLocale implements LocaleProvider {
     }
 
     private void loadPart(String name, String locale) {
-        String fileName = locale.equals("En") ? name + ".properties" : name + locale + ".properties";
+        String fileName = locale.equals("En") ? name + ".properties" : name + "_" + locale + ".properties";
         Properties properties = new Properties();
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream(fileName));
@@ -30,7 +31,11 @@ public class JavaLocale implements LocaleProvider {
         for (Object key : properties.keySet()) {
             String sKey = (String) key;
             String sValue = (String) properties.get(key);
-            items.put(sKey, sValue);
+            try {
+                items.put(sKey, new String(sValue.getBytes("ISO-8859-1"), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
     }
 

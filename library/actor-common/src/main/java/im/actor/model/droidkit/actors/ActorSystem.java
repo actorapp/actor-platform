@@ -1,6 +1,5 @@
 package im.actor.model.droidkit.actors;
 
-import im.actor.model.droidkit.actors.debug.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
 
 import java.util.HashMap;

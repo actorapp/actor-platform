@@ -12,15 +12,18 @@ import UIKit
 
 // Using padding for proper date align.
 // One space + 16 non-breakable spases for out messages
-private let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
+private let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
 
 // One space + 6 non-breakable spaces for in messages
-private let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
+private let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
 
 //private let bubbleFont = UIFont(name: "Roboto", size: 16)!
 private let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
 
-private let maxTextWidth = 240
+private let maxTextWidth = 210
+
+private let textPaddingTop: CGFloat = 4
+private let textPaddingBottom: CGFloat = 5
 
 private func measureText(message: String, isOut: Bool) -> CGRect {
     var style = NSMutableParagraphStyle();
@@ -33,35 +36,24 @@ private func measureText(message: String, isOut: Bool) -> CGRect {
     return CGRectMake(0, 0, round(rect.width), round(rect.height))
 }
 
+// MARK: -
+
 class BubbleTextCell : BubbleCell {
     
-    class func measureTextHeight(message: AMMessage) -> CGFloat {
-        var content = message.getContent() as! AMTextContent!;
-        return round(measureText(content.getText(), message.getSenderId() == MSG.myUid()).height) + 14
-    }
+    let textPaddingStartOutgoing: CGFloat = 11.0;
+    let textPaddingEndOutgoing: CGFloat = 10.0;
     
-    let textPaddingStart:CGFloat = 10.0;
-    let textPaddingEnd:CGFloat = 8.0;
-    let datePaddingOut:CGFloat = 66.0;
-    let datePaddingIn:CGFloat = 20.0;
-    
-//    let dateColorOut = UIColor(red: 45/255.0, green: 163/255.0, blue: 47/255.0, alpha: 1.0);
-    let dateColorOut = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
-    
-    let dateColorIn = UIColor(red: 151/255.0, green: 151/255.0, blue: 151/255.0, alpha: 1.0);
-    let messageTextColor = UIColor(red: 20/255.0, green: 22/255.0, blue: 23/255.0, alpha: 1.0);
-    
-    let statusActive = UIColor(red: 52/255.0, green: 151/255.0, blue: 249/255.0, alpha: 1.0);
-    
-    let statusPassive = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
+    let textPaddingStartIncoming: CGFloat = 17.0;
+    let textPaddingEndIncoming: CGFloat = 10.0;
     
     let bubble = UIImageView();
     let messageText = UILabel();
-    let dateText = UILabel();
     let statusView = UIImageView();
     var isOut:Bool = false;
-    var messageState: UInt = AMMessageState.UNKNOWN.rawValue;
     var needRelayout = true
+    
+    private let dateText = UILabel();
+    private var messageState: UInt = AMMessageState.UNKNOWN.rawValue;
     
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
@@ -108,24 +100,53 @@ class BubbleTextCell : BubbleCell {
         messageState = UInt(message.getMessageState().ordinal());
     }
     
+    // MARK: -
+    // MARK: Getters
+    
+    class func measureTextHeight(message: AMMessage) -> CGFloat {
+        var content = message.getContent() as! AMTextContent!
+        return round(measureText(content.getText(), message.getSenderId() == MSG.myUid()).height) + textPaddingTop + textPaddingBottom // 3 text top, 3 text bottom
+    }
+    
+    class func bubbleTopPadding() -> CGFloat {
+        return 3
+    }
+    
+    class func bubbleBottomPadding() -> CGFloat {
+        return 3
+    }
+    
+    // MARK: -
+    // MARK: Layout
+    
     override func layoutSubviews() {
         super.layoutSubviews();
 
         UIView.performWithoutAnimation { () -> Void in
             
-            var realRect = measureText(self.messageText.text!, self.isOut);
+            var textBounds = measureText(self.messageText.text!, self.isOut);
             
-            self.messageText.frame = realRect;
+            var bubbleTopPadding = BubbleTextCell.bubbleTopPadding()
+            var bubbleBottomPadding = BubbleTextCell.bubbleBottomPadding()
+            
+            var contentWidth = self.contentView.frame.width
+            var contentHeight = self.contentView.frame.height
+            
+            var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
+            
+            self.messageText.frame = textBounds;
+            println("\(self.messageText.frame)")
             self.messageText.sizeToFit()
+            println("\(self.messageText.frame)")
             
-            var w = round(realRect.width);
-            var h = round(realRect.height);
+            var textWidth = round(textBounds.width);
+            var textHeight = round(textBounds.height);
             
             if (self.isOut) {
-                self.messageText.frame.origin = CGPoint(x: self.frame.width - w - self.textPaddingEnd - self.bubblePadding, y: 8);
+                self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - self.textPaddingEndOutgoing - self.bubblePadding, y: bubbleTopPadding + textPaddingTop);
                 self.dateText.textColor = self.dateColorOut;
             } else {
-                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStart, y: 8)
+                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStartIncoming, y: bubbleTopPadding + textPaddingTop)
                 self.dateText.textColor = self.dateColorIn;
             }
             
@@ -133,16 +154,15 @@ class BubbleTextCell : BubbleCell {
             let y = round(self.messageText.frame.origin.y);
             
             if (self.isOut) {
-                self.bubble.frame = CGRectMake(x - self.textPaddingEnd, y - 4, w + self.textPaddingStart+self.textPaddingEnd, h + 8);
-                self.dateText.frame = CGRectMake(x + w - 68, self.bubble.frame.maxY - 24, 46, 26);
+                self.bubble.frame = CGRectMake(x - self.textPaddingStartOutgoing, bubbleTopPadding, textWidth + self.textPaddingStartOutgoing + self.textPaddingEndOutgoing, bubbleHeight);
+                self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
             } else {
-                self.bubble.frame = CGRectMake(x - self.textPaddingStart, y - 4, w + self.textPaddingStart+self.textPaddingEnd + self.datePaddingIn, h + 8);
-                self.dateText.frame = CGRectMake(x + w - 32, self.bubble.frame.maxY - 24, 46, 26);
+                self.bubble.frame = CGRectMake(x - self.textPaddingStartIncoming, bubbleTopPadding, textWidth + self.textPaddingStartIncoming + self.textPaddingEndIncoming, textHeight + 8);
+                self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
             }
             
-            
             if (self.isOut) {
-                self.statusView.frame = CGRectMake(x + w - 22, y + h - 20, 20, 26);
+                self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26);
                 self.statusView.hidden = false;
                 
                 switch(self.messageState) {

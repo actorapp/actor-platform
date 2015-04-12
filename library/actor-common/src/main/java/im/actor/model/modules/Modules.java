@@ -8,6 +8,7 @@ import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.droidkit.engine.PreferencesStorage;
+import im.actor.model.util.Timing;
 
 /**
  * Created by ex3ndr on 16.02.15.
@@ -37,44 +38,31 @@ public class Modules {
 
     public Modules(Configuration configuration) {
         this.configuration = configuration;
-        long start = configuration.getThreadingProvider().getActorTime();
+
+        Timing timing = new Timing("MODULES_INIT");
+
+        timing.section("I18N");
         this.i18nEngine = new I18nEngine(configuration.getLocaleProvider(), this);
-        Log.d("CORE_INIT", "Loading stage5.1 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
+
+        timing.section("Preferences");
         this.preferences = configuration.getStorageProvider().createPreferencesStorage();
-        Log.d("CORE_INIT", "Loading stage5.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+
+        timing.section("API");
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
                 new PreferenceApiStorage(preferences),
-                new ActorApiCallback() {
-                    @Override
-                    public void onAuthIdInvalidated(long authKey) {
+                new ActorApiCallbackImpl(),
+                configuration.getNetworkProvider());
 
-                    }
-
-                    @Override
-                    public void onNewSessionCreated() {
-                        if (updates != null) {
-                            updates.onNewSessionCreated();
-                        }
-                        if (presence != null) {
-                            presence.onNewSessionCreated();
-                        }
-                    }
-
-                    @Override
-                    public void onUpdateReceived(Object obj) {
-                        if (updates != null) {
-                            updates.onUpdateReceived(obj);
-                        }
-                    }
-                }, configuration.getNetworkProvider());
-        Log.d("CORE_INIT", "Loading stage5.3 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Auth");
         this.auth = new Auth(this);
+
+        timing.section("Pushes");
         this.pushes = new Pushes(this);
-        Log.d("CORE_INIT", "Loading stage5.4 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+
+        timing.section("App State");
         this.appStateModule = new AppStateModule(this);
+
+        timing.end();
     }
 
     public void run() {
@@ -82,57 +70,53 @@ public class Modules {
     }
 
     public void onLoggedIn() {
-        long start = configuration.getThreadingProvider().getActorTime();
+        Timing timing = new Timing("ACCOUNT_CREATE");
+        timing.section("Users");
         users = new Users(this);
-        Log.d("CORE_INIT", "Loading stage6.1 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Groups");
         groups = new Groups(this);
+        timing.section("Search");
         search = new SearchModule(this);
+        timing.section("Security");
         security = new Security(this);
-        Log.d("CORE_INIT", "Loading stage6.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Messages");
         messages = new Messages(this);
-        Log.d("CORE_INIT", "Loading stage6.3 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Updates");
         updates = new Updates(this);
-        Log.d("CORE_INIT", "Loading stage6.4 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Presence");
         presence = new Presence(this);
-        Log.d("CORE_INIT", "Loading stage6.5 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Typing");
         typing = new Typing(this);
-        Log.d("CORE_INIT", "Loading stage6.6 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Files");
         filesModule = new Files(this);
-        Log.d("CORE_INIT", "Loading stage6.6.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Notifications");
         notifications = new Notifications(this);
-        Log.d("CORE_INIT", "Loading stage6.7 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Contacts");
         contacts = new Contacts(this);
-        Log.d("CORE_INIT", "Loading stage6.8 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Settings");
         settings = new Settings(this);
+        timing.section("Profile");
         profile = new Profile(this);
+        timing.end();
 
-        Log.d("CORE_INIT", "Loading stage6.8.2 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing = new Timing("ACCOUNT_RUN");
+        timing.section("Files");
         filesModule.run();
+        timing.section("Search");
         search.run();
-        Log.d("CORE_INIT", "Loading stage6.9 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Notifications");
         notifications.run();
+        timing.section("AppState");
         appStateModule.run();
+        timing.section("Contacts");
         contacts.run();
+        timing.section("Messages");
         messages.run();
-        Log.d("CORE_INIT", "Loading stage6.10 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Updates");
         updates.run();
-        Log.d("CORE_INIT", "Loading stage6.11 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.section("Presence");
         presence.run();
-        Log.d("CORE_INIT", "Loading stage6.12 in " + (configuration.getThreadingProvider().getActorTime() - start) + " ms");
-        start = configuration.getThreadingProvider().getActorTime();
+        timing.end();
 
         // Notify about app visible
         presence.onAppVisible();
@@ -217,5 +201,30 @@ public class Modules {
 
     public SearchModule getSearch() {
         return search;
+    }
+
+    private class ActorApiCallbackImpl implements ActorApiCallback {
+
+        @Override
+        public void onAuthIdInvalidated(long authKey) {
+
+        }
+
+        @Override
+        public void onNewSessionCreated() {
+            if (updates != null) {
+                updates.onNewSessionCreated();
+            }
+            if (presence != null) {
+                presence.onNewSessionCreated();
+            }
+        }
+
+        @Override
+        public void onUpdateReceived(Object obj) {
+            if (updates != null) {
+                updates.onUpdateReceived(obj);
+            }
+        }
     }
 }

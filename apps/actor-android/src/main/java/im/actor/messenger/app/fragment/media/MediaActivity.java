@@ -41,7 +41,7 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.viewmodel.DownloadCallback;
+import im.actor.model.viewmodel.FileCallback;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
@@ -340,7 +340,7 @@ public class MediaActivity extends BaseActivity {
                 if (document.getSource() instanceof FileRemoteSource) {
                     FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
                     final FileReference location = remoteSource.getFileReference();
-                    messenger().requestState(location.getFileId(), new DownloadCallback() {
+                    messenger().requestState(location.getFileId(), new FileCallback() {
                                 @Override
                                 public void onNotDownloaded() {
                                     messenger().startDownloading(location);
@@ -704,7 +704,7 @@ public class MediaActivity extends BaseActivity {
         if (document.getSource() instanceof FileRemoteSource) {
             FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
             final FileReference location = remoteSource.getFileReference();
-            messenger().requestState(location.getFileId(), new DownloadCallback() {
+            messenger().requestState(location.getFileId(), new FileCallback() {
                 @Override
                 public void onNotDownloaded() {
                 }

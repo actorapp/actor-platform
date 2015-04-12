@@ -69,6 +69,10 @@ import Foundation
             return _iconClock!;
         }
     }
+
+    // static let PrimaryColor = UIColor.RGB(0x114669)
+    static let IsDarkTheme = true
+    static let PrimaryColor = UIColor(red: 0, green: 36/255.0, blue: 77/255.0, alpha: 1.0)
     
     static let TintDarkColor = UIColor(red: 38/255.0, green: 109/255.0, blue: 204/255.0, alpha: 1.0);
     static let TintColor = UIColor(red: 80/255.0, green: 133/255.0, blue: 204/255.0, alpha: 1.0);
@@ -77,13 +81,13 @@ import Foundation
     static let SearchBgColor = UIColor(red: 217/255.0, green: 218/255.0, blue: 220/255.0, alpha: 1)
     
     static let placeHolderColors : [UIColor] = [
-        UIColor(red: 0x59/255.0, green: 0xa2/255.0, blue: 0xbe/255.0, alpha: 1),
-        UIColor(red: 0x20/255.0, green: 0x93/255.0, blue: 0xcd/255.0, alpha: 1),
-        UIColor(red: 0xad/255.0, green: 0x62/255.0, blue: 0xa7/255.0, alpha: 1),
-        UIColor(red: 0xf1/255.0, green: 0x63/255.0, blue: 0x64/255.0, alpha: 1),
-        UIColor(red: 0xf9/255.0, green: 0xa4/255.0, blue: 0x3e/255.0, alpha: 1),
-        UIColor(red: 0xe4/255.0, green: 0xc6/255.0, blue: 0x2e/255.0, alpha: 1),
-        UIColor(red: 0x67/255.0, green: 0xbf/255.0, blue: 0x74/255.0, alpha: 1)];
+        UIColor.RGB(0x59b7d3),
+        UIColor.RGB(0x1d4e6f),
+        UIColor.RGB(0x995794),
+        UIColor.RGB(0xff506c),
+        UIColor.RGB(0xf99341),
+        UIColor.RGB(0xe4d027),
+        UIColor.RGB(0x87c743)];
     
     static let TextPrimaryColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0);
     static let TextSecondaryColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0);
@@ -97,8 +101,8 @@ import Foundation
     
     static let SelectorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 60/255.0)
     
-    static let PrimaryDarkText = UIColor.RGB(0x787878)
-    static let SecondaryDarkText = UIColor.RGB(0x787878)
+    static let PrimaryDarkText = UIColor(red: 0, green: 0, blue: 0, alpha: 0.9)
+    static let SecondaryDarkText = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
     
     static let PlaceholderText = UIColor(red: 200/255.0, green: 200/255.0, blue: 200/255.0, alpha: 1.0)
 }

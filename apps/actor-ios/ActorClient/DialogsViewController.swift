@@ -8,10 +8,16 @@
 
 import UIKit
 
-class DialogsViewController: EngineListController {
+class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var loadingView: UIView!
+    
+    var searchView: UISearchBar?
+    var searchDisplay: UISearchDisplayController?
+    var searchSource: AADialogsListSearchSource?
+    
+    var binder = Binder()
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -27,19 +33,15 @@ class DialogsViewController: EngineListController {
     
     func initCommon(){
         var icon = UIImage(named: "ic_letter_blue_24")!;
-        tabBarItem = UITabBarItem(title: nil,
+        tabBarItem = UITabBarItem(title: "Chats",
             image: icon.tintImage(Resources.BarTintUnselectedColor)
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             selectedImage: icon);
-        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
         return MSG.getDialogsGlobalList()
-    }
-    
-    func toggleEdit() {
-        self.tableView.setEditing(!self.tableView.editing, animated: true);
     }
     
     func isTableEditing() -> Bool {
@@ -80,7 +82,56 @@ class DialogsViewController: EngineListController {
         
         bindTable(tableView);
         
+        
+        searchView = UISearchBar()
+        searchView!.searchBarStyle = UISearchBarStyle.Default
+        searchView!.barStyle = UIBarStyle.Default
+        searchView!.translucent = false
+        
+        let image = UIImage(named: "SearchBarBg")!
+        searchView?.setSearchFieldBackgroundImage(image.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
+        
+        // Enabled color
+        searchView!.barTintColor = UIColor.whiteColor()
+        
+        // Disabled color
+        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 320, height: 44))
+        searchView!.backgroundColor = UIColor.whiteColor()
+        
+        // Enabled Cancel button color
+        searchView!.tintColor = Resources.TintColor
+        
+        searchView!.placeholder = "";
+        searchView!.delegate = self
+        searchView!.frame = CGRectMake(0, 0, 0, 44)
+        
+        searchDisplay = UISearchDisplayController(searchBar: searchView, contentsController: self)
+        searchDisplay?.searchResultsDelegate = self
+        searchDisplay?.searchResultsTableView.rowHeight = 76
+        searchDisplay?.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
+        searchDisplay?.searchResultsTableView.frame = tableView.frame
+        
+        tableView.tableHeaderView = searchView
+        
+        searchSource = AADialogsListSearchSource(searchDisplay: searchDisplay!)
+        
         super.viewDidLoad();
+        
+        navigationItem.title = "Chats"; // Localize
+        navigationItem.leftBarButtonItem = editButtonItem()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
+        
+        placeholder.setImage(nil, title: "Empty", subtitle: "Your dialog list is empty. You can start chat by pressing top right button.")
+        binder.bind(MSG.getAppState().getIsDialogsEmpty(), closure: { (value: Any?) -> () in
+            if let empty = value as? JavaLangBoolean {
+                if Bool(empty.booleanValue()) == true {
+                    self.showPlaceholder()
+                } else {
+                    self.hidePlaceholder()
+                }
+            }
+        })
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -88,6 +139,23 @@ class DialogsViewController: EngineListController {
         
         MSG.onDialogsOpen();
     }
+    
+    // MARK: -
+    // MARK: Setters
+    
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
+        
+        if editing == true {
+            navigationItem.rightBarButtonItem = nil
+        } else {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
+        }
+    }
+    
+    // MARK: -
+    // MARK: UITableView
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
@@ -117,11 +185,33 @@ class DialogsViewController: EngineListController {
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var dialog = objectAtIndexPath(indexPath) as! AMDialog;
-        self.navigationController?.pushViewController(MessagesViewController(peer: dialog.getPeer()), animated: true);
+        
+        if (tableView == self.tableView) {
+            var dialog = objectAtIndexPath(indexPath) as! AMDialog
+            navigateToMessagesWithPeer(dialog.getPeer())
+        } else {
+            var searchEntity = searchSource!.objectAtIndexPath(indexPath) as! AMSearchEntity
+            navigateToMessagesWithPeer(searchEntity.getPeer())
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
         MSG.onDialogsClosed();
     }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    func navigateToCompose() {
+        let composeController = ComposeController()
+        composeController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(composeController, animated: true)
+    }
+    
+    private func navigateToMessagesWithPeer(peer: AMPeer) {
+        let conversationController = AAConversationController(peer: peer)
+        conversationController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(conversationController, animated: true);
+    }
+    
 }
