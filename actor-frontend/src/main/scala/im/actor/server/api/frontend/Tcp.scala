@@ -3,8 +3,6 @@ package im.actor.server.api.frontend
 import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
-import scala.util.Try
-
 import akka.actor._
 import akka.event.Logging
 import akka.stream.FlowMaterializer
@@ -13,10 +11,8 @@ import akka.util.Timeout
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api.Database
 
-import im.actor.server.session.Session
-
 object Tcp {
-  def start(appConf: Config)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
+  def start(appConf: Config, sessionRegion: ActorRef)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     val log = Logging.getLogger(system, this)
     val config = appConf.getConfig("frontend.tcp")
 
@@ -27,8 +23,6 @@ object Tcp {
     val serverAddress = new InetSocketAddress(interface, port)
 
     val connections = StreamTcp().bind(serverAddress)
-
-    val sessionRegion = Session.startRegionProxy()
 
     connections runForeach { conn =>
       log.info(s"Client connected from: ${conn.remoteAddress}")

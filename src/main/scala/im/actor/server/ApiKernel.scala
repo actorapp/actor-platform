@@ -30,8 +30,8 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
 
-    Tcp.start(serverConfig)
-    Ws.start(serverConfig)
+    Tcp.start(serverConfig, sessionRegion)
+    //Ws.start(serverConfig)
   }
 
   def shutdown() = {

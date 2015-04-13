@@ -29,10 +29,10 @@ import im.actor.util.testing._
 class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers {
   behavior of "Session actor"
 
-  /*it should "send Drop on message on wrong message box" in sessions().e1
+  it should "send Drop on message on wrong message box" in sessions().e1
   it should "send NewSession on first HandleMessageBox" in sessions().e2
   it should "reply to RpcRequestBox" in sessions().e3
-  it should "handle user authorization" in sessions().e4*/
+  it should "handle user authorization" in sessions().e4
   it should "subscribe to sequence updates" in sessions().e5
 
   implicit val materializer = ActorFlowMaterializer()

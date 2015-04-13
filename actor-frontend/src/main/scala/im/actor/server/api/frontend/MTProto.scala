@@ -14,7 +14,6 @@ import slick.driver.PostgresDriver.api.Database
 import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
-import im.actor.server.session.SessionMessage
 import im.actor.server.util.streams.SourceWatchManager
 
 object MTProto {
@@ -41,7 +40,7 @@ object MTProto {
       .mapConcat(optM => optM.map(Vector(_)).getOrElse(Vector.empty))
 
     val mapRespFlow = Flow[MTTransport]
-      .transform(() => MTProto.mapResponse())
+      .transform(() => MTProto.mapResponse(system))
 
     val completeSink = Sink.onComplete {
       case _ =>
@@ -160,6 +159,7 @@ object MTProto {
             } else {
               transportPackageHeader.decode(buf).toEither match {
                 case Right(headerRes) =>
+                  system.log.debug("Transport package header {}", headerRes)
                   doParse(AwaitPackageBody(headerRes.value), headerRes.remainder)(pSeq)
                 case Left(e) =>
                   system.log.debug("failed to parse package header", e)
@@ -190,12 +190,14 @@ object MTProto {
     }
   }
 
-  def mapResponse() = new PushPullStage[MTTransport, ByteString] {
-    private[this] var packageIndex: Int = 0
+  def mapResponse(system: ActorSystem) = new PushPullStage[MTTransport, ByteString] {
+    private[this] var packageIndex: Int = -1
 
     override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
       case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
-        val res = ByteString(handshake.encode(h).require.toByteBuffer)
+        val resBits = handshakeResponse.encode(h).require
+        val res = ByteString(resBits.toByteBuffer)
+        system.log.debug("Sending bytes {}", resBits)
 
         if (protoVersion == 0 || apiMajorVersion == 0) {
           ctx.pushAndFinish(res)
@@ -205,7 +207,11 @@ object MTProto {
       case ProtoPackage(p) =>
         packageIndex += 1
         val pkg = TransportPackage(packageIndex, p)
-        val res = ByteString(TransportPackageCodec.encode(pkg).require.toByteBuffer)
+        system.log.debug("Sending TransportPackage {}", pkg)
+
+        val resBits = TransportPackageCodec.encode(pkg).require
+        val res = ByteString(resBits.toByteBuffer)
+        system.log.debug("Sending bytes {}", resBits)
 
         p match {
           case _: Drop =>
@@ -232,23 +238,22 @@ object MTProto {
                 case e: AskTimeoutException =>
                   val msg = s"handleAsk within $timeout"
                   system.log.error(e, msg)
-                  Some(ProtoPackage(InternalError(0, 0, msg)))
+                  Some(ProtoPackage(InternalError(0, 0, msg))) // FIXME: send drop
               }
             } else {
               sessionClient ! SessionClient.SendToSession(m)
               Future.successful(None)
             }
           case Ping(bytes) => Future.successful(Some(ProtoPackage(Pong(bytes))))
-          case Pong(bytes) => Future.successful(Some(ProtoPackage(Ping(bytes))))
+          case Pong(bytes) => Future.successful(None)
           case m => Future.successful(Some(ProtoPackage(m)))
         }
       case h: Handshake => Future.successful {
-        val clientBytes = BitVector(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion) ++ h.bytes
-        val sha1Sign = BitVector(DigestUtils.sha1(clientBytes.toByteArray))
+        val sha256Sign = BitVector(DigestUtils.sha256(h.bytes.toByteArray))
         val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
         val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
         val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
-        Some(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha1Sign))
+        Some(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign))
       }
       case SilentClose =>
         // FIXME: do the real silent close?
