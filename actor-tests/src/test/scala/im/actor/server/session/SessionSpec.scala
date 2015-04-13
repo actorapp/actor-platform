@@ -1,41 +1,47 @@
 package im.actor.server.session
 
+import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
 import akka.actor._
 import akka.stream.ActorFlowMaterializer
-import akka.testkit.{TestKit, TestProbe}
-import org.specs2.matcher.ThrownExpectations
-import org.specs2.specification.core.Fragments
+import akka.testkit.TestProbe
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{ FlatSpecLike, Matchers }
 import scodec.bits._
 
 import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignOut, RequestSignUp, ResponseAuth, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs._
+import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
-import im.actor.server.SqlSpecHelpers
+import im.actor.api.rpc.sequence.SeqUpdate
+import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientData }
+import im.actor.server.{ persist, SqlSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
+import im.actor.server.push.SeqUpdatesManager
 import im.actor.util.testing._
 
-class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpectations {
-  def is = sequential ^ s2"""
-  Session Actor should
-    send Drop on message on wrong message box ${sessions().e1}
-    send NewSession on first HandleMessageBox ${sessions().e2}
-    reply to RpcRequestBox ${sessions().e3}
-    handle user authorization ${sessions().e4}
-  """
+class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers {
+  behavior of "Session actor"
+
+  /*it should "send Drop on message on wrong message box" in sessions().e1
+  it should "send NewSession on first HandleMessageBox" in sessions().e2
+  it should "reply to RpcRequestBox" in sessions().e3
+  it should "handle user authorization" in sessions().e4*/
+  it should "subscribe to sequence updates" in sessions().e5
 
   implicit val materializer = ActorFlowMaterializer()
   implicit val (ds, db) = migrateAndInitDb()
+  implicit val ec = system.dispatcher
 
+  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
-  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
+  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
 
   val authService = new AuthServiceImpl(sessionRegion)
   rpcApiService ! RpcApiService.AttachService(authService)
@@ -44,13 +50,12 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
 
     import SessionMessage._
 
-    val authId = Random.nextLong()
-
     val probe = TestProbe()
 
     def e1() = {
+      val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props(rpcApiService))
+      val session = system.actorOf(Session.props(rpcApiService, seqUpdManagerRegion))
 
       sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
 
@@ -61,6 +66,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
     }
 
     def e2() = {
+      val authId = createAuthId()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
@@ -73,6 +79,7 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
     }
 
     def e3() = {
+      val authId = createAuthId()
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
@@ -82,12 +89,13 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
 
-      expectRpcResult() must beLike {
-        case RpcOk(ResponseSendAuthCode(_, false)) => ok
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseSendAuthCode(_, false)) =>
       }
     }
 
     def e4() = {
+      val authId = createAuthId()
       val sessionId = Random.nextLong()
 
       val firstMessageId = Random.nextLong()
@@ -118,8 +126,8 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       sendMessageBox(authId, sessionId, sessionRegion, secondMessageId, RpcRequestBox(encodedSignUpRequest))
 
       expectMessageAck(authId, sessionId, secondMessageId)
-      expectRpcResult() must beLike {
-        case RpcOk(ResponseAuth(_, _, _)) => ok
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseAuth(_, _, _)) =>
       }
 
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require
@@ -128,9 +136,65 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
       sendMessageBox(authId, sessionId, sessionRegion, thirdMessageId, RpcRequestBox(encodedSignOutRequest))
 
       expectMessageAck(authId, sessionId, thirdMessageId)
-      expectRpcResult() must beLike {
-        case RpcOk(ResponseVoid) => ok
+      expectRpcResult() should matchPattern {
+        case RpcOk(ResponseVoid) =>
       }
+    }
+
+    def e5() = {
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val firstMessageId = Random.nextLong()
+      val phoneNumber = 75550000000L
+
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+      sendMessageBox(authId, sessionId, sessionRegion, firstMessageId, RpcRequestBox(encodedCodeRequest))
+
+      expectNewSession(authId, sessionId, firstMessageId)
+      expectMessageAck(authId, sessionId, firstMessageId)
+
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+
+      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
+        phoneNumber = phoneNumber,
+        smsHash = smsHash,
+        smsCode = "0000",
+        name = "Wayne Brain",
+        publicKey = Array(2, 2, 3),
+        deviceHash = Array(5, 5, 6),
+        deviceTitle = "Specs virtual device",
+        appId = 1,
+        appKey = "appKey",
+        isSilent = false
+      ))).require
+
+      val secondMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion, secondMessageId, RpcRequestBox(encodedSignUpRequest))
+
+      expectMessageAck(authId, sessionId, secondMessageId)
+
+      val authResult = expectRpcResult()
+      authResult should matchPattern {
+        case RpcOk(ResponseAuth(_, _, _)) =>
+      }
+
+      implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
+
+      val update = UpdateContactRegistered(1, true, 1L)
+      Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(seqUpdManagerRegion, update)), 1.second)
+
+      expectSeqUpdate(authId, sessionId).update should === (update.toByteArray)
+    }
+
+    private def createAuthId(): Long = {
+      val authId = Random.nextLong()
+      Await.result(db.run(persist.AuthId.create(authId, None)), 1.second)
+      authId
+    }
+
+    private def expectSeqUpdate(authId: Long, sessionId: Long): SeqUpdate = {
+      UpdateBoxCodec.decode(expectMessageBox(authId, sessionId).body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[SeqUpdate]
     }
 
     private def expectRpcResult(): RpcResult = {
@@ -148,19 +212,19 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
 
     private def expectMessageAck(authId: Long, sessionId: Long, messageId: Long): MessageAck = {
       val mb = expectMessageBox(authId, sessionId)
-      mb.body must beAnInstanceOf[MessageAck]
+      mb.body shouldBe a[MessageAck]
 
       val ack = mb.body.asInstanceOf[MessageAck]
-      ack.messageIds must be_==(Vector(messageId))
+      ack.messageIds should ===(Vector(messageId))
       ack
     }
 
     private def expectNewSession(authId: Long, sessionId: Long, messageId: Long): NewSession = {
       val mb = expectMessageBox(authId, sessionId)
-      mb.body must beAnInstanceOf[NewSession]
+      mb.body shouldBe a[NewSession]
 
       val ns = mb.body.asInstanceOf[NewSession]
-      ns must be_==(NewSession(sessionId, messageId))
+      ns should ===(NewSession(sessionId, messageId))
 
       ns
     }
@@ -186,14 +250,14 @@ class SessionSpec extends ActorSpecification with SqlSpecHelpers with ThrownExpe
         probe.ref
       )
     }
-
   }
 
-  override def map(fragments: => Fragments) =
-    super.map(fragments) ^ step(closeDb())
+  override def afterAll(): Unit = {
+    super.afterAll()
+    closeDb()
+  }
 
   private def closeDb(): Unit = {
-    TestKit.shutdownActorSystem(actorSystem = system, verifySystemShutdown = true)
     db.close()
     ds.close()
   }

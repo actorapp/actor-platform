@@ -21,6 +21,7 @@ import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, ProtoPackage, TransportPackage }
+import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.session.Session
 import im.actor.util.testing._
 
@@ -39,8 +40,9 @@ class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpe
   implicit val db = initDb(ds)
   implicit val flowMaterializer = ActorFlowMaterializer()
 
+  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
-  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
+  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
 
   val authService = new AuthServiceImpl(sessionRegion)
   rpcApiService ! AttachService(authService)

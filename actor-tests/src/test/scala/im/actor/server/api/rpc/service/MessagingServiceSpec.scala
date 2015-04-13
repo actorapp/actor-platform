@@ -16,7 +16,7 @@ class MessagingServiceSpec extends BaseServiceSpec {
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService)
+    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
 
     implicit val service = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
     implicit val authService = buildAuthService(sessionRegion)

@@ -76,13 +76,24 @@ object Build extends sbt.Build {
     .dependsOn(actorFrontend)
     .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorSession, actorRpcApi, actorTests)
 
+  lazy val actorApi = Project(
+    id = "actor-api",
+    base = file("actor-api"),
+    settings =
+      defaultSettings ++
+        SbtActorApi.settings ++
+        Seq(
+          libraryDependencies ++= Dependencies.api
+        )
+  ).dependsOn(actorPersist, actorCodecs)
+
   lazy val actorSession = Project(
     id = "actor-session",
     base = file("actor-session"),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.session
     )
-  ).dependsOn(actorPersist, actorCodecs, actorApi, actorRpcApi)
+  ).dependsOn(actorPersist, actorCodecs, actorApi, actorRpcApi, actorPush)
 
   lazy val actorSessionMessages = Project(
     id = "actor-session-messages",
@@ -96,18 +107,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.push
     )
-  ).dependsOn(actorPersist, actorCodecs, actorApi)
-
-  lazy val actorApi = Project(
-    id = "actor-api",
-    base = file("actor-api"),
-    settings =
-      defaultSettings ++
-        SbtActorApi.settings ++
-        Seq(
-          libraryDependencies ++= Dependencies.api
-        )
-  ).dependsOn(actorPersist, actorCodecs)
+  ).dependsOn(actorApi, actorCodecs, actorPersist, actorSessionMessages)
 
   lazy val actorRpcApi = Project(
     id = "actor-rpc-api",
