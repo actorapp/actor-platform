@@ -47,8 +47,7 @@ class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpe
   val authService = new AuthServiceImpl(sessionRegion)
   rpcApiService ! AttachService(authService)
 
-
-  TcpFrontend.start(serverConfig)
+  TcpFrontend.start(serverConfig, sessionRegion)
 
   val remote = new InetSocketAddress("localhost", 8080)
 

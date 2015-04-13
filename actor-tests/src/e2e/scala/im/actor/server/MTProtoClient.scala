@@ -93,7 +93,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
     case Received(bs) =>
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
-      handshake.decode(newBuffer) match {
+      handshakeResponse.decode(newBuffer) match {
         case Attempt.Successful(DecodeResult(hs, remainder)) =>
           caller ! MTConnected
           context.become(receiving(connection, remainder, Seq.empty, Seq.empty), discardOld = true)
@@ -164,7 +164,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
   private def send(connection: ActorRef, mtp: MTTransport): Unit = {
     val bits = mtp match {
       case h: Handshake =>
-        handshake.encode(h).require
+        handshakeResponse.encode(h).require
       case ProtoPackage(tp) =>
         TransportPackageCodec.encode(TransportPackage(1, tp)).require
       case SilentClose =>
