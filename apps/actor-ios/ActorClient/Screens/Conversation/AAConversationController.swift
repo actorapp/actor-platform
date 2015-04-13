@@ -281,11 +281,6 @@ class AAConversationController: EngineSlackListController {
         (cell as! BubbleCell).performBind(item as! AMMessage);
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var item = objectAtIndexPath(indexPath) as! AMMessage;
-        return BubbleCell.measureHeight(item);
-    }
-    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated);
         MSG.saveDraft(peer, withText: textView.text);
@@ -293,6 +288,22 @@ class AAConversationController: EngineSlackListController {
     
     override func getDisplayList() -> AMBindedDisplayList {
         return MSG.getMessagesGlobalListWithAMPeer(peer)
+    }
+    
+    // MARK: -
+    // MARK: UITableView Delegate
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        var message = objectAtIndexPath(indexPath) as! AMMessage;
+        
+        if let document = message.getContent() as? AMDocumentContent {
+        
+        }
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        var item = objectAtIndexPath(indexPath) as! AMMessage;
+        return BubbleCell.measureHeight(item);
     }
     
 }

@@ -20,6 +20,8 @@ class AASettingsController: AATableViewController {
     private var user: AMUserVM?
     private var binder = Binder()
     
+    private var phones: JavaUtilArrayList?
+    
     // MARK: -
     // MARK: Constructors
     
@@ -73,6 +75,13 @@ class AASettingsController: AATableViewController {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                     cell.setPresence(presenceText)
                 }
+            }
+        })
+        
+        binder.bind(user!.getPhones(), closure: { (phones: JavaUtilArrayList?) -> () in
+            if phones != nil {
+                self.phones = phones
+                self.tableView.reloadData()
             }
         })
     }
@@ -154,6 +163,19 @@ class AASettingsController: AATableViewController {
         return cell
     }
     
+    private func phoneCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.style = AATableViewCellStyle.Normal
+        cell.setLeftInset(15.0)
+        
+        if let phone = phones!.getWithInt(jint(indexPath.row)) as? AMUserPhone {
+            cell.setTitle("+\(phone.getPhone())")
+        }
+        
+        return cell
+    }
+    
     private func notificationsCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
@@ -178,7 +200,7 @@ class AASettingsController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -188,6 +210,11 @@ class AASettingsController: AATableViewController {
         case 1:
             return 1
         case 2:
+            if phones == nil {
+                return 0
+            }
+            return Int(phones!.size());
+        case 3:
             return 1
         default:
             return 0
@@ -199,7 +226,9 @@ class AASettingsController: AATableViewController {
             return userInfoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
             return setProfilePhotoCell(indexPath)
-        } else if indexPath.section == 2 && indexPath.row == 0 {
+        } else if indexPath.section == 2 {
+            return phoneCell(indexPath)
+        } else if indexPath.section == 3 && indexPath.row == 0 {
 //            return notificationsCell(indexPath)
 //        } else if indexPath.section == 1 && indexPath.row == 1 {
             return privacyCell(indexPath)
@@ -219,7 +248,7 @@ class AASettingsController: AATableViewController {
         
         if indexPath.section == 1 && indexPath.row == 0 {
             askSetPhoto()
-        } else if indexPath.section == 2 && indexPath.row == 0 {
+        } else if indexPath.section == 3 && indexPath.row == 0 {
 //            navigateToNotificationsSettings()
 //        } else if indexPath.section == 1 && indexPath.row == 1 {
             navigateToPrivacySettings()
@@ -233,11 +262,25 @@ class AASettingsController: AATableViewController {
         return 44
     }
     
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 1  && phones == nil {
+            return CGFloat.min
+        }
+        return tableView.sectionFooterHeight
+    }
+    
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
+        if section == 0 || (section == 2 && phones == nil) {
             return CGFloat.min
         }
         return tableView.sectionHeaderHeight
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 2 && phones != nil {
+            return "PHONES" // TODO: Localize
+        }
+        return nil
     }
     
     // MARK: -
