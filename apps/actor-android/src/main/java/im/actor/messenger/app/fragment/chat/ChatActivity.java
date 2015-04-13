@@ -327,7 +327,7 @@ public class ChatActivity extends BaseActivity {
         emojiKeyboard.setOnEmojiClickListener(new OnEmojiClickListener() {
             @Override
             public void onEmojiClicked(long smileId) {
-                String smile = null;
+                String smile =  null;
                 char a = (char) (smileId & 0xFFFFFFFF);
                 char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
                 char c = (char) ((smileId >> 32) & 0xFFFFFFFF);
