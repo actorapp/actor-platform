@@ -751,7 +751,7 @@ public class MediaActivity extends BaseActivity {
 
     public static class MediaFullscreenAnimationUtils {
 
-        public static final int animationMultiplier = 10;
+        public static final int animationMultiplier = 1;
         public static int startDelay = 60;
 
         public static void animateForward(final View transitionView, Bitmap bitmap,
@@ -901,7 +901,7 @@ public class MediaActivity extends BaseActivity {
 
         public static void animateBackgroundForward(View backgroundView, Animator.AnimatorListener listener) {
             backgroundView.animate()
-                    .setDuration(450*animationMultiplier)
+                    .setDuration(300*animationMultiplier)
                     .setInterpolator(new MaterialInterpolator())
                     .alpha(1)
                     .setListener(listener)
@@ -910,7 +910,7 @@ public class MediaActivity extends BaseActivity {
 
         public static void animateBackgroundBack(View backgroundView, Animator.AnimatorListener listener) {
             backgroundView.animate()
-                    .setDuration(450*animationMultiplier)
+                    .setDuration(300*animationMultiplier)
                     .setInterpolator(new MaterialInterpolator())
                     .alpha(0)
                     .setListener(listener)
