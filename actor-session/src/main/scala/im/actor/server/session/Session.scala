@@ -3,7 +3,7 @@ package im.actor.server.session
 import scala.collection.immutable
 
 import akka.actor._
-import akka.contrib.pattern.{ClusterSharding, ShardRegion}
+import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
@@ -14,6 +14,7 @@ import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
+import im.actor.server.push.SeqUpdatesPusher
 
 object Session {
 
@@ -37,10 +38,11 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
 
-  def props(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) = Props(classOf[Session], rpcApiService, materializer)
+  def props(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) =
+    Props(classOf[Session], rpcApiService, seqUpdManagerRegion, materializer)
 }
 
-class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
+class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
 
   import SessionMessage._
 
@@ -77,6 +79,8 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
+        context.actorOf(SeqUpdatesPusher.props(seqUpdManagerRegion, authId, self))
+
         context.become(receiveResolved(authId, sessionId, sessionMessagePublisher))
       }
     case Terminated(client) =>
@@ -95,6 +99,7 @@ class Session(rpcApiService: ActorRef)(implicit materializer: FlowMaterializer) 
       else
         handleSessionMessage(authId, sessionId, client, msg, publisher)
     case SendProtoMessage(protoMessage) =>
+      log.debug("Sending proto message {}", protoMessage)
       sendProtoMessage(authId, sessionId, protoMessage)
     case Terminated(client) =>
       clients -= client

@@ -5,18 +5,18 @@ import java.util.concurrent.TimeUnit
 
 import scala.concurrent._
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 import akka.actor._
-import akka.contrib.pattern.{ClusterSharding, ShardRegion}
-import akka.pattern.{ask, pipe}
+import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.{rpc => api}
-import im.actor.server.{models, persist => p}
+import im.actor.api.{ rpc => api }
+import im.actor.server.{ models, persist => p }
 
 object SeqUpdatesManager {
 
@@ -34,6 +34,12 @@ object SeqUpdatesManager {
   @SerialVersionUID(1L)
   private[push] case class PushUpdateGetSequenceState(header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]) extends Message
 
+  @SerialVersionUID(1L)
+  private[push] case class Subscribe(consumer: ActorRef) extends Message
+
+  @SerialVersionUID(1L)
+  private[push] case class SubscribeAck(consumer: ActorRef) extends Message
+
   type Sequence = Int
   type SequenceState = (Int, Array[Byte])
 
@@ -45,7 +51,7 @@ object SeqUpdatesManager {
   private[push] val noop1: Any => Unit = _ => ()
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env@Envelope(authId, payload) => (authId.toString, env)
+    case env @ Envelope(authId, payload) => (authId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
@@ -92,8 +98,7 @@ object SeqUpdatesManager {
 
   def broadcastClientUpdate(region: ActorRef, update: api.Update)(
     implicit
-    client: api.AuthorizedClientData, ec: ExecutionContext
-    ): DBIO[SequenceState] = {
+    client: api.AuthorizedClientData, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
@@ -185,7 +190,7 @@ object SeqUpdatesManager {
     }
   }
 
-  protected def bytesToTimestamp(bytes: Array[Byte]): Long = {
+  private def bytesToTimestamp(bytes: Array[Byte]): Long = {
     if (bytes.isEmpty) {
       0L
     } else {
@@ -193,7 +198,7 @@ object SeqUpdatesManager {
     }
   }
 
-  protected def timestampToBytes(timestamp: Long): Array[Byte] = {
+  private[push] def timestampToBytes(timestamp: Long): Array[Byte] = {
     ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
   }
 
@@ -215,19 +220,20 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   @SerialVersionUID(1L)
   private case class Initiated(authId: Long, timestamp: Long)
 
+  override def persistenceId: String = self.path.parent.name + "-" + self.path.name
+
   // FIXME: move to props
   val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
-
   context.setReceiveTimeout(receiveTimeout)
-
-  override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
   private[this] val IncrementOnStart: Int = 1000
   require(IncrementOnStart > 1)
   // it is needed to prevent divizion by zero in pushUpdate
 
   private[this] var seq: Int = 0
-  private[this] var lastTimestamp: Long = 0 // TODO: feed this value from db on actor startup
+  private[this] var lastTimestamp: Long = 0
+  // TODO: feed this value from db on actor startup
+  private[this] var consumers: Set[ActorRef] = Set.empty
 
   def receiveInitiated: Receive = {
     case Envelope(_, GetSequenceState) =>
@@ -240,7 +246,19 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       pushUpdate(authId, header, serializedData, userIds, groupIds, { seqstate: SequenceState =>
         replyTo ! seqstate
       })
+    case Envelope(authId, Subscribe(consumer: ActorRef)) =>
+      if (!consumers.contains(consumer)) {
+        consumers += consumer
+        context.watch(consumer)
+      }
+
+      log.debug("Consumer subscribed {}", consumer)
+
+      sender() ! SubscribeAck(consumer)
     case ReceiveTimeout => context.parent ! Passivate(stopMessage = PoisonPill)
+    case Terminated(consumer) =>
+      log.debug("Consumer unsubscribed {}", consumer)
+      consumers -= consumer
   }
 
   def stashing: Receive = {
@@ -253,7 +271,7 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   }
 
   def waitingForEnvelope: Receive = {
-    case env@Envelope(authId, _) =>
+    case env @ Envelope(authId, _) =>
       stash()
       context.become(stashing)
 
@@ -296,11 +314,19 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
     def push(seq: Int, timestamp: Long): Future[Unit] = {
       // TODO: push it
 
-      db.run(p.sequence.SeqUpdate.create(models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)))
+      val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)
+
+      db.run(p.sequence.SeqUpdate.create(seqUpdate))
         .map(_ => ())
         .andThen {
-        case Success(_) => log.debug("Pushed update seq: {}", seq)
-        case Failure(err) => log.error(err, "Failed to push update") // TODO: throw exception?
+        case Success(_) =>
+          consumers foreach { consumer =>
+            consumer ! seqUpdate
+          }
+
+          log.debug("Pushed update seq: {}", seq)
+        case Failure(err) =>
+          log.error(err, "Failed to push update") // TODO: throw exception?
       }
     }
 

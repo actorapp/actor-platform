@@ -6,6 +6,7 @@ import scala.concurrent.duration._
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
 import im.actor.server.persist
+import im.actor.server.push.SeqUpdatesManager
 
 class EncryptionServiceSpec extends BaseServiceSpec {
   def is = s2"""
@@ -14,8 +15,9 @@ class EncryptionServiceSpec extends BaseServiceSpec {
   """
 
   object s {
+    val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService)
+    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
 
     implicit val service = new encryption.EncryptionServiceImpl
     implicit val authService = buildAuthService(sessionRegion)
@@ -48,7 +50,7 @@ class EncryptionServiceSpec extends BaseServiceSpec {
         )
       ) must beOkLike {
         case api.encryption.ResponseGetPublicKeys(Vector(
-        pk@api.encryption.PublicKey(user2.id, user2pk.hash, _)
+        pk @ api.encryption.PublicKey(user2.id, user2pk.hash, _)
         )) if pk.key.sameElements(user2pk.data) => ok
       }.await
     }

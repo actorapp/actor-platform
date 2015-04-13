@@ -102,8 +102,6 @@ object UnsentResponse {
   val header = 0x08
 }
 
-import scodec.bits.BitVector
-
 @SerialVersionUID(1L)
 case class UpdateBox(bodyBytes: BitVector) extends ProtoMessage {
   val header = UpdateBox.header
