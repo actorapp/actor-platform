@@ -23,5 +23,16 @@ actor-server {
         event-stream = on
       }
     }
+
+    remote {
+      netty.tcp {
+        hostname = "127.0.0.1"
+        port = 2553
+      }
+    }
+
+    cluster {
+      seed-nodes = [ "akka.tcp://actor-app@127.0.0.1:2553" ]
+    }
   }
 }

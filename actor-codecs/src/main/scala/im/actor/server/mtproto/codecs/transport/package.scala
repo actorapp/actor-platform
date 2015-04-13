@@ -9,24 +9,27 @@ case class TransportPackageHeader(index: Int, header: Int, bodyLength: Int)
 
 package object transport {
   val intLengthBits = IntLengthBitsCodec
+  val intLengthString = IntLengthStringCodec
 
   val handshakeHeader = (C.byte :: C.byte :: C.byte :: C.int32).as[HandshakeHeader]
   val handshakeHeaderSize = byteSize + byteSize + byteSize + 32
   def handshakeData(bytesSize: Int) = C.bits(bytesSize.toLong * byteSize)
 
-  val handshake = (C.byte :: C.byte :: C.byte :: intLengthBits).as[Handshake]
+  val handshakeResponse = (C.byte :: C.byte :: C.byte :: C.bits(256)).as[Handshake]
 
-  val MTPackageCodec = (C.int64 :: C.int64 :: BytesCodec).as[MTPackage]
+  val MTPackageCodec = (C.int64 :: C.int64 :: C.bits).as[MTPackage]
 
   val PingCodec = bytes.as[Ping]
 
   val PongCodec = bytes.as[Pong]
 
-  val DropCodec = (C.int64 :: C.byte :: string).as[Drop]
+  val DropCodec = (C.int64 :: C.byte :: intLengthString).as[Drop]
 
   val RedirectCodec = (string :: C.int32 :: C.int32).as[Redirect]
 
   val InternalErrorCodec = (C.byte :: C.int32 :: string).as[InternalError]
+
+  val AckCodec = C.int32.as[Ack]
 
   val PackageIndexCodec = C.int32
 
@@ -40,5 +43,6 @@ package object transport {
       case Drop.header => DropCodec.map(_.asInstanceOf[MTProto])
       case Redirect.header => RedirectCodec.map(_.asInstanceOf[MTProto])
       case InternalError.header => InternalErrorCodec.map(_.asInstanceOf[MTProto])
+      case Ack.header => AckCodec.map(_.asInstanceOf[MTProto])
     }
 }

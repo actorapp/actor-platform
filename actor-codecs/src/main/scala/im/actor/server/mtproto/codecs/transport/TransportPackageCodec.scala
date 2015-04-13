@@ -18,6 +18,7 @@ class MTProtoDecoder(header: Int) extends Decoder[MTProto] {
       case Drop.header => DropCodec.asDecoder
       case Redirect.header => RedirectCodec.asDecoder
       case InternalError.header => InternalErrorCodec.asDecoder
+      case Ack.header => AckCodec.asDecoder
     }
 
     decoder.decode(bits)
@@ -35,6 +36,7 @@ object MTProtoEncoder extends Encoder[MTProto] {
       case x: Drop => DropCodec.encode(x)
       case x: Redirect => RedirectCodec.encode(x)
       case x: InternalError => InternalErrorCodec.encode(x)
+      case x: Ack => AckCodec.encode(x)
     }
   }
 }

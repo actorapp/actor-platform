@@ -66,7 +66,7 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
     def sendDrop(msg: String) = replyTo ! ProtoPackage(Drop(mb.messageId, 0, msg))
 
     if (pAuthId == 0L) {
-      if (pSessionId == 0L) sendDrop("sessionId must be equal to zero")
+      if (pSessionId != 0L) sendDrop("sessionId must be equal to zero")
       else mb.body match {
         case RequestAuthId() =>
           val f =
