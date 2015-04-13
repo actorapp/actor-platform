@@ -19,9 +19,9 @@ package object transport {
 
   val MTPackageCodec = (C.int64 :: C.int64 :: C.bits).as[MTPackage]
 
-  val PingCodec = bytes.as[Ping]
+  val PingCodec = intLengthBits.as[Ping]
 
-  val PongCodec = bytes.as[Pong]
+  val PongCodec = intLengthBits.as[Pong]
 
   val DropCodec = (C.int64 :: C.byte :: intLengthString).as[Drop]
 
