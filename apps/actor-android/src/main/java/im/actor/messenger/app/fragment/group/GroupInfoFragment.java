@@ -34,17 +34,14 @@ import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
-import im.actor.messenger.app.fragment.media.DocumentsActivity;
-import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.Messages;
-import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
@@ -181,6 +178,8 @@ public class GroupInfoFragment extends BaseFragment {
                     "" + mediaCount
             );
         }
+        header.findViewById(R.id.sharedContainer).setVisibility(View.GONE);
+
 
         //Members
         ((TextView) header.findViewById(R.id.membersCount)).setText(
