@@ -43,6 +43,8 @@ import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.EmojiProcessor;
 import im.actor.messenger.app.emoji.keyboard.EmojiKeyboardPopup;
 import im.actor.messenger.app.emoji.keyboard.OnEmojiClickListener;
+import im.actor.messenger.app.emoji.keyboard.OnStickerClickListener;
+import im.actor.messenger.app.emoji.stickers.Stickers;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
@@ -315,11 +317,17 @@ public class ChatActivity extends BaseActivity {
         final TintImageView emojiButton = (TintImageView) findViewById(R.id.ib_emoji);
         final EmojiKeyboardPopup emojiKeyboard = new EmojiKeyboardPopup(rootView, this);
 
+        emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
+            @Override
+            public void onStickerClick(String packId, String stickerId) {
+                messenger().sendPhoto(peer, Stickers.getFile(packId, stickerId));
+            }
+        });
 
         emojiKeyboard.setOnEmojiClickListener(new OnEmojiClickListener() {
             @Override
             public void onEmojiClicked(long smileId) {
-                String smile = null;
+                String smile =  null;
                 char a = (char) (smileId & 0xFFFFFFFF);
                 char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
                 char c = (char) ((smileId >> 32) & 0xFFFFFFFF);

@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,7 +33,9 @@ public class PagerSlidingTabStrip extends FrameLayout {
     public interface IconTabProvider {
         public int getPageIconResId(int position);
     }
-
+    public interface TabProvider {
+        public View getTab(int position);
+    }
     // @formatter:off
     private static final int[] ATTRS = new int[]{
             android.R.attr.textSize,
@@ -179,6 +180,8 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
             if (pager.getAdapter() instanceof IconTabProvider) {
                 addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
+            } else if(pager.getAdapter() instanceof TabProvider){
+                addTab(i, ((TabProvider)pager.getAdapter()).getTab(i));
             } else {
                 addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
             }
@@ -233,8 +236,8 @@ public class PagerSlidingTabStrip extends FrameLayout {
                 pager.setCurrentItem(position);
             }
         });
-
-        tab.setPadding(tabPadding, 0, tabPadding, 0);
+        if(tabPadding>0)
+            tab.setPadding(tabPadding, 0, tabPadding, 0);
         tabsContainer.addView(tab, position, expandedTabLayoutParams);
     }
 
