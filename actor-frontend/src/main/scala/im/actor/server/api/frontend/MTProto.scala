@@ -83,7 +83,10 @@ object MTProto {
     sealed trait ParserStep
 
     @SerialVersionUID(1L)
-    case object HandshakeStep extends ParserStep
+    case object HandshakeHeader extends ParserStep
+
+    @SerialVersionUID(1L)
+    case class HandshakeData(header: HandshakeHeader) extends ParserStep
 
     @SerialVersionUID(1L)
     case object AwaitPackageHeader extends ParserStep
@@ -96,7 +99,7 @@ object MTProto {
 
     type ParseState = (ParserStep, BitVector)
 
-    private[this] var parserState: ParseState = (HandshakeStep, BitVector.empty)
+    private[this] var parserState: ParseState = (HandshakeHeader, BitVector.empty)
 
     @inline
     private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
@@ -120,14 +123,36 @@ object MTProto {
         if (buf.isEmpty) {
           ((state, buf), pSeq)
         } else state match {
-          case HandshakeStep =>
-            HandshakeCodec.decode(buf).toEither match {
-              case Right(res) =>
-                system.log.debug("Handshake {}", res.value)
-                ((AwaitPackageHeader, res.remainder), Vector(res.value))
-              case Left(e) =>
-                system.log.debug("Failed to parse Handshake: {}", e)
-                failedState(e.message)
+          case HandshakeHeader =>
+            if (buf.length >= handshakeHeaderSize) {
+              handshakeHeader.decode(buf).toEither match {
+                case Right(res) =>
+                  system.log.debug("Handshake header {}", res.value)
+                  doParse(HandshakeData(res.value), res.remainder)(pSeq)
+                case Left(e) =>
+                  system.log.debug("Failed to parse Handshake header {}", e)
+                  failedState(e.message)
+              }
+            } else {
+              ((HandshakeHeader, buf), pSeq)
+            }
+          case state @ HandshakeData(header) =>
+            // FIXME: compute once
+            // FIXME: check if fits into Int
+            val bitsLength = (header.dataLength * byteSize).toInt
+
+            if (buf.length >= bitsLength) {
+              handshakeData(header.dataLength).decode(buf).toEither match {
+                case Right(res) =>
+                  system.log.debug("Handshake data {}", res)
+                  val handshake = Handshake(header.protoVersion, header.apiMajorVersion, header.apiMinorVersion, res.value)
+                  doParse(AwaitPackageHeader, res.remainder)(Vector(handshake))
+                case Left(e) =>
+                  system.log.debug("Failed to parse handshake data: {}", e)
+                  failedState(e.message)
+              }
+            } else {
+              ((state, buf), pSeq)
             }
           case AwaitPackageHeader =>
             if (buf.length < transportPackageHeader.sizeBound.lowerBound) {
@@ -136,7 +161,9 @@ object MTProto {
               transportPackageHeader.decode(buf).toEither match {
                 case Right(headerRes) =>
                   doParse(AwaitPackageBody(headerRes.value), headerRes.remainder)(pSeq)
-                case Left(e) => failedState(e.message)
+                case Left(e) =>
+                  system.log.debug("failed to parse package header", e)
+                  failedState(e.message)
               }
             }
           case state @ AwaitPackageBody(TransportPackageHeader(index, header, size)) =>
@@ -168,7 +195,7 @@ object MTProto {
 
     override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
       case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
-        val res = ByteString(HandshakeCodec.encode(h).require.toByteBuffer)
+        val res = ByteString(handshake.encode(h).require.toByteBuffer)
 
         if (protoVersion == 0 || apiMajorVersion == 0) {
           ctx.pushAndFinish(res)

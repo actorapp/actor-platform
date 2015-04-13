@@ -1,7 +1,6 @@
 package im.actor.server.mtproto.codecs
 
-import scodec._
-import scodec.codecs._
+import scodec.{ codecs => C, _ }
 
 import im.actor.server.mtproto.transport._
 
@@ -9,23 +8,29 @@ import im.actor.server.mtproto.transport._
 case class TransportPackageHeader(index: Int, header: Int, bodyLength: Int)
 
 package object transport {
-  val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
+  val intLengthBits = IntLengthBitsCodec
 
-  val MTPackageCodec = (int64 :: int64 :: codecs.bits).as[MTPackage]
+  val handshakeHeader = (C.byte :: C.byte :: C.byte :: C.int32).as[HandshakeHeader]
+  val handshakeHeaderSize = byteSize + byteSize + byteSize + 32
+  def handshakeData(bytesSize: Int) = C.bits(bytesSize.toLong * byteSize)
+
+  val handshake = (C.byte :: C.byte :: C.byte :: intLengthBits).as[Handshake]
+
+  val MTPackageCodec = (C.int64 :: C.int64 :: BytesCodec).as[MTPackage]
 
   val PingCodec = bytes.as[Ping]
 
   val PongCodec = bytes.as[Pong]
 
-  val DropCodec = (int64 :: byte :: string).as[Drop]
+  val DropCodec = (C.int64 :: C.byte :: string).as[Drop]
 
-  val RedirectCodec = (string :: int32 :: int32).as[Redirect]
+  val RedirectCodec = (string :: C.int32 :: C.int32).as[Redirect]
 
-  val InternalErrorCodec = (byte :: int32 :: string).as[InternalError]
+  val InternalErrorCodec = (C.byte :: C.int32 :: string).as[InternalError]
 
-  val PackageIndexCodec = int32
+  val PackageIndexCodec = C.int32
 
-  val transportPackageHeader = (int32 :: uint8 :: int32).as[TransportPackageHeader]
+  val transportPackageHeader = (C.int32 :: C.uint8 :: C.int32).as[TransportPackageHeader]
 
   def mtprotoCodec(header: Int): GenCodec[_, MTProto] =
     header match {
