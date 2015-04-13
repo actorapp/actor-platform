@@ -2,8 +2,9 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.{ models, persist }
+import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.session.Session
+import im.actor.server.{ models, persist }
 
 class AuthServiceSpec extends BaseServiceSpec {
   def is = sequential ^ s2"""
@@ -34,8 +35,9 @@ class AuthServiceSpec extends BaseServiceSpec {
                      """
 
   object s {
+    val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
+    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
 
     implicit val ec = system.dispatcher
     implicit val service = new auth.AuthServiceImpl(sessionRegion)

@@ -23,7 +23,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService)
+    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
 
     implicit val service = new contacts.ContactsServiceImpl(seqUpdManagerRegion)
     implicit val authService = buildAuthService(sessionRegion)
