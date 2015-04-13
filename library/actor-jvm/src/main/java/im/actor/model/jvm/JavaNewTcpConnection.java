@@ -29,8 +29,9 @@ import im.actor.model.util.CRC32;
 public class JavaNewTcpConnection implements Connection {
 
     private static final int CONNECTION_TIMEOUT = 5 * 1000;
-    private static final int HANDSHAKE_TIMEOUT = 15 * 1000;
-    private static final int RESPONSE_TIMEOUT = 15 * 1000;
+    private static final int HANDSHAKE_TIMEOUT = 5 * 1000;
+    private static final int RESPONSE_TIMEOUT = 5 * 1000;
+    private static final int PING_TIMEOUT = 5 * 60 * 1000;
 
     private static final int HEADER_PROTO = 0;
     private static final int HEADER_PING = 1;
@@ -52,6 +53,8 @@ public class JavaNewTcpConnection implements Connection {
     private final OutputStream outputStream;
     private final ReaderThread readerThread;
     private final WriterThread writerThread;
+    private TimerTask pingTask;
+    private final HashMap<Long, TimerTask> schedulledPings = new HashMap<Long, TimerTask>();
     private final HashMap<Integer, TimerTask> packageTimers = new HashMap<Integer, TimerTask>();
 
     // Connection state
@@ -138,6 +141,9 @@ public class JavaNewTcpConnection implements Connection {
         writerThread = new WriterThread();
         readerThread.start();
         writerThread.start();
+
+        pingTask = new PingTask();
+        DIE_TIMER.schedule(pingTask, PING_TIMEOUT);
     }
 
     @Override
@@ -189,8 +195,14 @@ public class JavaNewTcpConnection implements Connection {
             for (Integer id : packageTimers.keySet()) {
                 packageTimers.get(id).cancel();
             }
+            for (Long ping : schedulledPings.keySet()) {
+                schedulledPings.get(ping).cancel();
+            }
+            schedulledPings.clear();
             packageTimers.clear();
         }
+
+        pingTask.cancel();
     }
 
     private void onServerAck(int packageId) {
@@ -200,12 +212,49 @@ public class JavaNewTcpConnection implements Connection {
                 return;
             }
             task.cancel();
-            for (Integer id : packageTimers.keySet()) {
-                TimerTask task1 = packageTimers.get(id);
-                task1.cancel();
-                DIE_TIMER.schedule(task1, RESPONSE_TIMEOUT);
-            }
+
+            refreshTimeouts();
         }
+    }
+
+    private void onServerPong(long pingId) {
+        synchronized (packageTimers) {
+            TimerTask task = schedulledPings.remove(pingId);
+            if (task == null) {
+                return;
+            }
+            task.cancel();
+
+            refreshTimeouts();
+        }
+    }
+
+    private void refreshTimeouts() {
+        for (Long ping : schedulledPings.keySet().toArray(new Long[0])) {
+            // Remove old
+            TimerTask oldTask = schedulledPings.remove(ping);
+            oldTask.cancel();
+
+            // Add new
+            PingTimeoutTask newTask = new PingTimeoutTask(ping);
+            schedulledPings.put(ping, newTask);
+            DIE_TIMER.schedule(newTask, RESPONSE_TIMEOUT);
+        }
+        for (Integer id : packageTimers.keySet().toArray(new Integer[0])) {
+            // Remove old
+            TimerTask oldTask = packageTimers.get(id);
+            oldTask.cancel();
+
+            // Add new
+            FrameTimeoutTask newTask = new FrameTimeoutTask(id);
+            packageTimers.put(id, newTask);
+            DIE_TIMER.schedule(newTask, RESPONSE_TIMEOUT);
+        }
+
+        pingTask.cancel();
+
+        pingTask = new PingTask();
+        DIE_TIMER.schedule(pingTask, PING_TIMEOUT);
     }
 
     private class ReaderThread extends Thread {
@@ -239,7 +288,7 @@ public class JavaNewTcpConnection implements Connection {
                     int header = dataInput.readByte();
                     int size = dataInput.readInt();
 
-                    Log.d(TAG, "Reading frame body...");
+                    Log.d(TAG, "Reading frame body for #" + receivedPackageIndex);
                     byte[] body = readBytes(size + 4);
                     dataInput = new DataInput(body);
                     byte[] contents = dataInput.readBytes(size);
@@ -266,8 +315,13 @@ public class JavaNewTcpConnection implements Connection {
                         post(HEADER_PONG, contents);
                     } else if (header == HEADER_PONG) {
                         Log.d(TAG, "Received pong frame");
-
-                        // TODO: Implement processing
+                        DataInput pongInput = new DataInput(contents);
+                        int pongLen = pongInput.readInt();
+                        if (pongLen != 8) {
+                            Log.w(TAG, "Pong invalid content length, got: " + pongLen);
+                            continue;
+                        }
+                        onServerPong(pongInput.readLong());
                     } else if (header == HEADER_ACK) {
                         Log.d(TAG, "Received ack frame");
                         DataInput ackContent = new DataInput(contents);
@@ -341,19 +395,19 @@ public class JavaNewTcpConnection implements Connection {
                     dataOutput.writeInt((int) crc32Engine.getValue());
                     byte[] destPackage = dataOutput.toByteArray();
 
-                    if (p.getHeader() == HEADER_PROTO || p.getHeader() == HEADER_PING) {
-                        synchronized (packageTimers) {
-                            TimerTask timeoutTask = new TimerTask() {
-                                @Override
-                                public void run() {
-                                    Log.d(TAG, "Response #" + packageId + " not received in time");
-                                    close();
-                                }
-                            };
-                            packageTimers.put(packageId, timeoutTask);
-                            DIE_TIMER.schedule(timeoutTask, RESPONSE_TIMEOUT);
-                        }
-                    }
+//                    if (p.getHeader() == HEADER_PROTO) {
+//                        synchronized (packageTimers) {
+//                            TimerTask timeoutTask = new TimerTask() {
+//                                @Override
+//                                public void run() {
+//                                    Log.d(TAG, "Response #" + packageId + " not received in time");
+//                                    close();
+//                                }
+//                            };
+//                            packageTimers.put(packageId, timeoutTask);
+//                            DIE_TIMER.schedule(timeoutTask, RESPONSE_TIMEOUT);
+//                        }
+//                    }
 
                     outputStream.write(destPackage);
                     outputStream.flush();
@@ -392,6 +446,58 @@ public class JavaNewTcpConnection implements Connection {
 
         public int getLen() {
             return len;
+        }
+    }
+
+    class PingTimeoutTask extends TimerTask {
+        private long pingId;
+
+        public PingTimeoutTask(long pingId) {
+            this.pingId = pingId;
+        }
+
+        @Override
+        public void run() {
+            Log.d(TAG, "Ping #" + pingId + " is timed out");
+            close();
+        }
+    }
+
+    class FrameTimeoutTask extends TimerTask {
+        private int frameId;
+
+        FrameTimeoutTask(int frameId) {
+            this.frameId = frameId;
+        }
+
+        @Override
+        public void run() {
+            Log.d(TAG, "Response #" + frameId + " not received in time");
+            close();
+        }
+    }
+
+    class PingTask extends TimerTask {
+        @Override
+        public void run() {
+            if (isClosed()) {
+                return;
+            }
+            final long pingId = RANDOM.nextLong();
+            DataOutput dataOutput = new DataOutput();
+            dataOutput.writeInt(8);
+            synchronized (RANDOM) {
+                dataOutput.writeLong(pingId);
+            }
+
+            PingTimeoutTask pingTimeout = new PingTimeoutTask(pingId);
+            synchronized (packageTimers) {
+                schedulledPings.put(pingId, pingTimeout);
+            }
+            DIE_TIMER.schedule(pingTimeout, RESPONSE_TIMEOUT);
+
+            Log.d(TAG, "Performing ping #" + pingId + "...");
+            post(HEADER_PING, dataOutput.toByteArray());
         }
     }
 
