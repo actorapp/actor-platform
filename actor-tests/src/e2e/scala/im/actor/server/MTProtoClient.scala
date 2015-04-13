@@ -13,7 +13,7 @@ import akka.util.{ ByteString, Timeout }
 import scodec.bits.BitVector
 import scodec.{ Attempt, DecodeResult, codecs => C }
 
-import im.actor.server.mtproto.codecs.transport.{ HandshakeCodec, TransportPackageCodec }
+import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
 
 object MTProtoClient {
@@ -68,10 +68,9 @@ object MTProtoClientActor {
 class MTProtoClientActor extends Actor with ActorLogging {
 
   import Tcp._
+  import context.system
 
   import MTProtoClientActor._
-
-  import context.system
 
   def receive: Receive = {
     case MTConnect(remote) =>
@@ -94,7 +93,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
     case Received(bs) =>
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
-      HandshakeCodec.decode(newBuffer) match {
+      handshake.decode(newBuffer) match {
         case Attempt.Successful(DecodeResult(hs, remainder)) =>
           caller ! MTConnected
           context.become(receiving(connection, remainder, Seq.empty, Seq.empty), discardOld = true)
@@ -117,6 +116,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
         context.become(receiving(connection, buffer, tps.tail, consumers), discardOld = true)
       }
     case Received(bs) =>
+      log.debug("Received {}", bs)
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
       transportPackageList.decode(newBuffer).recover {
@@ -152,18 +152,19 @@ class MTProtoClientActor extends Actor with ActorLogging {
     val protoVersion = 1.toByte
     val apiMajorVersion = 1.toByte
     val apiMinorVersion = 1.toByte
-    val randomBytes = Random.nextString(10).getBytes
+    val randomBytes = BitVector(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
     // TODO: check digest
     //val randomBytesDigest = DigestUtils.sha1(Array(protoVersion, apiMajorVersion, apiMinorVersion) ++ randomBytes)
-    val handshake = Handshake(protoVersion, apiMajorVersion, apiMinorVersion, BitVector(randomBytes))
+    val handshake = Handshake(protoVersion, apiMajorVersion, apiMinorVersion, randomBytes)
+    log.debug("Sending handshake {}", handshake)
     send(connection, handshake)
   }
 
   private def send(connection: ActorRef, mtp: MTTransport): Unit = {
     val bits = mtp match {
       case h: Handshake =>
-        HandshakeCodec.encode(h).require
+        handshake.encode(h).require
       case ProtoPackage(tp) =>
         TransportPackageCodec.encode(TransportPackage(1, tp)).require
       case SilentClose =>
