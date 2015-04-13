@@ -67,6 +67,7 @@ public class PictureActivity extends ActionBarActivity {
     private boolean uiIsHidden;
     private Toolbar toolbar;
     private View containerView;
+    private boolean finished = false;
 
     public static void launchPhoto(Activity activity, View transitionView, String path, int senderId) {
 
@@ -168,6 +169,10 @@ public class PictureActivity extends ActionBarActivity {
     @Override
     public void finish() {
         // transitionView.setVisibility(View.VISIBLE);
+        if(finished){
+            return;
+        }
+        finished = true;
         transitionView.setAlpha(1f);
         transitionView.postDelayed(new Runnable() {
             @Override
@@ -181,6 +186,7 @@ public class PictureActivity extends ActionBarActivity {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 PictureActivity.super.finish();
+                                overridePendingTransition(0, 0);
                             }
                         });
                 MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView, null);
@@ -207,10 +213,6 @@ public class PictureActivity extends ActionBarActivity {
         transitionView.request(new RawFileTask(path));*/
     }
 
-    private void superFinish() {
-        super.finish();
-        overridePendingTransition(0, 0);
-    }
 
 
     @Override
