@@ -108,7 +108,7 @@ class Imaging {
         return image
     }
     
-    class func avatarPlaceholder(index: jint, size: Int, title:NSString) -> UIImage {
+    class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
         var color = Resources.placeHolderColors[Int(abs(index)) % Resources.placeHolderColors.count].CGColor;
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: size, height: size), false, UIScreen.mainScreen().scale);
@@ -117,7 +117,13 @@ class Imaging {
         // Background
         
         CGContextSetFillColorWithColor(context, color);
-        CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
+        
+        if rounded {
+            CGContextAddArc(context, CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
+        } else {
+            CGContextAddRect(context, CGRect(x: 0, y: 0, width: size, height: size))
+        }
+        
         CGContextDrawPath(context, kCGPathFill);
 
         // Text
@@ -137,9 +143,11 @@ class Imaging {
         
         // Border
         
-        CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor);
-        CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
-        CGContextDrawPath(context, kCGPathStroke);
+        if rounded {
+            CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor);
+            CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
+            CGContextDrawPath(context, kCGPathStroke);
+        }
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();

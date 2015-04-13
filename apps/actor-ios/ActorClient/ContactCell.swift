@@ -11,7 +11,7 @@ import UIKit
 
 class ContactCell : UITableViewCell {
     
-    let avatarView = AvatarView(frameSize: 40);
+    let avatarView = AAAvatarView(frameSize: 40, type: AAAvatarType.Rounded);
     let shortNameView = UILabel();
     let titleView = UILabel();
     let separatorView = TableViewSeparator(color: Resources.SeparatorColor)

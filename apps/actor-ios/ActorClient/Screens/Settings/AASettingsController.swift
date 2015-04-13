@@ -115,6 +115,18 @@ class AASettingsController: AATableViewController {
     }
     
     // MARK: -
+    // MARK: Setters
+    
+    override func setEditing(editing: Bool, animated: Bool) {
+        // TODO: Localize
+        var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
+        alertView.addButtonWithTitle("Change")
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.show()
+    }
+    
+    // MARK: -
     // MARK: Getters
     
     private func userInfoCell(indexPath: NSIndexPath) -> AAUserInfoCell {
@@ -124,9 +136,6 @@ class AASettingsController: AATableViewController {
             
             if let username = user!.getName().get() as? String {
                 cell.setUsername(username)
-                cell.usernameChangedBlock = { (newUsername: String) -> () in
-                    self.execute(MSG.editMyNameWithNSString(newUsername))
-                }
             }
             
         }
@@ -169,14 +178,16 @@ class AASettingsController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch (section) {
         case 0:
-            return 2
+            return 1
         case 1:
+            return 1
+        case 2:
             return 1
         default:
             return 0
@@ -186,9 +197,9 @@ class AASettingsController: AATableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 && indexPath.row == 0 {
             return userInfoCell(indexPath)
-        } else if indexPath.section == 0 && indexPath.row == 1 {
-            return setProfilePhotoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
+            return setProfilePhotoCell(indexPath)
+        } else if indexPath.section == 2 && indexPath.row == 0 {
 //            return notificationsCell(indexPath)
 //        } else if indexPath.section == 1 && indexPath.row == 1 {
             return privacyCell(indexPath)
@@ -197,7 +208,7 @@ class AASettingsController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 0 && indexPath.row == 0
+        return false
     }
     
     // MARK: -
@@ -206,9 +217,9 @@ class AASettingsController: AATableViewController {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        if indexPath.section == 0 && indexPath.row == 1 {
+        if indexPath.section == 1 && indexPath.row == 0 {
             askSetPhoto()
-        } else if indexPath.section == 1 && indexPath.row == 0 {
+        } else if indexPath.section == 2 && indexPath.row == 0 {
 //            navigateToNotificationsSettings()
 //        } else if indexPath.section == 1 && indexPath.row == 1 {
             navigateToPrivacySettings()
@@ -217,16 +228,14 @@ class AASettingsController: AATableViewController {
 
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 89
+            return 200
         }
         return 44
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
-            if (!Resources.IsDarkTheme) {
-                return CGFloat.min
-            }
+            return CGFloat.min
         }
         return tableView.sectionHeaderHeight
     }
@@ -306,3 +315,20 @@ extension AASettingsController: UINavigationControllerDelegate {
     
     
 }
+
+// MARK: -
+// MARK: UIAlertView Delegate
+
+extension AASettingsController: UIAlertViewDelegate {
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if alertView.buttonTitleAtIndex(buttonIndex) == "Change" {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                execute(MSG.editMyNameWithNSString(textField.text))
+            }
+        }
+    }
+    
+}
+
