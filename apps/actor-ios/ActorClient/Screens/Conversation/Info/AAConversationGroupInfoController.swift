@@ -98,27 +98,12 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: Setters
     
     override func setEditing(editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        
-        var cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell
-        
-        if cell != nil {
-            if editing == true {
-                groupNameTextField = cell!.groupNameTextField
-            }
-        }
-        
-        if groupNameTextField != nil {
-            if editing == true {
-                groupNameTextField!.becomeFirstResponder()
-            } else {
-                groupNameTextField!.resignFirstResponder()
-                groupNameTextField = nil
-            }
-        }
-        
-        tableView.beginUpdates()
-        tableView.endUpdates()
+        // TODO: Localize
+        var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
+        alertView.addButtonWithTitle("Change")
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.text = group!.getName().get() as! String
+        alertView.show()
     }
     
     // MARK: -
@@ -128,9 +113,6 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AAConversationGroupInfoCell = tableView.dequeueReusableCellWithIdentifier(GroupInfoCellIdentifier, forIndexPath: indexPath) as! AAConversationGroupInfoCell
         
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.groupNameChangedBlock = { (groupName: String) -> () in
-            self.execute(MSG.editGroupTitleWithInt(jint(self.gid), withNSString: groupName))
-        }
         
         return cell
     }
@@ -229,21 +211,23 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 2
+            return 1
         case 1:
             return 1
         case 2:
+            return 1
+        case 3:
             if groupMembers != nil {
                 return Int(groupMembers!.length()) + 1
             }
             return 0
-        case 3:
+        case 4:
             return 1
         default:
             return 0
@@ -251,20 +235,20 @@ class AAConversationGroupInfoController: AATableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if indexPath.section == 0 && indexPath.row == 0 {
+        if indexPath.section == 0 {
             return groupInfoCell(indexPath)
-        } else if indexPath.section == 0 && indexPath.row == 1 {
-            return setGroupPhotoCell(indexPath)
         } else if indexPath.section == 1 {
-            return notificationsCell(indexPath)
+            return setGroupPhotoCell(indexPath)
         } else if indexPath.section == 2 {
+            return notificationsCell(indexPath)
+        } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount {
                 return setupUserCellForIndexPath(indexPath)
             } else {
                 return addParticipantCell(indexPath)
             }
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             return leaveConversationCell(indexPath)
         }
         return UITableViewCell()
@@ -286,9 +270,9 @@ class AAConversationGroupInfoController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 1 {
+        if section == 2 {
             return "SETTINGS" // TODO: Localize
-        } else if section == 2 {
+        } else if section == 3 {
             let groupMembersCount = (groupMembers != nil) ? Int(groupMembers!.length()) : 0
             return "\(groupMembersCount) MEMBERS" // TODO: Localize
         }
@@ -304,9 +288,9 @@ class AAConversationGroupInfoController: AATableViewController {
         // TODO: Allow to change group photo? 
         // TODO: Allow to delete participants if I am a creator?
         
-        if indexPath.section == 0 && indexPath.row == 1 {
+        if indexPath.section == 1 && indexPath.row == 0 {
             askSetPhoto()
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount {
                 
@@ -318,15 +302,15 @@ class AAConversationGroupInfoController: AATableViewController {
             } else {
                 showAddParticipants()
             }
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             execute(MSG.leaveGroupWithInt(jint(gid)))
         }
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 {
-            return (editing ? 160 : 150)
-        } else if indexPath.section == 2 {
+        if indexPath.section == 0 {
+            return 200.0
+        } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount - 1 {
                 return 48
@@ -415,5 +399,21 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
 extension AAConversationGroupInfoController: UINavigationControllerDelegate {
     
     
+    
+}
+
+// MARK: -
+// MARK: UIAlertView Delegate
+
+extension AAConversationGroupInfoController: UIAlertViewDelegate {
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if alertView.buttonTitleAtIndex(buttonIndex) == "Change" {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                execute(MSG.editGroupTitleWithInt(jint(gid), withNSString: textField.text))
+            }
+        }
+    }
     
 }

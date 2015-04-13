@@ -18,7 +18,7 @@ class AAConversationGroupInfoUserCell: AATableViewCell {
     // MARK: -
     // MARK: Public vars
     
-    var userAvatarView: AvatarView!
+    var userAvatarView: AAAvatarView!
     
     // MARK: -
     // MARK: Constructors
@@ -26,7 +26,7 @@ class AAConversationGroupInfoUserCell: AATableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        userAvatarView = AvatarView(frameSize: 40)
+        userAvatarView = AAAvatarView(frameSize: 40, type: AAAvatarType.Rounded)
         contentView.addSubview(userAvatarView)
         
         usernameLabel = UILabel()
