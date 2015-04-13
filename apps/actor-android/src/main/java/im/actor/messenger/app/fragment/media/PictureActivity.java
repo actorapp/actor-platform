@@ -192,7 +192,7 @@ public class PictureActivity extends ActionBarActivity {
                 MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView, null);
 
             }
-        },50);
+        }, 50);
         /*
         transitionView.setExtraReceiverCallback(new ReceiverCallback() {
             @Override
@@ -301,8 +301,8 @@ public class PictureActivity extends ActionBarActivity {
 
                 }
             });
-            if(path==null){
-                messenger().requestState( fileId, new FileCallback() {
+            if (path == null) {
+                messenger().requestState(fileId, new FileCallback() {
                     @Override
                     public void onNotDownloaded() {
                         //messenger().startDownloading(location);

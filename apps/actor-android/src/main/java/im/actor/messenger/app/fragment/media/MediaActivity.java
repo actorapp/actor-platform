@@ -79,7 +79,6 @@ public class MediaActivity extends BaseActivity {
     //endregion
 
 
-
     //region grid
     private static final java.lang.String ARG_VIEW_TYPE = "ARG_VIEW_TYPE";
     private static final int VIEW_TYPE_GRID = 1;
@@ -151,120 +150,112 @@ public class MediaActivity extends BaseActivity {
     }
 
 
-
-
     /**
-    private void showPicture() {
-
-
-        Bundle bundle = activityIntent.getExtras();
-        String path = bundle.getString(ARG_PATH);
-        fileId = bundle.getLong(ARG_FILEID, 0);
-        fileName = bundle.getString(ARG_FILENAME);
-        fileSize = bundle.getInt(ARG_FILESIZE, 0);
-        int sender = bundle.getInt(ARG_OWNER, 0);
-        final UserVM owner = users().get(sender);
-
-        showingPager = true;
-        viewPager.setAlpha(1);
-        showView(viewPager, false);
-        toolbar.setTitle(R.string.media);
-        viewPager.setAdapter(new SingleMediaFakePagerAdapter(path, owner));
-        //viewPager.setCurrentItem(selectedIndex, false);
-
-
-        //showPager();
-
-        ownerContainer.setAlpha(1);
-        transitionImageView.setAlpha(1L);
-        showView(ownerContainer, false);
-        showView(transitionImageView, false);
-        showView(ownerContainer, false);
-
-        setPictureActionbar();
-
-
-        actionBar.setTitle("Picture");
-
-
-
-        final int navbarHeight = Screen.getNavbarHeight();
-        if(Build.VERSION.SDK_INT>=19) {
-            if (navbarHeight > 0) {
-                // ownerContainer.setPadding(0, 0, 0, navbarHeight);
-            }
-        }
-
-
-        transitionTop = bundle.getInt(ARG_IMAGE_TOP, 0);
-        transitionLeft = bundle.getInt(ARG_IMAGE_LEFT, 0);
-        transitionWidth = bundle.getInt(ARG_IMAGE_WIDTH, 0);
-        transitionHeight = bundle.getInt(ARG_IMAGE_HEIGHT, 0);
-        // ViewCompat.setTransitionName(imageView, TRANSIT_IMAGE);
-        // transitionBackgroundView.setAlpha(0);
-
-
-
-        // animateImage(transitionTop, transitionLeft, transitionHeight, transitionWidth);
-
-         Move to fragment?
-        ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, this));
-        Avatar avatar = owner.getAvatar().getValue();
-        if (avatar != null) {
-            ownerAvatarView.bindAvatar(32, avatar);
-        } else {
-            ownerAvatarView.unbind();
-        }
-        ownerNameView.setText(owner.getName());
-
-        ownerContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(Intents.openProfile(owner.getId(), MediaActivity.this));
-            }
-        });
-
-        //decorView.setOnSystemUiVisibilityChangeListener(this);
-        transitionImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-            }
-        });
-        transitionImageView.setOnDoubleClick(new GestureDetector.OnDoubleTapListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (!uiIsHidden) {
-                    hideSystemUi();
-                } else {
-                    showSystemUi();
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent e) {
-                if (!uiIsHidden)
-                    hideSystemUi();
-                return true;
-            }
-
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                return true;
-            }
-        });
-        transitionBackgroundView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!uiIsHidden) {
-                    hideSystemUi();
-                } else {
-                    showSystemUi();
-                }
-            }
-        });
-
-    }*/
+     * private void showPicture() {
+     * <p/>
+     * <p/>
+     * Bundle bundle = activityIntent.getExtras();
+     * String path = bundle.getString(ARG_PATH);
+     * fileId = bundle.getLong(ARG_FILEID, 0);
+     * fileName = bundle.getString(ARG_FILENAME);
+     * fileSize = bundle.getInt(ARG_FILESIZE, 0);
+     * int sender = bundle.getInt(ARG_OWNER, 0);
+     * final UserVM owner = users().get(sender);
+     * <p/>
+     * showingPager = true;
+     * viewPager.setAlpha(1);
+     * showView(viewPager, false);
+     * toolbar.setTitle(R.string.media);
+     * viewPager.setAdapter(new SingleMediaFakePagerAdapter(path, owner));
+     * //viewPager.setCurrentItem(selectedIndex, false);
+     * <p/>
+     * <p/>
+     * //showPager();
+     * <p/>
+     * ownerContainer.setAlpha(1);
+     * transitionImageView.setAlpha(1L);
+     * showView(ownerContainer, false);
+     * showView(transitionImageView, false);
+     * showView(ownerContainer, false);
+     * <p/>
+     * setPictureActionbar();
+     * <p/>
+     * <p/>
+     * actionBar.setTitle("Picture");
+     * <p/>
+     * <p/>
+     * <p/>
+     * final int navbarHeight = Screen.getNavbarHeight();
+     * if(Build.VERSION.SDK_INT>=19) {
+     * if (navbarHeight > 0) {
+     * // ownerContainer.setPadding(0, 0, 0, navbarHeight);
+     * }
+     * }
+     * <p/>
+     * <p/>
+     * transitionTop = bundle.getInt(ARG_IMAGE_TOP, 0);
+     * transitionLeft = bundle.getInt(ARG_IMAGE_LEFT, 0);
+     * transitionWidth = bundle.getInt(ARG_IMAGE_WIDTH, 0);
+     * transitionHeight = bundle.getInt(ARG_IMAGE_HEIGHT, 0);
+     * // ViewCompat.setTransitionName(imageView, TRANSIT_IMAGE);
+     * // transitionBackgroundView.setAlpha(0);
+     * <p/>
+     * <p/>
+     * <p/>
+     * // animateImage(transitionTop, transitionLeft, transitionHeight, transitionWidth);
+     * <p/>
+     * Move to fragment?
+     * ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, this));
+     * Avatar avatar = owner.getAvatar().getValue();
+     * if (avatar != null) {
+     * ownerAvatarView.bindAvatar(32, avatar);
+     * } else {
+     * ownerAvatarView.unbind();
+     * }
+     * ownerNameView.setText(owner.getName());
+     * <p/>
+     * ownerContainer.setOnClickListener(new View.OnClickListener() {
+     *
+     * @Override public void onClick(View v) {
+     * startActivity(Intents.openProfile(owner.getId(), MediaActivity.this));
+     * }
+     * });
+     * <p/>
+     * //decorView.setOnSystemUiVisibilityChangeListener(this);
+     * transitionImageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+     * @Override public void onViewTap(View view, float x, float y) {
+     * }
+     * });
+     * transitionImageView.setOnDoubleClick(new GestureDetector.OnDoubleTapListener() {
+     * @Override public boolean onSingleTapConfirmed(MotionEvent e) {
+     * if (!uiIsHidden) {
+     * hideSystemUi();
+     * } else {
+     * showSystemUi();
+     * }
+     * return false;
+     * }
+     * @Override public boolean onDoubleTap(MotionEvent e) {
+     * if (!uiIsHidden)
+     * hideSystemUi();
+     * return true;
+     * }
+     * @Override public boolean onDoubleTapEvent(MotionEvent e) {
+     * return true;
+     * }
+     * });
+     * transitionBackgroundView.setOnClickListener(new View.OnClickListener() {
+     * @Override public void onClick(View v) {
+     * if (!uiIsHidden) {
+     * hideSystemUi();
+     * } else {
+     * showSystemUi();
+     * }
+     * }
+     * });
+     * <p/>
+     * }
+     */
 
 
     private void setPictureActionbar() {
@@ -288,7 +279,7 @@ public class MediaActivity extends BaseActivity {
 
         emptyView.setVisibility(View.GONE);
         displayList = messenger().buildMediaList(peer);
-        adapter = new MediaAdapter(displayList,new OnMediaClickListener() {
+        adapter = new MediaAdapter(displayList, new OnMediaClickListener() {
 
 
             @Override
@@ -341,34 +332,34 @@ public class MediaActivity extends BaseActivity {
                     FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
                     final FileReference location = remoteSource.getFileReference();
                     messenger().requestState(location.getFileId(), new FileCallback() {
-                                @Override
-                                public void onNotDownloaded() {
-                                    messenger().startDownloading(location);
-                                }
+                        @Override
+                        public void onNotDownloaded() {
+                            messenger().startDownloading(location);
+                        }
 
-                                @Override
-                                public void onDownloading(float progress) {
-                                    messenger().cancelDownloading(location.getFileId());
-                                }
+                        @Override
+                        public void onDownloading(float progress) {
+                            messenger().cancelDownloading(location.getFileId());
+                        }
 
+                        @Override
+                        public void onDownloaded(final FileSystemReference reference) {
+                            MVVMEngine.runOnUiThread(new Runnable() {
                                 @Override
-                                public void onDownloaded(final FileSystemReference reference) {
-                                    MVVMEngine.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    // why that post to?
+                                    transitionImageView.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            // why that post to?
-                                            transitionImageView.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    transitionImageView.request(new RawFileTask(reference.getDescriptor()));
-                                                }
-
-                                            });
+                                            transitionImageView.request(new RawFileTask(reference.getDescriptor()));
                                         }
 
                                     });
                                 }
+
                             });
+                        }
+                    });
                     Logger.d("MediaActivity", "Remote =(");
                     // todo not loaded?
                 } else if (document.getSource() instanceof FileLocalSource) {
@@ -489,7 +480,6 @@ public class MediaActivity extends BaseActivity {
     }
 
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -533,11 +523,10 @@ public class MediaActivity extends BaseActivity {
     }
 
 
-
-
     private void syncUiState() {
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
@@ -616,7 +605,8 @@ public class MediaActivity extends BaseActivity {
             finish();
         }
     }
-    private void showPager(){
+
+    private void showPager() {
 
         transitionImageView.clear();
         transitionImageView.setAlpha(0f);
@@ -645,6 +635,7 @@ public class MediaActivity extends BaseActivity {
         });
         viewPager.setCurrentItem(selectedIndex, false);
     }
+
     private void hidePager() {
         Message media = displayList.getItem(selectedIndex);
         transitionImageView.setVisibility(View.VISIBLE);
@@ -673,20 +664,20 @@ public class MediaActivity extends BaseActivity {
                 transitionImageView.setExtraReceiverCallback(null);
                 // posdelayed is needed cause View does not set alpha immidiately
 
-                        MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap.getBitmap(), location[0], location[1], selectedView.getWidth(), selectedView.getHeight(),
-                                new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        invalidateOptionsMenu();
-                                        toolbar.setTitle(R.string.media);
-                                        transitionImageView.clear();
-                                        transitionImageView.setAlpha(0f);
-                                        transitionBackgroundView.setAlpha(0f);
-                                        transitionBackgroundView.setOnClickListener(null);
-                                        transitionBackgroundView.setVisibility(View.GONE);
-                                    }
-                                });
-                        MediaFullscreenAnimationUtils.animateBackgroundBack(transitionBackgroundView, null);
+                MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap.getBitmap(), location[0], location[1], selectedView.getWidth(), selectedView.getHeight(),
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                invalidateOptionsMenu();
+                                toolbar.setTitle(R.string.media);
+                                transitionImageView.clear();
+                                transitionImageView.setAlpha(0f);
+                                transitionBackgroundView.setAlpha(0f);
+                                transitionBackgroundView.setOnClickListener(null);
+                                transitionBackgroundView.setVisibility(View.GONE);
+                            }
+                        });
+                MediaFullscreenAnimationUtils.animateBackgroundBack(transitionBackgroundView, null);
 
             }
 
@@ -814,7 +805,7 @@ public class MediaActivity extends BaseActivity {
                     transitionView.animate()
                             .setInterpolator(new MaterialInterpolator())
                             .setStartDelay(startDelay)
-                            .setDuration(450 * animationMultiplier)
+                            .setDuration(300 * animationMultiplier)
                             .setInterpolator(new MaterialInterpolator())
                             .x(finalXPadding)
                             .y(finalYPadding)
@@ -901,7 +892,7 @@ public class MediaActivity extends BaseActivity {
 
         public static void animateBackgroundForward(View backgroundView, Animator.AnimatorListener listener) {
             backgroundView.animate()
-                    .setDuration(300*animationMultiplier)
+                    .setDuration(300 * animationMultiplier)
                     .setInterpolator(new MaterialInterpolator())
                     .alpha(1)
                     .setListener(listener)
@@ -910,7 +901,7 @@ public class MediaActivity extends BaseActivity {
 
         public static void animateBackgroundBack(View backgroundView, Animator.AnimatorListener listener) {
             backgroundView.animate()
-                    .setDuration(300*animationMultiplier)
+                    .setDuration(300 * animationMultiplier)
                     .setInterpolator(new MaterialInterpolator())
                     .alpha(0)
                     .setListener(listener)
