@@ -9,7 +9,7 @@ public class JvmConfigurationBuilder extends BaseConfigurationBuilder {
 
     public JvmConfigurationBuilder(String locale) {
         setLog(new JavaLog());
-        setNetworkProvider(new JavaNetworkProvider());
+        setNetworkProvider(new JavaNewNetworkProvider());
         setLocale(new JavaLocale(locale));
     }
 }

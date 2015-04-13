@@ -126,11 +126,11 @@ public class DataInput {
     public byte[] readBytes(int count) throws IOException {
 
         if (count < 0) {
-            throw new IllegalArgumentException("Count can't be negative");
+            throw new IOException("Count can't be negative");
         }
 
         if (count > Limits.MAX_BLOCK_SIZE) {
-            throw new IllegalArgumentException("Unable to read more than 1 MB");
+            throw new IOException("Unable to read more than 1 MB");
         }
 
 //        if (offset + count > maxOffset) {
@@ -149,7 +149,7 @@ public class DataInput {
         if (varInt > Integer.MAX_VALUE || varInt < Integer.MIN_VALUE) {
             throw new IOException("Too big VarInt32");
         }
-        return (int)varInt;
+        return (int) varInt;
     }
 
     public long readVarInt() throws IOException {
