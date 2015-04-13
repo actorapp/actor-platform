@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -36,12 +37,17 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.emoji.stickers.Stickers;
 import im.actor.messenger.app.emoji.stickers.StickersAdapter;
+import im.actor.messenger.app.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 
@@ -184,11 +190,12 @@ public class EmojiKeyboardPopup extends PopupWindow
         PagerSlidingTabStrip emojiPagerIndicator = (PagerSlidingTabStrip) keyboardView.findViewById(R.id.emoji_pager_indicator);
         View backspace = keyboardView.findViewById(R.id.backspace);
 
-        emojiPagerIndicator.setTabBackground(R.drawable.selector_bar);
+        emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
         emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
         emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
         emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
         emojiPagerIndicator.setUnderlineHeight(0);
+        emojiPagerIndicator.setTabPaddingLeftRight(0);
 
         backspace.setOnTouchListener(new RepeatListener(500,100, new OnClickListener() {
             @Override
@@ -213,14 +220,14 @@ public class EmojiKeyboardPopup extends PopupWindow
     }
 
     @Override
-    public void onStickerClick(long packId, long stickerId) {
+    public void onStickerClick(String packId, String stickerId) {
         if (onStickerClickListener != null) {
             onStickerClickListener.onStickerClick(packId, stickerId);
         }
     }
 
 
-    private class EmojisPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
+    private class EmojisPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
 
 
         public EmojisPagerAdapter() {
@@ -229,7 +236,7 @@ public class EmojiKeyboardPopup extends PopupWindow
 
         @Override
         public int getCount() {
-            return 2;
+            return Stickers.getPacks().length + 1;
         }
 
 
@@ -258,10 +265,11 @@ public class EmojiKeyboardPopup extends PopupWindow
                 });
             } else{
 
+                StickersPack stickersPack = Stickers.getPacks()[position-1];
                 RecyclerView recycler = (RecyclerView) LayoutInflater.from(mContext).inflate(R.layout.sticker_page, null);
                 itemView = recycler;
                 recycler.setLayoutManager(new GridLayoutManager(mContext, Screen.getWidth() / Screen.dp(90)));
-                recycler.setAdapter(new StickersAdapter(mContext, EmojiKeyboardPopup.this, Stickers.animalPack));
+                recycler.setAdapter(new StickersAdapter(mContext, EmojiKeyboardPopup.this, stickersPack));
 
             }
 
@@ -280,12 +288,20 @@ public class EmojiKeyboardPopup extends PopupWindow
         }
 
         @Override
-        public int getPageIconResId(int position) {
-            if(position==1){
-                return R.drawable.panda;
-            }
+        public View getTab(int position) {
 
-            return R.drawable.button_emoji;
+            ImageButton tabView = new ImageButton(mContext);
+            if(position==0){
+                tabView.setImageResource(R.drawable.button_emoji);
+                tabView.setPadding(24, 0, 24, 0);
+            } else{
+                tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                tabView.setAdjustViewBounds(true);
+                //tabView.setCropToPadding(false);
+                StickersPack pack = Stickers.getPacks()[position - 1];
+                tabView.setImageURI(Uri.parse(Stickers.getFile(pack.getId(), pack.getLogoStickerId())));
+            }
+            return tabView;
         }
     }
 
