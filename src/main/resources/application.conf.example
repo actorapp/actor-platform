@@ -1,13 +1,13 @@
 jdbc {
   url = "jdbc:postgresql://localhost:5432/actor"
-  username = "postgres"
+  user = "postgres"
   password = ""
   connectionPool = "HikariCP"
   keepAliveConnection = true
 }
 
 actor-server {
-  jdbc = ${jdbc}
+  persist.sql = ${jdbc}
 
   akka {
     log-dead-letters = 10
