@@ -25,7 +25,7 @@ class AAConversationController: EngineSlackListController {
     private let subtitleView: UILabel = UILabel();
     private let navigationView: UIView = UIView();
     
-    private let avatarView = BarAvatarView(frameSize: 36)
+    private let avatarView = BarAvatarView(frameSize: 36, type: AAAvatarType.Rounded)
     
     // MARK: -
     // MARK: Public vars
@@ -368,9 +368,10 @@ extension AAConversationController: ABActionShitDelegate {
 // MARK: -
 // MARK: BarAvatarView
 
-class BarAvatarView : AvatarView {
-    override init(frameSize: Int) {
-        super.init(frameSize: frameSize)
+class BarAvatarView : AAAvatarView {
+    
+    override init(frameSize: Int, type: AAAvatarType) {
+        super.init(frameSize: frameSize, type: type)
     }
     
     required init(coder aDecoder: NSCoder) {

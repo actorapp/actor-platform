@@ -13,7 +13,6 @@ class AAUserInfoController: AATableViewController {
     // MARK: -
     // MARK: Private vars
     
-    private let WhiteHeaderIdentifier = "WhiteHeaderIdentifier"
     private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
     private let CellIdentifier = "CellIdentifier"
     private let TitledCellIdentifier = "TitledCellIdentifier"
@@ -30,7 +29,7 @@ class AAUserInfoController: AATableViewController {
     
     init(uid: Int) {
         self.uid = uid
-        super.init(style: UITableViewStyle.Plain)
+        super.init(style: UITableViewStyle.Grouped)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -53,7 +52,6 @@ class AAUserInfoController: AATableViewController {
         tableView.reloadData()
         
         tableView.tableFooterView = UIView()
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
         binder.bind(user!.getAvatar(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
@@ -98,6 +96,18 @@ class AAUserInfoController: AATableViewController {
     }
     
     // MARK: -
+    // MARK: Setters
+    
+    override func setEditing(editing: Bool, animated: Bool) {
+        // TODO: Localize
+        var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
+        alertView.addButtonWithTitle("Change")
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.show()
+    }
+    
+    // MARK: -
     // MARK: Getters
     
     private func userInfoCell(indexPath: NSIndexPath) -> AAUserInfoCell {
@@ -107,9 +117,6 @@ class AAUserInfoController: AATableViewController {
             
             if let username = user!.getName().get() as? String {
                 cell.setUsername(username)
-                cell.usernameChangedBlock = { (newUsername: String) -> () in
-                    self.execute(MSG.editNameWithInt(jint(self.uid), withNSString: newUsername))
-                }
             }
             
         }
@@ -121,9 +128,8 @@ class AAUserInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
             
         cell.style = AATableViewCellStyle.Blue
-        cell.setLeftInset(65.0)
+        cell.setLeftInset(15.0)
         cell.setTitle("Send Message") // TODO: Localize
-        cell.showBottomSeparator()
         
         return cell
     }
@@ -132,7 +138,7 @@ class AAUserInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Switch
-        cell.setLeftInset(65.0)
+        cell.setLeftInset(15.0)
         cell.setTitle("Notifications") // TODO: Localize
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
@@ -143,7 +149,6 @@ class AAUserInfoController: AATableViewController {
         cell.switchBlock = { (on: Bool) -> () in
             MSG.changeNotificationsEnabledWithAMPeer(userPeer, withBoolean: on)
         }
-        cell.showBottomSeparator()
         
         return cell
     }
@@ -152,9 +157,8 @@ class AAUserInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Destructive
-        cell.setLeftInset(65.0)
+        cell.setLeftInset(15.0)
         cell.setTitle("Delete User") // TODO: Localize
-        cell.showBottomSeparator()
         
         return cell
     }
@@ -163,9 +167,8 @@ class AAUserInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Green
-        cell.setLeftInset(65.0)
+        cell.setLeftInset(15.0)
         cell.setTitle("Add User") // TODO: Localize
-        cell.showBottomSeparator()
         
         return cell
     }
@@ -210,9 +213,6 @@ class AAUserInfoController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        if indexPath.section == 0 && indexPath.row == 0 {
-            return true
-        }
         return false
     }
     
@@ -241,32 +241,18 @@ class AAUserInfoController: AATableViewController {
         }
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return 0
-        }
-        return 22
-    }
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        var view = tableView.dequeueReusableHeaderFooterViewWithIdentifier(WhiteHeaderIdentifier) as? UITableViewHeaderFooterView
-        if view == nil {
-            view = UITableViewHeaderFooterView(reuseIdentifier: WhiteHeaderIdentifier)
-            
-            view!.backgroundView = UIView()
-            view!.backgroundView!.backgroundColor = UIColor.whiteColor()
-        }
-        return view
-    }
-    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            if indexPath.row == 0 {
-                return 89
-            }
-            return 60
+        if indexPath.section == 0 && indexPath.row == 0 {
+            return 200.0
         }
         return 44
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return CGFloat.min
+        }
+        return tableView.sectionHeaderHeight
     }
     
     // MARK: -
@@ -277,4 +263,20 @@ class AAUserInfoController: AATableViewController {
         navigationController?.pushViewController(conversationController, animated: true);
     }
 
+}
+
+// MARK: -
+// MARK: UIAlertView Delegate
+
+extension AAUserInfoController: UIAlertViewDelegate {
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if alertView.buttonTitleAtIndex(buttonIndex) == "Change" {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                execute(MSG.editNameWithInt(jint(uid), withNSString: textField.text))
+            }
+        }
+    }
+    
 }
