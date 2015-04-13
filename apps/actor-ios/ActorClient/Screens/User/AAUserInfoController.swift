@@ -17,6 +17,8 @@ class AAUserInfoController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     private let TitledCellIdentifier = "TitledCellIdentifier"
     
+    private var phones: JavaUtilArrayList?
+    
     // MARK: -
     // MARK: Public vars
     
@@ -77,7 +79,14 @@ class AAUserInfoController: AATableViewController {
         })
         
         binder.bind(user!.isContact(), closure: { (contect: AMValueModel?) -> () in
-            self.tableView.reloadSections(NSIndexSet(index: 3), withRowAnimation: UITableViewRowAnimation.None)
+            self.tableView.reloadSections(NSIndexSet(index: 4), withRowAnimation: UITableViewRowAnimation.None)
+        })
+        
+        binder.bind(user!.getPhones(), closure: { (phones: JavaUtilArrayList?) -> () in
+            if phones != nil {
+                self.phones = phones
+                self.tableView.reloadData()
+            }
         })
         
         navigationItem.rightBarButtonItem = editButtonItem()
@@ -134,6 +143,19 @@ class AAUserInfoController: AATableViewController {
         return cell
     }
     
+    private func phoneCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.style = AATableViewCellStyle.Normal
+        cell.setLeftInset(15.0)
+        
+        if let phone = phones!.getWithInt(jint(indexPath.row)) as? AMUserPhone {
+            cell.setTitle("+\(phone.getPhone())")
+        }
+        
+        return cell
+    }
+    
     private func notificationsCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
@@ -177,7 +199,7 @@ class AAUserInfoController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -187,8 +209,13 @@ class AAUserInfoController: AATableViewController {
         case 1:
             return 1
         case 2:
-            return 1
+            if phones != nil {
+                return Int(phones!.size())
+            }
+            return 0
         case 3:
+            return 1
+        case 4:
             return 1
         default:
             return 0
@@ -201,8 +228,10 @@ class AAUserInfoController: AATableViewController {
         } else if indexPath.section == 1 {
             return sendMessageCell(indexPath)
         } else if indexPath.section == 2 {
-            return notificationsCell(indexPath)
+            return phoneCell(indexPath)
         } else if indexPath.section == 3 {
+            return notificationsCell(indexPath)
+        } else if indexPath.section == 4 {
             if ((user!.isContact().get() as! JavaLangBoolean).booleanValue()) {
                 return deleteUserCell(indexPath) // TODO: Make it work
             } else {
@@ -232,7 +261,7 @@ class AAUserInfoController: AATableViewController {
         
         if indexPath.section == 1 {
             navigateToMessages()
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             if ((user!.isContact().get() as! JavaLangBoolean).booleanValue()) {
                 execute(MSG.removeContactWithInt(jint(uid)))
             } else {
@@ -248,11 +277,25 @@ class AAUserInfoController: AATableViewController {
         return 44
     }
     
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 1 && phones == nil {
+            return CGFloat.min
+        }
+        return tableView.sectionFooterHeight
+    }
+    
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
+        if section == 0 || (section == 2 && phones == nil) {
             return CGFloat.min
         }
         return tableView.sectionHeaderHeight
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 2 && phones != nil {
+            return "PHONES" // TODO: Localize
+        }
+        return nil
     }
     
     // MARK: -
