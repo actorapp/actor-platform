@@ -6,7 +6,7 @@ import scodec.codecs._
 import im.actor.server.mtproto.transport._
 
 @SerialVersionUID(1L)
-case class TransportPackageHeader(index: Int, header: Int, bodyLength: Long)
+case class TransportPackageHeader(index: Int, header: Int, bodyLength: Int)
 
 package object transport {
   val HandshakeCodec = (byte :: byte :: byte :: bytes).as[Handshake]
@@ -25,7 +25,7 @@ package object transport {
 
   val PackageIndexCodec = int32
 
-  val transportPackageHeader = (int32 :: uint8 :: varint).as[TransportPackageHeader]
+  val transportPackageHeader = (int32 :: uint8 :: int32).as[TransportPackageHeader]
 
   def mtprotoCodec(header: Int): GenCodec[_, MTProto] =
     header match {

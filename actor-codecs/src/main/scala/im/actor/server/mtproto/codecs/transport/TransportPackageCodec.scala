@@ -39,8 +39,8 @@ object MTProtoEncoder extends Encoder[MTProto] {
   }
 }
 
-class SignedMTProtoDecoder(header: Int, size: Long) extends Decoder[MTProto] {
-  private val codec = C.fixedSizeBytes(size, C.bytes) :: C.uint32
+class SignedMTProtoDecoder(header: Int, size: Int) extends Decoder[MTProto] {
+  private val codec = C.fixedSizeBytes(size.toLong, C.bytes) :: C.uint32
 
   override def decode(bits: BitVector) = {
     codec.decode(bits) flatMap {
@@ -71,7 +71,8 @@ object TransportPackageCodec extends Codec[TransportPackage] {
       indexBits <- C.int32.encode(tp.index)
       headerBits <- C.uint8.encode(tp.body.header)
       bodyBits <- MTProtoEncoder.encode(tp.body)
-      lengthBits <- VarIntCodec.encode(bodyBits.size / byteSize)
+      // FIXME: validate if body length fits in int32
+      lengthBits <- C.int32.encode((bodyBits.size / byteSize).toInt)
       crc32 = new CRC32
       _ = crc32.update(bodyBits.toByteArray)
       crc32Bits <- C.uint32.encode(crc32.getValue)
@@ -86,7 +87,7 @@ object TransportPackageCodec extends Codec[TransportPackage] {
     for {
       indexRes <- C.int32.decode(bits)
       headerRes <- C.uint8.decode(indexRes.remainder)
-      lengthRes <- VarIntCodec.decode(headerRes.remainder)
+      lengthRes <- C.int32.decode(headerRes.remainder)
       bodyRes <- (new SignedMTProtoDecoder(headerRes.value, lengthRes.value)).decode(lengthRes.remainder)
     } yield {
       DecodeResult(TransportPackage(indexRes.value, bodyRes.value), bodyRes.remainder)
