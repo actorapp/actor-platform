@@ -79,7 +79,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     
         super.viewDidLoad();
         
-        navigationItem.title = "People";
+        navigationItem.title = NSLocalizedString("TabPeople", comment: "People Title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
         
         placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add coworkers by pressing top right button or invite them by pressing button below.", actionTitle: "Invite coworkers", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
@@ -107,12 +107,23 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: Methods
     
     func initCommon(){
-        var icon = UIImage(named: "ic_users_blue_24")!;
-        tabBarItem = UITabBarItem(title: "People",
-            image: icon.tintImage(Resources.BarTintUnselectedColor)
+        
+        var title = "";
+        if (MainAppTheme.tab.showText) {
+            title = NSLocalizedString("TabPeople", comment: "People Title")
+        }
+        
+        tabBarItem = UITabBarItem(title: title,
+            image: UIImage(named: "ic_people_outline")!
+                .tintImage(Resources.BarTintUnselectedColor)
                 .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: icon);
-        // tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+            selectedImage: UIImage(named: "ic_people_filled")!
+                .tintImage(Resources.BarTintColor)
+                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal));
+        
+        if (!MainAppTheme.tab.showText) {
+            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
     }
     
     func doAddContact() {
