@@ -72,6 +72,15 @@ class AATableViewController: AAViewController {
         return CGRect(x: 0, y: navigationBarHeight, width: view.bounds.size.width, height: view.bounds.size.height - navigationBarHeight)
     }
     
+    // MARK: -
+    // MARK: Layout
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        tableView.frame = view.bounds;
+    }
+    
 }
 
 // MARK: -
