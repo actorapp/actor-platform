@@ -8,7 +8,7 @@ import im.actor.api.rpc._, messaging._
 class MessagingServiceImpl(
   val seqUpdManagerRegion: ActorRef
 )(implicit val db: Database, val actorSystem: ActorSystem)
-    extends MessagingService with MessagingHandlers {
+    extends MessagingService with MessagingHandlers with HistoryHandlers {
   override def jhandleClearChat(peer: im.actor.api.rpc.peers.OutPeer, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseSeq]] = throw new NotImplementedError()
 
   override def jhandleDeleteChat(peer: im.actor.api.rpc.peers.OutPeer, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseSeq]] = throw new NotImplementedError()

@@ -82,12 +82,10 @@ private[messaging] trait MessagingHandlers {
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleSendEncryptedMessage(
-                                            peer: im.actor.api.rpc.peers.OutPeer,
-                                            randomId: Long,
-                                            encryptedMessage: Array[Byte],
-                                            keys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
-                                            ownKeys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
-                                            clientData: im.actor.api.rpc.ClientData
-                                            ): Future[HandlerResult[misc.ResponseSeqDate]] = throw new NotImplementedError()
+  override def jhandleSendEncryptedMessage(peer: im.actor.api.rpc.peers.OutPeer,
+                                           randomId: Long,
+                                           encryptedMessage: Array[Byte],
+                                           keys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
+                                           ownKeys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
+                                           clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[misc.ResponseSeqDate]] = throw new NotImplementedError()
 }
