@@ -711,6 +711,7 @@
 		0699D4D11ADCA2B90005AB9B /* UIBarAppearance+Swift.m in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */; };
 		0699D4D41ADD9F0C0005AB9B /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */; };
 		0699D4D61ADDA0B30005AB9B /* ContactActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */; };
+		0699D4D81ADDB4C70005AB9B /* CocoaLocale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D71ADDB4C70005AB9B /* CocoaLocale.swift */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
@@ -769,7 +770,6 @@
 		2537F8671A9753DD004A02E9 /* ABPhoneField.m in Sources */ = {isa = PBXBuildFile; fileRef = 2537F8661A9753DD004A02E9 /* ABPhoneField.m */; };
 		2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */; };
 		2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2537F86B1A9762F6004A02E9 /* ABPhoneFieldCodes.txt */; };
-		25C9C3841A9D4A900061780E /* CocoaLocale.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C9C3831A9D4A900061780E /* CocoaLocale.m */; };
 		25FAD8B31A9FF38E004F5E19 /* CocoaPhoneBookProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */; };
 		593617CB99210C20660D44C4 /* libPods-ActorApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B117098A374A503ABA90DFD /* libPods-ActorApp.a */; };
 /* End PBXBuildFile section */
@@ -2148,6 +2148,7 @@
 		0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIBarAppearance+Swift.h"; sourceTree = "<group>"; };
 		0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
 		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactActionCell.swift; sourceTree = "<group>"; };
+		0699D4D71ADDB4C70005AB9B /* CocoaLocale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLocale.swift; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -2218,8 +2219,6 @@
 		2537F8661A9753DD004A02E9 /* ABPhoneField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABPhoneField.m; sourceTree = "<group>"; };
 		2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = PhoneFormats.dat; sourceTree = "<group>"; };
 		2537F86B1A9762F6004A02E9 /* ABPhoneFieldCodes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ABPhoneFieldCodes.txt; sourceTree = "<group>"; };
-		25C9C3821A9D4A900061780E /* CocoaLocale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaLocale.h; sourceTree = "<group>"; };
-		25C9C3831A9D4A900061780E /* CocoaLocale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaLocale.m; sourceTree = "<group>"; };
 		25FAD8B11A9FF38E004F5E19 /* CocoaPhoneBookProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CocoaPhoneBookProvider.h; sourceTree = "<group>"; };
 		25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaPhoneBookProvider.m; sourceTree = "<group>"; };
 		2B117098A374A503ABA90DFD /* libPods-ActorApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ActorApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4601,6 +4600,7 @@
 				06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */,
 				06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */,
 				056911EF1ACF321300D4D209 /* CocoaExecution.swift */,
+				0699D4D71ADDB4C70005AB9B /* CocoaLocale.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -4620,8 +4620,6 @@
 		25C9C3881A9D4B860061780E /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
-				25C9C3821A9D4A900061780E /* CocoaLocale.h */,
-				25C9C3831A9D4A900061780E /* CocoaLocale.m */,
 				25FAD8B11A9FF38E004F5E19 /* CocoaPhoneBookProvider.h */,
 				25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */,
 			);
@@ -4886,7 +4884,6 @@
 				0514DA1E1AD1ED8A00F6C3BB /* DialogHistory.m in Sources */,
 				0514DAE81AD1ED8A00F6C3BB /* ECCurve.m in Sources */,
 				0514DAAE1AD1ED8A00F6C3BB /* GroupTypingVM.m in Sources */,
-				25C9C3841A9D4A900061780E /* CocoaLocale.m in Sources */,
 				0564F9E31AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift in Sources */,
 				0514D9F81AD1ED8A00F6C3BB /* FileSystemProvider.m in Sources */,
 				0514DA541AD1ED8A00F6C3BB /* BaseKeyValueEngine.m in Sources */,
@@ -5560,6 +5557,7 @@
 				0514D9901AD1ED8A00F6C3BB /* Mailbox.m in Sources */,
 				0514DAE61AD1ED8A00F6C3BB /* ECAlgorithms.m in Sources */,
 				0514DA491AD1ED8A00F6C3BB /* LoggedIn.m in Sources */,
+				0699D4D81ADDB4C70005AB9B /* CocoaLocale.swift in Sources */,
 				0514D8D21AD1ED8A00F6C3BB /* RequestDeleteChat.m in Sources */,
 				0514DAD11AD1ED8A00F6C3BB /* KeyGenerationParameters.m in Sources */,
 				0514DA621AD1ED8A00F6C3BB /* ValueDoubleChangedListener.m in Sources */,
