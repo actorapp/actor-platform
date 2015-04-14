@@ -47,6 +47,7 @@ class AAUserInfoController: AATableViewController {
         
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
+//        tableView.separatorColor = UIColor.clearColor()
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.registerClass(AAUserInfoTitledCell.self, forCellReuseIdentifier: TitledCellIdentifier) // TODO: Do we display phone numbers or no?
