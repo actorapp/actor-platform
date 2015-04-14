@@ -43,6 +43,8 @@ class ContactsBaseController: EngineListController {
         super.bindTable(table, fade: fade)
     }
     
+
+    
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
         let reuseId = "cell_contact";
         
@@ -57,7 +59,7 @@ class ContactsBaseController: EngineListController {
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
         var contact = item as! AMContact;
-        let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
+        let isLast = tableView.numberOfSections() == 1 && indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
         
         // Building short name
         var shortName : String? = nil;
@@ -65,10 +67,10 @@ class ContactsBaseController: EngineListController {
             shortName = contact.getName().smallValue();
         } else {
             var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! AMContact;
-            
+        
             var prevName = prevContact.getName().smallValue();
             var name = contact.getName().smallValue();
-            
+        
             if (prevName != name){
                 shortName = name;
             }
