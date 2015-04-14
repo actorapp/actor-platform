@@ -24,6 +24,10 @@
 
 "ContactsAddHint" = "Укажите номер телефона";
 
+"ContactsActionInvite" = "Пригласить друзей";
+
+"ContactsActionAdd" = "Добавить друга";
+
 /*
  * Placeholders
  */
