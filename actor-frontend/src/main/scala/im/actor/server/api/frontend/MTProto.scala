@@ -43,7 +43,8 @@ object MTProto {
       .transform(() => MTProto.mapResponse(system))
 
     val completeSink = Sink.onComplete {
-      case _ =>
+      case x =>
+        system.log.debug("Completing {}", x)
         watchManager ! PoisonPill
         authManager ! PoisonPill
         sessionClient ! PoisonPill
@@ -246,7 +247,7 @@ object MTProto {
             }
           case Ping(bytes) => Future.successful(Some(ProtoPackage(Pong(bytes))))
           case Pong(bytes) => Future.successful(None)
-          case m => Future.successful(Some(ProtoPackage(m)))
+          case m => Future.successful(None)
         }
       case h: Handshake => Future.successful {
         val sha256Sign = BitVector(DigestUtils.sha256(h.bytes.toByteArray))
@@ -256,6 +257,7 @@ object MTProto {
         Some(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign))
       }
       case SilentClose =>
+        system.log.debug("SilentClose")
         // FIXME: do the real silent close?
         throw new NotImplementedError("SilentClose handler is not implemented")
     }
