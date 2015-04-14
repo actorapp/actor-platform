@@ -41,6 +41,30 @@ object PeerUtils {
     }
   }
 
+  def withUserOutPeer[R <: RpcResponse](userOutPeer: UserOutPeer)
+                                                 (f: => DBIO[RpcError \/ R])
+                                                 (implicit
+                                                   client: AuthorizedClientData,
+                                                   actorSystem: ActorSystem,
+                                                   ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    renderCheckResult(Seq(checkUserPeer(userOutPeer.userId, userOutPeer.accessHash)), f)
+  }
+
+  def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)
+                                        (f: models.FullGroup => DBIO[RpcError \/ R])
+                                        (implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    persist.Group.findFull(groupOutPeer.groupId).headOption flatMap {
+      case Some(group) =>
+        if (group.accessHash != groupOutPeer.accessHash) {
+          DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+        } else {
+          f(group)
+        }
+      case None =>
+        DBIO.successful(Error(CommonErrors.GroupNotFound))
+    }
+  }
+
   def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[UserOutPeer])
                                                   (f: => DBIO[RpcError \/ R])
                                                   (implicit

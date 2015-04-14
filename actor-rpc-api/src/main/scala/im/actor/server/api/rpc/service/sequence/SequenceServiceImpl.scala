@@ -67,11 +67,9 @@ class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, 
   private def extractDiff(updates: Seq[models.sequence.SeqUpdate]): (Vector[DifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[DifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) =>
-        (
-          updates :+ DifferenceUpdate(update.header, update.serializedData),
+        (updates :+ DifferenceUpdate(update.header, update.serializedData),
           userIds ++ update.userIds,
-          groupIds ++ update.groupIds
-          )
+          groupIds ++ update.groupIds)
     }
   }
 }

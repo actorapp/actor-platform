@@ -8,8 +8,9 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
+import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.files.FileLocation
-import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup, ResponseEditGroupAvatar, UpdateGroupInvite }
+import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.util.PeerUtils._
@@ -65,9 +66,49 @@ class GroupsServiceImpl(seqUpdManagerRegion: ActorRef)(
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleRemoveGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = ???
+  override def jhandleRemoveGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = throw new NotImplementedError
 
-  override def jhandleInviteUser(groupPeer: GroupOutPeer, randomId: Long, user: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = ???
+  override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      withGroupOutPeer(groupOutPeer) { fullGroup => withUserOutPeer(userOutPeer) {
+        persist.GroupUser.find(fullGroup.id).flatMap { groupUsers =>
+          val userIds = groupUsers.map(_.userId)
+
+          if (!userIds.contains(userOutPeer.userId)) {
+            val date = new DateTime
+            val dateMillis = date.getMillis
+
+            val newGroupMembers = groupUsers.map(_.toMember) :+ Member(userOutPeer.userId, client.userId, dateMillis)
+
+            val invitingUserUpdates = Seq(
+              UpdateGroupInvite(groupId = fullGroup.id, randomId = randomId, inviteUserId = client.userId, date = dateMillis),
+              UpdateGroupTitleChanged(groupId = fullGroup.id, randomId = fullGroup.titleChangeRandomId, userId = fullGroup.titleChangerUserId, title = fullGroup.title, date = dateMillis),
+              // TODO: put avatar here
+              UpdateGroupAvatarChanged(groupId = fullGroup.id, randomId = fullGroup.avatarChangeRandomId, userId = fullGroup.avatarChangerUserId, avatar = None, date = dateMillis),
+              UpdateGroupMembersUpdate(groupId = fullGroup.id, members = newGroupMembers.toVector)
+            )
+
+            val userAddedUpdate = UpdateGroupUserAdded(groupId = fullGroup.id, userId = userOutPeer.userId, inviterUserId = client.userId, date = dateMillis, randomId = randomId)
+
+            for {
+              _ <- persist.GroupUser.create(fullGroup.id, userOutPeer.userId, client.userId, date)
+              _ <- DBIO.sequence(invitingUserUpdates map (broadcastUserUpdate(seqUpdManagerRegion, userOutPeer.userId, _)))
+              // TODO: #perf the following broadcasts do update serializing per each user
+              _ <- DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(seqUpdManagerRegion, _, userAddedUpdate)))
+              seqstate <- broadcastClientUpdate(seqUpdManagerRegion, userAddedUpdate)
+              // TODO: write service message
+            } yield {
+              Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
+            }
+          } else {
+            DBIO.successful(Error(RpcError(400, "USER_ALREADY_INVITED", "User is already a member of the group.", false, None)))
+          }
+        }
+      }}
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
 
   override def jhandleEditGroupTitle(groupPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = ???
 }
