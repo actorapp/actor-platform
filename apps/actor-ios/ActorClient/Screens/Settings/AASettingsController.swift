@@ -45,7 +45,11 @@ class AASettingsController: AATableViewController {
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
         navigationItem.title = NSLocalizedString("TabSettings", comment: "Settings Title")
-        navigationItem.rightBarButtonItem = editButtonItem()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: NSLocalizedString("SettingsEdit", comment: "Edtit Action"),
+            style: UIBarButtonItemStyle.Plain,
+            target: self,
+            action: "editProfile")
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = UIColor.RGB(0xefeff4)
@@ -122,8 +126,11 @@ class AASettingsController: AATableViewController {
     // MARK: Methods
     
     private func askSetPhoto() {
-        var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo") // TODO: Localize
-        actionSheet.addButtonWithTitle("Delete Photo")
+        var actionSheet = UIActionSheet(title: nil, delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            destructiveButtonTitle: nil,
+            otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
+        actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
         actionSheet.destructiveButtonIndex = 3
         actionSheet.showInView(view)
     }
@@ -138,8 +145,7 @@ class AASettingsController: AATableViewController {
     // MARK: -
     // MARK: Setters
     
-    override func setEditing(editing: Bool, animated: Bool) {
-        // TODO: Localize
+    func editProfile() {
         var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
         alertView.addButtonWithTitle("Change")
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
@@ -169,7 +175,7 @@ class AASettingsController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setContent("Set Profile Photo") // TODO: Localize
+        cell.setContent(NSLocalizedString("SettingsSetPhoto", comment: "Edtit Photo"))
         cell.setLeftInset(15.0)
         
         cell.showBottomSeparator()
@@ -216,7 +222,7 @@ class AASettingsController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
-        cell.setContent("Privacy and Security") // TODO: Localize
+        cell.setContent(NSLocalizedString("SettingsSecurity", comment: "Security Title"))
         cell.setLeftInset(15.0)
         
         cell.showTopSeparator()
