@@ -6,8 +6,9 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._, im.actor.api.rpc.messaging._, im.actor.api.rpc.misc._, im.actor.api.rpc.peers._, Implicits._
+import im.actor.server.api.util.PeerUtils._
 
-private[messaging] trait MessagingHandlers extends PeerHelpers {
+private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl =>
 
   import im.actor.server.push.SeqUpdatesManager._
