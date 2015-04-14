@@ -1,10 +1,10 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc._
 import im.actor.api.rpc.Implicits._
-import im.actor.api.rpc.messaging.{ UpdateMessage, TextMessage }
+import im.actor.api.rpc._
+import im.actor.api.rpc.messaging.{ TextMessage, UpdateMessage }
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util
 import im.actor.server.persist
@@ -67,5 +67,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         }
       }
     }
+
   }
+
 }
