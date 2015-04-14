@@ -20,6 +20,8 @@
 #import "java/util/List.h"
 #import "java/util/ArrayList.h"
 #import "java/util/HashSet.h"
+#import "java/util/Map.h"
+#import "java/util/HashMap.h"
 
 // Messenger
 
@@ -36,6 +38,7 @@
 #import "im/actor/model/NotificationProvider.h"
 #import "im/actor/model/NetworkProvider.h"
 #import "im/actor/model/DispatcherProvider.h"
+#import "im/actor/model/LocaleProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
