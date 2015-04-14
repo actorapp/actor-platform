@@ -40,7 +40,7 @@ class AATableViewController: AAViewController {
     override func loadView() {
         super.loadView()
         
-        view.backgroundColor = UIColor.whiteColor()
+        // view.backgroundColor = UIColor.whiteColor()
         
         tableView = UITableView(frame: view.bounds, style: tableViewStyle)
         tableView.delegate = self

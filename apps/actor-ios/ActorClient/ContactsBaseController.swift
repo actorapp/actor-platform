@@ -9,7 +9,7 @@
 import Foundation
 class ContactsBaseController: EngineListController {
     
-    override func bindTable(table: UITableView) {
+    override func bindTable(table: UITableView, fade: Bool) {
         table.rowHeight = 56
         table.separatorStyle = UITableViewCellSeparatorStyle.None
         table.backgroundColor = Resources.BackyardColor
@@ -40,7 +40,7 @@ class ContactsBaseController: EngineListController {
         table.tableHeaderView = header
         table.tableFooterView = footer
         
-        super.bindTable(table)
+        super.bindTable(table, fade: fade)
     }
     
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {

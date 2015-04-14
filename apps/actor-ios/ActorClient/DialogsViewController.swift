@@ -87,7 +87,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         loadingView.hidden = true;
         
-        bindTable(tableView);
+        bindTable(tableView, fade: true);
         
         searchView = UISearchBar()
         searchView!.delegate = self

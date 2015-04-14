@@ -30,6 +30,7 @@ class AAUserInfoCell: AATableViewCell {
         selectionStyle = UITableViewCellSelectionStyle.None
         
         userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square)
+        userAvatarView.backgroundColor = MainAppTheme.navigation.barColor
         contentView.addSubview(userAvatarView)
         
         usernameLabel = UILabel()
