@@ -59,7 +59,7 @@ class AASettingsPrivacyController: AATableViewController {
     private func terminateSessionsCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setTitle("Terminate all other sessions") // TODO: Localize
+        cell.setContent("Terminate all other sessions") // TODO: Localize
         cell.style = AATableViewCellStyle.Normal
         
         return cell
