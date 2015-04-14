@@ -57,6 +57,7 @@ class AAPlaceholderView: UIView {
         subtitleLabel.font = UIFont.systemFontOfSize(16.0)
         subtitleLabel.textAlignment = NSTextAlignment.Center
         subtitleLabel.numberOfLines = 0
+        
         contentView.addSubview(subtitleLabel)
         
         actionButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
@@ -92,7 +93,16 @@ class AAPlaceholderView: UIView {
         }
         
         if subtitle != nil {
-            subtitleLabel.text = subtitle
+            
+            var paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineHeightMultiple = 1.11
+            paragraphStyle.alignment = NSTextAlignment.Center
+            
+            var attrString = NSMutableAttributedString(string: subtitle!)
+            attrString.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, attrString.length))
+
+            subtitleLabel.attributedText = attrString
+            
             subtitleLabel.hidden = false
         } else {
             subtitleLabel.hidden = true
@@ -126,7 +136,7 @@ class AAPlaceholderView: UIView {
             contentHeight += imageView.image!.size.height + topOffset
         }
         
-        bgView.frame = CGRect(x: 0, y: 0, width: bounds.size.width, height: imageView.frame.height * 0.75)
+        bgView.frame = CGRect(x: 0, y: 0, width: bounds.size.width, height: imageView.frame.height * 0.75 + topOffset)
         
         if titleLabel.hidden == false {
             if contentHeight > 0 {
@@ -139,7 +149,7 @@ class AAPlaceholderView: UIView {
         
         if subtitleLabel.hidden == false {
             if contentHeight > 0 {
-                contentHeight += 10
+                contentHeight += 14
             }
             
             let subtitleLabelSize = subtitleLabel.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
@@ -149,7 +159,7 @@ class AAPlaceholderView: UIView {
         
         if actionButton.hidden == false {
             if contentHeight > 0 {
-                contentHeight += 44
+                contentHeight += 14
             }
             
             let actionButtonTitleLabelSize = actionButton.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))

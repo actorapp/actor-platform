@@ -101,15 +101,27 @@ import Foundation
             }
         }
         
-        binder.bind(MSG.getAppState().getIsAppLoaded(), closure: { (value: Any?) -> () in
-            if let loaded = value as? JavaLangBoolean {
-                if Bool(loaded.booleanValue()) == true {
-                    rootController.hideAppIsSyncingPlaceholder()
+        binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
+            if (empty!.booleanValue()) {
+                if (loaded!.booleanValue()) {
+                    rootController.showAppIsEmptyPlaceholder()
                 } else {
                     rootController.showAppIsSyncingPlaceholder()
                 }
+            } else {
+                rootController.hidePlaceholders()
             }
-        })
+        }
+        
+//        binder.bind(MSG.getAppState().getIsAppLoaded(), closure: { (value: Any?) -> () in
+//            if let loaded = value as? JavaLangBoolean {
+//                if Bool(loaded.booleanValue()) == true {
+//                    rootController.hideAppIsSyncingPlaceholder()
+//                } else {
+//                    rootController.showAppIsSyncingPlaceholder()
+//                }
+//            }
+//        })
         
         return true;
     }
