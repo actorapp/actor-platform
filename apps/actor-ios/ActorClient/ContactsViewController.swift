@@ -128,9 +128,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         var alertView = UIAlertView(
             title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
             message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
-            delegate: nil,
+            delegate: self,
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Alert Cancel"),
             otherButtonTitles: NSLocalizedString("AlertNext", comment: "Alert Next"))
+        
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.show()
     }
@@ -182,4 +183,44 @@ extension ContactsViewController: MFMessageComposeViewControllerDelegate {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
+}
+
+// MARK: -
+// MARK: UIAlertView Delegate
+
+extension ContactsViewController: UIAlertViewDelegate {
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        // TODO: Localize
+        if buttonIndex == 1 {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> () in
+                    println("\(val.self)")
+                    var user: AMUserVM?
+                    user = val as? AMUserVM
+                    if user == nil {
+                        if let users = val as? IOSObjectArray {
+                            if Int(users.length()) > 0 {
+                                if let tempUser = users.objectAtIndex(0) as? AMUserVM {
+                                    user = tempUser
+                                }
+                            }
+                        }
+                    }
+                    if user != nil {
+                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                            self.navigateToMessagesWithUid(user!.getId())
+                            }, failureBlock: { (val) -> () in
+                                UIAlertView(title: "Error", message: "Cannot add user with this phone number", delegate: self, cancelButtonTitle: "Cancel").show()
+                        })
+                    } else {
+                        UIAlertView(title: "Error", message: "Cannot find user with this phone number", delegate: self, cancelButtonTitle: "Cancel").show()
+                    }
+                    }, failureBlock: { (val) -> () in
+                        UIAlertView(title: "Error", message: "Cannot find user with this phone number", delegate: self, cancelButtonTitle: "Cancel").show()
+                })
+            }
+        }
+    }
 }
