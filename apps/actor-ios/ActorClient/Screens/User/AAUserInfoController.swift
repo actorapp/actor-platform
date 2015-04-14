@@ -48,7 +48,7 @@ class AAUserInfoController: AATableViewController {
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        tableView.backgroundColor = UIColor.RGB(0xefeff4)
+        tableView.backgroundColor = Resources.BackyardColor
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
