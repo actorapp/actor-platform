@@ -91,6 +91,8 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         
         if (searchDisplay != nil && searchDisplay!.active){
             MainAppTheme.search.applyStatusBar()
+        } else {
+            MainAppTheme.navigation.applyStatusBar()
         }
     }
     

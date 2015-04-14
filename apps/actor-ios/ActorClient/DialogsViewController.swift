@@ -116,9 +116,11 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         binder.bind(MSG.getAppState().getIsDialogsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
+                    self.navigationItem.leftBarButtonItem = nil
                     self.showPlaceholder()
                 } else {
                     self.hidePlaceholder()
+                    self.navigationItem.leftBarButtonItem = self.editButtonItem()
                 }
             }
         })
@@ -128,6 +130,21 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         super.viewDidAppear(animated)
         
         MSG.onDialogsOpen();
+    }
+    
+    
+    override func viewDidDisappear(animated: Bool) {
+        MSG.onDialogsClosed();
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if (searchDisplay != nil && searchDisplay!.active) {
+            MainAppTheme.search.applyStatusBar()
+        } else {
+            MainAppTheme.navigation.applyStatusBar()
+        }
     }
     
     // MARK: -
@@ -182,20 +199,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         } else {
             var searchEntity = searchSource!.objectAtIndexPath(indexPath) as! AMSearchEntity
             navigateToMessagesWithPeer(searchEntity.getPeer())
-        }
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        MSG.onDialogsClosed();
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        if (searchDisplay != nil && searchDisplay!.active) {
-            MainAppTheme.search.applyStatusBar()
-        } else {
-            MainAppTheme.navigation.applyStatusBar()
         }
     }
     

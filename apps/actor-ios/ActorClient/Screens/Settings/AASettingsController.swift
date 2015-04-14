@@ -105,6 +105,8 @@ class AASettingsController: AATableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         MSG.onProfileOpen(jint(uid))
+        
+        MainAppTheme.navigation.applyStatusBar()
     }
     
     override func viewDidDisappear(animated: Bool) {
