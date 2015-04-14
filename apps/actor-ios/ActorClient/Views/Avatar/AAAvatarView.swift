@@ -197,7 +197,9 @@ class AAAvatarView: UIImageView {
                 }
                 
                 self.putToCache(self.frameSize, id: Int64(self.bindedFileId!), image: image!)
-                self.image = image;
+                UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+                    self.image = image;
+                }, completion: nil)
                 
             });
         });
