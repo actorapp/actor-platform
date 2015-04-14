@@ -45,7 +45,7 @@ class AAAddParticipantController: ContactsBaseController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss")) // TODO: Localize
         
-        bindTable(tableView);
+        bindTable(tableView, fade: true);
         super.viewDidLoad();
     }
     

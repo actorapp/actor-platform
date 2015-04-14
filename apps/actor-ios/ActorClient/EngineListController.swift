@@ -13,6 +13,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     private var engineTableView: UITableView!;
     private var displayList: AMBindedDisplayList!;
+    private var fade: Bool = false
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
@@ -27,7 +28,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     }
 
     
-    func bindTable(table: UITableView){
+    func bindTable(table: UITableView, fade: Bool){
+        self.fade = fade
         self.engineTableView = table;
         self.engineTableView!.dataSource = self;
         self.engineTableView!.delegate = self;
@@ -38,7 +40,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
             self.displayList.addListenerWithAMDisplayList_Listener(self)
-            self.engineTableView.reloadData()
+            onCollectionChanged()
         }
     }
     
@@ -64,7 +66,28 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     // Table Data Source
     
     func onCollectionChanged() {
-        if (self.engineTableView != nil){
+        if (self.engineTableView != nil) {
+            if (displayList.getSize() == jint(0)) {
+                if (self.engineTableView.alpha != 0) {
+                    if (fade) {
+                        UIView.animateWithDuration(0.0, animations: { () -> Void in
+                            self.engineTableView.alpha = 0
+                        })
+                    } else {
+                        self.engineTableView.alpha = 0
+                    }
+                }
+            } else {
+                if (self.engineTableView.alpha == 0){
+                    if (fade) {
+                        UIView.animateWithDuration(0.3, animations: { () -> Void in
+                            self.engineTableView.alpha = 1
+                        })
+                    } else {
+                        self.engineTableView.alpha = 1
+                    }
+                }
+            }
             self.engineTableView.reloadData()
         }
     }

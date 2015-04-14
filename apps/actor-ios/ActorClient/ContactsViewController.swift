@@ -40,7 +40,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     
     override func viewDidLoad() {
-        bindTable(tableView);
+        
+        view.backgroundColor = UIColor.whiteColor()
+        
+        bindTable(tableView, fade: false);
         
         searchView = UISearchBar()
         searchView!.delegate = self

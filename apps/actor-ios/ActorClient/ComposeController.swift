@@ -28,8 +28,9 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     }
     
     override func viewDidLoad() {
+        view.backgroundColor = UIColor.whiteColor()
         
-        bindTable(tableView)
+        bindTable(tableView, fade: true)
         
         searchView = UISearchBar()
         searchView!.delegate = self
