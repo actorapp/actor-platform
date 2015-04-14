@@ -200,31 +200,6 @@ class AAAuthRegisterController: AAViewController {
             
         }
     }
-    
-    private func shakeView(view: UIView, originalX: CGFloat) {
-        var r = view.frame
-        r.origin.x = originalX
-        var originalFrame = r
-        var rFirst = r
-        rFirst.origin.x = r.origin.x + 4
-        r.origin.x = r.origin.x - 4
-    
-        UIView.animateWithDuration(0.05, delay: 0.0, options: UIViewAnimationOptions.Autoreverse, animations: { () -> Void in
-            view.frame = rFirst
-        }) { (finished) -> Void in
-            if (finished) {
-                UIView.animateWithDuration(0.05, delay: 0.0, options: (UIViewAnimationOptions.Repeat | UIViewAnimationOptions.Autoreverse), animations: { () -> Void in
-                    UIView.setAnimationRepeatCount(3)
-                    view.frame = r
-                    }, completion: { (finished) -> Void in
-                        view.frame = originalFrame
-                })
-            } else {
-                view.frame = originalFrame
-            }
-        }
-    }
-
 
 }
 
