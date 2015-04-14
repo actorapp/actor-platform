@@ -27,19 +27,84 @@ class AppTheme {
             return AppTabBar()
         }
     }
+    
+    var search:AppSearchBar {
+        get {
+            return AppSearchBar()
+        }
+    }
 }
 
-class SearchBar {
+class AppSearchBar {
+    
+    var statusBarLightContent : Bool {
+        get {
+            return false
+        }
+    }
+    
     var backgroundColor : UIColor {
         get {
-            return UIColor.whiteColor()
+            return UIColor.RGB(0xf1f1f1)
+        }
+    }
+    
+    var cancelColor : UIColor {
+        get {
+            return UIColor.RGB(0x8E8E93)
         }
     }
     
     var fieldBackgroundColor: UIColor {
         get {
-            return 
+            return UIColor.whiteColor()
         }
+    }
+    
+    var fieldTextColor: UIColor {
+        get {
+            return UIColor.blackColor().alpha(0.56)
+        }
+    }
+    
+    func applyAppearance(application: UIApplication) {
+        
+        // SearchBar Text Color
+        var textField = UITextField.my_appearanceWhenContainedIn(UISearchBar.self)
+        // textField.tintColor = UIColor.redColor()
+        var font = UIFont(name: "HelveticaNeue", size: 14.0)
+        textField.defaultTextAttributes = [NSFontAttributeName: font!,
+                        NSForegroundColorAttributeName : fieldTextColor]
+    }
+    
+    func applyStatusBar(){
+        if (statusBarLightContent) {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
+        } else {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
+        }
+    }
+    
+    func styleSearchBar(searchBar: UISearchBar) {
+        // SearchBar Minimal Style
+        searchBar.searchBarStyle = UISearchBarStyle.Default
+        // SearchBar Transculent
+        searchBar.translucent = false
+        // SearchBar placeholder animation fix
+        searchBar.placeholder = "";
+        
+        // SearchBar background color
+        searchBar.barTintColor = backgroundColor.forTransparentBar()
+        searchBar.setBackgroundImage(Imaging.imageWithColor(backgroundColor, size: CGSize(width: 1, height: 1)), forBarPosition: UIBarPosition.Any, barMetrics: UIBarMetrics.Default)
+        searchBar.backgroundColor = backgroundColor
+        
+        // SearchBar field color
+        var fieldBg = Imaging.imageWithColor(fieldBackgroundColor, size: CGSize(width: 14,height: 28))
+                                .roundCorners(14, h: 28, roundSize: 4)
+        searchBar.setSearchFieldBackgroundImage(fieldBg.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
+        
+        // SearchBar cancel color
+        searchBar.tintColor = cancelColor
     }
 }
 
@@ -186,6 +251,9 @@ class AppNavigationBar {
         navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: titleColor];
         // NavigationBar Background
         navAppearance.barTintColor = barColor;
+        // Small hack for correct background color
+        UISearchBar.appearance().backgroundColor = barColor
+        
         // NavigationBar Transculency
         navAppearance.translucent = isTransculent;
         // NavigationBar Shadow
@@ -193,6 +261,14 @@ class AppNavigationBar {
             navAppearance.shadowImage = nil
         } else {
             navAppearance.shadowImage = UIImage(named: shadowImage!)
+        }
+    }
+    
+    func applyStatusBar(){
+        if (statusBarLightContent) {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
+        } else {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
         }
     }
 }
