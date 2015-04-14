@@ -14,8 +14,8 @@ class AAUserInfoController: AATableViewController {
     // MARK: Private vars
     
     private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
-    private let CellIdentifier = "CellIdentifier"
     private let TitledCellIdentifier = "TitledCellIdentifier"
+    private let CellIdentifier = "CellIdentifier"
     
     private var phones: JavaUtilArrayList?
     
@@ -31,7 +31,7 @@ class AAUserInfoController: AATableViewController {
     
     init(uid: Int) {
         self.uid = uid
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.Plain)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -47,10 +47,11 @@ class AAUserInfoController: AATableViewController {
         
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
-//        tableView.separatorColor = UIColor.clearColor()
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.backgroundColor = UIColor.RGB(0xefeff4)
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
-        tableView.registerClass(AAUserInfoTitledCell.self, forCellReuseIdentifier: TitledCellIdentifier) // TODO: Do we display phone numbers or no?
+        tableView.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         
         tableView.reloadData()
         
@@ -139,19 +140,30 @@ class AAUserInfoController: AATableViewController {
             
         cell.style = AATableViewCellStyle.Blue
         cell.setLeftInset(15.0)
-        cell.setTitle("Send Message") // TODO: Localize
+        cell.setContent("Send Message") // TODO: Localize
+        
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(15.0)
         
         return cell
     }
     
-    private func phoneCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func phoneCell(indexPath: NSIndexPath) -> AATitledCell {
+        var cell: AATitledCell = tableView.dequeueReusableCellWithIdentifier(TitledCellIdentifier, forIndexPath: indexPath) as! AATitledCell
         
-        cell.style = AATableViewCellStyle.Normal
         cell.setLeftInset(15.0)
         
         if let phone = phones!.getWithInt(jint(indexPath.row)) as? AMUserPhone {
-            cell.setTitle("+\(phone.getPhone())")
+            cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
+        }
+        
+        cell.showBottomSeparator()
+        
+        var phonesCount = Int(phones!.size());
+        if indexPath.row == phonesCount - 1 {
+            cell.setBottomSeparatorLeftInset(0.0)
+        } else {
+            cell.setBottomSeparatorLeftInset(15.0)
         }
         
         return cell
@@ -162,16 +174,18 @@ class AAUserInfoController: AATableViewController {
         
         cell.style = AATableViewCellStyle.Switch
         cell.setLeftInset(15.0)
-        cell.setTitle("Notifications") // TODO: Localize
+        cell.setContent("Notifications") // TODO: Localize
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
         let userPeer: AMPeer! = AMPeer.userWithInt(jint(uid))
         cell.setSwitcherOn(MSG.isNotificationsEnabledWithAMPeer(userPeer))
         
-        
         cell.switchBlock = { (on: Bool) -> () in
             MSG.changeNotificationsEnabledWithAMPeer(userPeer, withBoolean: on)
         }
+        
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -181,7 +195,10 @@ class AAUserInfoController: AATableViewController {
         
         cell.style = AATableViewCellStyle.Destructive
         cell.setLeftInset(15.0)
-        cell.setTitle("Delete User") // TODO: Localize
+        cell.setContent("Delete User") // TODO: Localize
+        
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -191,7 +208,10 @@ class AAUserInfoController: AATableViewController {
         
         cell.style = AATableViewCellStyle.Green
         cell.setLeftInset(15.0)
-        cell.setTitle("Add User") // TODO: Localize
+        cell.setContent("Add User") // TODO: Localize
+        
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -274,29 +294,32 @@ class AAUserInfoController: AATableViewController {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
             return 200.0
+        } else if phones != nil && indexPath.section == 2 {
+            return 55
         }
         return 44
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 1 && phones == nil {
-            return CGFloat.min
+        if section < 2 {
+            return 0.0
         }
-        return tableView.sectionFooterHeight
+        return 15.0
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 || (section == 2 && phones == nil) {
-            return CGFloat.min
+        if section < 3 {
+            return 0
         }
-        return tableView.sectionHeaderHeight
+        return 15.0
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 2 && phones != nil {
-            return "PHONES" // TODO: Localize
-        }
-        return nil
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView {
+        return UIView()
+    }
+    
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView {
+        return UIView()
     }
     
     // MARK: -

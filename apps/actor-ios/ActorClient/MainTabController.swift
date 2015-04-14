@@ -125,7 +125,10 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
             messageComposeController.body = NSLocalizedString("InviteText", comment: "Invite Text")
-            presentViewController(messageComposeController, animated: true, completion: nil)
+            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
+                MainAppTheme.navigation.applyStatusBar()
+            })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
         }
