@@ -1,18 +1,12 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scala.util.Random
-
 import im.actor.api.rpc.ClientData
-import im.actor.api.rpc.groups.{ ResponseCreateGroup, UpdateGroupInvite }
-import im.actor.api.rpc.peers.UserOutPeer
+import im.actor.api.rpc.groups.UpdateGroupInvite
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.util.ACL
 import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManager
 
-class GroupsServiceSpec extends BaseServiceSuite {
+class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
@@ -38,12 +32,5 @@ class GroupsServiceSpec extends BaseServiceSuite {
     whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { s =>
       s.header should ===(UpdateGroupInvite.header)
     }
-  }
-
-  private def createGroup(title: String, userIds: Set[Int])(implicit clientData: ClientData): ResponseCreateGroup = {
-    val users = Await.result(db.run(persist.User.findByIds(userIds)), 5.seconds)
-    val userPeers = users.map(user => UserOutPeer(user.id, ACL.userAccessHash(clientData.authId, user)))
-    val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), 5.seconds)
-    result.toOption.get
   }
 }

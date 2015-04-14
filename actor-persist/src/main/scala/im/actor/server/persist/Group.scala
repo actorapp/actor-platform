@@ -18,7 +18,7 @@ private[persist] case class FullGroupData(id: Int,
                                           avatarChangedAt: DateTime,
                                           avatarChangeRandomId: Long)
 
-class GroupTable(tag: Tag) extends Table[FullGroupData](tag, "groups") {
+class FullGroupTable(tag: Tag) extends Table[FullGroupData](tag, "groups") {
   def id = column[Int]("id", O.PrimaryKey)
 
   def creatorUserId = column[Int]("creator_user_id")
@@ -53,10 +53,12 @@ class GroupTable(tag: Tag) extends Table[FullGroupData](tag, "groups") {
       avatarChangerUserId,
       avatarChangedAt,
       avatarChangeRandomId) <>(FullGroupData.tupled, FullGroupData.unapply)
+
+  def asGroup = (id, creatorUserId, accessHash, title, createdAt) <> (models.Group.tupled, models.Group.unapply)
 }
 
 object Group {
-  val groups = TableQuery[GroupTable]
+  val groups = TableQuery[FullGroupTable]
 
   def create(group: models.Group, randomId: Long) = {
     groups += FullGroupData(
@@ -72,4 +74,7 @@ object Group {
       avatarChangedAt = group.createdAt,
       avatarChangeRandomId = randomId)
   }
+
+  def find(id: Int) =
+    groups.filter(g => g.id === id).map(_.asGroup).result
 }

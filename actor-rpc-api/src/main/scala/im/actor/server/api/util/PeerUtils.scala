@@ -29,6 +29,15 @@ object PeerUtils {
           case Error(err) => DBIO.successful(Error(err))
           case _          => f
         }
+      case PeerType.Group =>
+        (for {
+          optGroup <- persist.Group.find(outPeer.id).headOption
+          grouperrOrGroup <- validGroup(optGroup)
+          hasherrOrGroup <- DBIO.successful(grouperrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
+        } yield hasherrOrGroup).flatMap {
+          case Error(err) => DBIO.successful(Error(err))
+          case _ => f
+        }
     }
   }
 
@@ -57,14 +66,6 @@ object PeerUtils {
       userOpt map (u => ACL.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
     }
   }
-/*
-  private def checkGroupPeer(groupId: Int, accessHash: Long): DBIO[Option[Boolean]] = {
-    for {
-      groupOpt <- persist.Group.find(groupId)
-    } yield {
-      groupOpt map (_.accessHash == accessHash)
-    }
-  }*/
 
   private def validUser(optUser: Option[models.User]) = {
     optUser match {
@@ -74,9 +75,25 @@ object PeerUtils {
     }
   }
 
+  private def validGroup(optGroup: Option[models.Group]) = {
+    optGroup match {
+      case Some(group) =>
+        DBIO.successful(\/-(group))
+      case None => DBIO.successful(Error(CommonErrors.GroupNotFound))
+    }
+  }
+
   private def validUserAccessHash(accessHash: Long, user: models.User)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
     if (accessHash == util.ACL.userAccessHash(client.authId, user)) {
       \/-(user)
+    } else {
+      Error(CommonErrors.InvalidAccessHash)
+    }
+  }
+
+  private def validGroupAccessHash(accessHash: Long, group: models.Group)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
+    if (accessHash == group.accessHash) {
+      \/-(group)
     } else {
       Error(CommonErrors.InvalidAccessHash)
     }
