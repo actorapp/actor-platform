@@ -13,7 +13,7 @@ class AAViewController: UIViewController {
     // MARK: -
     // MARK: Public vars
     
-    var placeholder = AAPlaceholderView()
+    var placeholder = AAPlaceholderView(topOffset: 0)
     
     // MARK: -
     // MARK: Constructors

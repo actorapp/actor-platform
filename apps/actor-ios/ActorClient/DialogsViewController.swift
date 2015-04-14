@@ -112,7 +112,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
         
-        placeholder.setImage(nil, title: "Empty", subtitle: "Your dialog list is empty. You can start chat by pressing top right button.")
+        placeholder.setImage(UIImage(named: "chat_list_placeholder"), title: "Start Messaging", subtitle: "Select contact from contact list or press compose icon at top right of the screen to start new conversation.")
         binder.bind(MSG.getAppState().getIsDialogsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {

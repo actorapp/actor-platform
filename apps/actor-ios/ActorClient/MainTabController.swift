@@ -14,7 +14,7 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     // MARK: -
     // MARK: Private vars
     
-    private var appIsSyncingPlaceholder = AAPlaceholderView()
+    private var appIsSyncingPlaceholder = AAPlaceholderView(topOffset: 44 + 20)
 
     // MARK: -
     // MARK: Public vars
@@ -80,7 +80,7 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     func showAppIsSyncingPlaceholder() {
         if appIsSyncingPlaceholder.superview == nil {
             appIsSyncingPlaceholder.frame = view.bounds
-            appIsSyncingPlaceholder.setImage(nil, title: "Please wait", subtitle: "Application is syncing some data..") // TODO: Localize
+            appIsSyncingPlaceholder.setImage(UIImage(named: "chat_list_placeholder"), title: "Sync in progress", subtitle: "Please, wait couple minutes while we enable your app.") // TODO: Localize
             view.addSubview(appIsSyncingPlaceholder)
         }
     }
