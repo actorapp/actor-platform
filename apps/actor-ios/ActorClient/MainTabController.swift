@@ -43,11 +43,19 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
         
         appEmptyContainer.hidden = true
         appIsEmptyPlaceholder.hidden = true
-        appIsEmptyPlaceholder.setImage(UIImage(named: "contacts_list_placeholder"), title: "Invite your friends", subtitle: "None of your contacts use Actor. Use button below to invite them.", actionTitle: "TELL A FRIEND", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
+        appIsEmptyPlaceholder.setImage(
+            UIImage(named: "contacts_list_placeholder"),
+            title: NSLocalizedString("Placeholder_Empty_Title", comment: "Placeholder Title"),
+            subtitle: NSLocalizedString("Placeholder_Empty_Message", comment: "Placeholder Message"),
+            actionTitle: NSLocalizedString("Placeholder_Empty_Action", comment: "Placeholder Action"),
+            actionTarget: self, actionSelector: Selector("showSmsInvitation"))
         appEmptyContainer.addSubview(appIsEmptyPlaceholder)
         
         appIsSyncingPlaceholder.hidden = true
-        appIsSyncingPlaceholder.setImage(UIImage(named: "chat_list_placeholder"), title: "Sync in progress", subtitle: "Please, wait couple minutes while we enable your app.")
+        appIsSyncingPlaceholder.setImage(
+            UIImage(named: "chat_list_placeholder"),
+            title: NSLocalizedString("Placeholder_Loading_Title", comment: "Placeholder Title"),
+            subtitle: NSLocalizedString("Placeholder_Loading_Message", comment: "Placeholder Message"))
         appEmptyContainer.addSubview(appIsSyncingPlaceholder)
         
         view.addSubview(appEmptyContainer)
@@ -116,7 +124,7 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
-            messageComposeController.body = "Hi! Let's switch to Connector! https://actor.im/mdl" // TODO: Localize
+            messageComposeController.body = NSLocalizedString("InviteText", comment: "Invite Text")
             presentViewController(messageComposeController, animated: true, completion: nil)
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?

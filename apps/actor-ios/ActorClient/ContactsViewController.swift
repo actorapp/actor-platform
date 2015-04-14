@@ -69,7 +69,12 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         navigationItem.title = NSLocalizedString("TabPeople", comment: "People Title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
         
-        placeholder.setImage(UIImage(named: "contacts_list_placeholder"), title: "No Contacts", subtitle: "None of your contacts use Actor. Use button below to invite them.", actionTitle: "TELL A FRIEND", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
+        placeholder.setImage(
+            UIImage(named: "contacts_list_placeholder"),
+            title:  NSLocalizedString("Placeholder_Contacts_Title", comment: "Placeholder Title"),
+            subtitle: NSLocalizedString("Placeholder_Contacts_Message", comment: "Placeholder Message"),
+            actionTitle: NSLocalizedString("Placeholder_Contacts_Action", comment: "Placeholder Action"),
+            actionTarget: self, actionSelector: Selector("showSmsInvitation"))
         binder.bind(MSG.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
@@ -120,7 +125,12 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     }
     
     func doAddContact() {
-        var alertView = UIAlertView(title: "Add Contact", message: "Please, specify phone number", delegate: nil, cancelButtonTitle: "Cancel")
+        var alertView = UIAlertView(
+            title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
+            message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
+            delegate: nil,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Alert Cancel"),
+            otherButtonTitles: NSLocalizedString("AlertNext", comment: "Alert Next"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.show()
     }
@@ -147,7 +157,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
-            messageComposeController.body = "Hi! Let's switch to Connector! https://actor.im/mdl" // TODO: Localize
+            messageComposeController.body =  NSLocalizedString("InviteText", comment: "Invite Text")
             presentViewController(messageComposeController, animated: true, completion: nil)
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
