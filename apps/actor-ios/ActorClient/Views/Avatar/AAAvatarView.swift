@@ -27,6 +27,7 @@ class AAAvatarView: UIImageView {
     
     var frameSize: Int = 0;
     var avatarType: AAAvatarType = AAAvatarType.Rounded
+    var placeholderImage: UIImage?
     
     var bindedFileId: jlong! = nil;
     var bindedTitle: String! = nil;
@@ -42,11 +43,29 @@ class AAAvatarView: UIImageView {
         super.init(image: nil)
     }
     
+    init(frameSize: Int) {
+        self.frameSize = frameSize
+        
+        super.init(image: nil)
+    }
+    
     init(frameSize: Int, type: AAAvatarType) {
         self.frameSize = frameSize
         self.avatarType = type
         
         super.init(image: nil)
+        
+        if type == AAAvatarType.Square {
+            self.contentMode = UIViewContentMode.ScaleAspectFill
+        }
+    }
+    
+    init(frameSize: Int, type: AAAvatarType, placeholderImage: UIImage) {
+        self.frameSize = frameSize
+        self.avatarType = type
+        self.placeholderImage = placeholderImage
+        
+        super.init(image: placeholderImage)
         
         if type == AAAvatarType.Square {
             self.contentMode = UIViewContentMode.ScaleAspectFill
@@ -126,8 +145,9 @@ class AAAvatarView: UIImageView {
         self.bindedTitle = title
         
         if (fileLocation == nil) {
-            // No avatar: Apply placeholder
-            self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == AAAvatarType.Rounded);
+            if (self.placeholderImage == nil) {
+                self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == AAAvatarType.Rounded);
+            }
             
             return
         }
@@ -185,7 +205,7 @@ class AAAvatarView: UIImageView {
     }
     
     func unbind() {
-        self.image = nil
+        self.image = (self.placeholderImage != nil) ? self.placeholderImage : nil
         self.bindedId = nil
         self.bindedTitle = nil
         
