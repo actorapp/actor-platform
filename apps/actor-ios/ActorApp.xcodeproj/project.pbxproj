@@ -709,6 +709,8 @@
 		0699D4C61ADC8D820005AB9B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
 		0699D4CF1ADCA1FA0005AB9B /* UIAppearance+Swift.m in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */; };
 		0699D4D11ADCA2B90005AB9B /* UIBarAppearance+Swift.m in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */; };
+		0699D4D41ADD9F0C0005AB9B /* BasicCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */; };
+		0699D4D61ADDA0B30005AB9B /* ContactActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
@@ -2144,6 +2146,8 @@
 		0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAppearance+Swift.m"; sourceTree = "<group>"; };
 		0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarAppearance+Swift.m"; sourceTree = "<group>"; };
 		0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIBarAppearance+Swift.h"; sourceTree = "<group>"; };
+		0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
+		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactActionCell.swift; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -4411,6 +4415,8 @@
 				06B356F51AB8C7BB00405472 /* ContactCell.swift */,
 				062774361AC070F700A4A8B3 /* SearchSource.swift */,
 				062774381AC073D700A4A8B3 /* ContactsSource.swift */,
+				0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */,
+				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -5355,6 +5361,7 @@
 				05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */,
 				0514DB191AD1ED8B00F6C3BB /* BigIntegers.m in Sources */,
 				0514DB151AD1ED8B00F6C3BB /* Nat256.m in Sources */,
+				0699D4D61ADDA0B30005AB9B /* ContactActionCell.swift in Sources */,
 				0514DA301AD1ED8A00F6C3BB /* PendingNotification.m in Sources */,
 				0514DA681AD1ED8A00F6C3BB /* AuthKeyStorage.m in Sources */,
 				0514DB141AD1ED8B00F6C3BB /* Nat224.m in Sources */,
@@ -5459,6 +5466,7 @@
 				06B99A131ABF45DA0066CA08 /* UIButtonTable.swift in Sources */,
 				0514DB0C1AD1ED8B00F6C3BB /* GF2Polynomial.m in Sources */,
 				0514DB071AD1ED8B00F6C3BB /* ZTauElement.m in Sources */,
+				0699D4D41ADD9F0C0005AB9B /* BasicCell.swift in Sources */,
 				0514DAF51AD1ED8A00F6C3BB /* LongArray.m in Sources */,
 				0514D91B1AD1ED8A00F6C3BB /* ServiceExUnsupported.m in Sources */,
 				25FAD8B31A9FF38E004F5E19 /* CocoaPhoneBookProvider.m in Sources */,

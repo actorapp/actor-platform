@@ -101,6 +101,36 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         }
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (section == 0) {
+            return super.tableView(tableView, numberOfRowsInSection: section)
+        } else {
+            return 2
+        }
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if (indexPath.section == 0) {
+            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        } else {
+            if (indexPath.row == 1) {
+                let reuseId = "cell_invite";
+                var res = ContactActionCell(reuseIdentifier: reuseId)
+                res.bind("ic_add_user", actionTitle: "Tell Friends about Actor", isLast: false)
+                return res
+            } else {
+                let reuseId = "cell_add";
+                var res = ContactActionCell(reuseIdentifier: reuseId)
+                res.bind("ic_invite_user", actionTitle: "Add Friend", isLast: true)
+                return res
+            }
+        }
+    }
+    
     // MARK: -
     // MARK: Methods
     
@@ -134,12 +164,27 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.show()
+        
+        var selected = tableView.indexPathForSelectedRow();
+        if (selected != nil){
+            tableView.deselectRowAtIndexPath(selected!, animated: true);
+        }
     }
     
     // MARK: -
     // MARK: UITableView Delegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if (tableView == self.tableView && indexPath.section == 1) {
+            if (indexPath.row == 1) {
+                showSmsInvitation()
+            } else {
+                doAddContact()
+            }
+            return
+        }
+        
         var contact: AMContact!;
         
         if (tableView == self.tableView) {

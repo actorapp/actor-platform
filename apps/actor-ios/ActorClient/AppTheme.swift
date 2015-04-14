@@ -8,29 +8,36 @@
 
 import Foundation
 
-var MainAppTheme : AppTheme {
-    get {
-        return AppTheme()
-    }
-}
+var MainAppTheme = AppTheme()
 
 class AppTheme {
     
-    var navigation: AppNavigationBar {
+    var navigation = AppNavigationBar()
+    
+    var tab = AppTabBar()
+    
+    var search = AppSearchBar()
+    
+    var list = AppList()
+}
+
+class AppList {
+    
+    var actionColor : UIColor {
         get {
-            return AppNavigationBar()
+            return UIColor.RGB(0x5085CB)
         }
     }
     
-    var tab:AppTabBar {
+    var backyardColor : UIColor {
         get {
-            return AppTabBar()
+            return UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
         }
     }
     
-    var search:AppSearchBar {
+    var separatorColor : UIColor {
         get {
-            return AppSearchBar()
+            return UIColor(red: 0, green: 0, blue: 0, alpha: 0x1e/255.0)
         }
     }
 }
