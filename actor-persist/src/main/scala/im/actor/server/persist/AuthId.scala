@@ -34,4 +34,7 @@ object AuthId {
 
   def findIdByUserId(userId: Int) =
     authIds.filter(a => a.userId === userId && a.deletedAt.isEmpty).map(_.id).result
+
+  def findIdByUserIds(userIds: Set[Int]) =
+    authIds.filter(a => a.userId inSet userIds).map(_.id).result
 }
