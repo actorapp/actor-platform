@@ -68,4 +68,10 @@ object Group {
 
   def findFull(id: Int) =
     groups.filter(g => g.id === id).result
+
+  def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: DateTime) =
+    groups
+      .filter(_.id === id)
+      .map(g => (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
+      .update((title, changerUserId, date, randomId))
 }

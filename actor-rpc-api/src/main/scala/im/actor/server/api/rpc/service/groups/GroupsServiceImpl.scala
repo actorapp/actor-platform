@@ -22,11 +22,11 @@ class GroupsServiceImpl(seqUpdManagerRegion: ActorRef)(
   ) extends GroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = ???
+  override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = throw new NotImplementedError
 
-  override def jhandleKickUser(groupPeer: GroupOutPeer, randomId: Long, user: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = ???
+  override def jhandleKickUser(groupPeer: GroupOutPeer, randomId: Long, user: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = throw new NotImplementedError
 
-  override def jhandleLeaveGroup(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = ???
+  override def jhandleLeaveGroup(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = throw new NotImplementedError
 
   override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
@@ -48,7 +48,7 @@ class GroupsServiceImpl(seqUpdManagerRegion: ActorRef)(
 
         for {
           _ <- persist.Group.create(group, randomId)
-          _ <- persist.GroupUser.create(group.id, userIds, client.userId, dateTime)
+          _ <- persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
           // TODO: write service message groupCreated
           _ <- DBIO.sequence(userIds.map(userId => broadcastUserUpdate(seqUpdManagerRegion, userId, update)).toSeq)
           seqstate <- broadcastClientUpdate(seqUpdManagerRegion, update)
@@ -110,5 +110,23 @@ class GroupsServiceImpl(seqUpdManagerRegion: ActorRef)(
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleEditGroupTitle(groupPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = ???
+  override def jhandleEditGroupTitle(groupOutPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      withGroupOutPeer(groupOutPeer) { fullGroup =>
+        val date = new DateTime
+        val dateMillis = date.getMillis
+
+        val update = UpdateGroupTitleChanged(groupId = fullGroup.id, userId = client.userId, title = title, date = dateMillis, randomId = randomId)
+
+        for {
+          _ <- persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)
+          // TODO: write service message
+          userIds <- persist.GroupUser.findUserIds(fullGroup.id)
+          (seqstate, _) <- broadcastUpdateAll(seqUpdManagerRegion, userIds.toSet, update)
+        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
 }

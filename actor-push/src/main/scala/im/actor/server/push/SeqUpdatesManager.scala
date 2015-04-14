@@ -101,6 +101,19 @@ object SeqUpdatesManager {
     DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(region, _, header, serializedData, userIds, groupIds)))
   }
 
+  def broadcastUpdateAll(region: ActorRef, userIds: Set[Int], update: api.Update)
+                        (implicit ec: ExecutionContext, client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val (refUserIds, refGroupIds) = updateRefs(update)
+
+    for {
+      authIds <- p.AuthId.findIdByUserIds(userIds + client.userId)
+      seqstates <- DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(region, _, header, serializedData, refUserIds, refGroupIds)))
+      seqstate <- persistAndPushUpdate(region, client.authId, header, serializedData, refUserIds, refGroupIds)
+    } yield (seqstate, seqstates)
+  }
+
   def broadcastUserUpdate(region: ActorRef,
                           userId: Int,
                           update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
