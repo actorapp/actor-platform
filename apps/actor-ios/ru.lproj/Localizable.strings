@@ -9,7 +9,7 @@
 "CurrentLocale" = "Ru";
 
 "NavigationEdit" = "Изменить";
-"NavigationBack" = "Назад";
+"NavigationBack" = "";
 
 "TabMessages" = "Сообщения";
 

@@ -37,4 +37,12 @@ extension UIColor {
         return UIColor(red: r, green: g, blue: b, alpha: CGFloat(alpha))
     }
     
+    func forTransparentBar() -> UIColor {
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
+        self.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return UIColor(red: max(0, r - 40/256.0), green: max(0, g - 40/256.0), blue: max(0, b - 40/256.0), alpha: a)
+    }
 }

@@ -179,6 +179,11 @@ class AAConversationController: EngineSlackListController {
         MSG.onConversationOpen(peer)
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         MSG.onConversationClosed(peer)

@@ -19,9 +19,10 @@ import Foundation
     // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        
+
         MainAppTheme.navigation.applyAppearance(application)
         MainAppTheme.tab.applyAppearance(application)
+        MainAppTheme.search.applyAppearance(application)
         
 //        var textFieldAppearance = UITextField.appearance();
 //        textFieldAppearance.tintColor = Resources.TintColor;

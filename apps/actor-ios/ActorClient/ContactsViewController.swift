@@ -43,26 +43,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         bindTable(tableView);
         
         searchView = UISearchBar()
-        searchView!.searchBarStyle = UISearchBarStyle.Default
-        searchView!.barStyle = UIBarStyle.Default
-        searchView!.translucent = false
-        
-        let image = UIImage(named: "SearchBarBg")!
-        searchView?.setSearchFieldBackgroundImage(image.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
-        
-        // Enabled color
-        searchView!.barTintColor = UIColor.whiteColor()
-        
-        // Disabled color
-        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 320, height: 44))
-        searchView!.backgroundColor = UIColor.whiteColor()
-        
-        // Enabled Cancel button color
-        searchView!.tintColor = Resources.TintColor
-        
-        searchView!.placeholder = "";
         searchView!.delegate = self
         searchView!.frame = CGRectMake(0, 0, 0, 44)
+        
+        MainAppTheme.search.styleSearchBar(searchView!)
         
         searchDisplay = UISearchDisplayController(searchBar: searchView, contentsController: self)
         searchDisplay?.searchResultsDelegate = self
@@ -100,6 +84,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         var selected = tableView.indexPathForSelectedRow();
         if (selected != nil){
             tableView.deselectRowAtIndexPath(selected!, animated: animated);
+        }
+        
+        if (searchDisplay != nil && searchDisplay!.active){
+            MainAppTheme.search.applyStatusBar()
         }
     }
     
@@ -165,6 +153,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         let conversationController = AAConversationController(peer: AMPeer.userWithInt(uid))
         conversationController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(conversationController, animated: true);
+        MainAppTheme.navigation.applyStatusBar()
     }
     
 }

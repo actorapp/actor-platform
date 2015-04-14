@@ -68,16 +68,16 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
         if (normalized.size() > 0) {
             displayList.initSearchWithNSString(normalized, withBoolean: false)
         } else {
-            displayList.initTopWithBoolean(false)
+            displayList.initEmpty()
         }
     }
     
     func searchDisplayControllerWillBeginSearch(controller: UISearchDisplayController) {
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
+        MainAppTheme.search.applyStatusBar()
     }
     
     func searchDisplayControllerWillEndSearch(controller: UISearchDisplayController) {
-        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
+        MainAppTheme.navigation.applyStatusBar()
     }
     
     func searchDisplayController(controller: UISearchDisplayController, didShowSearchResultsTableView tableView: UITableView) {
