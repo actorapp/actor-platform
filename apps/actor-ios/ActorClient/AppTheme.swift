@@ -226,7 +226,7 @@ class AppNavigationBar {
     
     var isTransculent : Bool {
         get {
-            return true
+            return false
         }
     }
     
@@ -251,6 +251,8 @@ class AppNavigationBar {
         navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: titleColor];
         // NavigationBar Background
         navAppearance.barTintColor = barColor;
+        navAppearance.setBackgroundImage(Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 1)), forBarMetrics: UIBarMetrics.Default)
+        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
         // Small hack for correct background color
         UISearchBar.appearance().backgroundColor = barColor
         

@@ -107,6 +107,8 @@ import Foundation
     static let SecondaryDarkText = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
     
     static let PlaceholderText = UIColor(red: 200/255.0, green: 200/255.0, blue: 200/255.0, alpha: 1.0)
+    
+    static let HintText = UIColor(red: 80/255.0, green: 80/255.0, blue: 80/255.0, alpha: 1.0)
 }
 
 

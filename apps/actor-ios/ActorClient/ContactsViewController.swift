@@ -69,7 +69,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         navigationItem.title = NSLocalizedString("TabPeople", comment: "People Title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "doAddContact")
         
-        placeholder.setImage(nil, title: "Empty", subtitle: "Your contact list is empty. You can add coworkers by pressing top right button or invite them by pressing button below.", actionTitle: "Invite coworkers", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
+        placeholder.setImage(UIImage(named: "contacts_list_placeholder"), title: "No Contacts", subtitle: "None of your contacts use Actor. Use button below to invite them.", actionTitle: "TELL A FRIEND", actionTarget: self, actionSelector: Selector("showSmsInvitation"))
         binder.bind(MSG.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
