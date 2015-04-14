@@ -77,7 +77,7 @@ class AppSearchBar {
                         NSForegroundColorAttributeName : fieldTextColor]
     }
     
-    func applyStatusBar(){
+    func applyStatusBar() {
         if (statusBarLightContent) {
             UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
         } else {
@@ -252,7 +252,7 @@ class AppNavigationBar {
         // NavigationBar Background
         navAppearance.barTintColor = barColor;
         navAppearance.setBackgroundImage(Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 1)), forBarMetrics: UIBarMetrics.Default)
-        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
+//        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
         // Small hack for correct background color
         UISearchBar.appearance().backgroundColor = barColor
         
@@ -260,13 +260,17 @@ class AppNavigationBar {
         navAppearance.translucent = isTransculent;
         // NavigationBar Shadow
         if (shadowImage == nil) {
-            navAppearance.shadowImage = nil
+            navAppearance.shadowImage = UIImage()
         } else {
             navAppearance.shadowImage = UIImage(named: shadowImage!)
         }
     }
     
-    func applyStatusBar(){
+    func applyAuthStatusBar() {
+        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
+    }
+    
+    func applyStatusBar() {
         if (statusBarLightContent) {
             UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
         } else {
