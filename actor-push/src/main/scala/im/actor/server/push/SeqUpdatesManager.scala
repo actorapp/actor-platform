@@ -110,6 +110,21 @@ object SeqUpdatesManager {
     } yield ownseqstate
   }
 
+  def notifyClientUpdate(region: ActorRef,
+                         update: api.Update)
+                        (implicit
+                         client: api.AuthorizedClientData,
+                         ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val (userIds, groupIds) = updateRefs(update)
+
+    for {
+      otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
+      seqstates <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, header, serializedData, userIds, groupIds)))
+    } yield seqstates
+  }
+
   def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext) = {
     val timestamp = bytesToTimestamp(state)
     for (updates <- p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1))
