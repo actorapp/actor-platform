@@ -14,6 +14,7 @@ package object rpc extends {
   object Implicits extends PeersImplicits with MessagingImplicits
 
   object CommonErrors {
+    val GroupNotFound = RpcError(404, "GROUP_NOT_FOUND", "", false, None)
     val InvalidAccessHash = RpcError(403, "INVALID_ACCESS_HASH", "", false, None)
     val UnsupportedRequest = RpcError(400, "REQUEST_NOT_SUPPORTED", "Operation not supported.", false, None)
     val UserNotAuthorized = RpcError(403, "USER_NOT_AUTHORIZED", "", false, None)
