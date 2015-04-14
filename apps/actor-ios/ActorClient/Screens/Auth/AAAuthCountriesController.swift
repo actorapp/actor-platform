@@ -60,7 +60,7 @@ class AAAuthCountriesController: AATableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        MainAppTheme.navigation.applyAuthStatusBar()
+        MainAppTheme.navigation.applyStatusBar()
     }
     
     // MARK: -

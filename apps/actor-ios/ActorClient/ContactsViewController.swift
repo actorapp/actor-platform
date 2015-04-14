@@ -175,6 +175,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         }
     }
     
+    func showSmsInvitation() {
+        showSmsInvitation(nil)
+    }
+    
     // MARK: -
     // MARK: UITableView Delegate
     
@@ -203,12 +207,16 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     // MARK: Navigation
     
-    func showSmsInvitation() {
+    func showSmsInvitation(recipients: [AnyObject]?) {
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
             messageComposeController.body =  NSLocalizedString("InviteText", comment: "Invite Text")
-            presentViewController(messageComposeController, animated: true, completion: nil)
+            messageComposeController.recipients = recipients
+            messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            presentViewController(messageComposeController, animated: true, completion: { () -> Void in
+                MainAppTheme.navigation.applyStatusBar()
+            })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
         }
@@ -261,13 +269,13 @@ extension ContactsViewController: UIAlertViewDelegate {
                         self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
                             self.navigateToMessagesWithUid(user!.getId())
                             }, failureBlock: { (val) -> () in
-                                UIAlertView(title: "Error", message: "Cannot add user with this phone number", delegate: self, cancelButtonTitle: "Cancel").show()
+                                self.showSmsInvitation([textField.text])
                         })
                     } else {
-                        UIAlertView(title: "Error", message: "Cannot find user with this phone number", delegate: self, cancelButtonTitle: "Cancel").show()
+                        self.showSmsInvitation([textField.text])
                     }
                     }, failureBlock: { (val) -> () in
-                        UIAlertView(title: "Error", message: "Cannot find user with this phone number", delegate: self, cancelButtonTitle: "Cancel").show()
+                        self.showSmsInvitation([textField.text])
                 })
             }
         }
