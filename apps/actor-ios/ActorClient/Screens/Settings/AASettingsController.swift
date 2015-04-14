@@ -43,7 +43,7 @@ class AASettingsController: AATableViewController {
         
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
-        navigationItem.title = "Settings" // TODO: Localize
+        navigationItem.title = NSLocalizedString("TabSettings", comment: "Settings Title")
         navigationItem.rightBarButtonItem = editButtonItem()
         
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
@@ -87,13 +87,19 @@ class AASettingsController: AATableViewController {
     }
     
     func initCommon(){
-        var icon = UIImage(named: "ic_settings_blue_24")!;
-//        tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarSystemItem.TopRated, tag: 0)
-        tabBarItem = UITabBarItem(title: "Settings",
-            image: icon.tintImage(Resources.BarTintUnselectedColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: icon);
-//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+        
+        var title = "";
+        if (MainAppTheme.tab.showText) {
+            title = NSLocalizedString("TabSettings", comment: "Settings Title")
+        }
+        
+        tabBarItem = UITabBarItem(title: title,
+            image: MainAppTheme.tab.createUnselectedIcon("ic_settings_outline"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_settings_filled"))
+        
+        if (!MainAppTheme.tab.showText) {
+            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
     }
     
     override func viewWillAppear(animated: Bool) {

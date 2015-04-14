@@ -76,8 +76,10 @@ import Foundation
     
     static let TintDarkColor = UIColor(red: 38/255.0, green: 109/255.0, blue: 204/255.0, alpha: 1.0);
     static let TintColor = UIColor(red: 80/255.0, green: 133/255.0, blue: 204/255.0, alpha: 1.0);
+    
     static let BarTintColor = TintColor;
-    static let BarTintUnselectedColor = UIColor(red: 171/255.0, green: 182/255.0, blue: 202/255.0, alpha: 1);
+    static let BarTintUnselectedColor = UIColor.RGB(0x5085CB, alpha: 0.56);
+    
     static let SearchBgColor = UIColor(red: 217/255.0, green: 218/255.0, blue: 220/255.0, alpha: 1)
     
     static let placeHolderColors : [UIColor] = [

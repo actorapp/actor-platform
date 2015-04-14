@@ -32,12 +32,19 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     func initCommon(){
-        var icon = UIImage(named: "ic_letter_blue_24")!;
-        tabBarItem = UITabBarItem(title: "Chats",
-            image: icon.tintImage(Resources.BarTintUnselectedColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: icon);
-//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+        
+        var title = "";
+        if (MainAppTheme.tab.showText) {
+            title = NSLocalizedString("TabMessages", comment: "Messages Title")
+        }
+        
+        tabBarItem = UITabBarItem(title: title,
+            image: MainAppTheme.tab.createUnselectedIcon("ic_chats_outline"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_chats_filled"))
+     
+        if (!MainAppTheme.tab.showText) {
+            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -118,7 +125,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         super.viewDidLoad();
         
-        navigationItem.title = "Chats"; // Localize
+        navigationItem.title = NSLocalizedString("TabMessages", comment: "Messages Title")
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
         
