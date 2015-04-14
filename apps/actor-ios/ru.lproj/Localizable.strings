@@ -29,6 +29,16 @@
 "ContactsActionAdd" = "Добавить друга";
 
 /*
+ * Settings
+ */
+
+"SettingsEdit" = "Изменить";
+
+"SettingsSetPhoto" = "Поменять Фото";
+
+"SettingsSecurity" = "Безопасность";
+
+/*
  * Placeholders
  */
 
@@ -59,6 +69,12 @@
 "CurrentLocale" = "Ru";
 
 "InviteText" = "Привет! Давай продолжим наше общение в Акторе https://actor.im/dl";
+
+"PhotoRemove" = "Удалить фото";
+
+"PhotoCamera" = "Снять фото";
+
+"PhotoLibrary" = "Выбрать фото";
 
 "NavigationEdit" = "Изменить";
 
