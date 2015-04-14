@@ -29,7 +29,7 @@ class AAUserInfoCell: AATableViewCell {
         
         selectionStyle = UITableViewCellSelectionStyle.None
         
-        userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square)
+        userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage(named: "profile_default")!)
         userAvatarView.backgroundColor = MainAppTheme.navigation.barColor
         contentView.addSubview(userAvatarView)
         
