@@ -121,7 +121,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setTitle("Set Group Photo") // TODO: Localize
+        cell.setContent("Set Group Photo") // TODO: Localize
         cell.setLeftInset(15.0)
         
         return cell
@@ -131,7 +131,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Switch
-        cell.setTitle("Notifications") // TODO: Localize
+        cell.setContent("Notifications") // TODO: Localize
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
@@ -172,7 +172,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setTitle("Add Participant...") // TODO: Localize
+        cell.setContent("Add Participant...") // TODO: Localize
         cell.setLeftInset(65.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
         
@@ -183,7 +183,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.DestructiveCentered
-        cell.setTitle("Leave group") // TODO: Localize
+        cell.setContent("Leave group") // TODO: Localize
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
         
