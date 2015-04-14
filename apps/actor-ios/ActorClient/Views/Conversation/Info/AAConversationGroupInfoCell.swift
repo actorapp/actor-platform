@@ -23,7 +23,7 @@ class AAConversationGroupInfoCell: AATableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         println("\(contentView.bounds.width)")
-        groupAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square)
+        groupAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage(named: "profile_default")!)
         contentView.addSubview(groupAvatarView)
         
         groupNameLabel = UILabel()

@@ -48,7 +48,7 @@ class AASettingsController: AATableViewController {
         navigationItem.rightBarButtonItem = editButtonItem()
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        tableView.backgroundColor = UIColor.RGB(0xefeff4)
+        tableView.backgroundColor = Resources.BackyardColor
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableView.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
