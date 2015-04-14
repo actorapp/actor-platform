@@ -4,7 +4,6 @@
 #import "IOSClass.h"
 #import "ActorModel.h"
 #import <FMDB/FMDB.h>
-#import "CocoaLocale.h"
 #import "CocoaPhoneBookProvider.h"
 #import "CocoaTcpConnection.h"
 #import "SThreadPoolTask.h"
