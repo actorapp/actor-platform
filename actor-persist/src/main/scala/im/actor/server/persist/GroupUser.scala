@@ -27,6 +27,9 @@ object GroupUser {
   def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: DateTime) =
     groupUsers ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt))
 
+  def find(groupId: Int) =
+    groupUsers.filter(g => g.groupId === groupId).result
+
   def findUserIds(groupId: Int) =
     groupUsers.filter(g => g.groupId === groupId).map(_.userId).result
 }

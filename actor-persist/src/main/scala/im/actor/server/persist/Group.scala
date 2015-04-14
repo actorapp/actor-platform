@@ -6,19 +6,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
 
-private[persist] case class FullGroupData(id: Int,
-                                          creatorUserId: Int,
-                                          accessHash: Long,
-                                          title: String,
-                                          createdAt: DateTime,
-                                          titleChangerUserId: Int,
-                                          titleChangedAt: DateTime,
-                                          titleChangeRandomId: Long,
-                                          avatarChangerUserId: Int,
-                                          avatarChangedAt: DateTime,
-                                          avatarChangeRandomId: Long)
-
-class FullGroupTable(tag: Tag) extends Table[FullGroupData](tag, "groups") {
+class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
   def id = column[Int]("id", O.PrimaryKey)
 
   def creatorUserId = column[Int]("creator_user_id")
@@ -52,16 +40,16 @@ class FullGroupTable(tag: Tag) extends Table[FullGroupData](tag, "groups") {
       titleChangeRandomId,
       avatarChangerUserId,
       avatarChangedAt,
-      avatarChangeRandomId) <>(FullGroupData.tupled, FullGroupData.unapply)
+      avatarChangeRandomId) <>(models.FullGroup.tupled, models.FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, createdAt) <> (models.Group.tupled, models.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, createdAt) <>(models.Group.tupled, models.Group.unapply)
 }
 
 object Group {
   val groups = TableQuery[FullGroupTable]
 
   def create(group: models.Group, randomId: Long) = {
-    groups += FullGroupData(
+    groups += models.FullGroup(
       id = group.id,
       creatorUserId = group.creatorUserId,
       accessHash = group.accessHash,
@@ -77,4 +65,7 @@ object Group {
 
   def find(id: Int) =
     groups.filter(g => g.id === id).map(_.asGroup).result
+
+  def findFull(id: Int) =
+    groups.filter(g => g.id === id).result
 }
