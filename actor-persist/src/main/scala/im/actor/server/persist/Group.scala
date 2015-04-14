@@ -1,0 +1,75 @@
+package im.actor.server.persist
+
+import com.github.tototoshi.slick.PostgresJodaSupport._
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
+
+private[persist] case class FullGroupData(id: Int,
+                                          creatorUserId: Int,
+                                          accessHash: Long,
+                                          title: String,
+                                          createdAt: DateTime,
+                                          titleChangerUserId: Int,
+                                          titleChangedAt: DateTime,
+                                          titleChangeRandomId: Long,
+                                          avatarChangerUserId: Int,
+                                          avatarChangedAt: DateTime,
+                                          avatarChangeRandomId: Long)
+
+class GroupTable(tag: Tag) extends Table[FullGroupData](tag, "groups") {
+  def id = column[Int]("id", O.PrimaryKey)
+
+  def creatorUserId = column[Int]("creator_user_id")
+
+  def accessHash = column[Long]("access_hash")
+
+  def title = column[String]("title")
+
+  def createdAt = column[DateTime]("created_at")
+
+  def titleChangerUserId = column[Int]("title_changer_user_id")
+
+  def titleChangedAt = column[DateTime]("title_changed_at")
+
+  def titleChangeRandomId = column[Long]("title_change_random_id")
+
+  def avatarChangerUserId = column[Int]("avatar_changer_user_id")
+
+  def avatarChangedAt = column[DateTime]("avatar_changed_at")
+
+  def avatarChangeRandomId = column[Long]("avatar_change_random_id")
+
+  def * =
+    (id,
+      creatorUserId,
+      accessHash,
+      title,
+      createdAt,
+      titleChangerUserId,
+      titleChangedAt,
+      titleChangeRandomId,
+      avatarChangerUserId,
+      avatarChangedAt,
+      avatarChangeRandomId) <>(FullGroupData.tupled, FullGroupData.unapply)
+}
+
+object Group {
+  val groups = TableQuery[GroupTable]
+
+  def create(group: models.Group, randomId: Long) = {
+    groups += FullGroupData(
+      id = group.id,
+      creatorUserId = group.creatorUserId,
+      accessHash = group.accessHash,
+      title = group.title,
+      createdAt = group.createdAt,
+      titleChangerUserId = group.creatorUserId,
+      titleChangedAt = group.createdAt,
+      titleChangeRandomId = randomId,
+      avatarChangerUserId = group.creatorUserId,
+      avatarChangedAt = group.createdAt,
+      avatarChangeRandomId = randomId)
+  }
+}
