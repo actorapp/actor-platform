@@ -18,6 +18,8 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   it should "send updates on group invite" in e2
 
+  it should "send updates ot title change" in e3
+
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val rpcApiService = buildRpcApiService()
   val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
@@ -34,10 +36,14 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
     implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
 
-    createGroup("Fun group", Set(user2.id))
+    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
     whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { s =>
       s.header should ===(UpdateGroupInvite.header)
+    }
+
+    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds =>
+      userIds.toSet should === (Set(user1.id, user2.id))
     }
   }
 
@@ -72,6 +78,30 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
     whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { update =>
       update.header should ===(UpdateGroupUserAdded.header)
+    }
+  }
+
+  def e3() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+
+    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp =>
+      resp should matchPattern {
+        case Ok(ResponseSeqDate(1001, _, _)) =>
+      }
+    }
+
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1))) { updates =>
+      updates.head.header should === (UpdateGroupTitleChanged.header)
+    }
+
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates =>
+      updates.head.header should === (UpdateGroupTitleChanged.header)
     }
   }
 }
