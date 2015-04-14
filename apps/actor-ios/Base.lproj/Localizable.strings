@@ -24,6 +24,10 @@
 
 "ContactsAddHint" = "Please, specify phone number";
 
+"ContactsActionInvite" = "Tell Friends about Actor";
+
+"ContactsActionAdd" = "Add Friend";
+
 /*
  * Placeholders
  */

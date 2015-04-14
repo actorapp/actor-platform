@@ -120,12 +120,16 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             if (indexPath.row == 1) {
                 let reuseId = "cell_invite";
                 var res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_add_user", actionTitle: "Tell Friends about Actor", isLast: false)
+                res.bind("ic_add_user",
+                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
+                    isLast: true)
                 return res
             } else {
                 let reuseId = "cell_add";
                 var res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_invite_user", actionTitle: "Add Friend", isLast: true)
+                res.bind("ic_invite_user",
+                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
+                    isLast: false)
                 return res
             }
         }
