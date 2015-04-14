@@ -112,21 +112,26 @@ class AAAuthSmsController: AAViewController {
     // MARK: Methods
     
     func nextButtonPressed() {
-        execute(MSG.sendCodeWithInt(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
-            if let state = val as? AMAuthStateEnum {
-                let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
-                if state.ordinal() == loggedInState {
-                    self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
-                } else {
-//                    SVProgressHUD.showSuccessWithStatus(state.description())
-                    self.navigateToRegistration()
+        if count(codeTextField.text) > 0 {
+            execute(MSG.sendCodeWithInt(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
+                if let state = val as? AMAuthStateEnum {
+                    let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
+                    if state.ordinal() == loggedInState {
+                        self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
+                    } else {
+    //                    SVProgressHUD.showSuccessWithStatus(state.description())
+                        self.navigateToRegistration()
+                    }
                 }
-            }
-            }, failureBlock: { (val) -> () in
-                if let exception = val as? JavaLangException {
-                    println("\(exception.getLocalizedMessage())") // TODO: Show popup?
-                }
-        })
+                }, failureBlock: { (val) -> () in
+                    self.shakeView(self.codeTextField, originalX: self.codeTextField.frame.origin.x)
+                    if let exception = val as? JavaLangException {
+                        println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+                    }
+            })
+        } else {
+            shakeView(codeTextField, originalX: codeTextField.frame.origin.x)
+        }
     }
     
     // MARK: -
