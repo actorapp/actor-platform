@@ -6,14 +6,60 @@
   Copyright (c) 2015 Actor LLC. All rights reserved.
 */
 
-"CurrentLocale" = "En";
-
-"NavigationEdit" = "Edit";
-
-"NavigationBack" = "";
+/*
+ * Main Screen
+ */
 
 "TabMessages" = "Messages";
 
 "TabPeople" = "People";
 
 "TabSettings" = "Settings";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Add Contact";
+
+"ContactsAddHint" = "Please, specify phone number";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Invite your friends";
+
+"Placeholder_Empty_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+
+"Placeholder_Empty_Action" = "TELL A FRIEND";
+
+"Placeholder_Loading_Title" = "Sync in progress";
+
+"Placeholder_Loading_Message" = "Please, wait couple minutes while we enable your app.";
+
+"Placeholder_Contacts_Title" = "Invite your friends";
+
+"Placeholder_Contacts_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+
+"Placeholder_Contacts_Action" = "TELL A FRIEND";
+
+"Placeholder_Dialogs_Title" = "Start messaging";
+
+"Placeholder_Dialogs_Message" = "Pick a contact from your contacts list or press write button at upper right corner to start the conversation right now.";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "En";
+
+"InviteText" = "Hi! Let's switch to Actor! https://actor.im/dl";
+
+"NavigationEdit" = "Edit";
+
+"NavigationBack" = "";
+
+"AlertCancel" = "Cancel";
+
+"AlertNext" = "Next";

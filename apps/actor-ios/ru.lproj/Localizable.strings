@@ -6,13 +6,60 @@
   Copyright (c) 2015 Actor LLC. All rights reserved.
 */
 
-"CurrentLocale" = "Ru";
-
-"NavigationEdit" = "Изменить";
-"NavigationBack" = "";
+/*
+ * Main Screen
+ */
 
 "TabMessages" = "Сообщения";
 
 "TabPeople" = "Люди";
 
 "TabSettings" = "Настройки";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Добавить Контакт";
+
+"ContactsAddHint" = "Укажите номер телефона";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Пригласите своих друзей";
+
+"Placeholder_Empty_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+
+"Placeholder_Empty_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Loading_Title" = "Синхронизируемся";
+
+"Placeholder_Loading_Message" = "Пожалуйста, подождите пока мы инициализируем приложение.";
+
+"Placeholder_Contacts_Title" = "Пригласите своих друзей";
+
+"Placeholder_Contacts_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+
+"Placeholder_Contacts_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Dialogs_Title" = "Начать общение";
+
+"Placeholder_Dialogs_Message" = "Выберите контакт из списка контактов или нажмине кнопку \"написать\" для начала общения.";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "Ru";
+
+"InviteText" = "Привет! Давай продолжим наше общение в Акторе https://actor.im/dl";
+
+"NavigationEdit" = "Изменить";
+
+"NavigationBack" = "";
+
+"AlertCancel" = "Отмена";
+
+"AlertNext" = "Далее";
