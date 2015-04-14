@@ -707,6 +707,8 @@
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
 		0699D4C11ADC80B20005AB9B /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4C01ADC80B20005AB9B /* AppTheme.swift */; };
 		0699D4C61ADC8D820005AB9B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
+		0699D4CF1ADCA1FA0005AB9B /* UIAppearance+Swift.m in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */; };
+		0699D4D11ADCA2B90005AB9B /* UIBarAppearance+Swift.m in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
@@ -2138,6 +2140,10 @@
 		0699D4C51ADC8D670005AB9B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		0699D4C71ADC8D820005AB9B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		0699D4CA1ADC8D8C0005AB9B /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		0699D4CC1ADCA18E0005AB9B /* UIAppearance+Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIAppearance+Swift.h"; sourceTree = "<group>"; };
+		0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAppearance+Swift.m"; sourceTree = "<group>"; };
+		0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarAppearance+Swift.m"; sourceTree = "<group>"; };
+		0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIBarAppearance+Swift.h"; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -4369,14 +4375,6 @@
 			name = network;
 			sourceTree = "<group>";
 		};
-		0699D4BF1ADC80950005AB9B /* Themes */ = {
-			isa = PBXGroup;
-			children = (
-				0699D4C01ADC80B20005AB9B /* AppTheme.swift */,
-			);
-			name = Themes;
-			sourceTree = "<group>";
-		};
 		069FE6CA1AC017AA00C6C033 /* ScreensOld */ = {
 			isa = PBXGroup;
 			children = (
@@ -4482,6 +4480,10 @@
 				06E484281AB78D7400AA272F /* SThreadPool.m */,
 				050B225C1ACBE5B900A0E904 /* ColorExtension.swift */,
 				051542E61ACD18050062E3E3 /* Utils.swift */,
+				0699D4CC1ADCA18E0005AB9B /* UIAppearance+Swift.h */,
+				0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */,
+				0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */,
+				0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -4515,7 +4517,7 @@
 				069FE6CA1AC017AA00C6C033 /* ScreensOld */,
 				2563889E1A99C09D00A5E0E3 /* Model */,
 				06E4842C1AB78D7E00AA272F /* Utils */,
-				0699D4BF1ADC80950005AB9B /* Themes */,
+				0699D4C01ADC80B20005AB9B /* AppTheme.swift */,
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
 				06CCE9411AD4A68200A17705 /* Pods */,
@@ -5190,6 +5192,7 @@
 				0514DA721AD1ED8A00F6C3BB /* Container.m in Sources */,
 				0514DA9B1AD1ED8A00F6C3BB /* StorageProvider.m in Sources */,
 				0514DB0F1AD1ED8B00F6C3BB /* PrimeField.m in Sources */,
+				0699D4CF1ADCA1FA0005AB9B /* UIAppearance+Swift.m in Sources */,
 				0514DAD51AD1ED8A00F6C3BB /* PaddedBufferedBlockCipher.m in Sources */,
 				0514D8B81AD1ED8A00F6C3BB /* EncryptedTextContentV1.m in Sources */,
 				0514DAC61AD1ED8A00F6C3BB /* MD5Digest.m in Sources */,
@@ -5535,6 +5538,7 @@
 				06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */,
 				0514D9E01AD1ED8A00F6C3BB /* VideoContent.m in Sources */,
 				0514DA531AD1ED8A00F6C3BB /* Users.m in Sources */,
+				0699D4D11ADCA2B90005AB9B /* UIBarAppearance+Swift.m in Sources */,
 				0514D9331AD1ED8A00F6C3BB /* UpdateGroupInvite.m in Sources */,
 				0514D9E41AD1ED8A00F6C3BB /* DialogBuilder.m in Sources */,
 				0514D9F11AD1ED8A00F6C3BB /* ReadState.m in Sources */,
