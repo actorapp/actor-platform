@@ -57,6 +57,12 @@ class AAAuthCountriesController: AATableViewController {
         tableView.sectionIndexBackgroundColor = UIColor.clearColor()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        MainAppTheme.navigation.applyAuthStatusBar()
+    }
+    
     // MARK: -
     // MARK: Methods
     

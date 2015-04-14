@@ -134,6 +134,12 @@ class AAAuthRegisterController: AAViewController {
         navigationItem.rightBarButtonItem = nextBarButton
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        MainAppTheme.navigation.applyAuthStatusBar()
+    }
+    
     // MARK: -
     // MARK: Layout
     

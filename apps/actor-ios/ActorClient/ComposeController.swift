@@ -67,6 +67,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
         var conversationController = AAConversationController(peer: AMPeer.userWithInt(peerId))
+        conversationController.hidesBottomBarWhenPushed = true
         navigationController!.pushViewController(conversationController, animated: true)
         MainAppTheme.navigation.applyStatusBar()
     }
