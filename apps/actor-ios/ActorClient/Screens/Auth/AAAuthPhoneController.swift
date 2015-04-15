@@ -65,7 +65,7 @@ class AAAuthPhoneController: AAViewController {
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = UIColor.blackColor()
         titleLabel.font = UIFont(name: "HelveticaNeue-Light", size: 30.0)
-        titleLabel.text = "Your Phone" // TODO: Localize
+        titleLabel.text = NSLocalizedString("AuthPhoneTitle", comment: "Title")
         titleLabel.sizeToFit()
         titleLabel.frame = CGRect(x: (screenSize.width - titleLabel.frame.size.width) / 2.0, y: isWidescreen ? 71.0 : 48.0, width: titleLabel.frame.size.width, height: titleLabel.frame.size.height)
         grayBackground.addSubview(titleLabel)
@@ -99,7 +99,7 @@ class AAAuthPhoneController: AAViewController {
         phoneTextField = ABPhoneField(frame: CGRect(x: 96.0, y: phoneBackgroundView.frame.origin.y + 1, width: screenSize.width - 96.0 - 10.0, height: phoneBackgroundView.frame.size.height - 2))
         phoneTextField.font = UIFont.systemFontOfSize(20.0)
         phoneTextField.backgroundColor = UIColor.whiteColor()
-        phoneTextField.placeholder = "Your phone number" // TODO: Localize
+        phoneTextField.placeholder = NSLocalizedString("AuthPhoneNumberHint", comment: "Hint")
         phoneTextField.keyboardType = UIKeyboardType.NumberPad;
         phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         view.addSubview(phoneTextField)
@@ -117,12 +117,12 @@ class AAAuthPhoneController: AAViewController {
         hintLabel.textAlignment = NSTextAlignment.Center
         hintLabel.contentMode = UIViewContentMode.Center
         hintLabel.numberOfLines = 0
-        hintLabel.text = "Please confirm your country code and enter your phone number." // TODO: Localize
+        hintLabel.text = NSLocalizedString("AuthPhoneHint", comment: "Hint")
         let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
         hintLabel.frame = CGRect(x: (screenSize.width - hintLabelSize.width) / 2.0, y: CGFloat(isWidescreen ? 274.0 : 214.0), width: hintLabelSize.width, height: hintLabelSize.height);
         view.addSubview(hintLabel)
         
-        var nextBarButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
+        var nextBarButton = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next Title"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
         navigationItem.rightBarButtonItem = nextBarButton
         
         currentIso = phoneTextField.currentIso
@@ -146,14 +146,16 @@ class AAAuthPhoneController: AAViewController {
         let numberLength = count(phoneTextField.phoneNumber) as Int
         let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
         if (numberLength != numberRequiredLength) {
-            SVProgressHUD.showErrorWithStatus("Wrong phone length")
+            SVProgressHUD.showErrorWithStatus(NSLocalizedString("AuthPhoneTooShort", comment: "Phone number is too short"))
         } else {
             
             execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)), successBlock: { (val) -> () in
                 self.navigateToSms()
                 }, failureBlock: { (val) -> () in
                     if let exception = val as? JavaLangException {
-                        println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+                        SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
+                    } else {
+                        SVProgressHUD.showErrorWithStatus("Unknown error")
                     }
             })
 
