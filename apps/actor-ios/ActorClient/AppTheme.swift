@@ -8,8 +8,6 @@
 
 import Foundation
 
-var MainAppTheme = AppTheme()
-
 class AppTheme {
     
     var navigation = AppNavigationBar()

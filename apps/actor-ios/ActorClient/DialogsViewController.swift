@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate {
+class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate, MasterViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var loadingView: UIView!
@@ -210,7 +210,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
         if (tableView == self.tableView) {
             var dialog = objectAtIndexPath(indexPath) as! AMDialog
             navigateToMessagesWithPeer(dialog.getPeer())
@@ -224,15 +223,11 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     // MARK: Navigation
     
     func navigateToCompose() {
-        let composeController = ComposeController()
-        composeController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(composeController, animated: true)
+        navigateDetail(ComposeController())
     }
     
     private func navigateToMessagesWithPeer(peer: AMPeer) {
-        let conversationController = AAConversationController(peer: peer)
-        conversationController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(conversationController, animated: true);
+        navigateDetail(AAConversationController(peer: peer))
         MainAppTheme.navigation.applyStatusBar()
     }
     

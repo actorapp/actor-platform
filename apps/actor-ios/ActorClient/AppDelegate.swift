@@ -69,9 +69,14 @@ import Foundation
 
         
         var rootController = MainTabController()
+        
+        var splitController = UISplitViewController()
+        splitController.viewControllers = [rootController, NoSelectionController()]
+//        splitController.addChildViewController(rootController)
+//        splitController.addChildViewController(UIViewController())
     
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
-        window?.rootViewController = rootController;
+        window?.rootViewController = splitController;
         window?.makeKeyAndVisible();
         window?.backgroundColor = UIColor.whiteColor()
         
