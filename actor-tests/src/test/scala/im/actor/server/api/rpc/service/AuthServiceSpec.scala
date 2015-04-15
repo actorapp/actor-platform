@@ -28,6 +28,8 @@ class AuthServiceSpec extends BaseServiceSuite {
 
   it should "respond ok to a request with the same public key" in (s.signIn().samePublicKey)
 
+  it should "logout previous sessions on sign in with the same device hash" in (s.signIn().sameDeviceHash)
+
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
@@ -84,13 +86,13 @@ class AuthServiceSpec extends BaseServiceSuite {
     }
 
     case class signIn() {
-      val authId = createAuthId()(service.db)
-      val sessionId = createSessionId()
-      val phoneNumber = buildPhone()
-
-      implicit val clientData = ClientData(authId, sessionId, None)
-
       def unoccupied() = {
+        val authId = createAuthId()(service.db)
+        val sessionId = createSessionId()
+        val phoneNumber = buildPhone()
+
+        implicit val clientData = ClientData(authId, sessionId, None)
+
         val smsHash = getSmsHash(authId, phoneNumber)
 
         val request = service.handleSignIn(
@@ -112,10 +114,15 @@ class AuthServiceSpec extends BaseServiceSuite {
       }
 
       def valid() = {
-        createUser(authId, phoneNumber)
+        val phoneNumber = buildPhone()
+        createUser(phoneNumber)
+
+        val authId = createAuthId()
+        val sessionId = createSessionId()
+        implicit val clientData = ClientData(authId, sessionId, None)
 
         val smsHash = getSmsHash(authId, phoneNumber)
-        val keyData = Array(1.toByte, 2.toByte, 3.toByte)
+        val keyData = Array[Byte](1, 2, 3)
 
         val request = service.handleSignIn(
           phoneNumber = phoneNumber,
@@ -138,51 +145,130 @@ class AuthServiceSpec extends BaseServiceSuite {
 
         val pkHash = PublicKey.keyHash(keyData)
 
-        Await.result(service.db.run(persist.AuthId.find(authId).head), 5.seconds) should ===(models.AuthId(authId, Some(rsp.user.id), Some(pkHash)))
+        Await.result(service.db.run(persist.AuthId.find(authId).headOption), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), Some(pkHash))))
         Await.result(service.db.run(persist.UserPublicKey.find(rsp.user.id, pkHash).headOption), 5.seconds) should matchPattern {
           case Some(_: models.UserPublicKey) =>
         }
       }
 
       def samePublicKey() = {
-        createUser(authId, phoneNumber)
+        val phoneNumber = buildPhone()
+        createUser(phoneNumber)
 
-        val smsHash1 = getSmsHash(authId, phoneNumber)
+        {
+          val authId = createAuthId()(service.db)
+          val sessionId = createSessionId()
+          implicit val clientData = ClientData(authId, sessionId, None)
 
-        whenReady(service.handleSignIn(
-          phoneNumber = phoneNumber,
-          smsHash = smsHash1,
-          smsCode = "0000",
-          publicKey = Array(1, 2, 3),
-          deviceHash = Array(4, 5, 6),
-          deviceTitle = "Specs virtual device",
-          appId = 1,
-          appKey = "appKey"
-        )) { resp =>
-          resp should matchPattern {
-            case Ok(rsp: ResponseAuth) =>
+          val smsHash = getSmsHash(authId, phoneNumber)
+
+          whenReady(service.handleSignIn(
+            phoneNumber = phoneNumber,
+            smsHash = smsHash,
+            smsCode = "0000",
+            publicKey = Array(1, 2, 3),
+            deviceHash = Array(4, 5, 6),
+            deviceTitle = "Specs virtual device",
+            appId = 1,
+            appKey = "appKey"
+          )) { resp =>
+            resp should matchPattern {
+              case Ok(rsp: ResponseAuth) =>
+            }
           }
         }
 
-        val smsHash2 = getSmsHash(authId, phoneNumber)
+        {
+          val authId = createAuthId()(service.db)
+          val sessionId = createSessionId()
+          implicit val clientData = ClientData(authId, sessionId, None)
 
-        whenReady(service.handleSignIn(
-          phoneNumber = phoneNumber,
-          smsHash = smsHash2,
-          smsCode = "0000",
-          publicKey = Array(1, 2, 3),
-          deviceHash = Array(5, 5, 6),
-          deviceTitle = "Specs virtual device",
-          appId = 1,
-          appKey = "appKey"
-        )) { resp =>
-          resp should matchPattern {
-            case Ok(rsp: ResponseAuth) =>
+          val smsHash = getSmsHash(authId, phoneNumber)
+
+          whenReady(service.handleSignIn(
+            phoneNumber = phoneNumber,
+            smsHash = smsHash,
+            smsCode = "0000",
+            publicKey = Array(1, 2, 3),
+            deviceHash = Array(5, 5, 6),
+            deviceTitle = "Specs virtual device",
+            appId = 1,
+            appKey = "appKey"
+          )) { resp =>
+            resp should matchPattern {
+              case Ok(rsp: ResponseAuth) =>
+            }
           }
         }
       }
-    }
 
+      def sameDeviceHash() = {
+        val phoneNumber = buildPhone()
+        val user = createUser(phoneNumber)
+
+        val deviceHash = Array[Byte](4, 5, 6)
+
+        val authId1 = createAuthId()
+
+        {
+          val sessionId = createSessionId()
+          implicit val clientData = ClientData(authId1, sessionId, None)
+
+          val smsHash = getSmsHash(authId1, phoneNumber)
+
+          whenReady(service.handleSignIn(
+            phoneNumber = phoneNumber,
+            smsHash = smsHash,
+            smsCode = "0000",
+            publicKey = Array(1, 2, 3),
+            deviceHash = deviceHash,
+            deviceTitle = "Specs virtual device",
+            appId = 1,
+            appKey = "appKey"
+          )) { resp =>
+            resp should matchPattern {
+              case Ok(rsp: ResponseAuth) =>
+            }
+          }
+        }
+
+        val authId2 = createAuthId()
+
+        {
+          val sessionId = createSessionId()
+          implicit val clientData = ClientData(authId2, sessionId, None)
+
+          val smsHash = getSmsHash(authId2, phoneNumber)
+
+          whenReady(service.handleSignIn(
+            phoneNumber = phoneNumber,
+            smsHash = smsHash,
+            smsCode = "0000",
+            publicKey = Array(1, 2, 3, 4),
+            deviceHash = deviceHash,
+            deviceTitle = "Specs virtual device",
+            appId = 1,
+            appKey = "appKey"
+          )) { resp =>
+            resp should matchPattern {
+              case Ok(rsp: ResponseAuth) =>
+            }
+          }
+        }
+
+        whenReady(db.run(persist.AuthId.findByUserId(user.id))) { authIds =>
+          val ids = authIds.map(_.id)
+          ids should contain(authId2)
+          ids shouldNot contain(authId1)
+        }
+
+        whenReady(db.run(persist.AuthSession.findByUserId(user.id))) { sessions =>
+          val ids = sessions.map(_.authId)
+          ids should contain(authId2)
+          ids shouldNot contain(authId1)
+        }
+      }
+    }
   }
 
 }
