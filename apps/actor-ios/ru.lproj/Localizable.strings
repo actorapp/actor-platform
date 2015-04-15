@@ -47,6 +47,20 @@
 "SettingsEditHeader" = "Измените свое имя";
 
 /*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Изменить имя";
+
+"ProfileSendMessage" = "Отправить сообщение";
+
+"ProfileNotifications" = "Оповещения";
+
+"ProfileAddToContacts" = "Добавить в контакты";
+
+"ProfileRemoveFromContacts" = "Удалить из контактов";
+
+/*
  * Placeholders
  */
 
