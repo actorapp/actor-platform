@@ -50,8 +50,8 @@ class AAConversationController: EngineSlackListController {
         
         self.textInputbar.backgroundColor = UIColor.whiteColor();
         self.textInputbar.autoHideRightButton = false;
-        self.textView.placeholder = "Message";
-        self.rightButton.titleLabel?.text = "Send"
+        self.textView.placeholder = NSLocalizedString("ChatPlaceholder",comment: "Placeholder")
+        self.rightButton.titleLabel?.text = NSLocalizedString("ChatSend",comment: "Send")
         
         self.keyboardPanningEnabled = true;
         
@@ -235,8 +235,8 @@ class AAConversationController: EngineSlackListController {
         super.didPressLeftButton(sender)
         
         var actionShit = ABActionShit()
-        actionShit.buttonTitles = ["Take Photo", "Media Library"]
-        actionShit.cancelButtonTitle = "Cancel"
+        actionShit.buttonTitles = [NSLocalizedString("PhotoCamera",comment: "Take Photo"), NSLocalizedString("PhotoLibrary",comment: "Choose Photo")]
+        actionShit.cancelButtonTitle = NSLocalizedString("AlertCancel",comment: "Cancel")
         actionShit.delegate = self
         actionShit.showWithCompletion(nil)
     }
