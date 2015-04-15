@@ -11,22 +11,24 @@ class AuthIdTable(tag: Tag) extends Table[models.AuthId](tag, "auth_ids") {
 
   def userId = column[Option[Int]]("user_id")
 
+  def publicKeyHash = column[Option[Long]]("public_key_hash")
+
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (id, userId) <>(models.AuthId.tupled, models.AuthId.unapply)
+  def * = (id, userId, publicKeyHash) <>(models.AuthId.tupled, models.AuthId.unapply)
 }
 
 object AuthId {
   val authIds = TableQuery[AuthIdTable]
 
-  def create(authId: Long, userId: Option[Int]) =
-    authIds += models.AuthId(authId, userId)
+  def create(authId: Long, userId: Option[Int], publicKeyHash: Option[Long]) =
+    authIds += models.AuthId(authId, userId, publicKeyHash)
 
   def byAuthIdNotDeleted(authId: Long) =
     authIds.filter(a => a.id === authId && a.deletedAt.isEmpty)
 
-  def setUserId(authId: Long, userId: Int) =
-    byAuthIdNotDeleted(authId).map(_.userId).update(Some(userId))
+  def setUserData(authId: Long, userId: Int, publicKeyHash: Long) =
+    byAuthIdNotDeleted(authId).map(a => (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
 
   def find(authId: Long) =
     byAuthIdNotDeleted(authId).result

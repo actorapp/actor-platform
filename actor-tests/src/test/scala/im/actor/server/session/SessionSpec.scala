@@ -237,7 +237,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
     private def createAuthId(): Long = {
       val authId = Random.nextLong()
-      Await.result(db.run(persist.AuthId.create(authId, None)), 1.second)
+      Await.result(db.run(persist.AuthId.create(authId, None, None)), 1.second)
       authId
     }
 

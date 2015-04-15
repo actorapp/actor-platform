@@ -165,6 +165,7 @@ CREATE TABLE file_blocks (
 
 CREATE TABLE auth_ids (
     id bigint NOT NULL,
+    public_key_hash bigint,
     user_id int,
     deleted_at timestamp,
     PRIMARY KEY (id)
@@ -201,7 +202,6 @@ CREATE TABLE public_keys (
        user_id int NOT NULL,
        hash bigint NOT NULL,
        data bytea NOT NULL,
-       auth_id bigint NOT NULL,
        deleted_at timestamp,
        PRIMARY KEY (user_id, hash)
 );

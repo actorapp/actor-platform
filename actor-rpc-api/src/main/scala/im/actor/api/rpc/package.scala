@@ -26,11 +26,12 @@ package object rpc extends {
   type OkResp[+A] = A
 
   object Error {
-    def apply(e: RpcError) = -\/(e)
+    def apply[A](e: RpcError)(implicit ev: A <:< RpcResponse): RpcError \/ A =
+      -\/(e)
     def unapply(v: RpcError \/ _) =
       v match {
-        case \/-(_) => None
         case -\/(e) => Some(e)
+        case _ => None
       }
   }
 

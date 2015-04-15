@@ -30,4 +30,7 @@ object AuthSession {
 
   def create(session: models.AuthSession) =
     sessions += session
+
+  def findByUserIdAndDeviceHash(userId: Int, deviceHash: Array[Byte]) =
+    sessions.filter(s => s.userId === userId && s.deviceHash === deviceHash)
 }
