@@ -29,6 +29,12 @@
 "ContactsActionAdd" = "Добавить друга";
 
 /*
+ * Dialogs
+ */
+
+"DialogsHint" = "Проведите для удаления";
+
+/*
  * Settings
  */
 
@@ -79,6 +85,8 @@
 "PhotoLibrary" = "Выбрать фото";
 
 "NavigationEdit" = "Изменить";
+
+"NavigationDone" = "Готово";
 
 "NavigationBack" = "";
 
