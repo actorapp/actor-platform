@@ -38,6 +38,8 @@
 
 "SettingsSecurity" = "Privacy and Security";
 
+"SettingsEditHeader" = "Change your name";
+
 /*
  * Placeholders
  */
@@ -83,3 +85,5 @@
 "AlertCancel" = "Cancel";
 
 "AlertNext" = "Next";
+
+"AlertSave" = "Save";

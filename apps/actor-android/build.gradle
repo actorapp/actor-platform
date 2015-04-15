@@ -162,6 +162,7 @@ android {
 
             buildConfigField STRING, MINT, NULL
             buildConfigField BOOLEAN, ENABLE_PHONE_BOOK, FALSE
+            // buildConfigField STRING, API_URL, URL_DEV1_PLAIN
         }
 
         applicationVariants.all { variant ->
