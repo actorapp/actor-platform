@@ -38,6 +38,8 @@
 
 "SettingsSecurity" = "Безопасность";
 
+"SettingsEditHeader" = "Измените свое имя";
+
 /*
  * Placeholders
  */
@@ -83,3 +85,5 @@
 "AlertCancel" = "Отмена";
 
 "AlertNext" = "Далее";
+
+"AlertSave" = "Сохранить";
