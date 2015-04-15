@@ -25,13 +25,12 @@ import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.session.Session
 import im.actor.util.testing._
 
-class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpectations {
-  def is =
-    s2"""
-    Server should
-      connect and Handshake $e1
-      respond to RPC request $e2
-      """.stripMargin
+class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
+  behavior of "Server"
+
+  it should "connect and Handshake" in e1
+
+  it should "respond to RPC request" in e2
 
   val serverConfig = system.settings.config
   val sqlConfig = serverConfig.getConfig("persist.sql")
@@ -78,29 +77,29 @@ class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpe
     expectMessageAck(messageId)
 
     val result = receiveRpcResult(messageId)
-    result must beAnInstanceOf[RpcOk]
+    result shouldBe an [RpcOk]
 
     client.close()
   }
 
   private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {
     val mb = receiveMessageBox()
-    mb.body must beAnInstanceOf[MessageAck]
+    mb.body shouldBe a [MessageAck]
 
     val expectedAck = MessageAck(Vector(messageId))
 
     val ack = mb.body.asInstanceOf[MessageAck]
-    ack must be_==(expectedAck)
+    ack should === (expectedAck)
 
     ack
   }
 
   private def receiveRpcResult(messageId: Long)(implicit client: MTProtoClient): RpcResult = {
     val mb = receiveMessageBox()
-    mb.body must beAnInstanceOf[RpcResponseBox]
+    mb.body shouldBe an [RpcResponseBox]
 
     val rspBox = mb.body.asInstanceOf[RpcResponseBox]
-    rspBox.messageId must be_==(messageId)
+    rspBox.messageId should ===(messageId)
 
     RpcResultCodec.decode(rspBox.bodyBytes).require.value
   }
@@ -116,7 +115,7 @@ class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpe
       case None => throw new Exception("Transport package not received")
     }
 
-    body must beAnInstanceOf[MTPackage]
+    body shouldBe a [MTPackage]
     body.asInstanceOf[MTPackage]
   }
 
@@ -126,16 +125,12 @@ class SimpleServerE2eSpec extends ActorSpecification with DbInit with ThrownExpe
     val expectedNewSession = NewSession(sessionId, messageId)
 
     val mb = MessageBoxCodec.decode(mtp.messageBytes).require.value
-    mb.body must beAnInstanceOf[NewSession]
-    mb.body must be_==(expectedNewSession)
+    mb.body shouldBe a [NewSession]
+    mb.body should === (expectedNewSession)
   }
 
-  override def map(fragments: => Fragments) =
-    super.map(fragments) ^ step(shutdownSystem) ^ step(closeDb())
-
-  private def shutdownSystem(): Unit =
-    TestKit.shutdownActorSystem(system)
-
-  private def closeDb(): Unit =
+  override def afterAll = {
+    super.afterAll()
     ds.close()
+  }
 }
