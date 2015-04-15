@@ -61,6 +61,14 @@
 "ProfileRemoveFromContacts" = "Удалить из контактов";
 
 /*
+ * Chat
+ */
+
+"ChatPlaceholder" = "Введите текст...";
+
+"ChatSend" = "Отпр.";
+
+/*
  * Placeholders
  */
 
@@ -96,7 +104,7 @@
 
 "PhotoCamera" = "Снять фото";
 
-"PhotoLibrary" = "Выбрать фото";
+"PhotoLibrary" = "Фотоархив";
 
 "NavigationEdit" = "Изменить";
 
