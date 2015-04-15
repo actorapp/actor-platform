@@ -61,6 +61,24 @@
 "ProfileRemoveFromContacts" = "Удалить из контактов";
 
 /*
+ * Group
+ */
+
+"GroupEditHeader" = "Измените тему группы";
+
+"GroupSetPhoto" = "Поменять фото группы";
+
+"GroupNotifications" = "Оповещения";
+
+"GroupSettings" = "НАСТРОЙКИ";
+
+"GroupMembers" = "{0} УЧАСТНИКИ";
+
+"GroupAddParticipant" = "Добавить в группу...";
+
+"GroupLeave" = "Покинуть группу";
+
+/*
  * Chat
  */
 
