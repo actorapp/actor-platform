@@ -96,6 +96,7 @@ class AAConversationController: EngineSlackListController {
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
         
+        backgroundView.clipsToBounds = true
         backgroundView.contentMode = UIViewContentMode.ScaleAspectFill
         view.insertSubview(backgroundView, atIndex: 0)
     }
