@@ -1,17 +1,19 @@
 package im.actor.server.persist
 
-import im.actor.server.models
-import slick.driver.PostgresDriver.api._
-import Database.dynamicSession
-import org.joda.time.DateTime
 import com.github.tototoshi.slick.PostgresJodaSupport._
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
 
 class AuthIdTable(tag: Tag) extends Table[models.AuthId](tag, "auth_ids") {
   def id = column[Long]("id", O.PrimaryKey)
+
   def userId = column[Option[Int]]("user_id")
+
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (id, userId) <> (models.AuthId.tupled, models.AuthId.unapply)
+  def * = (id, userId) <>(models.AuthId.tupled, models.AuthId.unapply)
 }
 
 object AuthId {

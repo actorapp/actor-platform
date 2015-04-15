@@ -77,8 +77,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def buildRpcApiService()(implicit system: ActorSystem, db: Database) = system.actorOf(RpcApiService.props())
 
-  def buildSessionRegion(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer) =
-    Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
+  def buildSessionRegion(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer) =
+    Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)))
 
   def buildAuthService(sessionRegion: ActorRef)(implicit system: ActorSystem, database: Database) = new auth.AuthServiceImpl(sessionRegion)
 
