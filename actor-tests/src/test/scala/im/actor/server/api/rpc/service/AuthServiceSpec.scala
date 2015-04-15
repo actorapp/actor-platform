@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service
 
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.session.Session
 import im.actor.server.{ models, persist }
 
@@ -36,8 +36,9 @@ class AuthServiceSpec extends BaseServiceSpec {
 
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
+    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)))
 
     implicit val ec = system.dispatcher
     implicit val service = new auth.AuthServiceImpl(sessionRegion)

@@ -14,7 +14,7 @@ import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.push.SeqUpdatesPusher
+import im.actor.server.push.UpdatesPusher
 
 object Session {
 
@@ -38,11 +38,11 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
 
-  def props(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) =
-    Props(classOf[Session], rpcApiService, seqUpdManagerRegion, materializer)
+  def props(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) =
+    Props(classOf[Session], rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, materializer)
 }
 
-class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
+class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
 
   import SessionMessage._
 
@@ -79,7 +79,7 @@ class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef)(implicit m
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
-        context.actorOf(SeqUpdatesPusher.props(seqUpdManagerRegion, authId, self))
+        context.actorOf(UpdatesPusher.props(seqUpdManagerRegion, weakUpdManagerRegion, authId, self))
 
         context.become(receiveResolved(authId, sessionId, sessionMessagePublisher))
       }

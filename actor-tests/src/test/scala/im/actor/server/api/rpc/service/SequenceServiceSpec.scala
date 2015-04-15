@@ -9,7 +9,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class SequenceServiceSpec extends BaseServiceSuite {
 
@@ -19,8 +19,9 @@ class SequenceServiceSpec extends BaseServiceSuite {
   it should "get difference" in e2
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
+  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
 
   implicit val service = new sequence.SequenceServiceImpl(seqUpdManagerRegion)
   implicit val msgService = new messaging.MessagingServiceImpl(seqUpdManagerRegion)

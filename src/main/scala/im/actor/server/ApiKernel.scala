@@ -13,7 +13,7 @@ import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.session.Session
 
 class ApiKernel extends Bootable with DbInit with FlywayInit {
@@ -33,8 +33,9 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
     flyway.migrate()
 
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion)))
+    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)))
 
     val services = Seq(
       new AuthServiceImpl(sessionRegion),
