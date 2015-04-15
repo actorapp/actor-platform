@@ -29,6 +29,8 @@ class AAAddParticipantController: ContactsBaseController {
         // TODO: Parse array of current members so they are fade out
         
         super.init()
+        
+//        view.backgroundColor = Resources.BackyardColor
     }
 
     required init(coder aDecoder: NSCoder) {

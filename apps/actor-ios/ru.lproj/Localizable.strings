@@ -114,6 +114,21 @@
 
 "Placeholder_Group_Message" = "К сожалению, Вы больше не являетесь участником этой группы.";
 
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "Ваш Телефон";
+
+"AuthPhoneNumberHint" = "Ваш номер телефона";
+
+"AuthPhoneHint" = "Пожалуйста, подтвердите Вашу страну и введите свой номер телефона.";
+
+"AuthPhoneTooShort" = "Номер телефона слишком короткий";
+
+"AuthCodeFieldHint" = "Код активации";
+
+"AuthCodeHint" = "Мы отправили Вам СМС с кодом активации.";
 
 /*
  * Common Elements
@@ -134,6 +149,8 @@
 "NavigationDone" = "Готово";
 
 "NavigationBack" = "";
+
+"NavigationNext" = "Далее";
 
 "AlertCancel" = "Отмена";
 
