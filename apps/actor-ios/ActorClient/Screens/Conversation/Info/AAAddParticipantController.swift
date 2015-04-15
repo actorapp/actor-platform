@@ -29,6 +29,7 @@ class AAAddParticipantController: ContactsBaseController {
         // TODO: Parse array of current members so they are fade out
         
         super.init()
+        view.backgroundColor = UIColor.whiteColor()
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -38,15 +39,23 @@ class AAAddParticipantController: ContactsBaseController {
     // MARK: -
     
     override func viewDidLoad() {
+        super.viewDidLoad();
+        
         title = "Contacts" // TODO: Localize
         
         tableView = UITableView(frame: view.bounds, style: UITableViewStyle.Plain)
+        tableView.backgroundColor = UIColor.whiteColor()
         view = tableView
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss")) // TODO: Localize
         
         bindTable(tableView, fade: true);
-        super.viewDidLoad();
+    }
+    
+    override func loadView() {
+        super.loadView()
+        
+        println("loadView")
     }
     
     // MARK: -
