@@ -21,11 +21,13 @@ class AuthIdTable(tag: Tag) extends Table[models.AuthId](tag, "auth_ids") {
 object AuthId {
   val authIds = TableQuery[AuthIdTable]
 
+  val activeAuthIds = authIds.filter(_.deletedAt.isEmpty)
+
   def create(authId: Long, userId: Option[Int], publicKeyHash: Option[Long]) =
     authIds += models.AuthId(authId, userId, publicKeyHash)
 
   def byAuthIdNotDeleted(authId: Long) =
-    authIds.filter(a => a.id === authId && a.deletedAt.isEmpty)
+    activeAuthIds.filter(a => a.id === authId)
 
   def setUserData(authId: Long, userId: Int, publicKeyHash: Long) =
     byAuthIdNotDeleted(authId).map(a => (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
@@ -34,11 +36,14 @@ object AuthId {
     byAuthIdNotDeleted(authId).result
 
   def findByUserId(userId: Int) =
-    authIds.filter(a => a.userId === userId && a.deletedAt.isEmpty).result
+    activeAuthIds.filter(a => a.userId === userId).result
 
   def findIdByUserId(userId: Int) =
-    authIds.filter(a => a.userId === userId && a.deletedAt.isEmpty).map(_.id).result
+    activeAuthIds.filter(a => a.userId === userId).map(_.id).result
 
   def findIdByUserIds(userIds: Set[Int]) =
-    authIds.filter(a => a.userId inSet userIds).map(_.id).result
+    activeAuthIds.filter(a => a.userId inSet userIds).map(_.id).result
+
+  def delete(id: Long) =
+    activeAuthIds.filter(_.id === id).map(_.deletedAt).update(Some(new DateTime))
 }

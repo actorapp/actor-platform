@@ -56,7 +56,10 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     (createUser(authId, phoneNumber), authId, phoneNumber)
   }
 
-  def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem) = withoutLogs {
+  def createUser(phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User =
+    createUser(createAuthId(), phoneNumber)
+
+  def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem): api.users.User = withoutLogs {
     val smsHash = getSmsHash(authId, phoneNumber)(service, system)
 
     val rsp = Await.result(service.handleSignUp(

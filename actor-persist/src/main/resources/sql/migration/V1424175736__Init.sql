@@ -223,6 +223,8 @@ CREATE TABLE auth_sessions (
        PRIMARY KEY (user_id, id)
 );
 
+CREATE UNIQUE INDEX ON auth_sessions(user_id, id, device_hash);
+
 CREATE TABLE user_phones (
   user_id int NOT NULL,
   id int NOT NULL,

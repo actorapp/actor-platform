@@ -208,14 +208,18 @@ class AuthServiceImpl(sessionRegion: ActorRef)(implicit val actorSystem: ActorSy
                 longitude = None
               )
 
-
-              // TODO: logout other auth sessions
-
-              persist.AuthSession.create(authSession) andThen util.User.struct(
-                user,
-                None,
-                clientData.authId
-              ) map { userStruct =>
+              for {
+                prevSessions <- persist.AuthSession.findByUserIdAndDeviceHash(user.id, deviceHash)
+                _ <- DBIO.sequence(prevSessions map { s =>
+                  persist.AuthSession.delete(user.id, s.id) andThen persist.AuthId.delete(s.authId)
+                })
+                _ <- persist.AuthSession.create(authSession)
+                userStruct <- util.User.struct(
+                  user,
+                  None,
+                  clientData.authId
+                )
+              } yield {
                 Ok(
                   ResponseAuth(
                     pkHash,
