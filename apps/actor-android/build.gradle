@@ -161,7 +161,8 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
             applicationIdSuffix ".debug"
 
-            buildConfigField STRING, API_URL, URL_LOCAL
+            // buildConfigField STRING, API_URL, URL_LOCAL
+            buildConfigField STRING, API_URL, URL_DEV1_PLAIN
             buildConfigField STRING, MINT, NULL
             buildConfigField BOOLEAN, ENABLE_PHONE_BOOK, FALSE
         }
@@ -200,8 +201,8 @@ android {
         }
 
         debug {
-            // res.srcDirs = ['src/themes/dev',  'src/themes/dark',  'src/material-icons']
-            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
+            res.srcDirs = ['src/themes/dev', 'src/material-icons']
+            // res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
