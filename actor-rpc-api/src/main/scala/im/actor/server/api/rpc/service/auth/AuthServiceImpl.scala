@@ -164,8 +164,8 @@ class AuthServiceImpl(sessionRegion: ActorRef)(implicit val actorSystem: ActorSy
                             _ <- persist.User.create(user)
                             _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
                             pkHash = keyHash(publicKey)
-                            _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey, clientData.authId))
-                            _ <- persist.AuthId.setUserId(clientData.authId, userId)
+                            _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey))
+                            _ <- persist.AuthId.setUserData(clientData.authId, userId, pkHash)
                             _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                           } yield {
                             \/-(user :: pkHash :: HNil)
@@ -207,6 +207,8 @@ class AuthServiceImpl(sessionRegion: ActorRef)(implicit val actorSystem: ActorSy
                 latitude = None,
                 longitude = None
               )
+
+
               // TODO: logout other auth sessions
 
               persist.AuthSession.create(authSession) andThen util.User.struct(
@@ -247,25 +249,23 @@ class AuthServiceImpl(sessionRegion: ActorRef)(implicit val actorSystem: ActorSy
 
   private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String, clientData: ClientData) = {
     persist.User.find(userId).headOption.flatMap {
-      case None => DBIO.successful(Error(CommonErrors.Internal))
+      case None => throw new Exception("Failed to retrieve user")
       case Some(user) =>
         (for {
           _ <- persist.User.setCountryCode(userId = userId, countryCode = countryCode)
-          _ <- persist.AuthId.setUserId(authId = authId, userId = userId)
-          pkOpt <- persist.UserPublicKey.find(userId = userId, authId = authId).headOption
+          _ <- persist.AuthId.setUserData(authId, userId, pkHash)
+          pkOpt <- persist.UserPublicKey.find(user.id, pkHash).headOption
         } yield pkOpt).flatMap {
           case None =>
             for (
-              _ <- persist.UserPublicKey.create(models.UserPublicKey(userId = userId, hash = pkHash, data = pkData, authId = authId))
+              _ <- persist.UserPublicKey.create(models.UserPublicKey(userId = userId, hash = pkHash, data = pkData))
             ) yield \/-(user :: pkHash :: HNil)
           case Some(pk) =>
             if (!pkData.sameElements(pk.data)) {
-              for {
-                _ <- persist.UserPublicKey.delete(userId = userId, hash = pk.hash)
-                _ <- persist.UserPublicKey.create(models.UserPublicKey(userId = userId, hash = pkHash, data = pkData, authId = authId))
-              } yield \/-(user :: pkHash :: HNil)
-            } else
+              throw new Exception("Public key with the same hash already exists but not match with request's key data")
+            } else {
               DBIO.successful(\/-(user :: pkHash :: HNil))
+            }
         }
     }
   }

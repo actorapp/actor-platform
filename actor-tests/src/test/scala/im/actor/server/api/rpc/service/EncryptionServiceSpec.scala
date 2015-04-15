@@ -39,7 +39,7 @@ class EncryptionServiceSpec extends BaseServiceSpec {
 
     def e1 = {
       val user2Model = Await.result(db.run(persist.User.find(user2.id).head), 1.second)
-      val user2pk = Await.result(db.run(persist.UserPublicKey.find(user2.id, authId2).head), 1.second)
+      val user2pk = Await.result(db.run(persist.UserPublicKey.findByUserId(user2.id).head), 1.second)
 
       service.handleGetPublicKeys(
         keys = Vector(
