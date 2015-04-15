@@ -251,12 +251,15 @@ extension AAAuthRegisterController: UIImagePickerControllerDelegate {
     
     // TODO: Allow to crop rectangle 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyAuthStatusBar()
         avatarImageView.image = image
         avatarImageView.hidden = false
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyAuthStatusBar()
+        
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         avatarImageView.image = image
         avatarImageView.hidden = false
@@ -264,6 +267,8 @@ extension AAAuthRegisterController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        MainAppTheme.navigation.applyAuthStatusBar()
+        
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
