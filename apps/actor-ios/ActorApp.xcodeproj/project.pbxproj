@@ -689,6 +689,9 @@
 		05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */; };
 		05EDCD3B1ADDA97F00C57CEF /* AATitledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05EDCD3A1ADDA97F00C57CEF /* AATitledCell.swift */; };
 		05FCE8911AD80340002F0398 /* AABubbleDocumentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */; };
+		0603232C1ADF04FA00C73C0F /* NoSelectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232B1ADF04FA00C73C0F /* NoSelectionController.swift */; };
+		0603232E1ADF066500C73C0F /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232D1ADF066500C73C0F /* App.swift */; };
+		060323301ADF078200C73C0F /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232F1ADF078200C73C0F /* DetailViewController.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
@@ -2119,6 +2122,9 @@
 		05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsNotificationsController.swift; path = Settings/AASettingsNotificationsController.swift; sourceTree = "<group>"; };
 		05EDCD3A1ADDA97F00C57CEF /* AATitledCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATitledCell.swift; path = Views/Root/AATitledCell.swift; sourceTree = "<group>"; };
 		05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AABubbleDocumentCell.swift; path = Views/Bubbles/AABubbleDocumentCell.swift; sourceTree = "<group>"; };
+		0603232B1ADF04FA00C73C0F /* NoSelectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoSelectionController.swift; sourceTree = "<group>"; };
+		0603232D1ADF066500C73C0F /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		0603232F1ADF078200C73C0F /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
 		06047D071ABF8611002091CC /* CocoaTcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTcpConnection.m; sourceTree = "<group>"; };
@@ -2263,6 +2269,7 @@
 		050E99B01ACB4D410052C06B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				0603232A1ADF04E600C73C0F /* iPad */,
 				05E706441AD1F5FD009F09D8 /* Settings */,
 				054A25251AD06D030013FAAA /* User */,
 				0541A0551ACDA5210028E983 /* Conversation */,
@@ -2278,6 +2285,7 @@
 				050E99B71ACB4D410052C06B /* AANavigationController.swift */,
 				050E99B81ACB4D410052C06B /* AATableViewController.swift */,
 				050E99BF1ACB510A0052C06B /* AAViewController.swift */,
+				0603232F1ADF078200C73C0F /* DetailViewController.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -4367,6 +4375,14 @@
 			name = Bubbles;
 			sourceTree = "<group>";
 		};
+		0603232A1ADF04E600C73C0F /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				0603232B1ADF04FA00C73C0F /* NoSelectionController.swift */,
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
 		06047D031ABF85CD002091CC /* network */ = {
 			isa = PBXGroup;
 			children = (
@@ -4524,6 +4540,7 @@
 				06E4842C1AB78D7E00AA272F /* Utils */,
 				0699D4C01ADC80B20005AB9B /* AppTheme.swift */,
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
+				0603232D1ADF066500C73C0F /* App.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
 				06CCE9411AD4A68200A17705 /* Pods */,
 				0699D4C81ADC8D820005AB9B /* Localizable.strings */,
@@ -4940,6 +4957,7 @@
 				0514D8B21AD1ED8A00F6C3BB /* EncryptedFileLocationV1.m in Sources */,
 				0514D8CA1AD1ED8A00F6C3BB /* PublicKey.m in Sources */,
 				0514D9991AD1ED8A00F6C3BB /* ActorAskImpl.m in Sources */,
+				0603232E1ADF066500C73C0F /* App.swift in Sources */,
 				0514D9FB1AD1ED8A00F6C3BB /* JavaCryptoProvider.m in Sources */,
 				0514D99E1AD1ED8A00F6C3BB /* AskTimeoutException.m in Sources */,
 				0514DAE51AD1ED8A00F6C3BB /* DoubleAddMultiplier.m in Sources */,
@@ -5240,6 +5258,7 @@
 				0514DADA1AD1ED8A00F6C3BB /* ParametersWithRandom.m in Sources */,
 				0514D9241AD1ED8A00F6C3BB /* TypingType.m in Sources */,
 				0514D9C11AD1ED8A00F6C3BB /* ListEngine.m in Sources */,
+				0603232C1ADF04FA00C73C0F /* NoSelectionController.swift in Sources */,
 				0514D9591AD1ED8A00F6C3BB /* BaseConfigurationBuilder.m in Sources */,
 				0514DAA21AD1ED8A00F6C3BB /* JavaUtil.m in Sources */,
 				0514D9361AD1ED8A00F6C3BB /* UpdateGroupTitleChanged.m in Sources */,
@@ -5278,6 +5297,7 @@
 				0514D9B31AD1ED8A00F6C3BB /* Limits.m in Sources */,
 				0514D9F21AD1ED8A00F6C3BB /* SearchEntity.m in Sources */,
 				0514DA0C1AD1ED8A00F6C3BB /* BaseModule.m in Sources */,
+				060323301ADF078200C73C0F /* DetailViewController.swift in Sources */,
 				0514DA0F1AD1ED8A00F6C3BB /* Contacts.m in Sources */,
 				0514DA271AD1ED8A00F6C3BB /* UnreadMessagesStorage.m in Sources */,
 				06FCF1781AB60BFC00422FEC /* CocoaMainThreadProvider.swift in Sources */,
@@ -5679,7 +5699,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
 			name = ReleaseDev1;
@@ -5772,7 +5792,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
 			name = ReleaseDev2;
@@ -5865,7 +5885,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
 			name = ReleaseLlectro;
@@ -6005,7 +6025,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
 			name = Debug;
@@ -6044,7 +6064,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "ActorClient/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "../../library/actor-cocoa-base/src/**";
 			};
 			name = Release;
