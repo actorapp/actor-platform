@@ -109,6 +109,7 @@ object MTProto {
         val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
         newState._1 match {
           case FailedState(msg) =>
+            system.log.debug("Failed to parse connection-level {}", msg)
             // ctx.fail(new IllegalStateException(msg))
             ctx.pushAndFinish(ProtoPackage(Drop(0, 0, msg)))
           case _ =>
