@@ -7,7 +7,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class ContactsServiceSpec extends BaseServiceSpec {
   def is = sequential ^ s2"""
@@ -22,8 +22,9 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
+    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
 
     implicit val service = new contacts.ContactsServiceImpl(seqUpdManagerRegion)
     implicit val authService = buildAuthService(sessionRegion)

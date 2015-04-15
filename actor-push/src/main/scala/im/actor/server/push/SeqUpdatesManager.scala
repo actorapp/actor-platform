@@ -15,6 +15,7 @@ import akka.util.Timeout
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc => api }
 import im.actor.server.{ models, persist => p }
 
@@ -23,7 +24,7 @@ object SeqUpdatesManager {
   @SerialVersionUID(1L)
   private[push] case class Envelope(authId: Long, payload: Message)
 
-  sealed trait Message
+  private[push] sealed trait Message
 
   @SerialVersionUID(1L)
   private[push] case object GetSequenceState extends Message
@@ -43,31 +44,31 @@ object SeqUpdatesManager {
   type Sequence = Int
   type SequenceState = (Int, Array[Byte])
 
-  private[push] sealed trait PersistentEvent
+  private sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
-  private[push] case class SeqChanged(sequence: Int) extends PersistentEvent
+  private case class SeqChanged(sequence: Int) extends PersistentEvent
 
-  private[push] val noop1: Any => Unit = _ => ()
+  private val noop1: Any => Unit = _ => ()
 
-  private[this] val idExtractor: ShardRegion.IdExtractor = {
+  private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(authId, payload) => (authId.toString, env)
   }
 
-  private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
+  private val shardResolver: ShardRegion.ShardResolver = msg => msg match {
     case Envelope(authId, _) => (authId % 32).toString // TODO: configurable
   }
 
-  private[this] def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef = ClusterSharding(system).start(
+  // TODO: configurable
+  private val OperationTimeout = Timeout(5.seconds)
+  private val MaxDifferenceUpdates = 100
+
+  private def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef = ClusterSharding(system).start(
     typeName = "SeqUpdatesManager",
     entryProps = props,
     idExtractor = idExtractor,
     shardResolver = shardResolver
   )
-
-  // TODO: configurable
-  private val OperationTimeout = Timeout(5.seconds)
-  private val MaxDifferenceUpdates = 100
 
   def startRegion()(implicit system: ActorSystem, db: Database): ActorRef = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
 
@@ -236,6 +237,11 @@ object SeqUpdatesManager {
     }
   }
 
+  private[push] def subscribe(region: ActorRef, authId: Long, consumer: ActorRef)
+                             (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+  }
+
   private def bytesToTimestamp(bytes: Array[Byte]): Long = {
     if (bytes.isEmpty) {
       0L
@@ -244,7 +250,7 @@ object SeqUpdatesManager {
     }
   }
 
-  private[push] def timestampToBytes(timestamp: Long): Array[Byte] = {
+  private def timestampToBytes(timestamp: Long): Array[Byte] = {
     ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
   }
 
@@ -294,9 +300,10 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       })
     case Envelope(authId, Subscribe(consumer: ActorRef)) =>
       if (!consumers.contains(consumer)) {
-        consumers += consumer
         context.watch(consumer)
       }
+
+      consumers += consumer
 
       log.debug("Consumer subscribed {}", consumer)
 
@@ -367,7 +374,7 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
         .andThen {
         case Success(_) =>
           consumers foreach { consumer =>
-            consumer ! seqUpdate
+            consumer ! SeqUpdate(seqUpdate.seq, timestampToBytes(seqUpdate.timestamp), seqUpdate.header, seqUpdate.serializedData)
           }
 
           log.debug("Pushed update seq: {}", seq)

@@ -8,7 +8,7 @@ import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util
 import im.actor.server.persist
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "MessagingService"
@@ -19,8 +19,9 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
+    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
 
     implicit val service = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
     implicit val groupsService = new GroupsServiceImpl(seqUpdManagerRegion)

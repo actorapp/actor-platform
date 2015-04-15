@@ -9,7 +9,7 @@ import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util.ACL
 import im.actor.server.persist
-import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "GroupsService"
@@ -21,8 +21,9 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   it should "send updates ot title change" in e3
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion)
+  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
 
   implicit val service = new GroupsServiceImpl(seqUpdManagerRegion)
   implicit val authService = buildAuthService(sessionRegion)
