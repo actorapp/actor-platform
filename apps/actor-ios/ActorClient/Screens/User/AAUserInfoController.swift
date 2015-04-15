@@ -43,8 +43,6 @@ class AAUserInfoController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "User Info" // TODO: Localize
-        
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
@@ -64,11 +62,10 @@ class AAUserInfoController: AATableViewController {
         })
         
         binder.bind(user!.getName(), closure: { ( name: String?) -> () in
-            if name != nil {
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
-                    cell.setUsername(name!)
-                }
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+                cell.setUsername(name!)
             }
+            self.title = name!
         })
         
         binder.bind(user!.getPresence(), closure: { (presence: AMUserPresence?) -> () in
@@ -91,9 +88,10 @@ class AAUserInfoController: AATableViewController {
             }
         })
         
-        navigationItem.rightBarButtonItem = editButtonItem()
-        
-        // TODO: Allow cancellation
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: NSLocalizedString("NavigationEdit", comment: "Edit Title"),
+            style: UIBarButtonItemStyle.Plain,
+            target: self, action: "editName")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -109,10 +107,14 @@ class AAUserInfoController: AATableViewController {
     // MARK: -
     // MARK: Setters
     
-    override func setEditing(editing: Bool, animated: Bool) {
+    func editName() {
         // TODO: Localize
-        var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
-        alertView.addButtonWithTitle("Change")
+        var alertView = UIAlertView(
+            title: nil,
+            message: NSLocalizedString("ProfileEditHeader", comment: "Edit Title"),
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
+        alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
         alertView.show()
@@ -140,7 +142,7 @@ class AAUserInfoController: AATableViewController {
             
         cell.style = AATableViewCellStyle.Blue
         cell.setLeftInset(15.0)
-        cell.setContent("Send Message") // TODO: Localize
+        cell.setContent(NSLocalizedString("ProfileSendMessage", comment: "Send Message Title"))
         
         cell.showBottomSeparator()
         cell.setBottomSeparatorLeftInset(15.0)
@@ -174,7 +176,7 @@ class AAUserInfoController: AATableViewController {
         
         cell.style = AATableViewCellStyle.Switch
         cell.setLeftInset(15.0)
-        cell.setContent("Notifications") // TODO: Localize
+        cell.setContent(NSLocalizedString("ProfileNotifications", comment: "Notificaitons Title"))
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
         let userPeer: AMPeer! = AMPeer.userWithInt(jint(uid))
@@ -195,7 +197,7 @@ class AAUserInfoController: AATableViewController {
         
         cell.style = AATableViewCellStyle.Destructive
         cell.setLeftInset(15.0)
-        cell.setContent("Delete User") // TODO: Localize
+        cell.setContent(NSLocalizedString("ProfileRemoveFromContacts", comment: "Remove From Contacts"))
         
         cell.showTopSeparator()
         cell.showBottomSeparator()
@@ -206,9 +208,9 @@ class AAUserInfoController: AATableViewController {
     private func addUserCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.style = AATableViewCellStyle.Green
+        cell.style = AATableViewCellStyle.Blue
         cell.setLeftInset(15.0)
-        cell.setContent("Add User") // TODO: Localize
+        cell.setContent(NSLocalizedString("ProfileAddToContacts", comment: "Add To Contacts"))
         
         cell.showTopSeparator()
         cell.showBottomSeparator()
@@ -338,12 +340,11 @@ class AAUserInfoController: AATableViewController {
 extension AAUserInfoController: UIAlertViewDelegate {
     
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        if alertView.buttonTitleAtIndex(buttonIndex) == "Change" {
+        if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
                 execute(MSG.editNameWithInt(jint(uid), withNSString: textField.text))
             }
         }
     }
-    
 }
