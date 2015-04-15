@@ -10,10 +10,9 @@ class UserPublicKeyTable(tag: Tag) extends Table[models.UserPublicKey](tag, "pub
   def userId = column[Int]("user_id", O.PrimaryKey)
   def hash = column[Long]("hash", O.PrimaryKey)
   def data = column[Array[Byte]]("data")
-  def authId = column[Long]("auth_id")
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (userId, hash, data, authId) <> (models.UserPublicKey.tupled, models.UserPublicKey.unapply)
+  def * = (userId, hash, data) <> (models.UserPublicKey.tupled, models.UserPublicKey.unapply)
 }
 
 object UserPublicKey {
@@ -31,11 +30,14 @@ object UserPublicKey {
   def delete(userId: Int, hash: Long) =
     pkeys.filter(p => p.userId === userId && p.hash === hash).map(_.deletedAt).update(Some(new DateTime))
 
+  def find(userId: Int, hash: Long) =
+    active.filter(p => p.userId === userId && p.hash === hash).result
+
+  def findByUserId(userId: Int) =
+    active.filter(_.userId === userId).result
+
   def findKeyHashes(userId: Int)  =
     activeByUserId(userId).map(_.hash).result
-
-  def find(userId: Int, authId: Long) =
-    active.filter(p => p.userId === userId && p.authId === authId).result
 
   def findByUserHashes(pairs: Set[(Int, Long)]) = {
     // TODO: type-based size checking

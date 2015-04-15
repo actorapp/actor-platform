@@ -72,7 +72,7 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
           val f =
             if (authId == 0L) {
               authId = rand.nextLong()
-              db.run(persist.AuthId.create(authId, None))
+              db.run(persist.AuthId.create(authId, None, None))
             } else Future.successful(())
 
           f.onComplete {

@@ -4,6 +4,5 @@ package im.actor.server.models
 case class UserPublicKey(
   userId: Int,
   hash: Long,
-  data: Array[Byte],
-  authId: Long
+  data: Array[Byte]
 )
