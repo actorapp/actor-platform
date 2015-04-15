@@ -223,11 +223,11 @@ class AATableViewCell: UITableViewCell {
         }
         
         if topSeparator != nil {
-            topSeparator!.frame = CGRect(x: topSeparatorLeftInset, y: 0, width: contentView.bounds.width - topSeparatorLeftInset, height: Utils.retinaPixel())
+            topSeparator!.frame = CGRect(x: topSeparatorLeftInset, y: 0, width: bounds.width - topSeparatorLeftInset, height: Utils.retinaPixel())
         }
         
         if bottomSeparator != nil {
-            bottomSeparator!.frame = CGRect(x: bottomSeparatorLeftInset, y: contentView.bounds.height - Utils.retinaPixel(), width: contentView.bounds.width - bottomSeparatorLeftInset, height: Utils.retinaPixel())
+            bottomSeparator!.frame = CGRect(x: bottomSeparatorLeftInset, y: contentView.bounds.height - Utils.retinaPixel(), width: bounds.width - bottomSeparatorLeftInset, height: Utils.retinaPixel())
         }
     }
 
