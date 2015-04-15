@@ -180,11 +180,11 @@ class AASettingsController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setContent(NSLocalizedString("SettingsSetPhoto", comment: "Edtit Photo"))
+        cell.setContent(NSLocalizedString("SettingsSetPhoto", comment: "Edit Photo"))
         cell.setLeftInset(15.0)
         
-        cell.showBottomSeparator()
         cell.setBottomSeparatorLeftInset(15.0)
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -373,6 +373,7 @@ extension AASettingsController: UIImagePickerControllerDelegate {
     
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyStatusBar()
         
         changeAvatarToImage(image)
         
@@ -380,6 +381,8 @@ extension AASettingsController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyStatusBar()
+        
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         
         changeAvatarToImage(image)
@@ -388,6 +391,7 @@ extension AASettingsController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     

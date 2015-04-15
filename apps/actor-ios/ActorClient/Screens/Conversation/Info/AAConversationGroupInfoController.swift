@@ -34,7 +34,7 @@ class AAConversationGroupInfoController: AATableViewController {
     init (gid: Int) {
         self.gid = gid
         
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.Plain)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -48,6 +48,8 @@ class AAConversationGroupInfoController: AATableViewController {
         
         group = MSG.getGroups().getWithLong(jlong(gid)) as? AMGroupVM;
         
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.backgroundColor = Resources.BackyardColor
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableView.registerClass(AAConversationGroupInfoUserCell.self, forCellReuseIdentifier: UserCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
@@ -130,6 +132,9 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.setContent(NSLocalizedString("GroupSetPhoto", comment: "Set Group Photo"))
         cell.setLeftInset(15.0)
         
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(0.0)
+        
         return cell
     }
     
@@ -148,6 +153,12 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.switchBlock = { (on: Bool) -> () in
             MSG.changeNotificationsEnabledWithAMPeer(groupPeer, withBoolean: on)
         }
+        
+        cell.showTopSeparator()
+        cell.setTopSeparatorLeftInset(0.0)
+        
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(0.0)
         
         return cell
     }
@@ -171,6 +182,14 @@ class AAConversationGroupInfoController: AATableViewController {
         
         cell.setLeftInset(65.0)
         
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(15.0)
+        
+        if indexPath.row == 0 {
+            cell.showTopSeparator()
+            cell.setTopSeparatorLeftInset(0.0)
+        }
+        
         return cell
     }
     
@@ -182,6 +201,9 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.setLeftInset(65.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
         
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(0.0)
+        
         return cell
     }
     
@@ -192,6 +214,12 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.setContent(NSLocalizedString("GroupLeave", comment: "Leave group"))
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
+        
+        cell.setTopSeparatorLeftInset(0.0)
+        cell.showTopSeparator()
+        
+        cell.setBottomSeparatorLeftInset(0.0)
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -282,20 +310,6 @@ class AAConversationGroupInfoController: AATableViewController {
         return UITableViewCellEditingStyle.None
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 2 {
-            return NSLocalizedString("GroupSettings", comment: "Settings")
-        } else if section == 3 {
-            let groupMembersCount = (groupMembers != nil) ? Int(groupMembers!.length()) : 0
-            return NSLocalizedString("GroupMembers", comment: "Settings")
-                .stringByReplacingOccurrencesOfString("{0}",
-                    withString: "\(groupMembersCount)",
-                    options: NSStringCompareOptions.LiteralSearch,
-                    range: nil)
-        }
-        return ""
-    }
-    
     // MARK: - 
     // MARK: UITableView Delegate
     
@@ -337,11 +351,36 @@ class AAConversationGroupInfoController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return CGFloat.min
+        if section < 2 {
+            return 0.0
         }
-        return tableView.sectionHeaderHeight
+        return 15.0
     }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return 0.0
+        }
+        return 15.0
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView {
+        return UIView()
+    }
+    
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView {
+        return UIView()
+    }
+    
+//    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if section == 2 {
+//            return "SETTINGS" // TODO: Localize
+//        } else if section == 3 {
+//            let groupMembersCount = (groupMembers != nil) ? Int(groupMembers!.length()) : 0
+//            return "\(groupMembersCount) MEMBERS" // TODO: Localize
+//        }
+//        return ""
+//    }
     
     // MARK: -
     // MARK: Navigation
@@ -389,6 +428,7 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyStatusBar()
 
         changeAvatarToImage(image)
         
@@ -396,6 +436,7 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
 
         changeAvatarToImage(image)
@@ -404,6 +445,7 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
