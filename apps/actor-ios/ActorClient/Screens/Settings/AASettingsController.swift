@@ -130,8 +130,10 @@ class AASettingsController: AATableViewController {
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
             otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
-        actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
-        actionSheet.destructiveButtonIndex = 3
+        if (user!.getAvatar().get() != nil) {
+            actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
+            actionSheet.destructiveButtonIndex = 3
+        }
         actionSheet.showInView(view)
     }
     
@@ -146,8 +148,11 @@ class AASettingsController: AATableViewController {
     // MARK: Setters
     
     func editProfile() {
-        var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
-        alertView.addButtonWithTitle("Change")
+        var alertView = UIAlertView(title: nil,
+            message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
+        alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
         alertView.show()
@@ -342,23 +347,23 @@ class AASettingsController: AATableViewController {
 // MARK: UIActionSheet Delegate
 
 extension AASettingsController: UIActionSheetDelegate {
-    
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
-        let title = actionSheet.buttonTitleAtIndex(buttonIndex)
+
+        // Cancel button
+        if (buttonIndex == 0) {
+            return
+        }
         
-        // TODO: Localize
-        if title == "Choose Photo" || title == "Take Photo" {
-            let takePhoto = (title == "Take Photo")
+        if (buttonIndex == 1 || buttonIndex == 2) {
+            let takePhoto = (buttonIndex == 1)
             var picker = UIImagePickerController()
             picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             picker.delegate = self
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
-            
-        } else if title == "Delete Photo" {
+        } else if (buttonIndex == 3) {
             MSG.removeAvatar()
         }
     }
-    
 }
 
 // MARK: -
@@ -401,15 +406,13 @@ extension AASettingsController: UINavigationControllerDelegate {
 // MARK: UIAlertView Delegate
 
 extension AASettingsController: UIAlertViewDelegate {
-    
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        if alertView.buttonTitleAtIndex(buttonIndex) == "Change" {
+        if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
                 execute(MSG.editMyNameWithNSString(textField.text))
             }
         }
     }
-    
 }
 
