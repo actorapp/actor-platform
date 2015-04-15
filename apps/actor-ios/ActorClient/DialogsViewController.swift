@@ -66,7 +66,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         footerHint.textAlignment = NSTextAlignment.Center;
         footerHint.font = UIFont.systemFontOfSize(16);
         footerHint.textColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
-        footerHint.text = "Swipe for more options";
+        footerHint.text = NSLocalizedString("DialogsHint", comment: "Swipe hint")
         footer.addSubview(footerHint);
         
         var shadow = UIImageView(image: UIImage(named: "CardBottom2"));
@@ -110,6 +110,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         navigationItem.title = NSLocalizedString("TabMessages", comment: "Messages Title")
         navigationItem.leftBarButtonItem = editButtonItem()
+        navigationItem.leftBarButtonItem!.title = NSLocalizedString("NavigationEdit", comment: "Edit Title");
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
         
         placeholder.setImage(
@@ -157,6 +158,19 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
+        
+        if (editing) {
+            self.navigationItem.leftBarButtonItem!.title = NSLocalizedString("NavigationDone", comment: "Done Title");
+            self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Done;
+            
+            navigationItem.rightBarButtonItem = nil
+        }
+        else {
+            self.navigationItem.leftBarButtonItem!.title = NSLocalizedString("NavigationEdit", comment: "Edit Title");
+            self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Bordered;
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
+        }
         
         if editing == true {
             navigationItem.rightBarButtonItem = nil
