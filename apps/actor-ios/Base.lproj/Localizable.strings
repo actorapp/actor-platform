@@ -61,6 +61,11 @@
 "ProfileRemoveFromContacts" = "Remove from Contacts";
 
 /*
+ * Group
+ */
+
+
+/*
  * Chat
  */
 
@@ -91,6 +96,11 @@
 "Placeholder_Dialogs_Title" = "Start messaging";
 
 "Placeholder_Dialogs_Message" = "Pick a contact from your contacts list or press write button at upper right corner to start the conversation right now.";
+
+"Placeholder_Group_Title" = "Not a member";
+
+"Placeholder_Group_Message" = "Unfortunately, you are not a member of this group.";
+
 
 /*
  * Common Elements

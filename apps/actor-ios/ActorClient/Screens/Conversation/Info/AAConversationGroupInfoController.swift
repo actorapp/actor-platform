@@ -46,8 +46,6 @@ class AAConversationGroupInfoController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Group Info" // TODO: Localize
-        
         group = MSG.getGroups().getWithLong(jlong(gid)) as? AMGroupVM;
         
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
@@ -61,6 +59,7 @@ class AAConversationGroupInfoController: AATableViewController {
             if cell != nil {
                 cell!.setGroupName(value!)
             }
+            self.title = value!
         })
         
         binder.bind(group!.getAvatar(), closure: { (value: AMAvatar?) -> () in
@@ -86,7 +85,10 @@ class AAConversationGroupInfoController: AATableViewController {
                     self.hidePlaceholder()
                 } else {
                     self.navigationItem.rightBarButtonItem = nil
-                    self.showPlaceholderWithImage(nil, title: "Not a member", subtitle: "Unfortunately, you are not a member of this group.")
+                    self.showPlaceholderWithImage(
+                        UIImage(named: "contacts_list_placeholder"),
+                        title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),
+                        subtitle: NSLocalizedString("Placeholder_Group_Message", comment: "Message Title"))
                 }
             }
         })
@@ -415,5 +417,4 @@ extension AAConversationGroupInfoController: UIAlertViewDelegate {
             }
         }
     }
-    
 }
