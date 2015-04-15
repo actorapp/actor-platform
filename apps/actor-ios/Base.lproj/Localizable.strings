@@ -114,6 +114,21 @@
 
 "Placeholder_Group_Message" = "Unfortunately, you are not a member of this group.";
 
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "Your Phone";
+
+"AuthPhoneNumberHint" = "Your phone number";
+
+"AuthPhoneHint" = "Please condifm your country code and enter your phone number.";
+
+"AuthPhoneTooShort" = "Phone number too short";
+
+"AuthCodeFieldHint" = "Code";
+
+"AuthCodeHint" = "We have sent you an SMS with the code.";
 
 /*
  * Common Elements
@@ -134,6 +149,8 @@
 "NavigationDone" = "Done";
 
 "NavigationBack" = "";
+
+"NavigationNext" = "Next";
 
 "AlertCancel" = "Cancel";
 

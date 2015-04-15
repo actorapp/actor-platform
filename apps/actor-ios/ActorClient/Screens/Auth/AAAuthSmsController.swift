@@ -60,7 +60,7 @@ class AAAuthSmsController: AAViewController {
         view.addSubview(navigationBarSeparator)
         
         codeTextField = UITextField()
-        codeTextField.placeholder = "Code"
+        codeTextField.placeholder = NSLocalizedString("AuthCodeFieldHint", comment: "Hint")
         codeTextField.font = UIFont.systemFontOfSize(24.0)
         codeTextField.backgroundColor = UIColor.whiteColor()
         codeTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
@@ -81,13 +81,13 @@ class AAAuthSmsController: AAViewController {
         hintLabel.textAlignment = NSTextAlignment.Center
         hintLabel.contentMode = UIViewContentMode.Center
         hintLabel.numberOfLines = 0
-        hintLabel.text = "We have sent you an SMS with the code"
+        hintLabel.text = NSLocalizedString("AuthCodeHint", comment: "Hint")
         view.addSubview(hintLabel)
         
         let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 300, height: screenSize.height))
         hintLabel.frame = CGRectIntegral(CGRect(x: (screenSize.width - hintLabelSize.width) / 2, y: navigationBarSeparator.frame.origin.y + (isWidescreen ? 85.0 : 70.0), width: hintLabelSize.width, height: hintLabelSize.height))
         
-        var nextBarButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
+        var nextBarButton = UIBarButtonItem(title:NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
         navigationItem.rightBarButtonItem = nextBarButton
     }
 
