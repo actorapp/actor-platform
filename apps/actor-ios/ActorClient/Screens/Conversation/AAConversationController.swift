@@ -332,18 +332,21 @@ extension AAConversationController: UIDocumentPickerDelegate {
 extension AAConversationController: UIImagePickerControllerDelegate {
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         
         MSG.sendUIImage(image, peer: peer!)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         
         MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer!)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
