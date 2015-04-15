@@ -164,7 +164,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
   private def send(connection: ActorRef, mtp: MTTransport): Unit = {
     val bits = mtp match {
       case h: Handshake =>
-        handshakeResponse.encode(h).require
+        handshakeHeader.encode(HandshakeHeader(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion, h.bytes.toByteVector.size)).require ++ h.bytes
       case ProtoPackage(tp) =>
         TransportPackageCodec.encode(TransportPackage(1, tp)).require
       case SilentClose =>
