@@ -29,6 +29,12 @@
 "ContactsActionAdd" = "Add Friend";
 
 /*
+ * Dialogs
+ */
+
+"DialogsHint" = "Swipe for more options";
+
+/*
  * Settings
  */
 
@@ -39,6 +45,7 @@
 "SettingsSecurity" = "Privacy and Security";
 
 "SettingsEditHeader" = "Change your name";
+
 
 /*
  * Placeholders
@@ -79,6 +86,8 @@
 "PhotoLibrary" = "Choose Photo";
 
 "NavigationEdit" = "Edit";
+
+"NavigationDone" = "Done";
 
 "NavigationBack" = "";
 
