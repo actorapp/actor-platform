@@ -46,6 +46,19 @@
 
 "SettingsEditHeader" = "Change your name";
 
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Change name";
+
+"ProfileSendMessage" = "Send Message";
+
+"ProfileNotifications" = "Notifications";
+
+"ProfileAddToContacts" = "Add to Contacts";
+
+"ProfileRemoveFromContacts" = "Remove from Contacts";
 
 /*
  * Placeholders
