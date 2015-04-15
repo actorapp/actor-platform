@@ -27,6 +27,8 @@ class AAConversationController: EngineSlackListController {
     
     private let avatarView = BarAvatarView(frameSize: 36, type: AAAvatarType.Rounded)
     
+    private let backgroundView: UIImageView = UIImageView(image: UIImage(named: "ChatBackground")!)
+    
     // MARK: -
     // MARK: Public vars
     
@@ -93,6 +95,9 @@ class AAConversationController: EngineSlackListController {
         
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
+        
+        backgroundView.contentMode = UIViewContentMode.ScaleAspectFill
+        view.insertSubview(backgroundView, atIndex: 0)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -105,10 +110,6 @@ class AAConversationController: EngineSlackListController {
         super.viewWillAppear(animated)
         
         textView.text = MSG.loadDraft(peer)
-        
-        var image = UIImage(named: "ChatBackground")!
-        var chatBackground = UIImageView(image: image)
-        view.insertSubview(chatBackground, atIndex: 0)
         
         // Installing bindings
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
@@ -177,6 +178,11 @@ class AAConversationController: EngineSlackListController {
         }
         
         MSG.onConversationOpen(peer)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        backgroundView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
     }
     
     override func viewDidLoad() {
