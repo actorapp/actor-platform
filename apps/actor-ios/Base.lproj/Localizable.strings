@@ -64,6 +64,19 @@
  * Group
  */
 
+"GroupEditHeader" = "Change group theme";
+
+"GroupSetPhoto" = "Set Group Photo";
+
+"GroupNotifications" = "Notifications";
+
+"GroupSettings" = "SETTINGS";
+
+"GroupMembers" = "{0} MEMBERS";
+
+"GroupAddParticipant" = "Add Prticipant...";
+
+"GroupLeave" = "Leave group";
 
 /*
  * Chat

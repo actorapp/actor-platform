@@ -80,11 +80,15 @@ class AAConversationGroupInfoController: AATableViewController {
         binder.bind(group!.isMember(), closure: { (member: JavaLangBoolean?) -> () in
             if member != nil {
                 if Bool(member!.booleanValue()) == true {
-                    self.navigationItem.rightBarButtonItem = self.editButtonItem()
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                        title: NSLocalizedString("NavigationEdit", comment: "Edit Title"),
+                        style: UIBarButtonItemStyle.Plain,
+                        target: self, action: "editName")
                     
                     self.hidePlaceholder()
                 } else {
                     self.navigationItem.rightBarButtonItem = nil
+                    
                     self.showPlaceholderWithImage(
                         UIImage(named: "contacts_list_placeholder"),
                         title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),
@@ -92,17 +96,17 @@ class AAConversationGroupInfoController: AATableViewController {
                 }
             }
         })
-        
-        // TODO: Allow cancellation
     }
     
     // MARK: -
     // MARK: Setters
     
-    override func setEditing(editing: Bool, animated: Bool) {
-        // TODO: Localize
-        var alertView = UIAlertView(title: nil, message: "Change name", delegate: self, cancelButtonTitle: "Cancel")
-        alertView.addButtonWithTitle("Change")
+    func editName() {
+        var alertView = UIAlertView(title: nil,
+            message: NSLocalizedString("GroupEditHeader", comment: "Change name"),
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel titlte"))
+        alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save titlte"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.text = group!.getName().get() as! String
         alertView.show()
@@ -123,7 +127,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setContent("Set Group Photo") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupSetPhoto", comment: "Set Group Photo"))
         cell.setLeftInset(15.0)
         
         return cell
@@ -133,7 +137,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Switch
-        cell.setContent("Notifications") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupNotifications", comment: "Notifications"))
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
@@ -174,7 +178,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setContent("Add Participant...") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupAddParticipant", comment: "Add Prticipant"))
         cell.setLeftInset(65.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
         
@@ -185,7 +189,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.DestructiveCentered
-        cell.setContent("Leave group") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupLeave", comment: "Leave group"))
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
         
@@ -196,9 +200,16 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: Methods
     
     private func askSetPhoto() {
-        var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo") // TODO: Localize
-        actionSheet.addButtonWithTitle("Delete Photo")
-        actionSheet.destructiveButtonIndex = 3
+        var actionSheet = UIActionSheet(title: nil,
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            destructiveButtonTitle: nil,
+            otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Camera"))
+        
+        if (group?.getAvatar().get() != nil) {
+            actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
+            actionSheet.destructiveButtonIndex = 3
+        }
         actionSheet.showInView(view)
     }
     
@@ -273,10 +284,14 @@ class AAConversationGroupInfoController: AATableViewController {
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 2 {
-            return "SETTINGS" // TODO: Localize
+            return NSLocalizedString("GroupSettings", comment: "Settings")
         } else if section == 3 {
             let groupMembersCount = (groupMembers != nil) ? Int(groupMembers!.length()) : 0
-            return "\(groupMembersCount) MEMBERS" // TODO: Localize
+            return NSLocalizedString("GroupMembers", comment: "Settings")
+                .stringByReplacingOccurrencesOfString("{0}",
+                    withString: "\(groupMembersCount)",
+                    options: NSStringCompareOptions.LiteralSearch,
+                    range: nil)
         }
         return ""
     }
@@ -351,21 +366,20 @@ class AAConversationGroupInfoController: AATableViewController {
 extension AAConversationGroupInfoController: UIActionSheetDelegate {
     
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
-        let title = actionSheet.buttonTitleAtIndex(buttonIndex)
-        
-        // TODO: Localize
-        if title == "Choose Photo" || title == "Take Photo" {
-            let takePhoto = (title == "Take Photo")
+        if (buttonIndex == 0) {
+            return
+        }
+
+        if (buttonIndex == 1 || buttonIndex == 2) {
+            let takePhoto = (buttonIndex == 2)
             var picker = UIImagePickerController()
             picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             picker.delegate = self
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
-            
-        } else if title == "Delete Photo" {
-            MSG.removeGroupAvatarWithInt(jint(gid)) // TODO: Why request is not working?
+        } else if (buttonIndex == 3) {
+            MSG.removeGroupAvatarWithInt(jint(gid))
         }
     }
-    
 }
 
 // MARK: -
@@ -410,7 +424,7 @@ extension AAConversationGroupInfoController: UINavigationControllerDelegate {
 extension AAConversationGroupInfoController: UIAlertViewDelegate {
     
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
-        if alertView.buttonTitleAtIndex(buttonIndex) == "Change" {
+        if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
                 execute(MSG.editGroupTitleWithInt(jint(gid), withNSString: textField.text))
