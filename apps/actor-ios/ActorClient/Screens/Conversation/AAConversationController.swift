@@ -315,6 +315,9 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
+        let group = peer.getPeerType().name() == "GROUP"
+        println("\(group)")
+        (cell as! BubbleCell).group = group
         (cell as! BubbleCell).performBind(item as! AMMessage);
     }
     
@@ -340,7 +343,8 @@ class AAConversationController: EngineSlackListController {
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         var item = objectAtIndexPath(indexPath) as! AMMessage;
-        return BubbleCell.measureHeight(item);
+        let group = peer.getPeerType().name() == "GROUP"
+        return BubbleCell.measureHeight(item, group: group);
     }
     
 }
