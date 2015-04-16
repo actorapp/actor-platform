@@ -46,7 +46,6 @@ class BubbleTextCell : BubbleCell {
     let textPaddingStartIncoming: CGFloat = 17.0;
     let textPaddingEndIncoming: CGFloat = 10.0;
     
-    let bubble = UIImageView();
     let messageText = UILabel();
     let statusView = UIImageView();
     var isOut:Bool = false;
@@ -109,11 +108,25 @@ class BubbleTextCell : BubbleCell {
     }
     
     class func bubbleTopPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     class func bubbleBottomPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
+    }
+    
+    // MARK: -
+    // MARK: MenuController
+    
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if NSStringFromSelector(action) == "copy:" {
+            return true
+        }
+        return false
+    }
+    
+    override func copy(sender: AnyObject?) {
+        UIPasteboard.generalPasteboard().string = messageText.text
     }
     
     // MARK: -

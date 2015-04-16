@@ -10,7 +10,6 @@ import Foundation
 
 class BubbleMediaCell : BubbleCell {
     
-    let bubble = UIImageView();
     let preview = UIImageView();
     let circullarNode = CircullarNode()
     
@@ -250,11 +249,11 @@ class BubbleMediaCell : BubbleCell {
     }
     
     class func bubbleTopPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     class func bubbleBottomPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     // MARK: -

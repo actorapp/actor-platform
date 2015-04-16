@@ -14,6 +14,7 @@ class BubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Public vars
     
+    let bubble = UIImageView()
     let statusActive = UIColor(red: 52/255.0, green: 151/255.0, blue: 249/255.0, alpha: 1.0);
     let statusPassive = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
     
@@ -34,11 +35,17 @@ class BubbleCell: UITableViewCell {
 
     init(reuseId: String){
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseId);
+        
+        bubble.userInteractionEnabled = true
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: -
+    // MARK: Methods
+    
     
     // MARK: -
     // MARK: Getters
@@ -65,6 +72,21 @@ class BubbleCell: UITableViewCell {
         dateFormatter.dateFormat = "HH:mm"
         return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
     }
+    
+    // MARK: -
+    // MARK: MenuController
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        return false
+    }
+    
+//    - (void)copy:(id)sender {
+//    [[UIPasteboard generalPasteboard] setString:self.text];
+//    }
     
     // MARK: -
     // MARK: Bind

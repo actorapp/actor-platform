@@ -85,6 +85,9 @@ class AAConversationController: EngineSlackListController {
         
         self.navigationItem.titleView = navigationView;
         
+        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+        tableView.addGestureRecognizer(longPressGesture)
+        
         // Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
@@ -209,6 +212,28 @@ class AAConversationController: EngineSlackListController {
     
     // MARK: -
     // MARK: Methods
+    
+    func longPress(gesture: AALongPressGestureRecognizer) {
+        if gesture.state == UIGestureRecognizerState.Began {
+            let point = gesture.locationInView(tableView)
+            let indexPath = tableView.indexPathForRowAtPoint(point)
+            if indexPath != nil {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? BubbleCell {
+                    if cell.bubble.superview != nil {
+                        var bubbleFrame = cell.bubble.frame
+                        bubbleFrame = tableView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
+                        if CGRectContainsPoint(bubbleFrame, point) {
+//                            var menuController = AAMenuController()
+                            cell.becomeFirstResponder()
+                            var menuController = UIMenuController.sharedMenuController()
+                            menuController.setTargetRect(bubbleFrame, inView:tableView)
+                            menuController.setMenuVisible(true, animated: true)
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
