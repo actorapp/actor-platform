@@ -91,6 +91,24 @@ class AABubbleDocumentCell: BubbleCell {
             } else {
                 sizeLabel.text = "\(kb)Kb"
             }
+            
+            if group && !isOut {
+                if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
+                    var username = ""
+                    if let uname = user.getName().get() as? String {
+                        username = uname
+                    }
+                    senderNameLabel.text = username
+                    
+                    let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
+                    avatarView.bind(username, id: user.getId(), avatar: avatar)
+                }
+                contentView.addSubview(senderNameLabel)
+                contentView.addSubview(avatarView)
+            } else {
+                senderNameLabel.removeFromSuperview()
+                avatarView.removeFromSuperview()
+            }
         }
         
         // Always update date and state
@@ -134,6 +152,9 @@ class AABubbleDocumentCell: BubbleCell {
             var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
             var bubbleWidth = CGFloat(201)
             
+            var contentInsetY = CGFloat((self.group ? self.groupContentInsetY : 0.0))
+            var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+            
             if (self.isOut) {
                 self.bubble.frame = CGRectMake(contentWidth - bubbleWidth - self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
                 
@@ -143,13 +164,19 @@ class AABubbleDocumentCell: BubbleCell {
                 self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 25.0, width: bubbleWidth - 76.0 - 8.0 - 6.0, height: self.titleLabel.bounds.height)
                 self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
             } else {
-                self.bubble.frame = CGRectMake(self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
+                self.bubble.frame = CGRectMake(self.bubblePadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight)
                 
                 self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
                 self.dateLabel.textColor = self.dateColorIn
                 
-                self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 25.0, width: bubbleWidth - 82.0 - 8.0, height: self.titleLabel.bounds.height)
-                self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
+                self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 25.0 + contentInsetY, width: bubbleWidth - 82.0 - 8.0, height: self.titleLabel.bounds.height)
+                self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 47.0 + contentInsetY, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
+            }
+            
+            if self.group && !self.isOut {
+                let avatarSize = CGFloat(self.avatarView.frameSize)
+                self.avatarView.frame = CGRect(x: 5, y: self.bubble.frame.maxY - avatarSize - 1, width: avatarSize, height: avatarSize)
+                self.senderNameLabel.frame = CGRect(x: 14, y: 5, width: bubbleWidth - 30, height: 20)
             }
             
             if (self.isOut) {

@@ -92,6 +92,24 @@ class BubbleTextCell : BubbleCell {
             } else {
                 bubble.image =  UIImage(named: "BubbleIncomingFull");
             }
+            
+            if group && !isOut {
+                if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
+                    var username = ""
+                    if let uname = user.getName().get() as? String {
+                        username = uname
+                    }
+                    senderNameLabel.text = username
+                    
+                    let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
+                    avatarView.bind(username, id: user.getId(), avatar: avatar)
+                }
+                contentView.addSubview(senderNameLabel)
+                contentView.addSubview(avatarView)
+            } else {
+                senderNameLabel.removeFromSuperview()
+                avatarView.removeFromSuperview()
+            }
         }
         
         // Always update date and state
@@ -138,6 +156,7 @@ class BubbleTextCell : BubbleCell {
         UIView.performWithoutAnimation { () -> Void in
             
             var textBounds = measureText(self.messageText.text!, self.isOut);
+            var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
             
             var bubbleTopPadding = BubbleTextCell.bubbleTopPadding()
             var bubbleBottomPadding = BubbleTextCell.bubbleBottomPadding()
@@ -147,19 +166,24 @@ class BubbleTextCell : BubbleCell {
             
             var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
             
+            var contentInsetY = CGFloat((self.group ? self.groupContentInsetY : 0.0))
+            var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+            
             self.messageText.frame = textBounds;
-            println("\(self.messageText.frame)")
             self.messageText.sizeToFit()
-            println("\(self.messageText.frame)")
             
             var textWidth = round(textBounds.width);
             var textHeight = round(textBounds.height);
+            
+            if textWidth < senderNameBounds.width {
+                textWidth = senderNameBounds.width + 5
+            }
             
             if (self.isOut) {
                 self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - self.textPaddingEndOutgoing - self.bubblePadding, y: bubbleTopPadding + textPaddingTop);
                 self.dateText.textColor = self.dateColorOut;
             } else {
-                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStartIncoming, y: bubbleTopPadding + textPaddingTop)
+                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStartIncoming + contentInsetX, y: bubbleTopPadding + textPaddingTop + contentInsetY)
                 self.dateText.textColor = self.dateColorIn;
             }
             
@@ -170,8 +194,14 @@ class BubbleTextCell : BubbleCell {
                 self.bubble.frame = CGRectMake(x - self.textPaddingStartOutgoing, bubbleTopPadding, textWidth + self.textPaddingStartOutgoing + self.textPaddingEndOutgoing, bubbleHeight);
                 self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
             } else {
-                self.bubble.frame = CGRectMake(x - self.textPaddingStartIncoming, bubbleTopPadding, textWidth + self.textPaddingStartIncoming + self.textPaddingEndIncoming, textHeight + 8);
+                self.bubble.frame = CGRectMake(x - self.textPaddingStartIncoming, bubbleTopPadding, textWidth + self.textPaddingStartIncoming + self.textPaddingEndIncoming, textHeight + 8 + contentInsetY);
                 self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
+            }
+            
+            if self.group && !self.isOut {
+                let avatarSize = CGFloat(self.avatarView.frameSize)
+                self.avatarView.frame = CGRect(x: 5, y: self.bubble.frame.maxY - avatarSize - 1, width: avatarSize, height: avatarSize)
+                self.senderNameLabel.frame = CGRect(x: self.messageText.frame.origin.x, y: 5, width: textWidth, height: 20)
             }
             
             if (self.isOut) {
