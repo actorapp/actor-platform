@@ -12,3 +12,17 @@ import Foundation
 var MainAppTheme = AppTheme()
 
 var isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
+
+let isiOS8 = floor(NSFoundationVersionNumber) > floor(NSFoundationVersionNumber_iOS_7_1)
+
+var isRetina : Bool {
+    get {
+        return UIScreen.mainScreen().scale > 1
+    }
+}
+
+var retinaPixel : CGFloat {
+    get {
+        return isRetina ? 0.5 : 1.0
+    }
+}
