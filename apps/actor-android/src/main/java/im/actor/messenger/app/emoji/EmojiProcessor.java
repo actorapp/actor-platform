@@ -95,6 +95,7 @@ public class EmojiProcessor {
     private static final int LAYOUT_2X_1 = 4;
     private static final int LAYOUT_2X_2 = 5;
     private static EmojiProcessor instance;
+    private static EmojiProcessor processor;
 
     // protected Bitmap emojiImages;
     protected HashMap<Integer, Bitmap> emojiMap;
@@ -119,10 +120,14 @@ public class EmojiProcessor {
 
     private int rectSize = 0;
 
+    public static final EmojiProcessor emoji(){
+        return processor;
+    }
+
     public EmojiProcessor(Application application) {
         long start = System.currentTimeMillis();
         this.application = application;
-
+        processor = this;
         density = application.getResources().getDisplayMetrics().density;
 
         emojiSideSize = (int) (density * 20);
@@ -235,16 +240,15 @@ public class EmojiProcessor {
         return isLoaded;
     }
 
-    public void regiterListener(EmojiListener listener) {
+    public void registerListener(EmojiListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
-    public void unregiterListener(EmojiListener listener) {
+    public void unregisterListener(EmojiListener listener) {
         listeners.remove(listener);
     }
-
     public void loadEmoji() {
         if (isLoaded) {
             return;
@@ -357,7 +361,6 @@ public class EmojiProcessor {
                         for (int ind = 0; ind < resultColors.length; ind++) {
                             resultColors[ind] = resultColors[ind] | ((tmpColors[ind] & 0xFF) << 24);
                         }
-                        // todo alpha does not work?
 
                         Bitmap section = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
                         /*Canvas canvas = new Canvas(section);
@@ -603,7 +606,7 @@ public class EmojiProcessor {
         return spannable;
     }
 
-    public Spannable processEmojiMutable(String s, int mode) {
+    public Spannable processEmojiMutable(CharSequence s, int mode) {
 
         long prev = 0;
         long prevLong = 0;
@@ -659,12 +662,8 @@ public class EmojiProcessor {
         return spannable;
     }
 
-    public Spannable processEmojiCompatMutable(String s, int mode) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    public Spannable processEmojiCompatMutable(CharSequence s, int mode) {
             return processEmojiMutable(s, mode);
-        } else {
-            return processEmojiCutMutable(s, mode);
-        }
     }
 
     public static long[] findFirstUniqEmoji(String s, int count) {
@@ -725,7 +724,7 @@ public class EmojiProcessor {
         }
     }
 
-    public static boolean containsEmoji(String s) {
+    public static boolean containsEmoji(CharSequence s) {
         long prev = 0;
         long prevLong = 0;
         int prevLongCount = 0;
