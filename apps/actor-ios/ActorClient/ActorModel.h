@@ -142,5 +142,6 @@
 // API
 
 #import "im/actor/model/api/AuthSession.h"
+#import "im/actor/model/network/RpcException.h"
 
 #endif

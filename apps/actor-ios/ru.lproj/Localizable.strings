@@ -130,6 +130,16 @@
 
 "AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
 
+"AuthProfileTitle" = "Ваш профиль";
+
+"AuthProfileAddPhoto1" = "добавить";
+
+"AuthProfileAddPhoto2" = "фото";
+
+"AuthProfileNameHint" = "Ваше имя";
+
+"AuthProfileHint" = "Введите свое имя и фото";
+
 /*
  * Common Elements
  */
@@ -157,3 +167,13 @@
 "AlertNext" = "Далее";
 
 "AlertSave" = "Сохранить";
+
+"AlertOk" = "OK";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Неправильный номер телефона. Пожалуйста, повторите попытку.";
+
+"ErrorCodeExpired" = "Код устарел. Пожалуйста, начните авторизацию с начала.";

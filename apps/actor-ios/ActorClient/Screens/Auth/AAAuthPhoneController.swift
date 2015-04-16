@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AAAuthPhoneController: AAViewController {
+class AAAuthPhoneController: AAAuthController {
     
     // MARK: - 
     // MARK: Private vars
@@ -172,7 +172,6 @@ class AAAuthPhoneController: AAViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
         MainAppTheme.navigation.applyAuthStatusBar()
     }
     
@@ -182,20 +181,33 @@ class AAAuthPhoneController: AAViewController {
     func nextButtonPressed() {
         let numberLength = count(phoneTextField.phoneNumber) as Int
         let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
-        if (numberLength != numberRequiredLength) {
-            SVProgressHUD.showErrorWithStatus(NSLocalizedString("AuthPhoneTooShort", comment: "Phone number is too short"))
+        if (numberLength < numberRequiredLength) {
+            SVProgressHUD.showErrorWithStatus(NSLocalizedString("AuthPhoneTooShort", comment: "Too short error"))
         } else {
-            
-            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)), successBlock: { (val) -> () in
-                self.navigateToSms()
-                }, failureBlock: { (val) -> () in
-                    if let exception = val as? JavaLangException {
-                        SVProgressHUD.showErrorWithStatus(exception.getLocalizedMessage())
-                    } else {
-                        SVProgressHUD.showErrorWithStatus("Unknown error")
+            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
+                successBlock: { (val) -> () in
+                    self.navigateToSms()
+                },
+                failureBlock: { (val) -> () in
+                    var message = "Unknown error"
+                    var canTryAgain = false
+                    
+                    if let exception = val as? AMRpcException {
+                        var tag = exception.getTag()
+                        if (tag == "PHONE_NUMBER_INVALID") {
+                            message = NSLocalizedString("ErrorPhoneIncorrect", comment: "PHONE_NUMBER_INVALID error")
+                        } else {
+                            message = exception.getLocalizedMessage()
+                        }
+                        canTryAgain = exception.isCanTryAgain()
+                    } else if let exception = val as? JavaLangException {
+                        message = exception.getLocalizedMessage()
+                        canTryAgain = true
                     }
+                    
+                    var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+                    alertView.show()
             })
-
         }
     }
     
@@ -213,9 +225,8 @@ class AAAuthPhoneController: AAViewController {
     func navigateToSms() {
         var smsController = AAAuthSmsController()
         smsController.phoneNumber = "+\(phoneTextField.formattedPhoneNumber)"
-        navigationController!.pushViewController(smsController, animated: true)
+        navigateNext(smsController, removeCurrent: false)
     }
-    
 }
 
 // MARK: -
@@ -226,5 +237,4 @@ extension AAAuthPhoneController: AAAuthCountriesControllerDelegate {
     func countriesController(countriesController: AAAuthCountriesController, didChangeCurrentIso currentIso: String) {
         self.currentIso = currentIso
     }
-    
 }
