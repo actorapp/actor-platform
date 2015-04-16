@@ -16,7 +16,6 @@
 
 package im.actor.messenger.app.emoji.keyboard;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -27,6 +26,8 @@ import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ import android.widget.RelativeLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.stickers.Stickers;
 import im.actor.messenger.app.emoji.stickers.StickersAdapter;
 import im.actor.messenger.app.emoji.stickers.StickersPack;
@@ -56,7 +58,6 @@ import static im.actor.messenger.app.Core.core;
 
 public class EmojiKeyboardPopup extends PopupWindow
         implements EmojiRecentsListener, OnStickerClickListener {
-    private PagerAdapter mEmojisAdapter;
     private int keyBoardHeight = 0;
     private Boolean pendingOpen = false;
     private Boolean isOpened = false;
@@ -65,12 +66,12 @@ public class EmojiKeyboardPopup extends PopupWindow
     OnEmojiconBackspaceClickedListener onEmojiconBackspaceClickedListener;
     OnSoftKeyboardOpenCloseListener onSoftKeyboardOpenCloseListener;
     View rootView;
-    Context mContext;
+    BaseActivity activity;
 
 
-    public EmojiKeyboardPopup(View rootView, Context mContext) {
-        super(mContext);
-        this.mContext = mContext;
+    public EmojiKeyboardPopup(View rootView, BaseActivity activity) {
+        super(activity);
+        this.activity = activity;
         this.rootView = rootView;
         setBackgroundDrawable(null);
         if (Build.VERSION.SDK_INT >= 21) {
@@ -79,7 +80,7 @@ public class EmojiKeyboardPopup extends PopupWindow
         setContentView(createView());
         setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         //default size
-        setSize((int) mContext.getResources().getDimension(R.dimen.keyboard_height), LayoutParams.MATCH_PARENT);
+        setSize((int) activity.getResources().getDimension(R.dimen.keyboard_height), LayoutParams.MATCH_PARENT);
     }
 
     public void setOnSoftKeyboardOpenCloseListener(OnSoftKeyboardOpenCloseListener listener) {
@@ -93,7 +94,8 @@ public class EmojiKeyboardPopup extends PopupWindow
     public void setOnEmojiconBackspaceClickedListener(OnEmojiconBackspaceClickedListener listener) {
         this.onEmojiconBackspaceClickedListener = listener;
     }
-    public void setOnStickerClickListener(OnStickerClickListener listener){
+
+    public void setOnStickerClickListener(OnStickerClickListener listener) {
         this.onStickerClickListener = listener;
     }
 
@@ -120,7 +122,7 @@ public class EmojiKeyboardPopup extends PopupWindow
     public void dismiss() {
         super.dismiss();
         EmojiRecentsController
-                .getInstance(mContext).saveRecents();
+                .getInstance(activity).saveRecents();
     }
 
 
@@ -135,24 +137,24 @@ public class EmojiKeyboardPopup extends PopupWindow
                         .getHeight();
                 int heightDifference = screenHeight
                         - (r.bottom - r.top);
-                int resourceId = mContext.getResources()
+                int resourceId = activity.getResources()
                         .getIdentifier("status_bar_height",
                                 "dimen", "android");
                 if (resourceId > 0) {
-                    heightDifference -= mContext.getResources()
+                    heightDifference -= activity.getResources()
                             .getDimensionPixelSize(resourceId);
                 }
-                int orientation = mContext.getResources().getConfiguration().orientation;
+                int orientation = activity.getResources().getConfiguration().orientation;
 
-                int id = mContext.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
+                int id = activity.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
                 if (id > 0) {
-                    if (mContext.getResources().getBoolean(id)) {
-                        int navbarResId = mContext.getResources()
+                    if (activity.getResources().getBoolean(id)) {
+                        int navbarResId = activity.getResources()
                                 .getIdentifier(
                                         orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape",
                                         "dimen", "android");
                         if (navbarResId > 0) {
-                            heightDifference -= mContext.getResources()
+                            heightDifference -= activity.getResources()
                                     .getDimensionPixelSize(navbarResId);
                         }
                     }
@@ -184,32 +186,67 @@ public class EmojiKeyboardPopup extends PopupWindow
     }
 
     private View createView() {
-        View keyboardView = ((LayoutInflater) mContext.getSystemService(Activity.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.emoji_keyboard, null, false);
-        ViewPager emojiPager = (ViewPager) keyboardView.findViewById(R.id.emoji_pager);
-        PagerSlidingTabStrip emojiPagerIndicator = (PagerSlidingTabStrip) keyboardView.findViewById(R.id.emoji_pager_indicator);
-        View backspace = keyboardView.findViewById(R.id.backspace);
+        View keyboardView = LayoutInflater.from(activity)
+                .inflate(R.layout.emoji_keyboard, null);
 
-        emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
-        emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
-        emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
-        emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
-        emojiPagerIndicator.setUnderlineHeight(0);
-        emojiPagerIndicator.setTabPaddingLeftRight(0);
+        final FrameLayout emojiContainer = (FrameLayout) keyboardView.findViewById(R.id.emojiContainer);
+        emojiContainer.addView(createEmojiPagerView());
 
-        backspace.setOnTouchListener(new RepeatListener(500,100, new OnClickListener() {
+        RecyclerView recyclerView = (RecyclerView) keyboardView.findViewById(R.id.indicator);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity, OrientationHelper.HORIZONTAL, false));
+        recyclerView.setAdapter(new RecyclerView.Adapter() {
+            public int selected = 0;
+
             @Override
-            public void onClick(View v) {
-                if(onEmojiconBackspaceClickedListener!=null)
-                    onEmojiconBackspaceClickedListener.onClick(v);
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                SimpleDraweeView imageView = new SimpleDraweeView(activity);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setLayoutParams(new RecyclerView.LayoutParams(Screen.dp(50), Screen.dp(50)));
+                imageView.setBackgroundResource(R.drawable.clickable_background);
+                return new RecyclerView.ViewHolder(imageView) {
+                };
             }
-        }));
 
-        mEmojisAdapter = new EmojisPagerAdapter();
+            @Override
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+                holder.itemView.setSelected(position == selected);
+                holder.itemView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.setSelected(true);
+                        int oldSelected = selected;
+                        selected = position;
+                        notifyItemChanged(oldSelected);
+                        View view = null;
+                        if (position == 0) {
+                            view = createEmojiPagerView();
+                        } else {
+                            view = createStickersPagerView(position - 1);
+                        }
+                        emojiContainer.removeAllViews();
+                        emojiContainer.addView(view);
+                    }
+                });
+                SimpleDraweeView packImageView = (SimpleDraweeView) holder.itemView;
+                if (position == 0) {
+                    packImageView.setImageResource(R.drawable.button_emoji);
+                    packImageView.setPadding(0, 0, 0, 0);
+                } else {
+                    StickersPack pack = Stickers.getPacks()[position - 1];
+                    packImageView.setImageURI(Uri.parse("file://" + Stickers.getFile(pack.getId(), pack.getLogoStickerId())));
+                    packImageView.setPadding(Screen.dp(5), Screen.dp(5), Screen.dp(5), Screen.dp(5));
+                }
+            }
 
-        emojiPagerIndicator.setLayoutParams(new RelativeLayout.LayoutParams(Screen.dp(58 * mEmojisAdapter.getCount()), Screen.dp(48)));
-        emojiPager.setAdapter(mEmojisAdapter);
-        emojiPagerIndicator.setViewPager(emojiPager);
+            @Override
+            public int getItemCount() {
+                return 3;
+            }
+        });
+        //emojiContainer.addView(createEmojiPagerView());
+
+        /**/
 
 
         return keyboardView;
@@ -223,85 +260,6 @@ public class EmojiKeyboardPopup extends PopupWindow
     public void onStickerClick(String packId, String stickerId) {
         if (onStickerClickListener != null) {
             onStickerClickListener.onStickerClick(packId, stickerId);
-        }
-    }
-
-
-    private class EmojisPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
-
-
-        public EmojisPagerAdapter() {
-            super();
-        }
-
-        @Override
-        public int getCount() {
-            return Stickers.getPacks().length + 1;
-        }
-
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View itemView =null;
-
-            if(position==0) {
-                itemView = LayoutInflater.from(mContext).inflate(R.layout.emoji_page, null);
-                ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojimapcontainer);
-
-                long[] emojiPack = EmojiPack.ALL_SMILEYS;
-
-                int emojisRowCount = Screen.getWidth() / Screen.dp(34);
-                EmojiPackView emojiPackView = new EmojiPackView(mContext, core().getEmojiProcessor(), emojiPack, emojisRowCount, Screen.dp(34), Screen.dp(4));
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(emojisRowCount * Screen.dp(34), ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.gravity = Gravity.CENTER;
-                emojicontainer.addView(emojiPackView, params);
-
-                emojiPackView.setOnEmojiClickListener(new OnEmojiClickListener() {
-                    @Override
-                    public void onEmojiClicked(long smileId) {
-                        if (onEmojiClickListener != null)
-                            onEmojiClickListener.onEmojiClicked(smileId);
-                    }
-                });
-            } else{
-
-                StickersPack stickersPack = Stickers.getPacks()[position-1];
-                RecyclerView recycler = (RecyclerView) LayoutInflater.from(mContext).inflate(R.layout.sticker_page, null);
-                itemView = recycler;
-                recycler.setLayoutManager(new GridLayoutManager(mContext, Screen.getWidth() / Screen.dp(90)));
-                recycler.setAdapter(new StickersAdapter(mContext, EmojiKeyboardPopup.this, stickersPack));
-
-            }
-
-            ((ViewPager) container).addView(itemView, 0);
-            return itemView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object view) {
-            ((ViewPager) container).removeView((View) view);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object key) {
-            return key == view;
-        }
-
-        @Override
-        public View getTab(int position) {
-
-            ImageButton tabView = new ImageButton(mContext);
-            if(position==0){
-                tabView.setImageResource(R.drawable.button_emoji);
-                tabView.setPadding(24, 0, 24, 0);
-            } else{
-                tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                tabView.setAdjustViewBounds(true);
-                //tabView.setCropToPadding(false);
-                StickersPack pack = Stickers.getPacks()[position - 1];
-                tabView.setImageURI(Uri.parse(Stickers.getFile(pack.getId(), pack.getLogoStickerId())));
-            }
-            return tabView;
         }
     }
 
@@ -370,4 +328,164 @@ public class EmojiKeyboardPopup extends PopupWindow
         @Override
         void onClick(View v);
     }
+
+    public View createEmojiPagerView() {
+        View emojiPagerView = LayoutInflater.from(activity).inflate(R.layout.emoji_container_page, null);
+
+        ViewPager emojiPager = (ViewPager) emojiPagerView.findViewById(R.id.emoji_pager);
+
+
+        PagerSlidingTabStrip emojiPagerIndicator = (PagerSlidingTabStrip) emojiPagerView.findViewById(R.id.emoji_pager_indicator);
+        View backspace = emojiPagerView.findViewById(R.id.backspace);
+
+        emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
+        emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
+        emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
+        emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
+        emojiPagerIndicator.setUnderlineHeight(0);
+        emojiPagerIndicator.setTabPaddingLeftRight(0);
+
+        backspace.setOnTouchListener(new RepeatListener(500, 100, new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onEmojiconBackspaceClickedListener != null)
+                    onEmojiconBackspaceClickedListener.onClick(v);
+            }
+        }));
+
+        EmojisPagerAdapter mEmojisAdapter = new EmojisPagerAdapter();
+
+        emojiPagerIndicator.setLayoutParams(new RelativeLayout.LayoutParams(Screen.dp(58 * mEmojisAdapter.getCount()), Screen.dp(48)));
+        emojiPager.setAdapter(mEmojisAdapter);
+        emojiPagerIndicator.setViewPager(emojiPager);
+        return emojiPagerView;
+    }
+
+    public View createStickersPagerView(int packId) {
+        View stickerPagerView = LayoutInflater.from(activity).inflate(R.layout.sticker_container_page, null);
+        ViewPager stickerPager = (ViewPager) stickerPagerView.findViewById(R.id.sticker_pager);
+
+        SitckersPagerAdapter stickersPager = new SitckersPagerAdapter(Stickers.getPacks()[packId]);
+
+        stickerPager.setAdapter(stickersPager);
+        return stickerPagerView;
+    }
+
+
+    private class EmojisPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_item_page, null);
+            ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojiPackContainer);
+
+            long[] emojiPack = new long[0];
+            switch (position) {
+                case 0:
+                    emojiPack = EmojiPack.STANDART;
+                    break;
+                case 1:
+                    emojiPack = EmojiPack.NATURE;
+                    break;
+                case 2:
+                    emojiPack = EmojiPack.TRANSPORT;
+                    break;
+                case 3:
+                    emojiPack = EmojiPack.UNSORTED;
+                    break;
+            }
+
+            int emojisRowCount = Screen.getWidth() / Screen.dp(34);
+            EmojiPackView emojiPackView = new EmojiPackView(activity, core().getEmojiProcessor(), emojiPack, emojisRowCount, Screen.dp(34), Screen.dp(4));
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(emojisRowCount * Screen.dp(34), ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER;
+            emojicontainer.addView(emojiPackView, params);
+
+            emojiPackView.setOnEmojiClickListener(new OnEmojiClickListener() {
+                @Override
+                public void onEmojiClicked(long smileId) {
+                    if (onEmojiClickListener != null)
+                        onEmojiClickListener.onEmojiClicked(smileId);
+                }
+            });
+
+            container.addView(itemView, 0);
+            return itemView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object view) {
+            container.removeView((View) view);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object key) {
+            return key == view;
+        }
+
+        @Override
+        public View getTab(int position) {
+
+            ImageButton tabView = new ImageButton(activity);
+            //if(position==0){
+            tabView.setImageResource(R.drawable.button_emoji);
+            tabView.setPadding(24, 0, 24, 0);
+            //} else{
+                    /*tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    tabView.setAdjustViewBounds(true);
+                    //tabView.setCropToPadding(false);
+                    StickersPack pack = Stickers.getPacks()[position - 1];
+                    tabView.setImageURI(Uri.parse(Stickers.getFile(pack.getId(), pack.getLogoStickerId())));*/
+            //}
+            return tabView;
+        }
+
+    }
+
+    private class SitckersPagerAdapter extends PagerAdapter {
+
+        private final StickersPack stickersPack;
+
+        public SitckersPagerAdapter(StickersPack stickersPack) {
+            this.stickersPack = stickersPack;
+        }
+
+        @Override
+        public int getCount() {
+            int pages = 0;
+            pages = stickersPack.size() / 8;
+            if (stickersPack.size() % 8 > 0) {
+                pages++;
+            }
+            return pages;
+        }
+
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View page = LayoutInflater.from(activity).inflate(R.layout.sticker_item_page, null);
+            RecyclerView recycler = (RecyclerView) page.findViewById(R.id.recycler);
+            recycler.setLayoutManager(new GridLayoutManager(activity, 4));
+            recycler.setAdapter(new StickersAdapter(activity, EmojiKeyboardPopup.this, stickersPack, position, (keyBoardHeight - Screen.dp(50)) / 2));
+            container.addView(page);
+            return page;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object view) {
+            container.removeView((View) view);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object key) {
+            return key == view;
+        }
+
+    }
+
 }
