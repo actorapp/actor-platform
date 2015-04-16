@@ -19,7 +19,7 @@ public class StickersPack {
         return idsOrder.length;
     }
 
-    public  String getId() {
+    public String getId() {
         return packId;
     }
 

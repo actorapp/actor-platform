@@ -320,6 +320,7 @@ public class ChatActivity extends BaseActivity {
         emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
             @Override
             public void onStickerClick(String packId, String stickerId) {
+
                 messenger().sendPhoto(peer, Stickers.getFile(packId, stickerId));
             }
         });
