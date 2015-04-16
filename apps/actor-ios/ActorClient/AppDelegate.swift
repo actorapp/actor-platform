@@ -74,33 +74,30 @@ import Foundation
         // Create root layout for app
         var rootController : UIViewController? = nil
         if (isIPad) {
-            var splitController = UISplitViewController()
+            var splitController = MainSplitViewController()
             splitController.viewControllers = [MainTabController(), NoSelectionController()]
-            
-            if (isiOS8) {
-                splitController.minimumPrimaryColumnWidth = CGFloat(360.0)
-                splitController.maximumPrimaryColumnWidth = CGFloat(360.0)
-            }
             
             rootController = splitController
         } else {
-            rootController = MainTabController()
+            var tabController = MainTabController()
+            binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
+                if (empty!.booleanValue()) {
+                    if (loaded!.booleanValue()) {
+                        tabController.showAppIsEmptyPlaceholder()
+                    } else {
+                        tabController.showAppIsSyncingPlaceholder()
+                    }
+                } else {
+                    tabController.hidePlaceholders()
+                }
+            }
+            rootController = tabController
         }
         
         window?.rootViewController = rootController!
         window?.makeKeyAndVisible();
         
-//        binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
-//            if (empty!.booleanValue()) {
-//                if (loaded!.booleanValue()) {
-//                    rootController!.showAppIsEmptyPlaceholder()
-//                } else {
-//                    rootController!.showAppIsSyncingPlaceholder()
-//                }
-//            } else {
-//                rootController!.hidePlaceholders()
-//            }
-//        }
+
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
