@@ -43,6 +43,24 @@ class AABubbleUnsupportedCell: BubbleCell {
     
     override func bind(message: AMMessage, reuse: Bool) {
         self.isOut = message.getSenderId() == MSG.myUid()
+        
+        if group && !isOut {
+            if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
+                var username = ""
+                if let uname = user.getName().get() as? String {
+                    username = uname
+                }
+                senderNameLabel.text = username
+                
+                let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
+                avatarView.bind(username, id: user.getId(), avatar: avatar)
+            }
+            contentView.addSubview(senderNameLabel)
+            contentView.addSubview(avatarView)
+        } else {
+            senderNameLabel.removeFromSuperview()
+            avatarView.removeFromSuperview()
+        }
     }
     
     // MARK: -
@@ -71,12 +89,22 @@ class AABubbleUnsupportedCell: BubbleCell {
         var contentWidth = contentView.frame.width
         var contentHeight = contentView.frame.height
         
+        var contentInsetY = CGFloat((self.group ? self.groupContentInsetY : 0.0))
+        var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+        
         if (isOut) {
             bubble.frame = CGRectMake(contentWidth - 180 - bubbleMediaPadding, bubbleTopPadding, 180, 100)
         } else {
-            bubble.frame = CGRectMake(bubbleMediaPadding, bubbleTopPadding, 180, 100)
+            bubble.frame = CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, 180, 100)
         }
         
-        unsupportedLabel.frame = bubble.frame
+        var labelFrame = bubble.frame
+        
+        if (!isOut) {
+            labelFrame.origin.y = contentInsetY
+            labelFrame.size.height -= contentInsetY
+        }
+        
+        unsupportedLabel.frame = labelFrame
     }
 }
