@@ -53,24 +53,7 @@ import Foundation
         window?.backgroundColor = UIColor.whiteColor()
         
         if (MSG.isLoggedIn()) {
-            // Create root layout for app
-            var rootController : UIViewController? = nil
-            if (isIPad) {
-                var splitController = UISplitViewController()
-                splitController.viewControllers = [MainTabController(), NoSelectionController()]
-                
-                if (isiOS8) {
-                    splitController.minimumPrimaryColumnWidth = CGFloat(360.0)
-                    splitController.maximumPrimaryColumnWidth = CGFloat(360.0)
-                }
-                
-                rootController = splitController
-            } else {
-                rootController = MainTabController()
-            }
-            
-            window?.rootViewController = rootController!
-            window?.makeKeyAndVisible();
+            onLoggedIn()
         } else {
             // Create root layout for login
             
@@ -83,6 +66,30 @@ import Foundation
             window?.makeKeyAndVisible();
         }
         
+        
+        return true;
+    }
+    
+    func onLoggedIn() {
+        // Create root layout for app
+        var rootController : UIViewController? = nil
+        if (isIPad) {
+            var splitController = UISplitViewController()
+            splitController.viewControllers = [MainTabController(), NoSelectionController()]
+            
+            if (isiOS8) {
+                splitController.minimumPrimaryColumnWidth = CGFloat(360.0)
+                splitController.maximumPrimaryColumnWidth = CGFloat(360.0)
+            }
+            
+            rootController = splitController
+        } else {
+            rootController = MainTabController()
+        }
+        
+        window?.rootViewController = rootController!
+        window?.makeKeyAndVisible();
+        
 //        binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
 //            if (empty!.booleanValue()) {
 //                if (loaded!.booleanValue()) {
@@ -94,8 +101,6 @@ import Foundation
 //                rootController!.hidePlaceholders()
 //            }
 //        }
-        
-        return true;
     }
     
     func applicationWillEnterForeground(application: UIApplication) {

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate, MasterViewController {
+class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var loadingView: UIView!

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AAAuthSmsController: AAViewController {
+class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
 
     // MARK: -
     // MARK: Private vars
@@ -146,31 +146,40 @@ class AAAuthSmsController: AAViewController {
                 if let state = val as? AMAuthStateEnum {
                     let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
                     if state.ordinal() == loggedInState {
-                        self.navigationController!.presentingViewController!.dismissViewControllerAnimated(true, completion: nil)
+                        self.onAuthenticated()
                     } else {
-    //                    SVProgressHUD.showSuccessWithStatus(state.description())
-                        self.navigateToRegistration()
+                        self.navigateNext(AAAuthRegisterController(), removeCurrent: true)
                     }
                 }
                 }, failureBlock: { (val) -> () in
-                    self.shakeView(self.codeTextField, originalX: self.codeTextField.frame.origin.x)
-                    if let exception = val as? JavaLangException {
-                        println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+                    var message = "Unknwon Error"
+                    
+                    if let exception = val as? AMRpcException {
+                        var tag = exception.getTag()
+                        if (tag == "PHONE_CODE_EMPTY" || tag == "PHONE_CODE_INVALID") {
+                            self.shakeView(self.codeTextField, originalX: self.codeTextField.frame.origin.x)
+                            return
+                        } else if (tag == "PHONE_CODE_EXPIRED") {
+                            message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
+                        } else {
+                            message = exception.getLocalizedMessage()
+                        }
+                    } else if let exception = val as? JavaLangException {
+                        message = exception.getLocalizedMessage()
                     }
+                    
+                    var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+                    alertView.show()
             })
         } else {
             shakeView(codeTextField, originalX: codeTextField.frame.origin.x)
         }
     }
     
-    // MARK: -
-    // MARK: Navigate
-    
-    private func navigateToRegistration() {
-        dispatch_async(dispatch_get_main_queue(), {
-            let registerController = AAAuthRegisterController()
-            self.navigationController!.pushViewController(registerController, animated: true)
-        })
+    func alertView(alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
+        if (MSG.getAuthState() != AMAuthState.CODE_VALIDATION.rawValue) {
+            navigateBack()
+        }
     }
 }
 
@@ -180,7 +189,7 @@ class AAAuthSmsController: AAViewController {
 extension AAAuthSmsController: UITextFieldDelegate {
 
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-
+        
         let newString = (textField.text as NSString).stringByReplacingCharactersInRange(range, withString: string)
         if count(newString) == 6 {
             // TODO: Auto check code correct?
