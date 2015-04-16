@@ -400,9 +400,14 @@ public class EmojiKeyboardPopup extends PopupWindow
                     break;
             }
 
-            int emojisRowCount = Screen.getWidth() / Screen.dp(34);
-            EmojiPackView emojiPackView = new EmojiPackView(activity, core().getEmojiProcessor(), emojiPack, emojisRowCount, Screen.dp(34), Screen.dp(4));
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(emojisRowCount * Screen.dp(34), ViewGroup.LayoutParams.WRAP_CONTENT);
+            int emojisMaxRowCount = 8;
+            int emojiSize = Screen.dp(45);
+            int emojiPadding = emojiSize/5;
+            if(Screen.getWidth()/emojiSize<emojisMaxRowCount){
+                emojisMaxRowCount = Screen.getWidth()/emojiSize;
+            }
+            EmojiPackView emojiPackView = new EmojiPackView(activity, core().getEmojiProcessor(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.gravity = Gravity.CENTER;
             emojicontainer.addView(emojiPackView, params);
 
