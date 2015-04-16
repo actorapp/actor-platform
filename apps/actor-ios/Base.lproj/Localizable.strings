@@ -130,6 +130,16 @@
 
 "AuthCodeHint" = "We have sent you an SMS with the code.";
 
+"AuthProfileTitle" = "Your Info";
+
+"AuthProfileAddPhoto1" = "add";
+
+"AuthProfileAddPhoto2" = "photo";
+
+"AuthProfileNameHint" = "Your name";
+
+"AuthProfileHint" = "Enter your name and add a pofile picture";
+
 /*
  * Common Elements
  */
@@ -157,3 +167,13 @@
 "AlertNext" = "Next";
 
 "AlertSave" = "Save";
+
+"AlertOk" = "OK";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Entered phone number is invalid. Please try again.";
+
+"ErrorCodeExpired" = "Code expired. Please, start authentication again.";
