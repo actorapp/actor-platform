@@ -6,11 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.util.io.IOUtils;
-
-import static im.actor.messenger.app.Core.core;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -33,22 +30,23 @@ public class Stickers {
 
     });
     private static StickersPack stewiePack = new StickersPack("1", "ass", new String[]{
+            "1",
+            "2",
+            "happy",
+            "4",
             "ass",
+            "fuck",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
             "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
-            "ass",
+            "brian"
     });
 
-    public final static StickersPack[] getPacks(){
-        return new StickersPack[]{ animalPack, stewiePack };
+    public final static StickersPack[] getPacks() {
+        return new StickersPack[]{animalPack, stewiePack};
     }
 
     public static String getFile(String packId, String stickerId) {

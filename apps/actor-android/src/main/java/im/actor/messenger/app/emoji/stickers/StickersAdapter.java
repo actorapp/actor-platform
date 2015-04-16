@@ -3,7 +3,6 @@ package im.actor.messenger.app.emoji.stickers;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,28 +19,32 @@ public class StickersAdapter extends RecyclerView.Adapter {
     private final Context context;
     private final OnStickerClickListener onStickerClickListener;
     private final StickersPack stickerPack;
+    private final int page;
+    private final int itemHeight;
 
-    public StickersAdapter(Context context, OnStickerClickListener onStickerClickListener, StickersPack stickerPack) {
+    public StickersAdapter(Context context, OnStickerClickListener onStickerClickListener, StickersPack stickerPack, int page, int itemHeight) {
         this.context = context;
         this.onStickerClickListener = onStickerClickListener;
         this.stickerPack = stickerPack;
+        this.page = page;
+        this.itemHeight = itemHeight;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        SimpleDraweeView itemView = new SimpleDraweeView(context);
-        itemView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        itemView.setAdjustViewBounds(true);
-        itemView.setBackgroundResource(R.drawable.md_btn_selector_ripple);
-        return new RecyclerView.ViewHolder(itemView){};
+        SimpleDraweeView drawee = new SimpleDraweeView(context);
+        drawee.setAdjustViewBounds(true);
+        drawee.setBackgroundResource(R.drawable.clickable_background);
+        return new RecyclerView.ViewHolder(drawee) {
+        };
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final String packId = stickerPack.getId();
-        final String stickerId = stickerPack.getStickerId(position);
-        Uri uri = Uri.parse("file://"+Stickers.getFile(packId, stickerId));
-        ((ImageView)holder.itemView).setImageURI(uri);
+        final String stickerId = stickerPack.getStickerId(position + this.page * 8);
+        Uri uri = Uri.parse("file://" + Stickers.getFile(packId, stickerId));
+        ((ImageView) holder.itemView).setImageURI(uri);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +55,10 @@ public class StickersAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return stickerPack.size();
+        int offset = page * 8;
+        if (stickerPack.size() < offset + 8) {
+            return stickerPack.size() - offset;
+        }
+        return 8;
     }
 }
