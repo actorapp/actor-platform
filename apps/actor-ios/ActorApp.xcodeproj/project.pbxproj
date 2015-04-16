@@ -695,6 +695,7 @@
 		0603232E1ADF066500C73C0F /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232D1ADF066500C73C0F /* App.swift */; };
 		060323301ADF078200C73C0F /* NavigtionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */; };
 		060323621AE0667400C73C0F /* AAAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323611AE0667400C73C0F /* AAAuthController.swift */; };
+		060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323651AE07D1000C73C0F /* MainSplitViewController.swift */; };
 		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
 		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
@@ -2131,6 +2132,7 @@
 		0603232D1ADF066500C73C0F /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigtionExtensions.swift; sourceTree = "<group>"; };
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
+		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
 		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
 		06047D071ABF8611002091CC /* CocoaTcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTcpConnection.m; sourceTree = "<group>"; };
@@ -4388,6 +4390,7 @@
 			isa = PBXGroup;
 			children = (
 				0603232B1ADF04FA00C73C0F /* NoSelectionController.swift */,
+				060323651AE07D1000C73C0F /* MainSplitViewController.swift */,
 			);
 			name = iPad;
 			sourceTree = "<group>";
@@ -5125,6 +5128,7 @@
 				0514D8D61AD1ED8A00F6C3BB /* RequestEditGroupAvatar.m in Sources */,
 				0514D8EC1AD1ED8A00F6C3BB /* RequestRemoveAvatar.m in Sources */,
 				0514D95D1AD1ED8A00F6C3BB /* CommandCallback.m in Sources */,
+				060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */,
 				0514DA3A1AD1ED8A00F6C3BB /* SearchActor.m in Sources */,
 				062774371AC070F700A4A8B3 /* SearchSource.swift in Sources */,
 				0514DA821AD1ED8A00F6C3BB /* RpcError.m in Sources */,
