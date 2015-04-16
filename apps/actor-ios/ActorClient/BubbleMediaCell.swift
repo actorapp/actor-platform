@@ -79,6 +79,21 @@ class BubbleMediaCell : BubbleCell {
                 self.circullarNode.alpha = 0
                 self.preview.alpha = 0
             })
+            
+            if group && !isOut {
+                if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
+                    var username = ""
+                    if let uname = user.getName().get() as? String {
+                        username = uname
+                    }
+                    
+                    let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
+                    avatarView.bind(username, id: user.getId(), avatar: avatar)
+                }
+                contentView.addSubview(avatarView)
+            } else {
+                avatarView.removeFromSuperview()
+            }
         }
         
         var document = message.getContent() as! AMDocumentContent;
@@ -271,10 +286,17 @@ class BubbleMediaCell : BubbleCell {
         var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
         var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
         
+        var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+        
         if (self.isOut) {
             bubble.frame = CGRectMake(contentWidth - bubbleWidth - bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
         } else {
-            bubble.frame = CGRectMake(bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
+            bubble.frame = CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight)
+        }
+        
+        if self.group && !self.isOut {
+            let avatarSize = CGFloat(self.avatarView.frameSize)
+            self.avatarView.frame = CGRect(x: 5, y: self.bubble.frame.maxY - avatarSize - 1, width: avatarSize, height: avatarSize)
         }
         
         preview.frame = CGRectMake(bubble.frame.origin.x + 1, bubble.frame.origin.y + 1, bubble.frame.width - 2, bubble.frame.height - 2);

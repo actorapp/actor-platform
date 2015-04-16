@@ -14,6 +14,12 @@ class BubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Public vars
     
+    let groupContentInsetY = 20.0
+    let groupContentInsetX = 40.0
+    
+    let avatarView = AAAvatarView(frameSize: 39)
+    let senderNameLabel = UILabel()
+    var group: Bool = false
     let bubble = UIImageView()
     let statusActive = UIColor(red: 52/255.0, green: 151/255.0, blue: 249/255.0, alpha: 1.0);
     let statusPassive = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
@@ -36,6 +42,7 @@ class BubbleCell: UITableViewCell {
     init(reuseId: String){
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseId);
         
+        senderNameLabel.font = UIFont.systemFontOfSize(15.0)
         bubble.userInteractionEnabled = true
     }
     
@@ -50,21 +57,30 @@ class BubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Getters
 
-    class func measureHeight(message: AMMessage) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool) -> CGFloat {
         var content = message.getContent()!;
+        
+        var height = CGFloat(0.0)
         if (content is AMTextContent) {
-            return BubbleTextCell.measureTextHeight(message) + BubbleTextCell.bubbleTopPadding() + BubbleTextCell.bubbleBottomPadding()
+            height = BubbleTextCell.measureTextHeight(message) + BubbleTextCell.bubbleTopPadding() + BubbleTextCell.bubbleBottomPadding()
         } else if (content is AMPhotoContent) {
-            return BubbleMediaCell.measureMediaHeight(message) + BubbleMediaCell.bubbleTopPadding() + BubbleMediaCell.bubbleBottomPadding()
+            height = BubbleMediaCell.measureMediaHeight(message) + BubbleMediaCell.bubbleTopPadding() + BubbleMediaCell.bubbleBottomPadding()
         } else if (content is AMVideoContent) {
-            return BubbleMediaCell.measureMediaHeight(message) + BubbleMediaCell.bubbleTopPadding() + BubbleMediaCell.bubbleBottomPadding()
+            height = BubbleMediaCell.measureMediaHeight(message) + BubbleMediaCell.bubbleTopPadding() + BubbleMediaCell.bubbleBottomPadding()
         } else if (content is AMServiceContent) {
-            return BubbleServiceCell.measureServiceHeight(message) + BubbleServiceCell.bubbleTopPadding() + BubbleServiceCell.bubbleBottomPadding()
+            height = BubbleServiceCell.measureServiceHeight(message) + BubbleServiceCell.bubbleTopPadding() + BubbleServiceCell.bubbleBottomPadding()
         } else if (content is AMDocumentContent) {
-            return AABubbleDocumentCell.measureServiceHeight(message) + AABubbleDocumentCell.bubbleTopPadding() + AABubbleDocumentCell.bubbleBottomPadding()
+            height = AABubbleDocumentCell.measureServiceHeight(message) + AABubbleDocumentCell.bubbleTopPadding() + AABubbleDocumentCell.bubbleBottomPadding()
         } else {
-            return AABubbleUnsupportedCell.measureUnsupportedHeight(message) + AABubbleUnsupportedCell.bubbleTopPadding() + AABubbleUnsupportedCell.bubbleBottomPadding()
+            height = AABubbleUnsupportedCell.measureUnsupportedHeight(message) + AABubbleUnsupportedCell.bubbleTopPadding() + AABubbleUnsupportedCell.bubbleBottomPadding()
         }
+        
+        let isIn = message.getSenderId() != MSG.myUid()
+        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) && !(content is AMVideoContent) {
+            height += CGFloat(20.0)
+        }
+        
+        return height
     }
     
     func formatDate(date: Int64) -> String {
