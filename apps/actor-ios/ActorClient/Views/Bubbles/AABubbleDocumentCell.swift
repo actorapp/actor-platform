@@ -13,8 +13,6 @@ class AABubbleDocumentCell: BubbleCell {
     // MARK: -
     // MARK: Private vars
     
-    private let bubble = UIImageView()
-    
     private let titleLabel = UILabel()
     private let sizeLabel = UILabel()
     
@@ -111,11 +109,11 @@ class AABubbleDocumentCell: BubbleCell {
     }
     
     class func bubbleTopPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     class func bubbleBottomPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     // MARK: -

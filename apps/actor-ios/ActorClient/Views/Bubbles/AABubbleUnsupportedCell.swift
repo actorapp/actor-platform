@@ -12,8 +12,7 @@ class AABubbleUnsupportedCell: BubbleCell {
     
     // MARK: -
     // MARK: Private vars
-    
-    private let bubble = UIImageView()
+
     private let unsupportedLabel = UILabel()
     
     // MARK: -
@@ -54,11 +53,11 @@ class AABubbleUnsupportedCell: BubbleCell {
     }
     
     class func bubbleTopPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     class func bubbleBottomPadding() -> CGFloat {
-        return 3
+        return 1 + Utils.retinaPixel()
     }
     
     // MARK: -

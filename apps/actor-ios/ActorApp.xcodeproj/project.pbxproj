@@ -684,6 +684,8 @@
 		05C890561AD71DDA002BD07A /* AADialogsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C890551AD71DDA002BD07A /* AADialogsListCell.swift */; };
 		05C890581AD71DED002BD07A /* AADialogsListSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */; };
 		05C8905B1AD71EAC002BD07A /* AADialogsListSearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */; };
+		05D4D31C1ADFA9A60080E6C7 /* AAMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D4D31B1ADFA9A60080E6C7 /* AAMenuController.swift */; };
+		05D4D31E1ADFB1D80080E6C7 /* AALongPressGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D4D31D1ADFB1D80080E6C7 /* AALongPressGestureRecognizer.swift */; };
 		05E706461AD1F665009F09D8 /* AASettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706451AD1F665009F09D8 /* AASettingsController.swift */; };
 		05E706491AD3EDE0009F09D8 /* AASettingsPrivacyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */; };
 		05E7064B1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */; };
@@ -2117,6 +2119,8 @@
 		05C890551AD71DDA002BD07A /* AADialogsListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListCell.swift; path = Views/DialogsList/AADialogsListCell.swift; sourceTree = "<group>"; };
 		05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListSearchCell.swift; path = Views/DialogsList/AADialogsListSearchCell.swift; sourceTree = "<group>"; };
 		05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListSearchSource.swift; path = SearchSources/AADialogsListSearchSource.swift; sourceTree = "<group>"; };
+		05D4D31B1ADFA9A60080E6C7 /* AAMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAMenuController.swift; path = Views/Root/AAMenuController.swift; sourceTree = "<group>"; };
+		05D4D31D1ADFB1D80080E6C7 /* AALongPressGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AALongPressGestureRecognizer.swift; path = Views/Root/AALongPressGestureRecognizer.swift; sourceTree = "<group>"; };
 		05E706451AD1F665009F09D8 /* AASettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsController.swift; path = Settings/AASettingsController.swift; sourceTree = "<group>"; };
 		05E706481AD3EDE0009F09D8 /* AASettingsPrivacyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsPrivacyController.swift; path = Settings/AASettingsPrivacyController.swift; sourceTree = "<group>"; };
 		05E7064A1AD3EDEF009F09D8 /* AASettingsNotificationsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AASettingsNotificationsController.swift; path = Settings/AASettingsNotificationsController.swift; sourceTree = "<group>"; };
@@ -4297,6 +4301,8 @@
 				0541A0641ACDA7A20028E983 /* AATableViewCell.swift */,
 				05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */,
 				05EDCD3A1ADDA97F00C57CEF /* AATitledCell.swift */,
+				05D4D31B1ADFA9A60080E6C7 /* AAMenuController.swift */,
+				05D4D31D1ADFB1D80080E6C7 /* AALongPressGestureRecognizer.swift */,
 			);
 			name = Root;
 			sourceTree = "<group>";
@@ -4879,6 +4885,7 @@
 				0514D91F1AD1ED8A00F6C3BB /* ServiceMessage.m in Sources */,
 				0514DB1D1AD1ED8B00F6C3BB /* MemoableResetException.m in Sources */,
 				0514D9751AD1ED8A00F6C3BB /* DispatcherProvider.m in Sources */,
+				05D4D31E1ADFB1D80080E6C7 /* AALongPressGestureRecognizer.swift in Sources */,
 				0514D8B61AD1ED8A00F6C3BB /* EncryptedPackageV2.m in Sources */,
 				0514D9811AD1ED8A00F6C3BB /* TraceInterface.m in Sources */,
 				0514D97F1AD1ED8A00F6C3BB /* FutureCallback.m in Sources */,
@@ -5256,6 +5263,7 @@
 				0514DA391AD1ED8A00F6C3BB /* Pushes.m in Sources */,
 				0514D9A61AD1ED8A00F6C3BB /* TaskActor.m in Sources */,
 				0514DADA1AD1ED8A00F6C3BB /* ParametersWithRandom.m in Sources */,
+				05D4D31C1ADFA9A60080E6C7 /* AAMenuController.swift in Sources */,
 				0514D9241AD1ED8A00F6C3BB /* TypingType.m in Sources */,
 				0514D9C11AD1ED8A00F6C3BB /* ListEngine.m in Sources */,
 				0603232C1ADF04FA00C73C0F /* NoSelectionController.swift in Sources */,
