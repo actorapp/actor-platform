@@ -24,6 +24,7 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
 
   def receive = {
     case (mb: MessageBox, clientData: ClientData) =>
+      log.info("MessageBox: {} clientData: {}", mb, clientData)
       if (messageQueue.isEmpty && totalDemand > 0)
         onNext(HandleMessageBox(mb, clientData))
       else {
@@ -34,6 +35,8 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
       deliverBuf()
     case Cancel =>
       context.stop(self)
+    case unmatched =>
+      log.debug("Unmatched {}", unmatched)
   }
 
   @tailrec final def deliverBuf(): Unit =
