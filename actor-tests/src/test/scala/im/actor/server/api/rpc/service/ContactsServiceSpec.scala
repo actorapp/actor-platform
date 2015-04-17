@@ -5,20 +5,22 @@ import scala.concurrent.duration._
 
 import slick.dbio.DBIO
 
-import im.actor.api.{ rpc => api }
+import im.actor.api.{ rpc => api }, api._
 import im.actor.server.api.util
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
-class ContactsServiceSpec extends BaseServiceSpec {
-  def is = sequential ^ s2"""
-  GetContacts handler should
-    respond with isChanged = true and actual users if hash was emptySHA1 ${s.getcontacts.changed}
-    respond with isChanged = false if not changed ${s.getcontacts.notChanged}
-  ContactsService
-    AddContact handler should add contact ${s.addremove.add()}
-    remove contact ${s.addremove.remove}
-    add after remove ${s.addremove.addAfterRemove}
-  """
+class ContactsServiceSpec extends BaseServiceSuite {
+  behavior of "Contacts Service"
+
+  "GetContacts handler" should "respond with isChanged = true and actual users if hash was emptySHA1" in s.getcontacts.changed
+
+  it should "respond with isChanged = false if not changed" in s.getcontacts.notChanged
+
+  "AddContact handler" should "add contact" in (s.addremove.add())
+
+  "RemoveContact handler" should "remove contact" in (s.addremove.remove)
+
+  "AddContact handler" should "add contact after remove" in (s.addremove.addAfterRemove)
 
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
@@ -45,20 +47,24 @@ class ContactsServiceSpec extends BaseServiceSpec {
         user
       }
 
-      def changed = {
+      def changed() = {
         val expectedUsers = Await.result(db.run(DBIO.sequence(userModels map { user =>
           util.UserUtils.userStruct(user, None, clientData.authId)
         })), 3.seconds)
 
-        service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
-          api.contacts.ResponseGetContacts(expectedUsers.toVector, false)
-        ).await
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp =>
+          resp should matchPattern {
+            case Ok(api.contacts.ResponseGetContacts(users, false)) if users == expectedUsers.toVector =>
+          }
+        }
       }
 
-      def notChanged = {
-        service.handleGetContacts(service.hashIds(userModels.map(_.id))) must beOk(
-          api.contacts.ResponseGetContacts(Vector.empty, true)
-        ).await
+      def notChanged() = {
+        whenReady(service.handleGetContacts(service.hashIds(userModels.map(_.id)))) { resp =>
+          resp should matchPattern {
+            case Ok(api.contacts.ResponseGetContacts(Vector(), true)) =>
+          }
+        }
       }
     }
 
@@ -75,31 +81,39 @@ class ContactsServiceSpec extends BaseServiceSpec {
       implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
       def add(firstRun: Boolean = true, expectedUpdSeq: Int = 1000) = {
-        service.handleAddContact(user2.id, user2AccessHash) must beOkLike {
-          case api.misc.ResponseSeq(seq, state) if seq == expectedUpdSeq => ok
-        }.await
+        whenReady(service.handleAddContact(user2.id, user2AccessHash)) { resp =>
+          resp should matchPattern {
+            case Ok(api.misc.ResponseSeq(seq, state)) if seq == expectedUpdSeq =>
+          }
+        }
 
         val expectedUsers = Vector(Await.result(
           db.run(util.UserUtils.userStruct(user2Model, None, clientData.authId)),
           3.seconds
         ))
 
-        service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
-          api.contacts.ResponseGetContacts(expectedUsers, false)
-        ).await
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp =>
+          resp should matchPattern {
+            case Ok(api.contacts.ResponseGetContacts(expectedUsers, false)) =>
+          }
+        }
       }
 
-      def remove = {
-        service.handleRemoveContact(user2.id, user2AccessHash) must beOkLike {
-          case api.misc.ResponseSeq(1002, state) => ok
-        }.await
+      def remove() = {
+        whenReady(service.handleRemoveContact(user2.id, user2AccessHash)) { resp =>
+          resp should matchPattern {
+            case Ok(api.misc.ResponseSeq(1002, state)) =>
+          }
+        }
 
-        service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
-          api.contacts.ResponseGetContacts(Vector.empty, false)
-        ).await
+        whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp =>
+          resp should matchPattern {
+            case Ok(api.contacts.ResponseGetContacts(Vector(), false)) =>
+          }
+        }
       }
 
-      def addAfterRemove = add(firstRun = false, expectedUpdSeq = 1003)
+      def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 1003)
     }
 
   }
