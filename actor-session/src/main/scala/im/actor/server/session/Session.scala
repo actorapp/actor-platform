@@ -63,7 +63,27 @@ class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdMan
       context.become(waitingForSessionInfo)
 
       // TODO: handle errors
-      db.run(persist.SessionInfo.find(authId, sessionId).headOption.map(_.getOrElse(models.SessionInfo(authId, sessionId, None)))).pipeTo(self)
+      // TODO: refactor
+      val infoAction = {
+        for {
+          authIdModelOpt <- persist.AuthId.find(authId).headOption
+          infoModel <- persist.SessionInfo.find(authId, sessionId).headOption.map(_.getOrElse(models.SessionInfo(authId, sessionId, None)))
+        } yield {
+          authIdModelOpt match {
+            case Some(models.AuthId(_, Some(userId), _)) =>
+              persist.SessionInfo.updateUserId(authId, sessionId, Some(userId))
+              models.SessionInfo(authId, sessionId, Some(userId))
+            case Some(models.AuthId(_, None, _)) =>
+              infoModel
+            case None =>
+              infoModel
+          }
+        }
+      }
+
+      val infoFuture = db.run(infoAction)
+
+      infoFuture.pipeTo(self)
     case msg => stash()
   }
 
