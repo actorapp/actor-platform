@@ -72,7 +72,15 @@ object HistoryUtils {
       case models.PeerType.Private =>
         persist.Dialog.updateLastReceivedAt(peer.id, models.Peer.privat(byPeer.id), date)
       case models.PeerType.Group =>
-        throw new NotImplementedError()
+        persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds =>
+          // TODO: #perf update dialogs in one query
+
+          val actions = groupUserIds.view.filterNot(_ == byPeer.id) map { groupUserId =>
+            persist.Dialog.updateLastReceivedAt(groupUserId, models.Peer.group(peer.id), date)
+          }
+
+          DBIO.sequence(actions)
+        }
     }
   }
 

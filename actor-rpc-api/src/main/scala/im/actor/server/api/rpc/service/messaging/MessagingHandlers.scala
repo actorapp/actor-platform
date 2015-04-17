@@ -73,7 +73,6 @@ private[messaging] trait MessagingHandlers {
               _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds.toSet, outUpdate)
               _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
               seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update)
-            // TODO: write history messages
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
