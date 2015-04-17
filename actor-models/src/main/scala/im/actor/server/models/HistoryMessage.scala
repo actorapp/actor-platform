@@ -7,9 +7,9 @@ case class HistoryMessage(
   userId: Int,
   peer: Peer,
   date: DateTime,
-  randomId: Long,
   senderUserId: Int,
+  randomId: Long,
   messageContentHeader: Int,
-  messageContentData: BitVector,
-  state: MessageState
+  messageContentData: Array[Byte],
+  deletedAt: Option[DateTime]
 )

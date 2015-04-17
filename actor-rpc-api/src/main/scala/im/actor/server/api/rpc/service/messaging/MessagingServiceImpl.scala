@@ -1,9 +1,13 @@
 package im.actor.server.api.rpc.service.messaging
 
+import scala.concurrent.Future
+
 import akka.actor._
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._, messaging._
+import im.actor.api.rpc.misc.ResponseVoid
+import im.actor.api.rpc.peers.OutPeer
 
 class MessagingServiceImpl(
   val seqUpdManagerRegion: ActorRef
@@ -19,7 +23,7 @@ class MessagingServiceImpl(
 
   override def jhandleEncryptedReceived(peer: im.actor.api.rpc.peers.OutPeer,randomId: Long, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseVoid]] = throw new NotImplementedError()
 
-  override def jhandleMessageRead(peer: im.actor.api.rpc.peers.OutPeer,date: Long, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseVoid]] = throw new NotImplementedError()
+  override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = throw new NotImplementedError()
 
-  override def jhandleMessageReceived(peer: im.actor.api.rpc.peers.OutPeer,date: Long, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseVoid]] = throw new NotImplementedError()
+  override def jhandleMessageRead(peer: im.actor.api.rpc.peers.OutPeer,date: Long, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseVoid]] = throw new NotImplementedError()
 }

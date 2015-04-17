@@ -1,51 +1,76 @@
 package im.actor.server.persist
 
-import im.actor.server.models
-import slick.driver.PostgresDriver.api._
-import Database.dynamicSession
-import org.joda.time.DateTime
+import scala.concurrent.ExecutionContext
+
 import com.github.tototoshi.slick.PostgresJodaSupport._
+import org.joda.time.DateTime
 import scodec.bits.BitVector
+import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
 
 class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
+
   import MessageStateColumnType._
 
   def userId = column[Int]("user_id", O.PrimaryKey)
+
   def peerType = column[Int]("peer_type", O.PrimaryKey)
+
   def peerId = column[Int]("peer_id", O.PrimaryKey)
-  def sortDate = column[DateTime]("sort_date")
-  def senderUserId = column[Int]("sender_user_id")
-  def randomId = column[Long]("random_id")
-  def date = column[DateTime]("date")
-  def messageContentHeader = column[Int]("message_content_header")
-  def messageContentData = column[BitVector]("message_content_data")
-  def state = column[models.MessageState]("state")
 
-  def * = (userId, peerType, peerId, sortDate, senderUserId, randomId, date, messageContentHeader,
-    messageContentData, state) <> (applyDialog, unapplyDialog)
+  def lastMessageDate = column[DateTime]("last_message_date")
 
-  def applyDialog: ((Int, Int, Int, DateTime, Int, Long, DateTime, Int, BitVector, models.MessageState)) => models.Dialog = {
-    case (userId, peerType, peerId, sortDate, senderUserId, randomId, date, mcHeader, mcData, state) =>
-      models.Dialog(userId = userId,
+  def lastReceivedAt = column[DateTime]("last_received_at")
+
+  def lastReadAt = column[DateTime]("last_read_at")
+
+  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) <>(applyDialog.tupled, unapplyDialog)
+
+  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime) => models.Dialog = {
+    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) =>
+      models.Dialog(
+        userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
-        sortDate = sortDate,
-        senderUserId = senderUserId,
-        randomId = randomId,
-        date = date,
-        messageContentHeader = mcHeader,
-        messageContentData = mcData,
-        state = state
+        lastMessageDate = lastMessageDate,
+        lastReceivedAt = lastReceivedAt,
+        lastReadAt = lastReadAt
       )
   }
 
-  def unapplyDialog: models.Dialog => Option[(Int, Int, Int, DateTime, Int, Long, DateTime, Int, BitVector, models.MessageState)] = { dialog =>
+  def unapplyDialog: models.Dialog => Option[(Int, Int, Int, DateTime, DateTime, DateTime)] = { dialog =>
     models.Dialog.unapply(dialog).map {
-      case (userId, peer, sortDate, senderUserId, randomId, date, mcHeader, mcData, state) =>
-        (userId, peer.typ.toInt, peer.id, sortDate, senderUserId, randomId, date, mcHeader, mcData, state)
+      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt) =>
+        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt)
     }
   }
 }
 
 object Dialog {
-  val table = TableQuery[DialogTable]
+  val dialogs = TableQuery[DialogTable]
+
+  def byUserIdPeer(userId: Int, peer: models.Peer) =
+    dialogs.filter(d => d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id)
+
+  def create(dialog: models.Dialog) =
+    dialogs += dialog
+
+  def createIfNotExists(dialog: models.Dialog)(implicit ec: ExecutionContext) = {
+    for {
+      dOpt <- find(dialog.userId, dialog.peer)
+      res <- if (dOpt.isEmpty) create(dialog) else DBIO.successful(0)
+    } yield res
+  }
+
+  def find(userId: Int, peer: models.Peer) =
+    dialogs.filter(d => d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
+
+  def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)
+                           (implicit ec: ExecutionContext) = {
+    byUserIdPeer(userId, peer).map(_.lastMessageDate).update(lastMessageDate) flatMap {
+      case 0 =>
+        create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0)))
+      case x => DBIO.successful(x)
+    }
+  }
 }

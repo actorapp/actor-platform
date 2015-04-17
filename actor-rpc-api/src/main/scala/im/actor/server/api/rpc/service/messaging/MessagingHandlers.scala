@@ -10,12 +10,14 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
+import im.actor.server.models
 import im.actor.server.persist
 
 private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl =>
 
   import im.actor.server.api.util.PeerUtils._
+  import im.actor.server.api.util.HistoryUtils._
   import im.actor.server.push.SeqUpdatesManager._
 
   override implicit val ec = actorSystem.dispatcher
@@ -45,13 +47,12 @@ private[messaging] trait MessagingHandlers {
               message = message
             )
 
-            // TODO: write history messages
-
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
 
             for {
               _ <- broadcastUserUpdate(seqUpdManagerRegion, outPeer.id, outUpdate)
               _ <- notifyClientUpdate(seqUpdManagerRegion, ownUpdate)
+              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
               seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
@@ -70,6 +71,7 @@ private[messaging] trait MessagingHandlers {
               userIds <- persist.GroupUser.findUserIds(outPeer.id)
               otherAuthIds <- persist.AuthId.findIdByUserIds(userIds.toSet).map(_.filterNot(_ == client.authId))
               _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds.toSet, outUpdate)
+              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
               seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update)
             // TODO: write history messages
             } yield {
