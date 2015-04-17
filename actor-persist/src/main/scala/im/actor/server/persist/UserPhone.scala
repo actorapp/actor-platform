@@ -21,7 +21,11 @@ object UserPhone {
 
   def exists(number: Long) = byPhoneNumber(number).exists.result
 
+  // TODO: rename to findByNumber
   def findByPhoneNumber(number: Long) = byPhoneNumber(number).result
+
+  def findByNumbers(numbers: Set[Long]) =
+    phones.filter(_.number inSet numbers).result
 
   def findByUserId(userId: Int) = phones.filter(_.userId === userId).result
 
