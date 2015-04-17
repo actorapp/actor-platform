@@ -37,6 +37,12 @@ object UserContact {
   def find(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
+  def findIds(ownerUserId: Int, contactUserIds: Set[Int]) =
+    contacts.filter(c => c.isDeleted === false && c.ownerUserId === ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
+
+  def findIds_all(ownerUserId: Int) =
+    contacts.filter(_.ownerUserId === ownerUserId).map(_.contactUserId).result
+
   def findName(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.name).result
 
@@ -50,6 +56,9 @@ object UserContact {
     val contact = models.contact.UserContact(ownerUserId, contactUserId, phoneNumber, name, accessSalt, false)
     contacts.insertOrUpdate(contact)
   }
+
+  def insertOrUpdate(contact: models.contact.UserContact) =
+    contacts.insertOrUpdate(contact)
 
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)
