@@ -67,7 +67,7 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
 
         whenReady(messagingService.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))(_ => ())
 
-        Thread.sleep(step)
+        Thread.sleep(step * 2) // wait more to widen delay between 3rd and 4rd messages (we don't want 4rd message to be in ResponseLoadHistory)
 
         whenReady(messagingService.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", 0, None).toMessageContent))(_ => ())
 
@@ -93,7 +93,7 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
       {
         implicit val clientData = clientData1
 
-        whenReady(service.handleLoadHistory(user2Peer, startDate + step * 3, 100)) { resp =>
+        whenReady(service.handleLoadHistory(user2Peer, startDate + step * 3 + step, 100)) { resp =>
           resp should matchPattern {
             case Ok(_) =>
           }
