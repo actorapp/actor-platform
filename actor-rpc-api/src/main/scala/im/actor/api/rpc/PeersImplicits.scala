@@ -11,5 +11,8 @@ trait PeersImplicits {
   implicit class ExtGroupOutPeer(groupOutPeer: GroupOutPeer) {
     lazy val asOutPeer: OutPeer =
       OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+    lazy val asPeer: Peer =
+      Peer(PeerType.Group, groupOutPeer.groupId)
   }
 }
