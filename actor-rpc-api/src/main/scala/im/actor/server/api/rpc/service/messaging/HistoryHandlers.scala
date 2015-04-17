@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.messaging.{ UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.messaging.{ UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
 import im.actor.server.api.util.HistoryUtils
@@ -39,8 +39,46 @@ trait HistoryHandlers {
             // TODO: #perf avoid repeated extraction of group user ids (send updates inside markMessagesReceived?)
             otherGroupUserIds <- persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
             otherAuthIds <- persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-            _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds, update)
             _ <- markMessagesReceived(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
+            _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds, update)
+          } yield {
+            Ok(ResponseVoid)
+          }
+        case _ => throw new NotImplementedError()
+      }
+    }
+
+    db.run(toDBIOAction(action map (_.transactionally)))
+  }
+
+  override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val action = requireAuth(clientData).map { implicit client =>
+      val readDate = System.currentTimeMillis()
+
+      peer.`type` match {
+        case PeerType.Private =>
+          val update = UpdateMessageRead(Peer(PeerType.Private, client.userId), date, readDate)
+          val ownUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peer.id), date)
+
+          for {
+            _ <- markMessagesRead(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
+            _ <- broadcastUserUpdate(seqUpdManagerRegion, peer.id, update)
+            _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
+          } yield {
+            Ok(ResponseVoid)
+          }
+        case PeerType.Group =>
+          val groupPeer = Peer(PeerType.Group, peer.id)
+          val update = UpdateMessageRead(groupPeer, date, readDate)
+          val ownUpdate = UpdateMessageReadByMe(groupPeer, date)
+
+          for {
+          // TODO: #perf avoid repeated extraction of group user ids (send updates inside markMessagesReceived?)
+            otherGroupUserIds <- persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
+            otherAuthIds <- persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
+            _ <- markMessagesRead(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
+            _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds, update)
+            _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
           } yield {
             Ok(ResponseVoid)
           }

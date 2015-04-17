@@ -84,6 +84,26 @@ object HistoryUtils {
     }
   }
 
+  def markMessagesRead(byPeer: models.Peer, peer: models.Peer, date: DateTime)(implicit ec: ExecutionContext) = {
+    requirePrivatePeer(byPeer)
+    requireDifferentPeers(byPeer, peer)
+
+    peer.typ match {
+      case models.PeerType.Private =>
+        persist.Dialog.updateLastReadAt(peer.id, models.Peer.privat(byPeer.id), date)
+      case models.PeerType.Group =>
+        persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds =>
+          // TODO: #perf update dialogs in one query
+
+          val actions = groupUserIds.view.filterNot(_ == byPeer.id) map { groupUserId =>
+            persist.Dialog.updateLastReadAt(groupUserId, models.Peer.group(peer.id), date)
+          }
+
+          DBIO.sequence(actions)
+        }
+    }
+  }
+
   private def requireDifferentPeers(peer1: models.Peer, peer2: models.Peer) = {
     if (peer1 == peer2)
       throw new Exception("peers should not be same")
