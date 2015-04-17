@@ -33,7 +33,17 @@ trait HistoryHandlers {
             Ok(ResponseVoid)
           }
         case PeerType.Group =>
-          throw new NotImplementedError()
+          val update = UpdateMessageReceived(Peer(PeerType.Group, peer.id), date, receivedDate)
+
+          for {
+            // TODO: #perf avoid repeated extraction of group user ids (send updates inside markMessagesReceived?)
+            otherGroupUserIds <- persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
+            otherAuthIds <- persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
+            _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds, update)
+            _ <- markMessagesReceived(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
+          } yield {
+            Ok(ResponseVoid)
+          }
         case _ => throw new NotImplementedError()
       }
     }
