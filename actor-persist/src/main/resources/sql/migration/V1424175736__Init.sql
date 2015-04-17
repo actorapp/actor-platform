@@ -2,32 +2,22 @@ CREATE TABLE history_messages (
        user_id int NOT NULL,
        peer_type int NOT NULL,
        peer_id int NOT NULL,
-       sender_user_id int NOT NULL,
        date timestamp NOT NULL,
+       sender_user_id int NOT NULL,
        random_id bigint NOT NULL,
        message_content_header int NOT NULL,
        message_content_data bytea NOT NULL,
-       is_deleted boolean NOT NULL default false,
-       is_read boolean NOT NULL default false,
-       state int NOT NULL default 1,
-       PRIMARY KEY(user_id, peer_type, peer_id, sender_user_id, date, random_id)
+       deleted_at timestamp,
+       PRIMARY KEY(user_id, peer_type, peer_id, date, sender_user_id, random_id)
 );
-
-CREATE INDEX idx_history_messages_user_peer_random_id ON history_messages(user_id, peer_type, peer_id, random_id);
-
-CREATE INDEX idx_history_messages_user_peer_is_read on history_messages (user_id, peer_type, peer_id, is_read);
 
 CREATE TABLE dialogs (
        user_id int NOT NULL,
        peer_type int NOT NULL,
        peer_id int NOT NULL,
-       sender_user_id int NOT NULL,
-       date timestamp NOT NULL,
-       random_id bigint NOT NULL,
-       message_content_header int NOT NULL,
-       message_content_data bytea NOT NULL,
-       state int,
-       sort_date timestamp NOT NULL,
+       last_message_date timestamp NOT NULL,
+       last_received_at timestamp NOT NULL,
+       last_read_at timestamp NOT NULL,
        PRIMARY KEY(user_id, peer_type, peer_id)
 );
 
@@ -131,8 +121,6 @@ CREATE TABLE IF NOT EXISTS akka_snapshot (
        created BIGINT NOT NULL,
        PRIMARY KEY (persistence_id, sequence_nr)
 );
-
-CREATE INDEX idx_history_messages_user_peer_sender_state ON history_messages(user_id, peer_type, peer_id, sender_user_id, state);
 
 CREATE TABLE user_emails (
        id int NOT NULL,

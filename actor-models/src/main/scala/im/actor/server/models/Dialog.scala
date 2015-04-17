@@ -7,11 +7,7 @@ import scodec.bits.BitVector
 case class Dialog(
   userId: Int,
   peer: Peer,
-  sortDate: DateTime,
-  senderUserId: Int,
-  randomId: Long,
-  date: DateTime,
-  messageContentHeader: Int,
-  messageContentData: BitVector,
-  state: MessageState
+  lastMessageDate: DateTime,
+  lastReceivedAt: DateTime,
+  lastReadAt: DateTime
 )
