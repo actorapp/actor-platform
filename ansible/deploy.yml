@@ -16,23 +16,27 @@
         recursive=yes
         rsync_opts=" --exclude config/application.conf --exclude config/logback.xml --exclude apns --exclude ssl --exclude logs "
       sudo: no
+      tags: ["deploy"]
     - name: "Create logs directory"
       file:
         path="{{ app_path }}/logs"
         force=yes
         state=directory
       sudo: no
+      tags: ["deploy"]
     - name: "SSL directory"
       file:
         path=~/ssl
         state=directory
       sudo: no
+      tags: ["deploy"]
     - name: "Link ssl"
       file:
         src=~/ssl
         dest="{{ app_path }}/ssl"
         state=link
       sudo: no
+      tags: ["deploy"]
     - name: "Copy the app monit service file"
       template:
         src=templates/etc_monit_conf.d_app.j2
@@ -46,3 +50,4 @@
     - name: "Restart app"
       command: "monit restart {{ app_name }}"
       sudo: true
+      tags: ["deploy"]
