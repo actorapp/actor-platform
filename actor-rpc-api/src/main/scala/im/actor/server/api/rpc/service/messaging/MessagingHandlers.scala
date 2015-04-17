@@ -50,9 +50,9 @@ private[messaging] trait MessagingHandlers {
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
 
             for {
+              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
               _ <- broadcastUserUpdate(seqUpdManagerRegion, outPeer.id, outUpdate)
               _ <- notifyClientUpdate(seqUpdManagerRegion, ownUpdate)
-              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
               seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
@@ -70,8 +70,8 @@ private[messaging] trait MessagingHandlers {
             for {
               userIds <- persist.GroupUser.findUserIds(outPeer.id)
               otherAuthIds <- persist.AuthId.findIdByUserIds(userIds.toSet).map(_.filterNot(_ == client.authId))
-              _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds.toSet, outUpdate)
               _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
+              _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds.toSet, outUpdate)
               seqstate <- persistAndPushUpdate(seqUpdManagerRegion, client.authId, update)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))

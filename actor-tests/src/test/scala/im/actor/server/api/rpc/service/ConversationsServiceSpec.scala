@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service
 import scala.concurrent.Future
 
 import org.joda.time.DateTime
+import org.scalatest.concurrent.AsyncAssertions.Waiter
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
@@ -49,19 +50,26 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
     val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
     def history() = {
+      val step = 2000L
+
       val startDate = {
         implicit val clientData = clientData1
 
-        val startDate = System.currentTimeMillis
+        val startDate = System.currentTimeMillis()
 
-        val sendMessages = Future.sequence(Seq(
-          messagingService.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
-          futureSleep(1500).flatMap(_ => messagingService.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent)),
-          futureSleep(3000).flatMap(_ => messagingService.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent)),
-          futureSleep(4500).flatMap(_ => messagingService.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", 0, None).toMessageContent))
-        ))
+        whenReady(messagingService.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent))(_ => ())
 
-        whenReady(sendMessages)(_ => ())
+        Thread.sleep(step)
+
+        whenReady(messagingService.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent))(_ => ())
+
+        Thread.sleep(step)
+
+        whenReady(messagingService.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))(_ => ())
+
+        Thread.sleep(step)
+
+        whenReady(messagingService.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", 0, None).toMessageContent))(_ => ())
 
         startDate
       }
@@ -69,13 +77,13 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
       {
         implicit val clientData = clientData2
 
-        whenReady(messagingService.handleMessageReceived(user1Peer, startDate + 2000)) { resp =>
+        whenReady(messagingService.handleMessageReceived(user1Peer, startDate + step * 2)) { resp =>
           resp should matchPattern {
             case Ok(ResponseVoid) =>
           }
         }
 
-        whenReady(messagingService.handleMessageRead(user1Peer, startDate + 1000)) { resp =>
+        whenReady(messagingService.handleMessageRead(user1Peer, startDate + step)) { resp =>
           resp should matchPattern {
             case Ok(ResponseVoid) =>
           }
@@ -85,7 +93,7 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
       {
         implicit val clientData = clientData1
 
-        whenReady(service.handleLoadHistory(user2Peer, startDate + 4000, 100)) { resp =>
+        whenReady(service.handleLoadHistory(user2Peer, startDate + step * 3, 100)) { resp =>
           resp should matchPattern {
             case Ok(_) =>
           }

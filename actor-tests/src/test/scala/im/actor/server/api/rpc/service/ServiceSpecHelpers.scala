@@ -99,5 +99,5 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     res
   }
 
-  protected def futureSleep(delay: Long)(implicit ec: ExecutionContext): Future[Unit] = Future { Thread.sleep(delay) }
+  protected def futureSleep(delay: Long)(implicit ec: ExecutionContext): Future[Unit] = Future { blocking { Thread.sleep(delay) } }
 }
