@@ -47,7 +47,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
 
       def changed = {
         val expectedUsers = Await.result(db.run(DBIO.sequence(userModels map { user =>
-          util.User.struct(user, None, clientData.authId)
+          util.UserUtils.userStruct(user, None, clientData.authId)
         })), 3.seconds)
 
         service.handleGetContacts(service.hashIds(Seq.empty)) must beOk(
@@ -80,7 +80,7 @@ class ContactsServiceSpec extends BaseServiceSpec {
         }.await
 
         val expectedUsers = Vector(Await.result(
-          db.run(util.User.struct(user2Model, None, clientData.authId)),
+          db.run(util.UserUtils.userStruct(user2Model, None, clientData.authId)),
           3.seconds
         ))
 

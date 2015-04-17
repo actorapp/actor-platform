@@ -1,11 +1,21 @@
 package im.actor.api
 
-import im.actor.api.rpc._, peers._
+import im.actor.api.rpc.peers._
+import im.actor.server.models
 
 trait PeersImplicits {
+
+  implicit class ExtPeer(peer: Peer) {
+    lazy val asModel: models.Peer =
+      models.Peer(models.PeerType.fromInt(peer.`type`.id), peer.id)
+  }
+
   implicit class ExtOutPeer(outPeer: OutPeer) {
     lazy val asPeer: Peer =
       Peer(outPeer.`type`, outPeer.id)
+
+    lazy val asModel: models.Peer =
+      models.Peer(models.PeerType.fromInt(outPeer.`type`.id), outPeer.id)
   }
 
   implicit class ExtGroupOutPeer(groupOutPeer: GroupOutPeer) {
@@ -15,4 +25,5 @@ trait PeersImplicits {
     lazy val asPeer: Peer =
       Peer(PeerType.Group, groupOutPeer.groupId)
   }
+
 }

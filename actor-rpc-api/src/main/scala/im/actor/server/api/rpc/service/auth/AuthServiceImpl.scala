@@ -214,7 +214,7 @@ class AuthServiceImpl(sessionRegion: ActorRef)(implicit val actorSystem: ActorSy
                   persist.AuthSession.delete(user.id, s.id) andThen persist.AuthId.delete(s.authId)
                 })
                 _ <- persist.AuthSession.create(authSession)
-                userStruct <- util.User.struct(
+                userStruct <- util.UserUtils.userStruct(
                   user,
                   None,
                   clientData.authId
