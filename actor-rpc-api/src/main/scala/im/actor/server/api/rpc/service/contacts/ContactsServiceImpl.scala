@@ -102,8 +102,6 @@ class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
           }
         }
       }
-
-      throw new Exception()
     }
 
     db.run(toDBIOAction(action)) // TODO: transactionally
