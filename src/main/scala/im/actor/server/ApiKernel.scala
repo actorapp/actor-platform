@@ -8,6 +8,7 @@ import com.typesafe.config.ConfigFactory
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
+import im.actor.server.api.rpc.service.conversations.ConversationsServiceImpl
 import im.actor.server.api.rpc.service.encryption.EncryptionServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
@@ -43,7 +44,8 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
       new EncryptionServiceImpl,
       new MessagingServiceImpl(seqUpdManagerRegion),
       new GroupsServiceImpl(seqUpdManagerRegion),
-      new SequenceServiceImpl(seqUpdManagerRegion))
+      new SequenceServiceImpl(seqUpdManagerRegion),
+      new ConversationsServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 
