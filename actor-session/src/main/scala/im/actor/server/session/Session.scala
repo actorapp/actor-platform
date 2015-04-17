@@ -1,20 +1,24 @@
 package im.actor.server.session
 
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
-import scodec._
-import scodec.bits._
+import akka.pattern.pipe
+import scodec.DecodeResult
+import scodec.bits.BitVector
+import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport._
+import im.actor.server.mtproto.transport.{ MTPackage, Drop }
 import im.actor.server.push.UpdatesPusher
+import im.actor.server.{ models, persist }
 
 object Session {
 
@@ -38,20 +42,40 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
 
-  def props(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) =
-    Props(classOf[Session], rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, materializer)
+  def props(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit db: Database, materializer: FlowMaterializer) =
+    Props(classOf[Session], rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, db, materializer)
 }
 
-class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit materializer: FlowMaterializer) extends Actor with ActorLogging with MessageIdHelper {
+class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit db: Database, materializer: FlowMaterializer) extends ActorLogging with MessageIdHelper with Stash {
 
   import SessionMessage._
+
+  implicit val ec: ExecutionContext = context.dispatcher
 
   private[this] var optUserId: Option[Int] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
 
-  def receive = receiveAnonymous
+  def receive = waitingForEnvelope
 
-  def receiveAnonymous: Receive = {
+  def waitingForEnvelope: Receive = {
+    case env @ Envelope(authId, sessionId, _) =>
+      stash()
+      context.become(waitingForSessionInfo)
+
+      // TODO: handle errors
+      db.run(persist.SessionInfo.find(authId, sessionId).headOption.map(_.getOrElse(models.SessionInfo(authId, sessionId, None)))).pipeTo(self)
+    case msg => stash()
+  }
+
+  def waitingForSessionInfo: Receive = {
+    case info: models.SessionInfo =>
+      optUserId = info.optUserId
+      unstashAll()
+      context.become(anonymous)
+    case msg => stash()
+  }
+
+  def anonymous: Receive = {
     case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
       val client = sender()
 
@@ -81,14 +105,14 @@ class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdMan
 
         context.actorOf(UpdatesPusher.props(seqUpdManagerRegion, weakUpdManagerRegion, authId, self))
 
-        context.become(receiveResolved(authId, sessionId, sessionMessagePublisher))
+        context.become(resolved(authId, sessionId, sessionMessagePublisher))
       }
     case Terminated(client) =>
       clients -= client
     case unmatched => handleUnmatched(unmatched)
   }
 
-  def receiveResolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
+  def resolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
     case env @ Envelope(eauthId, esessionId, msg) =>
       val client = sender()
 
@@ -126,7 +150,11 @@ class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdMan
         sendProtoMessage(authId, sessionId, protoMessage)
       case UserAuthorized(userId) =>
         log.debug("User {} authorized session {}", userId, sessionId)
+
         this.optUserId = Some(userId)
+
+        // TODO: handle errors
+        persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId)
     }
   }
 
