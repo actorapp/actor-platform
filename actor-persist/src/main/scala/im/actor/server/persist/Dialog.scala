@@ -73,4 +73,13 @@ object Dialog {
       case x => DBIO.successful(x)
     }
   }
+
+  def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)
+                          (implicit ec: ExecutionContext) = {
+    byUserIdPeer(userId, peer).map(_.lastReceivedAt).update(lastReceivedAt) flatMap {
+      case 0 =>
+        create(models.Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0)))
+      case x => DBIO.successful(x)
+    }
+  }
 }
