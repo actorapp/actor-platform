@@ -1,0 +1,101 @@
+package im.actor.server.api.rpc.service
+
+import scala.concurrent.Future
+
+import org.joda.time.DateTime
+
+import im.actor.api.rpc.Implicits._
+import im.actor.api.rpc._
+import im.actor.api.rpc.conversations.{ MessageState, ResponseLoadHistory }
+import im.actor.api.rpc.messaging.TextMessage
+import im.actor.api.rpc.misc.ResponseVoid
+import im.actor.api.rpc.peers.PeerType
+import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.util.ACL
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+
+class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
+  behavior of "ConversationsService"
+
+  it should "Load history (private)" in privat.history
+
+  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  val rpcApiService = buildRpcApiService()
+  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
+
+  implicit val service = new conversations.ConversationsServiceImpl
+  implicit val messagingService = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
+  implicit val groupsService = new GroupsServiceImpl(seqUpdManagerRegion)
+  implicit val authService = buildAuthService(sessionRegion)
+  implicit val ec = system.dispatcher
+
+  object privat {
+    val (user1, authId1, _) = createUser()
+    val sessionId1 = createSessionId()
+
+    val (user2, authId2, _) = createUser()
+    val sessionId2 = createSessionId()
+
+    val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
+    val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+
+    val user1Model = getUserModel(user1.id)
+    val user1AccessHash = ACL.userAccessHash(authId2, user1.id, user1Model.accessSalt)
+    val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACL.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+
+    def history() = {
+      val startDate = {
+        implicit val clientData = clientData1
+
+        val startDate = System.currentTimeMillis
+
+        val sendMessages = Future.sequence(Seq(
+          messagingService.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
+          futureSleep(1500).flatMap(_ => messagingService.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent)),
+          futureSleep(3000).flatMap(_ => messagingService.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent)),
+          futureSleep(4500).flatMap(_ => messagingService.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", 0, None).toMessageContent))
+        ))
+
+        whenReady(sendMessages)(_ => ())
+
+        startDate
+      }
+
+      {
+        implicit val clientData = clientData2
+
+        whenReady(messagingService.handleMessageReceived(user1Peer, startDate + 2000)) { resp =>
+          resp should matchPattern {
+            case Ok(ResponseVoid) =>
+          }
+        }
+
+        whenReady(messagingService.handleMessageRead(user1Peer, startDate + 1000)) { resp =>
+          resp should matchPattern {
+            case Ok(ResponseVoid) =>
+          }
+        }
+      }
+
+      {
+        implicit val clientData = clientData1
+
+        whenReady(service.handleLoadHistory(user2Peer, startDate + 4000, 100)) { resp =>
+          resp should matchPattern {
+            case Ok(_) =>
+          }
+          val respBody = resp.toOption.get
+
+          respBody.users.length should ===(0)
+          respBody.history.length should ===(3)
+          respBody.history.map(_.state) should === (Seq(Some(MessageState.Sent), Some(MessageState.Received), Some(MessageState.Read)))
+        }
+      }
+    }
+  }
+}

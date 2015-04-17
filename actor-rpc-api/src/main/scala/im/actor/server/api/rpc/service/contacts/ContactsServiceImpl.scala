@@ -55,7 +55,7 @@ class ContactsServiceImpl(
             namesMap = immutable.Map(userIdsNames: _*)
             // TODO: #perf optimize (so much requests!)
             userStructs <- DBIO.sequence(users.map(user =>
-              util.User.struct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
+              util.UserUtils.userStruct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
           } yield {
             Ok(ResponseGetContacts(
               users = userStructs.toVector,

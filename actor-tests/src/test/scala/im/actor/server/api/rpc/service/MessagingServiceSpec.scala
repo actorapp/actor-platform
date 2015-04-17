@@ -99,10 +99,12 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def markReceived() = {
-        lazy val startDate = System.currentTimeMillis()
 
-        {
+
+        val startDate = {
           implicit val clientData = clientData1
+
+          val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
             service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
@@ -111,6 +113,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           ))
 
           whenReady(sendMessages)(_ => ())
+
+          startDate
         }
 
         {
@@ -136,10 +140,10 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       }
 
       def markRead() = {
-        lazy val startDate = System.currentTimeMillis()
-
-        {
+        val startDate = {
           implicit val clientData = clientData1
+
+          val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
             service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
@@ -148,6 +152,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           ))
 
           whenReady(sendMessages)(_ => ())
+
+          startDate
         }
 
         {
@@ -274,6 +280,4 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       }
     }
   }
-
-  private def futureSleep(delay: Long)(implicit ec: ExecutionContext): Future[Unit] = Future { Thread.sleep(delay) }
 }

@@ -1,10 +1,10 @@
 package im.actor.server.persist
 
-import im.actor.server.models
-
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
 
 class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "history_messages") {
   def userId = column[Int]("user_id", O.PrimaryKey)
@@ -53,9 +53,28 @@ class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "h
 object HistoryMessage {
   val messages = TableQuery[HistoryMessageTable]
 
+  val notDeletedMessages = messages.filter(_.deletedAt.isEmpty)
+
   def create(message: models.HistoryMessage) =
     messages += message
 
   def create(newMessages: Seq[models.HistoryMessage]) =
     messages ++= newMessages
+
+  def find(userId: Int, peer: models.Peer, dateOpt: Option[DateTime], limit: Int) = {
+    val baseQuery = notDeletedMessages
+      .filter(m =>
+      m.userId === userId &&
+        m.peerType === peer.typ.toInt &&
+        m.peerId === peer.id)
+
+    val query = dateOpt match {
+      case Some(date) =>
+        baseQuery.filter(_.date <= date).sortBy(_.date.desc)
+      case None =>
+        baseQuery.sortBy(_.date.asc)
+    }
+
+    query.take(limit).result
+  }
 }
