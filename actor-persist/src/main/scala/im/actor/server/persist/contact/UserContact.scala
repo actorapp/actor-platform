@@ -37,6 +37,9 @@ object UserContact {
   def find(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
+  def findName(ownerUserId: Int, contactUserId: Int) =
+    byPKNotDeleted(ownerUserId, contactUserId).map(_.name).result
+
   def findContactIdsAll(ownerUserId: Int) =
     contacts.filter(c => c.ownerUserId === ownerUserId).map(_.contactUserId).result
 
