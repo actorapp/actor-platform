@@ -6,9 +6,11 @@ import scala.language.postfixOps
 import akka.actor.ActorSystem
 import slick.dbio.Effect.Read
 import slick.dbio.{ Effect, DBIO, DBIOAction, NoStream }
+import slick.profile.SqlAction
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.users.User
+import im.actor.server.models.UserPhone
 import im.actor.server.{ models, persist }
 
 object UserUtils {
@@ -72,8 +74,43 @@ object UserUtils {
 
   // TODO: #perf lots of sql queries
   def userStructs(userIds: Set[Int], senderUserId: Int, senderAuthId: Long)
-                 (implicit ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] = {
+                 (implicit ec: ExecutionContext, s: ActorSystem)
+  : DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] = {
     DBIO.sequence(userIds.toSeq map (userStructOption(_, senderUserId, senderAuthId))) map (_.flatten)
+  }
+
+  def userStructs(userIds: Set[Int])
+                 (implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem)
+  : DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] =
+    userStructs(userIds, client.userId, client.authId)
+
+  def getClientUser(implicit client: AuthorizedClientData): SqlAction[Option[models.User], NoStream, Read] = {
+    persist.User.find(client.userId).headOption
+  }
+
+  def getClientUserUnsafe(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[models.User, NoStream, Read] = {
+    getClientUser map {
+      case Some(user) => user
+      case None => throw new Exception("Client user not found")
+    }
+  }
+
+  def getClientUserPhone(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[(models.User, UserPhone)], NoStream, Read with Read] = {
+    getClientUser.flatMap {
+      case Some(user) =>
+        persist.UserPhone.findByUserId(client.userId).headOption map {
+          case Some(userPhone) => Some((user, userPhone))
+          case None => None
+        }
+      case None => DBIO.successful(None)
+    }
+  }
+
+  def getClientUserPhoneUnsafe(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[(models.User, UserPhone), NoStream, Read with Read] = {
+    getClientUserPhone map {
+      case Some(user_phone) => user_phone
+      case None => throw new Exception("Client user phone not found")
+    }
   }
 
   def normalizeLocalName(name: Option[String]) = name match {

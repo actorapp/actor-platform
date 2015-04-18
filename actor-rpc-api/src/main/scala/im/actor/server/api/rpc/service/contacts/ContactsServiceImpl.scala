@@ -27,6 +27,7 @@ class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
   extends ContactsService {
 
   import im.actor.server.push.SeqUpdatesManager._
+  import UserUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)
@@ -60,7 +61,7 @@ class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
             usersPhones <- DBIO.sequence(uniquePhones map (p => persist.User.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
             userStructsSalts <- DBIO.sequence(usersPhones.map {
               case (u, phoneNumber) =>
-                UserUtils.userStruct(u, phonesMap(phoneNumber), client.authId) map (us => (us, u.accessSalt))
+                userStruct(u, phonesMap(phoneNumber), client.authId) map (us => (us, u.accessSalt))
             })
           } yield {
               val userPhoneNumbers = userPhones.map(_.number).toSet
@@ -120,7 +121,7 @@ class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
             namesMap = immutable.Map(userIdsNames: _*)
             // TODO: #perf optimize (so much requests!)
             userStructs <- DBIO.sequence(users.map(user =>
-              util.UserUtils.userStruct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
+              userStruct(user, namesMap.get(user.id).getOrElse(None), clientData.authId)))
           } yield {
             Ok(ResponseGetContacts(
               users = userStructs.toVector,
@@ -187,7 +188,30 @@ class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSearchContacts(request: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = throw new NotImplementedError()
+  override def jhandleSearchContacts(rawNumber: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      getClientUserPhoneUnsafe.flatMap {
+        case (clientUser, clientPhone) =>
+          PhoneNumber.normalizeStr(rawNumber, clientUser.countryCode) match {
+            case Some(phoneNumber) =>
+              val filteredPhones = Set(phoneNumber).filter(_ != clientPhone.number)
+
+              for {
+                userPhones <- persist.UserPhone.findByNumbers(filteredPhones)
+                users <- userStructs(userPhones.map(_.userId).toSet)
+              } yield {
+                // TODO: record social relations
+
+                Ok(ResponseSearchContacts(users.toVector))
+              }
+            case None =>
+              DBIO.successful(Ok(ResponseSearchContacts(Vector.empty)))
+          }
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
 
   private def addContactSendUpdate(clientUserId: Int,
                                    userId: Int,
