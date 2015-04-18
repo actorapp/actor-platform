@@ -356,6 +356,13 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       seq += IncrementOnStart - 1
   }
 
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    super.preRestart(reason, message)
+
+    log.error(reason, "SeqUpdatesManager exception, message option: {}", message)
+  }
+
   private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
     pushUpdate(authId, header, serializedData, userIds, groupIds, noop1)
   }
