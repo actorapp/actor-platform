@@ -88,13 +88,16 @@ class AAConversationController: EngineSlackListController {
         var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
         tableView.addGestureRecognizer(longPressGesture)
         
+        var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
+        tableView.addGestureRecognizer(tapGesture)
+        
         // Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
-        var tapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
-        tapGesture.numberOfTapsRequired = 1
-        tapGesture.numberOfTouchesRequired = 1
-        avatarView.addGestureRecognizer(tapGesture)
+        var avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
+        avatarTapGesture.numberOfTapsRequired = 1
+        avatarTapGesture.numberOfTouchesRequired = 1
+        avatarView.addGestureRecognizer(avatarTapGesture)
         
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
@@ -210,6 +213,11 @@ class AAConversationController: EngineSlackListController {
         }
     }
     
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated);
+        MSG.saveDraft(peer, withText: textView.text);
+    }
+    
     // MARK: -
     // MARK: Methods
     
@@ -223,7 +231,6 @@ class AAConversationController: EngineSlackListController {
                         var bubbleFrame = cell.bubble.frame
                         bubbleFrame = tableView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
                         if CGRectContainsPoint(bubbleFrame, point) {
-//                            var menuController = AAMenuController()
                             cell.becomeFirstResponder()
                             var menuController = UIMenuController.sharedMenuController()
                             menuController.setTargetRect(bubbleFrame, inView:tableView)
@@ -235,12 +242,29 @@ class AAConversationController: EngineSlackListController {
         }
     }
     
+    func tap(gesture: UITapGestureRecognizer) {
+        if gesture.state == UIGestureRecognizerState.Ended {
+            let point = gesture.locationInView(tableView)
+            let indexPath = tableView.indexPathForRowAtPoint(point)
+            if indexPath != nil {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? BubbleCell {
+                    if cell.avatarView.superview != nil {
+                        var avatarFrame = cell.avatarView.frame
+                        avatarFrame = tableView.convertRect(avatarFrame, fromView: cell.bubble.superview)
+                        if CGRectContainsPoint(avatarFrame, point) {
+                            var item = objectAtIndexPath(indexPath!) as! AMMessage;
+                            navigateToUserWithId(Int(item.getSenderId()))
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            let userInfoController = AAUserInfoController(uid: id)
-            userInfoController.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(userInfoController, animated: true)
+            navigateToUserWithId(id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = AAConversationGroupInfoController(gid: id)
             groupInfoController.hidesBottomBarWhenPushed = true
@@ -321,11 +345,6 @@ class AAConversationController: EngineSlackListController {
         (cell as! BubbleCell).performBind(item as! AMMessage);
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated);
-        MSG.saveDraft(peer, withText: textView.text);
-    }
-    
     override func getDisplayList() -> AMBindedDisplayList {
         return MSG.getMessagesGlobalListWithAMPeer(peer)
     }
@@ -345,6 +364,15 @@ class AAConversationController: EngineSlackListController {
         var item = objectAtIndexPath(indexPath) as! AMMessage;
         let group = peer.getPeerType().name() == "GROUP"
         return BubbleCell.measureHeight(item, group: group);
+    }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    private func navigateToUserWithId(id: Int) {
+        let userInfoController = AAUserInfoController(uid: id)
+        userInfoController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(userInfoController, animated: true)
     }
     
 }

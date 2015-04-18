@@ -52,6 +52,9 @@ class AABubbleUnsupportedCell: BubbleCell {
                 }
                 senderNameLabel.text = username
                 
+                var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
+                senderNameLabel.textColor = color
+                
                 let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
                 avatarView.bind(username, id: user.getId(), avatar: avatar)
             }
