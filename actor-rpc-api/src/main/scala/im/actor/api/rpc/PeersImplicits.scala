@@ -26,4 +26,8 @@ trait PeersImplicits {
       Peer(PeerType.Group, groupOutPeer.groupId)
   }
 
+  implicit class ExtPeerModel(model: models.Peer) {
+    lazy val asStruct: Peer =
+      Peer(PeerType(model.typ.toInt), model.id)
+  }
 }

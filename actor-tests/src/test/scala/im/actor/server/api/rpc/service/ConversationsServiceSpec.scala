@@ -1,24 +1,21 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent.Future
-
-import org.joda.time.DateTime
-import org.scalatest.concurrent.AsyncAssertions.Waiter
-
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
-import im.actor.api.rpc.conversations.{ MessageState, ResponseLoadHistory }
+import im.actor.api.rpc.conversations.MessageState
 import im.actor.api.rpc.messaging.TextMessage
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util.ACL
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 
 class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "ConversationsService"
 
-  it should "Load history (private)" in privat.history
+  it should "Load history (private)" in s.privat
+
+  it should "Load dialogs" in s.dialogs
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
@@ -31,7 +28,7 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
   implicit val authService = buildAuthService(sessionRegion)
   implicit val ec = system.dispatcher
 
-  object privat {
+  object s {
     val (user1, authId1, _) = createUser()
     val sessionId1 = createSessionId()
 
@@ -49,7 +46,7 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
     val user2AccessHash = ACL.userAccessHash(authId1, user2.id, user2Model.accessSalt)
     val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
-    def history() = {
+    def privat() = {
       val step = 2000L
 
       val startDate = {
@@ -101,9 +98,27 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
 
           respBody.users.length should ===(0)
           respBody.history.length should ===(3)
-          respBody.history.map(_.state) should === (Seq(Some(MessageState.Sent), Some(MessageState.Received), Some(MessageState.Read)))
+          respBody.history.map(_.state) should ===(Seq(Some(MessageState.Sent), Some(MessageState.Received), Some(MessageState.Read)))
         }
       }
     }
+
+    def dialogs() = {
+      implicit val clientData = clientData1
+
+      whenReady(service.handleLoadDialogs(0, 100)) { resp =>
+        resp should matchPattern {
+          case Ok(_) =>
+        }
+
+        val respBody = resp.toOption.get
+
+        respBody.dialogs.length should ===(1)
+        val dialog = respBody.dialogs.head
+        dialog.unreadCount should ===(3)
+        respBody.users.length should ===(1)
+      }
+    }
   }
+
 }
