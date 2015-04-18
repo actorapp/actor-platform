@@ -33,9 +33,11 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
-  def receive = initialized(Set.empty)
+  def receive = initialized(Seq.empty)
 
-  def initialized(services: Set[Service]): Receive = {
+  def initialized(services: Seq[Service]): Receive = {
+    log.debug("Services list changed: {}", services)
+
     val chain: Chain =
       if (services.isEmpty) {
         PartialFunction.empty
@@ -47,7 +49,8 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
 
     {
       case AttachService(service) =>
-        context.become(initialized(services + service), discardOld = true)
+        log.debug("Attached service: {}", service)
+        context.become(initialized(services :+ service), discardOld = true)
       case HandleRpcRequest(messageId, requestBytes, clientData) =>
         RequestCodec.decode(requestBytes).require map {
           case Request(rpcRequest) =>
