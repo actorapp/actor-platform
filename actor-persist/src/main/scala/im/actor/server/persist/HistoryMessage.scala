@@ -2,7 +2,10 @@ package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
+import slick.dbio.Effect.{ Write, Read }
+import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
+import slick.profile.{ FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
 
@@ -55,13 +58,13 @@ object HistoryMessage {
 
   val notDeletedMessages = messages.filter(_.deletedAt.isEmpty)
 
-  def create(message: models.HistoryMessage) =
+  def create(message: models.HistoryMessage): FixedSqlAction[Int, NoStream, Write] =
     messages += message
 
-  def create(newMessages: Seq[models.HistoryMessage]) =
+  def create(newMessages: Seq[models.HistoryMessage]): FixedSqlAction[Option[Int], NoStream, Write] =
     messages ++= newMessages
 
-  def find(userId: Int, peer: models.Peer, dateOpt: Option[DateTime], limit: Int) = {
+  def find(userId: Int, peer: models.Peer, dateOpt: Option[DateTime], limit: Int): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] = {
     val baseQuery = notDeletedMessages
       .filter(m =>
       m.userId === userId &&
@@ -77,4 +80,17 @@ object HistoryMessage {
 
     query.take(limit).result
   }
+
+  def find(userId: Int, peer: models.Peer): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] =
+    notDeletedMessages
+      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .sortBy(_.date.desc)
+      .result
+
+  def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
+    notDeletedMessages
+      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .filter(m => m.date > lastReadAt)
+      .length
+      .result
 }

@@ -65,6 +65,9 @@ object Dialog {
   def find(userId: Int, peer: models.Peer) =
     dialogs.filter(d => d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
 
+  def findByUser(userId: Int) =
+    dialogs.filter(_.userId === userId).result
+
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)
                            (implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastMessageDate).update(lastMessageDate) flatMap {
