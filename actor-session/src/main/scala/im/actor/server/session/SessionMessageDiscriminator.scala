@@ -44,10 +44,6 @@ class SessionMessageDiscriminator(implicit actorSystem: ActorSystem)
       element match {
         case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) =>
           ctx.emit(p.outRpc)(HandleRpcRequest(messageId, bodyBytes, clientData))
-        case HandleMessageBox(MessageBox(messageId, Container(mbs)), clientData) =>
-          mbs foreach { mb =>
-            handleElement(ctx, HandleMessageBox(mb, clientData))
-          }
         case e: SubscribeToPresences =>
           ctx.emit(p.outSubscribe)(e)
         case unmatched =>

@@ -7,7 +7,7 @@ import akka.actor._
 import akka.stream.actor._
 
 import im.actor.api.rpc.ClientData
-import im.actor.server.mtproto.protocol.MessageBox
+import im.actor.server.mtproto.protocol.{ Container, MessageBox }
 
 private[session] object SessionMessagePublisher {
   def props() = Props[SessionMessagePublisher]
@@ -20,16 +20,24 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
   import SessionStream._
 
   // TODO: MaxQueueSize
-  var messageQueue = immutable.Queue.empty[SessionStreamMessage]
+  private[this] var messageQueue = immutable.Queue.empty[SessionStreamMessage]
 
   def receive = {
     case (mb: MessageBox, clientData: ClientData) =>
       log.info("MessageBox: {} clientData: {}", mb, clientData)
-      if (messageQueue.isEmpty && totalDemand > 0)
-        onNext(HandleMessageBox(mb, clientData))
-      else {
-        messageQueue = messageQueue.enqueue(HandleMessageBox(mb, clientData))
-        deliverBuf()
+
+      mb.body match {
+        case Container(bodies) =>
+          val messages = bodies.map(HandleMessageBox(_, clientData))
+          messageQueue = messageQueue.enqueue(messages.toList)
+          deliverBuf()
+        case _ =>
+          if (messageQueue.isEmpty && totalDemand > 0)
+            onNext(HandleMessageBox(mb, clientData))
+          else {
+            messageQueue = messageQueue.enqueue(HandleMessageBox(mb, clientData))
+            deliverBuf()
+          }
       }
     case Request(_) =>
       deliverBuf()
