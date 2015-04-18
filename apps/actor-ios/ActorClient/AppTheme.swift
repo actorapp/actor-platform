@@ -17,6 +17,34 @@ class AppTheme {
     var search = AppSearchBar()
     
     var list = AppList()
+    
+    var bubbles = ChatBubbles()
+}
+
+class ChatBubbles {
+    var textBgOut: UIColor {
+        get {
+            return UIColor.whiteColor()
+        }
+    }
+    
+    var textBgOutBorder : UIColor {
+        get {
+            return UIColor.RGB(0xCCCCCC)
+        }
+    }
+    
+    var textBgIn : UIColor {
+        get {
+            return UIColor.RGB(0xD2FEFD)
+        }
+    }
+    
+    var textBgInBorder : UIColor {
+        get {
+            return UIColor.RGB(0x99E4E3)
+        }
+    }
 }
 
 class AppList {
