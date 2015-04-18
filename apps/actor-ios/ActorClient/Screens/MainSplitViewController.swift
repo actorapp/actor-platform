@@ -13,7 +13,7 @@ class MainSplitViewController: UISplitViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         
-        preferredDisplayMode = .AllVisible
+    preferredDisplayMode = .AllVisible
     }
 
     required init(coder aDecoder: NSCoder) {

@@ -26,6 +26,10 @@ extension UIImage {
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
+        if (self.capInsets.bottom != 0 || self.capInsets.top != 0 || self.capInsets.left != 0 || self.capInsets.right != 0) {
+            return image.resizableImageWithCapInsets(capInsets, resizingMode: resizingMode)
+        }
+        
         return image;
     }
     

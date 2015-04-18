@@ -21,6 +21,7 @@ class BubbleCell: UITableViewCell {
     let senderNameLabel = UILabel()
     var group: Bool = false
     let bubble = UIImageView()
+    let bubbleBorder = UIImageView()
     let statusActive = UIColor(red: 52/255.0, green: 151/255.0, blue: 249/255.0, alpha: 1.0);
     let statusPassive = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
     
@@ -116,9 +117,34 @@ class BubbleCell: UITableViewCell {
         bind(message, reuse: reuse)
     }
     
+    func bindBubbleType(type: BubbleType, isCompact: Bool) {
+        // TODO: Cache images
+        switch(type) {
+            case BubbleType.TextIn:
+                bubble.image =  UIImage(named: "BubbleIncomingFull")?.tintImage(MainAppTheme.bubbles.textBgIn)
+                bubbleBorder.image =  UIImage(named: "BubbleIncomingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgInBorder)
+            break
+            case BubbleType.TextOut:
+                bubble.image =  UIImage(named: "BubbleOutgoingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                bubbleBorder.image =  UIImage(named: "BubbleOutgoingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+
+            break
+            default:
+            break
+        }
+    }
+    
     func bind(message: AMMessage, reuse: Bool){
         fatalError("bind(message:) has not been implemented")
     }
     
+}
+
+enum BubbleType {
+    case TextOut
+    case TextIn
+    case MediaOut
+    case MediaIn
+    case Service
 }
 

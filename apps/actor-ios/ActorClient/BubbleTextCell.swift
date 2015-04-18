@@ -71,6 +71,7 @@ class BubbleTextCell : BubbleCell {
         statusView.contentMode = UIViewContentMode.Center;
         
         contentView.addSubview(bubble);
+        contentView.addSubview(bubbleBorder);
         contentView.addSubview(messageText);
         contentView.addSubview(dateText);
         contentView.addSubview(statusView);
@@ -87,10 +88,11 @@ class BubbleTextCell : BubbleCell {
             needRelayout = true
             messageText.text = (message.getContent() as! AMTextContent).getText();
             isOut = message.getSenderId() == MSG.myUid();
+            
             if (isOut) {
-                bubble.image =  UIImage(named: "BubbleOutgoingFull");
+                bindBubbleType(.TextOut, isCompact: false)
             } else {
-                bubble.image =  UIImage(named: "BubbleIncomingFull");
+                bindBubbleType(.TextIn, isCompact: false)
             }
             
             if group && !isOut {
@@ -200,6 +202,7 @@ class BubbleTextCell : BubbleCell {
                 self.bubble.frame = CGRectMake(x - self.textPaddingStartIncoming, bubbleTopPadding, textWidth + self.textPaddingStartIncoming + self.textPaddingEndIncoming, textHeight + 8 + contentInsetY);
                 self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
             }
+            self.bubbleBorder.frame = self.bubble.frame
             
             if self.group && !self.isOut {
                 let avatarSize = CGFloat(self.avatarView.frameSize)

@@ -9,14 +9,14 @@
           "height" : 1
         },
         "capInsets" : {
-          "bottom" : 11,
-          "top" : 11,
-          "right" : 20,
-          "left" : 19
+          "bottom" : 15,
+          "top" : 14,
+          "right" : 19,
+          "left" : 13
         }
       },
       "idiom" : "universal",
-      "filename" : "BubbleOutgoingFull.png",
+      "filename" : "BubbleOutgoingFullBorder.png",
       "scale" : "1x"
     },
     {
@@ -31,11 +31,11 @@
           "bottom" : 30,
           "top" : 29,
           "right" : 40,
-          "left" : 39
+          "left" : 28
         }
       },
       "idiom" : "universal",
-      "filename" : "BubbleOutgoingFull@2x.png",
+      "filename" : "BubbleOutgoingFullBorder@2x.png",
       "scale" : "2x"
     },
     {
@@ -49,12 +49,12 @@
         "capInsets" : {
           "bottom" : 45,
           "top" : 44,
-          "right" : 60,
-          "left" : 59
+          "right" : 57,
+          "left" : 39
         }
       },
       "idiom" : "universal",
-      "filename" : "BubbleOutgoingFull@3x.png",
+      "filename" : "BubbleOutgoingFullBorder@3x.png",
       "scale" : "3x"
     }
   ],
