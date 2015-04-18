@@ -47,8 +47,8 @@ class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
     val action = requireAuth(clientData).map { implicit client =>
       // TODO: flatten
 
-      persist.UserPhone.findByUserId(client.userId).head.map { currentUserPhone =>
-        persist.User.find(client.userId).head.map { currentUser =>
+      persist.UserPhone.findByUserId(client.userId).head.flatMap { currentUserPhone =>
+        persist.User.find(client.userId).head.flatMap { currentUser =>
           val filteredPhones = phones.filterNot(_.phoneNumber == currentUserPhone.number)
           val phoneNumbers = filteredPhones.map(_.phoneNumber).map(PhoneNumber.normalizeLong(_, currentUser.countryCode)).flatten.toSet
           val phonesMap = immutable.HashMap(filteredPhones.map { p => p.phoneNumber -> p.name }: _*)
