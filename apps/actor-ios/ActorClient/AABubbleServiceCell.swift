@@ -8,48 +8,32 @@
 
 import Foundation
 
-private let maxServiceTextWidth = 260
-private let serviceBubbleFont = UIFont(name: "HelveticaNeue-Medium", size: 12)!
-
-private func measureText(message: String) -> CGRect {
-    var messageValue = message as NSString;
-    var style = NSMutableParagraphStyle();
-    style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-    
-    var size = CGSize(width: maxServiceTextWidth, height: 0);
-    var rect = messageValue.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: serviceBubbleFont, NSParagraphStyleAttributeName: style], context: nil);
-    return CGRectMake(0, 0, round(rect.width), round(rect.height))
-}
 
 // MARK: -
 
-class BubbleServiceCell : BubbleCell {
+class AABubbleServiceCell : AABubbleCell {
+    
+    private static let serviceBubbleFont = UIFont(name: "HelveticaNeue-Medium", size: 12)!
     
     // MARK: -
     // MARK: Private vars
     
     private let serviceText = UILabel()
-    private let serviceBackground = UIImageView()
     
     // MARK: -
     // MARK: Constructors
     
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
-        
+       
+        serviceText.font = AABubbleServiceCell.serviceBubbleFont;
         serviceText.lineBreakMode = .ByWordWrapping;
         serviceText.numberOfLines = 0;
         serviceText.textColor = UIColor.whiteColor()
         serviceText.contentMode = UIViewContentMode.Center
         serviceText.textAlignment = NSTextAlignment.Center
-        serviceText.font = serviceBubbleFont;
         
-        serviceBackground.image = UIImage(named: "bubble_service_bg");
-
-        self.contentView.addSubview(serviceBackground)
-        self.contentView.addSubview(serviceText)
-        
-        self.backgroundColor = UIColor.clearColor();
+        contentView.addSubview(serviceText)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -60,7 +44,10 @@ class BubbleServiceCell : BubbleCell {
     // MARK: Bind
 
     override func bind(message: AMMessage, reuse: Bool) {
-        serviceText.text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent)
+        if (!reuse) {
+            serviceText.text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent)
+            bindBubbleType(.Service, isCompact: false)
+        }
     }
     
     // MARK: -
@@ -83,18 +70,32 @@ class BubbleServiceCell : BubbleCell {
     // MARK: Layout
     
     override func layoutSubviews() {
+        super.layoutSubviews()
         
-        var bubbleTopPadding = BubbleServiceCell.bubbleTopPadding()
-        var bubbleBottomPadding = BubbleServiceCell.bubbleBottomPadding()
+        var bubbleTopPadding = AABubbleServiceCell.bubbleTopPadding()
+        var bubbleBottomPadding = AABubbleServiceCell.bubbleBottomPadding()
         
         var contentWidth = self.contentView.frame.width
         var contentHeight = self.contentView.frame.height
         
         var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
-        var bubbleWidth = CGFloat(maxServiceTextWidth)
+        var bubbleWidth = CGFloat(AABubbleServiceCell.maxServiceTextWidth)
         
         let serviceTextSize = serviceText.sizeThatFits(CGSize(width: bubbleWidth, height: CGFloat.max))
         serviceText.frame = CGRectMake((contentWidth - serviceTextSize.width) / 2.0, bubbleTopPadding + 3, serviceTextSize.width, bubbleHeight - 6);
-        serviceBackground.frame = CGRectMake(serviceText.frame.origin.x - 8, serviceText.frame.origin.y - 3, serviceText.frame.width + 16, serviceText.frame.height + 6)
+        
+        layoutBubble(CGRectMake(serviceText.frame.origin.x - 8, serviceText.frame.origin.y - 3, serviceText.frame.width + 16, serviceText.frame.height + 6))
+    }
+    
+    private static let maxServiceTextWidth = 260
+    
+    private class func measureText(message: String) -> CGRect {
+        var messageValue = message as NSString;
+        var style = NSMutableParagraphStyle();
+        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
+        
+        var size = CGSize(width: maxServiceTextWidth, height: 0);
+        var rect = messageValue.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: serviceBubbleFont, NSParagraphStyleAttributeName: style], context: nil);
+        return CGRectMake(0, 0, round(rect.width), round(rect.height))
     }
 }

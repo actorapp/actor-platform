@@ -10,35 +10,14 @@
 import Foundation
 import UIKit
 
-// Using padding for proper date align.
-// One space + 16 non-breakable spases for out messages
-private let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
 
-// One space + 6 non-breakable spaces for in messages
-private let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
-
-//private let bubbleFont = UIFont(name: "Roboto", size: 16)!
-private let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
-
-private let maxTextWidth = 210
-
-private let textPaddingTop: CGFloat = 4
-private let textPaddingBottom: CGFloat = 5
-
-private func measureText(message: String, isOut: Bool) -> CGRect {
-    var style = NSMutableParagraphStyle();
-    style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-    
-    var text = (message + (isOut ? stringOutPadding : stringInPadding)) as NSString;
-    
-    var size = CGSize(width: maxTextWidth, height: 0);
-    var rect = text.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: bubbleFont, NSParagraphStyleAttributeName: style], context: nil);
-    return CGRectMake(0, 0, round(rect.width), round(rect.height))
-}
 
 // MARK: -
 
-class BubbleTextCell : BubbleCell {
+class AABubbleTextCell : AABubbleCell {
+    
+    private static let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
+    private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
     let textPaddingStartOutgoing: CGFloat = 11.0;
     let textPaddingEndOutgoing: CGFloat = 10.0;
@@ -57,12 +36,11 @@ class BubbleTextCell : BubbleCell {
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
         
-        messageText.font = bubbleFont;
+        messageText.font = AABubbleTextCell.bubbleFont;
         messageText.lineBreakMode = .ByWordWrapping;
         messageText.numberOfLines = 0;
-        messageText.textColor = messageTextColor;
         
-        dateText.font = UIFont(name: "HelveticaNeue-Italic", size: 11);
+        dateText.font = AABubbleTextCell.dateFont;
         dateText.lineBreakMode = .ByClipping;
         dateText.numberOfLines = 1;
         dateText.contentMode = UIViewContentMode.TopLeft
@@ -70,13 +48,9 @@ class BubbleTextCell : BubbleCell {
         
         statusView.contentMode = UIViewContentMode.Center;
         
-        contentView.addSubview(bubble);
-        contentView.addSubview(bubbleBorder);
         contentView.addSubview(messageText);
         contentView.addSubview(dateText);
         contentView.addSubview(statusView);
-        
-        self.backgroundColor = UIColor.clearColor();
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -91,8 +65,12 @@ class BubbleTextCell : BubbleCell {
             
             if (isOut) {
                 bindBubbleType(.TextOut, isCompact: false)
+                messageText.textColor = MainAppTheme.bubbles.textOut
+                dateText.textColor = MainAppTheme.bubbles.textDateOut
             } else {
                 bindBubbleType(.TextIn, isCompact: false)
+                messageText.textColor = MainAppTheme.bubbles.textIn
+                dateText.textColor = MainAppTheme.bubbles.textDateIn
             }
             
             if group && !isOut {
@@ -120,6 +98,35 @@ class BubbleTextCell : BubbleCell {
         // Always update date and state
         dateText.text = formatDate(message.getDate());
         messageState = UInt(message.getMessageState().ordinal());
+        
+        if (isOut) {
+            switch(self.messageState) {
+            case AMMessageState.PENDING.rawValue:
+                self.statusView.image = Resources.iconClock;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusSending
+                break;
+            case AMMessageState.SENT.rawValue:
+                self.statusView.image = Resources.iconCheck1;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusSent
+                break;
+            case AMMessageState.RECEIVED.rawValue:
+                self.statusView.image = Resources.iconCheck2;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusReceived
+                break;
+            case AMMessageState.READ.rawValue:
+                self.statusView.image = Resources.iconCheck2;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusRead
+                break;
+            case AMMessageState.ERROR.rawValue:
+                self.statusView.image = Resources.iconError;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusError
+                break
+            default:
+                self.statusView.image = Resources.iconClock;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusSending
+                break;
+            }
+        }
     }
     
     // MARK: -
@@ -127,7 +134,7 @@ class BubbleTextCell : BubbleCell {
     
     class func measureTextHeight(message: AMMessage) -> CGFloat {
         var content = message.getContent() as! AMTextContent!
-        return round(measureText(content.getText(), message.getSenderId() == MSG.myUid()).height) + textPaddingTop + textPaddingBottom // 3 text top, 3 text bottom
+        return round(AABubbleTextCell.measureText(content.getText(), isOut: message.getSenderId() == MSG.myUid()).height) + textPaddingTop + textPaddingBottom // 3 text top, 3 text bottom
     }
     
     class func bubbleTopPadding() -> CGFloat {
@@ -160,11 +167,11 @@ class BubbleTextCell : BubbleCell {
 
         UIView.performWithoutAnimation { () -> Void in
             
-            var textBounds = measureText(self.messageText.text!, self.isOut);
+            var textBounds = AABubbleTextCell.measureText(self.messageText.text!, isOut: self.isOut);
             var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
             
-            var bubbleTopPadding = BubbleTextCell.bubbleTopPadding()
-            var bubbleBottomPadding = BubbleTextCell.bubbleBottomPadding()
+            var bubbleTopPadding = AABubbleTextCell.bubbleTopPadding()
+            var bubbleBottomPadding = AABubbleTextCell.bubbleBottomPadding()
             
             var contentWidth = self.contentView.frame.width
             var contentHeight = self.contentView.frame.height
@@ -185,11 +192,9 @@ class BubbleTextCell : BubbleCell {
             }
             
             if (self.isOut) {
-                self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - self.textPaddingEndOutgoing - self.bubblePadding, y: bubbleTopPadding + textPaddingTop);
-                self.dateText.textColor = self.dateColorOut;
+                self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - self.textPaddingEndOutgoing - self.bubblePadding, y: bubbleTopPadding + AABubbleTextCell.textPaddingTop);
             } else {
-                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStartIncoming + contentInsetX, y: bubbleTopPadding + textPaddingTop + contentInsetY)
-                self.dateText.textColor = self.dateColorIn;
+                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStartIncoming + contentInsetX, y: bubbleTopPadding + AABubbleTextCell.textPaddingTop + contentInsetY)
             }
             
             let x = round(self.messageText.frame.origin.x);
@@ -213,35 +218,32 @@ class BubbleTextCell : BubbleCell {
             if (self.isOut) {
                 self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26);
                 self.statusView.hidden = false;
-                
-                switch(self.messageState) {
-                    case AMMessageState.UNKNOWN.rawValue:
-                        self.statusView.image = Resources.iconClock;
-                        self.statusView.tintColor = self.statusPassive;
-                    case AMMessageState.PENDING.rawValue:
-                        self.statusView.image = Resources.iconClock;
-                        self.statusView.tintColor = self.statusPassive;
-                        break;
-                    case AMMessageState.SENT.rawValue:
-                        self.statusView.image = Resources.iconCheck1;
-                        self.statusView.tintColor = self.statusPassive;
-                        break;
-                    case AMMessageState.RECEIVED.rawValue:
-                        self.statusView.image = Resources.iconCheck2;
-                        self.statusView.tintColor = self.statusPassive;
-                        break;
-                    case AMMessageState.READ.rawValue:
-                        self.statusView.image = Resources.iconCheck2;
-                        self.statusView.tintColor = self.statusActive;
-                        break;
-                    default:
-                        self.statusView.image = Resources.iconClock;
-                        self.statusView.tintColor = self.statusPassive;
-                        break;
-                }
             } else {
                 self.statusView.hidden = true;
             }
         }
+    }
+    
+    // Using padding for proper date align.
+    // One space + 16 non-breakable spases for out messages
+    private static let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
+    
+    // One space + 6 non-breakable spaces for in messages
+    private static let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
+    
+    private static let maxTextWidth = 210
+    
+    private static let textPaddingTop: CGFloat = 4
+    private static let textPaddingBottom: CGFloat = 5
+    
+    private class func measureText(message: String, isOut: Bool) -> CGRect {
+        var style = NSMutableParagraphStyle();
+        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
+        
+        var text = (message + (isOut ? stringOutPadding : stringInPadding)) as NSString;
+        
+        var size = CGSize(width: maxTextWidth, height: 0);
+        var rect = text.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: bubbleFont, NSParagraphStyleAttributeName: style], context: nil);
+        return CGRectMake(0, 0, round(rect.width), round(rect.height))
     }
 }

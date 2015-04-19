@@ -22,29 +22,44 @@ class AppTheme {
 }
 
 class ChatBubbles {
-    var textBgOut: UIColor {
-        get {
-            return UIColor.whiteColor()
-        }
-    }
     
-    var textBgOutBorder : UIColor {
-        get {
-            return UIColor.RGB(0xCCCCCC)
-        }
-    }
+    // Basic colors
+    var text : UIColor { get { return UIColor.RGB(0x141617) } }
+
+    var bgOut: UIColor { get { return UIColor.whiteColor() } }
+    var bgOutBorder: UIColor { get { return UIColor.RGB(0xCCCCCC) } }
     
-    var textBgIn : UIColor {
-        get {
-            return UIColor.RGB(0xD2FEFD)
-        }
-    }
+    var bgIn : UIColor { get { return UIColor.RGB(0xD2FEFD) } }
+    var bgInBorder:UIColor { get { return UIColor.RGB(0x99E4E3) } }
     
-    var textBgInBorder : UIColor {
-        get {
-            return UIColor.RGB(0x99E4E3)
-        }
-    }
+    var statusActive : UIColor { get { return UIColor.RGB(0x3397f9) } }
+    var statusPassive : UIColor { get { return UIColor.alphaBlack(0.27) } }
+    // TODO: Fix
+    var statusDanger : UIColor { get { return UIColor.redColor() } }
+    
+    // Text-based bubble colors
+    var statusSending : UIColor { get { return statusPassive } }
+    var statusSent : UIColor { get { return statusPassive } }
+    var statusReceived : UIColor { get { return statusPassive } }
+    var statusRead : UIColor { get { return statusActive } }
+    var statusError : UIColor { get { return statusDanger } }
+    
+    var textBgOut: UIColor { get { return bgOut } }
+    var textBgOutBorder : UIColor { get { return bgOutBorder } }
+    var textBgIn : UIColor { get { return bgIn } }
+    var textBgInBorder : UIColor { get { return bgInBorder } }
+    
+    var textDateOut : UIColor { get { return UIColor.alphaBlack(0.27) } }
+    var textDateIn : UIColor { get { return UIColor.RGB(0x979797) } }
+    
+    var textOut : UIColor { get { return text } }
+    var textIn : UIColor { get { return text } }
+    
+    // Media-based bubble colors
+    var mediaBgOut: UIColor { get { return bgOut } }
+    var mediaBgOutBorder: UIColor { get { return bgOutBorder } }
+    var mediaBgIn: UIColor { get { return bgIn } }
+    var mediaBgInBorder: UIColor { get { return bgInBorder } }
 }
 
 class AppList {

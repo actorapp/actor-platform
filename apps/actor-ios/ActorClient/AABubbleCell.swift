@@ -9,33 +9,36 @@
 import Foundation
 import UIKit;
 
-class BubbleCell: UITableViewCell {
+class AABubbleCell: UITableViewCell {
+    
+    // MARK: -
+    // MARK: Private static vars
+    
+    // Cached bubble images
+    private static var cacnedOutTextBg:UIImage? = nil;
+    private static var cacnedOutTextBgBorder:UIImage? = nil;
+    private static var cacnedInTextBg:UIImage? = nil;
+    private static var cacnedInTextBgBorder:UIImage? = nil;
     
     // MARK: -
     // MARK: Public vars
     
-    let groupContentInsetY = 20.0
-    let groupContentInsetX = 40.0
-    
+    // Views
     let avatarView = AAAvatarView(frameSize: 39)
     let senderNameLabel = UILabel()
-    var group: Bool = false
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
-    let statusActive = UIColor(red: 52/255.0, green: 151/255.0, blue: 249/255.0, alpha: 1.0);
-    let statusPassive = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
     
-    //    let dateColorOut = UIColor(red: 45/255.0, green: 163/255.0, blue: 47/255.0, alpha: 1.0);
-    let dateColorOut = UIColor(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 0.27);
-    let dateColorIn = UIColor(red: 151/255.0, green: 151/255.0, blue: 151/255.0, alpha: 1.0);
-    
-    let messageTextColor = UIColor(red: 20/255.0, green: 22/255.0, blue: 23/255.0, alpha: 1.0);
-    
+    // Layout
+    let groupContentInsetY = 20.0
+    let groupContentInsetX = 40.0
+    var bubbleVerticalSpacing: CGFloat = 6.0
     let bubblePadding: CGFloat = 6;
     let bubbleMediaPadding: CGFloat = 10;
-    var bindedMessage: AMMessage? = nil
     
-    var bubbleVerticalSpacing: CGFloat = 6.0
+    // Binded data
+    var bindedMessage: AMMessage? = nil
+    var group: Bool = false
     
     // MARK: -
     // MARK: Constructors
@@ -44,7 +47,13 @@ class BubbleCell: UITableViewCell {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseId);
         
         senderNameLabel.font = UIFont.systemFontOfSize(15.0)
+        
         bubble.userInteractionEnabled = true
+        
+        contentView.addSubview(bubble);
+        contentView.addSubview(bubbleBorder);
+        
+        backgroundColor = UIColor.clearColor();
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -61,15 +70,15 @@ class BubbleCell: UITableViewCell {
     class func measureHeight(message: AMMessage, group: Bool) -> CGFloat {
         var content = message.getContent()!;
         
-        var height = CGFloat(0.0)
+        var height : CGFloat
         if (content is AMTextContent) {
-            height = BubbleTextCell.measureTextHeight(message) + BubbleTextCell.bubbleTopPadding() + BubbleTextCell.bubbleBottomPadding()
+            height = AABubbleTextCell.measureTextHeight(message) + AABubbleTextCell.bubbleTopPadding() + AABubbleTextCell.bubbleBottomPadding()
         } else if (content is AMPhotoContent) {
-            height = BubbleMediaCell.measureMediaHeight(message) + BubbleMediaCell.bubbleTopPadding() + BubbleMediaCell.bubbleBottomPadding()
+            height = AABubbleMediaCell.measureMediaHeight(message) + AABubbleMediaCell.bubbleTopPadding() + AABubbleMediaCell.bubbleBottomPadding()
         } else if (content is AMVideoContent) {
-            height = BubbleMediaCell.measureMediaHeight(message) + BubbleMediaCell.bubbleTopPadding() + BubbleMediaCell.bubbleBottomPadding()
+            height = AABubbleMediaCell.measureMediaHeight(message) + AABubbleMediaCell.bubbleTopPadding() + AABubbleMediaCell.bubbleBottomPadding()
         } else if (content is AMServiceContent) {
-            height = BubbleServiceCell.measureServiceHeight(message) + BubbleServiceCell.bubbleTopPadding() + BubbleServiceCell.bubbleBottomPadding()
+            height = AABubbleServiceCell.measureServiceHeight(message) + AABubbleServiceCell.bubbleTopPadding() + AABubbleServiceCell.bubbleBottomPadding()
         } else if (content is AMDocumentContent) {
             height = AABubbleDocumentCell.measureServiceHeight(message) + AABubbleDocumentCell.bubbleTopPadding() + AABubbleDocumentCell.bubbleBottomPadding()
         } else {
@@ -101,10 +110,6 @@ class BubbleCell: UITableViewCell {
         return false
     }
     
-//    - (void)copy:(id)sender {
-//    [[UIPasteboard generalPasteboard] setString:self.text];
-//    }
-    
     // MARK: -
     // MARK: Bind
     
@@ -121,20 +126,42 @@ class BubbleCell: UITableViewCell {
         // TODO: Cache images
         switch(type) {
             case BubbleType.TextIn:
-                bubble.image =  UIImage(named: "BubbleIncomingFull")?.tintImage(MainAppTheme.bubbles.textBgIn)
-                bubbleBorder.image =  UIImage(named: "BubbleIncomingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgInBorder)
+                if (AABubbleCell.cacnedInTextBg == nil) {
+                    AABubbleCell.cacnedInTextBg = UIImage(named: "BubbleIncomingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                }
+                if (AABubbleCell.cacnedInTextBgBorder == nil) {
+                    AABubbleCell.cacnedInTextBgBorder = UIImage(named: "BubbleIncomingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+                }
+                
+                bubble.image = AABubbleCell.cacnedInTextBg
+                bubbleBorder.image = AABubbleCell.cacnedInTextBgBorder
             break
             case BubbleType.TextOut:
-                bubble.image =  UIImage(named: "BubbleOutgoingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
-                bubbleBorder.image =  UIImage(named: "BubbleOutgoingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-
+                if (AABubbleCell.cacnedOutTextBg == nil) {
+                    AABubbleCell.cacnedOutTextBg = UIImage(named: "BubbleOutgoingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                }
+                if (AABubbleCell.cacnedOutTextBgBorder == nil) {
+                    AABubbleCell.cacnedOutTextBgBorder = UIImage(named: "BubbleOutgoingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+                }
+                
+                bubble.image =  AABubbleCell.cacnedOutTextBg!
+                bubbleBorder.image =  AABubbleCell.cacnedOutTextBgBorder!
+            break
+            case BubbleType.MediaIn:
+            break
+            case BubbleType.MediaIn:
             break
             default:
             break
         }
     }
     
-    func bind(message: AMMessage, reuse: Bool){
+    func layoutBubble(frame: CGRect) {
+        bubble.frame = frame
+        bubbleBorder.frame = frame
+    }
+    
+    func bind(message: AMMessage, reuse: Bool) {
         fatalError("bind(message:) has not been implemented")
     }
     
@@ -147,4 +174,3 @@ enum BubbleType {
     case MediaIn
     case Service
 }
-
