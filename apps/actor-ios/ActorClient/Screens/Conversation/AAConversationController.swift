@@ -441,7 +441,7 @@ extension AAConversationController: UIImagePickerControllerDelegate {
 extension AAConversationController: UINavigationControllerDelegate {
     
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        MainAppTheme.navigation.applyStatusBar()
+        MainAppTheme.navigation.applyStatusBarFast()
     }
     
 }
