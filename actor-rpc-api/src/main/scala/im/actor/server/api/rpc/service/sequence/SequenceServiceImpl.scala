@@ -3,18 +3,26 @@ package im.actor.server.api.rpc.service.sequence
 import scala.concurrent.{ExecutionContext, Future}
 
 import akka.actor.{ActorRef, ActorSystem}
+import slick.dbio
+import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
+import im.actor.api.rpc.groups.Group
 import im.actor.api.rpc.misc.{ResponseSeq, ResponseVoid}
 import im.actor.api.rpc.peers.{GroupOutPeer, UserOutPeer}
 import im.actor.api.rpc.sequence.{DifferenceUpdate, ResponseGetDifference, SequenceService}
+import im.actor.api.rpc.users.{ Phone, User }
+import im.actor.server.api.util.{ UserUtils, GroupUtils }
 import im.actor.server.models
+import im.actor.server.models.UserPhone
 import im.actor.server.push.SeqUpdatesManager
 
 class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, actorSystem: ActorSystem) extends SequenceService {
 
   import SeqUpdatesManager._
+  import GroupUtils._
+  import UserUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -33,12 +41,10 @@ class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, 
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       for {
         seqstate <- getSeqState(seqUpdManagerRegion, client.authId)
-        diff <- getDifference(client.authId, state)
+        (updates, needMore) <- getDifference(client.authId, state)
+        (diffUpdates, userIds, groupIds) = extractDiff(updates)
+        (users, phones, groups) <- getUsersPhonesGroups(userIds, groupIds)
       } yield {
-        val (updates, needMore) = diff
-
-        val (diffUpdates, userIds, groupIds) = extractDiff(updates)
-
         // TODO: get users, groups and group members
 
         Ok(ResponseGetDifference(
@@ -46,9 +52,9 @@ class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, 
           state = state,
           updates = diffUpdates,
           needMore = needMore,
-          users = Vector.empty,
-          groups = Vector.empty,
-          phones = Vector.empty,
+          users = users.toVector,
+          groups = groups.toVector,
+          phones = phones.toVector,
           emails = Vector.empty))
       }
     }
@@ -79,5 +85,16 @@ class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, 
           userIds ++ update.userIds,
           groupIds ++ update.groupIds)
     }
+  }
+
+  private def getUsersPhonesGroups(userIds: Set[Int], groupIds: Set[Int])
+                                  (implicit client: AuthorizedClientData)
+  : dbio.DBIOAction[(Seq[User], Seq[Phone], Seq[Group]), NoStream, Read with Read with Read with Read with Read with Read with Read with Read with Read] = {
+    for {
+      groups <- getGroupsStructs(groupIds)
+      allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) => ids ++ g.members.map(_.userId) }
+      users <- userStructs(allUserIds)
+      phones <- getUserPhones(allUserIds)
+    } yield (users, phones, groups)
   }
 }

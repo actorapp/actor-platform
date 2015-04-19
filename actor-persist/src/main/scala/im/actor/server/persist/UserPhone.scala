@@ -1,8 +1,10 @@
 package im.actor.server.persist
 
+import slick.dbio.Effect.{ Write, Read }
+import slick.profile.{ FixedSqlAction, FixedSqlStreamingAction }
+
 import im.actor.server.models
 import slick.driver.PostgresDriver.api._
-import Database.dynamicSession
 
 class UserPhoneTable(tag: Tag) extends Table[models.UserPhone](tag, "user_phones") {
   def id = column[Int]("id", O.PrimaryKey)
@@ -24,11 +26,15 @@ object UserPhone {
   // TODO: rename to findByNumber
   def findByPhoneNumber(number: Long) = byPhoneNumber(number).result
 
-  def findByNumbers(numbers: Set[Long]) =
+  def findByNumbers(numbers: Set[Long]): FixedSqlStreamingAction[Seq[models.UserPhone], models.UserPhone, Read] =
     phones.filter(_.number inSet numbers).result
 
-  def findByUserId(userId: Int) = phones.filter(_.userId === userId).result
+  def findByUserId(userId: Int): FixedSqlStreamingAction[Seq[models.UserPhone], models.UserPhone, Read] =
+    phones.filter(_.userId === userId).result
 
-  def create(id: Int, userId: Int, accessSalt: String, number: Long, title: String) =
+  def findByUserIds(userIds: Set[Int]): FixedSqlStreamingAction[Seq[models.UserPhone], models.UserPhone, Read] =
+    phones.filter(_.userId inSet userIds).result
+
+  def create(id: Int, userId: Int, accessSalt: String, number: Long, title: String): FixedSqlAction[Int, NoStream, Write] =
     phones += models.UserPhone(id, userId, accessSalt, number, title)
 }
