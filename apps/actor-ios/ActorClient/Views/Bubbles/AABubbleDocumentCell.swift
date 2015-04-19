@@ -61,7 +61,7 @@ class AABubbleDocumentCell: AABubbleCell {
     // MARK: -
     // MARK: Bind
     
-    override func bind(message: AMMessage, reuse: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         let document = message.getContent() as! AMDocumentContent
         
         if (!reuse) {

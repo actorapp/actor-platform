@@ -27,8 +27,9 @@ class AABubbleTextCell : AABubbleCell {
     
     let messageText = UILabel();
     let statusView = UIImageView();
-    var isOut:Bool = false;
+    var isOut:Bool = false
     var needRelayout = true
+    var isCompact:Bool = false
     
     private let dateText = UILabel();
     private var messageState: UInt = AMMessageState.UNKNOWN.rawValue;
@@ -57,18 +58,19 @@ class AABubbleTextCell : AABubbleCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func bind(message: AMMessage, reuse: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         if (!reuse) {
             needRelayout = true
             messageText.text = (message.getContent() as! AMTextContent).getText();
             isOut = message.getSenderId() == MSG.myUid();
+            isCompact = isPreferCompact
             
             if (isOut) {
-                bindBubbleType(.TextOut, isCompact: false)
+                bindBubbleType(.TextOut, isCompact: isPreferCompact)
                 messageText.textColor = MainAppTheme.bubbles.textOut
                 dateText.textColor = MainAppTheme.bubbles.textDateOut
             } else {
-                bindBubbleType(.TextIn, isCompact: false)
+                bindBubbleType(.TextIn, isCompact: isPreferCompact)
                 messageText.textColor = MainAppTheme.bubbles.textIn
                 dateText.textColor = MainAppTheme.bubbles.textDateIn
             }
@@ -132,17 +134,17 @@ class AABubbleTextCell : AABubbleCell {
     // MARK: -
     // MARK: Getters
     
-    class func measureTextHeight(message: AMMessage) -> CGFloat {
+    class func measureTextHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
         var content = message.getContent() as! AMTextContent!
         return round(AABubbleTextCell.measureText(content.getText(), isOut: message.getSenderId() == MSG.myUid()).height) + textPaddingTop + textPaddingBottom // 3 text top, 3 text bottom
     }
     
     class func bubbleTopPadding() -> CGFloat {
-        return 1 + Utils.retinaPixel()
+        return 1 + retinaPixel
     }
     
     class func bubbleBottomPadding() -> CGFloat {
-        return 1 + Utils.retinaPixel()
+        return 1 + retinaPixel
     }
     
     // MARK: -
@@ -171,7 +173,7 @@ class AABubbleTextCell : AABubbleCell {
             var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
             
             var bubbleTopPadding = AABubbleTextCell.bubbleTopPadding()
-            var bubbleBottomPadding = AABubbleTextCell.bubbleBottomPadding()
+            var bubbleBottomPadding = self.isCompact ? 0 : AABubbleTextCell.bubbleBottomPadding()
             
             var contentWidth = self.contentView.frame.width
             var contentHeight = self.contentView.frame.height

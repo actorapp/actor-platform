@@ -27,7 +27,7 @@ class AAConversationController: EngineSlackListController {
     
     private let avatarView = BarAvatarView(frameSize: 36, type: AAAvatarType.Rounded)
     
-    private let backgroundView: UIImageView = UIImageView(image: UIImage(named: "ChatBackground")!)
+    private let backgroundView: UIView = UIView()
     
     // MARK: -
     // MARK: Public vars
@@ -103,7 +103,8 @@ class AAConversationController: EngineSlackListController {
         self.navigationItem.rightBarButtonItem = barItem
         
         backgroundView.clipsToBounds = true
-        backgroundView.contentMode = UIViewContentMode.ScaleAspectFill
+        backgroundView.backgroundColor = UIColor(
+            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(UIColor.RGB(0xe7e0c4)))
         view.insertSubview(backgroundView, atIndex: 0)
     }
     
@@ -339,10 +340,19 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        let group = peer.getPeerType().name() == "GROUP"
-        println("\(group)")
-        (cell as! AABubbleCell).group = group
-        (cell as! AABubbleCell).performBind(item as! AMMessage);
+        var message = item as! AMMessage
+        var bubbleCell = (cell as! AABubbleCell)
+        
+        var preferCompact = false
+        if (indexPath.row > 0) {
+            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
+            if (message.getSenderId() == next.getSenderId()) {
+                preferCompact = true
+            }
+        }
+
+        bubbleCell.group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
+        bubbleCell.performBind(message, isPreferCompact: preferCompact)
     }
     
     override func getDisplayList() -> AMBindedDisplayList {
@@ -361,9 +371,18 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var item = objectAtIndexPath(indexPath) as! AMMessage;
-        let group = peer.getPeerType().name() == "GROUP"
-        return AABubbleCell.measureHeight(item, group: group);
+        var message = objectAtIndexPath(indexPath) as! AMMessage;
+        
+        var preferCompact = false
+        if (indexPath.row > 0) {
+            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
+            if (message.getSenderId() == next.getSenderId()) {
+                preferCompact = true
+            }
+        }
+        
+        let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
+        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact);
     }
     
     // MARK: -

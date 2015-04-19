@@ -4415,7 +4415,6 @@
 			children = (
 				069FE6D21AC0203100C6C033 /* Common */,
 				069FE6D31AC0204A00C6C033 /* Main */,
-				069FE6D11AC0201000C6C033 /* Conversation */,
 				069FE6D41AC0207A00C6C033 /* Views */,
 				065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */,
 				065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */,
@@ -4424,13 +4423,6 @@
 				06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */,
 			);
 			name = ScreensOld;
-			sourceTree = "<group>";
-		};
-		069FE6D11AC0201000C6C033 /* Conversation */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Conversation;
 			sourceTree = "<group>";
 		};
 		069FE6D21AC0203100C6C033 /* Common */ = {

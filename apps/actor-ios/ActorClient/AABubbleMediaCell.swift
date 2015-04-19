@@ -46,7 +46,7 @@ class AABubbleMediaCell : AABubbleCell {
     
     // MARK: -
     
-    override func bind(message: AMMessage, reuse: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         if (!reuse) {
             self.isOut = message.getSenderId() == MSG.myUid()
             
