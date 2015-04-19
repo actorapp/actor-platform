@@ -11,9 +11,9 @@ import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ PeerType, Peer, OutPeer }
 import im.actor.api.rpc.weak.{ UpdateTyping, WeakService }
-import im.actor.server.push.WeakUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManagerRegion, WeakUpdatesManager }
 
-class WeakServiceImpl(weakUpdManagerRegion: ActorRef)(implicit db: Database, actorSystem: ActorSystem) extends WeakService {
+class WeakServiceImpl(weakUpdManagerRegion: WeakUpdatesManagerRegion)(implicit db: Database, actorSystem: ActorSystem) extends WeakService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleTyping(peer: OutPeer, typingType: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {

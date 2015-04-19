@@ -19,6 +19,8 @@ import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc => api }
 import im.actor.server.{ models, persist => p }
 
+case class SeqUpdatesManagerRegion(ref: ActorRef)
+
 object SeqUpdatesManager {
 
   @SerialVersionUID(1L)
@@ -63,28 +65,29 @@ object SeqUpdatesManager {
   private val OperationTimeout = Timeout(5.seconds)
   private val MaxDifferenceUpdates = 100
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef = ClusterSharding(system).start(
+  private def startRegion(props: Option[Props])(implicit system: ActorSystem): SeqUpdatesManagerRegion =
+    SeqUpdatesManagerRegion(ClusterSharding(system).start(
     typeName = "SeqUpdatesManager",
     entryProps = props,
     idExtractor = idExtractor,
     shardResolver = shardResolver
-  )
+  ))
 
-  def startRegion()(implicit system: ActorSystem, db: Database): ActorRef = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
+  def startRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
 
-  def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = startRegion(None)
 
-  def getSeqState(region: ActorRef, authId: Long)(implicit ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
+  def getSeqState(region: SeqUpdatesManagerRegion, authId: Long)(implicit ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
     for {
-      seqstate <- DBIO.from(region.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
+      seqstate <- DBIO.from(region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
     } yield seqstate
   }
 
-  def persistAndPushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])(implicit ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(region: SeqUpdatesManagerRegion, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])(implicit ec: ExecutionContext): DBIO[SequenceState] = {
     DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData, userIds, groupIds))
   }
 
-  def persistAndPushUpdate(region: ActorRef, authId: Long, update: api.Update)(implicit ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(region: SeqUpdatesManagerRegion, authId: Long, update: api.Update)(implicit ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -93,7 +96,7 @@ object SeqUpdatesManager {
     persistAndPushUpdate(region, authId, header, serializedData, userIds, groupIds)
   }
 
-  def persistAndPushUpdates(region: ActorRef, authIds: Set[Long], update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def persistAndPushUpdates(region: SeqUpdatesManagerRegion, authIds: Set[Long], update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -102,7 +105,7 @@ object SeqUpdatesManager {
     DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(region, _, header, serializedData, userIds, groupIds)))
   }
 
-  def broadcastUpdateAll(region: ActorRef, userIds: Set[Int], update: api.Update)
+  def broadcastUpdateAll(region: SeqUpdatesManagerRegion, userIds: Set[Int], update: api.Update)
                         (implicit ec: ExecutionContext, client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
     val header = update.header
     val serializedData = update.toByteArray
@@ -115,7 +118,7 @@ object SeqUpdatesManager {
     } yield (seqstate, seqstates)
   }
 
-  def broadcastUserUpdate(region: ActorRef,
+  def broadcastUserUpdate(region: SeqUpdatesManagerRegion,
                           userId: Int,
                           update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
@@ -128,7 +131,7 @@ object SeqUpdatesManager {
     } yield seqstates
   }
 
-  def broadcastClientUpdate(region: ActorRef, update: api.Update)(
+  def broadcastClientUpdate(region: SeqUpdatesManagerRegion, update: api.Update)(
     implicit
     client: api.AuthorizedClientData, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
@@ -142,7 +145,7 @@ object SeqUpdatesManager {
     } yield ownseqstate
   }
 
-  def notifyClientUpdate(region: ActorRef,
+  def notifyClientUpdate(region: SeqUpdatesManagerRegion,
                          update: api.Update)
                         (implicit
                          client: api.AuthorizedClientData,
@@ -237,9 +240,9 @@ object SeqUpdatesManager {
     }
   }
 
-  private[push] def subscribe(region: ActorRef, authId: Long, consumer: ActorRef)
+  private[push] def subscribe(region: SeqUpdatesManagerRegion, authId: Long, consumer: ActorRef)
                              (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 
   private def bytesToTimestamp(bytes: Array[Byte]): Long = {
@@ -254,12 +257,12 @@ object SeqUpdatesManager {
     ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
   }
 
-  private def pushUpdateGetSeqState(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Future[SequenceState] = {
-    region.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)))(OperationTimeout).mapTo[SequenceState]
+  private def pushUpdateGetSeqState(region: SeqUpdatesManagerRegion, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Future[SequenceState] = {
+    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)))(OperationTimeout).mapTo[SequenceState]
   }
 
-  private def pushUpdate(region: ActorRef, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
-    region ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds))
+  private def pushUpdate(region: SeqUpdatesManagerRegion, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
+    region.ref ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds))
   }
 }
 

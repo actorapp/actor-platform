@@ -12,7 +12,9 @@ import im.actor.api.{ rpc => api }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.models
 import im.actor.server.persist
-import im.actor.server.session.Session
+import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
+import im.actor.server.session.{ SessionRegion, Session }
 
 trait PersistenceHelpers {
   implicit val timeout = Timeout(5.seconds)
@@ -81,13 +83,13 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def buildRpcApiService()(implicit system: ActorSystem, db: Database) = system.actorOf(RpcApiService.props())
 
   def buildSessionRegion(rpcApiService: ActorRef,
-                         seqUpdManagerRegion: ActorRef,
-                         weakUpdManagerRegion: ActorRef,
-                         presenceManagerRegion: ActorRef)
+                         seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                         weakUpdManagerRegion: WeakUpdatesManagerRegion,
+                         presenceManagerRegion: PresenceManagerRegion)
                         (implicit system: ActorSystem, db: Database, flowMaterializer: FlowMaterializer) =
     Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
 
-  def buildAuthService(sessionRegion: ActorRef)(implicit system: ActorSystem, database: Database) = new auth.AuthServiceImpl(sessionRegion)
+  def buildAuthService(sessionRegion: SessionRegion)(implicit system: ActorSystem, database: Database) = new auth.AuthServiceImpl(sessionRegion)
 
   protected def withoutLogs[A](f: => A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]

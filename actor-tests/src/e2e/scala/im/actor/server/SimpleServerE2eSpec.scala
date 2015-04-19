@@ -21,6 +21,7 @@ import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, ProtoPackage, TransportPackage }
+import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
 import im.actor.util.testing._
@@ -41,8 +42,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
-  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)))
+  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
 
   val services = Seq(
     new AuthServiceImpl(sessionRegion),
@@ -50,7 +52,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
     new EncryptionServiceImpl,
     new MessagingServiceImpl(seqUpdManagerRegion),
     new GroupsServiceImpl(seqUpdManagerRegion),
-    new SequenceServiceImpl(seqUpdManagerRegion)
+    new SequenceServiceImpl(seqUpdManagerRegion, sessionRegion)
   )
 
   services foreach { service =>
