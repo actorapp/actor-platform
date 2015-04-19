@@ -9,8 +9,7 @@ import slick.dbio.{ Effect, DBIO, DBIOAction, NoStream }
 import slick.profile.SqlAction
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.users.User
-import im.actor.server.models.UserPhone
+import im.actor.api.rpc.users.{ Phone, User }
 import im.actor.server.{ models, persist }
 
 object UserUtils {
@@ -84,6 +83,14 @@ object UserUtils {
   : DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] =
     userStructs(userIds, client.userId, client.authId)
 
+  def getUserPhones(userIds: Set[Int])
+                   (implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem)
+  : DBIOAction[Seq[Phone], NoStream, Read] = {
+    for {
+      phoneModels <- persist.UserPhone.findByUserIds(userIds)
+    } yield phoneModels map (model => Phone(model.id, ACL.phoneAccessHash(client.authId, model), model.number, model.title))
+  }
+
   def getClientUser(implicit client: AuthorizedClientData): SqlAction[Option[models.User], NoStream, Read] = {
     persist.User.find(client.userId).headOption
   }
@@ -95,7 +102,7 @@ object UserUtils {
     }
   }
 
-  def getClientUserPhone(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[(models.User, UserPhone)], NoStream, Read with Read] = {
+  def getClientUserPhone(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[(models.User, models.UserPhone)], NoStream, Read with Read] = {
     getClientUser.flatMap {
       case Some(user) =>
         persist.UserPhone.findByUserId(client.userId).headOption map {
@@ -106,7 +113,7 @@ object UserUtils {
     }
   }
 
-  def getClientUserPhoneUnsafe(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[(models.User, UserPhone), NoStream, Read with Read] = {
+  def getClientUserPhoneUnsafe(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[(models.User, models.UserPhone), NoStream, Read with Read] = {
     getClientUserPhone map {
       case Some(user_phone) => user_phone
       case None => throw new Exception("Client user phone not found")
