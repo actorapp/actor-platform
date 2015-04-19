@@ -8,35 +8,13 @@
         <option name="jdk" value="1.8" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/actor-api" />
-            <option value="$PROJECT_DIR$/actor-api/project" />
-            <option value="$PROJECT_DIR$/actor-codecs" />
-            <option value="$PROJECT_DIR$/actor-codecs/project" />
-            <option value="$PROJECT_DIR$/actor-frontend" />
-            <option value="$PROJECT_DIR$/actor-frontend/project" />
-            <option value="$PROJECT_DIR$/actor-models" />
-            <option value="$PROJECT_DIR$/actor-models/project" />
-            <option value="$PROJECT_DIR$/actor-persist" />
-            <option value="$PROJECT_DIR$/actor-persist/project" />
-            <option value="$PROJECT_DIR$/actor-presences" />
-            <option value="$PROJECT_DIR$/actor-presences/project" />
-            <option value="$PROJECT_DIR$/actor-push" />
-            <option value="$PROJECT_DIR$/actor-push/project" />
-            <option value="$PROJECT_DIR$/actor-rpc-api" />
-            <option value="$PROJECT_DIR$/actor-rpc-api/project" />
-            <option value="$PROJECT_DIR$/actor-session" />
-            <option value="$PROJECT_DIR$/actor-session-messages" />
-            <option value="$PROJECT_DIR$/actor-session-messages/project" />
-            <option value="$PROJECT_DIR$/actor-session/project" />
-            <option value="$PROJECT_DIR$/actor-tests" />
-            <option value="$PROJECT_DIR$/actor-tests/project" />
-            <option value="$PROJECT_DIR$/project" />
+            <option value="$PROJECT_DIR$/actor-session-messages/project/project" />
+            <option value="$PROJECT_DIR$/actor-session-messages/project/project/project" />
           </set>
         </option>
         <option name="resolveClassifiers" value="true" />
         <option name="resolveSbtClassifiers" value="true" />
-        <option name="sbtVersion" value="0.13.8" />
+        <option name="sbtVersion" value="0.13.5" />
         <option name="useAutoImport" value="true" />
         <option name="useOurOwnAutoImport" value="true" />
       </SbtProjectSettings>

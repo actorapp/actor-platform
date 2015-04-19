@@ -4,6 +4,7 @@ application.conf
 application.conf
 actor-tests/journal
 actor-tests/snapshots
+project
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/find.xml
