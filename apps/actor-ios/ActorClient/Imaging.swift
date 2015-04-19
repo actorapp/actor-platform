@@ -33,6 +33,25 @@ extension UIImage {
         return image;
     }
     
+    func tintBgImage(color: UIColor) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.size,false,UIScreen.mainScreen().scale);
+        
+        var rect = CGRectZero;
+        rect.size = self.size;
+        // Composite tint color at its own opacity.
+        color.set();
+        UIRectFill(rect);
+
+        // Mask tint color-swatch to this image's opaque mask.
+        // We want behaviour like NSCompositeDestinationIn on Mac OS X.
+        self.drawInRect(rect, blendMode: kCGBlendModeOverlay, alpha: 1.0)
+        
+        var image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        return image
+    }
+    
     func roundImage(newSize: Int) -> UIImage {
         var nSize = CGSize(width: newSize, height: newSize)
         UIGraphicsBeginImageContextWithOptions(nSize,false,UIScreen.mainScreen().scale);

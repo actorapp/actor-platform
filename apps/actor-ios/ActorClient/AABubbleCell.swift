@@ -20,6 +20,11 @@ class AABubbleCell: UITableViewCell {
     private static var cacnedInTextBg:UIImage? = nil;
     private static var cacnedInTextBgBorder:UIImage? = nil;
     
+    private static var cacnedOutTextCompactBg:UIImage? = nil;
+    private static var cacnedOutTextCompactBgBorder:UIImage? = nil;
+    private static var cacnedInTextCompactBg:UIImage? = nil;
+    private static var cacnedInTextCompactBgBorder:UIImage? = nil;
+    
     // MARK: -
     // MARK: Public vars
     
@@ -67,12 +72,12 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Getters
 
-    class func measureHeight(message: AMMessage, group: Bool) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool) -> CGFloat {
         var content = message.getContent()!;
         
         var height : CGFloat
         if (content is AMTextContent) {
-            height = AABubbleTextCell.measureTextHeight(message) + AABubbleTextCell.bubbleTopPadding() + AABubbleTextCell.bubbleBottomPadding()
+            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact) + AABubbleTextCell.bubbleTopPadding() + AABubbleTextCell.bubbleBottomPadding()
         } else if (content is AMPhotoContent) {
             height = AABubbleMediaCell.measureMediaHeight(message) + AABubbleMediaCell.bubbleTopPadding() + AABubbleMediaCell.bubbleBottomPadding()
         } else if (content is AMVideoContent) {
@@ -113,39 +118,64 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Bind
     
-    func performBind(message: AMMessage) {
+    func performBind(message: AMMessage, isPreferCompact: Bool) {
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
             reuse = true
         }
         bindedMessage = message
-        bind(message, reuse: reuse)
+        bind(message, reuse: reuse, isPreferCompact: isPreferCompact)
     }
     
     func bindBubbleType(type: BubbleType, isCompact: Bool) {
+        
         // TODO: Cache images
         switch(type) {
             case BubbleType.TextIn:
-                if (AABubbleCell.cacnedInTextBg == nil) {
-                    AABubbleCell.cacnedInTextBg = UIImage(named: "BubbleIncomingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                if (isCompact) {
+                    if (AABubbleCell.cacnedInTextCompactBg == nil) {
+                        AABubbleCell.cacnedInTextCompactBg = UIImage(named: "BubbleIncomingPartial")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                    }
+                    if (AABubbleCell.cacnedInTextCompactBgBorder == nil) {
+                        AABubbleCell.cacnedInTextCompactBgBorder = UIImage(named: "BubbleIncomingPartialBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+                    }
+                    
+                    bubble.image = AABubbleCell.cacnedInTextCompactBg
+                    bubbleBorder.image = AABubbleCell.cacnedInTextCompactBgBorder
+                } else {
+                    if (AABubbleCell.cacnedInTextBg == nil) {
+                        AABubbleCell.cacnedInTextBg = UIImage(named: "BubbleIncomingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                    }
+                    if (AABubbleCell.cacnedInTextBgBorder == nil) {
+                        AABubbleCell.cacnedInTextBgBorder = UIImage(named: "BubbleIncomingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+                    }
+                    
+                    bubble.image = AABubbleCell.cacnedInTextBg
+                    bubbleBorder.image = AABubbleCell.cacnedInTextBgBorder
                 }
-                if (AABubbleCell.cacnedInTextBgBorder == nil) {
-                    AABubbleCell.cacnedInTextBgBorder = UIImage(named: "BubbleIncomingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-                }
-                
-                bubble.image = AABubbleCell.cacnedInTextBg
-                bubbleBorder.image = AABubbleCell.cacnedInTextBgBorder
             break
             case BubbleType.TextOut:
-                if (AABubbleCell.cacnedOutTextBg == nil) {
-                    AABubbleCell.cacnedOutTextBg = UIImage(named: "BubbleOutgoingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                if (isCompact) {
+                    if (AABubbleCell.cacnedOutTextCompactBg == nil) {
+                        AABubbleCell.cacnedOutTextCompactBg = UIImage(named: "BubbleOutgoingPartial")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                    }
+                    if (AABubbleCell.cacnedOutTextCompactBgBorder == nil) {
+                        AABubbleCell.cacnedOutTextCompactBgBorder = UIImage(named: "BubbleOutgoingPartialBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+                    }
+                    
+                    bubble.image =  AABubbleCell.cacnedOutTextCompactBg!
+                    bubbleBorder.image =  AABubbleCell.cacnedOutTextCompactBgBorder!
+                } else {
+                    if (AABubbleCell.cacnedOutTextBg == nil) {
+                        AABubbleCell.cacnedOutTextBg = UIImage(named: "BubbleOutgoingFull")?.tintImage(MainAppTheme.bubbles.textBgOut)
+                    }
+                    if (AABubbleCell.cacnedOutTextBgBorder == nil) {
+                        AABubbleCell.cacnedOutTextBgBorder = UIImage(named: "BubbleOutgoingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
+                    }
+                    
+                    bubble.image =  AABubbleCell.cacnedOutTextBg!
+                    bubbleBorder.image =  AABubbleCell.cacnedOutTextBgBorder!
                 }
-                if (AABubbleCell.cacnedOutTextBgBorder == nil) {
-                    AABubbleCell.cacnedOutTextBgBorder = UIImage(named: "BubbleOutgoingFullBorder")?.tintImage(MainAppTheme.bubbles.textBgOutBorder)
-                }
-                
-                bubble.image =  AABubbleCell.cacnedOutTextBg!
-                bubbleBorder.image =  AABubbleCell.cacnedOutTextBgBorder!
             break
             case BubbleType.MediaIn:
             break
@@ -161,7 +191,7 @@ class AABubbleCell: UITableViewCell {
         bubbleBorder.frame = frame
     }
     
-    func bind(message: AMMessage, reuse: Bool) {
+    func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         fatalError("bind(message:) has not been implemented")
     }
     

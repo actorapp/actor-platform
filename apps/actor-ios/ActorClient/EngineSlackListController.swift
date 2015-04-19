@@ -79,6 +79,22 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         return displayList.getItemWithInt(jint(indexPath.row));
     }
     
+    func objectAtIndex(index: Int) -> AnyObject? {
+        if (displayList == nil) {
+            return nil
+        }
+        
+        return displayList.getItemWithInt(jint(index));
+    }
+    
+    func getCount() -> Int {
+        if (displayList == nil) {
+            return 0
+        }
+        
+        return Int(displayList.getSize())
+    }
+    
     // Abstract methods
     
     func getDisplayList() -> AMBindedDisplayList {
