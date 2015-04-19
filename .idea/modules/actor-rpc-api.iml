@@ -15,8 +15,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../actor-rpc-api/target/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-rpc-api/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-rpc-api/target/resource_managed/test" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../actor-rpc-api/target/resolution-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/../../actor-rpc-api/target/streams" />
+      <excludeFolder url="file://$MODULE_DIR$/../../actor-rpc-api/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
