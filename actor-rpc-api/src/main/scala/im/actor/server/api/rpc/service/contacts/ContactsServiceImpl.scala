@@ -18,9 +18,10 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.api.util
 import im.actor.server.api.util.{ PhoneNumber, UserUtils }
+import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.{ models, persist }
 
-class ContactsServiceImpl(seqUpdManagerRegion: ActorRef)
+class ContactsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)
                          (implicit
                           db: Database,
                           actorSystem: ActorSystem)

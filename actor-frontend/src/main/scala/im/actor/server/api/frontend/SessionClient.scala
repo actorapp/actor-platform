@@ -8,23 +8,23 @@ import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
 import scodec.bits.BitVector
 
 import im.actor.server.mtproto.{transport => T}
-import im.actor.server.session.SessionMessage
+import im.actor.server.session.{ SessionRegion, SessionMessage }
 
 private[frontend] object SessionClient {
   @SerialVersionUID(1L)
   case class SendToSession(p: T.MTPackage)
 
-  def props(sessionRegion: ActorRef) = Props(classOf[SessionClient], sessionRegion)
+  def props(sessionRegion: SessionRegion) = Props(classOf[SessionClient], sessionRegion)
 }
 
-private[frontend] class SessionClient(sessionRegion: ActorRef) extends Actor with ActorLogging with ActorPublisher[T.MTTransport] {
+private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Actor with ActorLogging with ActorPublisher[T.MTTransport] {
   import SessionClient.SendToSession
 
   private[this] var buf = Vector.empty[T.MTProto]
 
   def receive = {
     case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) =>
-      sessionRegion ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
+      sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
     case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) =>
       if (buf.isEmpty && totalDemand > 0) {
         onNext(T.ProtoPackage(p))

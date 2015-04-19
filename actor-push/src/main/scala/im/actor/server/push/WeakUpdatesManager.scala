@@ -12,6 +12,8 @@ import im.actor.api.rpc.Update
 import im.actor.api.rpc.sequence.WeakUpdate
 import im.actor.server.persist
 
+case class WeakUpdatesManagerRegion(ref: ActorRef)
+
 object WeakUpdatesManager {
 
   @SerialVersionUID(1L)
@@ -36,18 +38,19 @@ object WeakUpdatesManager {
     case Envelope(authId, _) => (authId % 32).toString // TODO: configurable
   }
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef = ClusterSharding(system).start(
+  private def startRegion(props: Option[Props])(implicit system: ActorSystem): WeakUpdatesManagerRegion =
+    WeakUpdatesManagerRegion(ClusterSharding(system).start(
     typeName = "WeakUpdatesManager",
     entryProps = props,
     idExtractor = idExtractor,
     shardResolver = shardResolver
-  )
+  ))
 
-  def startRegion()(implicit system: ActorSystem): ActorRef = startRegion(Some(Props(classOf[WeakUpdatesManager])))
+  def startRegion()(implicit system: ActorSystem): WeakUpdatesManagerRegion = startRegion(Some(Props(classOf[WeakUpdatesManager])))
 
-  def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): WeakUpdatesManagerRegion = startRegion(None)
 
-  def broadcastUserWeakUpdate(region: ActorRef, userId: Int, update: Update)
+  def broadcastUserWeakUpdate(region: WeakUpdatesManagerRegion, userId: Int, update: Update)
                              (implicit ec: ExecutionContext): DBIO[Unit] = {
     val header = update.header
     val serializedData = update.toByteArray
@@ -55,14 +58,14 @@ object WeakUpdatesManager {
 
     for (authIds <- persist.AuthId.findIdByUserId(userId)) yield {
       authIds foreach { authId =>
-        region ! Envelope(authId, msg)
+        region.ref ! Envelope(authId, msg)
       }
     }
   }
 
-  private[push] def subscribe(region: ActorRef, authId: Long, consumer: ActorRef)
+  private[push] def subscribe(region: WeakUpdatesManagerRegion, authId: Long, consumer: ActorRef)
                              (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 }
 

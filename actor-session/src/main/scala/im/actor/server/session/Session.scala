@@ -5,10 +5,10 @@ import scala.concurrent.ExecutionContext
 
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.pattern.pipe
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
-import akka.pattern.pipe
 import scodec.DecodeResult
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -16,8 +16,9 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.{ MTPackage, Drop }
-import im.actor.server.push.UpdatesPusher
+import im.actor.server.mtproto.transport.{ Drop, MTPackage }
+import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion, UpdatesPusher }
 import im.actor.server.{ models, persist }
 
 object Session {
@@ -32,22 +33,24 @@ object Session {
     case Envelope(authId, sessionId, _) => (authId % 32).toString // TODO: configurable
   }
 
-  def startRegion(props: Option[Props])(implicit system: ActorSystem): ActorRef =
-    ClusterSharding(system).start(
-      typeName = "Session",
-      entryProps = props,
-      idExtractor = idExtractor,
-      shardResolver = shardResolver
-    )
+  def startRegion(props: Option[Props])(implicit system: ActorSystem): SessionRegion =
+    SessionRegion(
+      ClusterSharding(system).start(
+        typeName = "Session",
+        entryProps = props,
+        idExtractor = idExtractor,
+        shardResolver = shardResolver
+      ))
 
-  def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
   def props(rpcApiService: ActorRef,
-            seqUpdManagerRegion: ActorRef,
-            weakUpdManagerRegion: ActorRef,
-            presenceManagerRegion: ActorRef)
+            seqUpdManagerRegion: SeqUpdatesManagerRegion,
+            weakUpdManagerRegion: WeakUpdatesManagerRegion,
+            presenceManagerRegion: PresenceManagerRegion)
            (implicit db: Database, materializer: FlowMaterializer): Props =
-    Props(classOf[Session],
+    Props(
+      classOf[Session],
       rpcApiService,
       seqUpdManagerRegion,
       weakUpdManagerRegion,
@@ -57,9 +60,9 @@ object Session {
 }
 
 class Session(rpcApiService: ActorRef,
-              seqUpdManagerRegion: ActorRef,
-              weakUpdManagerRegion: ActorRef,
-              presenceManagerRegion: ActorRef)
+              seqUpdManagerRegion: SeqUpdatesManagerRegion,
+              weakUpdManagerRegion: WeakUpdatesManagerRegion,
+              presenceManagerRegion: PresenceManagerRegion)
              (implicit db: Database, materializer: FlowMaterializer)
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 
@@ -186,11 +189,11 @@ class Session(rpcApiService: ActorRef,
       case SubscribeToOnline(userIds) =>
 
       case SubscribeFromOnline(userIds) =>
-        // TODO: implement
+      // TODO: implement
       case SubscribeToGroupOnline(groupIds) =>
-        // TODO: implement
+      // TODO: implement
       case SubscribeFromGroupOnline(groupIds) =>
-        // TODO: implement
+      // TODO: implement
       case UserAuthorized(userId) =>
         log.debug("User {} authorized session {}", userId, sessionId)
 

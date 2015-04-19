@@ -1,18 +1,21 @@
 package im.actor.server.presences
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.ask
 import akka.util.Timeout
-import scala.concurrent.duration._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
-import im.actor.server.models
-import im.actor.server.persist
+
+import im.actor.server.{ models, persist }
+
+case class PresenceManagerRegion(val ref: ActorRef)
 
 object PresenceManager {
+
   @SerialVersionUID(1L)
   private case class Envelope(userId: Int, payload: Message)
 
@@ -49,34 +52,36 @@ object PresenceManager {
   private def startRegion(props: Option[Props])
                          (implicit
                           system: ActorSystem,
-                          db: Database): ActorRef = ClusterSharding(system).start(
-    typeName = "PresenceManager",
-    entryProps = props,
-    idExtractor = idExtractor,
-    shardResolver = shardResolver
-  )
+                          db: Database): PresenceManagerRegion =
+    PresenceManagerRegion(ClusterSharding(system).start(
+      typeName = "PresenceManager",
+      entryProps = props,
+      idExtractor = idExtractor,
+      shardResolver = shardResolver
+    ))
 
-  def startRegion()(implicit system: ActorSystem, db: Database): ActorRef = startRegion(Some(props))
+  def startRegion()(implicit system: ActorSystem, db: Database): PresenceManagerRegion = startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem, db: Database): ActorRef = startRegion(None)
+  def startRegionProxy()(implicit system: ActorSystem, db: Database): PresenceManagerRegion = startRegion(None)
 
   def props(implicit db: Database) = Props(classOf[PresenceManager], db)
 
-  def subscribe(region: ActorRef, userId: Int, consumer: ActorRef)
+  def subscribe(region: PresenceManagerRegion, userId: Int, consumer: ActorRef)
                (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+    region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 
-  def presenceSetOnline(region: ActorRef, userId: Int, timeout: Long): Unit = {
-    region ! Envelope(userId, UserPresenceChange(Online, timeout))
+  def presenceSetOnline(region: PresenceManagerRegion, userId: Int, timeout: Long): Unit = {
+    region.ref ! Envelope(userId, UserPresenceChange(Online, timeout))
   }
 
-  def presenceSetOffline(region: ActorRef, userId: Int, timeout: Long): Unit = {
-    region ! Envelope(userId, UserPresenceChange(Offline, timeout))
+  def presenceSetOffline(region: PresenceManagerRegion, userId: Int, timeout: Long): Unit = {
+    region.ref ! Envelope(userId, UserPresenceChange(Offline, timeout))
   }
 }
 
 class PresenceManager(implicit db: Database) extends Actor with ActorLogging with Stash {
+
   import PresenceManager._
 
   @SerialVersionUID(1L)

@@ -15,9 +15,10 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.util.PeerUtils._
 import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.{ models, persist }
 
-class GroupsServiceImpl(seqUpdManagerRegion: ActorRef)(
+class GroupsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)(
   implicit val db: Database, val actorSystem: ActorSystem
   ) extends GroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher

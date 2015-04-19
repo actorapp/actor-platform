@@ -12,7 +12,7 @@ import im.actor.api.rpc.sequence.WeakUpdate
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ UpdateBox => ProtoUpdateBox, Update }
 import im.actor.server.mtproto.protocol.UpdateBox
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
 
 object UpdatesPusher {
 
@@ -25,9 +25,9 @@ object UpdatesPusher {
   @SerialVersionUID(1L)
   case class SubscribeToUserPresences(userIds: Set[Int])
 
-  def props(seqUpdatesManagerRegion: ActorRef,
-            weakUpdatesManagerRegion: ActorRef,
-            presenceManagerRegion: ActorRef,
+  def props(seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+            weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
+            presenceManagerRegion: PresenceManagerRegion,
             authId: Long,
             session: ActorRef) =
     Props(classOf[UpdatesPusher],
@@ -38,9 +38,9 @@ object UpdatesPusher {
       session)
 }
 
-private[push] class UpdatesPusher(seqUpdatesManagerRegion: ActorRef,
-                                  weakUpdatesManagerRegion: ActorRef,
-                                  presenceManagerRegion: ActorRef,
+private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+                                  weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
+                                  presenceManagerRegion: PresenceManagerRegion,
                                   authId: Long,
                                   session: ActorRef) extends Actor with ActorLogging {
 

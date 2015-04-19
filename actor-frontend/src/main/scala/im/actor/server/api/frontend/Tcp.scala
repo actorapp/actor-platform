@@ -11,8 +11,10 @@ import akka.util.Timeout
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api.Database
 
+import im.actor.server.session.SessionRegion
+
 object Tcp {
-  def start(appConf: Config, sessionRegion: ActorRef)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
+  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     val log = Logging.getLogger(system, this)
     val config = appConf.getConfig("frontend.tcp")
 
