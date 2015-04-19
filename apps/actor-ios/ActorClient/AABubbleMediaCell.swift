@@ -13,8 +13,6 @@ class AABubbleMediaCell : AABubbleCell {
     let preview = UIImageView();
     let circullarNode = CircullarNode()
     
-    var isOut:Bool = false;
-    
     var contentWidth = 0
     var contentHeight = 0
     var thumb : AMFastThumb? = nil
@@ -33,8 +31,8 @@ class AABubbleMediaCell : AABubbleCell {
     // MARK: -
     // MARK: Constructors
     
-    override init(reuseId: String) {
-        super.init(reuseId: reuseId)
+    init(reuseId: String, peer: AMPeer) {
+        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
         
         contentView.addSubview(preview)
         contentView.addSubview(circullarNode.view)
@@ -80,21 +78,6 @@ class AABubbleMediaCell : AABubbleCell {
                 self.circullarNode.alpha = 0
                 self.preview.alpha = 0
             })
-            
-            if group && !isOut {
-                if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
-                    var username = ""
-                    if let uname = user.getName().get() as? String {
-                        username = uname
-                    }
-                    
-                    let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
-                    avatarView.bind(username, id: user.getId(), avatar: avatar)
-                }
-                contentView.addSubview(avatarView)
-            } else {
-                avatarView.removeFromSuperview()
-            }
         }
         
         var document = message.getContent() as! AMDocumentContent;
@@ -290,17 +273,12 @@ class AABubbleMediaCell : AABubbleCell {
         var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
         var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
         
-        var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+        var contentInsetX = CGFloat((self.isGroup ? self.groupContentInsetX : 0.0))
         
         if (self.isOut) {
             layoutBubble(CGRectMake(contentWidth - bubbleWidth - bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight))
         } else {
             layoutBubble(CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight))
-        }
-        
-        if self.group && !self.isOut {
-            let avatarSize = CGFloat(self.avatarView.frameSize)
-            self.avatarView.frame = CGRect(x: 5, y: self.bubble.frame.maxY - avatarSize - 1, width: avatarSize, height: avatarSize)
         }
         
         preview.frame = CGRectMake(bubble.frame.origin.x + 1, bubble.frame.origin.y + 1, bubble.frame.width - 2, bubble.frame.height - 2);

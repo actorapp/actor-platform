@@ -23,8 +23,8 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Constructors
     
-    override init(reuseId: String) {
-        super.init(reuseId: reuseId)
+    init(reuseId: String, peer: AMPeer) {
+        super.init(reuseId: reuseId, peer: peer, isFullSize: true)
        
         serviceText.font = AABubbleServiceCell.serviceBubbleFont;
         serviceText.lineBreakMode = .ByWordWrapping;
@@ -33,7 +33,19 @@ class AABubbleServiceCell : AABubbleCell {
         serviceText.contentMode = UIViewContentMode.Center
         serviceText.textAlignment = NSTextAlignment.Center
         
+        self.contentInsets = UIEdgeInsets(
+            top: 3,
+            left: 8,
+            bottom: 3,
+            right: 8)
+        self.bubbleInsets = UIEdgeInsets(
+            top: 3,
+            left: 0,
+            bottom: 3,
+            right: 0)
         contentView.addSubview(serviceText)
+        
+        bindBubbleType(.Service, isCompact: false)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -46,45 +58,32 @@ class AABubbleServiceCell : AABubbleCell {
     override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         if (!reuse) {
             serviceText.text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent)
-            bindBubbleType(.Service, isCompact: false)
         }
     }
     
     // MARK: -
     // MARK: Getters
     
-    class func measureServiceHeight(message: AMMessage) -> CGFloat {
+    class func measureServiceHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
         var text = MSG.getFormatter().formatFullServiceMessageWithInt(message.getSenderId(), withAMServiceContent: message.getContent() as! AMServiceContent);
-        return measureText(text).height + 3 + 3 // 3 text top 3 text bottom
-    }
-    
-    class func bubbleTopPadding() -> CGFloat {
-        return 3
-    }
-    
-    class func bubbleBottomPadding() -> CGFloat {
-        return 3
+        return measureText(text).height + 3 + 3 + 3 + (isPreferCompact ? 0 : 3)
     }
     
     // MARK: -
     // MARK: Layout
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        var bubbleTopPadding = AABubbleServiceCell.bubbleTopPadding()
-        var bubbleBottomPadding = AABubbleServiceCell.bubbleBottomPadding()
-        
+    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        var insets = fullContentInsets
         var contentWidth = self.contentView.frame.width
         var contentHeight = self.contentView.frame.height
         
-        var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
+        var bubbleHeight = contentHeight - insets.top - insets.bottom
         var bubbleWidth = CGFloat(AABubbleServiceCell.maxServiceTextWidth)
         
         let serviceTextSize = serviceText.sizeThatFits(CGSize(width: bubbleWidth, height: CGFloat.max))
-        serviceText.frame = CGRectMake((contentWidth - serviceTextSize.width) / 2.0, bubbleTopPadding + 3, serviceTextSize.width, bubbleHeight - 6);
+        serviceText.frame = CGRectMake((contentWidth - serviceTextSize.width) / 2.0, insets.top, serviceTextSize.width, serviceTextSize.height);
         
-        layoutBubble(CGRectMake(serviceText.frame.origin.x - 8, serviceText.frame.origin.y - 3, serviceText.frame.width + 16, serviceText.frame.height + 6))
+        layoutBubble(serviceTextSize.width, contentHeight: serviceTextSize.height)
     }
     
     private static let maxServiceTextWidth = 260
