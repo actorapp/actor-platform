@@ -1,0 +1,20 @@
+#login/logout
+POST          /login                     @controllers.Application.login
+POST          /logout                    @controllers.Application.logout
+
+#managers
+POST          /managers                  @controllers.Managers.create
+
+#users
+POST          /users                     @controllers.Users.create
+PUT           /users/:id                 @controllers.Users.update(id: Int)
+DELETE        /users/:id                 @controllers.Users.delete(id: Int)
+GET           /users/:id                 @controllers.Users.get(id: Int)
+GET           /users                     @controllers.Users.list(page: Int ?= 1, perPage: Int ?= 50)
+
+#nodes
+GET           /node/:nodeId/users        @controllers.Nodes.users(nodeId: Int, page: Int ?= 1, perPage: Int ?= 50)
+POST          /node                      @controllers.Nodes.create
+GET           /node/:id                  @controllers.Nodes.get(id: Int)
+PUT           /node/:id                  @controllers.Nodes.update(id: Int)
+DELETE        /node/:id                  @controllers.Nodes.delete(id: Int)
