@@ -255,6 +255,32 @@ class AAConversationController: EngineSlackListController {
                         if CGRectContainsPoint(avatarFrame, point) {
                             var item = objectAtIndexPath(indexPath!) as! AMMessage;
                             navigateToUserWithId(Int(item.getSenderId()))
+                            return
+                        }
+                    }
+                    
+                    var item = objectAtIndexPath(indexPath!) as! AMMessage
+                    if let content = item.getContent() as? AMPhotoContent {
+                        if let fileSource = content.getSource() as? AMFileRemoteSource {
+                            if let photoCell = cell as? AABubbleMediaCell {
+                                let frame = photoCell.preview.frame
+                                
+                                MSG.requestStateWithLong(fileSource.getFileReference().getFileId(),
+                                    withAMDownloadCallback: CocoaDownloadCallback(
+                                        notDownloaded: { () -> () in
+                                        MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
+                                    }, onDownloading: { (progress) -> () in
+                                        MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
+                                    }, onDownloaded: { (reference) -> () in
+                                        var imageInfo = JTSImageInfo()
+                                        imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
+                                        imageInfo.referenceRect = frame
+                                        imageInfo.referenceView = photoCell
+                                        
+                                        var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                                        previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+                                    }))
+                            }
                         }
                     }
                 }
@@ -308,32 +334,34 @@ class AAConversationController: EngineSlackListController {
         if (message.getContent() is AMTextContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
         } else if (message.getContent() is AMPhotoContent || message.getContent() is AMVideoContent) {
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! AABubbleMediaCell?
             if (cell == nil) {
-                cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier)
+                cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier, peer: peer)
             }
             return cell!
             
         } else if (message.getContent() is AMServiceContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! AABubbleServiceCell?
             if (cell == nil) {
-                cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier)
+                cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier, peer: peer)
             }
             return cell!
-        } else if (message.getContent() is AMDocumentContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
-            if cell == nil {
-                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier)
-            }
-            return cell!
-        } else {
+        }
+//        else if (message.getContent() is AMDocumentContent) {
+//            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
+//            if cell == nil {
+//                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier, peer: peer)
+//            }
+//            return cell!
+//        }
+        else {
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleUnsupportedIdentifier) as! AABubbleUnsupportedCell?
             if (cell == nil) {
-                cell = AABubbleUnsupportedCell(reuseId: BubbleUnsupportedIdentifier)
+                cell = AABubbleUnsupportedCell(reuseId: BubbleUnsupportedIdentifier, peer: peer)
             }
             return cell!
         }
@@ -346,13 +374,27 @@ class AAConversationController: EngineSlackListController {
         var preferCompact = false
         if (indexPath.row > 0) {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
-            if (message.getSenderId() == next.getSenderId()) {
-                preferCompact = true
-            }
+            preferCompact = useCompact(message, next: next)
         }
 
-        bubbleCell.group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
         bubbleCell.performBind(message, isPreferCompact: preferCompact)
+    }
+    
+    func useCompact(source: AMMessage, next: AMMessage) -> Bool {
+        if (source.getContent() is AMServiceContent) {
+            if (next.getContent() is AMServiceContent) {
+                return true
+            }
+        } else {
+            if (next.getContent() is AMServiceContent) {
+                return false
+            }
+            if (source.getSenderId() == next.getSenderId()) {
+                return true
+            }
+        }
+        
+        return false
     }
     
     override func getDisplayList() -> AMBindedDisplayList {
@@ -376,9 +418,7 @@ class AAConversationController: EngineSlackListController {
         var preferCompact = false
         if (indexPath.row > 0) {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
-            if (message.getSenderId() == next.getSenderId()) {
-                preferCompact = true
-            }
+            preferCompact = useCompact(message, next: next)
         }
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
@@ -439,18 +479,15 @@ extension AAConversationController: UIImagePickerControllerDelegate {
 // MARK: UINavigationController Delegate
 
 extension AAConversationController: UINavigationControllerDelegate {
-    
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
         MainAppTheme.navigation.applyStatusBarFast()
     }
-    
 }
 
 // MARK: -
 // MARK: ABActionShit Delegate
 
 extension AAConversationController: ABActionShitDelegate {
-    
     func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
         if (buttonIndex == 0 || buttonIndex == 1) {
             var pickerController = UIImagePickerController()
@@ -464,7 +501,6 @@ extension AAConversationController: ABActionShitDelegate {
             self.presentViewController(pickerController, animated: true, completion: nil)
         }
     }
-    
 }
 
 // MARK: -
