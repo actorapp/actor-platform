@@ -2,6 +2,8 @@ package im.actor
 
 import akka.sbt.AkkaKernelPlugin
 import akka.sbt.AkkaKernelPlugin.{Dist, distBootClass, distJvmOptions, outputDirectory}
+import im.actor.SbtActorApi
+import play.PlayScala
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
@@ -80,7 +82,7 @@ object Build extends sbt.Build {
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorFrontend, actorCommonsBase, actorRpcApi)
-    .aggregate(actorCommonsApi, actorCommonsBase, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
+    .aggregate(actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -176,7 +178,6 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.models
     )
   )
-
   lazy val actorPersist = Project(
     id = "actor-persist",
     base = file("actor-persist"),
@@ -184,6 +185,14 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.persist
     )
   ).dependsOn(actorModels)
+
+  lazy val actorDashboard = Project(
+    id = "actor-dashboard",
+    base = file("actor-dashboard"),
+    settings = defaultSettings
+  )
+    .enablePlugins(PlayScala)
+    .dependsOn(actorPersist)
 
   lazy val actorTests = Project(
     id = "actor-tests",

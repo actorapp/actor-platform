@@ -21,6 +21,8 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
 
 addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.2")
 
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.8")
+
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.4.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.0.0")
