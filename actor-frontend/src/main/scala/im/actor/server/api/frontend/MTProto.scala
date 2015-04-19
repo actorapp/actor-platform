@@ -11,9 +11,11 @@ import org.apache.commons.codec.digest.DigestUtils
 import scodec.DecodeResult
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api.Database
+
 import im.actor.server.mtproto.codecs._
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
+import im.actor.server.session.SessionRegion
 import im.actor.server.util.streams.SourceWatchManager
 
 object MTProto {
@@ -24,7 +26,7 @@ object MTProto {
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def flow(maxBufferSize: Int, sessionRegion: ActorRef)
+  def flow(maxBufferSize: Int, sessionRegion: SessionRegion)
           (implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db))
     val authSource = Source(ActorPublisher[MTTransport](authManager))
@@ -66,11 +68,11 @@ object MTProto {
       // @formatter:off
 
       mtproto ~> merge
-      auth    ~> merge
+      auth ~> merge
       session ~> merge
-      watch   ~> merge
-                 merge ~> mapResp ~> bcast
-                                     bcast.out(0) ~> complete
+      watch ~> merge
+      merge ~> mapResp ~> bcast
+      bcast.out(0) ~> complete
 
       // @formatter:on
 

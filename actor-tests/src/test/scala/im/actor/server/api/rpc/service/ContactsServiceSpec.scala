@@ -7,7 +7,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.{ rpc => api }, api._
 import im.actor.server.api.util
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class ContactsServiceSpec extends BaseServiceSuite {
@@ -26,7 +26,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    val presenceManagerRegion = PresenceManager.startRegion()
+    val presenceManagerRegion: PresenceManagerRegion = PresenceManager.startRegion()
     val rpcApiService = buildRpcApiService()
     val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
 

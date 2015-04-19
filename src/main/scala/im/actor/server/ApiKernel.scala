@@ -36,7 +36,7 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
 
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    val presenceManagerRegion = PresenceManager.startRegion
+    val presenceManagerRegion = PresenceManager.startRegion()
 
     val rpcApiService = system.actorOf(RpcApiService.props())
     val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))

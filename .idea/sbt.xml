@@ -8,8 +8,8 @@
         <option name="jdk" value="1.8" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/actor-session-messages/project/project" />
-            <option value="$PROJECT_DIR$/actor-session-messages/project/project/project" />
+            <option value="$PROJECT_DIR$/actor-session-messages/project/project/project/project/project" />
+            <option value="$PROJECT_DIR$/actor-session-messages/project/project/project/project/project/project" />
           </set>
         </option>
         <option name="resolveClassifiers" value="true" />

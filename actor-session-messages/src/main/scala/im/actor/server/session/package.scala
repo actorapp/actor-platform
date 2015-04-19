@@ -1,7 +1,11 @@
 package im.actor.server.session
 
+import akka.actor.ActorRef
+
 import im.actor.api.rpc.BaseClientData
 import im.actor.server.mtproto.protocol.ProtoMessage
+
+case class SessionRegion(ref: ActorRef)
 
 sealed trait SessionMessage
 

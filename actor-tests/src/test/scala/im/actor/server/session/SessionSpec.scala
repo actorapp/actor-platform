@@ -77,7 +77,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val messageId = Random.nextLong()
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion, messageId, RpcRequestBox(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
       probe.receiveOne(1.second)
@@ -90,7 +90,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val messageId = Random.nextLong()
 
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333334L, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion, messageId, RpcRequestBox(encodedRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
@@ -108,7 +108,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val phoneNumber = 75550000000L
 
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion, firstMessageId, RpcRequestBox(encodedCodeRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
@@ -129,7 +129,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       ))).require
 
       val secondMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion, secondMessageId, RpcRequestBox(encodedSignUpRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
 
       expectMessageAck(authId, sessionId, secondMessageId)
       expectRpcResult() should matchPattern {
@@ -139,7 +139,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require
 
       val thirdMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion, thirdMessageId, RpcRequestBox(encodedSignOutRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, thirdMessageId, RpcRequestBox(encodedSignOutRequest))
 
       expectMessageAck(authId, sessionId, thirdMessageId)
       expectRpcResult() should matchPattern {
@@ -155,7 +155,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val phoneNumber = 75550000000L
 
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion, firstMessageId, RpcRequestBox(encodedCodeRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
@@ -176,7 +176,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       ))).require
 
       val secondMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion, secondMessageId, RpcRequestBox(encodedSignUpRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
 
       expectMessageAck(authId, sessionId, secondMessageId)
 
@@ -201,7 +201,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val phoneNumber = 75550000000L
 
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion, firstMessageId, RpcRequestBox(encodedCodeRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
@@ -222,7 +222,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       ))).require
 
       val secondMessageId = Random.nextLong()
-      sendMessageBox(authId, sessionId, sessionRegion, secondMessageId, RpcRequestBox(encodedSignUpRequest))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, secondMessageId, RpcRequestBox(encodedSignUpRequest))
 
       expectMessageAck(authId, sessionId, secondMessageId)
 

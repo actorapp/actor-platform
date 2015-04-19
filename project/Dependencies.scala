@@ -89,6 +89,8 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore
   )
 
+  val sessionMessages = Seq(akkaActor)
+
   val push = common :+ akkaContrib
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
