@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.typesafe.akka:akka-persistence-experimental_2.11:2.3.9:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-persistence-experimental_2.11/jars/akka-persistence-experimental_2.11-2.3.9.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-persistence-experimental_2.11/docs/akka-persistence-experimental_2.11-2.3.9-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-persistence-experimental_2.11/srcs/akka-persistence-experimental_2.11-2.3.9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

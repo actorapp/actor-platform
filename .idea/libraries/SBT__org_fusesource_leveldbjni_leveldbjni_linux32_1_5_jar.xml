@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SBT: org.fusesource.leveldbjni:leveldbjni-linux32:1.5:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.fusesource.leveldbjni/leveldbjni-linux32/jars/leveldbjni-linux32-1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <option name="dynamics" value="true" />
+    <option name="reflectiveCalls" value="true" />
+    <option name="implicitConversions" value="true" />
+    <option name="macros" value="true" />
+    <profile name="SBT 1" modules="actor-typing,actor-server,actor-api,actor-codecs,actor-frontend,actor-models,actor-persist,actor-presences,actor-push,actor-rpc-api,actor-session,actor-session-messages,actor-tests">
+      <option name="higherKinds" value="true" />
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+      <option name="featureWarnings" value="true" />
+      <parameters>
+        <parameter value="-encoding" />
+        <parameter value="UTF-8" />
+        <parameter value="-Xfatal-warnings" />
+        <parameter value="-Xlint" />
+        <parameter value="-Ywarn-dead-code" />
+        <parameter value="-Ywarn-infer-any" />
+        <parameter value="-Ywarn-numeric-widen" />
+      </parameters>
+    </profile>
+    <profile name="SBT 2" modules="project" />
+  </component>
+</project>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.google.inject.extensions:guice-assistedinject:3.0:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.google.inject.extensions/guice-assistedinject/jars/guice-assistedinject-3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.google.inject.extensions/guice-assistedinject/docs/guice-assistedinject-3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.google.inject.extensions/guice-assistedinject/srcs/guice-assistedinject-3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

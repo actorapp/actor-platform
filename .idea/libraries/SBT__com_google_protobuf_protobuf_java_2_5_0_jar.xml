@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.google.protobuf:protobuf-java:2.5.0:jar">
+    <CLASSES>
+      <root url="jar:///usr/local/Cellar/typesafe-activator/1.3.2/libexec/repository/com.google.protobuf/protobuf-java/2.5.0/bundles/protobuf-java.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.google.protobuf/protobuf-java/docs/protobuf-java-2.5.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.google.protobuf/protobuf-java/srcs/protobuf-java-2.5.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

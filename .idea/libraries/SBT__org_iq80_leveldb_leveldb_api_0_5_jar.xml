@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.iq80.leveldb:leveldb-api:0.5:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.iq80.leveldb/leveldb-api/jars/leveldb-api-0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.iq80.leveldb/leveldb-api/docs/leveldb-api-0.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.iq80.leveldb/leveldb-api/srcs/leveldb-api-0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

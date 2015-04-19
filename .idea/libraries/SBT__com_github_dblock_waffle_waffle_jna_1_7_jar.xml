@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.github.dblock.waffle:waffle-jna:1.7:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.dblock.waffle/waffle-jna/jars/waffle-jna-1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.dblock.waffle/waffle-jna/docs/waffle-jna-1.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.dblock.waffle/waffle-jna/srcs/waffle-jna-1.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
