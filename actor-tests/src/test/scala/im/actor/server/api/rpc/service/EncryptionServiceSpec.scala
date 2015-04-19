@@ -6,6 +6,7 @@ import scala.concurrent.duration._
 import im.actor.api.{ rpc => api }
 import im.actor.server.api.util
 import im.actor.server.persist
+import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class EncryptionServiceSpec extends BaseServiceSpec {
@@ -17,8 +18,9 @@ class EncryptionServiceSpec extends BaseServiceSpec {
   object s {
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+    val presenceManagerRegion = PresenceManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
+    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
 
     implicit val service = new encryption.EncryptionServiceImpl
     implicit val authService = buildAuthService(sessionRegion)

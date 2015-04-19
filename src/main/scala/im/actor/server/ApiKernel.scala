@@ -14,6 +14,7 @@ import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
+import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.session.Session
 
@@ -35,8 +36,10 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
 
     val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+    val presenceManagerRegion = PresenceManager.startRegion
+
     val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)))
+    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
 
     val services = Seq(
       new AuthServiceImpl(sessionRegion),
@@ -44,7 +47,7 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
       new EncryptionServiceImpl,
       new MessagingServiceImpl(seqUpdManagerRegion),
       new GroupsServiceImpl(seqUpdManagerRegion),
-      new SequenceServiceImpl(seqUpdManagerRegion),
+      new SequenceServiceImpl(seqUpdManagerRegion, sessionRegion),
       new ConversationsServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))

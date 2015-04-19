@@ -74,7 +74,7 @@ object Build extends sbt.Build {
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorFrontend)
-    .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorSession, actorRpcApi, actorTests)
+    .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
 
   lazy val actorApi = Project(
     id = "actor-api",
@@ -107,7 +107,13 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.push
     )
-  ).dependsOn(actorApi, actorCodecs, actorPersist, actorSessionMessages)
+  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorSessionMessages)
+
+  lazy val actorPresences = Project(
+    id = "actor-presences",
+    base = file("actor-presences"),
+    settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.presences)
+  ).dependsOn(actorPersist)
 
   lazy val actorRpcApi = Project(
     id = "actor-rpc-api",
@@ -115,7 +121,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPush, actorSessionMessages)
+  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorPush, actorSessionMessages)
 
   lazy val actorFrontend = Project(
     id = "actor-frontend",

@@ -9,6 +9,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
+import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class SequenceServiceSpec extends BaseServiceSuite {
@@ -20,10 +21,11 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
+  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
 
-  implicit val service = new sequence.SequenceServiceImpl(seqUpdManagerRegion)
+  implicit val service = new sequence.SequenceServiceImpl(seqUpdManagerRegion, sessionRegion)
   implicit val msgService = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
   implicit val authService = buildAuthService(sessionRegion)
   implicit val ec = system.dispatcher
