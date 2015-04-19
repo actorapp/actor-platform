@@ -17,6 +17,7 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.sequence.{ WeakUpdate, SeqUpdate }
 import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientData }
+import im.actor.server.presences.PresenceManager
 import im.actor.server.{ persist, SqlSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -42,8 +43,11 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
-  val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)))
+  val sessionRegion = Session.startRegion(
+    Some(
+      Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
 
   val authService = new AuthServiceImpl(sessionRegion)
   rpcApiService ! RpcApiService.AttachService(authService)
@@ -57,7 +61,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
     def e1() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion))
+      val session = system.actorOf(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion))
 
       sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
 

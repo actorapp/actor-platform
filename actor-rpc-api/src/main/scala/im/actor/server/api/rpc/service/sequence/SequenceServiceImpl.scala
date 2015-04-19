@@ -15,10 +15,10 @@ import im.actor.api.rpc.sequence.{DifferenceUpdate, ResponseGetDifference, Seque
 import im.actor.api.rpc.users.{ Phone, User }
 import im.actor.server.api.util.{ UserUtils, GroupUtils }
 import im.actor.server.models
-import im.actor.server.models.UserPhone
 import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.session.SessionMessage
 
-class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, actorSystem: ActorSystem) extends SequenceService {
+class SequenceServiceImpl(seqUpdManagerRegion: ActorRef, sessionRegion: ActorRef)(implicit db: Database, actorSystem: ActorSystem) extends SequenceService {
 
   import SeqUpdatesManager._
   import GroupUtils._
@@ -62,20 +62,32 @@ class SequenceServiceImpl(seqUpdManagerRegion: ActorRef)(implicit db: Database, 
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    // FIXME: #security check access hashes
+    sessionRegion ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeToOnline(users.map(_.userId).toSet))
+
+    Future.successful(Ok(ResponseVoid))
   }
 
-  override def jhandleSubscribeFromOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleSubscribeFromOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    // FIXME: #security check access hashes
+    sessionRegion ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeFromOnline(users.map(_.userId).toSet))
+
+    Future.successful(Ok(ResponseVoid))
   }
 
-  override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    // FIXME: #security check access hashes
+    sessionRegion ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeFromGroupOnline(groups.map(_.groupId).toSet))
+
+    Future.successful(Ok(ResponseVoid))
   }
 
-  override def jhandleSubscribeToGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleSubscribeToGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    // FIXME: #security check access hashes
+    sessionRegion ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeToGroupOnline(groups.map(_.groupId).toSet))
+
+    Future.successful(Ok(ResponseVoid))
   }
 
   private def extractDiff(updates: Seq[models.sequence.SeqUpdate]): (Vector[DifferenceUpdate], Set[Int], Set[Int]) = {
