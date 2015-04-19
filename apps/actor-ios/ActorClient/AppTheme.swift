@@ -26,11 +26,11 @@ class ChatBubbles {
     // Basic colors
     var text : UIColor { get { return UIColor.RGB(0x141617) } }
 
-    var bgOut: UIColor { get { return UIColor.whiteColor() } }
-    var bgOutBorder: UIColor { get { return UIColor.RGB(0xCCCCCC) } }
+    var bgOut: UIColor { get { return UIColor.RGB(0xD2FEFD) } }
+    var bgOutBorder: UIColor { get { return UIColor.RGB(0x99E4E3) } }
     
-    var bgIn : UIColor { get { return UIColor.RGB(0xD2FEFD) } }
-    var bgInBorder:UIColor { get { return UIColor.RGB(0x99E4E3) } }
+    var bgIn : UIColor { get { return UIColor.whiteColor() } }
+    var bgInBorder:UIColor { get { return  UIColor.RGB(0xCCCCCC) } }
     
     var statusActive : UIColor { get { return UIColor.RGB(0x3397f9) } }
     var statusPassive : UIColor { get { return UIColor.alphaBlack(0.27) } }
@@ -56,10 +56,13 @@ class ChatBubbles {
     var textIn : UIColor { get { return text } }
     
     // Media-based bubble colors
-    var mediaBgOut: UIColor { get { return bgOut } }
-    var mediaBgOutBorder: UIColor { get { return bgOutBorder } }
-    var mediaBgIn: UIColor { get { return bgIn } }
-    var mediaBgInBorder: UIColor { get { return bgInBorder } }
+    var mediaBgOut: UIColor { get { return UIColor.whiteColor() } }
+    var mediaBgOutBorder: UIColor { get { return UIColor.RGB(0xCCCCCC) } }
+    var mediaBgIn: UIColor { get { return mediaBgOut } }
+    var mediaBgInBorder: UIColor { get { return mediaBgOutBorder } }
+    
+    // Service-based bubble colors
+    var serviceBg: UIColor { get { return UIColor.RGB(0x2D394A, alpha: 0.56) } }
 }
 
 class AppList {

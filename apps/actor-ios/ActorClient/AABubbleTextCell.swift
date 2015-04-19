@@ -10,48 +10,40 @@
 import Foundation
 import UIKit
 
-
-
-// MARK: -
-
 class AABubbleTextCell : AABubbleCell {
     
     private static let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
     private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
-    let textPaddingStartOutgoing: CGFloat = 11.0;
-    let textPaddingEndOutgoing: CGFloat = 10.0;
-    
-    let textPaddingStartIncoming: CGFloat = 17.0;
-    let textPaddingEndIncoming: CGFloat = 10.0;
-    
     let messageText = UILabel();
     let statusView = UIImageView();
-    var isOut:Bool = false
+    let senderNameLabel = UILabel();
     var needRelayout = true
     var isCompact:Bool = false
     
     private let dateText = UILabel();
     private var messageState: UInt = AMMessageState.UNKNOWN.rawValue;
     
-    override init(reuseId: String) {
-        super.init(reuseId: reuseId)
+    init(reuseId: String, peer: AMPeer) {
+        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
         
-        messageText.font = AABubbleTextCell.bubbleFont;
-        messageText.lineBreakMode = .ByWordWrapping;
-        messageText.numberOfLines = 0;
+        senderNameLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15)!
         
-        dateText.font = AABubbleTextCell.dateFont;
-        dateText.lineBreakMode = .ByClipping;
-        dateText.numberOfLines = 1;
+        messageText.font = AABubbleTextCell.bubbleFont
+        messageText.lineBreakMode = .ByWordWrapping
+        messageText.numberOfLines = 0
+        
+        dateText.font = AABubbleTextCell.dateFont
+        dateText.lineBreakMode = .ByClipping
+        dateText.numberOfLines = 1
         dateText.contentMode = UIViewContentMode.TopLeft
-        dateText.textAlignment = NSTextAlignment.Right;
+        dateText.textAlignment = NSTextAlignment.Right
         
-        statusView.contentMode = UIViewContentMode.Center;
+        statusView.contentMode = UIViewContentMode.Center
         
-        contentView.addSubview(messageText);
-        contentView.addSubview(dateText);
-        contentView.addSubview(statusView);
+        contentView.addSubview(messageText)
+        contentView.addSubview(dateText)
+        contentView.addSubview(statusView)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -62,20 +54,41 @@ class AABubbleTextCell : AABubbleCell {
         if (!reuse) {
             needRelayout = true
             messageText.text = (message.getContent() as! AMTextContent).getText();
-            isOut = message.getSenderId() == MSG.myUid();
             isCompact = isPreferCompact
             
             if (isOut) {
                 bindBubbleType(.TextOut, isCompact: isPreferCompact)
                 messageText.textColor = MainAppTheme.bubbles.textOut
                 dateText.textColor = MainAppTheme.bubbles.textDateOut
+
+                bubbleInsets = UIEdgeInsets(
+                    top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
+                    left: 0,
+                    bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
+                    right: isPreferCompact ? 10 : 4)
+                contentInsets = UIEdgeInsets(
+                    top: AABubbleCell.bubbleContentTop,
+                    left: 10,
+                    bottom: AABubbleCell.bubbleContentBottom,
+                    right: (isPreferCompact ? 4 : 10))
             } else {
                 bindBubbleType(.TextIn, isCompact: isPreferCompact)
                 messageText.textColor = MainAppTheme.bubbles.textIn
                 dateText.textColor = MainAppTheme.bubbles.textDateIn
+                
+                bubbleInsets = UIEdgeInsets(
+                    top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
+                    left: isPreferCompact ? 10 : 4,
+                    bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
+                    right: 0)
+                contentInsets = UIEdgeInsets(
+                    top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
+                    left: isPreferCompact ? 11 : 17,
+                    bottom: AABubbleCell.bubbleContentBottom,
+                    right: 10)
             }
             
-            if group && !isOut {
+            if isGroup && !isOut {
                 if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
                     var username = ""
                     if let uname = user.getName().get() as? String {
@@ -85,15 +98,11 @@ class AABubbleTextCell : AABubbleCell {
                     
                     var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
                     senderNameLabel.textColor = color
-                    
-                    let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
-                    avatarView.bind(username, id: user.getId(), avatar: avatar)
                 }
                 contentView.addSubview(senderNameLabel)
-                contentView.addSubview(avatarView)
+
             } else {
                 senderNameLabel.removeFromSuperview()
-                avatarView.removeFromSuperview()
             }
         }
         
@@ -135,16 +144,14 @@ class AABubbleTextCell : AABubbleCell {
     // MARK: Getters
     
     class func measureTextHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
-        var content = message.getContent() as! AMTextContent!
-        return round(AABubbleTextCell.measureText(content.getText(), isOut: message.getSenderId() == MSG.myUid()).height) + textPaddingTop + textPaddingBottom // 3 text top, 3 text bottom
-    }
-    
-    class func bubbleTopPadding() -> CGFloat {
-        return 1 + retinaPixel
-    }
-    
-    class func bubbleBottomPadding() -> CGFloat {
-        return 1 + retinaPixel
+        let content = message.getContent() as! AMTextContent!
+        let contentHeight = AABubbleTextCell.measureText(content.getText(), isOut: message.getSenderId() == MSG.myUid()).height
+        
+        if (isPreferCompact) {
+            return contentHeight + bubbleBottomCompact + bubbleContentBottom + bubbleContentTop + bubbleTopCompact
+        } else {
+            return contentHeight + bubbleBottom + bubbleContentBottom + bubbleContentTop + bubbleTop
+        }
     }
     
     // MARK: -
@@ -164,66 +171,43 @@ class AABubbleTextCell : AABubbleCell {
     // MARK: -
     // MARK: Layout
     
-    override func layoutSubviews() {
-        super.layoutSubviews();
-
-        UIView.performWithoutAnimation { () -> Void in
-            
-            var textBounds = AABubbleTextCell.measureText(self.messageText.text!, isOut: self.isOut);
-            var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
-            
-            var bubbleTopPadding = AABubbleTextCell.bubbleTopPadding()
-            var bubbleBottomPadding = self.isCompact ? 0 : AABubbleTextCell.bubbleBottomPadding()
-            
-            var contentWidth = self.contentView.frame.width
-            var contentHeight = self.contentView.frame.height
-            
-            var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
-            
-            var contentInsetY = CGFloat((self.group ? self.groupContentInsetY : 0.0))
-            var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
-            
-            self.messageText.frame = textBounds;
-            self.messageText.sizeToFit()
-            
-            var textWidth = round(textBounds.width);
-            var textHeight = round(textBounds.height);
-            
-            if textWidth < senderNameBounds.width {
-                textWidth = senderNameBounds.width + 5
-            }
-            
-            if (self.isOut) {
-                self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - self.textPaddingEndOutgoing - self.bubblePadding, y: bubbleTopPadding + AABubbleTextCell.textPaddingTop);
-            } else {
-                self.messageText.frame.origin = CGPoint(x: self.bubblePadding + self.textPaddingStartIncoming + contentInsetX, y: bubbleTopPadding + AABubbleTextCell.textPaddingTop + contentInsetY)
-            }
-            
-            let x = round(self.messageText.frame.origin.x);
-            let y = round(self.messageText.frame.origin.y);
-            
-            if (self.isOut) {
-                self.bubble.frame = CGRectMake(x - self.textPaddingStartOutgoing, bubbleTopPadding, textWidth + self.textPaddingStartOutgoing + self.textPaddingEndOutgoing, bubbleHeight);
-                self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
-            } else {
-                self.bubble.frame = CGRectMake(x - self.textPaddingStartIncoming, bubbleTopPadding, textWidth + self.textPaddingStartIncoming + self.textPaddingEndIncoming, textHeight + 8 + contentInsetY);
-                self.dateText.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26);
-            }
-            self.bubbleBorder.frame = self.bubble.frame
-            
-            if self.group && !self.isOut {
-                let avatarSize = CGFloat(self.avatarView.frameSize)
-                self.avatarView.frame = CGRect(x: 5, y: self.bubble.frame.maxY - avatarSize - 1, width: avatarSize, height: avatarSize)
-                self.senderNameLabel.frame = CGRect(x: self.messageText.frame.origin.x, y: 5, width: textWidth, height: 20)
-            }
-            
-            if (self.isOut) {
-                self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26);
-                self.statusView.hidden = false;
-            } else {
-                self.statusView.hidden = true;
-            }
+    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        // Convenience
+        var insets = fullContentInsets
+        var contentWidth = self.contentView.frame.width
+        var contentHeight = self.contentView.frame.height
+        
+        // Measure Text
+        var textBounds = AABubbleTextCell.measureText(self.messageText.text!, isOut: self.isOut);
+        var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
+        
+        self.messageText.frame = textBounds
+        self.messageText.sizeToFit()
+        
+        var textWidth = round(textBounds.width)
+        var textHeight = round(textBounds.height)
+        
+        if textWidth < senderNameBounds.width {
+            textWidth = senderNameBounds.width + 5
         }
+        
+        // Layout elements
+        if (self.isOut) {
+            self.messageText.frame.origin = CGPoint(x: contentWidth - textWidth - insets.right, y: insets.top)
+            self.dateText.frame = CGRectMake(contentWidth - insets.right - 70, textHeight + insets.top - 20, 46, 26)
+            self.statusView.frame = CGRectMake(contentWidth - insets.right - 24, textHeight + insets.top - 20, 20, 26)
+            self.statusView.hidden = false
+        } else {
+            self.messageText.frame.origin = CGPoint(x: insets.left, y: insets.top)
+            self.dateText.frame = CGRectMake(insets.left + textWidth - 47, textHeight + insets.top - 20, 46, 26)
+            self.statusView.hidden = true
+        }
+        
+        if self.isGroup && !self.isOut {
+            self.senderNameLabel.frame = CGRect(x: insets.left, y: insets.top - 18, width: textWidth, height: 20)
+        }
+
+        layoutBubble(textWidth, contentHeight: textHeight)
     }
     
     // Using padding for proper date align.
@@ -235,8 +219,6 @@ class AABubbleTextCell : AABubbleCell {
     
     private static let maxTextWidth = 210
     
-    private static let textPaddingTop: CGFloat = 4
-    private static let textPaddingBottom: CGFloat = 5
     
     private class func measureText(message: String, isOut: Bool) -> CGRect {
         var style = NSMutableParagraphStyle();
