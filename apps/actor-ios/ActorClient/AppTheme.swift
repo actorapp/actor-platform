@@ -325,4 +325,12 @@ class AppNavigationBar {
             UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
         }
     }
+    
+    func applyStatusBarFast() {
+        if (statusBarLightContent) {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
+        } else {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: false)
+        }
+    }
 }
