@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AABubbleUnsupportedCell: BubbleCell {
+class AABubbleUnsupportedCell: AABubbleCell {
     
     // MARK: -
     // MARK: Private vars
@@ -26,15 +26,9 @@ class AABubbleUnsupportedCell: BubbleCell {
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
         
-        bubble.image = UIImage(named: "conv_media_bg")
         unsupportedLabel.text = "Unsupported content" // TODO: localize
         unsupportedLabel.lineBreakMode = NSLineBreakMode.ByWordWrapping
         unsupportedLabel.textAlignment = NSTextAlignment.Center
-        
-        contentView.addSubview(bubble)
-        contentView.addSubview(unsupportedLabel)
-        
-        backgroundColor = UIColor.clearColor()
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -64,6 +58,14 @@ class AABubbleUnsupportedCell: BubbleCell {
             senderNameLabel.removeFromSuperview()
             avatarView.removeFromSuperview()
         }
+        
+        if (!reuse) {
+            if (isOut) {
+                bindBubbleType(.MediaOut, isCompact: false)
+            } else {
+                bindBubbleType(.MediaIn, isCompact: false)
+            }
+        }
     }
     
     // MARK: -
@@ -87,27 +89,30 @@ class AABubbleUnsupportedCell: BubbleCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        var bubbleTopPadding = BubbleServiceCell.bubbleTopPadding()
+        UIView.performWithoutAnimation { () -> Void in
         
-        var contentWidth = contentView.frame.width
-        var contentHeight = contentView.frame.height
+            var bubbleTopPadding = AABubbleServiceCell.bubbleTopPadding()
         
-        var contentInsetY = CGFloat((self.group ? self.groupContentInsetY : 0.0))
-        var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+            var contentWidth = self.contentView.frame.width
+            var contentHeight = self.contentView.frame.height
         
-        if (isOut) {
-            bubble.frame = CGRectMake(contentWidth - 180 - bubbleMediaPadding, bubbleTopPadding, 180, 100)
-        } else {
-            bubble.frame = CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, 180, 100)
+            var contentInsetY = CGFloat((self.group ? self.groupContentInsetY : 0.0))
+            var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
+        
+            if (self.isOut) {
+                self.layoutBubble(CGRectMake(contentWidth - 180 - self.bubbleMediaPadding, bubbleTopPadding, 180, 100))
+            } else {
+                self.layoutBubble(CGRectMake(self.bubbleMediaPadding + contentInsetX, bubbleTopPadding, 180, 100))
+            }
+        
+            var labelFrame = self.bubble.frame
+        
+            if (!self.isOut) {
+                labelFrame.origin.y = contentInsetY
+                labelFrame.size.height -= contentInsetY
+            }
+        
+            self.unsupportedLabel.frame = labelFrame
         }
-        
-        var labelFrame = bubble.frame
-        
-        if (!isOut) {
-            labelFrame.origin.y = contentInsetY
-            labelFrame.size.height -= contentInsetY
-        }
-        
-        unsupportedLabel.frame = labelFrame
     }
 }
