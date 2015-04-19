@@ -56,4 +56,8 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
           deliverBuf()
         case None =>
       }
+
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    log.error(reason, "Exception thrown, message: {}", message)
+  }
 }

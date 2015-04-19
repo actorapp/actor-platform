@@ -47,6 +47,7 @@ class SessionMessageDiscriminator(implicit actorSystem: ActorSystem)
         case e: SubscribeToPresences =>
           ctx.emit(p.outSubscribe)(e)
         case unmatched =>
+          actorSystem.log.debug("Unmatched {}", unmatched)
           ctx.emit(p.outUnmatched)(unmatched)
       }
     }
