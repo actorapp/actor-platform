@@ -1,0 +1,71 @@
+package im.actor.server.presences
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
+
+import akka.testkit.TestProbe
+import akka.util.Timeout
+import org.scalatest.time.{ Seconds, Span }
+
+import im.actor.server.SqlSpecHelpers
+import im.actor.util.testing.ActorSuite
+
+class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
+  behavior of "PresenceManager"
+
+  it should "subscribe to presences" in e1
+  it should "send presence on subscription" in e2
+  it should "deliver presence changes" in e3
+  it should "change presence to Offline after timeout" in e4
+
+  import PresenceManager._
+
+  implicit val ec: ExecutionContext = system.dispatcher
+  implicit val (ds, db) = migrateAndInitDb()
+
+  override implicit val patienceConfig = PatienceConfig(timeout = Span(5, Seconds))
+  implicit val timeout: Timeout = Timeout(5.seconds)
+
+  val region = PresenceManager.startRegion()
+
+  val probe = TestProbe()
+  val userId = 1
+
+  def e1() = {
+    whenReady(subscribe(region, userId, probe.ref)){_ => }
+  }
+
+  def e2() = {
+    probe.expectMsg(PresenceState(userId, Offline, None))
+  }
+
+  def e3() = {
+    presenceSetOnline(region, userId, 500)
+    val lastSeenAt = probe.expectMsgPF() {
+      case PresenceState(1, Online, Some(ls)) =>
+        ls
+    }
+
+    presenceSetOffline(region, userId, 100)
+    probe.expectMsgPF() {
+      case PresenceState(1, Offline, Some(ls)) =>
+        ls should ===(lastSeenAt)
+    }
+  }
+
+  def e4() = {
+    presenceSetOnline(region, userId, 100)
+    val lastSeenAt = probe.expectMsgPF() {
+      case PresenceState(1, Online, Some(ls)) =>
+        ls
+    }
+
+    Thread.sleep(200)
+
+    probe.expectMsgPF() {
+      case PresenceState(1, Offline, Some(ls)) =>
+        ls should ===(lastSeenAt)
+    }
+  }
+}
+

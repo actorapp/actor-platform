@@ -4,6 +4,7 @@
     <logger name="org.flywaydb" level="WARN"/>
     <logger name="slick.ast" level="WARN"/>
     <logger name="slick.compiler" level="WARN"/>
+    <logger name="slick.relational.ResultConverterCompiler" level="WARN"/>
     <logger name="slick.relational.ResultConverter" level="WARN"/>
     <logger name="slick.jdbc.JdbcBackend.benchmark" level="WARN"/>
 

@@ -42,11 +42,26 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): ActorRef = startRegion(None)
 
-  def props(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit db: Database, materializer: FlowMaterializer) =
-    Props(classOf[Session], rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, db, materializer)
+  def props(rpcApiService: ActorRef,
+            seqUpdManagerRegion: ActorRef,
+            weakUpdManagerRegion: ActorRef,
+            presenceManagerRegion: ActorRef)
+           (implicit db: Database, materializer: FlowMaterializer): Props =
+    Props(classOf[Session],
+      rpcApiService,
+      seqUpdManagerRegion,
+      weakUpdManagerRegion,
+      presenceManagerRegion,
+      db,
+      materializer)
 }
 
-class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdManagerRegion: ActorRef)(implicit db: Database, materializer: FlowMaterializer) extends ActorLogging with MessageIdHelper with Stash {
+class Session(rpcApiService: ActorRef,
+              seqUpdManagerRegion: ActorRef,
+              weakUpdManagerRegion: ActorRef,
+              presenceManagerRegion: ActorRef)
+             (implicit db: Database, materializer: FlowMaterializer)
+  extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionMessage._
 
@@ -123,7 +138,7 @@ class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdMan
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
-        context.actorOf(UpdatesPusher.props(seqUpdManagerRegion, weakUpdManagerRegion, authId, self))
+        context.actorOf(UpdatesPusher.props(seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion, authId, self))
 
         context.become(resolved(authId, sessionId, sessionMessagePublisher))
       }
@@ -168,6 +183,14 @@ class Session(rpcApiService: ActorRef, seqUpdManagerRegion: ActorRef, weakUpdMan
         withValidMessageBox(client, messageBoxBytes)(mb => publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId)))
       case SendProtoMessage(protoMessage) =>
         sendProtoMessage(authId, sessionId, protoMessage)
+      case SubscribeToOnline(userIds) =>
+
+      case SubscribeFromOnline(userIds) =>
+        // TODO: implement
+      case SubscribeToGroupOnline(groupIds) =>
+        // TODO: implement
+      case SubscribeFromGroupOnline(groupIds) =>
+        // TODO: implement
       case UserAuthorized(userId) =>
         log.debug("User {} authorized session {}", userId, sessionId)
 

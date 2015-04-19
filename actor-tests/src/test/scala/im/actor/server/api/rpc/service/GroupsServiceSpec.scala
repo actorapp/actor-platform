@@ -9,6 +9,7 @@ import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util.ACL
 import im.actor.server.persist
+import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 
 class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
@@ -22,8 +23,9 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion)
+  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
 
   implicit val service = new GroupsServiceImpl(seqUpdManagerRegion)
   implicit val authService = buildAuthService(sessionRegion)
