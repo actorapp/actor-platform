@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.fusesource.leveldbjni:leveldbjni:1.7:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.fusesource.leveldbjni/leveldbjni/jars/leveldbjni-1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.fusesource.leveldbjni/leveldbjni/docs/leveldbjni-1.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.fusesource.leveldbjni/leveldbjni/srcs/leveldbjni-1.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

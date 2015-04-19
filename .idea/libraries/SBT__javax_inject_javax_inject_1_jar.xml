@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: javax.inject:javax.inject:1:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/javax.inject/javax.inject/jars/javax.inject-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/javax.inject/javax.inject/docs/javax.inject-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/javax.inject/javax.inject/srcs/javax.inject-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

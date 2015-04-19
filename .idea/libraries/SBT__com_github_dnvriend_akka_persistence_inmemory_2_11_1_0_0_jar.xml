@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.github.dnvriend:akka-persistence-inmemory_2.11:1.0.0:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.dnvriend/akka-persistence-inmemory_2.11/jars/akka-persistence-inmemory_2.11-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.dnvriend/akka-persistence-inmemory_2.11/docs/akka-persistence-inmemory_2.11-1.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.github.dnvriend/akka-persistence-inmemory_2.11/srcs/akka-persistence-inmemory_2.11-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: com.eaio:grabbag:1.8.1:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.eaio/grabbag/jars/grabbag-1.8.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.eaio/grabbag/docs/grabbag-1.8.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.eaio/grabbag/srcs/grabbag-1.8.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.scala-sbt:test-interface:1.0:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-sbt/test-interface/jars/test-interface-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-sbt/test-interface/docs/test-interface-1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-sbt/test-interface/srcs/test-interface-1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

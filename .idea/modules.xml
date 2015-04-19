@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-api.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-api-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-codecs.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-codecs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-codecs-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-codecs-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-frontend.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-frontend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-frontend-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-frontend-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-models.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-models.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-models-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-models-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-persist.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-persist.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-persist-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-persist-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-presences.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-presences.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-presences-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-presences-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-push.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-push.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-push-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-push-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-rpc-api.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-rpc-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-rpc-api-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-rpc-api-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-server.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-server-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-server-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-session.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-session.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-session-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-session-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-session-messages.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-session-messages.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-session-messages-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-session-messages-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-tests.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-tests-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-tests-build.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.scalatest:scalatest_2.11:2.2.4:jar">
+    <CLASSES>
+      <root url="jar:///usr/local/Cellar/typesafe-activator/1.3.2/libexec/repository/org.scalatest/scalatest_2.11/2.2.4/bundles/scalatest_2.11.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scalatest/scalatest_2.11/docs/scalatest_2.11-2.2.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scalatest/scalatest_2.11/srcs/scalatest_2.11-2.2.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
