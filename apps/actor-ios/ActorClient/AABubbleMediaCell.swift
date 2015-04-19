@@ -8,7 +8,7 @@
 
 import Foundation
 
-class BubbleMediaCell : BubbleCell {
+class AABubbleMediaCell : AABubbleCell {
     
     let preview = UIImageView();
     let circullarNode = CircullarNode()
@@ -36,13 +36,8 @@ class BubbleMediaCell : BubbleCell {
     override init(reuseId: String) {
         super.init(reuseId: reuseId)
         
-        bubble.image = UIImage(named: "conv_media_bg")
-        
-        contentView.addSubview(bubble)
         contentView.addSubview(preview)
         contentView.addSubview(circullarNode.view)
-        
-        self.backgroundColor = UIColor.clearColor();
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -54,6 +49,12 @@ class BubbleMediaCell : BubbleCell {
     override func bind(message: AMMessage, reuse: Bool) {
         if (!reuse) {
             self.isOut = message.getSenderId() == MSG.myUid()
+            
+            if (self.isOut) {
+                bindBubbleType(BubbleType.MediaOut, isCompact: false)
+            } else {
+                bindBubbleType(BubbleType.MediaIn, isCompact: false)
+            }
             
             if (message.getContent() is AMPhotoContent) {
                 var photo = message.getContent() as! AMPhotoContent;
@@ -72,7 +73,7 @@ class BubbleMediaCell : BubbleCell {
             preview.image = nil
             thumbLoaded = false
             contentLoaded = false
-            contentViewSize = BubbleMediaCell.measureMedia(contentWidth, h: contentHeight)
+            contentViewSize = AABubbleMediaCell.measureMedia(contentWidth, h: contentHeight)
             
             circullarNode.setProgress(0, animated: false)
             UIView.animateWithDuration(0, animations: { () -> Void in
@@ -258,9 +259,12 @@ class BubbleMediaCell : BubbleCell {
         if (message.getContent() is AMPhotoContent) {
             var photo = message.getContent() as! AMPhotoContent;
             return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height;
+        } else if (message.getContent() is AMVideoContent) {
+            var video = message.getContent() as! AMVideoContent;
+            return measureMedia(Int(video.getW()), h: Int(video.getH())).height;
         }
         
-        fatalError("???")
+        fatalError("Unknown content type")
     }
     
     class func bubbleTopPadding() -> CGFloat {
@@ -277,8 +281,8 @@ class BubbleMediaCell : BubbleCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        var bubbleTopPadding = BubbleMediaCell.bubbleTopPadding()
-        var bubbleBottomPadding = BubbleMediaCell.bubbleBottomPadding()
+        var bubbleTopPadding = AABubbleMediaCell.bubbleTopPadding()
+        var bubbleBottomPadding = AABubbleMediaCell.bubbleBottomPadding()
         
         var contentWidth = self.contentView.frame.width
         var contentHeight = self.contentView.frame.height
@@ -289,9 +293,9 @@ class BubbleMediaCell : BubbleCell {
         var contentInsetX = CGFloat((self.group ? self.groupContentInsetX : 0.0))
         
         if (self.isOut) {
-            bubble.frame = CGRectMake(contentWidth - bubbleWidth - bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight)
+            layoutBubble(CGRectMake(contentWidth - bubbleWidth - bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight))
         } else {
-            bubble.frame = CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight)
+            layoutBubble(CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight))
         }
         
         if self.group && !self.isOut {

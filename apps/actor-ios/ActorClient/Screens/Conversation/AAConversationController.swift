@@ -226,7 +226,7 @@ class AAConversationController: EngineSlackListController {
             let point = gesture.locationInView(tableView)
             let indexPath = tableView.indexPathForRowAtPoint(point)
             if indexPath != nil {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? BubbleCell {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
                     if cell.bubble.superview != nil {
                         var bubbleFrame = cell.bubble.frame
                         bubbleFrame = tableView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
@@ -247,7 +247,7 @@ class AAConversationController: EngineSlackListController {
             let point = gesture.locationInView(tableView)
             let indexPath = tableView.indexPathForRowAtPoint(point)
             if indexPath != nil {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? BubbleCell {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
                     if cell.avatarView.superview != nil {
                         var avatarFrame = cell.avatarView.frame
                         avatarFrame = tableView.convertRect(avatarFrame, fromView: cell.bubble.superview)
@@ -305,22 +305,22 @@ class AAConversationController: EngineSlackListController {
         var message = (item as! AMMessage);
         
         if (message.getContent() is AMTextContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! BubbleTextCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = BubbleTextCell(reuseId: BubbleTextIdentifier)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier)
             }
             return cell!
         } else if (message.getContent() is AMPhotoContent || message.getContent() is AMVideoContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! BubbleMediaCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! AABubbleMediaCell?
             if (cell == nil) {
-                cell = BubbleMediaCell(reuseId: BubbleMediaIdentifier)
+                cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier)
             }
             return cell!
             
         } else if (message.getContent() is AMServiceContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! BubbleServiceCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! AABubbleServiceCell?
             if (cell == nil) {
-                cell = BubbleServiceCell(reuseId: BubbleServiceIdentifier)
+                cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier)
             }
             return cell!
         } else if (message.getContent() is AMDocumentContent) {
@@ -341,8 +341,8 @@ class AAConversationController: EngineSlackListController {
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
         let group = peer.getPeerType().name() == "GROUP"
         println("\(group)")
-        (cell as! BubbleCell).group = group
-        (cell as! BubbleCell).performBind(item as! AMMessage);
+        (cell as! AABubbleCell).group = group
+        (cell as! AABubbleCell).performBind(item as! AMMessage);
     }
     
     override func getDisplayList() -> AMBindedDisplayList {
@@ -363,7 +363,7 @@ class AAConversationController: EngineSlackListController {
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         var item = objectAtIndexPath(indexPath) as! AMMessage;
         let group = peer.getPeerType().name() == "GROUP"
-        return BubbleCell.measureHeight(item, group: group);
+        return AABubbleCell.measureHeight(item, group: group);
     }
     
     // MARK: -

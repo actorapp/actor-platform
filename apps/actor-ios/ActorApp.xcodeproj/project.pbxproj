@@ -704,11 +704,11 @@
 		063BCF311AB7AC0F00D469AB /* iOSNotificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */; };
 		064903791AB38C6200FA7B1C /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064903781AB38C6200FA7B1C /* Strings.swift */; };
 		065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */; };
-		065A51CC1ABB441E00B48088 /* BubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* BubbleServiceCell.swift */; };
+		065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */; };
 		065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */; };
 		065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */; };
-		067144501AB089B000364820 /* BubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671444F1AB089B000364820 /* BubbleCell.swift */; };
-		067144521AB0947000364820 /* BubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067144511AB0947000364820 /* BubbleTextCell.swift */; };
+		067144501AB089B000364820 /* AABubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671444F1AB089B000364820 /* AABubbleCell.swift */; };
+		067144521AB0947000364820 /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067144511AB0947000364820 /* AABubbleTextCell.swift */; };
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0671592E1ABC830E00D95719 /* CocoaNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592D1ABC830E00D95719 /* CocoaNetworking.swift */; };
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
@@ -732,7 +732,7 @@
 		06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */; };
 		06B356F61AB8C7BB00405472 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F51AB8C7BB00405472 /* ContactCell.swift */; };
 		06B99A131ABF45DA0066CA08 /* UIButtonTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */; };
-		06BC45151AB87ECB0003F59E /* BubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45141AB87ECB0003F59E /* BubbleMediaCell.swift */; };
+		06BC45151AB87ECB0003F59E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */; };
 		06BC45171AB889110003F59E /* CircullarProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45161AB889110003F59E /* CircullarProgress.swift */; };
 		06BFDB511AB1AD3800F16E43 /* DialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFDB501AB1AD3800F16E43 /* DialogCell.swift */; };
 		06BFDB551AB1D14900F16E43 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB521AB1D06B00F16E43 /* Roboto-Bold.ttf */; };
@@ -2144,11 +2144,11 @@
 		064903781AB38C6200FA7B1C /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		065A51C51ABA0BA200B48088 /* ActorClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorClient.entitlements; sourceTree = "<group>"; };
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
-		065A51CB1ABB441E00B48088 /* BubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleServiceCell.swift; sourceTree = "<group>"; };
+		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMembersController.swift; sourceTree = "<group>"; };
 		065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GroupMembersController.xib; sourceTree = "<group>"; };
-		0671444F1AB089B000364820 /* BubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleCell.swift; sourceTree = "<group>"; };
-		067144511AB0947000364820 /* BubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleTextCell.swift; sourceTree = "<group>"; };
+		0671444F1AB089B000364820 /* AABubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleCell.swift; sourceTree = "<group>"; };
+		067144511AB0947000364820 /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
 		0671592D1ABC830E00D95719 /* CocoaNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaNetworking.swift; sourceTree = "<group>"; };
 		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -2178,7 +2178,7 @@
 		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineSlackListController.swift; sourceTree = "<group>"; };
 		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonTable.swift; sourceTree = "<group>"; };
-		06BC45141AB87ECB0003F59E /* BubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleMediaCell.swift; sourceTree = "<group>"; };
+		06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
 		06BC45161AB889110003F59E /* CircullarProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarProgress.swift; sourceTree = "<group>"; };
 		06BFDB501AB1AD3800F16E43 /* DialogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogCell.swift; sourceTree = "<group>"; };
 		06BFDB521AB1D06B00F16E43 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
@@ -4380,6 +4380,10 @@
 		05FCE88F1AD80320002F0398 /* Bubbles */ = {
 			isa = PBXGroup;
 			children = (
+				0671444F1AB089B000364820 /* AABubbleCell.swift */,
+				067144511AB0947000364820 /* AABubbleTextCell.swift */,
+				06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */,
+				065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */,
 				05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */,
 				0564F9E21AD8581700D8CDF1 /* AABubbleUnsupportedCell.swift */,
 			);
@@ -4425,10 +4429,6 @@
 		069FE6D11AC0201000C6C033 /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
-				0671444F1AB089B000364820 /* BubbleCell.swift */,
-				067144511AB0947000364820 /* BubbleTextCell.swift */,
-				06BC45141AB87ECB0003F59E /* BubbleMediaCell.swift */,
-				065A51CB1ABB441E00B48088 /* BubbleServiceCell.swift */,
 			);
 			name = Conversation;
 			sourceTree = "<group>";
@@ -4852,7 +4852,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				065A51CC1ABB441E00B48088 /* BubbleServiceCell.swift in Sources */,
+				065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */,
 				0514D9C71AD1ED8A00F6C3BB /* ListStorage.m in Sources */,
 				0514DB011AD1ED8B00F6C3BB /* WNafPreCompInfo.m in Sources */,
 				0514D9411AD1ED8A00F6C3BB /* UpdatePhoneMoved.m in Sources */,
@@ -4873,7 +4873,7 @@
 				0514DAD21AD1ED8A00F6C3BB /* CBCBlockCipher.m in Sources */,
 				0514D9141AD1ED8A00F6C3BB /* ResponseStartUpload.m in Sources */,
 				0514D97B1AD1ED8A00F6C3BB /* ActorSelection.m in Sources */,
-				067144521AB0947000364820 /* BubbleTextCell.swift in Sources */,
+				067144521AB0947000364820 /* AABubbleTextCell.swift in Sources */,
 				0514D94A1AD1ED8A00F6C3BB /* UpdateUserLocalNameChanged.m in Sources */,
 				0514D8A71AD1ED8A00F6C3BB /* DocumentMessage.m in Sources */,
 				0514DAE41AD1ED8A00F6C3BB /* AbstractECMultiplier.m in Sources */,
@@ -5339,7 +5339,7 @@
 				0514D9C61AD1ED8A00F6C3BB /* ListEngineRecord.m in Sources */,
 				0514D9F71AD1ED8A00F6C3BB /* OutputFile.m in Sources */,
 				0514DA891AD1ED8A00F6C3BB /* MTProto.m in Sources */,
-				06BC45151AB87ECB0003F59E /* BubbleMediaCell.swift in Sources */,
+				06BC45151AB87ECB0003F59E /* AABubbleMediaCell.swift in Sources */,
 				050B226D1ACC010200A0E904 /* AAAuthPhoneController.swift in Sources */,
 				0514DADB1AD1ED8A00F6C3BB /* ParametersWithSalt.m in Sources */,
 				0514D90C1AD1ED8A00F6C3BB /* ResponseGetPublicKeys.m in Sources */,
@@ -5441,7 +5441,7 @@
 				0514DA5F1AD1ED8A00F6C3BB /* MVVMCollection.m in Sources */,
 				0514D95B1AD1ED8A00F6C3BB /* CocoaThreadingProvider.m in Sources */,
 				0514DA611AD1ED8A00F6C3BB /* ValueChangedListener.m in Sources */,
-				067144501AB089B000364820 /* BubbleCell.swift in Sources */,
+				067144501AB089B000364820 /* AABubbleCell.swift in Sources */,
 				0514DA2B1AD1ED8A00F6C3BB /* PlainReaderActor.m in Sources */,
 				0514D9B01AD1ED8A00F6C3BB /* DataInput.m in Sources */,
 				0514D8971AD1ED8A00F6C3BB /* AuthHolder.m in Sources */,
