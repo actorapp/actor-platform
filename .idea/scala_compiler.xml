@@ -5,7 +5,7 @@
     <option name="reflectiveCalls" value="true" />
     <option name="implicitConversions" value="true" />
     <option name="macros" value="true" />
-    <profile name="SBT 1" modules="actor-typing,actor-server,actor-api,actor-codecs,actor-frontend,actor-models,actor-persist,actor-presences,actor-push,actor-rpc-api,actor-session,actor-tests">
+    <profile name="SBT 1" modules="actor-typing,actor-server,actor-api,actor-codecs,actor-frontend,actor-models,actor-persist,actor-presences,actor-push,actor-rpc-api,actor-session,actor-session-messages,actor-tests">
       <option name="higherKinds" value="true" />
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
@@ -20,6 +20,6 @@
         <parameter value="-Ywarn-numeric-widen" />
       </parameters>
     </profile>
-    <profile name="SBT 2" modules="actor-session-messages,project" />
+    <profile name="SBT 2" modules="project" />
   </component>
 </project>
