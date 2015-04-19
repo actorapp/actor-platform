@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.scalacheck:scalacheck_2.11:1.12.2:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scalacheck/scalacheck_2.11/jars/scalacheck_2.11-1.12.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scalacheck/scalacheck_2.11/docs/scalacheck_2.11-1.12.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scalacheck/scalacheck_2.11/srcs/scalacheck_2.11-1.12.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

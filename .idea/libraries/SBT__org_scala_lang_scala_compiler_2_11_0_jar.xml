@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.scala-lang:scala-compiler:2.11.0:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/docs/scala-compiler-2.11.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/srcs/scala-compiler-2.11.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

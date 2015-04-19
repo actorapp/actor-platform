@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: org.joda:joda-convert:1.7:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.joda/joda-convert/jars/joda-convert-1.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.joda/joda-convert/docs/joda-convert-1.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.joda/joda-convert/srcs/joda-convert-1.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

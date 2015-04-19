@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="SBT: junit:junit-dep:4.10:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/junit/junit-dep/jars/junit-dep-4.10.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.ivy2/cache/junit/junit-dep/docs/junit-dep-4.10-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/junit/junit-dep/srcs/junit-dep-4.10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
