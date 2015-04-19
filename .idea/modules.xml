@@ -26,6 +26,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-session-messages-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-session-messages-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-tests.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-tests.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/actor-tests-build.iml" filepath="$PROJECT_DIR$/.idea/modules/actor-tests-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/actor-session-messages/project/.idea/modules/project.iml" filepath="$PROJECT_DIR$/actor-session-messages/project/.idea/modules/project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/actor-session-messages/project/.idea/modules/project-build.iml" filepath="$PROJECT_DIR$/actor-session-messages/project/.idea/modules/project-build.iml" />
     </modules>
   </component>
 </project>
