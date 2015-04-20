@@ -131,10 +131,12 @@ public class JsFacade implements Exportable {
     }
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d("JsFacade", "Bind chat: " + peer.getPeerType() + " : " + peer.getPeerId());
         messenger.getConversationList(peer.convert()).subscribe(callback);
     }
 
     public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d("JsFacade", "UnBind chat: " + peer.getPeerType() + " : " + peer.getPeerId());
         messenger.getConversationList(peer.convert()).subscribe(callback);
     }
 
@@ -180,10 +182,12 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
+        Log.d("JsFacade", "On chat open: " + peer.getPeerType() + " : " + peer.getPeerId());
         messenger.onConversationOpen(peer.convert());
     }
 
     public void onConversationClosed(JsPeer peer) {
+        Log.d("JsFacade", "On chat closed: " + peer.getPeerType() + " : " + peer.getPeerId());
         messenger.onConversationClosed(peer.convert());
     }
 
