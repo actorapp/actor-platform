@@ -79,6 +79,22 @@
 "GroupLeave" = "Покинуть группу";
 
 /*
+ * Compose
+ */
+
+"ComposeTitle" = "Новое сообщение";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Приватность и безопасность";
+
+"PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
+
+/*
  * Chat
  */
 

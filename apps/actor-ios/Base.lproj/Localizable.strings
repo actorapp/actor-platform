@@ -79,6 +79,22 @@
 "GroupLeave" = "Leave group";
 
 /*
+ * Compose
+ */
+
+"ComposeTitle" = "New Message";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Privacy and Security";
+
+"PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateHint" = "Logs out all devices except for this one.";
+
+/*
  * Chat
  */
 
