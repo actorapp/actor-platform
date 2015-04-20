@@ -116,6 +116,7 @@ class AAUserInfoController: AATableViewController {
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
         alertView.show()
     }
