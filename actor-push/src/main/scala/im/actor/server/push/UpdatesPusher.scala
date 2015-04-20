@@ -103,7 +103,7 @@ private[push] class UpdatesPusher(authId: Long, session: ActorRef)
           case Offline =>
             lastSeenAt match {
               case Some(date) =>
-                UpdateUserLastSeen(userId, date.getMillis)
+                UpdateUserLastSeen(userId, date.getMillis / 1000)
               case None =>
                 UpdateUserOffline(userId)
             }
