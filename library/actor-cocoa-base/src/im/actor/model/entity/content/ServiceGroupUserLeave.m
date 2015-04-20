@@ -10,6 +10,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "java/io/IOException.h"
 
@@ -23,10 +24,18 @@
   return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)init {
-  return
+
 #line 18
-  [super initWithNSString:@"User leave"];
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  
+#line 19
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
+}
+
+
+#line 22
+- (instancetype)init {
+  return [super initWithNSString:@"User leave"];
 }
 
 @end

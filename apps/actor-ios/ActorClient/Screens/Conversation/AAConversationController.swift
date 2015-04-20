@@ -265,7 +265,7 @@ class AAConversationController: EngineSlackListController {
                                 let frame = photoCell.preview.frame
                                 
                                 MSG.requestStateWithLong(fileSource.getFileReference().getFileId(),
-                                    withAMDownloadCallback: CocoaDownloadCallback(
+                                    withAMFileCallback: CocoaDownloadCallback(
                                         notDownloaded: { () -> () in
                                         MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
                                     }, onDownloading: { (progress) -> () in

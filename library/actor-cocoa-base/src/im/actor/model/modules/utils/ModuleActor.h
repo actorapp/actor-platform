@@ -63,6 +63,8 @@
 
 - (id<DKListEngine>)messagesWithAMPeer:(AMPeer *)peer;
 
+- (id<DKListEngine>)mediaWithAMPeer:(AMPeer *)peer;
+
 - (jint)myUid;
 
 - (ImActorModelModulesModules *)modules;

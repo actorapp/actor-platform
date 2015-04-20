@@ -72,25 +72,33 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 
 
 #line 44
-- (AMBindedDisplayList *)getContactsGlobalList {
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer {
   
 #line 45
-  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getContactsGlobalList];
+  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildMediaListWithAMPeer:peer];
 }
 
 
 #line 48
-- (AMBindedDisplayList *)buildContactDisplayList {
+- (AMBindedDisplayList *)getContactsGlobalList {
   
 #line 49
-  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewContactListWithBoolean:NO];
+  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getContactsGlobalList];
 }
 
 
 #line 52
-- (AMBindedDisplayList *)buildSearchList {
+- (AMBindedDisplayList *)buildContactDisplayList {
   
 #line 53
+  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewContactListWithBoolean:NO];
+}
+
+
+#line 56
+- (AMBindedDisplayList *)buildSearchList {
+  
+#line 57
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewSearchListWithBoolean:NO];
 }
 

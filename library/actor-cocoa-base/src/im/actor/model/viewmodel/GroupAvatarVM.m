@@ -24,23 +24,21 @@ J2OBJC_FIELD_SETTER(AMGroupAvatarVM, uploadState_, AMValueModel *)
 @implementation AMGroupAvatarVM
 
 
-#line 11
+#line 17
 - (instancetype)initWithInt:(jint)gid {
   if (self = [super init]) {
     
-#line 12
+#line 18
     uploadState_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I", @"avatar.group.",
-#line 13
+#line 19
     gid) withId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
   }
   return self;
 }
 
 
-#line 16
+#line 27
 - (AMValueModel *)getUploadState {
-  
-#line 17
   return uploadState_;
 }
 

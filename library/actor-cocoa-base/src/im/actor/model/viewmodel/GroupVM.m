@@ -54,120 +54,120 @@ J2OBJC_FIELD_SETTER(AMGroupVM, listeners_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 
 
-#line 17
+#line 18
 @implementation AMGroupVM
 
 
-#line 30
+#line 37
 - (instancetype)initWithAMGroup:(AMGroup *)rawObj {
   if (self =
-#line 31
+#line 38
   [super initWithId:rawObj]) {
     listeners_ =
-#line 28
+#line 29
     [[JavaUtilArrayList alloc] init];
     
-#line 32
+#line 39
     self->id__ = [((AMGroup *) nil_chk(rawObj)) getGroupId];
     
-#line 33
+#line 40
     self->hash__ = [rawObj getAccessHash];
     
-#line 34
+#line 41
     self->creatorId_ = [rawObj getAdminId];
     
-#line 35
+#line 42
     self->name_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".title") withId:[rawObj getTitle]];
     
-#line 36
+#line 43
     self->avatar_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".avatar") withId:[rawObj getAvatar]];
     
-#line 37
+#line 44
     self->isMember__ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".isMember") withId:JavaLangBoolean_valueOfWithBoolean_([rawObj isMember])];
     
-#line 38
+#line 45
     self->members_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".members") withId:[[JavaUtilHashSet alloc] initWithJavaUtilCollection:[rawObj getMembers]]];
     
-#line 39
+#line 46
     self->presence_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"group.", id__, @".presence") withId:JavaLangInteger_valueOfWithInt_(0)];
   }
   return self;
 }
 
 
-#line 42
+#line 54
 - (jint)getId {
   
-#line 43
+#line 55
   return id__;
 }
 
 
-#line 46
+#line 63
 - (jlong)getHash {
   
-#line 47
+#line 64
   return hash__;
 }
 
 
-#line 50
+#line 72
 - (jlong)getCreatorId {
   
-#line 51
+#line 73
   return creatorId_;
 }
 
 
-#line 54
+#line 81
 - (jint)getMembersCount {
   
-#line 55
+#line 82
   return [((JavaUtilHashSet *) nil_chk([((AMValueModel *) nil_chk(members_)) get])) size];
 }
 
 
-#line 58
+#line 90
 - (AMValueModel *)getName {
   
-#line 59
+#line 91
   return name_;
 }
 
 
-#line 62
+#line 99
 - (AMValueModel *)getAvatar {
   
-#line 63
+#line 100
   return avatar_;
 }
 
 
-#line 66
+#line 108
 - (AMValueModel *)isMember {
   
-#line 67
+#line 109
   return isMember__;
 }
 
 
-#line 70
+#line 117
 - (AMValueModel *)getMembers {
   
-#line 71
+#line 118
   return members_;
 }
 
 
-#line 74
+#line 126
 - (AMValueModel *)getPresence {
   
-#line 75
+#line 127
   return presence_;
 }
 
 
-#line 79
+#line 131
 - (void)updateValuesWithId:(AMGroup *)rawObj {
   jboolean isChanged = NO;
   isChanged |= [((AMValueModel *) nil_chk(name_)) changeWithId:[((AMGroup *) nil_chk(rawObj)) getTitle]];
@@ -175,15 +175,18 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
   isChanged |= [((AMValueModel *) nil_chk(isMember__)) changeWithId:JavaLangBoolean_valueOfWithBoolean_([rawObj isMember])];
   isChanged |= [((AMValueModel *) nil_chk(members_)) changeWithId:[[JavaUtilHashSet alloc] initWithJavaUtilCollection:[rawObj getMembers]]];
   
-#line 86
+#line 138
   if (isChanged) {
     AMGroupVM_notifyChange(self);
   }
 }
 
+
+#line 149
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
   
-#line 93
+#line 150
+  AMMVVMEngine_checkMainThread();
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     return;
   }
@@ -192,11 +195,16 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 }
 
 
-#line 101
+#line 164
 - (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
+  
+#line 165
+  AMMVVMEngine_checkMainThread();
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:listener];
 }
 
+
+#line 169
 - (void)notifyChange {
   AMGroupVM_notifyChange(self);
 }
@@ -218,8 +226,8 @@ J2OBJC_FIELD_SETTER(AMGroupVM_$1, this$0_, AMGroupVM *)
 
 void AMGroupVM_notifyChange(AMGroupVM *self) {
   
-#line 106
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) runOnUiThread:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
+#line 170
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:[[AMGroupVM_$1 alloc] initWithAMGroupVM:self]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM)
@@ -227,18 +235,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM)
 @implementation AMGroupVM_$1
 
 
-#line 108
+#line 172
 - (void)run {
   {
     IOSObjectArray *a__ =
-#line 109
+#line 173
     [((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:AMModelChangedListener_class_()]];
     id<AMModelChangedListener> const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     id<AMModelChangedListener> const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       id<AMModelChangedListener> l = *b__++;
       
-#line 110
+#line 174
       [((id<AMModelChangedListener>) nil_chk(l)) onChangedWithId:this$0_];
     }
   }
