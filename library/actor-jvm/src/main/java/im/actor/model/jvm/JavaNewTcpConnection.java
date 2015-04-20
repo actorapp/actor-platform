@@ -395,19 +395,19 @@ public class JavaNewTcpConnection implements Connection {
                     dataOutput.writeInt((int) crc32Engine.getValue());
                     byte[] destPackage = dataOutput.toByteArray();
 
-//                    if (p.getHeader() == HEADER_PROTO) {
-//                        synchronized (packageTimers) {
-//                            TimerTask timeoutTask = new TimerTask() {
-//                                @Override
-//                                public void run() {
-//                                    Log.d(TAG, "Response #" + packageId + " not received in time");
-//                                    close();
-//                                }
-//                            };
-//                            packageTimers.put(packageId, timeoutTask);
-//                            DIE_TIMER.schedule(timeoutTask, RESPONSE_TIMEOUT);
-//                        }
-//                    }
+                    if (p.getHeader() == HEADER_PROTO) {
+                        synchronized (packageTimers) {
+                            TimerTask timeoutTask = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    Log.d(TAG, "Response #" + packageId + " not received in time");
+                                    close();
+                                }
+                            };
+                            packageTimers.put(packageId, timeoutTask);
+                            DIE_TIMER.schedule(timeoutTask, RESPONSE_TIMEOUT);
+                        }
+                    }
 
                     outputStream.write(destPackage);
                     outputStream.flush();
