@@ -39,7 +39,7 @@ object MTProto {
     val mtprotoFlow = Flow[ByteString]
       .transform(() => MTProto.parse(maxBufferSize))
       .mapAsyncUnordered(MTProto.handlePackage(_, authManager, sessionClient))
-      .mapConcat(optM => optM.map(Vector(_)).getOrElse(Vector.empty))
+      .mapConcat(msgs => msgs.toVector)
 
     val mapRespFlow = Flow[MTTransport]
       .transform(() => MTProto.mapResponse(system))
@@ -80,7 +80,7 @@ object MTProto {
     }
   }
 
-  def parse(maxBufferSize: Int)(implicit system: ActorSystem) = new StatefulStage[ByteString, MTTransport] {
+  def parse(maxBufferSize: Int)(implicit system: ActorSystem) = new StatefulStage[ByteString, (MTTransport, Option[Int])] {
 
     sealed trait ParserStep
 
@@ -107,13 +107,13 @@ object MTProto {
     private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
 
     def initial = new State {
-      override def onPush(chunk: ByteString, ctx: Context[MTTransport]): Directive = {
+      override def onPush(chunk: ByteString, ctx: Context[(MTTransport, Option[Int])]): Directive = {
         val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
         newState._1 match {
           case FailedState(msg) =>
             system.log.debug("Failed to parse connection-level {}", msg)
             // ctx.fail(new IllegalStateException(msg))
-            ctx.pushAndFinish(ProtoPackage(Drop(0, 0, msg)))
+            ctx.pushAndFinish((ProtoPackage(Drop(0, 0, msg)), None))
           case _ =>
             parserState = newState
             emit(res.iterator, ctx)
@@ -122,7 +122,7 @@ object MTProto {
 
       @tailrec
       private def doParse(state: ParserStep, buf: BitVector)
-                         (pSeq: Vector[MTTransport]): (ParseState, Vector[MTTransport]) = {
+                         (pSeq: Vector[(MTTransport, Option[Int])]): (ParseState, Vector[(MTTransport, Option[Int])]) = {
         if (buf.isEmpty) {
           ((state, buf), pSeq)
         } else state match {
@@ -149,7 +149,7 @@ object MTProto {
                 case Right(res) =>
                   // system.log.debug("Handshake data {}", res)
                   val handshake = Handshake(header.protoVersion, header.apiMajorVersion, header.apiMinorVersion, res.value)
-                  doParse(AwaitPackageHeader, res.remainder)(Vector(handshake))
+                  doParse(AwaitPackageHeader, res.remainder)(Vector((handshake, None)))
                 case Left(e) =>
                   // system.log.debug("Failed to parse handshake data: {}", e)
                   failedState(e.message)
@@ -179,7 +179,7 @@ object MTProto {
               val (body, remainder) = buf.splitAt(bitsLength)
               (new SignedMTProtoDecoder(header, size)).decode(body).toEither match {
                 case Right(DecodeResult(body, BitVector.empty)) =>
-                  doParse(AwaitPackageHeader, remainder)(pSeq :+ ProtoPackage(body))
+                  doParse(AwaitPackageHeader, remainder)(pSeq :+ ((ProtoPackage(body), Some(index))))
                 case Right(_) =>
                   failedState("Body length is more than body itself")
                 case Left(e) =>
@@ -229,37 +229,46 @@ object MTProto {
     override def onPull(ctx: Context[ByteString]): Directive = ctx.pull()
   }
 
-  def handlePackage(req: MTTransport, authManager: ActorRef, sessionClient: ActorRef)
-                   (implicit system: ActorSystem, timeout: Timeout): Future[Option[MTTransport]] = {
+  def handlePackage(req: (MTTransport, Option[Int]), authManager: ActorRef, sessionClient: ActorRef)
+                   (implicit system: ActorSystem, timeout: Timeout): Future[Seq[MTTransport]] = {
     import system.dispatcher
 
     req match {
-      case p @ ProtoPackage(body) =>
-        body match {
+      case (p @ ProtoPackage(body), optIndex) =>
+        // TODO: #perf don't create so much futures
+
+        val f: Future[Seq[MTTransport]] = body match {
           case m: MTPackage =>
             if (m.authId == 0) {
-              authManager.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].map(Some.apply).recover {
+              authManager.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].map(Seq(_)).recover {
                 case e: AskTimeoutException =>
                   val msg = s"handleAsk within $timeout"
                   system.log.error(e, msg)
-                  Some(ProtoPackage(InternalError(0, 0, msg))) // FIXME: send drop
+                  Seq(ProtoPackage(InternalError(0, 0, msg))) // FIXME: send drop
               }
             } else {
               sessionClient ! SessionClient.SendToSession(m)
-              Future.successful(None)
+
+              Future.successful(Seq.empty)
             }
-          case Ping(bytes) => Future.successful(Some(ProtoPackage(Pong(bytes))))
-          case Pong(bytes) => Future.successful(None)
-          case m => Future.successful(None)
+          case Ping(bytes) => Future.successful(Seq(ProtoPackage(Pong(bytes))))
+          case Pong(bytes) => Future.successful(Seq.empty)
+          case m => Future.successful(Seq.empty)
         }
-      case h: Handshake => Future.successful {
+
+        optIndex match {
+          case Some(index) =>
+            f map (xs => xs :+ ProtoPackage(Ack(index)))
+          case None => f
+        }
+      case (h: Handshake, _) => Future.successful {
         val sha256Sign = BitVector(DigestUtils.sha256(h.bytes.toByteArray))
         val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
         val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
         val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
-        Some(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign))
+        Seq(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign))
       }
-      case SilentClose =>
+      case (SilentClose, _) =>
         system.log.debug("SilentClose")
         // FIXME: do the real silent close?
         throw new Exception("SilentClose handler is not implemented")
