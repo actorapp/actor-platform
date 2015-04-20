@@ -57,6 +57,13 @@ public class Environment {
         return threadingProvider.getCurrentTime();
     }
 
+    public static long getCurrentSyncedTime() {
+        if (threadingProvider == null) {
+            throw new RuntimeException("Environment is not inited!");
+        }
+        return threadingProvider.getSyncedCurrentTime();
+    }
+
     public static AtomicIntegerCompat createAtomicInt(int init) {
         if (threadingProvider == null) {
             throw new RuntimeException("Environment is not inited!");

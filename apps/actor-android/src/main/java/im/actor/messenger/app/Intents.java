@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -27,7 +26,6 @@ import im.actor.messenger.app.fragment.settings.EditNameActivity;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Peer;
-import im.actor.model.modules.file.entity.Downloaded;
 
 /**
  * Created by ex3ndr on 07.10.14.
