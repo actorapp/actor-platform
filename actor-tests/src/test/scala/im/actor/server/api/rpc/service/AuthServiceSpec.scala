@@ -32,14 +32,14 @@ class AuthServiceSpec extends BaseServiceSuite {
   it should "logout previous sessions on sign in with the same device hash" in (s.signIn().sameDeviceHash)
 
   object s {
-    val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-    val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    val presenceManagerRegion = PresenceManager.startRegion()
-    val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
+    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+    implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val rpcApiService = system.actorOf(RpcApiService.props())
+    implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
 
     implicit val ec = system.dispatcher
-    implicit val service = new auth.AuthServiceImpl(sessionRegion)
+    implicit val service = new auth.AuthServiceImpl
 
     object sendAuthCode {
       val authId = createAuthId()(service.db)

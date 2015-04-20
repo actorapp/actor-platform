@@ -14,8 +14,11 @@ import im.actor.api.rpc.weak.{ UpdateTyping, WeakService }
 import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManagerRegion, WeakUpdatesManager }
 
-class WeakServiceImpl(weakUpdManagerRegion: WeakUpdatesManagerRegion, presenceManagerRegion: PresenceManagerRegion)
-                     (implicit db: Database, actorSystem: ActorSystem) extends WeakService {
+class WeakServiceImpl(implicit
+                      weakUpdManagerRegion: WeakUpdatesManagerRegion,
+                      presenceManagerRegion: PresenceManagerRegion,
+                      db: Database,
+                      actorSystem: ActorSystem) extends WeakService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleTyping(peer: OutPeer, typingType: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -27,7 +30,7 @@ class WeakServiceImpl(weakUpdManagerRegion: WeakUpdatesManagerRegion, presenceMa
           UpdateTyping(Peer(PeerType.Group, peer.id), client.userId, typingType)
       }
 
-      for (_ <- WeakUpdatesManager.broadcastUserWeakUpdate(weakUpdManagerRegion, peer.id, update)) yield {
+      for (_ <- WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update)) yield {
         Ok(ResponseVoid)
       }
     }
@@ -39,9 +42,9 @@ class WeakServiceImpl(weakUpdManagerRegion: WeakUpdatesManagerRegion, presenceMa
     val authorizedAction = requireAuth(clientData).map { client =>
 
       if (isOnline) {
-        PresenceManager.presenceSetOnline(presenceManagerRegion, client.userId, timeout)
+        PresenceManager.presenceSetOnline(client.userId, timeout)
       } else {
-        PresenceManager.presenceSetOffline(presenceManagerRegion, client.userId, timeout)
+        PresenceManager.presenceSetOffline(client.userId, timeout)
       }
 
       DBIO.successful(Ok(ResponseVoid))

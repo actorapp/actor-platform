@@ -50,8 +50,8 @@ object WeakUpdatesManager {
 
   def startRegionProxy()(implicit system: ActorSystem): WeakUpdatesManagerRegion = startRegion(None)
 
-  def broadcastUserWeakUpdate(region: WeakUpdatesManagerRegion, userId: Int, update: Update)
-                             (implicit ec: ExecutionContext): DBIO[Unit] = {
+  def broadcastUserWeakUpdate(userId: Int, update: Update)
+                             (implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext): DBIO[Unit] = {
     val header = update.header
     val serializedData = update.toByteArray
     val msg = PushUpdate(header, serializedData)
@@ -63,8 +63,8 @@ object WeakUpdatesManager {
     }
   }
 
-  private[push] def subscribe(region: WeakUpdatesManagerRegion, authId: Long, consumer: ActorRef)
-                             (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+  private[push] def subscribe(authId: Long, consumer: ActorRef)
+                             (implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 }

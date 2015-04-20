@@ -21,14 +21,14 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   it should "send updates ot title change" in e3
 
-  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  implicit val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
+  implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
-  implicit val service = new GroupsServiceImpl(seqUpdManagerRegion)
-  implicit val authService = buildAuthService(sessionRegion)
+  implicit val service = new GroupsServiceImpl
+  implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 
   def e1() = {

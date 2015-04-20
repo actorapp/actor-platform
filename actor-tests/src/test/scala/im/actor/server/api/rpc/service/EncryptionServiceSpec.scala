@@ -16,14 +16,14 @@ class EncryptionServiceSpec extends BaseServiceSpec {
   """
 
   object s {
-    val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-    val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+    implicit val presenceManagerRegion = PresenceManager.startRegion()
     val rpcApiService = buildRpcApiService()
-    val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
+    implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
     implicit val service = new encryption.EncryptionServiceImpl
-    implicit val authService = buildAuthService(sessionRegion)
+    implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
 
     val authId = createAuthId()

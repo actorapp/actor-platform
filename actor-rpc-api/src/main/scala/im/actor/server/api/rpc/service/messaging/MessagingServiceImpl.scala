@@ -10,9 +10,10 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.OutPeer
 import im.actor.server.push.SeqUpdatesManagerRegion
 
-class MessagingServiceImpl(
-  val seqUpdManagerRegion: SeqUpdatesManagerRegion
-)(implicit val db: Database, val actorSystem: ActorSystem)
+class MessagingServiceImpl(implicit
+                           val seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                           val db: Database,
+                           val actorSystem: ActorSystem)
     extends MessagingService with MessagingHandlers with HistoryHandlers {
   override def jhandleClearChat(peer: im.actor.api.rpc.peers.OutPeer, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseSeq]] = Future {
     throw new Exception("Not implemented")
