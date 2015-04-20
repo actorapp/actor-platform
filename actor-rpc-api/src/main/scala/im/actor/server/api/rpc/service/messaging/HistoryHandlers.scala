@@ -44,7 +44,7 @@ trait HistoryHandlers {
           } yield {
             Ok(ResponseVoid)
           }
-        case _ => throw new NotImplementedError()
+        case _ => throw new Exception("Not implemented")
       }
     }
 
@@ -82,7 +82,7 @@ trait HistoryHandlers {
           } yield {
             Ok(ResponseVoid)
           }
-        case _ => throw new NotImplementedError()
+        case _ => throw new Exception("Not implemented")
       }
     }
 

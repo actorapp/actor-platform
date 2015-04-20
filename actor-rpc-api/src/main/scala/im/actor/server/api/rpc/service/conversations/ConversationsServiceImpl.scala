@@ -30,7 +30,7 @@ class ConversationsServiceImpl(implicit db: Database, actorSystem: ActorSystem) 
 
   override def jhandleLoadDialogs(startDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
-      persist.Dialog.findByUser(client.userId, new DateTime(startDate), limit) flatMap { dialogModels =>
+      persist.Dialog.findByUser(client.userId, new DateTime(endDateTimeFrom(startDate).getOrElse(new DateTime(0))), limit) flatMap { dialogModels =>
         for {
           dialogs <- DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) <- getDialogsUsersGroups(dialogs)
