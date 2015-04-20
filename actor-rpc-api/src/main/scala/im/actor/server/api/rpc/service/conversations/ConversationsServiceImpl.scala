@@ -30,7 +30,7 @@ class ConversationsServiceImpl(implicit db: Database, actorSystem: ActorSystem) 
 
   override def jhandleLoadDialogs(startDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
-      persist.Dialog.findByUser(client.userId) flatMap { dialogModels =>
+      persist.Dialog.findByUser(client.userId, new DateTime(startDate), limit) flatMap { dialogModels =>
         for {
           dialogs <- DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) <- getDialogsUsersGroups(dialogs)
@@ -104,17 +104,18 @@ class ConversationsServiceImpl(implicit db: Database, actorSystem: ActorSystem) 
       unreadCount <- persist.HistoryMessage.getUnreadCount(dialogModel.userId, dialogModel.peer, dialogModel.lastReadAt)
     } yield {
       val emptyMessageContent = TextMessage("", 0, None)
-      val message = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
+      val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
+      val message = messageModel.asStruct(dialogModel.lastReceivedAt, dialogModel.lastReadAt)
 
       Dialog(
         peer = dialogModel.peer.asStruct,
         unreadCount = unreadCount,
-        sortDate = message.date.getMillis,
+        sortDate = message.date,
         senderUserId = message.senderUserId,
         randomId = message.randomId,
-        date = message.date.getMillis,
-        message = MessageContent(emptyMessageContent.header, emptyMessageContent),
-        state = None
+        date = message.date,
+        message = message.message,
+        state = message.state
       )
     }
   }
