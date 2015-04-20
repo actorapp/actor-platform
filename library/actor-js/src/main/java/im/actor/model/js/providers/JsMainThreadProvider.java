@@ -10,7 +10,7 @@ import im.actor.model.MainThreadProvider;
 public class JsMainThreadProvider implements MainThreadProvider {
 
     @Override
-    public void runOnUiThread(final Runnable runnable) {
+    public void postToMainThread(final Runnable runnable) {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
