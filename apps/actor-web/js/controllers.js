@@ -116,10 +116,8 @@ angular.module('actor.controllers', [])
 				});				
 
         });
-		$scope.dialogSelect = function(peerid){
-			$rootScope.$broadcast('selectPeer', peerid); 
-
-			console.log(peerid);
+		$scope.dialogSelect = function(peer){
+			$rootScope.$broadcast('selectPeer', peer);  
 		}
 
 		function isInteger(num) {
@@ -131,27 +129,38 @@ angular.module('actor.controllers', [])
 
 	.controller('AppIMChat', function($scope, $location, $timeout) {    
 		$scope.historyHide = true;
+		$scope.curentPeer = null;
+		$scope.message = {};
+		
 
-		$scope.$on('selectPeer', function(event, peerid) {  
-			$scope.uid = messenger.getUid();
-			$scope.peer = peerid;
+
+		$scope.$on('selectPeer', function(event, peer) {  
+			$scope.uid = messenger.getUid(); 
 			$scope.historyHide = false;
-			messenger.bindChat({peerType: "user", peerId: peerid}, renderMessages);
+			if($scope.curentPeer){
+				messenger.onConversationClosed($scope.curentPeer); 
+			}
+			console.log( 'Select chat: ', peer);
+			 
+			
+			$scope.curentPeer = peer;  
+			messenger.onConversationOpen($scope.curentPeer);
+			$scope.message.text = messenger.loadDraft($scope.curentPeer); 
+			messenger.bindChat($scope.curentPeer, $scope.renderMessages);
+ 			
 		}); 
-
-		$scope.sendMessage = function(peer,message, $event){
-			console.log($event);
-			if ($event.which == 13 && $event.shiftKey == false) {
-				console.log(1);
-				messenger.sendMessage({peerType:"user", peerId: peer}, message.text); 
-				
-				$scope.message.text  = ""; 
-				console.log($scope.message);
-			} 
-			//messenger.sendMessage({peerType:"user", peerId: peer}, message.text); 
-		} 
-		function renderMessages(messages){
-			//console.log(messages);
+		$scope.onTyping = function($event){
+			messenger.onTyping($scope.curentPeer); 			
+		}
+		$scope.sendMessage = function(){ 
+			messenger.sendMessage($scope.curentPeer, $scope.message.text);   
+			$scope.message.text  = null;   
+		}  
+		$scope.submitMsg = function() {
+			$scope.sendMessage();
+		}
+		$scope.renderMessages = function(messages){ 
+			console.log(messages);
 			$timeout(function() { 
 				$scope.$apply(function($scope) { 
 					messages.forEach(function(message){
@@ -172,8 +181,7 @@ angular.module('actor.controllers', [])
 							message.pic = '<span class="user_bg user_bgcolor_'+num+'">'+text+'</span>';
 						}
 					}); 
-					$scope.messages = messages;
-					
+					$scope.messages = messages; 
 				});				
 				
 			});

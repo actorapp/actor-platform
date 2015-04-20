@@ -64,7 +64,7 @@
 		<div class="im_chats_wrap">
 			<div class="im_dialogs_wrap" ng-controller="AppImDialogsController">
 				<div ng-repeat="dialog in dialogs">
-					<div class="im_dialog_wrap" ng-mousedown="dialogSelect(dialog.peer.peer.id);">
+					<div class="im_dialog_wrap" ng-mousedown="dialogSelect(dialog.peer.peer);">
 						<div class="im_dialog">
 							<div class="im_dialog_meta">{{dialog.date}}</div>
 							<div class="im_dialog_photo" ng-bind-html="dialog.pic"> 
@@ -95,10 +95,10 @@
 				<div class="im_bottom_panel_wrap"> 
 					<div class="im_send_panel_wrap"> 
 						<div class="im_send_field_wrap">
-							<textarea  ng-keypress="sendMessage(peer, message, $event)" ng-model="message.text" class="im_message_field" placeholder="Write a message..."> </textarea>
+							<textarea enter-submit="submitMsg()" ng-keypress="onTyping($event)" ng-model="message.text" class="im_message_field" placeholder="Write a message..."> </textarea>
 						</div>
 						<div class="im_send_bottom_wrap">
-							<div class="im_message_send_btn_wrap" ng-mousedown="sendMessage(peer, message);">
+							<div class="im_message_send_btn_wrap" ng-mousedown="sendMessage(message);">
 								<div class="im_message_send_btn">Send</div>
 							</div> 
 							<div class="im_send_constrols_wrap">
