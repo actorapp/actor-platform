@@ -10,23 +10,30 @@ import Foundation
 
 class AABubbleMediaCell : AABubbleCell {
     
-    let preview = UIImageView();
+    // Views
+    let preview = UIImageView()
     let circullarNode = CircullarNode()
+    let timeBg = UIImageView()
+    let timeLabel = UILabel()
+    let statusView = UIImageView()
     
+    // Layout
     var contentWidth = 0
     var contentHeight = 0
-    var thumb : AMFastThumb? = nil
     var contentViewSize: CGSize? = nil
+    
+    // Binded data
+    var thumb : AMFastThumb? = nil
     var thumbLoaded = false
     var contentLoaded = false
+    var generation = 0;
     
+    // File state callbacks
     var bindedDownloadFile: jlong? = nil
     var bindedDownloadCallback: CocoaDownloadCallback? = nil
     
     var bindedUploadFile: jlong? = nil
     var bindedUploadCallback: CocoaUploadCallback? = nil
-    
-    var generation = 0;
     
     // MARK: -
     // MARK: Constructors
@@ -34,8 +41,25 @@ class AABubbleMediaCell : AABubbleCell {
     init(reuseId: String, peer: AMPeer) {
         super.init(reuseId: reuseId, peer: peer, isFullSize: false)
         
+        timeBg.image = Imaging.imageWithColor(MainAppTheme.bubbles.mediaDateBg, size: CGSize(width: 1, height: 1))
+
+        timeLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
+        timeLabel.textColor = MainAppTheme.bubbles.mediaDate
+        
+        statusView.contentMode = UIViewContentMode.Center        
+        
         contentView.addSubview(preview)
         contentView.addSubview(circullarNode.view)
+        contentView.addSubview(timeBg)
+        contentView.addSubview(timeLabel)
+        contentView.addSubview(statusView)
+        
+        bubbleInsets = UIEdgeInsets(
+            top: 3,
+            left: 10,
+            bottom: 3,
+            right: 10)
+        contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -46,7 +70,6 @@ class AABubbleMediaCell : AABubbleCell {
     
     override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         if (!reuse) {
-            self.isOut = message.getSenderId() == MSG.myUid()
             
             if (self.isOut) {
                 bindBubbleType(BubbleType.MediaOut, isCompact: false)
@@ -79,6 +102,7 @@ class AABubbleMediaCell : AABubbleCell {
                 self.preview.alpha = 0
             })
         }
+        timeLabel.text = formatDate(message.getDate())
         
         var document = message.getContent() as! AMDocumentContent;
         
@@ -134,6 +158,38 @@ class AABubbleMediaCell : AABubbleCell {
             } else {
                  fatalError("Unsupported file source")
             }
+        }
+        
+        if (isOut) {
+            statusView.hidden = false
+            switch(UInt(message.getMessageState().ordinal())) {
+            case AMMessageState.PENDING.rawValue:
+                self.statusView.image = Resources.iconClock;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
+                break;
+            case AMMessageState.SENT.rawValue:
+                self.statusView.image = Resources.iconCheck1;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSent
+                break;
+            case AMMessageState.RECEIVED.rawValue:
+                self.statusView.image = Resources.iconCheck2;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaReceived
+                break;
+            case AMMessageState.READ.rawValue:
+                self.statusView.image = Resources.iconCheck2;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaRead
+                break;
+            case AMMessageState.ERROR.rawValue:
+                self.statusView.image = Resources.iconError;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaError
+                break
+            default:
+                self.statusView.image = Resources.iconClock;
+                self.statusView.tintColor = MainAppTheme.bubbles.statusMediaSending
+                break;
+            }
+        } else {
+            statusView.hidden = true
         }
     }
     
@@ -241,48 +297,50 @@ class AABubbleMediaCell : AABubbleCell {
     class func measureMediaHeight(message: AMMessage) -> CGFloat {
         if (message.getContent() is AMPhotoContent) {
             var photo = message.getContent() as! AMPhotoContent;
-            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height;
+            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 3 + 3 + 2;
         } else if (message.getContent() is AMVideoContent) {
             var video = message.getContent() as! AMVideoContent;
-            return measureMedia(Int(video.getW()), h: Int(video.getH())).height;
+            return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 3 + 3 + 2;
+        } else {
+            fatalError("Unknown content type")
         }
-        
-        fatalError("Unknown content type")
-    }
-    
-    class func bubbleTopPadding() -> CGFloat {
-        return 1 + Utils.retinaPixel()
-    }
-    
-    class func bubbleBottomPadding() -> CGFloat {
-        return 1 + Utils.retinaPixel()
     }
     
     // MARK: -
     // MARK: Layout
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        var bubbleTopPadding = AABubbleMediaCell.bubbleTopPadding()
-        var bubbleBottomPadding = AABubbleMediaCell.bubbleBottomPadding()
-        
+    override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        var insets = fullContentInsets
         var contentWidth = self.contentView.frame.width
         var contentHeight = self.contentView.frame.height
         
-        var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
+        var bubbleHeight = contentHeight - insets.top - insets.bottom
         var bubbleWidth = bubbleHeight * CGFloat(self.contentWidth) / CGFloat(self.contentHeight)
         
-        var contentInsetX = CGFloat((self.isGroup ? self.groupContentInsetX : 0.0))
+        layoutBubble(bubbleWidth, contentHeight: bubbleHeight)
         
-        if (self.isOut) {
-            layoutBubble(CGRectMake(contentWidth - bubbleWidth - bubbleMediaPadding, bubbleTopPadding, bubbleWidth, bubbleHeight))
+        if (isOut) {
+            preview.frame = CGRectMake(contentWidth - insets.left - bubbleWidth, insets.top, bubbleWidth, bubbleHeight)
         } else {
-            layoutBubble(CGRectMake(bubbleMediaPadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight))
+            preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
+        }
+        circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
+        
+        timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
+        timeLabel.sizeToFit()
+        
+        var timeWidth = (isOut ? 23 : 0) + timeLabel.bounds.width
+        var timeHeight: CGFloat = 20
+        
+        timeLabel.frame = CGRectMake(preview.frame.maxX - timeWidth - 18, preview.frame.maxY - timeHeight - 6, timeLabel.frame.width, timeHeight)
+        
+        if (isOut) {
+            statusView.frame = CGRectMake(timeLabel.frame.maxX, timeLabel.frame.minY, 23, timeHeight)
         }
         
-        preview.frame = CGRectMake(bubble.frame.origin.x + 1, bubble.frame.origin.y + 1, bubble.frame.width - 2, bubble.frame.height - 2);
-        
-        circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
+        timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
     }
 }
+
+
+

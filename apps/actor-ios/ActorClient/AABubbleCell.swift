@@ -109,21 +109,25 @@ class AABubbleCell: UITableViewCell {
     class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool) -> CGFloat {
         var content = message.getContent()!;
         
+        // TODO: Add Docs and Media
         var height : CGFloat
         if (content is AMTextContent) {
             height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
-        } else if (content is AMPhotoContent || content is AMVideoContent) {
-            height = AABubbleMediaCell.measureMediaHeight(message) + AABubbleMediaCell.bubbleTopPadding() + AABubbleMediaCell.bubbleBottomPadding()
+        } else if (content is AMPhotoContent) {
+            height = AABubbleMediaCell.measureMediaHeight(message)
         } else if (content is AMServiceContent) {
             height = AABubbleServiceCell.measureServiceHeight(message, isPreferCompact: isPreferCompact)
-        } else if (content is AMDocumentContent) {
-            height = AABubbleDocumentCell.measureServiceHeight(message) + AABubbleDocumentCell.bubbleTopPadding() + AABubbleDocumentCell.bubbleBottomPadding()
-        } else {
-            height = AABubbleUnsupportedCell.measureUnsupportedHeight(message) + AABubbleUnsupportedCell.bubbleTopPadding() + AABubbleUnsupportedCell.bubbleBottomPadding()
+        }
+//        else if (content is AMDocumentContent) {
+//            height = AABubbleDocumentCell.measureServiceHeight(message) + AABubbleDocumentCell.bubbleTopPadding() + AABubbleDocumentCell.bubbleBottomPadding()
+//        }
+        else {
+            // Use Text Cell for usupported content
+            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
         }
         
         let isIn = message.getSenderId() != MSG.myUid()
-        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) && !(content is AMVideoContent) {
+        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) {
             height += CGFloat(20.0)
         }
         
@@ -287,7 +291,7 @@ class AABubbleCell: UITableViewCell {
     
     func layoutAvatar() {
         let avatarSize = CGFloat(self.avatarView.frameSize)
-        avatarView.frame = CGRect(x: 5, y: self.bubble.frame.maxY - avatarSize - 1, width: avatarSize, height: avatarSize)
+        avatarView.frame = CGRect(x: 5, y: self.contentView.frame.size.height - avatarSize - 1, width: avatarSize, height: avatarSize)
     }
     
     // Need to be called in child cells

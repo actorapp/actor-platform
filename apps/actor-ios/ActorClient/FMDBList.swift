@@ -157,7 +157,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull){
                 query = nil
             }
-            var res = DKListEngineRecord(long: jlong(result!.longForColumn("ID")), withLong: jlong(result!.longForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
+            var res = DKListEngineRecord(long: jlong(result!.longLongIntForColumn("ID")), withLong: jlong(result!.longLongIntForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
             result?.close()
             return res;
         } else {
@@ -172,7 +172,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         if (sortingKey == nil) {
             result = db!.executeQuery(queryForwardFirst, limit.toNSNumber());
         } else {
-            result = db!.executeQuery(queryForwardMore, sortingKey!.longValue, limit.toNSNumber());
+            result = db!.executeQuery(queryForwardMore, sortingKey!.toNSNumber(), limit.toNSNumber());
         }
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
@@ -186,7 +186,8 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            res.addWithId(DKListEngineRecord(long: jlong(result!.longForColumn("ID")), withLong: jlong(result!.longForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes()))
+            var record = DKListEngineRecord(long: jlong(result!.longLongIntForColumn("ID")), withLong: jlong(result!.longLongIntForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
+            res.addWithId(record)
         }
         result!.close()
         return res;
@@ -195,12 +196,11 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     func loadForwardWithNSString(query: String!, withJavaLangLong sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
         checkTable();
         
-        checkTable();
         var result : FMResultSet? = nil;
         if (sortingKey == nil) {
             result = db!.executeQuery(queryForwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
         } else {
-            result = db!.executeQuery(queryForwardFilterMore, query + "%", "% " + query + "%", sortingKey!.longValue, limit.toNSNumber());
+            result = db!.executeQuery(queryForwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
         }
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
@@ -214,9 +214,11 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            res.addWithId(DKListEngineRecord(long: jlong(result!.longForColumn("ID")), withLong: jlong(result!.longForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes()))
+            var record = DKListEngineRecord(long: jlong(result!.longLongIntForColumn("ID")), withLong: jlong(result!.longLongIntForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
+            res.addWithId(record)
         }
         result!.close()
+        
         return res;
     }
     
