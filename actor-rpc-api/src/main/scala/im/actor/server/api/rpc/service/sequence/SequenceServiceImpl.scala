@@ -46,16 +46,15 @@ class SequenceServiceImpl(implicit
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       for {
+        // FIXME: would new updates between getSeqState and getDifference break client state?
         seqstate <- getSeqState(client.authId)
         (updates, needMore) <- getDifference(client.authId, state)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, phones, groups) <- getUsersPhonesGroups(userIds, groupIds)
       } yield {
-        // TODO: get users, groups and group members
-
         Ok(ResponseGetDifference(
-          seq = seq,
-          state = state,
+          seq = seqstate._1,
+          state = seqstate._2,
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
@@ -65,7 +64,7 @@ class SequenceServiceImpl(implicit
       }
     }
 
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
   override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {

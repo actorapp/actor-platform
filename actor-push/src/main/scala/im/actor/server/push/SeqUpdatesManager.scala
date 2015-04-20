@@ -364,8 +364,10 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
 
   override def receiveRecover: Receive = {
     case SeqChanged(value) =>
+      log.debug("Recovery: SeqChanged {}", value)
       seq = value
     case RecoveryCompleted =>
+      log.debug("Recovery: Completed, seq: {}", seq)
       seq += IncrementOnStart - 1
   }
 
