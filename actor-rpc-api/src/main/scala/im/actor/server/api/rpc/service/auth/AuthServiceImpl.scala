@@ -7,7 +7,9 @@ import scalaz._
 import akka.actor.{ ActorRef, ActorSystem }
 import org.joda.time.DateTime
 import shapeless._
+import slick.dbio
 import slick.dbio.DBIO
+import slick.dbio.Effect.Write
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
@@ -29,16 +31,39 @@ class AuthServiceImpl(implicit
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   object Errors {
+    val AuthSessionNotFound = RpcError(404, "AUTH_SESSION_NOT_FOUND", "Auth session not found.", false, None)
+    val InvalidKey = RpcError(400, "INVALID_KEY", "Invalid key.", false, None)
     val PhoneNumberInvalid = RpcError(400, "PHONE_NUMBER_INVALID", "Invalid phone number.", false, None)
     val PhoneNumberUnoccupied = RpcError(400, "PHONE_NUMBER_UNOCCUPIED", "", false, None)
-    val PhoneCodeEmpty = RpcError(400, "PHONE_CODE_EMPTY", "", false, None)
-    val PhoneCodeExpired = RpcError(400, "PHONE_CODE_EXPIRED", "", false, None)
-    val PhoneCodeInvalid = RpcError(400, "PHONE_CODE_INVALID", "", false, None)
-    val InvalidKey = RpcError(400, "INVALID_KEY", "", false, None)
+    val PhoneCodeEmpty = RpcError(400, "PHONE_CODE_EMPTY", "Code is empty.", false, None)
+    val PhoneCodeExpired = RpcError(400, "PHONE_CODE_EXPIRED", "Code is expired.", false, None)
+    val PhoneCodeInvalid = RpcError(400, "PHONE_CODE_INVALID", "Invalid code.", false, None)
   }
 
-  override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] =
-    throw new NotImplementedError()
+  override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
+    val authorizedAction = requireAuth(clientData).map { client =>
+      for {
+        sessionModels <- persist.AuthSession.findByUserId(client.userId)
+      } yield {
+        val sessionStructs = sessionModels map { sessionModel =>
+          AuthSession(
+            sessionModel.id,
+            client.userId,
+            sessionModel.appId,
+            sessionModel.appTitle,
+            sessionModel.deviceTitle,
+            (sessionModel.authTime.getMillis / 1000).toInt,
+            sessionModel.authLocation,
+            sessionModel.latitude,
+            sessionModel.longitude)
+        }
+
+        Ok(ResponseGetAuthSessions(sessionStructs.toVector))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction))
+  }
 
   override def jhandleSendAuthCode(
     rawPhoneNumber: Long, appId: Int, apiKey: String, clientData: ClientData
@@ -74,8 +99,8 @@ class AuthServiceImpl(implicit
 
   override def jhandleSendAuthCall(
     phoneNumber: Long, smsHash: String, appId: Int, apiKey: String, clientData: ClientData
-  ): Future[HandlerResult[ResponseVoid]] =
-    throw new NotImplementedError()
+  ): Future[HandlerResult[ResponseVoid]] = Future { throw new Exception("Not implemented") }
+
 
   override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData) map { implicit client =>
@@ -213,9 +238,7 @@ class AuthServiceImpl(implicit
 
               for {
                 prevSessions <- persist.AuthSession.findByUserIdAndDeviceHash(user.id, deviceHash)
-                _ <- DBIO.sequence(prevSessions map { s =>
-                  persist.AuthSession.delete(user.id, s.id) andThen persist.AuthId.delete(s.authId)
-                })
+                _ <- DBIO.sequence(prevSessions map logout)
                 _ <- persist.AuthSession.create(authSession)
                 userStruct <- util.UserUtils.userStruct(
                   user,
@@ -248,11 +271,34 @@ class AuthServiceImpl(implicit
     }
   }
 
-  override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
-    throw new NotImplementedError()
+  override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val authorizedAction = requireAuth(clientData).map { client =>
+      for {
+        sessions <- persist.AuthSession.findByUserId(client.userId) map (_.filterNot(_.authId != client.authId))
+        _ <- DBIO.sequence(sessions map logout)
+      } yield {
+        Ok(ResponseVoid)
+      }
+    }
 
-  override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
-    throw new NotImplementedError()
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+
+  override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val authorizedAction = requireAuth(clientData).map { client =>
+      persist.AuthSession.find(client.userId, id).headOption flatMap {
+        case Some(session) =>
+          for (_ <- logout(session)) yield Ok(ResponseVoid)
+        case None =>
+          DBIO.successful(Error(Errors.AuthSessionNotFound))
+      }
+
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
 
   private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String, clientData: ClientData) = {
     persist.User.find(userId).headOption.flatMap {
@@ -275,6 +321,13 @@ class AuthServiceImpl(implicit
             }
         }
     }
+  }
+
+  private def logout(session: models.AuthSession): dbio.DBIOAction[Unit, NoStream, Write with Write] = {
+    for {
+      _ <- persist.AuthSession.delete(session.userId, session.id)
+      _ <- persist.AuthId.delete(session.authId)
+    } yield ()
   }
 
   private def sendSmsCode(authId: Long, phoneNumber: Long, code: String): Unit = {

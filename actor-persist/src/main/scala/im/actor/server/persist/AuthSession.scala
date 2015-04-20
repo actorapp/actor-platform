@@ -46,6 +46,9 @@ object AuthSession {
   def create(session: models.AuthSession) =
     sessions += session
 
+  def find(userId: Int, id: Int) =
+    activeSessions.filter(s => s.userId === userId && s.id === id).result
+
   def findByUserId(userId: Int) =
     activeSessions.filter(_.userId === userId).result
 
