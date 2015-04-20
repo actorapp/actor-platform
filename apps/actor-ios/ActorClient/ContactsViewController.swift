@@ -40,7 +40,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     
     override func viewDidLoad() {
-        
+        self.extendedLayoutIncludesOpaqueBars = true
         view.backgroundColor = UIColor.whiteColor()
         
         bindTable(tableView, fade: false);

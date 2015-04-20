@@ -10,8 +10,7 @@ import UIKit
 
 class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate {
 
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var loadingView: UIView!
+    var tableView: UITableView!
     
     var searchView: UISearchBar?
     var searchDisplay: UISearchDisplayController?
@@ -26,7 +25,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     override init() {
-        super.init(nibName: "DialogsViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
         
         initCommon(); 
     }
@@ -45,6 +44,18 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
         }
+        
+        tableView = UITableView()
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.rowHeight = 76
+        self.extendedLayoutIncludesOpaqueBars = true
+        view.addSubview(tableView)
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -84,8 +95,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         header.addSubview(headerShadow);
         
         self.tableView.tableHeaderView = header;
-        
-        loadingView.hidden = true;
         
         bindTable(tableView, fade: true);
         
