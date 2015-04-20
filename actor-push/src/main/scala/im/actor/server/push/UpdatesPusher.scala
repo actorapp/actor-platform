@@ -93,6 +93,8 @@ private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegi
     case updateBox: ProtoUpdateBox =>
       sendUpdateBox(updateBox)
     case PresenceState(userId, presence, lastSeenAt) =>
+      log.debug("presence: {}, lastSeenAt {}", presence, lastSeenAt)
+
       val update: Update =
         presence match {
           case Online =>
@@ -105,6 +107,8 @@ private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegi
                 UpdateUserOffline(userId)
             }
         }
+
+      log.debug("Formed update: {}", update)
 
       val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)

@@ -13,6 +13,7 @@ import im.actor.server.api.rpc.service.encryption.EncryptionServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
@@ -56,6 +57,7 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
         seqUpdManagerRegion,
         presenceManagerRegion,
         sessionRegion),
+      new WeakServiceImpl(weakUpdManagerRegion, presenceManagerRegion),
       new ConversationsServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
