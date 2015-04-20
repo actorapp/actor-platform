@@ -46,8 +46,21 @@ class GroupsServiceImpl(implicit
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleLeaveGroup(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleLeaveGroup(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      withGroupOutPeer(groupOutPeer) { fullGroup =>
+        val date = new DateTime
+
+        val update = UpdateGroupUserLeave(fullGroup.id, client.userId, date.getMillis, randomId)
+
+        for {
+          groupUserIds <- persist.GroupUser.findUserIds(fullGroup.id)
+          (seqstate, _) <- broadcastUpdateAll(groupUserIds.toSet, update)
+        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
   override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
