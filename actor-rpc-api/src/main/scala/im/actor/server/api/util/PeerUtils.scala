@@ -79,6 +79,26 @@ object PeerUtils {
     renderCheckResult(checkOptsFutures, f)
   }
 
+  def withKickableGroupMember[R <: RpcResponse](groupOutPeer: GroupOutPeer,
+                                                kickUserOutPeer: UserOutPeer)
+                                               (f: models.FullGroup => DBIO[RpcError \/ R])
+                                               (implicit
+                                                 client: AuthorizedClientData,
+                                                 actorSystem: ActorSystem,
+                                                 ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    withGroupOutPeer(groupOutPeer) { group =>
+      persist.GroupUser.find(group.id, kickUserOutPeer.userId).flatMap {
+        case Some(models.GroupUser(_, _, inviterUserId, _)) =>
+          if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
+            f(group)
+          } else {
+            DBIO.successful(Error(RpcError(403, "NO_PERMISSION", "You are permitted to kick this user.", false, None)))
+          }
+        case None => DBIO.successful(Error(RpcError(404, "USER_NOT_FOUND", "User is not a group member.", false, None)))
+      }
+    }
+  }
+
   private def checkUserPeer(userId: Int, accessHash: Long)
                            (implicit
                             client: AuthorizedClientData,
