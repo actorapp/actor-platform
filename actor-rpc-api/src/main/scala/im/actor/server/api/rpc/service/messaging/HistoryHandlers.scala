@@ -94,7 +94,7 @@ trait HistoryHandlers {
       val update = UpdateChatClear(peer.asPeer)
 
       for {
-        _ <- persist.HistoryMessage.delete(client.userId, peer.asModel)
+        _ <- persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         seqstate <- broadcastClientUpdate(update)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
@@ -107,7 +107,7 @@ trait HistoryHandlers {
       val update = UpdateChatDelete(peer.asPeer)
 
       for {
-        _ <- persist.HistoryMessage.delete(client.userId, peer.asModel)
+        _ <- persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         _ <- persist.Dialog.delete(client.userId, peer.asModel)
         seqstate <- broadcastClientUpdate(update)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
@@ -116,7 +116,16 @@ trait HistoryHandlers {
     db.run(toDBIOAction(action map (_.transactionally)))
   }
 
-  override def jhandleDeleteMessage(peer: im.actor.api.rpc.peers.OutPeer,rids: scala.collection.immutable.Vector[Long], clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseVoid]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleDeleteMessage(peer: OutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val action = requireAuth(clientData).map { implicit client =>
+      val update = UpdateMessageDelete(peer.asPeer, randomIds)
+
+      for {
+        _ <- persist.HistoryMessage.delete(client.userId, peer.asModel, randomIds.toSet)
+        seqstate <- broadcastClientUpdate(update)
+      } yield Ok(ResponseVoid)
+    }
+
+    db.run(toDBIOAction(action map (_.transactionally)))
   }
 }
