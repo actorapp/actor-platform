@@ -130,10 +130,10 @@ object MTProto {
             if (buf.length >= handshakeHeaderSize) {
               handshakeHeader.decode(buf).toEither match {
                 case Right(res) =>
-                  system.log.debug("Handshake header {}", res.value)
+                  // system.log.debug("Handshake header {}", res.value)
                   doParse(HandshakeData(res.value), res.remainder)(pSeq)
                 case Left(e) =>
-                  system.log.debug("Failed to parse Handshake header {}", e)
+                  // system.log.debug("Failed to parse Handshake header {}", e)
                   failedState(e.message)
               }
             } else {
@@ -147,11 +147,11 @@ object MTProto {
             if (buf.length >= bitsLength) {
               handshakeData(header.dataLength).decode(buf).toEither match {
                 case Right(res) =>
-                  system.log.debug("Handshake data {}", res)
+                  // system.log.debug("Handshake data {}", res)
                   val handshake = Handshake(header.protoVersion, header.apiMajorVersion, header.apiMinorVersion, res.value)
                   doParse(AwaitPackageHeader, res.remainder)(Vector(handshake))
                 case Left(e) =>
-                  system.log.debug("Failed to parse handshake data: {}", e)
+                  // system.log.debug("Failed to parse handshake data: {}", e)
                   failedState(e.message)
               }
             } else {
@@ -163,10 +163,10 @@ object MTProto {
             } else {
               transportPackageHeader.decode(buf).toEither match {
                 case Right(headerRes) =>
-                  system.log.debug("Transport package header {}", headerRes)
+                  // system.log.debug("Transport package header {}", headerRes)
                   doParse(AwaitPackageBody(headerRes.value), headerRes.remainder)(pSeq)
                 case Left(e) =>
-                  system.log.debug("failed to parse package header", e)
+                  // system.log.debug("failed to parse package header", e)
                   failedState(e.message)
               }
             }
@@ -201,7 +201,7 @@ object MTProto {
       case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
         val resBits = handshakeResponse.encode(h).require
         val res = ByteString(resBits.toByteBuffer)
-        system.log.debug("Sending bytes {}", resBits)
+        // system.log.debug("Sending bytes {}", resBits)
 
         if (protoVersion == 0 || apiMajorVersion == 0) {
           ctx.pushAndFinish(res)
@@ -211,11 +211,11 @@ object MTProto {
       case ProtoPackage(p) =>
         packageIndex += 1
         val pkg = TransportPackage(packageIndex, p)
-        system.log.debug("Sending TransportPackage {}", pkg)
+        // system.log.debug("Sending TransportPackage {}", pkg)
 
         val resBits = TransportPackageCodec.encode(pkg).require
         val res = ByteString(resBits.toByteBuffer)
-        system.log.debug("Sending bytes {}", resBits)
+        // system.log.debug("Sending bytes {}", resBits)
 
         p match {
           case _: Drop =>
@@ -262,7 +262,7 @@ object MTProto {
       case SilentClose =>
         system.log.debug("SilentClose")
         // FIXME: do the real silent close?
-        throw new NotImplementedError("SilentClose handler is not implemented")
+        throw new Exception("SilentClose handler is not implemented")
     }
   }
 }
