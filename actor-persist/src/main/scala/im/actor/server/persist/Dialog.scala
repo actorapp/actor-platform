@@ -4,14 +4,11 @@ import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
-import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
 
 class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
-
-  import MessageStateColumnType._
 
   def userId = column[Int]("user_id", O.PrimaryKey)
 
@@ -25,7 +22,7 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
   def lastReadAt = column[DateTime]("last_read_at")
 
-  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) <>(applyDialog.tupled, unapplyDialog)
+  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) <> (applyDialog.tupled, unapplyDialog)
 
   def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime) => models.Dialog = {
     case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) =>
@@ -65,8 +62,12 @@ object Dialog {
   def find(userId: Int, peer: models.Peer) =
     dialogs.filter(d => d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
 
-  def findByUser(userId: Int) =
-    dialogs.filter(_.userId === userId).result
+  def findByUser(userId: Int, startDate: DateTime, limit: Int) =
+    dialogs
+      .filter(d => d.userId === userId && d.lastMessageDate >= startDate)
+      .take(limit)
+      .result
+
 
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)
                            (implicit ec: ExecutionContext) = {
