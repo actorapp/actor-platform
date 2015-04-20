@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import im.actor.model.LocaleProvider;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Sex;
@@ -167,7 +168,9 @@ public class I18nEngine {
         }
 
         if (value.getState() == UserPresence.State.OFFLINE) {
-            int delta = (int) (new Date().getTime() / 1000L - value.getLastSeen());
+            long currentTime = Environment.getCurrentSyncedTime() / 1000L;
+            int delta = (int) (currentTime - value.getLastSeen());
+
             if (delta < 60) {
                 if (locale.containsKey("OnlineNowMale") && locale.containsKey("OnlineNowFemale")) {
                     return sex == Sex.UNKNOWN

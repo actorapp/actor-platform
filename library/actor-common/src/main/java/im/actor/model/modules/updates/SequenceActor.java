@@ -135,7 +135,7 @@ public class SequenceActor extends ModuleActor {
 
         // Checking sequence
         if (seq <= this.seq) {
-            Log.d(TAG, "Ignored SeqUpdate {seq:" + seq + "}");
+            Log.d(TAG, "Ignored SeqUpdate {seq:" + seq + ", currentSeq: " + this.seq + "}");
             return;
         }
         Log.d(TAG, "SeqUpdate {seq:" + seq + "}");
