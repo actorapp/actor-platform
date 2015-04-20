@@ -42,6 +42,5 @@ private[auth] trait Helpers extends PublicKeyHelpers {
       f
     )
 
-  def nextIntId(rnd: ThreadLocalRandom): Int = rnd.nextInt(Int.MaxValue) + 1
   def nextAccessSalt(rnd: ThreadLocalRandom): String = rnd.nextLong().toString
 }
