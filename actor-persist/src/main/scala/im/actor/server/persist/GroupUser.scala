@@ -2,7 +2,9 @@ package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
+import slick.dbio.Effect.Write
 import slick.driver.PostgresDriver.api._
+import slick.profile.FixedSqlAction
 
 import im.actor.server.models
 
@@ -30,6 +32,12 @@ object GroupUser {
   def find(groupId: Int) =
     groupUsers.filter(g => g.groupId === groupId).result
 
+  def find(groupId: Int, userId: Int) =
+    groupUsers.filter(g => g.groupId === groupId && g.userId === userId).result.headOption
+
   def findUserIds(groupId: Int) =
     groupUsers.filter(g => g.groupId === groupId).map(_.userId).result
+
+  def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
+    groupUsers.filter(g => g.groupId === groupId && g.userId === userId).delete
 }
