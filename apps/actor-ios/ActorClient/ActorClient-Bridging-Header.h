@@ -18,6 +18,7 @@
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <VENTokenField/VENTokenField.h>
 #import <HockeySDK/HockeySDK.h>
+#import "JTSImageViewController/JTSImageViewController.h"
 #import "SVProgressHUD.h"
 #import "MMAnonymousClass.h"
 

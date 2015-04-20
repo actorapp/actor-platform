@@ -24,47 +24,45 @@ J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
 @implementation AMUserPresence
 
 
-#line 10
+#line 16
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state {
   if (self = [super init]) {
     
-#line 11
+#line 17
     self->state_ = state;
     
-#line 12
+#line 18
     self->lastSeen_ = 0;
   }
   return self;
 }
 
-
-#line 15
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
                                         withLong:(jlong)lastSeen {
   if (self = [super init]) {
     
-#line 16
+#line 29
     self->state_ = state;
     
-#line 17
+#line 30
     self->lastSeen_ = lastSeen;
   }
   return self;
 }
 
 
-#line 20
+#line 38
 - (AMUserPresence_StateEnum *)getState {
   
-#line 21
+#line 39
   return state_;
 }
 
 
-#line 24
+#line 47
 - (jlong)getLastSeen {
   
-#line 25
+#line 48
   return lastSeen_;
 }
 
@@ -78,7 +76,7 @@ J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPresence)
 
-#line 28
+#line 51
 
 BOOL AMUserPresence_StateEnum_initialized = NO;
 

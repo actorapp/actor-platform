@@ -15,9 +15,7 @@
 
 - (instancetype)initWithInt:(jint)uid;
 
-- (void)onTypingStart;
-
-- (void)onTypingEnd;
+- (jint)getUid;
 
 - (AMValueModel *)getTyping;
 

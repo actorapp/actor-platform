@@ -77,7 +77,7 @@ void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnab
   AMMVVMEngine_init();
   
 #line 29
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) runOnUiThread:runnable];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) postToMainThread:runnable];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMEngine)

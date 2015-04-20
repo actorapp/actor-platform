@@ -37,18 +37,18 @@ J2OBJC_FIELD_SETTER(AMAvatarUploadState, descriptor_, NSString *)
 }
 
 
-#line 15
+#line 20
 - (NSString *)getDescriptor {
   
-#line 16
+#line 21
   return descriptor_;
 }
 
 
-#line 19
+#line 29
 - (jboolean)isUploading {
   
-#line 20
+#line 30
   return isUploading__;
 }
 
