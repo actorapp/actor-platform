@@ -170,6 +170,8 @@
 
 "AlertOk" = "OK";
 
+"UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
+
 /*
  * Errors
  */

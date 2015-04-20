@@ -19,7 +19,6 @@ class AAConversationController: EngineSlackListController {
     private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
     private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
     private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
-    private let BubbleUnsupportedIdentifier = "BubbleUnsupportedIdentifier"
     
     private let titleView: UILabel = UILabel();
     private let subtitleView: UILabel = UILabel();
@@ -331,13 +330,14 @@ class AAConversationController: EngineSlackListController {
         
         var message = (item as! AMMessage);
         
+        // TODO: Add Docs and Video
         if (message.getContent() is AMTextContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
                 cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
-        } else if (message.getContent() is AMPhotoContent || message.getContent() is AMVideoContent) {
+        } else if (message.getContent() is AMPhotoContent) {
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! AABubbleMediaCell?
             if (cell == nil) {
                 cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier, peer: peer)
@@ -350,18 +350,11 @@ class AAConversationController: EngineSlackListController {
                 cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier, peer: peer)
             }
             return cell!
-        }
-//        else if (message.getContent() is AMDocumentContent) {
-//            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
-//            if cell == nil {
-//                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier, peer: peer)
-//            }
-//            return cell!
-//        }
-        else {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleUnsupportedIdentifier) as! AABubbleUnsupportedCell?
+        } else {
+            // Use Text bubble for unsupported
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleUnsupportedCell(reuseId: BubbleUnsupportedIdentifier, peer: peer)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
         }

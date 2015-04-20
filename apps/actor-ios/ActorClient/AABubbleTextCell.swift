@@ -13,6 +13,7 @@ import UIKit
 class AABubbleTextCell : AABubbleCell {
     
     private static let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
+    private static let bubbleFontUnsupported = UIFont(name: "HelveticaNeue-Italic", size: 16)!
     private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
     let messageText = UILabel();
@@ -29,7 +30,6 @@ class AABubbleTextCell : AABubbleCell {
         
         senderNameLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15)!
         
-        messageText.font = AABubbleTextCell.bubbleFont
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
         
@@ -53,12 +53,27 @@ class AABubbleTextCell : AABubbleCell {
     override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         if (!reuse) {
             needRelayout = true
-            messageText.text = (message.getContent() as! AMTextContent).getText();
+            if let content = message.getContent() as? AMTextContent {
+                messageText.text = content.getText();
+                messageText.font = AABubbleTextCell.bubbleFont
+                if (isOut) {
+                    messageText.textColor = MainAppTheme.bubbles.textOut
+                } else {
+                    messageText.textColor = MainAppTheme.bubbles.textIn
+                }
+            } else {
+                messageText.text = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
+                messageText.font = AABubbleTextCell.bubbleFontUnsupported
+                if (isOut) {
+                    messageText.textColor = MainAppTheme.bubbles.textUnsupportedOut
+                } else {
+                    messageText.textColor = MainAppTheme.bubbles.textUnsupportedIn
+                }
+            }
             isCompact = isPreferCompact
             
             if (isOut) {
                 bindBubbleType(.TextOut, isCompact: isPreferCompact)
-                messageText.textColor = MainAppTheme.bubbles.textOut
                 dateText.textColor = MainAppTheme.bubbles.textDateOut
 
                 bubbleInsets = UIEdgeInsets(
@@ -73,7 +88,6 @@ class AABubbleTextCell : AABubbleCell {
                     right: (isPreferCompact ? 4 : 10))
             } else {
                 bindBubbleType(.TextIn, isCompact: isPreferCompact)
-                messageText.textColor = MainAppTheme.bubbles.textIn
                 dateText.textColor = MainAppTheme.bubbles.textDateIn
                 
                 bubbleInsets = UIEdgeInsets(
@@ -144,8 +158,13 @@ class AABubbleTextCell : AABubbleCell {
     // MARK: Getters
     
     class func measureTextHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
-        let content = message.getContent() as! AMTextContent!
-        let contentHeight = AABubbleTextCell.measureText(content.getText(), isOut: message.getSenderId() == MSG.myUid()).height
+        var messageContent = ""
+        if let content = message.getContent() as? AMTextContent {
+            messageContent = content.getText()
+        } else {
+            messageContent = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
+        }
+        let contentHeight = AABubbleTextCell.measureText(messageContent, isOut: message.getSenderId() == MSG.myUid()).height
         
         if (isPreferCompact) {
             return contentHeight + bubbleBottomCompact + bubbleContentBottom + bubbleContentTop + bubbleTopCompact
