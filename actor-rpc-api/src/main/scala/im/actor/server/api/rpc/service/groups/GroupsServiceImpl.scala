@@ -18,9 +18,10 @@ import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.{ models, persist }
 
-class GroupsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)(
-  implicit val db: Database, val actorSystem: ActorSystem
-  ) extends GroupsService {
+class GroupsServiceImpl(implicit
+                        val seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                        val db: Database,
+                        val actorSystem: ActorSystem) extends GroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = throw new NotImplementedError
@@ -51,8 +52,8 @@ class GroupsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)(
           _ <- persist.Group.create(group, randomId)
           _ <- persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
           // TODO: write service message groupCreated
-          _ <- DBIO.sequence(userIds.map(userId => broadcastUserUpdate(seqUpdManagerRegion, userId, update)).toSeq)
-          seqstate <- broadcastClientUpdate(seqUpdManagerRegion, update)
+          _ <- DBIO.sequence(userIds.map(userId => broadcastUserUpdate(userId, update)).toSeq)
+          seqstate <- broadcastClientUpdate(update)
         } yield {
           Ok(ResponseCreateGroup(
             groupPeer = GroupOutPeer(group.id, group.accessHash),
@@ -93,10 +94,10 @@ class GroupsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)(
 
             for {
               _ <- persist.GroupUser.create(fullGroup.id, userOutPeer.userId, client.userId, date)
-              _ <- DBIO.sequence(invitingUserUpdates map (broadcastUserUpdate(seqUpdManagerRegion, userOutPeer.userId, _)))
+              _ <- DBIO.sequence(invitingUserUpdates map (broadcastUserUpdate(userOutPeer.userId, _)))
               // TODO: #perf the following broadcasts do update serializing per each user
-              _ <- DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(seqUpdManagerRegion, _, userAddedUpdate)))
-              seqstate <- broadcastClientUpdate(seqUpdManagerRegion, userAddedUpdate)
+              _ <- DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate)))
+              seqstate <- broadcastClientUpdate(userAddedUpdate)
               // TODO: write service message
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
@@ -123,7 +124,7 @@ class GroupsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)(
           _ <- persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)
           // TODO: write service message
           userIds <- persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) <- broadcastUpdateAll(seqUpdManagerRegion, userIds.toSet, update)
+          (seqstate, _) <- broadcastUpdateAll(userIds.toSet, update)
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
       }
     }

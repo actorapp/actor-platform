@@ -18,16 +18,16 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
 
   it should "Load dialogs" in s.dialogs
 
-  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  implicit val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
+  implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
   implicit val service = new conversations.ConversationsServiceImpl
-  implicit val messagingService = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
-  implicit val groupsService = new GroupsServiceImpl(seqUpdManagerRegion)
-  implicit val authService = buildAuthService(sessionRegion)
+  implicit val messagingService = new messaging.MessagingServiceImpl
+  implicit val groupsService = new GroupsServiceImpl
+  implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 
   object s {

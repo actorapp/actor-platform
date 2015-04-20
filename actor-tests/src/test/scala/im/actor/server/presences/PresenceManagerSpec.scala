@@ -26,13 +26,13 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   override implicit val patienceConfig = PatienceConfig(timeout = Span(5, Seconds))
   implicit val timeout: Timeout = Timeout(5.seconds)
 
-  val region = PresenceManager.startRegion()
+  implicit val region = PresenceManager.startRegion()
 
   val probe = TestProbe()
   val userId = 1
 
   def e1() = {
-    whenReady(subscribe(region, userId, probe.ref)){_ => }
+    whenReady(subscribe(userId, probe.ref)){_ => }
   }
 
   def e2() = {
@@ -40,13 +40,13 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   }
 
   def e3() = {
-    presenceSetOnline(region, userId, 500)
+    presenceSetOnline(userId, 500)
     val lastSeenAt = probe.expectMsgPF() {
       case PresenceState(1, Online, Some(ls)) =>
         ls
     }
 
-    presenceSetOffline(region, userId, 100)
+    presenceSetOffline(userId, 100)
     probe.expectMsgPF() {
       case PresenceState(1, Offline, Some(ls)) =>
         ls should ===(lastSeenAt)
@@ -54,7 +54,7 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   }
 
   def e4() = {
-    presenceSetOnline(region, userId, 100)
+    presenceSetOnline(userId, 100)
     val lastSeenAt = probe.expectMsgPF() {
       case PresenceState(1, Online, Some(ls)) =>
         ls

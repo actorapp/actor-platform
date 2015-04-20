@@ -77,62 +77,69 @@ object SeqUpdatesManager {
 
   def startRegionProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = startRegion(None)
 
-  def getSeqState(region: SeqUpdatesManagerRegion, authId: Long)(implicit ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
+  def getSeqState(authId: Long)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
     for {
       seqstate <- DBIO.from(region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
     } yield seqstate
   }
 
-  def persistAndPushUpdate(region: SeqUpdatesManagerRegion, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])(implicit ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])
+                          (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
     DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData, userIds, groupIds))
   }
 
-  def persistAndPushUpdate(region: SeqUpdatesManagerRegion, authId: Long, update: api.Update)(implicit ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(authId: Long, update: api.Update)
+                          (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     val (userIds, groupIds) = updateRefs(update)
 
-    persistAndPushUpdate(region, authId, header, serializedData, userIds, groupIds)
+    persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)
   }
 
-  def persistAndPushUpdates(region: SeqUpdatesManagerRegion, authIds: Set[Long], update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def persistAndPushUpdates(authIds: Set[Long], update: api.Update)
+                           (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     val (userIds, groupIds) = updateRefs(update)
 
-    DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(region, _, header, serializedData, userIds, groupIds)))
+    DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
   }
 
-  def broadcastUpdateAll(region: SeqUpdatesManagerRegion, userIds: Set[Int], update: api.Update)
-                        (implicit ec: ExecutionContext, client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
+  def broadcastUpdateAll(userIds: Set[Int], update: api.Update)
+                        (implicit
+                         region: SeqUpdatesManagerRegion,
+                         ec: ExecutionContext,
+                         client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (refUserIds, refGroupIds) = updateRefs(update)
 
     for {
       authIds <- p.AuthId.findIdByUserIds(userIds + client.userId)
-      seqstates <- DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(region, _, header, serializedData, refUserIds, refGroupIds)))
-      seqstate <- persistAndPushUpdate(region, client.authId, header, serializedData, refUserIds, refGroupIds)
+      seqstates <- DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds)))
+      seqstate <- persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds)
     } yield (seqstate, seqstates)
   }
 
-  def broadcastUserUpdate(region: SeqUpdatesManagerRegion,
-                          userId: Int,
-                          update: api.Update)(implicit ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def broadcastUserUpdate(userId: Int,
+                          update: api.Update)
+                         (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
     for {
       authIds <- p.AuthId.findIdByUserId(userId)
-      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(region, _, header, serializedData, userIds, groupIds)))
+      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
     } yield seqstates
   }
 
-  def broadcastClientUpdate(region: SeqUpdatesManagerRegion, update: api.Update)(
-    implicit
+  def broadcastClientUpdate(update: api.Update)
+                           (implicit
+    region: SeqUpdatesManagerRegion,
     client: api.AuthorizedClientData, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
@@ -140,14 +147,14 @@ object SeqUpdatesManager {
 
     for {
       otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, header, serializedData, userIds, groupIds)))
-      ownseqstate <- persistAndPushUpdate(region, client.authId, header, serializedData, userIds, groupIds)
+      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
+      ownseqstate <- persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds)
     } yield ownseqstate
   }
 
-  def notifyClientUpdate(region: SeqUpdatesManagerRegion,
-                         update: api.Update)
+  def notifyClientUpdate(update: api.Update)
                         (implicit
+                         region: SeqUpdatesManagerRegion,
                          client: api.AuthorizedClientData,
                          ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
@@ -156,7 +163,7 @@ object SeqUpdatesManager {
 
     for {
       otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      seqstates <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(region, authId, header, serializedData, userIds, groupIds)))
+      seqstates <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
     } yield seqstates
   }
 
@@ -240,8 +247,8 @@ object SeqUpdatesManager {
     }
   }
 
-  private[push] def subscribe(region: SeqUpdatesManagerRegion, authId: Long, consumer: ActorRef)
-                             (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+  private[push] def subscribe(authId: Long, consumer: ActorRef)
+                             (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 

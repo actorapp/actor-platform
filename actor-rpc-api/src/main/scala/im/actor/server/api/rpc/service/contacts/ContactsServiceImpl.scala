@@ -21,14 +21,14 @@ import im.actor.server.api.util.{ PhoneNumber, UserUtils }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.{ models, persist }
 
-class ContactsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)
-                         (implicit
+class ContactsServiceImpl(implicit
+                          val seqUpdManagerRegion: SeqUpdatesManagerRegion,
                           db: Database,
                           actorSystem: ActorSystem)
   extends ContactsService {
 
-  import im.actor.server.push.SeqUpdatesManager._
   import UserUtils._
+  import im.actor.server.push.SeqUpdatesManager._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)
@@ -94,7 +94,7 @@ class ContactsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)
 
                 for {
                   _ <- createAllUserContacts(client.userId, userStructsSalts)
-                  seqstate <- broadcastClientUpdate(seqUpdManagerRegion, UpdateContactsAdded(newContactIds.toVector))
+                  seqstate <- broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector))
                 } yield {
                   Ok(ResponseImportContacts(userStructsSalts.toVector.map(_._1), seqstate._1, seqstate._2))
                 }
@@ -145,8 +145,8 @@ class ContactsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)
           if (accessHash == util.ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
               _ <- persist.contact.UserContact.delete(client.userId, userId)
-              _ <- broadcastClientUpdate(seqUpdManagerRegion, UpdateUserLocalNameChanged(userId, None))
-              seqstate <- broadcastClientUpdate(seqUpdManagerRegion, UpdateContactsRemoved(Vector(userId)))
+              _ <- broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None))
+              seqstate <- broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)))
             } yield {
               Ok(ResponseSeq(seqstate._1, seqstate._2))
             }
@@ -224,7 +224,7 @@ class ContactsServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion)
                                     ) = {
     for {
       _ <- persist.contact.UserContact.createOrRestore(clientUserId, userId, phoneNumber, name, accessSalt)
-      seqstate <- broadcastClientUpdate(seqUpdManagerRegion, UpdateContactsAdded(Vector(userId)))
+      seqstate <- broadcastClientUpdate(UpdateContactsAdded(Vector(userId)))
     } yield seqstate
   }
 

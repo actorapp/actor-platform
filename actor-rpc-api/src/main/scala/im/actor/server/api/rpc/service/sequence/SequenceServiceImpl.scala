@@ -19,10 +19,12 @@ import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
 import im.actor.server.session.{ SessionRegion, SessionMessage }
 
-class SequenceServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                          presenceManagerRegion: PresenceManagerRegion,
-                          sessionRegion: SessionRegion)
-                         (implicit db: Database, actorSystem: ActorSystem) extends SequenceService {
+class SequenceServiceImpl(implicit
+                          val seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                          val presenceManagerRegion: PresenceManagerRegion,
+                          val sessionRegion: SessionRegion,
+                          db: Database,
+                          actorSystem: ActorSystem) extends SequenceService {
 
   import SeqUpdatesManager._
   import GroupUtils._
@@ -33,7 +35,7 @@ class SequenceServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion,
   override def jhandleGetState(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       for {
-        seqstate <- getSeqState(seqUpdManagerRegion, client.authId)
+        seqstate <- getSeqState(client.authId)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 
@@ -44,7 +46,7 @@ class SequenceServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion,
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       for {
-        seqstate <- getSeqState(seqUpdManagerRegion, client.authId)
+        seqstate <- getSeqState(client.authId)
         (updates, needMore) <- getDifference(client.authId, state)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, phones, groups) <- getUsersPhonesGroups(userIds, groupIds)

@@ -73,25 +73,25 @@ object PresenceManager {
 
   def props(implicit db: Database) = Props(classOf[PresenceManager], db)
 
-  def subscribe(region: PresenceManagerRegion, userId: Int, consumer: ActorRef)
-               (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+  def subscribe(userId: Int, consumer: ActorRef)
+               (implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 
-  def unsubscribe(region: PresenceManagerRegion, userId: Int, consumer: ActorRef)
-                 (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+  def unsubscribe(userId: Int, consumer: ActorRef)
+                 (implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
 
-  def subscribe(region: PresenceManagerRegion, userIds: Set[Int], consumer: ActorRef)
-               (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] =
-    Future.sequence(userIds map (subscribe(region, _, consumer))) map (_ => ())
+  def subscribe(userIds: Set[Int], consumer: ActorRef)
+               (implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] =
+    Future.sequence(userIds map (subscribe(_, consumer))) map (_ => ())
 
-  def presenceSetOnline(region: PresenceManagerRegion, userId: Int, timeout: Long): Unit = {
+  def presenceSetOnline(userId: Int, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
     region.ref ! Envelope(userId, UserPresenceChange(Online, timeout))
   }
 
-  def presenceSetOffline(region: PresenceManagerRegion, userId: Int, timeout: Long): Unit = {
+  def presenceSetOffline(userId: Int, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
     region.ref ! Envelope(userId, UserPresenceChange(Offline, timeout))
   }
 }

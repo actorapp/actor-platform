@@ -44,11 +44,13 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(rpcApiService: ActorRef,
+  def props(rpcApiService: ActorRef)
+           (implicit
             seqUpdManagerRegion: SeqUpdatesManagerRegion,
             weakUpdManagerRegion: WeakUpdatesManagerRegion,
-            presenceManagerRegion: PresenceManagerRegion)
-           (implicit db: Database, materializer: FlowMaterializer): Props =
+            presenceManagerRegion: PresenceManagerRegion,
+            db: Database,
+            materializer: FlowMaterializer): Props =
     Props(
       classOf[Session],
       rpcApiService,
@@ -59,11 +61,13 @@ object Session {
       materializer)
 }
 
-class Session(rpcApiService: ActorRef,
+class Session(rpcApiService: ActorRef)
+             (implicit
               seqUpdManagerRegion: SeqUpdatesManagerRegion,
               weakUpdManagerRegion: WeakUpdatesManagerRegion,
-              presenceManagerRegion: PresenceManagerRegion)
-             (implicit db: Database, materializer: FlowMaterializer)
+              presenceManagerRegion: PresenceManagerRegion,
+              db: Database,
+              materializer: FlowMaterializer)
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionMessage._
@@ -141,13 +145,7 @@ class Session(rpcApiService: ActorRef,
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
-        val updatesPusher = context.actorOf(
-          UpdatesPusher.props(
-            seqUpdManagerRegion,
-            weakUpdManagerRegion,
-            presenceManagerRegion,
-            authId,
-            self))
+        val updatesPusher = context.actorOf(UpdatesPusher.props(authId, self))
 
         context.become(resolved(authId, sessionId, sessionMessagePublisher, updatesPusher))
       }

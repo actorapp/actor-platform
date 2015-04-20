@@ -18,7 +18,10 @@ import im.actor.server.models
 import im.actor.server.persist
 import im.actor.server.session._
 
-class AuthServiceImpl(sessionRegion: SessionRegion)(implicit val actorSystem: ActorSystem, val db: Database) extends AuthService with Helpers {
+class AuthServiceImpl(implicit
+                      val sessionRegion: SessionRegion,
+                      val actorSystem: ActorSystem,
+                      val db: Database) extends AuthService with Helpers {
   private trait SignType
   private case class Up(name: String, isSilent: Boolean) extends SignType
   private case object In extends SignType
