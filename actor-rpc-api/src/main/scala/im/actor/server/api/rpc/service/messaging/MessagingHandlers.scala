@@ -88,5 +88,8 @@ private[messaging] trait MessagingHandlers {
                                            encryptedMessage: Array[Byte],
                                            keys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
                                            ownKeys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
-                                           clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[misc.ResponseSeqDate]] = throw new NotImplementedError()
+                                           clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[misc.ResponseSeqDate]] =
+    Future {
+      throw new Exception("not implemented")
+    }
 }
