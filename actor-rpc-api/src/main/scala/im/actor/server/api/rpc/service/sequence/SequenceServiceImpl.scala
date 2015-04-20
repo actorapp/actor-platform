@@ -15,10 +15,14 @@ import im.actor.api.rpc.sequence.{DifferenceUpdate, ResponseGetDifference, Seque
 import im.actor.api.rpc.users.{ Phone, User }
 import im.actor.server.api.util.{ UserUtils, GroupUtils }
 import im.actor.server.models
+import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
 import im.actor.server.session.{ SessionRegion, SessionMessage }
 
-class SequenceServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion, sessionRegion: SessionRegion)(implicit db: Database, actorSystem: ActorSystem) extends SequenceService {
+class SequenceServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                          presenceManagerRegion: PresenceManagerRegion,
+                          sessionRegion: SessionRegion)
+                         (implicit db: Database, actorSystem: ActorSystem) extends SequenceService {
 
   import SeqUpdatesManager._
   import GroupUtils._
@@ -63,17 +67,35 @@ class SequenceServiceImpl(seqUpdManagerRegion: SeqUpdatesManagerRegion, sessionR
   }
 
   override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    // FIXME: #security check access hashes
-    sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeToOnline(users.map(_.userId).toSet))
+    val authorizedAction = requireAuth(clientData).map { client =>
+      // FIXME: #security check access hashes
+      val userIds = users.map(_.userId).toSet
 
-    Future.successful(Ok(ResponseVoid))
+      sessionRegion.ref ! SessionMessage.envelope(
+        clientData.authId,
+        clientData.sessionId,
+        SessionMessage.SubscribeToOnline(userIds))
+
+      DBIO.successful(Ok(ResponseVoid))
+    }
+
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleSubscribeFromOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    // FIXME: #security check access hashes
-    sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeFromOnline(users.map(_.userId).toSet))
+    val authorizedAction = requireAuth(clientData).map { client =>
+      // FIXME: #security check access hashes
+      val userIds = users.map(_.userId).toSet
 
-    Future.successful(Ok(ResponseVoid))
+      sessionRegion.ref ! SessionMessage.envelope(
+        clientData.authId,
+        clientData.sessionId,
+        SessionMessage.SubscribeFromOnline(userIds))
+
+      DBIO.successful(Ok(ResponseVoid))
+    }
+
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {

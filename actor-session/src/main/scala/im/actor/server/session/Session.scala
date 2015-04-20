@@ -17,7 +17,7 @@ import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
-import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion, UpdatesPusher }
 import im.actor.server.{ models, persist }
 
@@ -141,16 +141,22 @@ class Session(rpcApiService: ActorRef,
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
-        context.actorOf(UpdatesPusher.props(seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion, authId, self))
+        val updatesPusher = context.actorOf(
+          UpdatesPusher.props(
+            seqUpdManagerRegion,
+            weakUpdManagerRegion,
+            presenceManagerRegion,
+            authId,
+            self))
 
-        context.become(resolved(authId, sessionId, sessionMessagePublisher))
+        context.become(resolved(authId, sessionId, sessionMessagePublisher, updatesPusher))
       }
     case Terminated(client) =>
       clients -= client
     case unmatched => handleUnmatched(unmatched)
   }
 
-  def resolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
+  def resolved(authId: Long, sessionId: Long, publisher: ActorRef, updatesPusher: ActorRef): Receive = {
     case env @ Envelope(eauthId, esessionId, msg) =>
       val client = sender()
 
@@ -159,7 +165,7 @@ class Session(rpcApiService: ActorRef,
       if (authId != eauthId || sessionId != esessionId) // Should never happen
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
-        handleSessionMessage(authId, sessionId, client, msg, publisher)
+        handleSessionMessage(authId, sessionId, client, msg, publisher, updatesPusher)
     case SendProtoMessage(protoMessage) =>
       log.debug("Sending proto message {}", protoMessage)
       sendProtoMessage(authId, sessionId, protoMessage)
@@ -179,7 +185,8 @@ class Session(rpcApiService: ActorRef,
                                    sessionId: Long,
                                    client: ActorRef,
                                    message: SessionMessage,
-                                   publisher: ActorRef): Unit = {
+                                   publisher: ActorRef,
+                                   updatesPusher: ActorRef): Unit = {
     log.debug("Session message {}", message)
     message match {
       case HandleMessageBox(messageBoxBytes) =>
@@ -187,9 +194,9 @@ class Session(rpcApiService: ActorRef,
       case SendProtoMessage(protoMessage) =>
         sendProtoMessage(authId, sessionId, protoMessage)
       case SubscribeToOnline(userIds) =>
-
+        updatesPusher ! UpdatesPusher.SubscribeToUserPresences(userIds)
       case SubscribeFromOnline(userIds) =>
-      // TODO: implement
+        updatesPusher ! UpdatesPusher.UnsubscribeFromUserPresences(userIds)
       case SubscribeToGroupOnline(groupIds) =>
       // TODO: implement
       case SubscribeFromGroupOnline(groupIds) =>

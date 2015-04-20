@@ -39,7 +39,12 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
     val presenceManagerRegion = PresenceManager.startRegion()
 
     val rpcApiService = system.actorOf(RpcApiService.props())
-    val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
+    val sessionRegion = Session.startRegion(
+      Some(Session.props(
+        rpcApiService,
+        seqUpdManagerRegion,
+        weakUpdManagerRegion,
+        presenceManagerRegion)))
 
     val services = Seq(
       new AuthServiceImpl(sessionRegion),
@@ -47,7 +52,10 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
       new EncryptionServiceImpl,
       new MessagingServiceImpl(seqUpdManagerRegion),
       new GroupsServiceImpl(seqUpdManagerRegion),
-      new SequenceServiceImpl(seqUpdManagerRegion, sessionRegion),
+      new SequenceServiceImpl(
+        seqUpdManagerRegion,
+        presenceManagerRegion,
+        sessionRegion),
       new ConversationsServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))

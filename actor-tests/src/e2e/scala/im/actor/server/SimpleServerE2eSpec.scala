@@ -52,7 +52,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
     new EncryptionServiceImpl,
     new MessagingServiceImpl(seqUpdManagerRegion),
     new GroupsServiceImpl(seqUpdManagerRegion),
-    new SequenceServiceImpl(seqUpdManagerRegion, sessionRegion)
+    new SequenceServiceImpl(seqUpdManagerRegion, presenceManagerRegion, sessionRegion)
   )
 
   services foreach { service =>
