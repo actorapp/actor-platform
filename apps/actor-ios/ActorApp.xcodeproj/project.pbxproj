@@ -2105,7 +2105,7 @@
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContactsViewController.xib; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabController.swift; sourceTree = "<group>"; };
+		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabController.swift; path = ../MainTabController.swift; sourceTree = "<group>"; };
 		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineSlackListController.swift; sourceTree = "<group>"; };
 		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonTable.swift; sourceTree = "<group>"; };
@@ -2132,7 +2132,7 @@
 		06D8D8BF1AB431D800A80E40 /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBKeyValue.swift; sourceTree = "<group>"; };
 		06D8D8C11AB4390600A80E40 /* Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
 		06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaStorage.swift; sourceTree = "<group>"; };
-		06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogsViewController.swift; sourceTree = "<group>"; };
+		06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogsViewController.swift; path = ../DialogsViewController.swift; sourceTree = "<group>"; };
 		06E484231AB78D7300AA272F /* SThreadPoolTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SThreadPoolTask.h; sourceTree = "<group>"; };
 		06E484241AB78D7300AA272F /* SThreadPoolTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPoolTask.m; sourceTree = "<group>"; };
 		06E484251AB78D7300AA272F /* SThreadPoolQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPoolQueue.m; sourceTree = "<group>"; };
@@ -2208,6 +2208,7 @@
 		050E99B01ACB4D410052C06B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				0612BC901AE48FDB001EE387 /* Main */,
 				0603232A1ADF04E600C73C0F /* iPad */,
 				05E706441AD1F5FD009F09D8 /* Settings */,
 				054A25251AD06D030013FAAA /* User */,
@@ -2326,6 +2327,7 @@
 			isa = PBXGroup;
 			children = (
 				05C890551AD71DDA002BD07A /* AADialogsListCell.swift */,
+				06BFDB501AB1AD3800F16E43 /* DialogCell.swift */,
 				05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */,
 			);
 			name = DialogsList;
@@ -4265,6 +4267,15 @@
 			path = util;
 			sourceTree = "<group>";
 		};
+		0612BC901AE48FDB001EE387 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */,
+				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
 		069FE6CA1AC017AA00C6C033 /* ScreensOld */ = {
 			isa = PBXGroup;
 			children = (
@@ -4298,11 +4309,8 @@
 		069FE6D31AC0204A00C6C033 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */,
 				06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */,
 				06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */,
-				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
-				06BFDB501AB1AD3800F16E43 /* DialogCell.swift */,
 			);
 			name = Main;
 			sourceTree = "<group>";
