@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc
 
 import scala.concurrent._
+import scala.util.Try
 import scalaz._
 
 import akka.actor._
@@ -51,29 +52,38 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
       case AttachService(service) =>
         log.debug("Attached service: {}", service)
         context.become(initialized(services :+ service), discardOld = true)
-      case HandleRpcRequest(messageId, requestBytes, clientData) =>
-        RequestCodec.decode(requestBytes).require map {
-          case Request(rpcRequest) =>
-            log.debug("Request: {}", rpcRequest)
+      case msg @ HandleRpcRequest(messageId, requestBytes, clientData) =>
+        val replyTo = sender()
 
-            val result =
-              if (chain.isDefinedAt(rpcRequest)) {
-                chain(rpcRequest)(clientData)
-              } else {
-                log.error("Unsupported request {}", rpcRequest)
-                Future.successful(Error(CommonErrors.UnsupportedRequest))
-              }
+        try {
+          RequestCodec.decode(requestBytes).require map {
+            case Request(rpcRequest) =>
+              log.debug("Request: {}", rpcRequest)
 
-            result
-              .map(_.fold(err => err, ok => ok))
-              .recover({
-              case e: Throwable =>
-                log.error(e, "Failed to handle messageId:{} rpcRequest: {}", messageId, rpcRequest)
-                RpcInternalError(true, 1000) // TODO: configurable delay
-            }).map(result => RpcResponse(messageId, RpcResultCodec.encode(result).require))
-              .pipeTo(sender())
-          case _ =>
-            Future.successful(CommonErrors.UnsupportedRequest)
+              val result =
+                if (chain.isDefinedAt(rpcRequest)) {
+                  chain(rpcRequest)(clientData)
+                } else {
+                  log.error("Unsupported request {}", rpcRequest)
+                  Future.successful(Error(CommonErrors.UnsupportedRequest))
+                }
+
+              result
+                .map(_.fold(err => err, ok => ok))
+                .recover({
+                case e: Throwable =>
+                  log.error(e, "Failed to handle messageId:{} rpcRequest: {}", messageId, rpcRequest)
+                  RpcInternalError(true, 1000) // TODO: configurable delay
+              }).map(result => RpcResponse(messageId, RpcResultCodec.encode(result).require))
+                .pipeTo(replyTo)
+            case _ =>
+              Future.successful(CommonErrors.UnsupportedRequest)
+          }
+        } catch {
+          case e: Exception =>
+            replyTo ! RpcResponse(messageId, RpcResultCodec.encode(RpcInternalError(true, 1000)).require) // TODO: configurable delay
+          case e: Throwable =>
+            log.error(e, "Failed to handle {}", msg)
         }
     }
   }
