@@ -15,6 +15,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
+import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
 import im.actor.server.models
 import im.actor.server.persist
@@ -24,6 +25,8 @@ class AuthServiceImpl(implicit
                       val sessionRegion: SessionRegion,
                       val actorSystem: ActorSystem,
                       val db: Database) extends AuthService with Helpers {
+  import IdUtils._
+
   private trait SignType
   private case class Up(name: String, isSilent: Boolean) extends SignType
   private case object In extends SignType
