@@ -410,7 +410,7 @@ extension AAConversationGroupInfoController: UIActionSheetDelegate {
         }
 
         if (buttonIndex == 1 || buttonIndex == 2) {
-            let takePhoto = (buttonIndex == 2)
+            let takePhoto = (buttonIndex == 1)
             var picker = UIImagePickerController()
             picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             picker.delegate = self

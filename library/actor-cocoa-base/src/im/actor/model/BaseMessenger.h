@@ -31,6 +31,8 @@
 
 - (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer;
 
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
+
 - (AMBindedDisplayList *)getContactsGlobalList;
 
 - (AMBindedDisplayList *)buildContactDisplayList;

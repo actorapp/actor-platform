@@ -12,7 +12,7 @@
 @class ImActorModelModulesFileDownloadTask;
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
-@protocol AMDownloadCallback;
+@protocol AMFileCallback;
 @protocol AMFileSystemReference;
 @protocol DKKeyValueEngine;
 
@@ -31,11 +31,11 @@
 - (void)preStart;
 
 - (void)requestStateWithLong:(jlong)fileId
-      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
+          withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (void)bindDownloadWithAMFileReference:(AMFileReference *)fileReference
                             withBoolean:(jboolean)autoStart
-                 withAMDownloadCallback:(id<AMDownloadCallback>)callback;
+                     withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (void)startDownloadWithAMFileReference:(AMFileReference *)fileReference;
 
@@ -43,7 +43,7 @@
 
 - (void)unbindDownloadWithLong:(jlong)fileId
                    withBoolean:(jboolean)autoCancel
-        withAMDownloadCallback:(id<AMDownloadCallback>)callback;
+            withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (void)onDownloadProgressWithLong:(jlong)fileId
                          withFloat:(jfloat)progress;
@@ -85,11 +85,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_QueueItem)
 }
 
 - (instancetype)initWithLong:(jlong)fileId
-      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
+          withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (jlong)getFileId;
 
-- (id<AMDownloadCallback>)getCallback;
+- (id<AMFileCallback>)getCallback;
 
 @end
 
@@ -105,13 +105,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_RequestState)
 
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference
                             withBoolean:(jboolean)isAutostart
-                 withAMDownloadCallback:(id<AMDownloadCallback>)callback;
+                     withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (AMFileReference *)getFileReference;
 
 - (jboolean)isAutostart;
 
-- (id<AMDownloadCallback>)getCallback;
+- (id<AMFileCallback>)getCallback;
 
 @end
 
@@ -159,11 +159,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_CancelDownload
 
 - (instancetype)initWithLong:(jlong)fileId
                  withBoolean:(jboolean)isAutocancel
-      withAMDownloadCallback:(id<AMDownloadCallback>)callback;
+          withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (jlong)getFileId;
 
-- (id<AMDownloadCallback>)getCallback;
+- (id<AMFileCallback>)getCallback;
 
 - (jboolean)isAutocancel;
 
@@ -235,8 +235,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_OnDownloadedEr
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0
-                 withAMFileSystemReference:(id<AMFileSystemReference>)capture$1;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
+             withAMFileSystemReference:(id<AMFileSystemReference>)capture$1;
 
 @end
 
@@ -252,7 +252,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$1)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -268,8 +268,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$2)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0
-                                 withFloat:(jfloat)capture$1;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
+                             withFloat:(jfloat)capture$1;
 
 @end
 
@@ -285,7 +285,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$3)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -301,7 +301,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$4)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -317,8 +317,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$5)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0
-                 withAMFileSystemReference:(id<AMFileSystemReference>)capture$1;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
+             withAMFileSystemReference:(id<AMFileSystemReference>)capture$1;
 
 @end
 
@@ -334,7 +334,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$6)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -350,7 +350,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$7)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -366,7 +366,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$8)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -382,8 +382,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$9)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0
-                                 withFloat:(jfloat)capture$1;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
+                             withFloat:(jfloat)capture$1;
 
 @end
 
@@ -399,7 +399,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$10)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -415,7 +415,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$11)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -431,7 +431,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$12)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -447,7 +447,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$13)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 
@@ -480,8 +480,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$15)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0
-                                 withFloat:(jfloat)capture$1;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
+                             withFloat:(jfloat)capture$1;
 
 @end
 
@@ -497,8 +497,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$16)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0
-                 withAMFileSystemReference:(id<AMFileSystemReference>)capture$1;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
+             withAMFileSystemReference:(id<AMFileSystemReference>)capture$1;
 
 @end
 
@@ -514,7 +514,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$17)
 
 - (void)run;
 
-- (instancetype)initWithAMDownloadCallback:(id<AMDownloadCallback>)capture$0;
+- (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0;
 
 @end
 

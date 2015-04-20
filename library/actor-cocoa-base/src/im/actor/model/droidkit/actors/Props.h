@@ -16,9 +16,6 @@
 
 #include "J2ObjC_header.h"
 
-#define DKProps_TYPE_CREATOR 2
-#define DKProps_TYPE_DEFAULT 1
-
 @interface DKProps : NSObject {
 }
 
@@ -46,10 +43,6 @@ CF_EXTERN_C_BEGIN
 FOUNDATION_EXPORT DKProps *DKProps_createWithIOSClass_withDKActorCreator_(IOSClass *clazz, id<DKActorCreator> creator);
 
 FOUNDATION_EXPORT DKProps *DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(IOSClass *clazz, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator);
-
-J2OBJC_STATIC_FIELD_GETTER(DKProps, TYPE_DEFAULT, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(DKProps, TYPE_CREATOR, jint)
 CF_EXTERN_C_END
 
 typedef DKProps ImActorModelDroidkitActorsProps;
