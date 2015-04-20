@@ -24,10 +24,6 @@ class ConversationsServiceImpl(implicit db: Database, actorSystem: ActorSystem) 
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  object Errors {
-    val DialogNotFound = RpcError(404, "DIALOG_NOT_FOUND", "Dialog not found.", false, None)
-  }
-
   override def jhandleLoadDialogs(startDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       persist.Dialog.findByUser(client.userId, new DateTime(endDateTimeFrom(startDate).getOrElse(new DateTime(0))), limit) flatMap { dialogModels =>
@@ -76,7 +72,7 @@ class ConversationsServiceImpl(implicit db: Database, actorSystem: ActorSystem) 
             }
           }
         case None =>
-          DBIO.successful(Error(Errors.DialogNotFound))
+          DBIO.successful(Ok(ResponseLoadHistory(Vector.empty, Vector.empty)))
       }
     }
 
