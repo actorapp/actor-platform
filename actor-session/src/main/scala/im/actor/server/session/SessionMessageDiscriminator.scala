@@ -31,7 +31,7 @@ class SessionMessageDiscriminator(implicit actorSystem: ActorSystem)
   override def createRouteLogic(p: PortT) = new RouteLogic[SessionStreamMessage] {
     override def initialState = State[Any](DemandFromAll(p.outlets)) {
       (ctx, _, element) =>
-        log.debug("Discriminator element: {}", element)
+        // log.debug("Discriminator element: {}", element)
 
         handleElement(ctx, element)
 
