@@ -58,7 +58,7 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
         try {
           RequestCodec.decode(requestBytes).require map {
             case Request(rpcRequest) =>
-              log.debug("Request: {}", rpcRequest)
+              log.debug("Request: {}, Client: {}", rpcRequest, clientData)
 
               val result =
                 if (chain.isDefinedAt(rpcRequest)) {
