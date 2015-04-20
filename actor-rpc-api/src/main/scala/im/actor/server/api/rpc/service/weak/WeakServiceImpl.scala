@@ -1,18 +1,17 @@
 package im.actor.server.api.rpc.service.weak
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.actor.{ ActorRef, ActorSystem }
-
+import akka.actor.ActorSystem
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.peers.{ PeerType, Peer, OutPeer }
+import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
 import im.actor.api.rpc.weak.{ UpdateTyping, WeakService }
-import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
-import im.actor.server.push.{ WeakUpdatesManagerRegion, WeakUpdatesManager }
+import im.actor.server.persist
+import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
+import im.actor.server.push.{ WeakUpdatesManager, WeakUpdatesManagerRegion }
 
 class WeakServiceImpl(implicit
                       weakUpdManagerRegion: WeakUpdatesManagerRegion,
@@ -23,16 +22,21 @@ class WeakServiceImpl(implicit
 
   override def jhandleTyping(peer: OutPeer, typingType: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
-      val update = peer.`type` match {
+      val action = peer.`type` match {
         case PeerType.Private =>
-          UpdateTyping(Peer(PeerType.Private, client.userId), client.userId, typingType)
+          val update = UpdateTyping(Peer(PeerType.Private, client.userId), client.userId, typingType)
+
+          WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update)
         case PeerType.Group =>
-          UpdateTyping(Peer(PeerType.Group, peer.id), client.userId, typingType)
+          val update = UpdateTyping(Peer(PeerType.Group, peer.id), client.userId, typingType)
+
+          for {
+            otherUserIds <- persist.GroupUser.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
+            _ <- DBIO.sequence(otherUserIds map (WeakUpdatesManager.broadcastUserWeakUpdate(_, update)))
+          } yield ()
       }
 
-      for (_ <- WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update)) yield {
-        Ok(ResponseVoid)
-      }
+      for (_ <- action) yield Ok(ResponseVoid)
     }
 
     db.run(toDBIOAction(authorizedAction))
