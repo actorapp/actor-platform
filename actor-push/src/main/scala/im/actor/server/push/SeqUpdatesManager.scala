@@ -311,7 +311,10 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       log.debug("Consumer subscribed {}", consumer)
 
       sender() ! SubscribeAck(consumer)
-    case ReceiveTimeout => context.parent ! Passivate(stopMessage = PoisonPill)
+    case ReceiveTimeout =>
+      if (consumers.isEmpty) {
+        context.parent ! Passivate(stopMessage = PoisonPill)
+      }
     case Terminated(consumer) =>
       log.debug("Consumer unsubscribed {}", consumer)
       consumers -= consumer

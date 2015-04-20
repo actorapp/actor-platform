@@ -4,6 +4,7 @@ import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor._
+import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.ask
 import akka.util.Timeout
@@ -29,6 +30,12 @@ object PresenceManager {
 
   @SerialVersionUID(1L)
   private case class SubscribeAck(consumer: ActorRef)
+
+  @SerialVersionUID(1L)
+  private case class Unsubscribe(consumer: ActorRef) extends Message
+
+  @SerialVersionUID(1L)
+  private case class UnsubscribeAck(consumer: ActorRef)
 
   trait Presence
 
@@ -70,6 +77,15 @@ object PresenceManager {
                (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
     region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
   }
+
+  def unsubscribe(region: PresenceManagerRegion, userId: Int, consumer: ActorRef)
+                 (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+  }
+
+  def subscribe(region: PresenceManagerRegion, userIds: Set[Int], consumer: ActorRef)
+               (implicit ec: ExecutionContext, timeout: Timeout): Future[Unit] =
+    Future.sequence(userIds map (subscribe(region, _, consumer))) map (_ => ())
 
   def presenceSetOnline(region: PresenceManagerRegion, userId: Int, timeout: Long): Unit = {
     region.ref ! Envelope(userId, UserPresenceChange(Online, timeout))
@@ -127,6 +143,9 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
 
       sender ! SubscribeAck(consumer)
       deliverState(userId)
+    case Envelope(userId, Unsubscribe(consumer)) =>
+      consumers -= consumer
+      sender ! UnsubscribeAck(consumer)
     case Terminated(consumer) =>
       consumers -= consumer
     case Envelope(userId, change @ UserPresenceChange(presence, timeout)) =>
@@ -150,6 +169,10 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
 
       if (needDeliver) {
         deliverState(userId)
+      }
+    case ReceiveTimeout =>
+      if (consumers.isEmpty) {
+        context.parent ! Passivate(stopMessage = PoisonPill)
       }
   }
 

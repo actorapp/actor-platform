@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.sequence.WeakUpdate
-import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
+import im.actor.api.rpc.weak.{ UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ UpdateBox => ProtoUpdateBox, Update }
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
@@ -24,6 +24,9 @@ object UpdatesPusher {
 
   @SerialVersionUID(1L)
   case class SubscribeToUserPresences(userIds: Set[Int])
+
+  @SerialVersionUID(1L)
+  case class UnsubscribeFromUserPresences(userIds: Set[Int])
 
   def props(seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
             weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
@@ -71,12 +74,20 @@ private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegi
           self ! SubscribeToWeak
           log.error(e, "Failed to subscribe to weak updates")
       }
-    case SubscribeToUserPresences(userIds) =>
+    case cmd @ SubscribeToUserPresences(userIds) =>
       userIds foreach { userId =>
         PresenceManager.subscribe(presenceManagerRegion, userId, self) onFailure {
           case e =>
-            self ! SubscribeToUserPresences(userIds)
+            self ! cmd
             log.error(e, "Failed to subscribe to presences")
+        }
+      }
+    case cmd @ UnsubscribeFromUserPresences(userIds) =>
+      userIds foreach { userId =>
+        PresenceManager.unsubscribe(presenceManagerRegion, userId, self) onFailure {
+          case e =>
+            self ! cmd
+            log.error(e, "Failed to subscribe from presences")
         }
       }
     case updateBox: ProtoUpdateBox =>
@@ -87,7 +98,12 @@ private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegi
           case Online =>
             UpdateUserOnline(userId)
           case Offline =>
-            UpdateUserOffline(userId)
+            lastSeenAt match {
+              case Some(date) =>
+                UpdateUserLastSeen(userId, date.getMillis)
+              case None =>
+                UpdateUserOffline(userId)
+            }
         }
 
       val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
