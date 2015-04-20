@@ -107,6 +107,7 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
         firstNameField.placeholder = NSLocalizedString("AuthProfileNameHint", comment: "Title")
         firstNameField.delegate = self
         firstNameField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        firstNameField.autocapitalizationType = UITextAutocapitalizationType.Words
         view.addSubview(firstNameField)
         
         firstNameFieldSeparator = UIView()

@@ -110,6 +110,7 @@ class AAConversationGroupInfoController: AATableViewController {
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel titlte"))
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save titlte"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = group!.getName().get() as! String
         alertView.show()
     }
