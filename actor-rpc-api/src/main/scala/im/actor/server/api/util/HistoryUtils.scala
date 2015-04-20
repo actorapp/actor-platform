@@ -70,7 +70,11 @@ object HistoryUtils {
 
     peer.typ match {
       case models.PeerType.Private =>
-        persist.Dialog.updateLastReceivedAt(peer.id, models.Peer.privat(byPeer.id), date)
+        // TODO: #perf do in single query
+        DBIO.sequence(Seq(
+          persist.Dialog.updateLastReceivedAt(peer.id, models.Peer.privat(byPeer.id), date),
+          persist.Dialog.updateLastReceivedAt(byPeer.id, peer, date)
+        ))
       case models.PeerType.Group =>
         persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds =>
           // TODO: #perf update dialogs in one query
@@ -90,7 +94,11 @@ object HistoryUtils {
 
     peer.typ match {
       case models.PeerType.Private =>
-        persist.Dialog.updateLastReadAt(peer.id, models.Peer.privat(byPeer.id), date)
+        // TODO: #perf do in single query
+        DBIO.sequence(Seq(
+          persist.Dialog.updateLastReadAt(peer.id, models.Peer.privat(byPeer.id), date),
+          persist.Dialog.updateLastReadAt(byPeer.id, peer, date)
+        ))
       case models.PeerType.Group =>
         persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds =>
           // TODO: #perf update dialogs in one query

@@ -90,7 +90,7 @@ object HistoryMessage {
   def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
     notDeletedMessages
       .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
-      .filter(m => m.date > lastReadAt)
+      .filter(m => m.date > lastReadAt && m.senderUserId =!= userId)
       .length
       .result
 }
