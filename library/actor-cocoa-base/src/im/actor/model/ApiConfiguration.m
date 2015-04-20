@@ -28,7 +28,7 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
 @implementation AMApiConfiguration
 
 
-#line 16
+#line 25
 - (instancetype)initWithNSString:(NSString *)appTitle
                          withInt:(jint)appId
                     withNSString:(NSString *)appKey
@@ -36,61 +36,61 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
                     withNSString:(NSString *)deviceString {
   if (self = [super init]) {
     
-#line 17
+#line 26
     self->appTitle_ = appTitle;
     
-#line 18
+#line 27
     self->appId_ = appId;
     
-#line 19
+#line 28
     self->appKey_ = appKey;
     
-#line 20
+#line 29
     self->deviceTitle_ = deviceTitle;
     
-#line 21
+#line 30
     self->deviceString_ = deviceString;
   }
   return self;
 }
 
 
-#line 24
+#line 38
 - (NSString *)getAppTitle {
   
-#line 25
+#line 39
   return appTitle_;
 }
 
 
-#line 28
+#line 47
 - (jint)getAppId {
   
-#line 29
+#line 48
   return appId_;
 }
 
 
-#line 32
+#line 56
 - (NSString *)getAppKey {
   
-#line 33
+#line 57
   return appKey_;
 }
 
 
-#line 36
+#line 65
 - (NSString *)getDeviceTitle {
   
-#line 37
+#line 66
   return deviceTitle_;
 }
 
 
-#line 40
+#line 74
 - (NSString *)getDeviceString {
   
-#line 41
+#line 75
   return deviceString_;
 }
 

@@ -129,8 +129,8 @@
 #import "im/actor/model/viewmodel/UserPresence.h"
 #import "im/actor/model/viewmodel/UploadFileVMCallback.h"
 #import "im/actor/model/viewmodel/UploadFileVM.h"
-#import "im/actor/model/viewmodel/DownloadCallback.h"
-#import "im/actor/model/viewmodel/UploadCallback.h"
+#import "im/actor/model/viewmodel/FileCallback.h"
+#import "im/actor/model/viewmodel/UploadFileCallback.h"
 #import "im/actor/model/viewmodel/AppStateVM.h"
 
 // Misc

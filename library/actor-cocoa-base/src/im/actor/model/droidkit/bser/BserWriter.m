@@ -282,7 +282,7 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
 }
 
 
-#line 151
+#line 152
 - (void)writeVarIntFieldWithInt:(jint)fieldNumber
                        withLong:(jlong)value {
   BSBserWriter_writeVarIntFieldWithInt_withLong_(self, fieldNumber, value);
@@ -304,7 +304,7 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
 }
 
 
-#line 172
+#line 173
 - (void)writeVarIntWithLong:(jlong)value {
   BSBserWriter_writeVarIntWithLong_(self, value);
 }
@@ -331,64 +331,65 @@ J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
 void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType) {
   
 #line 143
+  fieldNumber = (fieldNumber & (jint) 0xFFFF);
   if (fieldNumber <= 0) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"fieldNumber can't be less or eq to zero"];
   }
   
-#line 147
+#line 148
   jlong tag = ((jlong) (LShift32(fieldNumber, 3)) | wireType);
   [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:tag];
 }
 
 void BSBserWriter_writeVarIntFieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
   
-#line 152
+#line 153
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_VARINT);
   BSBserWriter_writeVarIntWithLong_(self, value);
 }
 
 void BSBserWriter_writeBytesFieldWithInt_withByteArray_(BSBserWriter *self, jint fieldNumber, IOSByteArray *value) {
   
-#line 157
+#line 158
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_LENGTH_DELIMITED);
   BSBserWriter_writeBytesWithByteArray_(self, value);
 }
 
 void BSBserWriter_writeVar64FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
   
-#line 162
+#line 163
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_64BIT);
   BSBserWriter_writeLongWithLong_(self, value);
 }
 
 void BSBserWriter_writeVar32FieldWithInt_withLong_(BSBserWriter *self, jint fieldNumber, jlong value) {
   
-#line 167
+#line 168
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_32BIT);
   BSBserWriter_writeIntWithLong_(self, value);
 }
 
 void BSBserWriter_writeVarIntWithLong_(BSBserWriter *self, jlong value) {
   
-#line 173
-  [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:value];
+#line 174
+  [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:value & (jint) 0xFFFFFFFF];
 }
 
 void BSBserWriter_writeLongWithLong_(BSBserWriter *self, jlong v) {
   
-#line 177
-  [((BSDataOutput *) nil_chk(self->stream_)) writeLongWithLong:v];
+#line 178
+  [((BSDataOutput *) nil_chk(self->stream_)) writeLongWithLong:v & (jint) 0xFFFFFFFF];
 }
 
 void BSBserWriter_writeIntWithLong_(BSBserWriter *self, jlong v) {
   
-#line 181
-  [((BSDataOutput *) nil_chk(self->stream_)) writeIntWithInt:(jint) v];
+#line 182
+  [((BSDataOutput *) nil_chk(self->stream_)) writeIntWithInt:(jint) (v & (jint) 0xFFFF)];
 }
 
 void BSBserWriter_writeBytesWithByteArray_(BSBserWriter *self, IOSByteArray *data) {
   
-#line 185
+#line 186
   [((BSDataOutput *) nil_chk(self->stream_)) writeProtoBytesWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
 }
 
