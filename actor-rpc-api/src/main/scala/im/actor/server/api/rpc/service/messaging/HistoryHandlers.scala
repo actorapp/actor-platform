@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._, Implicits._
-import im.actor.api.rpc.messaging.{ UpdateChatClear, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
 import im.actor.server.api.util.HistoryUtils
@@ -102,8 +102,18 @@ trait HistoryHandlers {
     db.run(toDBIOAction(action map (_.transactionally)))
   }
 
-  override def jhandleDeleteChat(peer: im.actor.api.rpc.peers.OutPeer, clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseSeq]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleDeleteChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val action = requireAuth(clientData).map { implicit client =>
+      val update = UpdateChatDelete(peer.asPeer)
+
+      for {
+        _ <- persist.HistoryMessage.delete(client.userId, peer.asModel)
+        _ <- persist.Dialog.delete(client.userId, peer.asModel)
+        seqstate <- broadcastClientUpdate(update)
+      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+    }
+
+    db.run(toDBIOAction(action map (_.transactionally)))
   }
 
   override def jhandleDeleteMessage(peer: im.actor.api.rpc.peers.OutPeer,rids: scala.collection.immutable.Vector[Long], clientData: im.actor.api.rpc.ClientData): scala.concurrent.Future[scalaz.\/[im.actor.api.rpc.RpcError,im.actor.api.rpc.misc.ResponseVoid]] = Future {

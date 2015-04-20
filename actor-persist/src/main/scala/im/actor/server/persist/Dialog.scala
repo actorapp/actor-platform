@@ -4,7 +4,9 @@ import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
+import slick.dbio.Effect.Write
 import slick.driver.PostgresDriver.api._
+import slick.profile.FixedSqlAction
 
 import im.actor.server.models
 
@@ -95,4 +97,7 @@ object Dialog {
       case x => DBIO.successful(x)
     }
   }
+
+  def delete(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
+    byUserIdPeer(userId, peer).delete
 }
