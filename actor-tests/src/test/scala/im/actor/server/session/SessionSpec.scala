@@ -45,16 +45,16 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
   implicit val (ds, db) = migrateAndInitDb()
   implicit val ec = system.dispatcher
 
-  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  implicit val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
-  val sessionRegion = Session.startRegion(
+  implicit val sessionRegion = Session.startRegion(
     Some(
-      Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
+      Session.props(rpcApiService)))
 
-  val authService = new AuthServiceImpl(sessionRegion)
-  val sequenceService = new SequenceServiceImpl(seqUpdManagerRegion, presenceManagerRegion, sessionRegion)
+  val authService = new AuthServiceImpl
+  val sequenceService = new SequenceServiceImpl
 
   rpcApiService ! RpcApiService.AttachService(authService)
   rpcApiService ! RpcApiService.AttachService(sequenceService)
@@ -68,7 +68,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
     def e1() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion))
+      val session = system.actorOf(Session.props(rpcApiService))
 
       sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
 
@@ -195,7 +195,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
 
       val update = UpdateContactRegistered(1, true, 1L)
-      Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(seqUpdManagerRegion, update)), 1.second)
+      Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(update)), 1.second)
 
       expectSeqUpdate(authId, sessionId).update should === (update.toByteArray)
     }
@@ -241,7 +241,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
 
       val update = UpdateContactRegistered(1, true, 1L)
-      Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(weakUpdManagerRegion, clientData.userId, update)), 1.second)
+      Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(clientData.userId, update)), 1.second)
 
       expectWeakUpdate(authId, sessionId).update should === (update.toByteArray)
     }

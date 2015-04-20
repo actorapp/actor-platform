@@ -28,24 +28,25 @@ object UpdatesPusher {
   @SerialVersionUID(1L)
   case class UnsubscribeFromUserPresences(userIds: Set[Int])
 
-  def props(seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+  def props(authId: Long, session: ActorRef)
+           (implicit
+            seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
             weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-            presenceManagerRegion: PresenceManagerRegion,
-            authId: Long,
-            session: ActorRef) =
-    Props(classOf[UpdatesPusher],
+            presenceManagerRegion: PresenceManagerRegion) =
+    Props(
+      classOf[UpdatesPusher],
+      authId,
+      session,
       seqUpdatesManagerRegion,
       weakUpdatesManagerRegion,
-      presenceManagerRegion,
-      authId,
-      session)
+      presenceManagerRegion)
 }
 
-private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+private[push] class UpdatesPusher(authId: Long, session: ActorRef)
+                                 (implicit
+                                  seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
                                   weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-                                  presenceManagerRegion: PresenceManagerRegion,
-                                  authId: Long,
-                                  session: ActorRef) extends Actor with ActorLogging {
+                                  presenceManagerRegion: PresenceManagerRegion) extends Actor with ActorLogging {
 
   import UpdatesPusher._
   import im.actor.server.session.SessionMessage._
@@ -63,20 +64,20 @@ private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegi
 
   def receive = {
     case SubscribeToSeq =>
-      SeqUpdatesManager.subscribe(seqUpdatesManagerRegion, authId, self) onFailure {
+      SeqUpdatesManager.subscribe(authId, self) onFailure {
         case e =>
           self ! SubscribeToSeq
           log.error(e, "Failed to subscribe to sequence updates")
       }
     case SubscribeToWeak =>
-      WeakUpdatesManager.subscribe(weakUpdatesManagerRegion, authId, self) onFailure {
+      WeakUpdatesManager.subscribe(authId, self) onFailure {
         case e =>
           self ! SubscribeToWeak
           log.error(e, "Failed to subscribe to weak updates")
       }
     case cmd @ SubscribeToUserPresences(userIds) =>
       userIds foreach { userId =>
-        PresenceManager.subscribe(presenceManagerRegion, userId, self) onFailure {
+        PresenceManager.subscribe(userId, self) onFailure {
           case e =>
             self ! cmd
             log.error(e, "Failed to subscribe to presences")
@@ -84,7 +85,7 @@ private[push] class UpdatesPusher(seqUpdatesManagerRegion: SeqUpdatesManagerRegi
       }
     case cmd @ UnsubscribeFromUserPresences(userIds) =>
       userIds foreach { userId =>
-        PresenceManager.unsubscribe(presenceManagerRegion, userId, self) onFailure {
+        PresenceManager.unsubscribe(userId, self) onFailure {
           case e =>
             self ! cmd
             log.error(e, "Failed to subscribe from presences")

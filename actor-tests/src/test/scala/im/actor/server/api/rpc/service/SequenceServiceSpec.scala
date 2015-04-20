@@ -19,15 +19,15 @@ class SequenceServiceSpec extends BaseServiceSuite {
   it should "get state" in e1
   it should "get difference" in e2
 
-  val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-  val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  implicit val presenceManagerRegion = PresenceManager.startRegion()
   val rpcApiService = buildRpcApiService()
-  val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
+  implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
-  implicit val service = new sequence.SequenceServiceImpl(seqUpdManagerRegion, presenceManagerRegion, sessionRegion)
-  implicit val msgService = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
-  implicit val authService = buildAuthService(sessionRegion)
+  implicit val service = new sequence.SequenceServiceImpl
+  implicit val msgService = new messaging.MessagingServiceImpl
+  implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 
   import SeqUpdatesManager._
@@ -51,7 +51,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val (userIds, groupIds) = updateRefs(update)
 
     val actions = for (a <- 1 to 600) yield {
-      persistAndPushUpdate(seqUpdManagerRegion, authId, update.header, update.toByteArray, userIds, groupIds)
+      persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds)
     }
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)

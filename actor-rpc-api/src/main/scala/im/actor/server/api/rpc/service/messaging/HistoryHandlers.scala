@@ -28,7 +28,7 @@ trait HistoryHandlers {
 
           for {
             _ <- markMessagesReceived(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
-            _ <- broadcastUserUpdate(seqUpdManagerRegion, peer.id, update)
+            _ <- broadcastUserUpdate(peer.id, update)
           } yield {
             Ok(ResponseVoid)
           }
@@ -40,7 +40,7 @@ trait HistoryHandlers {
             otherGroupUserIds <- persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
             otherAuthIds <- persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
             _ <- markMessagesReceived(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
-            _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds, update)
+            _ <- persistAndPushUpdates(otherAuthIds, update)
           } yield {
             Ok(ResponseVoid)
           }
@@ -62,8 +62,8 @@ trait HistoryHandlers {
 
           for {
             _ <- markMessagesRead(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
-            _ <- broadcastUserUpdate(seqUpdManagerRegion, peer.id, update)
-            _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
+            _ <- broadcastUserUpdate(peer.id, update)
+            _ <- broadcastClientUpdate(ownUpdate)
           } yield {
             Ok(ResponseVoid)
           }
@@ -77,8 +77,8 @@ trait HistoryHandlers {
             otherGroupUserIds <- persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
             otherAuthIds <- persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
             _ <- markMessagesRead(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
-            _ <- persistAndPushUpdates(seqUpdManagerRegion, otherAuthIds, update)
-            _ <- broadcastClientUpdate(seqUpdManagerRegion, ownUpdate)
+            _ <- persistAndPushUpdates(otherAuthIds, update)
+            _ <- broadcastClientUpdate(ownUpdate)
           } yield {
             Ok(ResponseVoid)
           }
