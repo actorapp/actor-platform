@@ -24,11 +24,31 @@ class GroupsServiceImpl(implicit
                         val actorSystem: ActorSystem) extends GroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = throw new NotImplementedError
+  override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = Future {
+    throw new Exception("Not implemented")
+  }
 
-  override def jhandleKickUser(groupPeer: GroupOutPeer, randomId: Long, user: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = throw new NotImplementedError
+  override def jhandleKickUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client =>
+      withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup =>
+        val date = new DateTime
 
-  override def jhandleLeaveGroup(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = throw new NotImplementedError
+        val update = UpdateGroupUserKick(fullGroup.id, userOutPeer.userId, client.userId, date.getMillis, randomId)
+
+        for {
+          _ <- persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
+          groupUserIds <- persist.GroupUser.findUserIds(fullGroup.id)
+          (seqstate, _) <- broadcastUpdateAll(groupUserIds.toSet, update)
+        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+  override def jhandleLeaveGroup(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = Future {
+    throw new Exception("Not implemented")
+  }
 
   override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
@@ -68,7 +88,8 @@ class GroupsServiceImpl(implicit
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleRemoveGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = throw new NotImplementedError
+  override def jhandleRemoveGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
+    Future { throw new Exception("Not implemented") }
 
   override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
