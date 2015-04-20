@@ -13,6 +13,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util.PeerUtils._
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -22,6 +23,8 @@ class GroupsServiceImpl(implicit
                         val seqUpdManagerRegion: SeqUpdatesManagerRegion,
                         val db: Database,
                         val actorSystem: ActorSystem) extends GroupsService {
+  import IdUtils._
+
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = Future {
@@ -70,7 +73,7 @@ class GroupsServiceImpl(implicit
         val rnd = ThreadLocalRandom.current()
 
         val group = models.Group(
-          id = rnd.nextInt(),
+          id = nextIntId(rnd),
           creatorUserId = client.userId,
           accessHash = rnd.nextLong(),
           title = title,
