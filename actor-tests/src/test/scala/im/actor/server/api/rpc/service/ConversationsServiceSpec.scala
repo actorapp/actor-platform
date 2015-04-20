@@ -106,19 +106,38 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
     }
 
     def dialogs() = {
-      implicit val clientData = clientData1
+      {
+        implicit val clientData = clientData1
 
-      whenReady(service.handleLoadDialogs(0, 100)) { resp =>
-        resp should matchPattern {
-          case Ok(_) =>
+        whenReady(service.handleLoadDialogs(0, 100)) { resp =>
+          resp should matchPattern {
+            case Ok(_) =>
+          }
+
+          val respBody = resp.toOption.get
+
+          respBody.dialogs.length should ===(1)
+          val dialog = respBody.dialogs.head
+          dialog.unreadCount should ===(0)
+          respBody.users.length should ===(1)
         }
+      }
 
-        val respBody = resp.toOption.get
+      {
+        implicit val clientData = clientData2
 
-        respBody.dialogs.length should ===(1)
-        val dialog = respBody.dialogs.head
-        dialog.unreadCount should ===(3)
-        respBody.users.length should ===(1)
+        whenReady(service.handleLoadDialogs(0, 100)) { resp =>
+          resp should matchPattern {
+            case Ok(_) =>
+          }
+
+          val respBody = resp.toOption.get
+
+          respBody.dialogs.length should ===(1)
+          val dialog = respBody.dialogs.head
+          dialog.unreadCount should ===(3)
+          respBody.users.length should ===(1)
+        }
       }
     }
   }
