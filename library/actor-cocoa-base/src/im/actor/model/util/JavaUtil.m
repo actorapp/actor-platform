@@ -13,7 +13,7 @@
 @implementation AMJavaUtil
 
 
-#line 7
+#line 15
 + (jboolean)equalsEWithId:(id)a
                    withId:(id)b {
   return AMJavaUtil_equalsEWithId_withId_(a, b);
@@ -28,7 +28,7 @@
 jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {
   AMJavaUtil_init();
   
-#line 8
+#line 16
   if (a == nil && b == nil) {
     return YES;
   }

@@ -88,7 +88,7 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules)
 
-@interface ImActorModelModulesModules_$1 : NSObject < AMActorApiCallback > {
+@interface ImActorModelModulesModules_ActorApiCallbackImpl : NSObject < AMActorApiCallback > {
 }
 
 - (void)onAuthIdInvalidatedWithLong:(jlong)authKey;
@@ -101,11 +101,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules)
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules_$1)
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules_ActorApiCallbackImpl)
 
 CF_EXTERN_C_BEGIN
 CF_EXTERN_C_END
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_$1)
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
 
 #endif // _ImActorModelModulesModules_H_

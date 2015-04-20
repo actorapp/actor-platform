@@ -24,10 +24,10 @@ J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
 @implementation AMOwnAvatarVM
 
 
-#line 12
+#line 17
 - (AMValueModel *)getUploadState {
   
-#line 13
+#line 18
   return uploadState_;
 }
 

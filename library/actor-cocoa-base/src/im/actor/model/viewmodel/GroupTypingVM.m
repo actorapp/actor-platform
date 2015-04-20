@@ -24,32 +24,32 @@ J2OBJC_FIELD_SETTER(AMGroupTypingVM, active_, AMValueModel *)
 @implementation AMGroupTypingVM
 
 
-#line 12
+#line 18
 - (instancetype)initWithInt:(jint)gid {
   if (self = [super init]) {
     
-#line 13
+#line 19
     self->gid_ = gid;
     
-#line 14
+#line 20
     self->active_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"groups.", gid, @".typing") withId:[IOSIntArray newArrayWithLength:0]];
   }
   return self;
 }
 
 
-#line 17
+#line 28
 - (jint)getGid {
   
-#line 18
+#line 29
   return gid_;
 }
 
 
-#line 21
+#line 37
 - (AMValueModel *)getActive {
   
-#line 22
+#line 38
   return active_;
 }
 

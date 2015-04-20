@@ -79,6 +79,22 @@
 "GroupLeave" = "Leave group";
 
 /*
+ * Compose
+ */
+
+"ComposeTitle" = "New Message";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Privacy and Security";
+
+"PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateHint" = "Logs out all devices except for this one.";
+
+/*
  * Chat
  */
 
@@ -130,6 +146,16 @@
 
 "AuthCodeHint" = "We have sent you an SMS with the code.";
 
+"AuthProfileTitle" = "Your Info";
+
+"AuthProfileAddPhoto1" = "add";
+
+"AuthProfileAddPhoto2" = "photo";
+
+"AuthProfileNameHint" = "Your name";
+
+"AuthProfileHint" = "Enter your name and add a pofile picture";
+
 /*
  * Common Elements
  */
@@ -157,3 +183,15 @@
 "AlertNext" = "Next";
 
 "AlertSave" = "Save";
+
+"AlertOk" = "OK";
+
+"UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Entered phone number is invalid. Please try again.";
+
+"ErrorCodeExpired" = "Code expired. Please, start authentication again.";

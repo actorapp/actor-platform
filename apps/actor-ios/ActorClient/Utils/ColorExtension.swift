@@ -27,6 +27,14 @@ extension UIColor {
             alpha: CGFloat(alpha)
         )
     }
+    
+    class func alphaBlack(alpha: Double) -> UIColor {
+        return UIColor(red: 0, green: 0, blue: 0, alpha: CGFloat(alpha))
+    }
+    
+    class func alphaWhite(alpha: Double) -> UIColor {
+        return UIColor(red: 1, green: 1, blue: 1, alpha: CGFloat(alpha))
+    }
 
     func alpha(alpha: Double) -> UIColor {
         var r:CGFloat = 0

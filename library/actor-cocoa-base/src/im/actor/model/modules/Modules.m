@@ -11,10 +11,8 @@
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/StorageProvider.h"
-#include "im/actor/model/ThreadingProvider.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/i18n/I18nEngine.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Contacts.h"
@@ -35,6 +33,7 @@
 #include "im/actor/model/modules/utils/PreferenceApiStorage.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/Endpoints.h"
+#include "im/actor/model/util/Timing.h"
 
 @interface ImActorModelModulesModules () {
  @public
@@ -82,305 +81,301 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, profile_, ImActorModelModulesPro
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, search_, ImActorModelModulesSearchModule *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, security_, ImActorModelModulesSecurity *)
 
-@interface ImActorModelModulesModules_$1 () {
+@interface ImActorModelModulesModules_ActorApiCallbackImpl () {
  @public
   ImActorModelModulesModules *this$0_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesModules *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, ImActorModelModulesModules *)
 
 
-#line 15
+#line 16
 @implementation ImActorModelModulesModules
 
 
-#line 38
+#line 39
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   if (self = [super init]) {
     
-#line 39
+#line 40
     self->configuration_ = configuration;
     
-#line 40
-    jlong start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk(configuration)) getThreadingProvider])) getActorTime];
-    
-#line 41
-    self->i18nEngine_ = [[AMI18nEngine alloc] initWithAMLocaleProvider:[configuration getLocaleProvider] withImActorModelModulesModules:self];
-    
 #line 42
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.1 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
-    
-#line 43
-    self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
+    AMTiming *timing = [[AMTiming alloc] initWithNSString:@"MODULES_INIT"];
     
 #line 44
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+    [timing sectionWithNSString:@"I18N"];
     
 #line 45
-    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
+    self->i18nEngine_ = [[AMI18nEngine alloc] initWithAMLocaleProvider:[((AMConfiguration *) nil_chk(configuration)) getLocaleProvider] withImActorModelModulesModules:self];
     
-#line 46
-    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:
 #line 47
-    [[ImActorModelModulesUtilsPreferenceApiStorage alloc] initWithDKPreferencesStorage:preferences_] withAMActorApiCallback:
+    [timing sectionWithNSString:@"Preferences"];
+    
 #line 48
-    [[ImActorModelModulesModules_$1 alloc] initWithImActorModelModulesModules:self] withAMNetworkProvider:
-#line 70
+    self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
+    
+#line 50
+    [timing sectionWithNSString:@"API"];
+    
+#line 51
+    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:
+#line 52
+    [[ImActorModelModulesUtilsPreferenceApiStorage alloc] initWithDKPreferencesStorage:preferences_] withAMActorApiCallback:
+#line 53
+    [[ImActorModelModulesModules_ActorApiCallbackImpl alloc] initWithImActorModelModulesModules:self] withAMNetworkProvider:
+#line 54
     [configuration getNetworkProvider]];
     
-#line 71
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+#line 56
+    [timing sectionWithNSString:@"Auth"];
     
-#line 72
-    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-    
-#line 73
+#line 57
     self->auth_ = [[ImActorModelModulesAuth alloc] initWithImActorModelModulesModules:self];
     
-#line 74
+#line 59
+    [timing sectionWithNSString:@"Pushes"];
+    
+#line 60
     self->pushes_ = [[ImActorModelModulesPushes alloc] initWithImActorModelModulesModules:self];
     
-#line 75
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.4 in ", ([((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime] - start), @" ms"));
+#line 62
+    [timing sectionWithNSString:@"App State"];
     
-#line 76
-    start = [((id<AMThreadingProvider>) nil_chk([configuration getThreadingProvider])) getActorTime];
-    
-#line 77
+#line 63
     self->appStateModule_ = [[ImActorModelModulesAppStateModule alloc] initWithImActorModelModulesModules:self];
+    
+#line 65
+    [timing end];
   }
   return self;
 }
 
 
-#line 80
+#line 68
 - (void)run {
   
-#line 81
+#line 69
   [((ImActorModelModulesAuth *) nil_chk(self->auth_)) run];
 }
 
 
-#line 84
+#line 72
 - (void)onLoggedIn {
   
-#line 85
-  jlong start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk(configuration_)) getThreadingProvider])) getActorTime];
+#line 73
+  AMTiming *timing = [[AMTiming alloc] initWithNSString:@"ACCOUNT_CREATE"];
+  [timing sectionWithNSString:@"Users"];
   users_ = [[ImActorModelModulesUsers alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.1 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Groups"];
   groups_ = [[ImActorModelModulesGroups alloc] initWithImActorModelModulesModules:self];
+  [timing sectionWithNSString:@"Search"];
   search_ = [[ImActorModelModulesSearchModule alloc] initWithImActorModelModulesModules:self];
+  [timing sectionWithNSString:@"Security"];
   security_ = [[ImActorModelModulesSecurity alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Messages"];
   messages_ = [[ImActorModelModulesMessages alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.3 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Updates"];
   updates_ = [[ImActorModelModulesUpdates alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.4 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Presence"];
   presence_ = [[ImActorModelModulesPresence alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.5 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Typing"];
   typing_ = [[ImActorModelModulesTyping alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.6 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Files"];
   filesModule_ = [[ImActorModelModulesFiles alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.6.2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Notifications"];
   notifications_ = [[ImActorModelModulesNotifications alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.7 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Contacts"];
   contacts_ = [[ImActorModelModulesContacts alloc] initWithImActorModelModulesModules:self];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.8 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Settings"];
   settings_ = [[ImActorModelModulesSettings alloc] initWithImActorModelModulesModules:self];
+  [timing sectionWithNSString:@"Profile"];
   profile_ = [[ImActorModelModulesProfile alloc] initWithImActorModelModulesModules:self];
+  [timing end];
   
-#line 118
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.8.2 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+#line 102
+  timing = [[AMTiming alloc] initWithNSString:@"ACCOUNT_RUN"];
+  [timing sectionWithNSString:@"Files"];
   [filesModule_ run];
+  [timing sectionWithNSString:@"Search"];
   [search_ run];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.9 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Notifications"];
   [notifications_ run];
+  [timing sectionWithNSString:@"AppState"];
   [((ImActorModelModulesAppStateModule *) nil_chk(appStateModule_)) run];
+  [timing sectionWithNSString:@"Contacts"];
   [contacts_ run];
+  [timing sectionWithNSString:@"Messages"];
   [messages_ run];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.10 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Updates"];
   [updates_ run];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.11 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing sectionWithNSString:@"Presence"];
   [presence_ run];
-  AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage6.12 in ", ([((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime] - start), @" ms"));
-  start = [((id<AMThreadingProvider>) nil_chk([configuration_ getThreadingProvider])) getActorTime];
+  [timing end];
   
-#line 138
+#line 122
   [presence_ onAppVisible];
   [notifications_ onAppVisible];
 }
 
 
-#line 142
+#line 126
 - (id<DKPreferencesStorage>)getPreferences {
   
-#line 143
+#line 127
   return preferences_;
 }
 
 
-#line 146
+#line 130
 - (AMConfiguration *)getConfiguration {
   
-#line 147
+#line 131
   return configuration_;
 }
 
 
-#line 150
+#line 134
 - (ImActorModelModulesAuth *)getAuthModule {
   
-#line 151
+#line 135
   return auth_;
 }
 
 
-#line 154
+#line 138
 - (ImActorModelModulesUsers *)getUsersModule {
   
-#line 155
+#line 139
   return users_;
 }
 
 
-#line 158
+#line 142
 - (ImActorModelModulesGroups *)getGroupsModule {
   
-#line 159
+#line 143
   return groups_;
 }
 
 
-#line 162
+#line 146
 - (ImActorModelModulesMessages *)getMessagesModule {
   
-#line 163
+#line 147
   return messages_;
 }
 
 
-#line 166
+#line 150
 - (ImActorModelModulesUpdates *)getUpdatesModule {
   
-#line 167
+#line 151
   return updates_;
 }
 
 
-#line 170
+#line 154
 - (ImActorModelModulesTyping *)getTypingModule {
   
-#line 171
+#line 155
   return typing_;
 }
 
 
-#line 174
+#line 158
 - (ImActorModelModulesPresence *)getPresenceModule {
   
-#line 175
+#line 159
   return presence_;
 }
 
 
-#line 178
+#line 162
 - (AMActorApi *)getActorApi {
   
-#line 179
+#line 163
   return actorApi_;
 }
 
 
-#line 182
+#line 166
 - (AMI18nEngine *)getI18nEngine {
   
-#line 183
+#line 167
   return i18nEngine_;
 }
 
 
-#line 186
+#line 170
 - (ImActorModelModulesContacts *)getContactsModule {
   
-#line 187
+#line 171
   return contacts_;
 }
 
 
-#line 190
+#line 174
 - (ImActorModelModulesFiles *)getFilesModule {
   
-#line 191
+#line 175
   return filesModule_;
 }
 
 
-#line 194
+#line 178
 - (ImActorModelModulesNotifications *)getNotifications {
   
-#line 195
+#line 179
   return notifications_;
 }
 
 
-#line 198
+#line 182
 - (ImActorModelModulesSettings *)getSettings {
   
-#line 199
+#line 183
   return settings_;
 }
 
 
-#line 202
+#line 186
 - (ImActorModelModulesProfile *)getProfile {
   
-#line 203
+#line 187
   return profile_;
 }
 
 
-#line 206
+#line 190
 - (ImActorModelModulesAppStateModule *)getAppStateModule {
   
-#line 207
+#line 191
   return appStateModule_;
 }
 
 
-#line 210
+#line 194
 - (ImActorModelModulesPushes *)getPushes {
   
-#line 211
+#line 195
   return pushes_;
 }
 
 
-#line 214
+#line 198
 - (ImActorModelModulesSecurity *)getSecurity {
   
-#line 215
+#line 199
   return security_;
 }
 
 
-#line 218
+#line 202
 - (ImActorModelModulesSearchModule *)getSearch {
   
-#line 219
+#line 203
   return search_;
 }
 
@@ -412,18 +407,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesM
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 
-@implementation ImActorModelModulesModules_$1
+
+#line 206
+@implementation ImActorModelModulesModules_ActorApiCallbackImpl
 
 
-#line 50
+#line 209
 - (void)onAuthIdInvalidatedWithLong:(jlong)authKey {
 }
 
 
-#line 55
+#line 214
 - (void)onNewSessionCreated {
   
-#line 56
+#line 215
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onNewSessionCreated];
   }
@@ -433,7 +430,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 }
 
 
-#line 65
+#line 224
 - (void)onUpdateReceivedWithId:(id)obj {
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onUpdateReceivedWithId:obj];
@@ -445,11 +442,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesModules_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesModules_ActorApiCallbackImpl *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
 }
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules_ActorApiCallbackImpl)

@@ -298,7 +298,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5)
                         withLong:(jlong)bottomSortKey;
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
-                                    withInt:(jint)capture$0;
+                                   withLong:(jlong)capture$0
+                                    withInt:(jint)capture$1;
 
 @end
 

@@ -30,6 +30,8 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     
     init() {
         super.init(nibName: nil, bundle: nil);
+        self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
+        self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
     }
     
     required init(coder aDecoder: NSCoder) {

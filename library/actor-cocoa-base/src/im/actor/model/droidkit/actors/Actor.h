@@ -8,14 +8,8 @@
 
 @class DKActorContext;
 @class DKActorRef;
-@class DKActorSelection;
 @class DKActorSystem;
 @class DKMailbox;
-@class IOSObjectArray;
-@class ImActorModelDroidkitActorsTasksActorAskImpl;
-@class ImActorModelDroidkitActorsTasksAskFuture;
-@class JavaUtilArrayList;
-@protocol ImActorModelDroidkitActorsTasksAskCallback;
 
 #include "J2ObjC_header.h"
 
@@ -27,8 +21,6 @@
 - (void)initActorWithNSString:(NSString *)path
            withDKActorContext:(DKActorContext *)context
                 withDKMailbox:(DKMailbox *)mailbox OBJC_METHOD_FAMILY_NONE;
-
-- (JavaUtilArrayList *)getExtensions;
 
 - (DKActorSystem *)system;
 
@@ -53,35 +45,6 @@
 - (void)replyWithId:(id)message;
 
 - (void)dropWithId:(id)message;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)combineWithImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback
-                                                  withImActorModelDroidkitActorsTasksAskFutureArray:(IOSObjectArray *)futures;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
-                                                             withLong:(jlong)timeout;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
-                       withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorSelection:(DKActorSelection *)selection
-                                                             withLong:(jlong)timeout
-                       withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
-                                                       withLong:(jlong)timeout;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
-                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
-
-- (ImActorModelDroidkitActorsTasksAskFuture *)askWithDKActorRef:(DKActorRef *)ref
-                                                       withLong:(jlong)timeout
-                 withImActorModelDroidkitActorsTasksAskCallback:(id<ImActorModelDroidkitActorsTasksAskCallback>)callback;
 
 @end
 
