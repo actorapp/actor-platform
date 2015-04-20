@@ -8,8 +8,6 @@
 
 import Foundation
 
-var MainAppTheme = AppTheme()
-
 class AppTheme {
     
     var navigation = AppNavigationBar()
@@ -19,6 +17,70 @@ class AppTheme {
     var search = AppSearchBar()
     
     var list = AppList()
+    
+    var bubbles = ChatBubbles()
+}
+
+class ChatBubbles {
+    
+    // Basic colors
+    var text : UIColor { get { return UIColor.RGB(0x141617) } }
+    var textUnsupported : UIColor { get { return UIColor.RGB(0x50b1ae) } }
+
+    var bgOut: UIColor { get { return UIColor.RGB(0xD2FEFD) } }
+    var bgOutBorder: UIColor { get { return UIColor.RGB(0x99E4E3) } }
+    
+    var bgIn : UIColor { get { return UIColor.whiteColor() } }
+    var bgInBorder:UIColor { get { return  UIColor.RGB(0xCCCCCC) } }
+    
+    var statusActive : UIColor { get { return UIColor.RGB(0x3397f9) } }
+    var statusPassive : UIColor { get { return UIColor.alphaBlack(0.27) } }
+    // TODO: Fix
+    var statusDanger : UIColor { get { return UIColor.redColor() } }
+    
+    var statusMediaActive : UIColor { get { return UIColor.RGB(0x1ed2f9) } }
+    var statusMediaPassive : UIColor { get { return UIColor.whiteColor() } }
+    // TODO: Fix
+    var statusMediaDanger : UIColor { get { return UIColor.redColor() } }
+    
+    // Text-based bubble colors
+    var statusSending : UIColor { get { return statusPassive } }
+    var statusSent : UIColor { get { return statusPassive } }
+    var statusReceived : UIColor { get { return statusPassive } }
+    var statusRead : UIColor { get { return statusActive } }
+    var statusError : UIColor { get { return statusDanger } }
+    
+    var textBgOut: UIColor { get { return bgOut } }
+    var textBgOutBorder : UIColor { get { return bgOutBorder } }
+    var textBgIn : UIColor { get { return bgIn } }
+    var textBgInBorder : UIColor { get { return bgInBorder } }
+    
+    var textDateOut : UIColor { get { return UIColor.alphaBlack(0.27) } }
+    var textDateIn : UIColor { get { return UIColor.RGB(0x979797) } }
+    
+    var textOut : UIColor { get { return text } }
+    var textIn : UIColor { get { return text } }
+    
+    var textUnsupportedOut : UIColor { get { return textUnsupported } }
+    var textUnsupportedIn : UIColor { get { return textUnsupported } }
+
+    
+    // Media-based bubble colors
+    var statusMediaSending : UIColor { get { return statusMediaPassive } }
+    var statusMediaSent : UIColor { get { return statusMediaPassive } }
+    var statusMediaReceived : UIColor { get { return statusMediaPassive } }
+    var statusMediaRead : UIColor { get { return statusMediaActive } }
+    var statusMediaError : UIColor { get { return statusMediaDanger } }
+    
+    var mediaBgOut: UIColor { get { return UIColor.whiteColor() } }
+    var mediaBgOutBorder: UIColor { get { return UIColor.RGB(0xCCCCCC) } }
+    var mediaBgIn: UIColor { get { return mediaBgOut } }
+    var mediaBgInBorder: UIColor { get { return mediaBgOutBorder } }
+    var mediaDateBg: UIColor { get { return UIColor.RGB(0x2D394A, alpha: 0.54) } }
+    var mediaDate: UIColor { get { return UIColor.whiteColor() } }
+    
+    // Service-based bubble colors
+    var serviceBg: UIColor { get { return UIColor.RGB(0x2D394A, alpha: 0.56) } }
 }
 
 class AppList {
@@ -282,6 +344,14 @@ class AppNavigationBar {
             UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: true)
         } else {
             UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: true)
+        }
+    }
+    
+    func applyStatusBarFast() {
+        if (statusBarLightContent) {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
+        } else {
+            UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: false)
         }
     }
 }

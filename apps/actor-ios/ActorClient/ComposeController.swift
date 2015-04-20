@@ -19,7 +19,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     override init() {
         super.init(nibName: "ComposeController", bundle: nil)
         
-        self.navigationItem.title = "New Message";
+        self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
         self.extendedLayoutIncludesOpaqueBars = true
     }
 

@@ -19,13 +19,14 @@ class AAConversationController: EngineSlackListController {
     private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
     private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
     private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
-    private let BubbleUnsupportedIdentifier = "BubbleUnsupportedIdentifier"
     
     private let titleView: UILabel = UILabel();
     private let subtitleView: UILabel = UILabel();
     private let navigationView: UIView = UIView();
     
     private let avatarView = BarAvatarView(frameSize: 36, type: AAAvatarType.Rounded)
+    
+    private let backgroundView: UIView = UIView()
     
     // MARK: -
     // MARK: Public vars
@@ -83,16 +84,27 @@ class AAConversationController: EngineSlackListController {
         
         self.navigationItem.titleView = navigationView;
         
+        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+        tableView.addGestureRecognizer(longPressGesture)
+        
+        var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
+        tableView.addGestureRecognizer(tapGesture)
+        
         // Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
-        var tapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
-        tapGesture.numberOfTapsRequired = 1
-        tapGesture.numberOfTouchesRequired = 1
-        avatarView.addGestureRecognizer(tapGesture)
+        var avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
+        avatarTapGesture.numberOfTapsRequired = 1
+        avatarTapGesture.numberOfTouchesRequired = 1
+        avatarView.addGestureRecognizer(avatarTapGesture)
         
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
+        
+        backgroundView.clipsToBounds = true
+        backgroundView.backgroundColor = UIColor(
+            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(UIColor.RGB(0xe7e0c4)))
+        view.insertSubview(backgroundView, atIndex: 0)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -105,10 +117,6 @@ class AAConversationController: EngineSlackListController {
         super.viewWillAppear(animated)
         
         textView.text = MSG.loadDraft(peer)
-        
-        var image = UIImage(named: "ChatBackground")!
-        var chatBackground = UIImageView(image: image)
-        view.insertSubview(chatBackground, atIndex: 0)
         
         // Installing bindings
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
@@ -179,6 +187,11 @@ class AAConversationController: EngineSlackListController {
         MSG.onConversationOpen(peer)
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        backgroundView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
@@ -200,15 +213,84 @@ class AAConversationController: EngineSlackListController {
         }
     }
     
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated);
+        MSG.saveDraft(peer, withText: textView.text);
+    }
+    
     // MARK: -
     // MARK: Methods
+    
+    func longPress(gesture: AALongPressGestureRecognizer) {
+        if gesture.state == UIGestureRecognizerState.Began {
+            let point = gesture.locationInView(tableView)
+            let indexPath = tableView.indexPathForRowAtPoint(point)
+            if indexPath != nil {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
+                    if cell.bubble.superview != nil {
+                        var bubbleFrame = cell.bubble.frame
+                        bubbleFrame = tableView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
+                        if CGRectContainsPoint(bubbleFrame, point) {
+                            cell.becomeFirstResponder()
+                            var menuController = UIMenuController.sharedMenuController()
+                            menuController.setTargetRect(bubbleFrame, inView:tableView)
+                            menuController.setMenuVisible(true, animated: true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func tap(gesture: UITapGestureRecognizer) {
+        if gesture.state == UIGestureRecognizerState.Ended {
+            let point = gesture.locationInView(tableView)
+            let indexPath = tableView.indexPathForRowAtPoint(point)
+            if indexPath != nil {
+                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
+                    if cell.avatarView.superview != nil {
+                        var avatarFrame = cell.avatarView.frame
+                        avatarFrame = tableView.convertRect(avatarFrame, fromView: cell.bubble.superview)
+                        if CGRectContainsPoint(avatarFrame, point) {
+                            var item = objectAtIndexPath(indexPath!) as! AMMessage;
+                            navigateToUserWithId(Int(item.getSenderId()))
+                            return
+                        }
+                    }
+                    
+                    var item = objectAtIndexPath(indexPath!) as! AMMessage
+                    if let content = item.getContent() as? AMPhotoContent {
+                        if let fileSource = content.getSource() as? AMFileRemoteSource {
+                            if let photoCell = cell as? AABubbleMediaCell {
+                                let frame = photoCell.preview.frame
+                                
+                                MSG.requestStateWithLong(fileSource.getFileReference().getFileId(),
+                                    withAMFileCallback: CocoaDownloadCallback(
+                                        notDownloaded: { () -> () in
+                                        MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
+                                    }, onDownloading: { (progress) -> () in
+                                        MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
+                                    }, onDownloaded: { (reference) -> () in
+                                        var imageInfo = JTSImageInfo()
+                                        imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
+                                        imageInfo.referenceRect = frame
+                                        imageInfo.referenceView = photoCell
+                                        
+                                        var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                                        previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+                                    }))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            let userInfoController = AAUserInfoController(uid: id)
-            userInfoController.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(userInfoController, animated: true)
+            navigateToUserWithId(id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = AAConversationGroupInfoController(gid: id)
             groupInfoController.hidesBottomBarWhenPushed = true
@@ -248,47 +330,64 @@ class AAConversationController: EngineSlackListController {
         
         var message = (item as! AMMessage);
         
+        // TODO: Add Docs and Video
         if (message.getContent() is AMTextContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! BubbleTextCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = BubbleTextCell(reuseId: BubbleTextIdentifier)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
-        } else if (message.getContent() is AMPhotoContent || message.getContent() is AMVideoContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! BubbleMediaCell?
+        } else if (message.getContent() is AMPhotoContent) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! AABubbleMediaCell?
             if (cell == nil) {
-                cell = BubbleMediaCell(reuseId: BubbleMediaIdentifier)
+                cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier, peer: peer)
             }
             return cell!
             
         } else if (message.getContent() is AMServiceContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! BubbleServiceCell?
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! AABubbleServiceCell?
             if (cell == nil) {
-                cell = BubbleServiceCell(reuseId: BubbleServiceIdentifier)
-            }
-            return cell!
-        } else if (message.getContent() is AMDocumentContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
-            if cell == nil {
-                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier)
+                cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier, peer: peer)
             }
             return cell!
         } else {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleUnsupportedIdentifier) as! AABubbleUnsupportedCell?
+            // Use Text bubble for unsupported
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleUnsupportedCell(reuseId: BubbleUnsupportedIdentifier)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
         }
     }
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        (cell as! BubbleCell).performBind(item as! AMMessage);
+        var message = item as! AMMessage
+        var bubbleCell = (cell as! AABubbleCell)
+        
+        var preferCompact = false
+        if (indexPath.row > 0) {
+            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
+            preferCompact = useCompact(message, next: next)
+        }
+
+        bubbleCell.performBind(message, isPreferCompact: preferCompact)
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated);
-        MSG.saveDraft(peer, withText: textView.text);
+    func useCompact(source: AMMessage, next: AMMessage) -> Bool {
+        if (source.getContent() is AMServiceContent) {
+            if (next.getContent() is AMServiceContent) {
+                return true
+            }
+        } else {
+            if (next.getContent() is AMServiceContent) {
+                return false
+            }
+            if (source.getSenderId() == next.getSenderId()) {
+                return true
+            }
+        }
+        
+        return false
     }
     
     override func getDisplayList() -> AMBindedDisplayList {
@@ -307,8 +406,25 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var item = objectAtIndexPath(indexPath) as! AMMessage;
-        return BubbleCell.measureHeight(item);
+        var message = objectAtIndexPath(indexPath) as! AMMessage;
+        
+        var preferCompact = false
+        if (indexPath.row > 0) {
+            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
+            preferCompact = useCompact(message, next: next)
+        }
+        
+        let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
+        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact);
+    }
+    
+    // MARK: -
+    // MARK: Navigation
+    
+    private func navigateToUserWithId(id: Int) {
+        let userInfoController = AAUserInfoController(uid: id)
+        userInfoController.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(userInfoController, animated: true)
     }
     
 }
@@ -356,18 +472,15 @@ extension AAConversationController: UIImagePickerControllerDelegate {
 // MARK: UINavigationController Delegate
 
 extension AAConversationController: UINavigationControllerDelegate {
-    
     func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        
+        MainAppTheme.navigation.applyStatusBarFast()
     }
-    
 }
 
 // MARK: -
 // MARK: ABActionShit Delegate
 
 extension AAConversationController: ABActionShitDelegate {
-    
     func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
         if (buttonIndex == 0 || buttonIndex == 1) {
             var pickerController = UIImagePickerController()
@@ -381,7 +494,6 @@ extension AAConversationController: ABActionShitDelegate {
             self.presentViewController(pickerController, animated: true, completion: nil)
         }
     }
-    
 }
 
 // MARK: -

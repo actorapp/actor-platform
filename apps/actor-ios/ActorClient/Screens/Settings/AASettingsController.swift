@@ -125,7 +125,7 @@ class AASettingsController: AATableViewController {
     // MARK: -
     // MARK: Methods
     
-    private func askSetPhoto() {
+    private func askSetPhoto(pressedView: UIView) {
         var actionSheet = UIActionSheet(title: nil, delegate: self,
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
@@ -287,7 +287,7 @@ class AASettingsController: AATableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if indexPath.section == 1 && indexPath.row == 0 {
-            askSetPhoto()
+            askSetPhoto(tableView.cellForRowAtIndexPath(indexPath)!)
         } else if indexPath.section == 3 && indexPath.row == 0 {
 //            navigateToNotificationsSettings()
 //        } else if indexPath.section == 1 && indexPath.row == 1 {

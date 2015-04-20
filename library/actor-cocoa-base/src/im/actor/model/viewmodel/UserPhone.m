@@ -23,33 +23,33 @@ J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 @implementation AMUserPhone
 
 
-#line 10
+#line 17
 - (instancetype)initWithLong:(jlong)phone
                 withNSString:(NSString *)title {
   if (self = [super init]) {
     
-#line 11
+#line 18
     self->phone_ = phone;
     
-#line 12
+#line 19
     self->title_ = title;
   }
   return self;
 }
 
 
-#line 15
+#line 27
 - (jlong)getPhone {
   
-#line 16
+#line 28
   return phone_;
 }
 
 
-#line 19
+#line 36
 - (NSString *)getTitle {
   
-#line 20
+#line 37
   return title_;
 }
 
@@ -57,19 +57,19 @@ J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 28
+#line 45
   AMUserPhone *userPhone = (AMUserPhone *) check_class_cast(o, [AMUserPhone class]);
   
-#line 30
+#line 47
   if (phone_ != ((AMUserPhone *) nil_chk(userPhone))->phone_) return NO;
   
-#line 32
+#line 49
   return YES;
 }
 
 - (NSUInteger)hash {
   
-#line 37
+#line 54
   return (jint) (phone_ ^ (URShift64(phone_, 32)));
 }
 

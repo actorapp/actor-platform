@@ -12,7 +12,7 @@
 
 @protocol AMMainThreadProvider < NSObject, JavaObject >
 
-- (void)runOnUiThread:(id<JavaLangRunnable>)runnable;
+- (void)postToMainThread:(id<JavaLangRunnable>)runnable;
 
 - (jboolean)isMainThread;
 

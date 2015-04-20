@@ -79,6 +79,22 @@
 "GroupLeave" = "Покинуть группу";
 
 /*
+ * Compose
+ */
+
+"ComposeTitle" = "Новое сообщение";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Приватность и безопасность";
+
+"PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
+
+/*
  * Chat
  */
 
@@ -122,13 +138,23 @@
 
 "AuthPhoneNumberHint" = "Ваш номер телефона";
 
-"AuthPhoneHint" = "Пожалуйста, подтвердите Вашу страну и введите свой номер телефона.";
+"AuthPhoneHint" = "Пожалуйста, укажите Вашу страну и номер телефона.";
 
 "AuthPhoneTooShort" = "Номер телефона слишком короткий";
 
 "AuthCodeFieldHint" = "Код активации";
 
-"AuthCodeHint" = "Мы отправили Вам СМС с кодом активации.";
+"AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
+
+"AuthProfileTitle" = "Ваш профиль";
+
+"AuthProfileAddPhoto1" = "добавить";
+
+"AuthProfileAddPhoto2" = "фото";
+
+"AuthProfileNameHint" = "Ваше имя";
+
+"AuthProfileHint" = "Введите свое имя и фото";
 
 /*
  * Common Elements
@@ -157,3 +183,15 @@
 "AlertNext" = "Далее";
 
 "AlertSave" = "Сохранить";
+
+"AlertOk" = "OK";
+
+"UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Неправильный номер телефона. Пожалуйста, повторите попытку.";
+
+"ErrorCodeExpired" = "Код устарел. Пожалуйста, начните авторизацию с начала.";

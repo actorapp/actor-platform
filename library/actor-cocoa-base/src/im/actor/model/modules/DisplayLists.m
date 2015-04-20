@@ -195,21 +195,42 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 }
 
 
-#line 139
-- (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList {
+#line 138
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer {
   
-#line 140
+#line 139
   AMMVVMEngine_checkMainThread();
   
-#line 142
+#line 141
+  id<DKListEngine> mediaEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getMediaEngineWithAMPeer:peer];
+  if (!([DKListEngineDisplayExt_class_() isInstance:mediaEngine])) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Media ListEngine must implement ListEngineDisplayExt for using global list"];
+  }
+  
+#line 146
+  AMBindedDisplayList *mediaList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
+#line 147
+  NO withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
+  [mediaList initTopWithBoolean:NO];
+  return mediaList;
+}
+
+
+#line 152
+- (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList {
+  
+#line 153
+  AMMVVMEngine_checkMainThread();
+  
+#line 155
   id<DKListEngine> contactsEngine = [((ImActorModelModulesSearchModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSearch])) getSearchList];
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Search ListEngine must implement ListEngineDisplayExt for using global list"];
   }
   
-#line 147
+#line 160
   AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
-#line 148
+#line 161
   isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
   [contactList initEmpty];
   return contactList;

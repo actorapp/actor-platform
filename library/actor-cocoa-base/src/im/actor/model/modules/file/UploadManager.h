@@ -13,7 +13,7 @@
 @class ImActorModelModulesModules;
 @class JavaUtilArrayList;
 @protocol AMFileSystemReference;
-@protocol AMUploadCallback;
+@protocol AMUploadFileCallback;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -35,13 +35,13 @@
 - (void)stopUploadWithLong:(jlong)rid;
 
 - (void)bindUploadWithLong:(jlong)rid
-      withAMUploadCallback:(id<AMUploadCallback>)callback;
+  withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (void)unbindUploadWithLong:(jlong)rid
-        withAMUploadCallback:(id<AMUploadCallback>)callback;
+    withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (void)requestStateWithLong:(jlong)rid
-        withAMUploadCallback:(id<AMUploadCallback>)callback;
+    withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (void)resumeUploadWithLong:(jlong)rid;
 
@@ -110,11 +110,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_StartUpload)
 }
 
 - (instancetype)initWithLong:(jlong)rid
-        withAMUploadCallback:(id<AMUploadCallback>)callback;
+    withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (jlong)getRid;
 
-- (id<AMUploadCallback>)getCallback;
+- (id<AMUploadFileCallback>)getCallback;
 
 @end
 
@@ -129,11 +129,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_BindUpload)
 }
 
 - (instancetype)initWithLong:(jlong)rid
-        withAMUploadCallback:(id<AMUploadCallback>)callback;
+    withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (jlong)getRid;
 
-- (id<AMUploadCallback>)getCallback;
+- (id<AMUploadFileCallback>)getCallback;
 
 @end
 
@@ -256,11 +256,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_UploadError)
 }
 
 - (instancetype)initWithLong:(jlong)rid
-        withAMUploadCallback:(id<AMUploadCallback>)callback;
+    withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (jlong)getRid;
 
-- (id<AMUploadCallback>)getCallback;
+- (id<AMUploadFileCallback>)getCallback;
 
 @end
 
@@ -308,7 +308,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_ResumeUpload)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -324,7 +324,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$1)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -340,7 +340,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$2)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -356,8 +356,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$3)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0
-                               withFloat:(jfloat)capture$1;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0
+                                   withFloat:(jfloat)capture$1;
 
 @end
 
@@ -373,7 +373,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$4)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -389,7 +389,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$5)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -405,8 +405,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$6)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0
-                               withFloat:(jfloat)capture$1;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0
+                                   withFloat:(jfloat)capture$1;
 
 @end
 
@@ -422,7 +422,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$7)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -438,7 +438,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$8)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -454,7 +454,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$9)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
@@ -470,8 +470,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$10)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0
-                               withFloat:(jfloat)capture$1;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0
+                                   withFloat:(jfloat)capture$1;
 
 @end
 
@@ -487,7 +487,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$11)
 
 - (void)run;
 
-- (instancetype)initWithAMUploadCallback:(id<AMUploadCallback>)capture$0;
+- (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0;
 
 @end
 
