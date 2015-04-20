@@ -15,8 +15,11 @@ import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignOut, RequestSignU
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.sequence.{ WeakUpdate, SeqUpdate }
+import im.actor.api.rpc.peers.UserOutPeer
+import im.actor.api.rpc.sequence.{ RequestSubscribeToOnline, WeakUpdate, SeqUpdate }
+import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientData }
+import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.presences.PresenceManager
 import im.actor.server.{ persist, SqlSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
@@ -36,6 +39,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
   it should "handle user authorization" in sessions().e4
   it should "subscribe to sequence updates" in sessions().e5
   it should "subscribe to weak updates" in sessions().e6
+  it should "subscribe to presences" in sessions().e7
 
   implicit val materializer = ActorFlowMaterializer()
   implicit val (ds, db) = migrateAndInitDb()
@@ -50,7 +54,10 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       Session.props(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)))
 
   val authService = new AuthServiceImpl(sessionRegion)
+  val sequenceService = new SequenceServiceImpl(seqUpdManagerRegion, presenceManagerRegion, sessionRegion)
+
   rpcApiService ! RpcApiService.AttachService(authService)
+  rpcApiService ! RpcApiService.AttachService(sequenceService)
 
   case class sessions() {
 
@@ -237,6 +244,68 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(weakUpdManagerRegion, clientData.userId, update)), 1.second)
 
       expectWeakUpdate(authId, sessionId).update should === (update.toByteArray)
+    }
+
+    def e7() = {
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val firstMessageId = Random.nextLong()
+      val phoneNumber = 75550000000L
+
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
+
+      expectNewSession(authId, sessionId, firstMessageId)
+      expectMessageAck(authId, sessionId, firstMessageId)
+
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+
+      {
+        val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
+          phoneNumber = phoneNumber,
+          smsHash = smsHash,
+          smsCode = "0000",
+          name = "Wayne Brain",
+          publicKey = Array(3, 2, 3),
+          deviceHash = Array(5, 5, 6),
+          deviceTitle = "Specs virtual device",
+          appId = 1,
+          appKey = "appKey",
+          isSilent = false
+        ))).require
+
+        val messageId = Random.nextLong()
+        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedSignUpRequest))
+
+        expectMessageAck(authId, sessionId, messageId)
+
+        val authResult = expectRpcResult()
+        authResult should matchPattern {
+          case RpcOk(ResponseAuth(_, _, _)) =>
+        }
+      }
+
+      {
+        val userForSubscribe = 2
+
+        // FIXME: real user and real accessHash
+        val encodedSubscribeRequest = RequestCodec.encode(Request(RequestSubscribeToOnline(Vector(UserOutPeer(userForSubscribe, 0L))))).require
+
+        val messageId = Random.nextLong()
+        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedSubscribeRequest))
+
+        expectMessageAck(authId, sessionId, messageId)
+
+        val subscribeResult = expectRpcResult()
+        subscribeResult should matchPattern {
+          case RpcOk(ResponseVoid) =>
+        }
+      }
+
+      val ub = expectWeakUpdate(authId, sessionId)
+
+      ub.updateHeader should ===(UpdateUserOffline.header)
     }
 
     private def createAuthId(): Long = {

@@ -25,7 +25,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
   val rpcApiService = buildRpcApiService()
   val sessionRegion = buildSessionRegion(rpcApiService, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
 
-  implicit val service = new sequence.SequenceServiceImpl(seqUpdManagerRegion, sessionRegion)
+  implicit val service = new sequence.SequenceServiceImpl(seqUpdManagerRegion, presenceManagerRegion, sessionRegion)
   implicit val msgService = new messaging.MessagingServiceImpl(seqUpdManagerRegion)
   implicit val authService = buildAuthService(sessionRegion)
   implicit val ec = system.dispatcher

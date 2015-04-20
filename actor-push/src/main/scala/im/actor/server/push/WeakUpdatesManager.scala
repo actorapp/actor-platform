@@ -73,6 +73,8 @@ class WeakUpdatesManager extends Actor with ActorLogging {
 
   import WeakUpdatesManager._
 
+  // TODO: set receive timeout
+
   def receive = working(Set.empty)
 
   def working(consumers: Set[ActorRef]): Receive = {
