@@ -93,4 +93,10 @@ object HistoryMessage {
       .filter(m => m.date > lastReadAt && m.senderUserId =!= userId)
       .length
       .result
+
+  def delete(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
+    notDeletedMessages
+      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .map(_.deletedAt)
+      .update(Some(new DateTime))
 }
