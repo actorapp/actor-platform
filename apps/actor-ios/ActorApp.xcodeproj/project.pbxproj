@@ -733,7 +733,6 @@
 		06D8D8C21AB4390600A80E40 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8C11AB4390600A80E40 /* Conversions.swift */; };
 		06D8D8C41AB43BA100A80E40 /* CocoaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */; };
 		06E281DE1AAEDDB00070EE18 /* DialogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */; };
-		06E281DF1AAEDDB00070EE18 /* DialogsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06E281DD1AAEDDB00070EE18 /* DialogsViewController.xib */; };
 		06E484291AB78D7400AA272F /* SThreadPoolTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484241AB78D7300AA272F /* SThreadPoolTask.m */; };
 		06E4842A1AB78D7400AA272F /* SThreadPoolQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484251AB78D7300AA272F /* SThreadPoolQueue.m */; };
 		06E4842B1AB78D7400AA272F /* SThreadPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484281AB78D7400AA272F /* SThreadPool.m */; };
@@ -2134,7 +2133,6 @@
 		06D8D8C11AB4390600A80E40 /* Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
 		06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaStorage.swift; sourceTree = "<group>"; };
 		06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogsViewController.swift; sourceTree = "<group>"; };
-		06E281DD1AAEDDB00070EE18 /* DialogsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DialogsViewController.xib; sourceTree = "<group>"; };
 		06E484231AB78D7300AA272F /* SThreadPoolTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SThreadPoolTask.h; sourceTree = "<group>"; };
 		06E484241AB78D7300AA272F /* SThreadPoolTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPoolTask.m; sourceTree = "<group>"; };
 		06E484251AB78D7300AA272F /* SThreadPoolQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPoolQueue.m; sourceTree = "<group>"; };
@@ -4301,7 +4299,6 @@
 			isa = PBXGroup;
 			children = (
 				06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */,
-				06E281DD1AAEDDB00070EE18 /* DialogsViewController.xib */,
 				06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */,
 				06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */,
 				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
@@ -4628,7 +4625,6 @@
 				06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */,
 				06BFDB561AB1D14900F16E43 /* Roboto-Medium.ttf in Resources */,
 				06BFDB571AB1D14900F16E43 /* Roboto-Regular.ttf in Resources */,
-				06E281DF1AAEDDB00070EE18 /* DialogsViewController.xib in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
 				06ABC77F1AAF458B00C1B932 /* ContactsViewController.xib in Resources */,
 				06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */,
