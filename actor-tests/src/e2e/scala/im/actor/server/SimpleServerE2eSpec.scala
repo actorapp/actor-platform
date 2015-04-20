@@ -20,7 +20,7 @@ import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.{ MTPackage, ProtoPackage, TransportPackage }
+import im.actor.server.mtproto.transport.{ Ack, MTPackage, ProtoPackage, TransportPackage }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
@@ -87,6 +87,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
 
       client.send(ProtoPackage(mtPackage))
 
+      expectAck()
       expectNewSession(sessionId, messageId)
       expectMessageAck(messageId)
 
@@ -116,6 +117,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
 
       client.send(ProtoPackage(mtPackage))
 
+      expectAck()
       expectMessageAck(messageId)
 
       val result = receiveRpcResult(messageId)
@@ -131,6 +133,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
 
       client.send(ProtoPackage(mtPackage))
 
+      expectAck()
       expectMessageAck(messageId)
 
       val result = receiveRpcResult(messageId)
@@ -138,6 +141,26 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
     }
 
     client.close()
+  }
+
+  // TODO: DRY
+  private def expectAck(index: Int)(implicit client: MTProtoClient): Ack = {
+    client.receiveTransportPackage() match {
+      case Some(TransportPackage(_, ack @ Ack(i))) =>
+        i should ===(index)
+        ack
+      case None => throw new Exception("Transport package with ack not received")
+      case x => throw new Exception(s"Expected ack but ${x} received")
+    }
+  }
+
+  private def expectAck()(implicit client: MTProtoClient): Ack = {
+    client.receiveTransportPackage() match {
+      case Some(TransportPackage(_, ack @ Ack(_))) =>
+        ack
+      case None => throw new Exception("Transport package with ack not received")
+      case x => throw new Exception(s"Expected ack but ${x} received")
+    }
   }
 
   private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {

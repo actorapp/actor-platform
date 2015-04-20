@@ -20,6 +20,7 @@
       <sourceFolder url="file://$MODULE_DIR$/../../actor-tests/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-tests/target/resource_managed/it" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-tests/target/resource_managed/test" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../actor-tests/src/e2e/scala" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../actor-tests/target/e2e-classes" />
       <excludeFolder url="file://$MODULE_DIR$/../../actor-tests/target/resolution-cache" />
       <excludeFolder url="file://$MODULE_DIR$/../../actor-tests/target/streams" />
