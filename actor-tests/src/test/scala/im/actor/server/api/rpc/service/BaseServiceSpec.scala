@@ -23,6 +23,7 @@ trait BaseServiceSuite
 
   override def afterAll(): Unit = {
     super.afterAll()
+    db.ioExecutionContext
     db.close()
     ds.close()
   }
