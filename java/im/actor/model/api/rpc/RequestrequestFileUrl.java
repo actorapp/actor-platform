@@ -17,44 +17,44 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class ResponseGetPublicKeys extends Response {
+public class RequestrequestFileUrl extends Request<ResponserequestFileUrl> {
 
-    public static final int HEADER = 0x18;
-    public static ResponseGetPublicKeys fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseGetPublicKeys(), data);
+    public static final int HEADER = 0x4d;
+    public static RequestrequestFileUrl fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestrequestFileUrl(), data);
     }
 
-    private List<PublicKey> keys;
+    private FileLocation file;
 
-    public ResponseGetPublicKeys(List<PublicKey> keys) {
-        this.keys = keys;
+    public RequestrequestFileUrl(FileLocation file) {
+        this.file = file;
     }
 
-    public ResponseGetPublicKeys() {
+    public RequestrequestFileUrl() {
 
     }
 
-    public List<PublicKey> getKeys() {
-        return this.keys;
+    public FileLocation getFile() {
+        return this.file;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<PublicKey> _keys = new ArrayList<PublicKey>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _keys.add(new PublicKey());
-        }
-        this.keys = values.getRepeatedObj(1, _keys);
+        this.file = values.getObj(1, new FileLocation());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(1, this.keys);
+        if (this.file == null) {
+            throw new IOException();
+        }
+        writer.writeObject(1, this.file);
     }
 
     @Override
     public String toString() {
-        String res = "tuple GetPublicKeys{";
+        String res = "rpc requestFileUrl{";
+        res += "file=" + this.file;
         res += "}";
         return res;
     }

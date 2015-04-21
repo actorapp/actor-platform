@@ -16,29 +16,51 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class EncryptedContentV1Unsupported extends EncryptedContentV1 {
+public class Parameter extends BserObject {
 
-    private int key;
-    private byte[] content;
+    private String key;
+    private String value;
 
-    public EncryptedContentV1Unsupported(int key, byte[] content) {
+    public Parameter(String key, String value) {
         this.key = key;
-        this.content = content;
+        this.value = value;
     }
 
-    @Override
-    public int getHeader() {
+    public Parameter() {
+
+    }
+
+    public String getKey() {
         return this.key;
+    }
+
+    public String getValue() {
+        return this.value;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        throw new IOException("Parsing is unsupported");
+        this.key = values.getString(1);
+        this.value = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRaw(content);
+        if (this.key == null) {
+            throw new IOException();
+        }
+        writer.writeString(1, this.key);
+        if (this.value == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.value);
+    }
+
+    @Override
+    public String toString() {
+        String res = "struct Parameter{";
+        res += "}";
+        return res;
     }
 
 }

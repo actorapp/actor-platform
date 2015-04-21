@@ -179,9 +179,6 @@
       <node concept="1Dx9M1" id="2uPas5ecRWG" role="1Dx9rD">
         <property role="1Dx9K7" value="authorization process from begining.&lt;br/&gt;" />
       </node>
-      <node concept="1Dx9M1" id="2uPas5ecRWR" role="1Dx9rD">
-        <property role="1Dx9K7" value="Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.&lt;br/&gt;" />
-      </node>
       <node concept="2m6fVq" id="GBscvBB6EE" role="2m5mJr">
         <property role="TrG5h" value="SendAuthCode" />
         <node concept="2uC4CA" id="3zc4oYArGMn" role="2uC9gA">
@@ -373,11 +370,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBB6QQ" role="2m5mJr">
         <property role="TrG5h" value="SignIn" />
-        <node concept="2uC4CA" id="3zc4oYArRGS" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="INVALID_KEY" />
-          <property role="2uCiSL" value="Invalid public key" />
-        </node>
         <node concept="2uC4CA" id="3zc4oYArRGU" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="PHONE_NUMBER_UNOCCUPIED" />
@@ -401,7 +393,7 @@
         <node concept="2uC4CA" id="3zc4oYArRHc" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
-          <property role="2uCiSL" value="Phine number invalid" />
+          <property role="2uCiSL" value="Phone number invalid" />
         </node>
         <node concept="2m7Kf5" id="GBscvBB6Ro" role="2m0hLx">
           <property role="2m7DUN" value="1" />
@@ -417,11 +409,6 @@
           <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="smsCode" />
           <node concept="2m5ndX" id="GBscvBB6RK" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6RN" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="publicKey" />
-          <node concept="2m61tm" id="GBscvBB6RX" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="GBscvBB6S0" role="2m0hLx">
           <property role="2m7DUN" value="5" />
@@ -467,11 +454,6 @@
           <property role="1GSvIU" value="danger" />
           <ref role="NX6Kv" node="GBscvBB6RC" resolve="smsCode" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6foBE" role="1GBnQ6">
-          <property role="NX6R2" value="Device RSA 2048 bit public key in x.509 format" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBB6RN" resolve="publicKey" />
-        </node>
         <node concept="NX1gA" id="2EAJ7H6foBF" role="1GBnQ6">
           <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
           <property role="1GSvIU" value="full" />
@@ -493,11 +475,6 @@
       </node>
       <node concept="2m6fVq" id="GBscvBB77K" role="2m5mJr">
         <property role="TrG5h" value="SignUp" />
-        <node concept="2uC4CA" id="3zc4oYArSmI" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="INVALID_KEY" />
-          <property role="2uCiSL" value="Invalid public key" />
-        </node>
         <node concept="2uC4CA" id="3zc4oYArSmK" role="2uC9gA">
           <property role="2uC4DK" value="400" />
           <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
@@ -537,11 +514,6 @@
           <property role="2m7DUN" value="4" />
           <property role="TrG5h" value="name" />
           <node concept="2m5ndX" id="GBscvBB79i" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB79l" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="publicKey" />
-          <node concept="2m61tm" id="GBscvBB79x" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="GBscvBB79$" role="2m0hLx">
           <property role="2m7DUN" value="7" />
@@ -599,11 +571,6 @@
           <property role="NX6R2" value="User name" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBB798" resolve="name" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBq" role="1GBnQ6">
-          <property role="NX6R2" value="Device RSA 2048 bit public key in x.509 format" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBB79l" resolve="publicKey" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foBr" role="1GBnQ6">
           <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
@@ -2194,35 +2161,6 @@
           <property role="Nu42W" value="05" />
         </node>
       </node>
-      <node concept="NpBTk" id="1ydqyopT0HN" role="2m5mJr">
-        <property role="TrG5h" value="EmailContactRegistered" />
-        <node concept="2m7Kf5" id="1ydqyopT2ab" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="emailId" />
-          <node concept="2m5ndE" id="1ydqyopT2af" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1ydqyopT2ai" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="1ydqyopT2ao" role="2m7DVh" />
-        </node>
-        <node concept="NXeRC" id="1ydqyopT1dM" role="NXp_2">
-          <property role="NXePf" value="Update about email contact registered" />
-        </node>
-        <node concept="NX1gA" id="1ydqyopT2CC" role="NXp_2">
-          <property role="NX6R2" value="Email id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="1ydqyopT2ab" resolve="emailId" />
-        </node>
-        <node concept="NX1gA" id="1ydqyopT2CK" role="NXp_2">
-          <property role="NX6R2" value="Registered user's id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="1ydqyopT2ai" resolve="uid" />
-        </node>
-        <node concept="Nu42z" id="1ydqyopT0HO" role="NuuwV">
-          <property role="Nu42W" value="78" />
-        </node>
-      </node>
       <node concept="NpBTk" id="GBscvBBhb5" role="2m5mJr">
         <property role="TrG5h" value="ContactsAdded" />
         <node concept="NXeRC" id="EUEXKTm9Vc" role="NXp_2">
@@ -2845,55 +2783,6 @@
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBoyd" role="2m5mJr" />
-      <node concept="2m5naR" id="GBscvBBoB_" role="2m5mJr">
-        <property role="TrG5h" value="WrongKeysErrorData" />
-        <node concept="NXeRC" id="EUEXKTmEmx" role="NXodf">
-          <property role="NXePf" value="Error's Related data for WRRONG_KEYS in sendMessage" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmEJ8" role="NXodf">
-          <property role="NX6R2" value="added keys to user" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBoOb" resolve="newKeys" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmGxp" role="NXodf">
-          <property role="NX6R2" value="disabled keys" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBoOo" resolve="removedKeys" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmGxz" role="NXodf">
-          <property role="NX6R2" value="invalid keys" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBoOC" resolve="invalidKeys" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBoOb" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="newKeys" />
-          <node concept="2m5nlk" id="GBscvBBoOf" role="2m7DVh">
-            <node concept="2m5mGg" id="GBscvBBoOl" role="3GJlyp">
-              <ref role="2m5mJy" node="GBscvBB6a9" resolve="UserKey" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBoOo" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="removedKeys" />
-          <node concept="2m5nlk" id="GBscvBBoOv" role="2m7DVh">
-            <node concept="2m5mGg" id="GBscvBBoO_" role="3GJlyp">
-              <ref role="2m5mJy" node="GBscvBB6a9" resolve="UserKey" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBoOC" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="invalidKeys" />
-          <node concept="2m5nlk" id="GBscvBBoOM" role="2m7DVh">
-            <node concept="2m5mGg" id="GBscvBBoOS" role="3GJlyp">
-              <ref role="2m5mJy" node="GBscvBB6a9" resolve="UserKey" />
-            </node>
-          </node>
-        </node>
-      </node>
-      <node concept="NvyAe" id="GBscvBBpqg" role="2m5mJr" />
       <node concept="2m5naR" id="GBscvBBpX4" role="2m5mJr">
         <property role="TrG5h" value="EncryptedAesKey" />
         <node concept="NXeRC" id="EUEXKTmEIX" role="NXodf">
@@ -3207,9 +3096,6 @@
         <node concept="Nu42z" id="GBscvBBrkz" role="NuuwV">
           <property role="Nu42W" value="62" />
         </node>
-        <node concept="2m1Rp1" id="GBscvBBroK" role="2m6efq">
-          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
-        </node>
         <node concept="NXeRC" id="2EAJ7H6foAk" role="1GBnQ6">
           <property role="NXePf" value="Deleting messages" />
         </node>
@@ -3222,6 +3108,9 @@
           <property role="NX6R2" value="Message random id" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBroB" resolve="rids" />
+        </node>
+        <node concept="2m1Rp1" id="3MpuFr6x89N" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBrBX" role="2m5mJr">
@@ -3270,78 +3159,6 @@
           <property role="NX6R2" value="Conversation peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBrZI" resolve="peer" />
-        </node>
-      </node>
-      <node concept="NvyAe" id="GBscvBBkAs" role="2m5mJr" />
-      <node concept="NvWBy" id="GBscvBBkkC" role="2m5mJr">
-        <property role="NvWrd" value="Logic" />
-      </node>
-      <node concept="NpBTk" id="GBscvBBjZp" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedMessage" />
-        <node concept="NXeRC" id="EUEXKTmEJ2" role="NXp_2">
-          <property role="NXePf" value="Update about encrypted message" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmIqX" role="NXp_2">
-          <property role="NX6R2" value="Destination peer" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjZu" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmINz" role="NXp_2">
-          <property role="NX6R2" value="sender of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjZ_" resolve="senderUid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmJcc" role="NXp_2">
-          <property role="NX6R2" value="date of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjZI" resolve="date" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmJco" role="NXp_2">
-          <property role="NX6R2" value="device's public key hash" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjZT" resolve="keyHash" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmJXC" role="NXp_2">
-          <property role="NX6R2" value="Encrypted key for current device" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBk06" resolve="aesEncryptedKey" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjZu" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="GBscvBBjZy" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjZ_" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="senderUid" />
-          <node concept="2m5ndE" id="GBscvBBjZF" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjZI" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="date" />
-          <node concept="wb0Ql" id="2vxDjotnPP1" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjZT" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBBk03" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBk06" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="aesEncryptedKey" />
-          <node concept="2m61tm" id="GBscvBBk0i" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBk0l" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="message" />
-          <node concept="2m61tm" id="GBscvBBk0z" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBBjZq" role="NuuwV">
-          <property role="Nu42W" value="01" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBk8i" role="2m5mJr">
@@ -3455,135 +3272,6 @@
         <node concept="Nu42z" id="GBscvBBm98" role="NuuwV">
           <property role="Nu42W" value="04" />
         </node>
-      </node>
-      <node concept="NvWBy" id="GBscvBBmlS" role="2m5mJr">
-        <property role="NvWrd" value="Encrypted" />
-      </node>
-      <node concept="NpBTk" id="GBscvBBmpk" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedReceived" />
-        <node concept="NXeRC" id="4zDDY4ER4jx" role="NXp_2">
-          <property role="NXePf" value="Update about encrypted message received" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER4jB" role="NXp_2">
-          <property role="NX6R2" value="Destination peer" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmr5" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER4jJ" role="NXp_2">
-          <property role="NX6R2" value="Rid of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmrc" resolve="rid" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER4jT" role="NXp_2">
-          <property role="NX6R2" value="Date of receive" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmCz" resolve="receivedDate" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmr5" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="GBscvBBmr9" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmrc" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="rid" />
-          <node concept="wb0Ql" id="2vxDjoto63C" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmCz" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="receivedDate" />
-          <node concept="wb0Ql" id="2vxDjotnR67" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="GBscvBBmpl" role="NuuwV">
-          <property role="Nu42W" value="12" />
-        </node>
-      </node>
-      <node concept="NpBTk" id="GBscvBBmt9" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedRead" />
-        <node concept="NXeRC" id="4zDDY4ER4Nn" role="NXp_2">
-          <property role="NXePf" value="Update about encrypted message read" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER4Nt" role="NXp_2">
-          <property role="NX6R2" value="Destination peer" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmv0" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER4N_" role="NXp_2">
-          <property role="NX6R2" value="Rid of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmv7" resolve="rid" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER4NJ" role="NXp_2">
-          <property role="NX6R2" value="Date of read" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmvg" resolve="readDate" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmv0" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="GBscvBBmv4" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmv7" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="rid" />
-          <node concept="wb0Ql" id="2vxDjoto63F" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmvg" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="readDate" />
-          <node concept="wb0Ql" id="2vxDjotnR64" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="GBscvBBmta" role="NuuwV">
-          <property role="Nu42W" value="34" />
-        </node>
-      </node>
-      <node concept="NpBTk" id="GBscvBBmRO" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedReadByMe" />
-        <node concept="NXeRC" id="4zDDY4ER5jh" role="NXp_2">
-          <property role="NXePf" value="Update about encrypted message read by me" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER5jn" role="NXp_2">
-          <property role="NX6R2" value="Destination peer" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmTQ" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ER5jv" role="NXp_2">
-          <property role="NX6R2" value="Rid of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBmTX" resolve="rid" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmTQ" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="GBscvBBmTU" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBmTX" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="rid" />
-          <node concept="wb0Ql" id="2vxDjoto63I" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="GBscvBBmRP" role="NuuwV">
-          <property role="Nu42W" value="35" />
-        </node>
-      </node>
-      <node concept="NvWBy" id="GBscvBBmYc" role="2m5mJr">
-        <property role="NvWrd" value="Plain" />
       </node>
       <node concept="NpBTk" id="GBscvBBn2m" role="2m5mJr">
         <property role="TrG5h" value="MessageReceived" />
@@ -3707,9 +3395,6 @@
         <node concept="Nu42z" id="GBscvBBnlC" role="NuuwV">
           <property role="Nu42W" value="32" />
         </node>
-      </node>
-      <node concept="NvWBy" id="GBscvBBn$h" role="2m5mJr">
-        <property role="NvWrd" value="Message deletions" />
       </node>
       <node concept="NpBTk" id="GBscvBBnD9" role="2m5mJr">
         <property role="TrG5h" value="MessageDelete" />
@@ -4754,8 +4439,8 @@
       </node>
     </node>
     <node concept="2m5mJO" id="2uPas5edbiJ" role="2m5lHt">
-      <property role="TrG5h" value="Message and Dialogs lists" />
-      <property role="3XOG$Z" value="conversations" />
+      <property role="TrG5h" value="History" />
+      <property role="3XOG$Z" value="history" />
       <node concept="2m488m" id="2hmARQJT1hd" role="2m5mJr">
         <property role="TrG5h" value="MessageState" />
         <node concept="2m7y0F" id="2hmARQJT1hf" role="2m7ymf">
@@ -4843,7 +4528,7 @@
         </node>
         <node concept="2m7Kf5" id="2uPas5edlpl" role="2m0hLx">
           <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="startDate" />
+          <property role="TrG5h" value="minDate" />
           <node concept="wb0Ql" id="2vxDjotofQH" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
@@ -4903,7 +4588,7 @@
         <node concept="NX1gA" id="2EAJ7H6foAy" role="1GBnQ6">
           <property role="NX6R2" value="start date of messages for loading or 0 for loading from start" />
           <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edlpl" resolve="startDate" />
+          <ref role="NX6Kv" node="2uPas5edlpl" resolve="minDate" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foAz" role="1GBnQ6">
           <property role="NX6R2" value="maximum amount of messages (max is 100)" />
@@ -5011,7 +4696,7 @@
         <property role="TrG5h" value="LoadDialogs" />
         <node concept="2m7Kf5" id="2uPas5edmOy" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="startDate" />
+          <property role="TrG5h" value="minDate" />
           <node concept="wb0Ql" id="2vxDjotogGX" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
           </node>
@@ -5078,9 +4763,9 @@
           <property role="NXePf" value="Loading conversation history" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foBi" role="1GBnQ6">
-          <property role="NX6R2" value="start date of conversation loading" />
+          <property role="NX6R2" value="start date of conversation loading. Use 0 to load latest messages" />
           <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmOy" resolve="startDate" />
+          <ref role="NX6Kv" node="2uPas5edmOy" resolve="minDate" />
         </node>
         <node concept="NX1gA" id="2EAJ7H6foBj" role="1GBnQ6">
           <property role="NX6R2" value="limit maximum amount of messages (max is 100)" />
@@ -5163,545 +4848,6 @@
       <node concept="1Dx9M1" id="2uPas5edl6b" role="1Dx9rD">
         <property role="1Dx9K7" value="we will use maximum date from messages for startDate value." />
       </node>
-    </node>
-    <node concept="2m5mJO" id="GBscvBB69d" role="2m5lHt">
-      <property role="TrG5h" value="Encryption" />
-      <property role="3XOG$Z" value="encryption" />
-      <node concept="1Dx9M1" id="EUEXKTjhX$" role="1Dx9rD">
-        <property role="1Dx9K7" value="When user authenticates application send it's RSA public key for receiving encrypted messages." />
-      </node>
-      <node concept="1Dx9M1" id="EUEXKTjhXA" role="1Dx9rD">
-        <property role="1Dx9K7" value="Each public key has keyHash that calculated on server side." />
-      </node>
-      <node concept="1Dx9M1" id="EUEXKTjhXD" role="1Dx9rD">
-        <property role="1Dx9K7" value="Before sending encrypted messages application need to download all required receiver's and own" />
-      </node>
-      <node concept="1Dx9M1" id="EUEXKTjj2f" role="1Dx9rD">
-        <property role="1Dx9K7" value="public keys" />
-      </node>
-      <node concept="2m5naR" id="GBscvBB6a9" role="2m5mJr">
-        <property role="TrG5h" value="UserKey" />
-        <node concept="NXeRC" id="EUEXKTmVYb" role="NXodf">
-          <property role="NXePf" value="User public key reference" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVYp" role="NXodf">
-          <property role="NX6R2" value="User ID" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6b2" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVYx" role="NXodf">
-          <property role="NX6R2" value="Public key hash" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6b9" resolve="keyHash" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6b2" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="GBscvBB6b6" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6b9" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBB6bf" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="GBscvBB6cr" role="2m5mJr">
-        <property role="TrG5h" value="PublicKey" />
-        <node concept="NXeRC" id="EUEXKTmWmo" role="NXodf">
-          <property role="NXePf" value="Public Key" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWJS" role="NXodf">
-          <property role="NX6R2" value="Key's User Id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6cz" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWK0" role="NXodf">
-          <property role="NX6R2" value="hash of user's key" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6cE" resolve="keyHash" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWKa" role="NXodf">
-          <property role="NX6R2" value="RSA Public Key in x.509 format" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBB6cN" resolve="key" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6cz" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="GBscvBB6cB" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6cE" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBB6cK" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6cN" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="key" />
-          <node concept="2m61tm" id="GBscvBB6cV" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="NpBTk" id="GBscvBBhC8" role="2m5mJr">
-        <property role="TrG5h" value="NewDevice" />
-        <node concept="NXeRC" id="EUEXKTmWKi" role="NXp_2">
-          <property role="NXePf" value="Update about new public key of user" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWKo" role="NXp_2">
-          <property role="NX6R2" value="User's ID" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBhCp" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWKw" role="NXp_2">
-          <property role="NX6R2" value="Public key hash" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBhCw" resolve="keyHash" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWKE" role="NXp_2">
-          <property role="NX6R2" value="optional RSA Public Key in x.509 format" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBhCD" resolve="key" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWKQ" role="NXp_2">
-          <property role="NX6R2" value="Date of adding new key" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBhCU" resolve="date" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBhCp" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="GBscvBBhCt" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBhCw" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBBhCA" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBhCD" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="key" />
-          <node concept="2m5nlT" id="GBscvBBhCL" role="2m7DVh">
-            <node concept="2m61tm" id="GBscvBBhCR" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBhCU" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="date" />
-          <node concept="2m5ndQ" id="GBscvBBhD5" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBBhC9" role="NuuwV">
-          <property role="Nu42W" value="02" />
-        </node>
-      </node>
-      <node concept="NpBTk" id="GBscvBBhJP" role="2m5mJr">
-        <property role="TrG5h" value="RemovedDevice" />
-        <node concept="NXeRC" id="EUEXKTmWKZ" role="NXp_2">
-          <property role="NXePf" value="Update about removing public key of user" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWL5" role="NXp_2">
-          <property role="NX6R2" value="User's ID" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBhKh" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmWLd" role="NXp_2">
-          <property role="NX6R2" value="Key Hash of removed key" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBhKo" resolve="keyHash" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBhKh" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="GBscvBBhKl" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBhKo" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBBhKu" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBBhJQ" role="NuuwV">
-          <property role="Nu42W" value="25" />
-        </node>
-      </node>
-      <node concept="NvyAe" id="GBscvBBi6g" role="2m5mJr" />
-      <node concept="2m5naR" id="GBscvBBe_d" role="2m5mJr">
-        <property role="TrG5h" value="PublicKeyRequest" />
-        <node concept="NXeRC" id="EUEXKTmX9g" role="NXodf">
-          <property role="NXePf" value="Request for download public key" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmX9m" role="NXodf">
-          <property role="NX6R2" value="uiser's ID" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBe_H" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmX9u" role="NXodf">
-          <property role="NX6R2" value="Access Hash of User" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBe_O" resolve="accessHash" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmX9C" role="NXodf">
-          <property role="NX6R2" value="Public Key hash" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBe_X" resolve="keyHash" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBe_H" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="GBscvBBe_L" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBe_O" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="accessHash" />
-          <node concept="2m5ndQ" id="GBscvBBe_U" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBe_X" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBBeA5" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBBe$c" role="2m5mJr">
-        <property role="TrG5h" value="GetPublicKeys" />
-        <node concept="2m7Kf5" id="1qxBM7m23s" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="keys" />
-          <node concept="2m5nlk" id="1qxBM7m23w" role="2m7DVh">
-            <node concept="2m5mGg" id="1qxBM7m23A" role="3GJlyp">
-              <ref role="2m5mJy" node="GBscvBBe_d" resolve="PublicKeyRequest" />
-            </node>
-          </node>
-        </node>
-        <node concept="Nu42z" id="GBscvBBe$d" role="NuuwV">
-          <property role="Nu42W" value="06" />
-        </node>
-        <node concept="2m1R6W" id="GBscvBBeEp" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4EUpNh" role="1y2DgH">
-            <property role="NXePf" value="Response about loaded keys" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUpNn" role="1y2DgH">
-            <property role="NX6R2" value="Loaded keys" />
-            <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="GBscvBBeEu" resolve="keys" />
-          </node>
-          <node concept="2m7Kf5" id="GBscvBBeEu" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="keys" />
-            <node concept="2m5nlk" id="GBscvBBeEy" role="2m7DVh">
-              <node concept="2m5mGg" id="GBscvBBf5e" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBB6cr" resolve="PublicKey" />
-              </node>
-            </node>
-          </node>
-          <node concept="Nu42z" id="GBscvBBeEq" role="NuuwV">
-            <property role="Nu42W" value="18" />
-          </node>
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foAn" role="1GBnQ6">
-          <property role="NXePf" value="Loading required publick keys" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foAo" role="1GBnQ6">
-          <property role="NX6R2" value="key requests" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="1qxBM7m23s" resolve="keys" />
-        </node>
-      </node>
-    </node>
-    <node concept="2m5mJO" id="5NX0N0ROTyN" role="2m5lHt">
-      <property role="TrG5h" value="Encrypted Messages" />
-      <property role="3XOG$Z" value="encrypted" />
-      <node concept="2m5naR" id="5NX0N0ROUAb" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedPackage" />
-        <node concept="NXeRC" id="5NX0N0ROV8a" role="NXodf">
-          <property role="NXePf" value="Encrypted package" />
-        </node>
-        <node concept="NX1gA" id="5NX0N0ROV8w" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Type of message v1. Always eq 1" />
-          <ref role="NX6Kv" node="5NX0N0RP5x6" resolve="v1MessageType" />
-        </node>
-        <node concept="NX1gA" id="5NX0N0ROV8C" role="NXodf">
-          <property role="NX6R2" value="Body of message v1" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="5NX0N0RP5xr" resolve="v1Message" />
-        </node>
-        <node concept="NX1gA" id="5NX0N0ROV8M" role="NXodf">
-          <property role="NX6R2" value="Obsolete CRC32 of message type + body" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="5NX0N0ROUAu" resolve="v1Crc32" />
-        </node>
-        <node concept="NX1gA" id="5NX0N0RPero" role="NXodf">
-          <property role="NX6R2" value="Serialized EncryptedPackageV2" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="5NX0N0RPdmS" resolve="v2Message" />
-        </node>
-        <node concept="NX1gA" id="5NX0N0RPerC" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="HMAC-SHA256 of v2Message and AES key" />
-          <ref role="NX6Kv" node="5NX0N0RPdnh" resolve="v2HmacSha256" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RP5x6" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="v1MessageType" />
-          <node concept="2m5nlT" id="5NX0N0RPdmk" role="2m7DVh">
-            <node concept="2m5ndE" id="5NX0N0RPdmq" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RP5xr" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="v1Message" />
-          <node concept="2m5nlT" id="5NX0N0RPdmt" role="2m7DVh">
-            <node concept="2m61tm" id="5NX0N0RPdmz" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0ROUAu" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="v1Crc32" />
-          <node concept="2m5nlT" id="5NX0N0RPdmA" role="2m7DVh">
-            <node concept="2m5ndQ" id="5NX0N0RPdmG" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPdmS" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="v2Message" />
-          <node concept="2m5nlT" id="5NX0N0RPdn8" role="2m7DVh">
-            <node concept="2m61tm" id="5NX0N0RSWiC" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPdnh" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="v2HmacSha256" />
-          <node concept="2m5nlT" id="5NX0N0RPdn$" role="2m7DVh">
-            <node concept="2m5ndQ" id="5NX0N0RPdnE" role="3GH5xg" />
-          </node>
-        </node>
-      </node>
-      <node concept="NvyAe" id="5NX0N0RP$6d" role="2m5mJr" />
-      <node concept="NvyAe" id="5NX0N0RP$7F" role="2m5mJr" />
-      <node concept="NvWBy" id="5NX0N0RP$GS" role="2m5mJr">
-        <property role="NvWrd" value="Encrypted V1 Data" />
-      </node>
-      <node concept="2m5naR" id="5NX0N0ROYDQ" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedMessageV1" />
-        <property role="w4tQU" value="false" />
-        <node concept="2m7Kf5" id="5NX0N0ROZD5" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="rid" />
-          <node concept="2m5ndQ" id="5NX0N0ROZD9" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RP3We" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="contentType" />
-          <node concept="2m5ndE" id="5NX0N0RP3Wm" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RP3W5" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="content" />
-          <node concept="3BlaRf" id="5NX0N0RP3Wb" role="2m7DVh">
-            <ref role="3BrLez" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
-          </node>
-        </node>
-      </node>
-      <node concept="NvyAe" id="5NX0N0RP_l6" role="2m5mJr" />
-      <node concept="NvyAe" id="5NX0N0RP_o6" role="2m5mJr" />
-      <node concept="NvWBy" id="5NX0N0RP_r8" role="2m5mJr">
-        <property role="NvWrd" value="Encrypted V1 Content" />
-      </node>
-      <node concept="w93zz" id="5NX0N0RP2U1" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedContentV1" />
-      </node>
-      <node concept="2m5naR" id="5NX0N0RP0b5" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedTextContentV1" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
-        <node concept="2m7Kf5" id="5NX0N0RP0fP" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="text" />
-          <node concept="2m5ndX" id="5NX0N0RP0fT" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="5NX0N0RP2UL" role="3BtCOu">
-          <property role="Nu42W" value="01" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="5NX0N0RP0gw" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedDocumentV1" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="5NX0N0RP2U1" resolve="EncryptedContentV1" />
-        <node concept="2m7Kf5" id="5NX0N0RPtXZ" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="name" />
-          <node concept="2m5ndX" id="5NX0N0RPtY3" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPtY6" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="mimeType" />
-          <node concept="2m5ndX" id="5NX0N0RPuw3" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPuw6" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="fileLocation" />
-          <node concept="2m5mGg" id="5NX0N0RPuwe" role="2m7DVh">
-            <ref role="2m5mJy" node="5NX0N0RPsjy" resolve="EncryptedFileLocationV1" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPv28" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="fastThumb" />
-          <node concept="2m5nlT" id="5NX0N0RPv2i" role="2m7DVh">
-            <node concept="2m5mGg" id="5NX0N0RPv2o" role="3GH5xg">
-              <ref role="2m5mJy" node="GBscvBB67s" resolve="FastThumb" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPv2r" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5nlT" id="5NX0N0RPv2U" role="2m7DVh">
-            <node concept="2m5ndE" id="5NX0N0RPv30" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPv2F" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="extension" />
-          <node concept="2m5nlT" id="5NX0N0RPv33" role="2m7DVh">
-            <node concept="3BlaRf" id="5NX0N0RTk7a" role="3GH5xg">
-              <ref role="3BrLez" node="5NX0N0RPvAx" resolve="EncryptedDocumentV1Ex" />
-            </node>
-          </node>
-        </node>
-        <node concept="Nu42z" id="5NX0N0RPtYc" role="3BtCOu">
-          <property role="Nu42W" value="02" />
-        </node>
-      </node>
-      <node concept="w93zz" id="5NX0N0RPvAx" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedDocumentV1Ex" />
-      </node>
-      <node concept="2m5naR" id="5NX0N0RPvCX" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedDocumentV1ExPhoto" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="5NX0N0RPvAx" resolve="EncryptedDocumentV1Ex" />
-        <node concept="2m7Kf5" id="5NX0N0RPwOU" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="width" />
-          <node concept="2m5ndE" id="5NX0N0RPwOY" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPwP1" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="height" />
-          <node concept="2m5ndE" id="5NX0N0RPwP7" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="5NX0N0RPvEc" role="3BtCOu">
-          <property role="Nu42W" value="01" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="5NX0N0RPvFA" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedDocumentV1VExideo" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="5NX0N0RPvAx" resolve="EncryptedDocumentV1Ex" />
-        <node concept="2m7Kf5" id="5NX0N0RPxnj" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="width" />
-          <node concept="2m5ndE" id="5NX0N0RPxnn" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPxnq" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="height" />
-          <node concept="2m5ndE" id="5NX0N0RPxnw" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPxnz" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="duration" />
-          <node concept="2m5ndE" id="5NX0N0RPxnF" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="5NX0N0RPvGR" role="3BtCOu">
-          <property role="Nu42W" value="02" />
-        </node>
-      </node>
-      <node concept="NvyAe" id="5NX0N0RPA0x" role="2m5mJr" />
-      <node concept="NvWBy" id="5NX0N0RPA6J" role="2m5mJr">
-        <property role="NvWrd" value="File" />
-      </node>
-      <node concept="2m5naR" id="5NX0N0RPsjy" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedFileLocationV1" />
-        <node concept="2m7Kf5" id="5NX0N0RPsjz" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="fileId" />
-          <node concept="2m5ndQ" id="5NX0N0RPsj$" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPsj_" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="accessHash" />
-          <node concept="2m5ndQ" id="5NX0N0RPsjA" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPsjB" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="fileSize" />
-          <node concept="2m5ndE" id="5NX0N0RPsjC" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPsjD" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="encryptionType" />
-          <node concept="2m5nlT" id="5NX0N0RPtrO" role="2m7DVh">
-            <node concept="3GJkcs" id="5NX0N0RT700" role="3GH5xg">
-              <ref role="3GJkik" node="5NX0N0RPsmw" resolve="EncryptionType" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPsjF" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="encryptedFileSize" />
-          <node concept="2m5nlT" id="5NX0N0RPtrX" role="2m7DVh">
-            <node concept="2m5ndE" id="5NX0N0RPts3" role="3GH5xg" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RPsjH" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="encryptionKey" />
-          <node concept="2m5nlT" id="5NX0N0RPts6" role="2m7DVh">
-            <node concept="2m61tm" id="5NX0N0RPtsc" role="3GH5xg" />
-          </node>
-        </node>
-      </node>
-      <node concept="NvyAe" id="5NX0N0RT36Z" role="2m5mJr" />
-      <node concept="NvyAe" id="5NX0N0RT3at" role="2m5mJr" />
-      <node concept="NvWBy" id="5NX0N0RSozM" role="2m5mJr">
-        <property role="NvWrd" value="Encrypted V2 Data" />
-      </node>
-      <node concept="w93zz" id="5NX0N0RSVca" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedPackageV2" />
-        <property role="1FaRnq" value="true" />
-      </node>
-      <node concept="2m5naR" id="5NX0N0RSp9b" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedMessageV2" />
-        <property role="w4tQU" value="true" />
-        <ref role="w4$XZ" node="5NX0N0RSVca" resolve="EncryptedPackageV2" />
-        <node concept="NXeRC" id="5NX0N0RSZ_f" role="NXodf">
-          <property role="NXePf" value="Conversation message " />
-        </node>
-        <node concept="NX1gA" id="5NX0N0RT0G5" role="NXodf">
-          <property role="NX6R2" value="RandomId of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="5NX0N0RSXTY" resolve="rid" />
-        </node>
-        <node concept="NX1gA" id="5NX0N0RT0Gd" role="NXodf">
-          <property role="NX6R2" value="Content of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="5NX0N0RSpKj" resolve="content" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RSXTY" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="rid" />
-          <node concept="2m5ndQ" id="5NX0N0RSXU4" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="5NX0N0RSpKj" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="content" />
-          <node concept="3BlaRf" id="5NX0N0RT1LI" role="2m7DVh">
-            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="5NX0N0RSXnv" role="3BtCOu">
-          <property role="Nu42W" value="01" />
-        </node>
-      </node>
-      <node concept="NvyAe" id="5NX0N0RPA3B" role="2m5mJr" />
     </node>
     <node concept="2m5mJO" id="GBscvBBulc" role="2m5lHt">
       <property role="TrG5h" value="Typing and Online" />
@@ -6100,208 +5246,249 @@
           <node concept="2m61tm" id="GBscvBB68f" role="2m7DVh" />
         </node>
       </node>
-      <node concept="2m6fVq" id="GBscvBBiy9" role="2m5mJr">
-        <property role="TrG5h" value="GetFile" />
-        <node concept="2m7Kf5" id="GBscvBBiyL" role="2m0hLx">
+      <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
+      <node concept="2m6fVq" id="3MpuFr6x5xl" role="2m5mJr">
+        <property role="TrG5h" value="requestFileUrl" />
+        <node concept="NXeRC" id="3MpuFr6x791" role="1GBnQ6">
+          <property role="NXePf" value="Requesting file URL for downloading" />
+        </node>
+        <node concept="NX1gA" id="3MpuFr6x797" role="1GBnQ6">
+          <property role="NX6R2" value="file's location" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3MpuFr6x6CL" resolve="file" />
+        </node>
+        <node concept="2m7Kf5" id="3MpuFr6x6CL" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="fileLocation" />
-          <node concept="2m5mGg" id="GBscvBBiyP" role="2m7DVh">
+          <property role="TrG5h" value="file" />
+          <node concept="2m5mGg" id="3MpuFr6x6CP" role="2m7DVh">
             <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
           </node>
         </node>
-        <node concept="2m7Kf5" id="GBscvBBiyS" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="offset" />
-          <node concept="2m5ndE" id="GBscvBBiyY" role="2m7DVh" />
+        <node concept="Nu42z" id="3MpuFr6x5xm" role="NuuwV">
+          <property role="Nu42W" value="4D" />
         </node>
-        <node concept="2m7Kf5" id="GBscvBBiz1" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="limit" />
-          <node concept="2m5ndE" id="GBscvBBiz9" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBBiya" role="NuuwV">
-          <property role="Nu42W" value="10" />
-        </node>
-        <node concept="2m1R6W" id="GBscvBBizc" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4EUqke" role="1y2DgH">
-            <property role="NXePf" value="Loaded file part" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUqkk" role="1y2DgH">
-            <property role="NX6R2" value="File part" />
-            <ref role="NX6Kv" node="GBscvBBizh" resolve="payload" />
-          </node>
-          <node concept="2m7Kf5" id="GBscvBBizh" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="payload" />
-            <node concept="2m61tm" id="GBscvBBizl" role="2m7DVh" />
-          </node>
-          <node concept="Nu42z" id="GBscvBBizd" role="NuuwV">
-            <property role="Nu42W" value="11" />
-          </node>
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6fo_l" role="1GBnQ6">
-          <property role="NXePf" value="Downloading file part" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_m" role="1GBnQ6">
-          <property role="NX6R2" value="location of file" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBiyL" resolve="fileLocation" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_n" role="1GBnQ6">
-          <property role="NX6R2" value="offset in file in bytes" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBiyS" resolve="offset" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_o" role="1GBnQ6">
-          <property role="NX6R2" value="maximum size of file part" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBiz1" resolve="limit" />
-        </node>
-      </node>
-      <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
-      <node concept="2m5naR" id="GBscvBBj9g" role="2m5mJr">
-        <property role="TrG5h" value="UploadConfig" />
-        <node concept="NXeRC" id="7UKSaUukm1T" role="NXodf">
-          <property role="NXePf" value="Reference for upload session" />
-        </node>
-        <node concept="NX1gA" id="7UKSaUukm1Z" role="NXodf">
-          <property role="NX6R2" value="server related data for upload" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBja2" resolve="serverData" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBja2" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="serverData" />
-          <node concept="2m61tm" id="GBscvBBja6" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBBjkf" role="2m5mJr">
-        <property role="TrG5h" value="StartUpload" />
-        <node concept="Nu42z" id="GBscvBBjkg" role="NuuwV">
-          <property role="Nu42W" value="12" />
-        </node>
-        <node concept="2m1R6W" id="GBscvBBjl9" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4EUqP9" role="1y2DgH">
-            <property role="NXePf" value="Upload started" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUqPf" role="1y2DgH">
-            <property role="NX6R2" value="Upload started" />
+        <node concept="2m1R6W" id="3MpuFr6x68n" role="2m6efq">
+          <node concept="NX1gA" id="3MpuFr6x79h" role="1y2DgH">
             <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="GBscvBBjle" resolve="config" />
+            <property role="NX6R2" value="Url for downloading" />
+            <ref role="NX6Kv" node="3MpuFr6x68s" resolve="url" />
           </node>
-          <node concept="2m7Kf5" id="GBscvBBjle" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="config" />
-            <node concept="2m5mGg" id="GBscvBBjli" role="2m7DVh">
-              <ref role="2m5mJy" node="GBscvBBj9g" resolve="UploadConfig" />
-            </node>
-          </node>
-          <node concept="Nu42z" id="GBscvBBjla" role="NuuwV">
-            <property role="Nu42W" value="13" />
-          </node>
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foBc" role="1GBnQ6">
-          <property role="NXePf" value="Starting file upload" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBBjt3" role="2m5mJr">
-        <property role="TrG5h" value="UploadPart" />
-        <node concept="2m7Kf5" id="GBscvBBju3" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="config" />
-          <node concept="2m5mGg" id="GBscvBBju7" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBBj9g" resolve="UploadConfig" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjua" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="blockIndex" />
-          <node concept="2m5ndE" id="GBscvBBjug" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjuj" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="payload" />
-          <node concept="2m61tm" id="GBscvBBjur" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBBjt4" role="NuuwV">
-          <property role="Nu42W" value="14" />
-        </node>
-        <node concept="2m1Rp1" id="GBscvBBjuu" role="2m6efq">
-          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foAd" role="1GBnQ6">
-          <property role="NXePf" value="Uploading part of file" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foAe" role="1GBnQ6">
-          <property role="NX6R2" value="index of block" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjua" resolve="blockIndex" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foAf" role="1GBnQ6">
-          <property role="NX6R2" value="block payload" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBjuj" resolve="payload" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBBjv$" role="2m5mJr">
-        <property role="TrG5h" value="CompleteUpload" />
-        <node concept="2m7Kf5" id="GBscvBBjwH" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="config" />
-          <node concept="2m5mGg" id="GBscvBBjwL" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBBj9g" resolve="UploadConfig" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjwO" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="blocksCount" />
-          <node concept="2m5ndE" id="GBscvBBjwU" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBjwX" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="crc32" />
-          <node concept="2m5ndQ" id="GBscvBBjx5" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBBjv_" role="NuuwV">
-          <property role="Nu42W" value="16" />
-        </node>
-        <node concept="2m1R6W" id="GBscvBBjx8" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4EUrm6" role="1y2DgH">
-            <property role="NXePf" value="Upload completed" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUrmc" role="1y2DgH">
-            <property role="NX6R2" value="Uploaded file location" />
+          <node concept="NX1gA" id="3MpuFr6x79n" role="1y2DgH">
             <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="GBscvBBjxd" resolve="location" />
+            <property role="NX6R2" value="Timeout of url" />
+            <ref role="NX6Kv" node="3MpuFr6x68z" resolve="timeout" />
           </node>
-          <node concept="2m7Kf5" id="GBscvBBjxd" role="2m0hLx">
+          <node concept="2m7Kf5" id="3MpuFr6x68s" role="2m0hLx">
             <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="location" />
-            <node concept="2m5mGg" id="GBscvBBjxh" role="2m7DVh">
+            <property role="TrG5h" value="url" />
+            <node concept="2m5ndX" id="3MpuFr6x68w" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="3MpuFr6x68z" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="timeout" />
+            <node concept="2m5ndE" id="3MpuFr6x68D" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="3MpuFr6x68o" role="NuuwV">
+            <property role="Nu42W" value="4E" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3MpuFr6x8F5" role="2m5mJr">
+        <property role="TrG5h" value="requestFileUploadUrl" />
+        <node concept="NXeRC" id="3MpuFr6xfFT" role="1GBnQ6">
+          <property role="NXePf" value="Requesting pload url" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSiue5" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Expected size of uploading file. May be inaccurate. Used for size allocation optimizations." />
+          <ref role="NX6Kv" node="3MpuFr6xckS" resolve="expectedSize" />
+        </node>
+        <node concept="2m7Kf5" id="3MpuFr6xckS" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="expectedSize" />
+          <node concept="2m5ndE" id="3MpuFr6xckW" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3MpuFr6x8F6" role="NuuwV">
+          <property role="Nu42W" value="61" />
+        </node>
+        <node concept="2m1R6W" id="3MpuFr6x8Ir" role="2m6efq">
+          <node concept="2m7Kf5" id="3MpuFr6x8Iw" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="url" />
+            <node concept="2m5ndX" id="3MpuFr6x8I$" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="3MpuFr6xcPv" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="uploadKey" />
+            <node concept="2m61tm" id="3MpuFr6xcP_" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="3MpuFr6x8Is" role="NuuwV">
+            <property role="Nu42W" value="79" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSiylW" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Url for uploading" />
+            <ref role="NX6Kv" node="3MpuFr6x8Iw" resolve="url" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSiyR0" role="1y2DgH">
+            <property role="1GSvIU" value="compact" />
+            <property role="NX6R2" value="Upload key for upload" />
+            <ref role="NX6Kv" node="3MpuFr6xcPv" resolve="uploadKey" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3MpuFr6xcQQ" role="2m5mJr">
+        <property role="TrG5h" value="requestFileUploadCompleted" />
+        <node concept="NXeRC" id="gbd4oSimij" role="1GBnQ6">
+          <property role="NXePf" value="Comminting uploaded file to storage" />
+        </node>
+        <node concept="2m7Kf5" id="3MpuFr6xcSa" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uploadKey" />
+          <node concept="2m61tm" id="3MpuFr6xcSe" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3MpuFr6xcQR" role="NuuwV">
+          <property role="Nu42W" value="7A" />
+        </node>
+        <node concept="2m1R6W" id="3MpuFr6xcUP" role="2m6efq">
+          <node concept="NX1gA" id="gbd4oSixOV" role="1y2DgH">
+            <property role="NX6R2" value="Result file location" />
+            <ref role="NX6Kv" node="3MpuFr6xcUU" resolve="uploadedFileLocation" />
+          </node>
+          <node concept="2m7Kf5" id="3MpuFr6xcUU" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="uploadedFileLocation" />
+            <node concept="2m5mGg" id="3MpuFr6xcV6" role="2m7DVh">
               <ref role="2m5mJy" node="GBscvB$$Hy" resolve="FileLocation" />
             </node>
           </node>
-          <node concept="Nu42z" id="GBscvBBjx9" role="NuuwV">
-            <property role="Nu42W" value="17" />
+          <node concept="Nu42z" id="3MpuFr6xcUQ" role="NuuwV">
+            <property role="Nu42W" value="8A" />
           </node>
         </node>
-        <node concept="NXeRC" id="2EAJ7H6foBd" role="1GBnQ6">
-          <property role="NXePf" value="Complete uploading" />
+      </node>
+      <node concept="2m6fVq" id="gbd4oSisAS" role="2m5mJr">
+        <property role="TrG5h" value="requestFileUploadPart" />
+        <node concept="2m7Kf5" id="gbd4oSizT4" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="partNumber" />
+          <node concept="2m5ndE" id="gbd4oSizTa" role="2m7DVh" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6foBe" role="1GBnQ6">
-          <property role="NX6R2" value="Upload configuration" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjwH" resolve="config" />
+        <node concept="2m7Kf5" id="gbd4oSi$qf" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="partSize" />
+          <node concept="2m5ndE" id="gbd4oSi$qn" role="2m7DVh" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6foBf" role="1GBnQ6">
-          <property role="NX6R2" value="blocks count" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjwO" resolve="blocksCount" />
+        <node concept="2m7Kf5" id="gbd4oSitH3" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="uploadKey" />
+          <node concept="2m61tm" id="gbd4oSitH7" role="2m7DVh" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6foBg" role="1GBnQ6">
-          <property role="NX6R2" value="crc32 of uploaded file" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBjwX" resolve="crc32" />
+        <node concept="NXeRC" id="gbd4oSitc6" role="1GBnQ6">
+          <property role="NXePf" value="Upload file part" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSivKU" role="1GBnQ6">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="Upload Key from requestFileUploadUrl" />
+          <ref role="NX6Kv" node="gbd4oSitH3" resolve="uploadKey" />
+        </node>
+        <node concept="Nu42z" id="gbd4oSisAT" role="NuuwV">
+          <property role="Nu42W" value="8E" />
+        </node>
+        <node concept="2m1R6W" id="gbd4oSisFa" role="2m6efq">
+          <node concept="2m7Kf5" id="gbd4oSiwMM" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="url" />
+            <node concept="2m5ndX" id="gbd4oSiwMQ" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="gbd4oSisFb" role="NuuwV">
+            <property role="Nu42W" value="8D" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSixjU" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Upload file part url" />
+            <ref role="NX6Kv" node="gbd4oSiwMM" resolve="url" />
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="2m5mJO" id="3MpuFr6x9eS" role="2m5lHt">
+      <property role="TrG5h" value="Config sync" />
+      <property role="3XOG$Z" value="configs" />
+      <node concept="1Dx9M1" id="gbd4oSi_sy" role="1Dx9rD">
+        <property role="1Dx9K7" value="Parameter Syncronization across devices. Can be used for simple sync" />
+      </node>
+      <node concept="1Dx9M1" id="gbd4oSi_XD" role="1Dx9rD">
+        <property role="1Dx9K7" value="across devices without rewriting server side code." />
+      </node>
+      <node concept="2m5naR" id="3MpuFr6xf4A" role="2m5mJr">
+        <property role="TrG5h" value="Parameter" />
+        <node concept="2m7Kf5" id="3MpuFr6xf5m" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m5ndX" id="3MpuFr6xf5q" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3MpuFr6xf79" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndX" id="3MpuFr6xf7f" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3MpuFr6xf33" role="2m5mJr">
+        <property role="TrG5h" value="getParameters" />
+        <node concept="Nu42z" id="3MpuFr6xf34" role="NuuwV">
+          <property role="Nu42W" value="86" />
+        </node>
+        <node concept="2m1R6W" id="3MpuFr6xfaO" role="2m6efq">
+          <node concept="2m7Kf5" id="3MpuFr6xfaT" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="parameters" />
+            <node concept="2m5nlk" id="3MpuFr6xfaX" role="2m7DVh">
+              <node concept="2m5mGg" id="3MpuFr6xfb3" role="3GJlyp">
+                <ref role="2m5mJy" node="3MpuFr6xf4A" resolve="Parameter" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="3MpuFr6xfaP" role="NuuwV">
+            <property role="Nu42W" value="87" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3MpuFr6x9J6" role="2m5mJr">
+        <property role="TrG5h" value="EditParameter" />
+        <node concept="2m7Kf5" id="3MpuFr6x9Jn" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m5ndX" id="3MpuFr6x9Jr" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3MpuFr6x9JM" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndX" id="3MpuFr6x9JS" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3MpuFr6x9J7" role="NuuwV">
+          <property role="Nu42W" value="80" />
+        </node>
+        <node concept="2m1Rp1" id="3MpuFr6x9Jk" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="3MpuFr6xeti" role="2m5mJr">
+        <property role="TrG5h" value="ParameterChanged" />
+        <node concept="2m7Kf5" id="3MpuFr6xetG" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="key" />
+          <node concept="2m5ndX" id="3MpuFr6xetK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3MpuFr6xetN" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5nlT" id="3MpuFr6xetX" role="2m7DVh">
+            <node concept="2m5ndX" id="3MpuFr6xeu3" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3MpuFr6xetj" role="NuuwV">
+          <property role="Nu42W" value="83" />
         </node>
       </node>
     </node>

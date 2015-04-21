@@ -27,17 +27,15 @@ public class RequestSignIn extends Request<ResponseAuth> {
     private long phoneNumber;
     private String smsHash;
     private String smsCode;
-    private byte[] publicKey;
     private byte[] deviceHash;
     private String deviceTitle;
     private int appId;
     private String appKey;
 
-    public RequestSignIn(long phoneNumber, String smsHash, String smsCode, byte[] publicKey, byte[] deviceHash, String deviceTitle, int appId, String appKey) {
+    public RequestSignIn(long phoneNumber, String smsHash, String smsCode, byte[] deviceHash, String deviceTitle, int appId, String appKey) {
         this.phoneNumber = phoneNumber;
         this.smsHash = smsHash;
         this.smsCode = smsCode;
-        this.publicKey = publicKey;
         this.deviceHash = deviceHash;
         this.deviceTitle = deviceTitle;
         this.appId = appId;
@@ -58,10 +56,6 @@ public class RequestSignIn extends Request<ResponseAuth> {
 
     public String getSmsCode() {
         return this.smsCode;
-    }
-
-    public byte[] getPublicKey() {
-        return this.publicKey;
     }
 
     public byte[] getDeviceHash() {
@@ -85,7 +79,6 @@ public class RequestSignIn extends Request<ResponseAuth> {
         this.phoneNumber = values.getLong(1);
         this.smsHash = values.getString(2);
         this.smsCode = values.getString(3);
-        this.publicKey = values.getBytes(4);
         this.deviceHash = values.getBytes(5);
         this.deviceTitle = values.getString(6);
         this.appId = values.getInt(7);
@@ -103,10 +96,6 @@ public class RequestSignIn extends Request<ResponseAuth> {
             throw new IOException();
         }
         writer.writeString(3, this.smsCode);
-        if (this.publicKey == null) {
-            throw new IOException();
-        }
-        writer.writeBytes(4, this.publicKey);
         if (this.deviceHash == null) {
             throw new IOException();
         }
@@ -125,8 +114,7 @@ public class RequestSignIn extends Request<ResponseAuth> {
     @Override
     public String toString() {
         String res = "rpc SignIn{";
-        res += "publicKey=" + byteArrayToStringCompact(this.publicKey);
-        res += ", deviceHash=" + byteArrayToString(this.deviceHash);
+        res += "deviceHash=" + byteArrayToString(this.deviceHash);
         res += ", deviceTitle=" + this.deviceTitle;
         res += "}";
         return res;
