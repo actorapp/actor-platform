@@ -1,24 +1,19 @@
 package im.actor.server.mtproto.codecs.transport
 
-import scala.util.Random
-
-import org.specs2.Specification
-import org.specs2.matcher.ThrownExpectations
+import org.scalatest.{ FlatSpec, Matchers }
 import scodec.bits.BitVector
 
-import im.actor.server.mtproto.transport.{ Ping, MTPackage, TransportPackage }
+import im.actor.server.mtproto.transport.{ Ping, TransportPackage }
 
-class TransportCodecsSpec extends Specification with ThrownExpectations {
-  def is = s2"""
-             TransportPackageCodec should encode/decode $transportPackage
-             """
+class TransportCodecsSpec extends FlatSpec with Matchers {
+  it should "encode/decode" in transportPackage
 
-  def transportPackage = {
+  def transportPackage() = {
     val codec = TransportPackageCodec
 
     val tp = TransportPackage(2, Ping(BitVector.fromHex("00000000000000010000000000000002000000000000000119031701000000011108808786b9990210011a066170694b6579").get))
     val tpBytes = codec.encode(tp).require
 
-    codec.decode(tpBytes).require.value should_==(tp)
+    codec.decode(tpBytes).require.value should ===(tp)
   }
 }

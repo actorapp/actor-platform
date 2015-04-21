@@ -1,10 +1,10 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.bits._
-import scodec._
-import org.scalacheck._
 import org.scalacheck.Prop._
-import org.specs2.mutable.Specification
+import org.scalacheck._
+import org.scalatest.{ FlatSpec, Matchers }
+import scodec._
+import scodec.bits._
 
 object LongsCodecProp extends Properties("LongsCodec") {
   def genLong() = for {
@@ -21,16 +21,14 @@ object LongsCodecProp extends Properties("LongsCodec") {
   }
 }
 
-class LongsCodecSpec extends Specification {
-  "LongsCodec" should {
-    "encode array of longs" in {
-      longs.encode(Vector(200L, Long.MaxValue)).require should_== hex"0200000000000000c87fffffffffffffff".bits
-      longs.encode(Vector[Long]()).require should_== hex"0".bits
-    }
+class LongsCodecSpec extends FlatSpec with Matchers {
+  "LongsCodec" should "encode array of longs" in {
+    longs.encode(Vector(200L, Long.MaxValue)).require should ===(hex"0200000000000000c87fffffffffffffff".bits)
+    longs.encode(Vector[Long]()).require should ===(hex"0".bits)
+  }
 
-    "decode bytes to array of longs" in {
-      val res = longs.decode(hex"0200000000000000c87ffffffffffffffffeed".bits)
-      res.require should_== DecodeResult(Vector(200L, Long.MaxValue), BitVector(hex"feed"))
-    }
+  it should "decode bytes to array of longs" in {
+    val res = longs.decode(hex"0200000000000000c87ffffffffffffffffeed".bits)
+    res.require should ===(DecodeResult(Vector(200L, Long.MaxValue), BitVector(hex"feed")))
   }
 }
