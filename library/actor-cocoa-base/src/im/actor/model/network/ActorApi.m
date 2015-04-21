@@ -30,25 +30,25 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 @implementation AMActorApi
 
 
-#line 15
+#line 20
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   if (self = [super init]) {
     
-#line 17
+#line 22
     self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider);
   }
   return self;
 }
 
 
-#line 20
+#line 25
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
   
-#line 21
+#line 26
   if (request == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Request can't be null"];
   }

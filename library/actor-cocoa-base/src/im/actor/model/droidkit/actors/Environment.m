@@ -72,18 +72,24 @@ id<AMDispatcherProvider> DKEnvironment_dispatcherProvider_;
 
 
 #line 60
++ (jlong)getCurrentSyncedTime {
+  return DKEnvironment_getCurrentSyncedTime();
+}
+
+
+#line 67
 + (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_ {
   return DKEnvironment_createAtomicIntWithInt_(init_);
 }
 
 
-#line 67
+#line 74
 + (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_ {
   return DKEnvironment_createAtomicLongWithLong_(init_);
 }
 
 
-#line 74
+#line 81
 + (AMThreadLocalCompat *)createThreadLocal {
   return DKEnvironment_createThreadLocal();
 }
@@ -158,10 +164,20 @@ jlong DKEnvironment_getCurrentTime() {
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) getCurrentTime];
 }
 
-AMAtomicIntegerCompat *DKEnvironment_createAtomicIntWithInt_(jint init_) {
+jlong DKEnvironment_getCurrentSyncedTime() {
   DKEnvironment_init();
   
 #line 61
+  if (DKEnvironment_threadingProvider_ == nil) {
+    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Environment is not inited!"];
+  }
+  return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) getSyncedCurrentTime];
+}
+
+AMAtomicIntegerCompat *DKEnvironment_createAtomicIntWithInt_(jint init_) {
+  DKEnvironment_init();
+  
+#line 68
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Environment is not inited!"];
   }
@@ -171,7 +187,7 @@ AMAtomicIntegerCompat *DKEnvironment_createAtomicIntWithInt_(jint init_) {
 AMAtomicLongCompat *DKEnvironment_createAtomicLongWithLong_(jlong init_) {
   DKEnvironment_init();
   
-#line 68
+#line 75
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Environment is not inited!"];
   }
@@ -181,7 +197,7 @@ AMAtomicLongCompat *DKEnvironment_createAtomicLongWithLong_(jlong init_) {
 AMThreadLocalCompat *DKEnvironment_createThreadLocal() {
   DKEnvironment_init();
   
-#line 75
+#line 82
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Environment is not inited!"];
   }

@@ -85,7 +85,7 @@ J2OBJC_FIELD_SETTER(AMPeer, peerType_, AMPeerTypeEnum *)
     type = 2;
     break;
   }
-  return peerId_ + (LShift64((jlong) type, 32));
+  return ((jlong) peerId_ & (jlong) 0xFFFFFFFFLL) + (LShift64(((jlong) type & (jlong) 0xFFFFFFFFLL), 32));
 }
 
 
