@@ -111,7 +111,7 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(nSize, false, 1.0);
         var context = UIGraphicsGetCurrentContext();
         
-        self.drawInRect(CGRect(origin: CGPointZero, size: nSize));
+        self.drawInRect(CGRect(origin: CGPointMake(-1, -1), size: CGSize(width: w + 1, height: h + 1)));
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
