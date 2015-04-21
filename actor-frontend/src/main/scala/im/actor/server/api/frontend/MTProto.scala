@@ -233,33 +233,33 @@ object MTProto {
                    (implicit system: ActorSystem, timeout: Timeout): Future[Seq[MTTransport]] = {
     import system.dispatcher
 
+
+
     req match {
       case (p @ ProtoPackage(body), optIndex) =>
-        // TODO: #perf don't create so much futures
+        @inline def withAck(p: ProtoPackage): Seq[ProtoPackage] =
+          ackSeq() :+ p
 
-        val f: Future[Seq[MTTransport]] = body match {
+        @inline def ackSeq(): Seq[ProtoPackage] =
+          optIndex.map(index => Seq(ProtoPackage(Ack(index)))).getOrElse(Seq.empty)
+
+        body match {
           case m: MTPackage =>
             if (m.authId == 0) {
               authManager.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].map(Seq(_)).recover {
                 case e: AskTimeoutException =>
                   val msg = s"handleAsk within $timeout"
                   system.log.error(e, msg)
-                  Seq(ProtoPackage(InternalError(0, 0, msg))) // FIXME: send drop
+                  withAck(ProtoPackage(InternalError(0, 0, msg))) // FIXME: send drop
               }
             } else {
               sessionClient ! SessionClient.SendToSession(m)
 
-              Future.successful(Seq.empty)
+              Future.successful(ackSeq())
             }
-          case Ping(bytes) => Future.successful(Seq(ProtoPackage(Pong(bytes))))
-          case Pong(bytes) => Future.successful(Seq.empty)
-          case m => Future.successful(Seq.empty)
-        }
-
-        optIndex match {
-          case Some(index) =>
-            f map (xs => Vector(ProtoPackage(Ack(index))) ++ xs) // FIXME: #perf do it in more efficient way
-          case None => f
+          case Ping(bytes) => Future.successful(withAck(ProtoPackage(Pong(bytes))))
+          case Pong(bytes) => Future.successful(ackSeq())
+          case m => Future.successful(ackSeq())
         }
       case (h: Handshake, _) => Future.successful {
         val sha256Sign = BitVector(DigestUtils.sha256(h.bytes.toByteArray))
