@@ -139,12 +139,12 @@
     <property role="19KtqR" value="true" />
     <property role="TrG5h" value="ApiDescription" />
     <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
-    <node concept="1TJgyi" id="55bmeIQ6G_m" role="1TKVEl">
-      <property role="TrG5h" value="objcPrefix" />
-      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
-    </node>
     <node concept="1TJgyi" id="55bmeIQ71Qz" role="1TKVEl">
       <property role="TrG5h" value="javaPackage" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
+    <node concept="1TJgyi" id="gbd4oSj9sA" role="1TKVEl">
+      <property role="TrG5h" value="scalaPackage" />
       <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
     </node>
     <node concept="1TJgyj" id="55bmeIQ6Gyz" role="1TKVEi">
