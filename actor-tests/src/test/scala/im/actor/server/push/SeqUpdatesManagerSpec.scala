@@ -10,16 +10,15 @@ import im.actor.api.{ rpc => api }
 import im.actor.server.SqlSpecHelpers
 import im.actor.util.testing._
 
-class SeqUpdatesManagerSpec extends ActorSpecification(
+class SeqUpdatesManagerSpec extends ActorSuite(
   ActorSpecification.createSystem(
-    ConfigFactory.parseString( """
+    ConfigFactory.parseString("""
       push.seq-updates-manager.receive-timeout = 1 second
-                               """))
+                              """))
 ) with SqlSpecHelpers {
-  def is = s2"""
-  SeqUpdatesManager should
-    increment seq on update push $e1
-  """
+  behavior of "SeqUpdatesManager"
+
+  it should "increment seq on update push" in e1
 
   import SeqUpdatesManager._
 
@@ -28,7 +27,7 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
   val region = startRegion()
   val probe = TestProbe()
 
-  def e1 = {
+  def e1() = {
     val authId = util.Random.nextLong()
     val update = api.contacts.UpdateContactsAdded(Vector(1, 2, 3))
     val (userIds, groupIds) = updateRefs(update)
@@ -36,13 +35,13 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SequenceState]
-      msg._1 must be_==(1001)
+      msg._1 should ===(1000)
     }
 
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
-      msg._1 must be_==(1002)
+      msg._1 should ===(1001)
     }
 
     probe.expectNoMsg(1.5.seconds)
@@ -50,7 +49,7 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
-      msg._1 must be_==(2001)
+      msg._1 should ===(2000)
     }
 
     for (a <- 1 to 600)
@@ -61,12 +60,14 @@ class SeqUpdatesManagerSpec extends ActorSpecification(
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
-      msg._1 must be_==(3500)
+      msg._1 should ===(3500)
     }
   }
 
-  override def map(fragments: => Fragments) =
-    super.map(fragments) ^ step(closeDb())
+  override def afterAll: Unit = {
+    super.afterAll()
+    closeDb()
+  }
 
   private def closeDb(): Unit =
     ds.close()
