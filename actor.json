@@ -199,12 +199,6 @@
               "Authentication result",
               {
                 "type": "reference",
-                "argument": "publicKeyHash",
-                "category": "danger",
-                "description": "  Public Key Hash of current authentication"
-              },
-              {
-                "type": "reference",
                 "argument": "user",
                 "category": "compact",
                 "description": "  The authenticated User"
@@ -217,11 +211,6 @@
               }
             ],
             "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "publicKeyHash"
-              },
               {
                 "type": {
                   "type": "struct",

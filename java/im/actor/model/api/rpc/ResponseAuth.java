@@ -24,22 +24,16 @@ public class ResponseAuth extends Response {
         return Bser.parse(new ResponseAuth(), data);
     }
 
-    private long publicKeyHash;
     private User user;
     private Config config;
 
-    public ResponseAuth(long publicKeyHash, User user, Config config) {
-        this.publicKeyHash = publicKeyHash;
+    public ResponseAuth(User user, Config config) {
         this.user = user;
         this.config = config;
     }
 
     public ResponseAuth() {
 
-    }
-
-    public long getPublicKeyHash() {
-        return this.publicKeyHash;
     }
 
     public User getUser() {
@@ -52,14 +46,12 @@ public class ResponseAuth extends Response {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.publicKeyHash = values.getLong(1);
         this.user = values.getObj(2, new User());
         this.config = values.getObj(3, new Config());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.publicKeyHash);
         if (this.user == null) {
             throw new IOException();
         }

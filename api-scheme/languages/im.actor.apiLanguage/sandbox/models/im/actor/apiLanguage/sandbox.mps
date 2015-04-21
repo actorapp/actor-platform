@@ -330,11 +330,6 @@
         <node concept="NXeRC" id="3m8vlV8pAoI" role="NXp4Y">
           <property role="NXePf" value="Authentication result" />
         </node>
-        <node concept="NX1gA" id="3m8vlV8pAoO" role="NXp4Y">
-          <property role="NX6R2" value="Public Key Hash of current authentication" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB6W7" resolve="publicKeyHash" />
-        </node>
         <node concept="NX1gA" id="3m8vlV8pALZ" role="NXp4Y">
           <property role="NX6R2" value="The authenticated User" />
           <property role="1GSvIU" value="compact" />
@@ -344,11 +339,6 @@
           <property role="NX6R2" value="Current config of server" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBB6Wn" resolve="config" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6W7" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="publicKeyHash" />
-          <node concept="2m5ndQ" id="GBscvBB6Wb" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="GBscvBB6We" role="2m0hLx">
           <property role="2m7DUN" value="2" />
