@@ -27,8 +27,6 @@ class AuthServiceSpec extends BaseServiceSuite {
 
   it should "respond ok to a valid request" in (s.signIn().valid)
 
-  it should "respond ok to a request with the same public key" in (s.signIn().samePublicKey)
-
   it should "logout previous sessions on sign in with the same device hash" in (s.signIn().sameDeviceHash)
 
   object s {
@@ -71,7 +69,6 @@ class AuthServiceSpec extends BaseServiceSuite {
           smsHash = smsHash,
           smsCode = "0000",
           name = "Wayne Brain",
-          publicKey = Array(1, 2, 3),
           deviceHash = Array(4, 5, 6),
           deviceTitle = "Specs virtual device",
           appId = 1,
@@ -81,7 +78,7 @@ class AuthServiceSpec extends BaseServiceSuite {
 
         whenReady(request) { resp =>
           resp should matchPattern {
-            case Ok(ResponseAuth(_, _, _)) =>
+            case Ok(ResponseAuth( _, _)) =>
           }
         }
       }
@@ -101,7 +98,6 @@ class AuthServiceSpec extends BaseServiceSuite {
           phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
-          publicKey = Array(1, 2, 3),
           deviceHash = Array(4, 5, 6),
           deviceTitle = "Specs virtual device",
           appId = 1,
@@ -124,13 +120,11 @@ class AuthServiceSpec extends BaseServiceSuite {
         implicit val clientData = ClientData(authId, sessionId, None)
 
         val smsHash = getSmsHash(authId, phoneNumber)
-        val keyData = Array[Byte](1, 2, 3)
 
         val request = service.handleSignIn(
           phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
-          publicKey = keyData,
           deviceHash = Array(4, 5, 6),
           deviceTitle = "Specs virtual device",
           appId = 1,
@@ -145,63 +139,7 @@ class AuthServiceSpec extends BaseServiceSuite {
           resp.toOption.get
         }
 
-        val pkHash = PublicKey.keyHash(keyData)
-
-        Await.result(service.db.run(persist.AuthId.find(authId).headOption), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), Some(pkHash))))
-        Await.result(service.db.run(persist.UserPublicKey.find(rsp.user.id, pkHash).headOption), 5.seconds) should matchPattern {
-          case Some(_: models.UserPublicKey) =>
-        }
-      }
-
-      def samePublicKey() = {
-        val phoneNumber = buildPhone()
-        createUser(phoneNumber)
-
-        {
-          val authId = createAuthId()(service.db)
-          val sessionId = createSessionId()
-          implicit val clientData = ClientData(authId, sessionId, None)
-
-          val smsHash = getSmsHash(authId, phoneNumber)
-
-          whenReady(service.handleSignIn(
-            phoneNumber = phoneNumber,
-            smsHash = smsHash,
-            smsCode = "0000",
-            publicKey = Array(1, 2, 3),
-            deviceHash = Array(4, 5, 6),
-            deviceTitle = "Specs virtual device",
-            appId = 1,
-            appKey = "appKey"
-          )) { resp =>
-            resp should matchPattern {
-              case Ok(rsp: ResponseAuth) =>
-            }
-          }
-        }
-
-        {
-          val authId = createAuthId()(service.db)
-          val sessionId = createSessionId()
-          implicit val clientData = ClientData(authId, sessionId, None)
-
-          val smsHash = getSmsHash(authId, phoneNumber)
-
-          whenReady(service.handleSignIn(
-            phoneNumber = phoneNumber,
-            smsHash = smsHash,
-            smsCode = "0000",
-            publicKey = Array(1, 2, 3),
-            deviceHash = Array(5, 5, 6),
-            deviceTitle = "Specs virtual device",
-            appId = 1,
-            appKey = "appKey"
-          )) { resp =>
-            resp should matchPattern {
-              case Ok(rsp: ResponseAuth) =>
-            }
-          }
-        }
+        Await.result(service.db.run(persist.AuthId.find(authId).headOption), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
       }
 
       def sameDeviceHash() = {
@@ -222,7 +160,6 @@ class AuthServiceSpec extends BaseServiceSuite {
             phoneNumber = phoneNumber,
             smsHash = smsHash,
             smsCode = "0000",
-            publicKey = Array(1, 2, 3),
             deviceHash = deviceHash,
             deviceTitle = "Specs virtual device",
             appId = 1,
@@ -246,7 +183,6 @@ class AuthServiceSpec extends BaseServiceSuite {
             phoneNumber = phoneNumber,
             smsHash = smsHash,
             smsCode = "0000",
-            publicKey = Array(1, 2, 3, 4),
             deviceHash = deviceHash,
             deviceTitle = "Specs virtual device",
             appId = 1,

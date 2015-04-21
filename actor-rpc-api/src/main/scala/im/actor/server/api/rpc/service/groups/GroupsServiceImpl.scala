@@ -3,12 +3,12 @@ package im.actor.server.api.rpc.service.groups
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.ActorSystem
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc._
 import im.actor.api.rpc.Implicits._
+import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
@@ -23,6 +23,7 @@ class GroupsServiceImpl(implicit
                         val seqUpdManagerRegion: SeqUpdatesManagerRegion,
                         val db: Database,
                         val actorSystem: ActorSystem) extends GroupsService {
+
   import IdUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
@@ -105,7 +106,9 @@ class GroupsServiceImpl(implicit
   }
 
   override def jhandleRemoveGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
-    Future { throw new Exception("Not implemented") }
+    Future {
+      throw new Exception("Not implemented")
+    }
 
   override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
@@ -135,7 +138,7 @@ class GroupsServiceImpl(implicit
               // TODO: #perf the following broadcasts do update serializing per each user
               _ <- DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate)))
               seqstate <- broadcastClientUpdate(userAddedUpdate)
-              // TODO: write service message
+            // TODO: write service message
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
@@ -143,7 +146,8 @@ class GroupsServiceImpl(implicit
             DBIO.successful(Error(RpcError(400, "USER_ALREADY_INVITED", "User is already a member of the group.", false, None)))
           }
         }
-      }}
+      }
+      }
     }
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))

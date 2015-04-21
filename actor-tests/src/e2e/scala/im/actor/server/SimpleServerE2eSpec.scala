@@ -12,7 +12,6 @@ import im.actor.server.api.frontend.{ Tcp => TcpFrontend }
 import im.actor.server.api.rpc.RpcApiService.AttachService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.api.rpc.service.encryption.EncryptionServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -49,7 +48,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
   val services = Seq(
     new AuthServiceImpl,
     new ContactsServiceImpl,
-    new EncryptionServiceImpl,
     new MessagingServiceImpl,
     new GroupsServiceImpl,
     new SequenceServiceImpl
@@ -105,7 +103,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
         smsHash = smsHash,
         smsCode = "0000",
         name = "Wayne Brain",
-        publicKey = Array(1, 2, 3),
         deviceHash = Array(4, 5, 6),
         deviceTitle = "Specs virtual device",
         appId = 1,

@@ -52,7 +52,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", 0, None).toMessageContent)) { resp =>
+        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", None))) { resp =>
           resp should matchPattern {
             case Ok(ResponseSeqDate(1000, _, _)) =>
           }
@@ -69,7 +69,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", 0, None).toMessageContent)) { resp =>
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", None))) { resp =>
           resp should matchPattern {
             case Ok(ResponseSeqDate(1001, _, _)) =>
           }
@@ -109,9 +109,9 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent)),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))
+            service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", None)),
+            futureSleep(1500).flatMap(_ => service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ => service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
           whenReady(sendMessages)(_ => ())
@@ -148,9 +148,9 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           val startDate = System.currentTimeMillis()
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent)),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))
+            service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", None)),
+            futureSleep(1500).flatMap(_ => service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ => service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
           whenReady(sendMessages)(_ => ())
@@ -208,9 +208,9 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           implicit val clientData = clientData1
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(groupOutPeer.asOutPeer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent)),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))
+            service.handleSendMessage(groupOutPeer.asOutPeer, 1L, TextMessage("Hi Shiva 1", None)),
+            futureSleep(1500).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
           whenReady(sendMessages)(_ => ())
@@ -247,9 +247,9 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           implicit val clientData = clientData1
 
           val sendMessages = Future.sequence(Seq(
-            service.handleSendMessage(groupOutPeer.asOutPeer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent)),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))
+            service.handleSendMessage(groupOutPeer.asOutPeer, 1L, TextMessage("Hi Shiva 1", None)),
+            futureSleep(1500).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
           whenReady(sendMessages)(_ => ())

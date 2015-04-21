@@ -6,8 +6,7 @@ import org.joda.time.DateTime
 @SerialVersionUID(1L)
 case class AuthSession(
   userId: Int, id: Int, authId: Long, appId: Int, appTitle: String, deviceTitle: String, deviceHash: Array[Byte],
-  authTime: DateTime, authLocation: String, latitude: Option[Double], longitude: Option[Double],
-  publicKeyHash: Long
+  authTime: DateTime, authLocation: String, latitude: Option[Double], longitude: Option[Double]
 )
 
 object AuthSession {

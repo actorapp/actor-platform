@@ -11,7 +11,7 @@ package object rpc extends {
   import slick.dbio.Effect
   import slick.dbio.NoStream
 
-  object Implicits extends PeersImplicits with MessagingImplicits with GroupsImplicits with ConversationsImplicits
+  object Implicits extends PeersImplicits with GroupsImplicits with HistoryImplicits
 
   object CommonErrors {
     val GroupNotFound = RpcError(404, "GROUP_NOT_FOUND", "", false, None)
