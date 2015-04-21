@@ -2746,106 +2746,6 @@
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBoyd" role="2m5mJr" />
-      <node concept="2m5naR" id="GBscvBBpX4" role="2m5mJr">
-        <property role="TrG5h" value="EncryptedAesKey" />
-        <node concept="NXeRC" id="EUEXKTmEIX" role="NXodf">
-          <property role="NXePf" value="Encrypted AES key for encrypted messages" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmHFk" role="NXodf">
-          <property role="NX6R2" value="hash of public key of encrypted aes key" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBq0j" resolve="keyHash" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmHFs" role="NXodf">
-          <property role="NX6R2" value="encrypted aes key" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBq0q" resolve="aesEncryptedKey" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBq0j" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="keyHash" />
-          <node concept="2m5ndQ" id="GBscvBBq0n" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBq0q" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="aesEncryptedKey" />
-          <node concept="2m61tm" id="GBscvBBq0w" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBBpQg" role="2m5mJr">
-        <property role="TrG5h" value="SendEncryptedMessage" />
-        <node concept="2m7Kf5" id="GBscvBBpTl" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="GBscvBBpTp" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBpTs" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="rid" />
-          <node concept="wb0Ql" id="2vxDjotnV2j" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBpT_" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="encryptedMessage" />
-          <node concept="2m61tm" id="GBscvBBpTH" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBpTK" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="keys" />
-          <node concept="2m5nlk" id="GBscvBBqaY" role="2m7DVh">
-            <node concept="2m5mGg" id="GBscvBBqb4" role="3GJlyp">
-              <ref role="2m5mJy" node="GBscvBBpX4" resolve="EncryptedAesKey" />
-            </node>
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBqb7" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="ownKeys" />
-          <node concept="2m5nlk" id="GBscvBBqbk" role="2m7DVh">
-            <node concept="2m5mGg" id="GBscvBBqbq" role="3GJlyp">
-              <ref role="2m5mJy" node="GBscvBBpX4" resolve="EncryptedAesKey" />
-            </node>
-          </node>
-        </node>
-        <node concept="Nu42z" id="GBscvBBpQh" role="NuuwV">
-          <property role="Nu42W" value="0E" />
-        </node>
-        <node concept="2m1Rp1" id="2vxDjotnTL6" role="2m6efq">
-          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6fo_M" role="1GBnQ6">
-          <property role="NXePf" value="Sending encrypted message" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_N" role="1GBnQ6">
-          <property role="NX6R2" value="Destination peer for message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBpTl" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_O" role="1GBnQ6">
-          <property role="NX6R2" value="Message random id (generated on client side)" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBpTs" resolve="rid" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_P" role="1GBnQ6">
-          <property role="NX6R2" value="message encrypted by random aes key" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBpT_" resolve="encryptedMessage" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_Q" role="1GBnQ6">
-          <property role="NX6R2" value="encrypted aes keys for receivers devices" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBpTK" resolve="keys" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_R" role="1GBnQ6">
-          <property role="NX6R2" value="encrypted aes keys for own devices" />
-          <property role="1GSvIU" value="compact" />
-          <ref role="NX6Kv" node="GBscvBBqb7" resolve="ownKeys" />
-        </node>
-      </node>
       <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
         <property role="TrG5h" value="SendMessage" />
         <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
@@ -3362,6 +3262,338 @@
         </node>
         <node concept="Nu42z" id="GBscvBBnNQ" role="NuuwV">
           <property role="Nu42W" value="30" />
+        </node>
+      </node>
+      <node concept="2m488m" id="gbd4oSj4vu" role="2m5mJr">
+        <property role="TrG5h" value="MessageState" />
+        <node concept="2m7y0F" id="gbd4oSj4vv" role="2m7ymf">
+          <property role="TrG5h" value="Sent" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="gbd4oSj4vw" role="2m7ymf">
+          <property role="TrG5h" value="Received" />
+          <property role="2m7y0m" value="2" />
+        </node>
+        <node concept="2m7y0F" id="gbd4oSj4vx" role="2m7ymf">
+          <property role="TrG5h" value="Read" />
+          <property role="2m7y0m" value="3" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="gbd4oSj4vy" role="2m5mJr">
+        <property role="TrG5h" value="HistoryMessage" />
+        <node concept="NXeRC" id="gbd4oSj4vz" role="NXodf">
+          <property role="NXePf" value="Message from history" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4v$" role="NXodf">
+          <property role="NX6R2" value="Sender of mesasge" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vC" resolve="senderUid" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4v_" role="NXodf">
+          <property role="NX6R2" value="Random Id of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vE" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4vA" role="NXodf">
+          <property role="NX6R2" value="Date of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vG" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4vB" role="NXodf">
+          <property role="NX6R2" value="Content of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vI" resolve="message" />
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="senderUid" />
+          <node concept="2m5ndE" id="gbd4oSj4vD" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vE" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="gbd4oSj4vF" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vG" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="gbd4oSj4vH" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vI" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="message" />
+          <node concept="3BlaRf" id="gbd4oSj4vJ" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vK" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="state" />
+          <node concept="2m5nlT" id="gbd4oSj4vL" role="2m7DVh">
+            <node concept="3GJkcs" id="gbd4oSj4vM" role="3GH5xg">
+              <ref role="3GJkik" node="gbd4oSj4vu" resolve="MessageState" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="gbd4oSj4vN" role="2m5mJr">
+        <property role="TrG5h" value="LoadHistory" />
+        <node concept="2m7Kf5" id="gbd4oSj4vO" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="gbd4oSj4vP" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vQ" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="minDate" />
+          <node concept="wb0Ql" id="gbd4oSj4vR" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4vS" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="limit" />
+          <node concept="2m5ndE" id="gbd4oSj4vT" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="gbd4oSj4vU" role="NuuwV">
+          <property role="Nu42W" value="76" />
+        </node>
+        <node concept="2m1R6W" id="gbd4oSj4vV" role="2m6efq">
+          <node concept="NXeRC" id="gbd4oSj4vW" role="1y2DgH">
+            <property role="NXePf" value="Loaded history" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSj4vX" role="1y2DgH">
+            <property role="NX6R2" value="Messages" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="gbd4oSj4vZ" resolve="history" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSj4vY" role="1y2DgH">
+            <property role="NX6R2" value="Loaded users" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="gbd4oSj4w2" resolve="users" />
+          </node>
+          <node concept="2m7Kf5" id="gbd4oSj4vZ" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="history" />
+            <node concept="2m5nlk" id="gbd4oSj4w0" role="2m7DVh">
+              <node concept="2m5mGg" id="gbd4oSj4w1" role="3GJlyp">
+                <ref role="2m5mJy" node="gbd4oSj4vy" resolve="HistoryMessage" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="gbd4oSj4w2" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="gbd4oSj4w3" role="2m7DVh">
+              <node concept="2m5mGg" id="gbd4oSj4w4" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="gbd4oSj4w5" role="NuuwV">
+            <property role="Nu42W" value="77" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="gbd4oSj4w6" role="1GBnQ6">
+          <property role="NXePf" value="Loading history of chat" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4w7" role="1GBnQ6">
+          <property role="NX6R2" value="Peer of conversation" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vO" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4w8" role="1GBnQ6">
+          <property role="NX6R2" value="start date of messages for loading or 0 for loading from start" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vQ" resolve="minDate" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4w9" role="1GBnQ6">
+          <property role="NX6R2" value="maximum amount of messages (max is 100)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4vS" resolve="limit" />
+        </node>
+      </node>
+      <node concept="NvyAe" id="gbd4oSj4wa" role="2m5mJr" />
+      <node concept="2m5naR" id="gbd4oSj4wb" role="2m5mJr">
+        <property role="TrG5h" value="Dialog" />
+        <node concept="NXeRC" id="gbd4oSj4wc" role="NXodf">
+          <property role="NXePf" value="Conversation from history" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wd" role="NXodf">
+          <property role="NX6R2" value="Peer of conversation" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wk" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4we" role="NXodf">
+          <property role="NX6R2" value="plain messages unread messages count" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wm" resolve="unreadCount" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wf" role="NXodf">
+          <property role="NX6R2" value="date of conversation for sorting" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wo" resolve="sortDate" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wg" role="NXodf">
+          <property role="NX6R2" value="Sender of top message (may be zero)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wq" resolve="senderUid" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wh" role="NXodf">
+          <property role="NX6R2" value="Random ID of top message (may be zero)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4ws" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wi" role="NXodf">
+          <property role="NX6R2" value="Date of top message (can't be zero)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wu" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wj" role="NXodf">
+          <property role="NX6R2" value="Content of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4ww" resolve="message" />
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wk" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="gbd4oSj4wl" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wm" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="unreadCount" />
+          <node concept="2m5ndE" id="gbd4oSj4wn" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wo" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="sortDate" />
+          <node concept="wb0Ql" id="gbd4oSj4wp" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wq" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="senderUid" />
+          <node concept="2m5ndE" id="gbd4oSj4wr" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4ws" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="gbd4oSj4wt" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wu" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="gbd4oSj4wv" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4ww" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="message" />
+          <node concept="3BlaRf" id="gbd4oSj4wx" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wy" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="state" />
+          <node concept="2m5nlT" id="gbd4oSj4wz" role="2m7DVh">
+            <node concept="3GJkcs" id="gbd4oSj4w$" role="3GH5xg">
+              <ref role="3GJkik" node="gbd4oSj4vu" resolve="MessageState" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="gbd4oSj4w_" role="2m5mJr">
+        <property role="TrG5h" value="LoadDialogs" />
+        <node concept="2m7Kf5" id="gbd4oSj4wA" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="minDate" />
+          <node concept="wb0Ql" id="gbd4oSj4wB" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSj4wC" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="limit" />
+          <node concept="2m5ndE" id="gbd4oSj4wD" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="gbd4oSj4wE" role="NuuwV">
+          <property role="Nu42W" value="68" />
+        </node>
+        <node concept="2m1R6W" id="gbd4oSj4wF" role="2m6efq">
+          <node concept="NXeRC" id="gbd4oSj4wG" role="1y2DgH">
+            <property role="NXePf" value="Loaded dialogs" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSj4wH" role="1y2DgH">
+            <property role="NX6R2" value="Loaded groups" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="gbd4oSj4wK" resolve="groups" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSj4wI" role="1y2DgH">
+            <property role="NX6R2" value="Loaded users" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="gbd4oSj4wN" resolve="users" />
+          </node>
+          <node concept="NX1gA" id="gbd4oSj4wJ" role="1y2DgH">
+            <property role="NX6R2" value="Loaded dialogs" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="gbd4oSj4wQ" resolve="dialogs" />
+          </node>
+          <node concept="2m7Kf5" id="gbd4oSj4wK" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="groups" />
+            <node concept="2m5nlk" id="gbd4oSj4wL" role="2m7DVh">
+              <node concept="2m5mGg" id="gbd4oSj4wM" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="gbd4oSj4wN" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="gbd4oSj4wO" role="2m7DVh">
+              <node concept="2m5mGg" id="gbd4oSj4wP" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="gbd4oSj4wQ" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="dialogs" />
+            <node concept="2m5nlk" id="gbd4oSj4wR" role="2m7DVh">
+              <node concept="2m5mGg" id="gbd4oSj4wS" role="3GJlyp">
+                <ref role="2m5mJy" node="gbd4oSj4wb" resolve="Dialog" />
+              </node>
+            </node>
+          </node>
+          <node concept="Nu42z" id="gbd4oSj4wT" role="NuuwV">
+            <property role="Nu42W" value="69" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="gbd4oSj4wU" role="1GBnQ6">
+          <property role="NXePf" value="Loading conversation history" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wV" role="1GBnQ6">
+          <property role="NX6R2" value="start date of conversation loading. Use 0 to load latest messages" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wA" resolve="minDate" />
+        </node>
+        <node concept="NX1gA" id="gbd4oSj4wW" role="1GBnQ6">
+          <property role="NX6R2" value="limit maximum amount of messages (max is 100)" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="gbd4oSj4wC" resolve="limit" />
         </node>
       </node>
     </node>
@@ -4327,417 +4559,6 @@
         <node concept="Nu42z" id="GBscvBB$gE" role="NuuwV">
           <property role="Nu42W" value="27" />
         </node>
-      </node>
-    </node>
-    <node concept="2m5mJO" id="2uPas5edbiJ" role="2m5lHt">
-      <property role="TrG5h" value="History" />
-      <property role="3XOG$Z" value="history" />
-      <node concept="2m488m" id="2hmARQJT1hd" role="2m5mJr">
-        <property role="TrG5h" value="MessageState" />
-        <node concept="2m7y0F" id="2hmARQJT1hf" role="2m7ymf">
-          <property role="TrG5h" value="Sent" />
-          <property role="2m7y0m" value="1" />
-        </node>
-        <node concept="2m7y0F" id="2hmARQJT1ix" role="2m7ymf">
-          <property role="TrG5h" value="Received" />
-          <property role="2m7y0m" value="2" />
-        </node>
-        <node concept="2m7y0F" id="2hmARQJT1i$" role="2m7ymf">
-          <property role="TrG5h" value="Read" />
-          <property role="2m7y0m" value="3" />
-        </node>
-      </node>
-      <node concept="2m5naR" id="2uPas5edlo7" role="2m5mJr">
-        <property role="TrG5h" value="HistoryMessage" />
-        <node concept="NXeRC" id="EUEXKTmUKc" role="NXodf">
-          <property role="NXePf" value="Message from history" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmUKi" role="NXodf">
-          <property role="NX6R2" value="Sender of mesasge" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edloa" resolve="senderUid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmUKq" role="NXodf">
-          <property role="NX6R2" value="Random Id of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edloh" resolve="rid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmV9C" role="NXodf">
-          <property role="NX6R2" value="Date of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edloq" resolve="date" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmV9O" role="NXodf">
-          <property role="NX6R2" value="Content of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edlo_" resolve="message" />
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edloa" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="senderUid" />
-          <node concept="2m5ndE" id="2uPas5edloe" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edloh" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="rid" />
-          <node concept="wb0Ql" id="2vxDjotofQB" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edloq" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="date" />
-          <node concept="wb0Ql" id="2vxDjotofQE" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edlo_" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="message" />
-          <node concept="3BlaRf" id="5NX0N0RTfhX" role="2m7DVh">
-            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2hmARQJT1Il" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="state" />
-          <node concept="2m5nlT" id="4hxoBryzVTh" role="2m7DVh">
-            <node concept="3GJkcs" id="4hxoBryzVTn" role="3GH5xg">
-              <ref role="3GJkik" node="2hmARQJT1hd" resolve="MessageState" />
-            </node>
-          </node>
-        </node>
-      </node>
-      <node concept="2m6fVq" id="2uPas5edloX" role="2m5mJr">
-        <property role="TrG5h" value="LoadHistory" />
-        <node concept="2m7Kf5" id="2uPas5edlpe" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="2uPas5edlpi" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edlpl" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="minDate" />
-          <node concept="wb0Ql" id="2vxDjotofQH" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edlpu" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="limit" />
-          <node concept="2m5ndE" id="2uPas5edlpA" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="2uPas5edloY" role="NuuwV">
-          <property role="Nu42W" value="76" />
-        </node>
-        <node concept="2m1R6W" id="2uPas5edlpD" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4EUoLa" role="1y2DgH">
-            <property role="NXePf" value="Loaded history" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUoLg" role="1y2DgH">
-            <property role="NX6R2" value="Messages" />
-            <property role="1GSvIU" value="compact" />
-            <ref role="NX6Kv" node="2uPas5edlpI" resolve="history" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUoLo" role="1y2DgH">
-            <property role="NX6R2" value="Loaded users" />
-            <property role="1GSvIU" value="compact" />
-            <ref role="NX6Kv" node="2uPas5edlXB" resolve="users" />
-          </node>
-          <node concept="2m7Kf5" id="2uPas5edlpI" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="history" />
-            <node concept="2m5nlk" id="2uPas5edlpM" role="2m7DVh">
-              <node concept="2m5mGg" id="2uPas5edlpS" role="3GJlyp">
-                <ref role="2m5mJy" node="2uPas5edlo7" resolve="HistoryMessage" />
-              </node>
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="2uPas5edlXB" role="2m0hLx">
-            <property role="2m7DUN" value="2" />
-            <property role="TrG5h" value="users" />
-            <node concept="2m5nlk" id="2uPas5edlXI" role="2m7DVh">
-              <node concept="2m5mGg" id="3m8vlV8pGAf" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
-              </node>
-            </node>
-          </node>
-          <node concept="Nu42z" id="2uPas5edlpE" role="NuuwV">
-            <property role="Nu42W" value="77" />
-          </node>
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foAw" role="1GBnQ6">
-          <property role="NXePf" value="Loading history of chat" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foAx" role="1GBnQ6">
-          <property role="NX6R2" value="Peer of conversation" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edlpe" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foAy" role="1GBnQ6">
-          <property role="NX6R2" value="start date of messages for loading or 0 for loading from start" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edlpl" resolve="minDate" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foAz" role="1GBnQ6">
-          <property role="NX6R2" value="maximum amount of messages (max is 100)" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edlpu" resolve="limit" />
-        </node>
-      </node>
-      <node concept="NvyAe" id="2uPas5edomt" role="2m5mJr" />
-      <node concept="2m5naR" id="2uPas5edmPw" role="2m5mJr">
-        <property role="TrG5h" value="Dialog" />
-        <node concept="NXeRC" id="EUEXKTmVz3" role="NXodf">
-          <property role="NXePf" value="Conversation from history" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVz9" role="NXodf">
-          <property role="NX6R2" value="Peer of conversation" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmQ3" resolve="peer" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVzh" role="NXodf">
-          <property role="NX6R2" value="plain messages unread messages count" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmQa" resolve="unreadCount" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVzr" role="NXodf">
-          <property role="NX6R2" value="date of conversation for sorting" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmQj" resolve="sortDate" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVzB" role="NXodf">
-          <property role="NX6R2" value="Sender of top message (may be zero)" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmQu" resolve="senderUid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmVzP" role="NXodf">
-          <property role="NX6R2" value="Random ID of top message (may be zero)" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmQF" resolve="rid" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmV$5" role="NXodf">
-          <property role="NX6R2" value="Date of top message (can't be zero)" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edn95" resolve="date" />
-        </node>
-        <node concept="NX1gA" id="EUEXKTmV$L" role="NXodf">
-          <property role="NX6R2" value="Content of message" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edn9m" resolve="message" />
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edmQ3" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="2uPas5edmQ7" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edmQa" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="unreadCount" />
-          <node concept="2m5ndE" id="2uPas5edmQg" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edmQj" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="sortDate" />
-          <node concept="wb0Ql" id="2vxDjotoghM" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edmQu" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="senderUid" />
-          <node concept="2m5ndE" id="2uPas5edmQC" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edmQF" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="rid" />
-          <node concept="wb0Ql" id="2vxDjotoghP" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edn95" role="2m0hLx">
-          <property role="2m7DUN" value="7" />
-          <property role="TrG5h" value="date" />
-          <node concept="wb0Ql" id="2vxDjotoghS" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edn9m" role="2m0hLx">
-          <property role="2m7DUN" value="8" />
-          <property role="TrG5h" value="message" />
-          <node concept="3BlaRf" id="5NX0N0RTfMW" role="2m7DVh">
-            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2hmARQJT2aj" role="2m0hLx">
-          <property role="2m7DUN" value="9" />
-          <property role="TrG5h" value="state" />
-          <node concept="2m5nlT" id="4hxoBryzVqe" role="2m7DVh">
-            <node concept="3GJkcs" id="4hxoBryzVqk" role="3GH5xg">
-              <ref role="3GJkik" node="2hmARQJT1hd" resolve="MessageState" />
-            </node>
-          </node>
-        </node>
-      </node>
-      <node concept="2m6fVq" id="2uPas5edmy5" role="2m5mJr">
-        <property role="TrG5h" value="LoadDialogs" />
-        <node concept="2m7Kf5" id="2uPas5edmOy" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="minDate" />
-          <node concept="wb0Ql" id="2vxDjotogGX" role="2m7DVh">
-            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="2uPas5edmOD" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="limit" />
-          <node concept="2m5ndE" id="2uPas5edmOJ" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="2uPas5edmy6" role="NuuwV">
-          <property role="Nu42W" value="68" />
-        </node>
-        <node concept="2m1R6W" id="2uPas5ednrS" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4EUpi6" role="1y2DgH">
-            <property role="NXePf" value="Loaded dialogs" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUpic" role="1y2DgH">
-            <property role="NX6R2" value="Loaded groups" />
-            <property role="1GSvIU" value="compact" />
-            <ref role="NX6Kv" node="2uPas5ednrX" resolve="groups" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUpik" role="1y2DgH">
-            <property role="NX6R2" value="Loaded users" />
-            <property role="1GSvIU" value="compact" />
-            <ref role="NX6Kv" node="2uPas5ednsa" resolve="users" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUpiu" role="1y2DgH">
-            <property role="NX6R2" value="Loaded dialogs" />
-            <property role="1GSvIU" value="compact" />
-            <ref role="NX6Kv" node="2uPas5ednsq" resolve="dialogs" />
-          </node>
-          <node concept="2m7Kf5" id="2uPas5ednrX" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="groups" />
-            <node concept="2m5nlk" id="2uPas5edns1" role="2m7DVh">
-              <node concept="2m5mGg" id="2uPas5edns7" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
-              </node>
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="2uPas5ednsa" role="2m0hLx">
-            <property role="2m7DUN" value="2" />
-            <property role="TrG5h" value="users" />
-            <node concept="2m5nlk" id="2uPas5ednsh" role="2m7DVh">
-              <node concept="2m5mGg" id="3m8vlV8pGAi" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
-              </node>
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="2uPas5ednsq" role="2m0hLx">
-            <property role="2m7DUN" value="3" />
-            <property role="TrG5h" value="dialogs" />
-            <node concept="2m5nlk" id="2uPas5edns$" role="2m7DVh">
-              <node concept="2m5mGg" id="2uPas5ednsE" role="3GJlyp">
-                <ref role="2m5mJy" node="2uPas5edmPw" resolve="Dialog" />
-              </node>
-            </node>
-          </node>
-          <node concept="Nu42z" id="2uPas5ednrT" role="NuuwV">
-            <property role="Nu42W" value="69" />
-          </node>
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foBh" role="1GBnQ6">
-          <property role="NXePf" value="Loading conversation history" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBi" role="1GBnQ6">
-          <property role="NX6R2" value="start date of conversation loading. Use 0 to load latest messages" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmOy" resolve="minDate" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBj" role="1GBnQ6">
-          <property role="NX6R2" value="limit maximum amount of messages (max is 100)" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2uPas5edmOD" resolve="limit" />
-        </node>
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edbOX" role="1Dx9rD">
-        <property role="1Dx9K7" value="&lt;h1&gt;Overview&lt;/h1&gt;" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edc67" role="1Dx9rD">
-        <property role="1Dx9K7" value="Actor can work with encrypted and plain messages and encrypted messages does not appear in history," />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edcCs" role="1Dx9rD">
-        <property role="1Dx9K7" value="but it affects conversation lists." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edcTE" role="1Dx9rD">
-        <property role="1Dx9K7" value="&lt;h1&gt;Messages ordering&lt;/h1&gt;" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5eddaU" role="1Dx9rD">
-        <property role="1Dx9K7" value="Server provide date in milliseconds for accurate ordering of incoming messages in applications. " />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5eddsc" role="1Dx9rD">
-        <property role="1Dx9K7" value="NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5eddYH" role="1Dx9rD">
-        <property role="1Dx9K7" value="for the conversation conversation keep its position. Some events doesn't move conversation to top" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edeMv" role="1Dx9rD">
-        <property role="1Dx9K7" value="of conversations list. For example leaving chat or new device notification doesn't move it up." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edf3R" role="1Dx9rD">
-        <property role="1Dx9K7" value="&lt;h1&gt;Deleting of messages&lt;/h1&gt;" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edfAx" role="1Dx9rD">
-        <property role="1Dx9K7" value="For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edg9e" role="1Dx9rD">
-        <property role="1Dx9K7" value="Deletion of message is irreversible for now." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edgqG" role="1Dx9rD">
-        <property role="1Dx9K7" value="&lt;h1&gt;Deleting and clearing of conversation&lt;/h1&gt;" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edgGc" role="1Dx9rD">
-        <property role="1Dx9K7" value="Clearing of conversation deletes all messages in conversation and clears top message in conversation list." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edhf2" role="1Dx9rD">
-        <property role="1Dx9K7" value="Deletion of conversation deletes all messages and removes conversation from conversations list." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edhwA" role="1Dx9rD">
-        <property role="1Dx9K7" value="For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edi3y" role="1Dx9rD">
-        <property role="1Dx9K7" value="Deletion by ChatDelete of group causes automatic group leaving." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edi3N" role="1Dx9rD">
-        <property role="1Dx9K7" value="&lt;h1&gt;Loading history&lt;/h1&gt;" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edilt" role="1Dx9rD">
-        <property role="1Dx9K7" value="For loading conversation list use method LoadDialogs#0x68. " />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5ediSy" role="1Dx9rD">
-        <property role="1Dx9K7" value="When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains" />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edjag" role="1Dx9rD">
-        <property role="1Dx9K7" value="two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edkys" role="1Dx9rD">
-        <property role="1Dx9K7" value=" " />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edjYQ" role="1Dx9rD">
-        <property role="1Dx9K7" value="For loading history of conversation use method LoadHistory#0x68." />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edkgC" role="1Dx9rD">
-        <property role="1Dx9K7" value=" " />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edkyO" role="1Dx9rD">
-        <property role="1Dx9K7" value="Loading initial list are called with zero startDate and after loading more messages " />
-      </node>
-      <node concept="1Dx9M1" id="2uPas5edl6b" role="1Dx9rD">
-        <property role="1Dx9K7" value="we will use maximum date from messages for startDate value." />
       </node>
     </node>
     <node concept="2m5mJO" id="GBscvBBulc" role="2m5lHt">
