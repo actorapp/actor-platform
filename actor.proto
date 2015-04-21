@@ -53,11 +53,9 @@ message RequestSendAuthCall {
 
 // API#0x05
 // Authentication result
-// publicKeyHash Public Key Hash of current authentication
 // user The authenticated User
 // config Current config of server
 message ResponseAuth {
-    required int64 publicKeyHash = 1;
     required User user = 2;
     required Config config = 3;
 }
