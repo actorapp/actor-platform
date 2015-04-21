@@ -747,26 +747,6 @@ message RequestSendMessage {
     required bytes message = 4;
 }
 
-// API#0x74
-// ResponseVoid
-// Confirmation of encrypted message receive by device
-// peer Destination peer
-// rid Message random id
-message RequestEncryptedReceived {
-    required OutPeer peer = 1;
-    required int64 rid = 3;
-}
-
-// API#0x75
-// ResponseVoid
-// Marking encrypted message as read
-// peer Destination peer
-// rid Message random id
-message RequestEncryptedRead {
-    required OutPeer peer = 1;
-    required int64 rid = 3;
-}
-
 // API#0x37
 // ResponseVoid
 // Confirmation of plain message receive by device
