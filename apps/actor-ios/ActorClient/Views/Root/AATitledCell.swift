@@ -25,11 +25,12 @@ class AATitledCell: AATableViewCell {
         titleLabel.font = UIFont.systemFontOfSize(14.0)
         titleLabel.text = " "
         titleLabel.sizeToFit()
-        titleLabel.textColor = Resources.BarTintColor
+        titleLabel.textColor = MainAppTheme.list.actionColor
         contentView.addSubview(titleLabel)
         
         contentLabel.font = UIFont.systemFontOfSize(17.0)
         contentLabel.text = " "
+        contentLabel.textColor = MainAppTheme.list.textColor
         contentLabel.sizeToFit()
         contentView.addSubview(contentLabel)
     }

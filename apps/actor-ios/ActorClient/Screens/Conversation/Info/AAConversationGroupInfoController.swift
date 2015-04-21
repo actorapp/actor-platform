@@ -46,10 +46,12 @@ class AAConversationGroupInfoController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = MainAppTheme.list.bgColor
+        
         group = MSG.getGroups().getWithLong(jlong(gid)) as? AMGroupVM;
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        tableView.backgroundColor = Resources.BackyardColor
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableView.registerClass(AAConversationGroupInfoUserCell.self, forCellReuseIdentifier: UserCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
