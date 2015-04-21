@@ -13,27 +13,13 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
     let syncObject = NSObject()
     var pendingConnection: Array<AnyObject> = []
     
-    func createConnection(connectionId: jint, withEndpoint endpoint: AMConnectionEndpoint!, withCallback callback: AMConnectionCallback!, withCreateCallback createCallback: AMCreateConnectionCallback!) {
-        
-//        var connection = SwiftCocoaConnection(connectionId: connectionId, withEndpoint: endpoint!, withCallback: callback!, connectionCreated: { (connection) -> () in
-//            createCallback.onConnectionCreated(connection)
-//            objc_sync_enter(self.syncObject)
-//            self.pendingConnection.removeAtIndex(find(self.pendingConnection, connection)!)
-//            objc_sync_exit(self.syncObject)
-//        }) { (connection) -> () in
-//            createCallback.onConnectionCreateError()
-//            objc_sync_enter(self.syncObject)
-//            self.pendingConnection.removeAtIndex(find(self.pendingConnection, connection)!)
-//            objc_sync_exit(self.syncObject)
-//        }
+    func createConnection(connectionId: jint, withMTProtoVersion mtprotoVersion: jint, withApiMajorVersion apiMajorVersion: jint, withApiMinorVersion apiMinorVersion: jint, withEndpoint endpoint: AMConnectionEndpoint!, withCallback callback: AMConnectionCallback!, withCreateCallback createCallback: AMCreateConnectionCallback!) {
         
         var connection = CocoaTcpConnection(connectionId: connectionId, connectionEndpoint: endpoint, connectionCallback: callback, createCallback: createCallback)
         
         objc_sync_enter(syncObject)
         pendingConnection.append(connection)
         objc_sync_exit(syncObject)
-        
-        // connection.start()
     }
 }
 
