@@ -2368,12 +2368,6 @@
               },
               {
                 "type": "reference",
-                "argument": "extType",
-                "category": "full",
-                "description": "  type of extension. Now there are no extensions."
-              },
-              {
-                "type": "reference",
                 "argument": "ext",
                 "category": "full",
                 "description": "  Optional bytes of extension"
@@ -2388,11 +2382,6 @@
                 "type": "string",
                 "id": 1,
                 "name": "text"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "extType"
               },
               {
                 "type": {
@@ -2411,6 +2400,7 @@
         {
           "type": "trait",
           "content": {
+            "isContainer": "true",
             "name": "TextMessageEx",
             "attributes": []
           }
@@ -2426,12 +2416,6 @@
                 "argument": "text",
                 "category": "full",
                 "description": "  service message text"
-              },
-              {
-                "type": "reference",
-                "argument": "extType",
-                "category": "full",
-                "description": "  extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar"
               },
               {
                 "type": "reference",
@@ -2451,11 +2435,6 @@
                 "name": "text"
               },
               {
-                "type": "int32",
-                "id": 2,
-                "name": "extType"
-              },
-              {
                 "type": {
                   "type": "opt",
                   "childType": {
@@ -2472,6 +2451,7 @@
         {
           "type": "trait",
           "content": {
+            "isContainer": "true",
             "name": "ServiceEx",
             "attributes": []
           }
@@ -2684,12 +2664,6 @@
               },
               {
                 "type": "reference",
-                "argument": "extType",
-                "category": "full",
-                "description": "  Extension type"
-              },
-              {
-                "type": "reference",
                 "argument": "ext",
                 "category": "compact",
                 "description": "  Extension"
@@ -2764,11 +2738,6 @@
                 "name": "thumb"
               },
               {
-                "type": "int32",
-                "id": 7,
-                "name": "extType"
-              },
-              {
                 "type": {
                   "type": "opt",
                   "childType": {
@@ -2785,6 +2754,7 @@
         {
           "type": "trait",
           "content": {
+            "isContainer": "true",
             "name": "DocumentEx",
             "attributes": []
           }

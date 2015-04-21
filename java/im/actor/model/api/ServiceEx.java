@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public abstract class ServiceEx extends BserObject {
-    public static ServiceEx fromBytes(int key, byte[] content) throws IOException {
+    public static ServiceEx fromBytes(byte[] src) throws IOException {
+        BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));
+        int key = values.getInt(1);
+        byte[] content = values.getBytes(2);
         switch(key) { 
             case 1: return Bser.parse(new ServiceExUserAdded(), content);
             case 2: return Bser.parse(new ServiceExUserKicked(), content);
