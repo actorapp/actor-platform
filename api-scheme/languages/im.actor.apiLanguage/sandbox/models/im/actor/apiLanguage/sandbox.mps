@@ -42,7 +42,7 @@
       <concept id="2348480312264231184" name="im.actor.apiLanguage.structure.Int64" flags="ng" index="2m5ndQ" />
       <concept id="2348480312264231195" name="im.actor.apiLanguage.structure.String" flags="ng" index="2m5ndX" />
       <concept id="2348480312264232779" name="im.actor.apiLanguage.structure.ApiDescription" flags="ng" index="2m5nkH">
-        <property id="5857873509721229654" name="objcPrefix" index="3Bkp6X" />
+        <property id="291384077092427558" name="scalaPackage" index="WhUdw" />
         <property id="5857873509721316771" name="javaPackage" index="3BlOl8" />
         <child id="2348480312264237371" name="sections" index="2m5lHt" />
         <child id="5857873509721229475" name="aliases" index="3Bkp18" />
@@ -123,8 +123,8 @@
   </registry>
   <node concept="2m5nkH" id="22nuAqQwzAX">
     <property role="TrG5h" value="ActorApi" />
-    <property role="3Bkp6X" value="AM" />
     <property role="3BlOl8" value="im.actor.model.api" />
+    <property role="WhUdw" value="im.actor.api.rpc" />
     <node concept="wd7tA" id="55bmeIQ7$gx" role="3Bkp18">
       <property role="TrG5h" value="seq_state" />
       <node concept="2m61tm" id="55bmeIQ7$g_" role="wdlUs" />
@@ -4960,7 +4960,7 @@
       </node>
       <node concept="NvyAe" id="GBscvBBiZs" role="2m5mJr" />
       <node concept="2m6fVq" id="3MpuFr6x5xl" role="2m5mJr">
-        <property role="TrG5h" value="requestFileUrl" />
+        <property role="TrG5h" value="GetFileUrl" />
         <node concept="NXeRC" id="3MpuFr6x791" role="1GBnQ6">
           <property role="NXePf" value="Requesting file URL for downloading" />
         </node>
@@ -5006,7 +5006,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="3MpuFr6x8F5" role="2m5mJr">
-        <property role="TrG5h" value="requestFileUploadUrl" />
+        <property role="TrG5h" value="GetFileUploadUrl" />
         <node concept="NXeRC" id="3MpuFr6xfFT" role="1GBnQ6">
           <property role="NXePf" value="Requesting pload url" />
         </node>
@@ -5050,7 +5050,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="3MpuFr6xcQQ" role="2m5mJr">
-        <property role="TrG5h" value="requestFileUploadCompleted" />
+        <property role="TrG5h" value="CommitFileUpload" />
         <node concept="NXeRC" id="gbd4oSimij" role="1GBnQ6">
           <property role="NXePf" value="Comminting uploaded file to storage" />
         </node>
@@ -5080,7 +5080,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="gbd4oSisAS" role="2m5mJr">
-        <property role="TrG5h" value="requestFileUploadPart" />
+        <property role="TrG5h" value="GetFileUploadPartUrl" />
         <node concept="2m7Kf5" id="gbd4oSizT4" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="partNumber" />
@@ -5147,7 +5147,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="3MpuFr6xf33" role="2m5mJr">
-        <property role="TrG5h" value="getParameters" />
+        <property role="TrG5h" value="GetParameters" />
         <node concept="Nu42z" id="3MpuFr6xf34" role="NuuwV">
           <property role="Nu42W" value="86" />
         </node>

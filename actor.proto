@@ -1272,57 +1272,57 @@ message FastThumb {
 }
 
 // API#0x4D
-// ResponserequestFileUrl
+// ResponseGetFileUrl
 // Requesting file URL for downloading
 // file file's location
-message RequestrequestFileUrl {
+message RequestGetFileUrl {
     required FileLocation file = 1;
 }
 
 // API#0x4E
-message ResponserequestFileUrl {
+message ResponseGetFileUrl {
     required string url = 1;
     required int32 timeout = 2;
 }
 
 // API#0x61
-// ResponserequestFileUploadUrl
+// ResponseGetFileUploadUrl
 // Requesting pload url
 // expectedSize Expected size of uploading file. May be inaccurate. Used for size allocation optimizations.
-message RequestrequestFileUploadUrl {
+message RequestGetFileUploadUrl {
     required int32 expectedSize = 1;
 }
 
 // API#0x79
-message ResponserequestFileUploadUrl {
+message ResponseGetFileUploadUrl {
     required string url = 1;
     required bytes uploadKey = 2;
 }
 
 // API#0x7A
-// ResponserequestFileUploadCompleted
+// ResponseCommitFileUpload
 // Comminting uploaded file to storage
-message RequestrequestFileUploadCompleted {
+message RequestCommitFileUpload {
     required bytes uploadKey = 1;
 }
 
 // API#0x8A
-message ResponserequestFileUploadCompleted {
+message ResponseCommitFileUpload {
     required FileLocation uploadedFileLocation = 1;
 }
 
 // API#0x8E
-// ResponserequestFileUploadPart
+// ResponseGetFileUploadPartUrl
 // Upload file part
 // uploadKey Upload Key from requestFileUploadUrl
-message RequestrequestFileUploadPart {
+message RequestGetFileUploadPartUrl {
     required int32 partNumber = 1;
     required int32 partSize = 2;
     required bytes uploadKey = 3;
 }
 
 // API#0x8D
-message ResponserequestFileUploadPart {
+message ResponseGetFileUploadPartUrl {
     required string url = 1;
 }
 
@@ -1338,12 +1338,12 @@ message Parameter {
 }
 
 // API#0x86
-// ResponsegetParameters
-message RequestgetParameters {
+// ResponseGetParameters
+message RequestGetParameters {
 }
 
 // API#0x87
-message ResponsegetParameters {
+message ResponseGetParameters {
     repeated Parameter parameters = 1;
 }
 

@@ -176,18 +176,6 @@
           <property role="VOm3f" value="true" />
         </node>
       </node>
-      <node concept="3F0ifn" id="55bmeIQ74LS" role="3EZMnx">
-        <property role="3F0ifm" value="ObjectiveC Prefix" />
-        <node concept="lj46D" id="55bmeIQ74Mc" role="3F10Kt">
-          <property role="VOm3f" value="true" />
-        </node>
-      </node>
-      <node concept="3F0A7n" id="55bmeIQ74Wd" role="3EZMnx">
-        <ref role="1NtTu8" to="tsp6:55bmeIQ6G_m" resolve="objcPrefix" />
-        <node concept="ljvvj" id="55bmeIQ74Wy" role="3F10Kt">
-          <property role="VOm3f" value="true" />
-        </node>
-      </node>
       <node concept="3F0ifn" id="55bmeIQ74WU" role="3EZMnx">
         <property role="3F0ifm" value="Java Package" />
         <node concept="lj46D" id="55bmeIQ758H" role="3F10Kt">
@@ -200,9 +188,18 @@
           <property role="VOm3f" value="true" />
         </node>
       </node>
-      <node concept="3F0ifn" id="55bmeIQ7599" role="3EZMnx">
+      <node concept="3F0ifn" id="gbd4oSjgGV" role="3EZMnx">
+        <property role="3F0ifm" value="Scala Package" />
+        <node concept="lj46D" id="gbd4oSjh7d" role="3F10Kt">
+          <property role="VOm3f" value="true" />
+        </node>
+      </node>
+      <node concept="3F0A7n" id="gbd4oSjgZj" role="3EZMnx">
+        <ref role="1NtTu8" to="tsp6:gbd4oSj9sA" resolve="scalaPackage" />
+      </node>
+      <node concept="3F0ifn" id="gbd4oSjgJ9" role="3EZMnx">
         <property role="3F0ifm" value="" />
-        <node concept="ljvvj" id="55bmeIQ759z" role="3F10Kt">
+        <node concept="ljvvj" id="gbd4oSjgJA" role="3F10Kt">
           <property role="VOm3f" value="true" />
         </node>
       </node>
