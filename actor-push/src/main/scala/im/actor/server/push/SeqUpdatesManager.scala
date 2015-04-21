@@ -195,17 +195,12 @@ object SeqUpdatesManager {
 
     update match {
       case _: api.misc.UpdateConfig => empty
+      case _: api.configs.UpdateParameterChanged => empty
       case api.messaging.UpdateChatClear(peer) => (Set.empty, Set(peer.id))
       case api.messaging.UpdateChatDelete(peer) => (Set.empty, Set(peer.id))
-      case api.messaging.UpdateEncryptedMessage(peer, senderUserId, _, _, _, _) =>
-        val refs = peerRefs(peer)
-        refs.copy(_1 = refs._1 + senderUserId)
       case api.messaging.UpdateMessage(peer, senderUserId, _, _, _) =>
         val refs = peerRefs(peer)
         refs.copy(_1 = refs._1 + senderUserId)
-      case api.messaging.UpdateEncryptedRead(peer, _, _) => peerRefs(peer)
-      case api.messaging.UpdateEncryptedReadByMe(peer, _) => peerRefs(peer)
-      case api.messaging.UpdateEncryptedReceived(peer, _, _) => peerRefs(peer)
       case api.messaging.UpdateMessageDelete(peer, _) => peerRefs(peer)
       case api.messaging.UpdateMessageRead(peer, _, _) => peerRefs(peer)
       case api.messaging.UpdateMessageReadByMe(peer, _) => peerRefs(peer)
@@ -221,7 +216,6 @@ object SeqUpdatesManager {
       case api.contacts.UpdateContactRegistered(userId, _, _) => singleUser(userId)
       case api.contacts.UpdateContactsAdded(userIds) => users(userIds)
       case api.contacts.UpdateContactsRemoved(userIds) => users(userIds)
-      case api.contacts.UpdateEmailContactRegistered(_, userId) => singleUser(userId)
       case api.users.UpdateEmailMoved(_, userId) => singleUser(userId)
       case _: api.users.UpdateEmailTitleChanged => empty
       case api.users.UpdatePhoneMoved(_, userId) => singleUser(userId)
@@ -235,8 +229,6 @@ object SeqUpdatesManager {
       case api.users.UpdateUserPhoneAdded(userId, _) => singleUser(userId)
       case api.users.UpdateUserPhoneRemoved(userId, _) => singleUser(userId)
       case api.users.UpdateUserStateChanged(userId, _) => singleUser(userId)
-      case api.encryption.UpdateNewDevice(userId, _, _, _) => singleUser(userId)
-      case api.encryption.UpdateRemovedDevice(userId, _) => singleUser(userId)
       case api.weak.UpdateGroupOnline(groupId, _) => singleGroup(groupId)
       case api.weak.UpdateTyping(peer, userId, _) =>
         val refs = peerRefs(peer)

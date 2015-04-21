@@ -1,9 +1,8 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc.Implicits._
+
 import im.actor.api.rpc._
-import im.actor.api.rpc.conversations.MessageState
-import im.actor.api.rpc.messaging.TextMessage
+import im.actor.api.rpc.messaging.{ MessageState, TextMessage }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
@@ -11,8 +10,8 @@ import im.actor.server.api.util.ACL
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 
-class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
-  behavior of "ConversationsService"
+class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHelpers {
+  behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat
 
@@ -24,8 +23,7 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
   val rpcApiService = buildRpcApiService()
   implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
-  implicit val service = new conversations.ConversationsServiceImpl
-  implicit val messagingService = new messaging.MessagingServiceImpl
+  implicit val service = new messaging.MessagingServiceImpl
   implicit val groupsService = new GroupsServiceImpl
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
@@ -56,19 +54,19 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
 
         val startDate = System.currentTimeMillis()
 
-        whenReady(messagingService.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", 0, None).toMessageContent))(_ => ())
+        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", None)))(_ => ())
 
         Thread.sleep(step)
 
-        whenReady(messagingService.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", 0, None).toMessageContent))(_ => ())
+        whenReady(service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None)))(_ => ())
 
         Thread.sleep(step)
 
-        whenReady(messagingService.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", 0, None).toMessageContent))(_ => ())
+        whenReady(service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))(_ => ())
 
         Thread.sleep(step * 2) // wait more to widen delay between 3rd and 4rd messages (we don't want 4rd message to be in ResponseLoadHistory)
 
-        whenReady(messagingService.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", 0, None).toMessageContent))(_ => ())
+        whenReady(service.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", None)))(_ => ())
 
         startDate
       }
@@ -76,13 +74,13 @@ class ConversationsServiceSpec extends BaseServiceSuite with GroupsServiceHelper
       {
         implicit val clientData = clientData2
 
-        whenReady(messagingService.handleMessageReceived(user1Peer, startDate + step * 2)) { resp =>
+        whenReady(service.handleMessageReceived(user1Peer, startDate + step * 2)) { resp =>
           resp should matchPattern {
             case Ok(ResponseVoid) =>
           }
         }
 
-        whenReady(messagingService.handleMessageRead(user1Peer, startDate + step)) { resp =>
+        whenReady(service.handleMessageRead(user1Peer, startDate + step)) { resp =>
           resp should matchPattern {
             case Ok(ResponseVoid) =>
           }

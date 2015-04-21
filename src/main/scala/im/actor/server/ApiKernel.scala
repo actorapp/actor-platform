@@ -8,8 +8,6 @@ import com.typesafe.config.ConfigFactory
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.api.rpc.service.conversations.ConversationsServiceImpl
-import im.actor.server.api.rpc.service.encryption.EncryptionServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -46,12 +44,10 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
     val services = Seq(
       new AuthServiceImpl,
       new ContactsServiceImpl,
-      new EncryptionServiceImpl,
       new MessagingServiceImpl,
       new GroupsServiceImpl,
       new SequenceServiceImpl,
-      new WeakServiceImpl,
-      new ConversationsServiceImpl)
+      new WeakServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 

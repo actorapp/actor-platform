@@ -8,7 +8,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
-import im.actor.api.rpc.weak.{ UpdateTyping, WeakService }
+import im.actor.api.rpc.weak.{ TypingType, UpdateTyping, WeakService }
 import im.actor.server.persist
 import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManager, WeakUpdatesManagerRegion }
@@ -20,7 +20,7 @@ class WeakServiceImpl(implicit
                       actorSystem: ActorSystem) extends WeakService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleTyping(peer: OutPeer, typingType: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleTyping(peer: OutPeer, typingType: TypingType.TypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       val action = peer.`type` match {
         case PeerType.Private =>

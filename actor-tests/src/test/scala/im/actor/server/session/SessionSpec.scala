@@ -127,7 +127,6 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
         smsHash = smsHash,
         smsCode = "0000",
         name = "Wayne Brain",
-        publicKey = Array(1, 2, 3),
         deviceHash = Array(4, 5, 6),
         deviceTitle = "Specs virtual device",
         appId = 1,
@@ -140,7 +139,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       expectMessageAck(authId, sessionId, secondMessageId)
       expectRpcResult() should matchPattern {
-        case RpcOk(ResponseAuth(_, _, _)) =>
+        case RpcOk(ResponseAuth(_, _)) =>
       }
 
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require
@@ -174,7 +173,6 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
         smsHash = smsHash,
         smsCode = "0000",
         name = "Wayne Brain",
-        publicKey = Array(2, 2, 3),
         deviceHash = Array(5, 5, 6),
         deviceTitle = "Specs virtual device",
         appId = 1,
@@ -189,7 +187,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       val authResult = expectRpcResult()
       authResult should matchPattern {
-        case RpcOk(ResponseAuth(_, _, _)) =>
+        case RpcOk(ResponseAuth(_, _)) =>
       }
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
@@ -220,7 +218,6 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
         smsHash = smsHash,
         smsCode = "0000",
         name = "Wayne Brain",
-        publicKey = Array(3, 2, 3),
         deviceHash = Array(5, 5, 6),
         deviceTitle = "Specs virtual device",
         appId = 1,
@@ -235,7 +232,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       val authResult = expectRpcResult()
       authResult should matchPattern {
-        case RpcOk(ResponseAuth(_, _, _)) =>
+        case RpcOk(ResponseAuth(_, _)) =>
       }
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
@@ -267,7 +264,6 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
           smsHash = smsHash,
           smsCode = "0000",
           name = "Wayne Brain",
-          publicKey = Array(3, 2, 3),
           deviceHash = Array(5, 5, 6),
           deviceTitle = "Specs virtual device",
           appId = 1,
@@ -282,7 +278,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
         val authResult = expectRpcResult()
         authResult should matchPattern {
-          case RpcOk(ResponseAuth(_, _, _)) =>
+          case RpcOk(ResponseAuth(_, _)) =>
         }
       }
 
