@@ -187,6 +187,8 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$1)
 @interface MTManagerActor_$2 : NSObject < AMConnectionCallback > {
 }
 
+- (void)onConnectionRedirect:(NSString *)host withPort:(jint)port withTimeout:(jint)timeout;
+
 - (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
 
 - (void)onConnectionDie;

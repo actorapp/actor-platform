@@ -16,6 +16,10 @@
 
 #include "J2ObjC_header.h"
 
+#define AMActorApi_API_MAJOR_VERSION 1
+#define AMActorApi_API_MINOR_VERSION 0
+#define AMActorApi_MTPROTO_VERSION 1
+
 @interface AMActorApi : NSObject {
 }
 
@@ -32,6 +36,12 @@
 J2OBJC_EMPTY_STATIC_INIT(AMActorApi)
 
 CF_EXTERN_C_BEGIN
+
+J2OBJC_STATIC_FIELD_GETTER(AMActorApi, MTPROTO_VERSION, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MAJOR_VERSION, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MINOR_VERSION, jint)
 CF_EXTERN_C_END
 
 typedef AMActorApi ImActorModelNetworkActorApi;

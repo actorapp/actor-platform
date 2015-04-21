@@ -8,6 +8,7 @@
 
 @class AMAtomicLongCompat;
 @class AMEndpoints;
+@class AMExponentialBackoff;
 @class DKActorRef;
 @class IOSByteArray;
 @class ImActorModelNetworkParserRequest;

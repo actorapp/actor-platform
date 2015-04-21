@@ -7,6 +7,7 @@
 #define _MTAuthIdRetriever_H_
 
 @class AMEndpoints;
+@class AMExponentialBackoff;
 @class IOSBooleanArray;
 @class IOSByteArray;
 @protocol AMConnection;
@@ -57,6 +58,8 @@ J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_AuthIdCallback)
 @interface MTAuthIdRetriever_$1 : NSObject < AMConnectionCallback > {
 }
 
+- (void)onConnectionRedirect:(NSString *)host withPort:(jint)port withTimeout:(jint)timeout;
+
 - (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
 
 - (void)onConnectionDie;
@@ -81,7 +84,8 @@ J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$1)
 - (void)onConnectionCreateError;
 
 - (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
-withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$1;
+            withAMExponentialBackoff:(AMExponentialBackoff *)capture$1
+withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$2;
 
 @end
 
