@@ -12,13 +12,19 @@ public interface NetworkProvider {
     /**
      * Async connection creation
      *
-     * @param connectionId   id of connection (useful for logging)
-     * @param endpoint       endpoint of connection
-     * @param callback       callback for connection
-     * @param createCallback callback for connection creation
+     * @param connectionId    id of connection (useful for logging)
+     * @param mtprotoVersion  MTProto version
+     * @param apiMajorVersion API Major version
+     * @param apiMinorVersion API Minor version
+     * @param endpoint        endpoint of connection
+     * @param callback        callback for connection
+     * @param createCallback  callback for connection creation
      */
-    public void createConnection(int connectionId,
-                                 ConnectionEndpoint endpoint,
-                                 ConnectionCallback callback,
-                                 CreateConnectionCallback createCallback);
+    void createConnection(int connectionId,
+                          int mtprotoVersion,
+                          int apiMajorVersion,
+                          int apiMinorVersion,
+                          ConnectionEndpoint endpoint,
+                          ConnectionCallback callback,
+                          CreateConnectionCallback createCallback);
 }

@@ -36,7 +36,7 @@ public class Timing {
      */
     public void end() {
         if (this.sectionName != null) {
-            Log.d(TAG, "" + this.sectionName + " loaded in " + (sectionStart - ActorTime.currentTime()) + " ms");
+            Log.d(TAG, "" + this.sectionName + " loaded in " + (ActorTime.currentTime() - sectionStart) + " ms");
             this.sectionName = null;
         }
     }

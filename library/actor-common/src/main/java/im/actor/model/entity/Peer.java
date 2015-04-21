@@ -65,7 +65,7 @@ public class Peer extends BserObject {
                 type = 2;
                 break;
         }
-        return peerId + ((long) type << 32);
+        return ((long)peerId & 0xFFFFFFFFL)+ (((long) type & 0xFFFFFFFFL) << 32);
     }
 
     public PeerType getPeerType() {
