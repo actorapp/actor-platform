@@ -1,10 +1,10 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.bits._
-import scodec._
-import org.scalacheck._
 import org.scalacheck.Prop._
-import org.specs2.mutable.Specification
+import org.scalacheck._
+import org.scalatest.{ FlatSpec, Matchers }
+import scodec._
+import scodec.bits._
 
 object VarIntCodecProp extends Properties("VarIntCodec") {
   val integers = Gen.choose(Long.MinValue, Long.MaxValue)
@@ -16,18 +16,16 @@ object VarIntCodecProp extends Properties("VarIntCodec") {
   }
 }
 
-class VarIntCodecSpec extends Specification {
-  "VarIntCodec" should {
-    "encode VarInt" in {
-      varint.encode(543).require should_== hex"9f04".bits
-      varint.encode(Int.MaxValue).require should_== hex"ffffffff07".bits
-      varint.encode(Int.MinValue + 1).require should_== hex"ffffffff07".bits
-    }
+class VarIntCodecSpec extends FlatSpec with Matchers {
+  "VarIntCodec" should "encode VarInt" in {
+    varint.encode(543).require should ===(hex"9f04".bits)
+    varint.encode(Int.MaxValue).require should ===(hex"ffffffff07".bits)
+    varint.encode(Int.MinValue + 1).require should ===(hex"ffffffff07".bits)
+  }
 
-    "decode bytes to VarInt" in {
-      varint.decode(hex"9f04".bits).require should_== DecodeResult(543, BitVector.empty)
-      varint.decode(hex"9f04ff".bits).require should_== DecodeResult(543, hex"ff".bits)
-      varint.decode(hex"ffffffff07".bits).require should_== DecodeResult(Int.MaxValue, BitVector.empty)
-    }
+  it should "decode bytes to VarInt" in {
+    varint.decode(hex"9f04".bits).require should ===(DecodeResult(543, BitVector.empty))
+    varint.decode(hex"9f04ff".bits).require should ===(DecodeResult(543, hex"ff".bits))
+    varint.decode(hex"ffffffff07".bits).require should ===(DecodeResult(Int.MaxValue, BitVector.empty))
   }
 }

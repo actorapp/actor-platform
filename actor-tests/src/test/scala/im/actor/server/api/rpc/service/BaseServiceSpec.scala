@@ -2,31 +2,11 @@ package im.actor.server.api.rpc.service
 
 import akka.stream.ActorFlowMaterializer
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{Seconds, Span}
-import org.scalatest.{FlatSpecLike, Matchers}
-import org.specs2.matcher.ThrownExpectations
-import org.specs2.specification.core.Fragments
+import org.scalatest.time.{ Seconds, Span }
+import org.scalatest.{ FlatSpecLike, Matchers }
 
 import im.actor.server.SqlSpecHelpers
 import im.actor.util.testing._
-
-trait BaseServiceSpec
-  extends ActorSpecification
-  with ThrownExpectations
-  with SqlSpecHelpers
-  with ServiceSpecHelpers
-  with HandlerMatchers {
-  implicit lazy val (ds, db) = migrateAndInitDb()
-  implicit val flowMaterializer = ActorFlowMaterializer()
-
-  override def map(fragments: => Fragments) =
-    super.map(fragments) ^ step(closeDb())
-
-  def closeDb() = {
-    db.close()
-    ds.close()
-  }
-}
 
 trait BaseServiceSuite
   extends ActorSuite
