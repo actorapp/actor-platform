@@ -30,8 +30,7 @@ class AAConversationGroupInfoUserCell: AATableViewCell {
         contentView.addSubview(userAvatarView)
         
         usernameLabel = UILabel()
-        usernameLabel.backgroundColor = UIColor.whiteColor()
-        usernameLabel.textColor = UIColor.blackColor()
+        usernameLabel.textColor = MainAppTheme.list.textColor
         usernameLabel.font = UIFont.systemFontOfSize(18.0)
         usernameLabel.text = " "
         usernameLabel.sizeToFit()

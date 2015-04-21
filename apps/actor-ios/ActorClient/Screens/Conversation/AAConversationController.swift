@@ -49,14 +49,19 @@ class AAConversationController: EngineSlackListController {
         self.tableView.allowsSelection = false;
         self.tableView.tableHeaderView = UIView(frame:CGRectMake(0, 0, 100, 6));
         
-        self.textInputbar.backgroundColor = UIColor.whiteColor();
+        self.textInputbar.backgroundColor = MainAppTheme.chat.chatField
         self.textInputbar.autoHideRightButton = false;
         self.textView.placeholder = NSLocalizedString("ChatPlaceholder",comment: "Placeholder")
         self.rightButton.titleLabel?.text = NSLocalizedString("ChatSend",comment: "Send")
+        self.rightButton.setTitleColor(MainAppTheme.chat.sendEnabled, forState: UIControlState.Normal)
+        self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
         
         self.keyboardPanningEnabled = true;
-        
-        self.leftButton.setImage(UIImage(named: "conv_attach"), forState: UIControlState.Normal)
+
+        self.leftButton.setImage(UIImage(named: "conv_attach")!
+            .tintImage(MainAppTheme.chat.attachColor)
+            .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
+            forState: UIControlState.Normal)
         
         // Title
         
@@ -103,7 +108,7 @@ class AAConversationController: EngineSlackListController {
         
         backgroundView.clipsToBounds = true
         backgroundView.backgroundColor = UIColor(
-            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(UIColor.RGB(0xe7e0c4)))
+            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(MainAppTheme.bubbles.chatBgTint))
         view.insertSubview(backgroundView, atIndex: 0)
     }
     

@@ -19,11 +19,21 @@ class ContactCell : BasicCell {
         super.init(reuseIdentifier: reuseIdentifier, separatorPadding: 80)
         
         titleView.font = UIFont(name: "HelveticaNeue", size: 18);
+        titleView.textColor = MainAppTheme.list.contactsTitle
+        
         shortNameView.font = UIFont(name: "HelveticaNeue-Bold", size: 18);
         shortNameView.textAlignment = NSTextAlignment.Center
+        shortNameView.textColor = MainAppTheme.list.contactsShortTitle
+        
         self.contentView.addSubview(avatarView);
         self.contentView.addSubview(shortNameView);
         self.contentView.addSubview(titleView);
+        
+        backgroundColor = MainAppTheme.list.bgColor
+        
+        var selectedView = UIView()
+        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
+        selectedBackgroundView = selectedView
     }
 
     required init(coder aDecoder: NSCoder) {
