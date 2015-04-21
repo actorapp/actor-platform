@@ -4,13 +4,13 @@ import play.api.mvc.Controller
 
 class Nodes extends Controller {
 
-  def users(nodeId: Int, page: Int, perPage: Int) = play.mvc.Results.TODO
+  def users(nodeId: Int, page: Int, perPage: Int) = TODO
 
-  def create() = play.mvc.Results.TODO
+  def create() = TODO
 
-  def get(id: Int) = play.mvc.Results.TODO
+  def get(id: Int) = TODO
 
-  def update(id: Int) = play.mvc.Results.TODO
+  def update(id: Int) = TODO
 
-  def delete(id: Int) = play.mvc.Results.TODO
+  def delete(id: Int) = TODO
 }
