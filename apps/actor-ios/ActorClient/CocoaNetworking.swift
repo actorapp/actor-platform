@@ -13,10 +13,23 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
     let syncObject = NSObject()
     var pendingConnection: Array<AnyObject> = []
     
-    func createConnection(connectionId: jint, withMTProtoVersion mtprotoVersion: jint, withApiMajorVersion apiMajorVersion: jint, withApiMinorVersion apiMinorVersion: jint, withEndpoint endpoint: AMConnectionEndpoint!, withCallback callback: AMConnectionCallback!, withCreateCallback createCallback: AMCreateConnectionCallback!) {
+    func createConnection(connectionId: jint,
+        withMTProtoVersion mtprotoVersion: jint,
+        withApiMajorVersion apiMajorVersion: jint,
+        withApiMinorVersion apiMinorVersion: jint,
+        withEndpoint endpoint: AMConnectionEndpoint!,
+        withCallback callback: AMConnectionCallback!,
+        withCreateCallback createCallback: AMCreateConnectionCallback!) {
         
-        var connection = CocoaTcpConnection(connectionId: connectionId, connectionEndpoint: endpoint, connectionCallback: callback, createCallback: createCallback)
-        
+//        var connection = CocoaTcpConnection(connectionId: connectionId, connectionEndpoint: endpoint, connectionCallback: callback, createCallback: createCallback)
+
+        var connection = SwiftCocoaConnection(connectionId: connectionId, withEndpoint: endpoint, withCallback: callback, connectionCreated: { (connection) -> () in
+                
+            }, connectionFailure: { (connection) -> () in
+                
+            })
+        connection.start()
+            
         objc_sync_enter(syncObject)
         pendingConnection.append(connection)
         objc_sync_exit(syncObject)
@@ -24,6 +37,8 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
 }
 
 class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
+
+    let handshakeTimeout = 5.0
     
     let connectionTimeout = 5.0
     
@@ -40,6 +55,7 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
     let callback: AMConnectionCallback;
     
     init(connectionId: jint, withEndpoint endpoint: AMConnectionEndpoint, withCallback callback: AMConnectionCallback, connectionCreated: (connection: SwiftCocoaConnection)->(), connectionFailure: (connection: SwiftCocoaConnection)->()) {
+        
         self.connectionId = Int(connectionId)
         self.endpoint = endpoint;
         self.connectionCreated = connectionCreated
@@ -47,47 +63,58 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         self.callback = callback
     }
     
+    // Initialize connection
     func start() {
         NSLog("🎍#\(connectionId) Connecting...")
         gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0))
         gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: connectionTimeout, error: nil)
     }
     
+    // After connection successful
     func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        
         NSLog("🎍#\(connectionId) Connected...")
         
         if (UInt(self.endpoint.getType().ordinal()) == AMConnectionEndpoint_Type.TCP_TLS.rawValue) {
             NSLog("🎍#\(self.connectionId) Starring TLS Session...")
-                
-                // TODO: Check TLS
-            sock.startTLS([//(id)kCFStreamSSLAllowsExpiredCertificates:@NO,
-                //(id)kCFStreamSSLAllowsExpiredRoots:@NO,
-                //(id)kCFStreamSSLAllowsAnyRoot:@YES,
-                //(id)kCFStreamSSLValidatesCertificateChain:@YES,
-                kCFStreamSSLPeerName:"actor.im"
-                //(id)kCFStreamSSLLevel:(id)kCFStreamSocketSecurityLevelNegotiatedSSL,
-                ])
+            sock.startTLS(nil)
         } else {
-            if (self.isSocketOpen) {
-                return
-            }
-            self.isSocketOpen = true
-            
-            self.requestReadHeader()
-            self.connectionCreated(connection: self)
+            performHandshake()
         }
     }
-    
+    // After TLS successful
     func socketDidSecure(sock: GCDAsyncSocket!) {
-        NSLog("🎍#\(connectionId) TLS connection established...")
+        performHandshake()
+    }
+    
+    // Performing handshake
+    func performHandshake() {
         if (isSocketOpen) {
             return
         }
         isSocketOpen = true
         
-        self.requestReadHeader()
-        self.connectionCreated(connection: self)
+        NSLog("🎍#\(connectionId) Sending Handshake request...")
+        var dataToWrite = NSMutableData(capacity: Int(32 + 4 + 3))!
+        dataToWrite.appendByte(1)
+        dataToWrite.appendByte(1)
+        dataToWrite.appendByte(0)
+        dataToWrite.appendUInt32(32)
+        for i in 1...32 {
+            dataToWrite.appendByte(UInt8(arc4random_uniform(255)))
+        }
+        gcdSocket?.writeData(dataToWrite, withTimeout: -1, tag: 0)
+
+        NSLog("🎍#\(connectionId) Request Handshake response...")
+        gcdSocket?.readDataToLength(35, withTimeout: handshakeTimeout, tag: 5)
+    }
+    
+    // Handshake response
+    func handshakeReponse(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        var mtprotoVersion = data.readUInt8()
+        var apiMajorVersion = data.readUInt8(1)
+        var apiMinorVersion = data.readUInt8(2)
+        
+        NSLog("🎍#\(connectionId) Handshake response received \(mtprotoVersion),\(apiMajorVersion),\(apiMinorVersion) ")
     }
 
     func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
@@ -118,12 +145,14 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         gcdSocket?.readDataToLength(bodySize, withTimeout: -1, tag: 1)
     }
     
-    func socket(sock: GCDAsyncSocket!, didReadPartialDataOfLength partialLength: UInt, tag: Int) {
-        NSLog("🎍#\(connectionId) didReadPartialDataOfLength \(partialLength)...")
-    }
+//    func socket(sock: GCDAsyncSocket!, didReadPartialDataOfLength partialLength: UInt, tag: Int) {
+//        NSLog("🎍#\(connectionId) didReadPartialDataOfLength \(partialLength)...")
+//    }
     
     func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
-        if (tag == 0) {
+        if (tag == 5) {
+            handshakeReponse(sock, didReadData: data)
+        } else if (tag == 0) {
             // Header
             if (data.length != 4) {
                 fatalError("🎍#\(connectionId) Unknown header size");
@@ -160,13 +189,13 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         }
     }
     
-    func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
-        NSLog("🎍#\(connectionId) didWriteDataWithTag...")
-    }
-    
-    func socket(sock: GCDAsyncSocket!, didWritePartialDataOfLength partialLength: UInt, tag: Int) {
-        NSLog("🎍#\(connectionId) didWritePartialDataOfLength \(partialLength)...")
-    }
+//    func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
+//        NSLog("🎍#\(connectionId) didWriteDataWithTag...")
+//    }
+//    
+//    func socket(sock: GCDAsyncSocket!, didWritePartialDataOfLength partialLength: UInt, tag: Int) {
+//        NSLog("🎍#\(connectionId) didWritePartialDataOfLength \(partialLength)...")
+//    }
     
     func post(data: IOSByteArray!, withOffset offset: jint, withLen len: jint) {
         if (isSocketClosed) {
