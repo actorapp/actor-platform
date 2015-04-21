@@ -14,7 +14,6 @@
 //If RequestAuthCode return isRegistered = false than use SignUp method else SignIn.<br/>
 //If on any step API return PHONE_CODE_EXPIRED than application MUST start
 //authorization process from begining.<br/>
-//Each client MUST send valid RSA 2048 bit PublicKey encoded in x.509 format.<br/>
 
 // API#0x01
 // ResponseSendAuthCode
@@ -69,7 +68,6 @@ message ResponseAuth {
 // phoneNumber Phone number in international format
 // smsHash Code request hash from RequestAuthCode
 // smsCode Confirmation code from SMS
-// publicKey Device RSA 2048 bit public key in x.509 format
 // deviceHash Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled
 // deviceTitle Device title like 'Steven's iPhone'
 // appId Application ID
@@ -78,7 +76,6 @@ message RequestSignIn {
     required int64 phoneNumber = 1;
     required string smsHash = 2;
     required string smsCode = 3;
-    required bytes publicKey = 4;
     required bytes deviceHash = 5;
     required string deviceTitle = 6;
     required int32 appId = 7;
@@ -93,7 +90,6 @@ message RequestSignIn {
 // smsHash Code request hash from RequestAuthCode
 // smsCode Confirmation code from SMS
 // name User name
-// publicKey Device RSA 2048 bit public key in x.509 format
 // deviceHash Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled
 // deviceTitle Device title like 'Steven's iPhone'
 // appId Application ID
@@ -103,7 +99,6 @@ message RequestSignUp {
     required string smsHash = 2;
     required string smsCode = 3;
     required string name = 4;
-    required bytes publicKey = 6;
     required bytes deviceHash = 7;
     required string deviceTitle = 8;
     required int32 appId = 9;
@@ -560,15 +555,6 @@ message UpdateContactRegistered {
     required int64 date = 3;
 }
 
-// API#0x78
-// Update about email contact registered
-// emailId Email id
-// uid Registered user's id
-message UpdateEmailContactRegistered {
-    required int32 emailId = 1;
-    required int32 uid = 2;
-}
-
 // API#0x28
 // Update about contacts added
 // uids added contacts
@@ -733,16 +719,6 @@ message DocumentExVoice {
     required int32 duration = 1;
 }
 
-// Error's Related data for WRRONG_KEYS in sendMessage
-// newKeys added keys to user
-// removedKeys disabled keys
-// invalidKeys invalid keys
-message WrongKeysErrorData {
-    repeated UserKey newKeys = 1;
-    repeated UserKey removedKeys = 2;
-    repeated UserKey invalidKeys = 3;
-}
-
 // Encrypted AES key for encrypted messages
 // keyHash hash of public key of encrypted aes key
 // aesEncryptedKey encrypted aes key
@@ -820,7 +796,7 @@ message RequestMessageRead {
 }
 
 // API#0x62
-// ResponseVoid
+// ResponseSeq
 // Deleting messages
 // peer Destination peer
 // rids Message random id
@@ -843,22 +819,6 @@ message RequestClearChat {
 // peer Conversation peer
 message RequestDeleteChat {
     required OutPeer peer = 1;
-}
-
-// API#0x01
-// Update about encrypted message
-// peer Destination peer
-// senderUid sender of message
-// date date of message
-// keyHash device's public key hash
-// aesEncryptedKey Encrypted key for current device
-message UpdateEncryptedMessage {
-    required Peer peer = 1;
-    required int32 senderUid = 2;
-    required int64 date = 6;
-    required int64 keyHash = 3;
-    required bytes aesEncryptedKey = 4;
-    required bytes message = 5;
 }
 
 // API#0x37
@@ -885,37 +845,6 @@ message UpdateMessageSent {
     required Peer peer = 1;
     required int64 rid = 2;
     required int64 date = 3;
-}
-
-// API#0x12
-// Update about encrypted message received
-// peer Destination peer
-// rid Rid of message
-// receivedDate Date of receive
-message UpdateEncryptedReceived {
-    required Peer peer = 1;
-    required int64 rid = 2;
-    required int64 receivedDate = 3;
-}
-
-// API#0x34
-// Update about encrypted message read
-// peer Destination peer
-// rid Rid of message
-// readDate Date of read
-message UpdateEncryptedRead {
-    required Peer peer = 1;
-    required int64 rid = 2;
-    required int64 readDate = 3;
-}
-
-// API#0x35
-// Update about encrypted message read by me
-// peer Destination peer
-// rid Rid of message
-message UpdateEncryptedReadByMe {
-    required Peer peer = 1;
-    required int64 rid = 2;
 }
 
 // API#0x36
@@ -1201,7 +1130,7 @@ message UpdateGroupAvatarChanged {
 }
 
 //////////////////////////////////////////////////////
-// Message and Dialogs lists
+// History
 //////////////////////////////////////////////////////
 //<h1>Overview</h1>
 //Actor can work with encrypted and plain messages and encrypted messages does not appear in history,
@@ -1252,11 +1181,11 @@ message HistoryMessage {
 // ResponseLoadHistory
 // Loading history of chat
 // peer Peer of conversation
-// startDate start date of messages for loading or 0 for loading from start
+// minDate start date of messages for loading or 0 for loading from start
 // limit maximum amount of messages (max is 100)
 message RequestLoadHistory {
     required OutPeer peer = 1;
-    required int64 startDate = 3;
+    required int64 minDate = 3;
     required int32 limit = 4;
 }
 
@@ -1288,10 +1217,10 @@ message Dialog {
 // API#0x68
 // ResponseLoadDialogs
 // Loading conversation history
-// startDate start date of conversation loading
+// minDate start date of conversation loading. Use 0 to load latest messages
 // limit limit maximum amount of messages (max is 100)
 message RequestLoadDialogs {
-    required int64 startDate = 1;
+    required int64 minDate = 1;
     required int32 limit = 2;
 }
 
@@ -1300,142 +1229,6 @@ message ResponseLoadDialogs {
     repeated Group groups = 1;
     repeated User users = 2;
     repeated Dialog dialogs = 3;
-}
-
-//////////////////////////////////////////////////////
-// Encryption
-//////////////////////////////////////////////////////
-//When user authenticates application send it's RSA public key for receiving encrypted messages.
-//Each public key has keyHash that calculated on server side.
-//Before sending encrypted messages application need to download all required receiver's and own
-//public keys
-
-// User public key reference
-// uid User ID
-// keyHash Public key hash
-message UserKey {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-}
-
-// Public Key
-// uid Key's User Id
-// keyHash hash of user's key
-// key RSA Public Key in x.509 format
-message PublicKey {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-    required bytes key = 3;
-}
-
-// API#0x02
-// Update about new public key of user
-// uid User's ID
-// keyHash Public key hash
-// key optional RSA Public Key in x.509 format
-// date Date of adding new key
-message UpdateNewDevice {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-    optional bytes key = 3;
-    required int64 date = 4;
-}
-
-// API#0x25
-// Update about removing public key of user
-// uid User's ID
-// keyHash Key Hash of removed key
-message UpdateRemovedDevice {
-    required int32 uid = 1;
-    required int64 keyHash = 2;
-}
-
-// Request for download public key
-// uid uiser's ID
-// accessHash Access Hash of User
-// keyHash Public Key hash
-message PublicKeyRequest {
-    required int32 uid = 1;
-    required int64 accessHash = 2;
-    required int64 keyHash = 3;
-}
-
-// API#0x06
-// ResponseGetPublicKeys
-// Loading required publick keys
-// keys key requests
-message RequestGetPublicKeys {
-    repeated PublicKeyRequest keys = 1;
-}
-
-// API#0x18
-message ResponseGetPublicKeys {
-    repeated PublicKey keys = 1;
-}
-
-//////////////////////////////////////////////////////
-// Encrypted Messages
-//////////////////////////////////////////////////////
-
-// Encrypted package
-// v1MessageType Type of message v1. Always eq 1
-// v1Message Body of message v1
-// v1Crc32 Obsolete CRC32 of message type + body
-// v2Message Serialized EncryptedPackageV2
-// v2HmacSha256 HMAC-SHA256 of v2Message and AES key
-message EncryptedPackage {
-    optional int32 v1MessageType = 1;
-    optional bytes v1Message = 2;
-    optional int64 v1Crc32 = 3;
-    optional bytes v2Message = 5;
-    optional int64 v2HmacSha256 = 6;
-}
-
-message EncryptedMessageV1 {
-    required int64 rid = 1;
-    required int32 contentType = 2;
-    required bytes content = 3;
-}
-
-message EncryptedTextContentV1 {
-    required string text = 1;
-}
-
-message EncryptedDocumentV1 {
-    required string name = 1;
-    required string mimeType = 2;
-    required EncryptedFileLocationV1 fileLocation = 3;
-    optional FastThumb fastThumb = 4;
-    optional int32 extType = 5;
-    optional bytes extension = 6;
-}
-
-message EncryptedDocumentV1ExPhoto {
-    required int32 width = 1;
-    required int32 height = 2;
-}
-
-message EncryptedDocumentV1VExideo {
-    required int32 width = 1;
-    required int32 height = 2;
-    required int32 duration = 3;
-}
-
-message EncryptedFileLocationV1 {
-    required int64 fileId = 1;
-    required int64 accessHash = 2;
-    required int32 fileSize = 3;
-    optional EncryptionType encryptionType = 4;
-    optional int32 encryptedFileSize = 5;
-    optional bytes encryptionKey = 6;
-}
-
-// Conversation message
-// rid RandomId of message
-// content Content of message
-message EncryptedMessageV2 {
-    required int64 rid = 1;
-    required bytes content = 3;
 }
 
 //////////////////////////////////////////////////////
@@ -1559,66 +1352,93 @@ message FastThumb {
     required bytes thumb = 3;
 }
 
-// API#0x10
-// ResponseGetFile
-// Downloading file part
-// fileLocation location of file
-// offset offset in file in bytes
-// limit maximum size of file part
-message RequestGetFile {
-    required FileLocation fileLocation = 1;
-    required int32 offset = 2;
-    required int32 limit = 3;
+// API#0x4D
+// ResponserequestFileUrl
+// Requesting file URL for downloading
+// file file's location
+message RequestrequestFileUrl {
+    required FileLocation file = 1;
 }
 
-// API#0x11
-message ResponseGetFile {
-    required bytes payload = 1;
+// API#0x4E
+message ResponserequestFileUrl {
+    required string url = 1;
+    required int32 timeout = 2;
 }
 
-// Reference for upload session
-// serverData server related data for upload
-message UploadConfig {
-    required bytes serverData = 1;
+// API#0x61
+// ResponserequestFileUploadUrl
+// Requesting pload url
+// expectedSize Expected size of uploading file. May be inaccurate. Used for size allocation optimizations.
+message RequestrequestFileUploadUrl {
+    required int32 expectedSize = 1;
 }
 
-// API#0x12
-// ResponseStartUpload
-// Starting file upload
-message RequestStartUpload {
+// API#0x79
+message ResponserequestFileUploadUrl {
+    required string url = 1;
+    required bytes uploadKey = 2;
 }
 
-// API#0x13
-message ResponseStartUpload {
-    required UploadConfig config = 1;
+// API#0x7A
+// ResponserequestFileUploadCompleted
+// Comminting uploaded file to storage
+message RequestrequestFileUploadCompleted {
+    required bytes uploadKey = 1;
 }
 
-// API#0x14
-// ResponseVoid
-// Uploading part of file
-// blockIndex index of block
-// payload block payload
-message RequestUploadPart {
-    required UploadConfig config = 1;
-    required int32 blockIndex = 2;
-    required bytes payload = 3;
+// API#0x8A
+message ResponserequestFileUploadCompleted {
+    required FileLocation uploadedFileLocation = 1;
 }
 
-// API#0x16
-// ResponseCompleteUpload
-// Complete uploading
-// config Upload configuration
-// blocksCount blocks count
-// crc32 crc32 of uploaded file
-message RequestCompleteUpload {
-    required UploadConfig config = 1;
-    required int32 blocksCount = 2;
-    required int64 crc32 = 3;
+// API#0x8E
+// ResponserequestFileUploadPart
+// Upload file part
+// uploadKey Upload Key from requestFileUploadUrl
+message RequestrequestFileUploadPart {
+    required int32 partNumber = 1;
+    required int32 partSize = 2;
+    required bytes uploadKey = 3;
 }
 
-// API#0x17
-message ResponseCompleteUpload {
-    required FileLocation location = 1;
+// API#0x8D
+message ResponserequestFileUploadPart {
+    required string url = 1;
+}
+
+//////////////////////////////////////////////////////
+// Config sync
+//////////////////////////////////////////////////////
+//Parameter Syncronization across devices. Can be used for simple sync
+//across devices without rewriting server side code.
+
+message Parameter {
+    required string key = 1;
+    required string value = 2;
+}
+
+// API#0x86
+// ResponsegetParameters
+message RequestgetParameters {
+}
+
+// API#0x87
+message ResponsegetParameters {
+    repeated Parameter parameters = 1;
+}
+
+// API#0x80
+// ResponseSeq
+message RequestEditParameter {
+    required string key = 1;
+    required string value = 2;
+}
+
+// API#0x83
+message UpdateParameterChanged {
+    required string key = 1;
+    optional string value = 2;
 }
 
 //////////////////////////////////////////////////////

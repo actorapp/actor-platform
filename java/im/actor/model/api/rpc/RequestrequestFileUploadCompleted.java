@@ -17,29 +17,43 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestStartUpload extends Request<ResponseStartUpload> {
+public class RequestrequestFileUploadCompleted extends Request<ResponserequestFileUploadCompleted> {
 
-    public static final int HEADER = 0x12;
-    public static RequestStartUpload fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestStartUpload(), data);
+    public static final int HEADER = 0x7a;
+    public static RequestrequestFileUploadCompleted fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestrequestFileUploadCompleted(), data);
     }
 
+    private byte[] uploadKey;
 
-    public RequestStartUpload() {
+    public RequestrequestFileUploadCompleted(byte[] uploadKey) {
+        this.uploadKey = uploadKey;
+    }
 
+    public RequestrequestFileUploadCompleted() {
+
+    }
+
+    public byte[] getUploadKey() {
+        return this.uploadKey;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
+        this.uploadKey = values.getBytes(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        if (this.uploadKey == null) {
+            throw new IOException();
+        }
+        writer.writeBytes(1, this.uploadKey);
     }
 
     @Override
     public String toString() {
-        String res = "rpc StartUpload{";
+        String res = "rpc requestFileUploadCompleted{";
         res += "}";
         return res;
     }

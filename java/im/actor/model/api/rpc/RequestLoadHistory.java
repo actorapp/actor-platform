@@ -25,12 +25,12 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     }
 
     private OutPeer peer;
-    private long startDate;
+    private long minDate;
     private int limit;
 
-    public RequestLoadHistory(OutPeer peer, long startDate, int limit) {
+    public RequestLoadHistory(OutPeer peer, long minDate, int limit) {
         this.peer = peer;
-        this.startDate = startDate;
+        this.minDate = minDate;
         this.limit = limit;
     }
 
@@ -42,8 +42,8 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
         return this.peer;
     }
 
-    public long getStartDate() {
-        return this.startDate;
+    public long getMinDate() {
+        return this.minDate;
     }
 
     public int getLimit() {
@@ -53,7 +53,7 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     @Override
     public void parse(BserValues values) throws IOException {
         this.peer = values.getObj(1, new OutPeer());
-        this.startDate = values.getLong(3);
+        this.minDate = values.getLong(3);
         this.limit = values.getInt(4);
     }
 
@@ -63,7 +63,7 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
             throw new IOException();
         }
         writer.writeObject(1, this.peer);
-        writer.writeLong(3, this.startDate);
+        writer.writeLong(3, this.minDate);
         writer.writeInt(4, this.limit);
     }
 
@@ -71,7 +71,7 @@ public class RequestLoadHistory extends Request<ResponseLoadHistory> {
     public String toString() {
         String res = "rpc LoadHistory{";
         res += "peer=" + this.peer;
-        res += ", startDate=" + this.startDate;
+        res += ", minDate=" + this.minDate;
         res += ", limit=" + this.limit;
         res += "}";
         return res;

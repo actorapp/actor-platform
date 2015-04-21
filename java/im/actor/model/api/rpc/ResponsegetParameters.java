@@ -17,43 +17,44 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class ResponseStartUpload extends Response {
+public class ResponsegetParameters extends Response {
 
-    public static final int HEADER = 0x13;
-    public static ResponseStartUpload fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseStartUpload(), data);
+    public static final int HEADER = 0x87;
+    public static ResponsegetParameters fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponsegetParameters(), data);
     }
 
-    private UploadConfig config;
+    private List<Parameter> parameters;
 
-    public ResponseStartUpload(UploadConfig config) {
-        this.config = config;
+    public ResponsegetParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
     }
 
-    public ResponseStartUpload() {
+    public ResponsegetParameters() {
 
     }
 
-    public UploadConfig getConfig() {
-        return this.config;
+    public List<Parameter> getParameters() {
+        return this.parameters;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.config = values.getObj(1, new UploadConfig());
+        List<Parameter> _parameters = new ArrayList<Parameter>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _parameters.add(new Parameter());
+        }
+        this.parameters = values.getRepeatedObj(1, _parameters);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.config == null) {
-            throw new IOException();
-        }
-        writer.writeObject(1, this.config);
+        writer.writeRepeatedObj(1, this.parameters);
     }
 
     @Override
     public String toString() {
-        String res = "tuple StartUpload{";
+        String res = "tuple getParameters{";
         res += "}";
         return res;
     }

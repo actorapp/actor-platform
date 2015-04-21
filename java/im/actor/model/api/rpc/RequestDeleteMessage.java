@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestDeleteMessage extends Request<ResponseVoid> {
+public class RequestDeleteMessage extends Request<ResponseSeq> {
 
     public static final int HEADER = 0x62;
     public static RequestDeleteMessage fromBytes(byte[] data) throws IOException {
