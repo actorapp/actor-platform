@@ -2863,128 +2863,6 @@
           "type": "empty"
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "EncryptedAesKey",
-            "doc": [
-              "Encrypted AES key for encrypted messages",
-              {
-                "type": "reference",
-                "argument": "keyHash",
-                "category": "full",
-                "description": "  hash of public key of encrypted aes key"
-              },
-              {
-                "type": "reference",
-                "argument": "aesEncryptedKey",
-                "category": "compact",
-                "description": "  encrypted aes key"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "keyHash"
-              },
-              {
-                "type": "bytes",
-                "id": 2,
-                "name": "aesEncryptedKey"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "SendEncryptedMessage",
-            "header": 14,
-            "response": {
-              "type": "reference",
-              "name": "SeqDate"
-            },
-            "doc": [
-              "Sending encrypted message",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Destination peer for message"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "Message random id (generated on client side)"
-              },
-              {
-                "type": "reference",
-                "argument": "encryptedMessage",
-                "category": "compact",
-                "description": "message encrypted by random aes key"
-              },
-              {
-                "type": "reference",
-                "argument": "keys",
-                "category": "compact",
-                "description": "encrypted aes keys for receivers devices"
-              },
-              {
-                "type": "reference",
-                "argument": "ownKeys",
-                "category": "compact",
-                "description": "encrypted aes keys for own devices"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 3,
-                "name": "rid"
-              },
-              {
-                "type": "bytes",
-                "id": 4,
-                "name": "encryptedMessage"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "EncryptedAesKey"
-                  }
-                },
-                "id": 5,
-                "name": "keys"
-              },
-              {
-                "type": {
-                  "type": "list",
-                  "childType": {
-                    "type": "struct",
-                    "childType": "EncryptedAesKey"
-                  }
-                },
-                "id": 6,
-                "name": "ownKeys"
-              }
-            ]
-          }
-        },
-        {
           "type": "rpc",
           "content": {
             "name": "SendMessage",
@@ -3609,6 +3487,409 @@
                 },
                 "id": 1,
                 "name": "peer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "MessageState",
+            "values": [
+              {
+                "name": "Sent",
+                "id": 1
+              },
+              {
+                "name": "Received",
+                "id": 2
+              },
+              {
+                "name": "Read",
+                "id": 3
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "HistoryMessage",
+            "doc": [
+              "Message from history",
+              {
+                "type": "reference",
+                "argument": "senderUid",
+                "category": "full",
+                "description": "  Sender of mesasge"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random Id of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Content of message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "senderUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 5,
+                "name": "message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "MessageState"
+                  }
+                },
+                "id": 6,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadHistory",
+            "header": 118,
+            "response": {
+              "type": "anonymous",
+              "header": 119,
+              "doc": [
+                "Loaded history",
+                {
+                  "type": "reference",
+                  "argument": "history",
+                  "category": "compact",
+                  "description": "  Messages"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "HistoryMessage"
+                    }
+                  },
+                  "id": 1,
+                  "name": "history"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                }
+              ]
+            },
+            "doc": [
+              "Loading history of chat",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "Peer of conversation"
+              },
+              {
+                "type": "reference",
+                "argument": "minDate",
+                "category": "full",
+                "description": "start date of messages for loading or 0 for loading from start"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "category": "full",
+                "description": "maximum amount of messages (max is 100)"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "minDate"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "limit"
+              }
+            ]
+          }
+        },
+        {
+          "type": "empty"
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Dialog",
+            "doc": [
+              "Conversation from history",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Peer of conversation"
+              },
+              {
+                "type": "reference",
+                "argument": "unreadCount",
+                "category": "full",
+                "description": "  plain messages unread messages count"
+              },
+              {
+                "type": "reference",
+                "argument": "sortDate",
+                "category": "full",
+                "description": "  date of conversation for sorting"
+              },
+              {
+                "type": "reference",
+                "argument": "senderUid",
+                "category": "full",
+                "description": "  Sender of top message (may be zero)"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Random ID of top message (may be zero)"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of top message (can't be zero)"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Content of message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "unreadCount"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 4,
+                "name": "sortDate"
+              },
+              {
+                "type": "int32",
+                "id": 5,
+                "name": "senderUid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 6,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 7,
+                "name": "date"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 8,
+                "name": "message"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "MessageState"
+                  }
+                },
+                "id": 9,
+                "name": "state"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "LoadDialogs",
+            "header": 104,
+            "response": {
+              "type": "anonymous",
+              "header": 105,
+              "doc": [
+                "Loaded dialogs",
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Loaded groups"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Loaded users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "dialogs",
+                  "category": "compact",
+                  "description": "  Loaded dialogs"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Group"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Dialog"
+                    }
+                  },
+                  "id": 3,
+                  "name": "dialogs"
+                }
+              ]
+            },
+            "doc": [
+              "Loading conversation history",
+              {
+                "type": "reference",
+                "argument": "minDate",
+                "category": "full",
+                "description": "start date of conversation loading. Use 0 to load latest messages"
+              },
+              {
+                "type": "reference",
+                "argument": "limit",
+                "category": "full",
+                "description": "limit maximum amount of messages (max is 100)"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 1,
+                "name": "minDate"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "limit"
               }
             ]
           }
@@ -4755,442 +5036,6 @@
                 },
                 "id": 4,
                 "name": "date"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "title": "History",
-      "package": "history",
-      "doc": [
-        "<h1>Overview</h1>",
-        "Actor can work with encrypted and plain messages and encrypted messages does not appear in history,",
-        "but it affects conversation lists.",
-        "<h1>Messages ordering</h1>",
-        "Server provide date in milliseconds for accurate ordering of incoming messages in applications.",
-        "NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message",
-        "for the conversation conversation keep its position. Some events doesn't move conversation to top",
-        "of conversations list. For example leaving chat or new device notification doesn't move it up.",
-        "<h1>Deleting of messages</h1>",
-        "For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion.",
-        "Deletion of message is irreversible for now.",
-        "<h1>Deleting and clearing of conversation</h1>",
-        "Clearing of conversation deletes all messages in conversation and clears top message in conversation list.",
-        "Deletion of conversation deletes all messages and removes conversation from conversations list.",
-        "For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F.",
-        "Deletion by ChatDelete of group causes automatic group leaving.",
-        "<h1>Loading history</h1>",
-        "For loading conversation list use method LoadDialogs#0x68.",
-        "When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains",
-        "two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list.",
-        "",
-        "For loading history of conversation use method LoadHistory#0x68.",
-        "",
-        "Loading initial list are called with zero startDate and after loading more messages",
-        "we will use maximum date from messages for startDate value."
-      ],
-      "items": [
-        {
-          "type": "enum",
-          "content": {
-            "name": "MessageState",
-            "values": [
-              {
-                "name": "Sent",
-                "id": 1
-              },
-              {
-                "name": "Received",
-                "id": 2
-              },
-              {
-                "name": "Read",
-                "id": 3
-              }
-            ]
-          }
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "HistoryMessage",
-            "doc": [
-              "Message from history",
-              {
-                "type": "reference",
-                "argument": "senderUid",
-                "category": "full",
-                "description": "  Sender of mesasge"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random Id of message"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of message"
-              },
-              {
-                "type": "reference",
-                "argument": "message",
-                "category": "full",
-                "description": "  Content of message"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "senderUid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 2,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 3,
-                "name": "date"
-              },
-              {
-                "type": {
-                  "type": "trait",
-                  "childType": "Message"
-                },
-                "id": 5,
-                "name": "message"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "enum",
-                    "childType": "MessageState"
-                  }
-                },
-                "id": 6,
-                "name": "state"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LoadHistory",
-            "header": 118,
-            "response": {
-              "type": "anonymous",
-              "header": 119,
-              "doc": [
-                "Loaded history",
-                {
-                  "type": "reference",
-                  "argument": "history",
-                  "category": "compact",
-                  "description": "  Messages"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "compact",
-                  "description": "  Loaded users"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "HistoryMessage"
-                    }
-                  },
-                  "id": 1,
-                  "name": "history"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                }
-              ]
-            },
-            "doc": [
-              "Loading history of chat",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "Peer of conversation"
-              },
-              {
-                "type": "reference",
-                "argument": "minDate",
-                "category": "full",
-                "description": "start date of messages for loading or 0 for loading from start"
-              },
-              {
-                "type": "reference",
-                "argument": "limit",
-                "category": "full",
-                "description": "maximum amount of messages (max is 100)"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "OutPeer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 3,
-                "name": "minDate"
-              },
-              {
-                "type": "int32",
-                "id": 4,
-                "name": "limit"
-              }
-            ]
-          }
-        },
-        {
-          "type": "empty"
-        },
-        {
-          "type": "struct",
-          "content": {
-            "name": "Dialog",
-            "doc": [
-              "Conversation from history",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "full",
-                "description": "  Peer of conversation"
-              },
-              {
-                "type": "reference",
-                "argument": "unreadCount",
-                "category": "full",
-                "description": "  plain messages unread messages count"
-              },
-              {
-                "type": "reference",
-                "argument": "sortDate",
-                "category": "full",
-                "description": "  date of conversation for sorting"
-              },
-              {
-                "type": "reference",
-                "argument": "senderUid",
-                "category": "full",
-                "description": "  Sender of top message (may be zero)"
-              },
-              {
-                "type": "reference",
-                "argument": "rid",
-                "category": "full",
-                "description": "  Random ID of top message (may be zero)"
-              },
-              {
-                "type": "reference",
-                "argument": "date",
-                "category": "full",
-                "description": "  Date of top message (can't be zero)"
-              },
-              {
-                "type": "reference",
-                "argument": "message",
-                "category": "full",
-                "description": "  Content of message"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "Peer"
-                },
-                "id": 1,
-                "name": "peer"
-              },
-              {
-                "type": "int32",
-                "id": 3,
-                "name": "unreadCount"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 4,
-                "name": "sortDate"
-              },
-              {
-                "type": "int32",
-                "id": 5,
-                "name": "senderUid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "randomId"
-                },
-                "id": 6,
-                "name": "rid"
-              },
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 7,
-                "name": "date"
-              },
-              {
-                "type": {
-                  "type": "trait",
-                  "childType": "Message"
-                },
-                "id": 8,
-                "name": "message"
-              },
-              {
-                "type": {
-                  "type": "opt",
-                  "childType": {
-                    "type": "enum",
-                    "childType": "MessageState"
-                  }
-                },
-                "id": 9,
-                "name": "state"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "LoadDialogs",
-            "header": 104,
-            "response": {
-              "type": "anonymous",
-              "header": 105,
-              "doc": [
-                "Loaded dialogs",
-                {
-                  "type": "reference",
-                  "argument": "groups",
-                  "category": "compact",
-                  "description": "  Loaded groups"
-                },
-                {
-                  "type": "reference",
-                  "argument": "users",
-                  "category": "compact",
-                  "description": "  Loaded users"
-                },
-                {
-                  "type": "reference",
-                  "argument": "dialogs",
-                  "category": "compact",
-                  "description": "  Loaded dialogs"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Group"
-                    }
-                  },
-                  "id": 1,
-                  "name": "groups"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Dialog"
-                    }
-                  },
-                  "id": 3,
-                  "name": "dialogs"
-                }
-              ]
-            },
-            "doc": [
-              "Loading conversation history",
-              {
-                "type": "reference",
-                "argument": "minDate",
-                "category": "full",
-                "description": "start date of conversation loading. Use 0 to load latest messages"
-              },
-              {
-                "type": "reference",
-                "argument": "limit",
-                "category": "full",
-                "description": "limit maximum amount of messages (max is 100)"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "alias",
-                  "childType": "date"
-                },
-                "id": 1,
-                "name": "minDate"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "limit"
               }
             ]
           }

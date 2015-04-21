@@ -711,30 +711,6 @@ message DocumentExVoice {
     required int32 duration = 1;
 }
 
-// Encrypted AES key for encrypted messages
-// keyHash hash of public key of encrypted aes key
-// aesEncryptedKey encrypted aes key
-message EncryptedAesKey {
-    required int64 keyHash = 1;
-    required bytes aesEncryptedKey = 2;
-}
-
-// API#0x0E
-// ResponseSeqDate
-// Sending encrypted message
-// peer Destination peer for message
-// rid Message random id (generated on client side)
-// encryptedMessage message encrypted by random aes key
-// keys encrypted aes keys for receivers devices
-// ownKeys encrypted aes keys for own devices
-message RequestSendEncryptedMessage {
-    required OutPeer peer = 1;
-    required int64 rid = 3;
-    required bytes encryptedMessage = 4;
-    repeated EncryptedAesKey keys = 5;
-    repeated EncryptedAesKey ownKeys = 6;
-}
-
 // API#0x5C
 // ResponseSeqDate
 // Sending plain message
@@ -871,6 +847,79 @@ message UpdateChatClear {
 // peer Destination peer
 message UpdateChatDelete {
     required Peer peer = 1;
+}
+
+enum MessageState {
+    SENT = 1;
+    RECEIVED = 2;
+    READ = 3;
+}
+
+// Message from history
+// senderUid Sender of mesasge
+// rid Random Id of message
+// date Date of message
+// message Content of message
+message HistoryMessage {
+    required int32 senderUid = 1;
+    required int64 rid = 2;
+    required int64 date = 3;
+    required bytes message = 5;
+    optional MessageState state = 6;
+}
+
+// API#0x76
+// ResponseLoadHistory
+// Loading history of chat
+// peer Peer of conversation
+// minDate start date of messages for loading or 0 for loading from start
+// limit maximum amount of messages (max is 100)
+message RequestLoadHistory {
+    required OutPeer peer = 1;
+    required int64 minDate = 3;
+    required int32 limit = 4;
+}
+
+// API#0x77
+message ResponseLoadHistory {
+    repeated HistoryMessage history = 1;
+    repeated User users = 2;
+}
+
+// Conversation from history
+// peer Peer of conversation
+// unreadCount plain messages unread messages count
+// sortDate date of conversation for sorting
+// senderUid Sender of top message (may be zero)
+// rid Random ID of top message (may be zero)
+// date Date of top message (can't be zero)
+// message Content of message
+message Dialog {
+    required Peer peer = 1;
+    required int32 unreadCount = 3;
+    required int64 sortDate = 4;
+    required int32 senderUid = 5;
+    required int64 rid = 6;
+    required int64 date = 7;
+    required bytes message = 8;
+    optional MessageState state = 9;
+}
+
+// API#0x68
+// ResponseLoadDialogs
+// Loading conversation history
+// minDate start date of conversation loading. Use 0 to load latest messages
+// limit limit maximum amount of messages (max is 100)
+message RequestLoadDialogs {
+    required int64 minDate = 1;
+    required int32 limit = 2;
+}
+
+// API#0x69
+message ResponseLoadDialogs {
+    repeated Group groups = 1;
+    repeated User users = 2;
+    repeated Dialog dialogs = 3;
 }
 
 //////////////////////////////////////////////////////
@@ -1099,108 +1148,6 @@ message UpdateGroupAvatarChanged {
     required int32 uid = 2;
     optional Avatar avatar = 3;
     required int64 date = 4;
-}
-
-//////////////////////////////////////////////////////
-// History
-//////////////////////////////////////////////////////
-//<h1>Overview</h1>
-//Actor can work with encrypted and plain messages and encrypted messages does not appear in history,
-//but it affects conversation lists.
-//<h1>Messages ordering</h1>
-//Server provide date in milliseconds for accurate ordering of incoming messages in applications.
-//NOTHING can move conversation on conversation list down on list. For example if you clean chat or delete top message
-//for the conversation conversation keep its position. Some events doesn't move conversation to top
-//of conversations list. For example leaving chat or new device notification doesn't move it up.
-//<h1>Deleting of messages</h1>
-//For deletion of messages either plain or encrypted there is method MessageDelete#0x62 deletion.
-//Deletion of message is irreversible for now.
-//<h1>Deleting and clearing of conversation</h1>
-//Clearing of conversation deletes all messages in conversation and clears top message in conversation list.
-//Deletion of conversation deletes all messages and removes conversation from conversations list.
-//For sync this operations there are updates ChatDelete#0x30 and ChatClear#0x2F.
-//Deletion by ChatDelete of group causes automatic group leaving.
-//<h1>Loading history</h1>
-//For loading conversation list use method LoadDialogs#0x68.
-//When top message in conversation is encrypted than dialog item will contain empty text. Dialog item contains
-//two dates - visual and sort, visual used for displaying date and sort for sorting dialog in dialog list.
-//
-//For loading history of conversation use method LoadHistory#0x68.
-//
-//Loading initial list are called with zero startDate and after loading more messages
-//we will use maximum date from messages for startDate value.
-
-enum MessageState {
-    SENT = 1;
-    RECEIVED = 2;
-    READ = 3;
-}
-
-// Message from history
-// senderUid Sender of mesasge
-// rid Random Id of message
-// date Date of message
-// message Content of message
-message HistoryMessage {
-    required int32 senderUid = 1;
-    required int64 rid = 2;
-    required int64 date = 3;
-    required bytes message = 5;
-    optional MessageState state = 6;
-}
-
-// API#0x76
-// ResponseLoadHistory
-// Loading history of chat
-// peer Peer of conversation
-// minDate start date of messages for loading or 0 for loading from start
-// limit maximum amount of messages (max is 100)
-message RequestLoadHistory {
-    required OutPeer peer = 1;
-    required int64 minDate = 3;
-    required int32 limit = 4;
-}
-
-// API#0x77
-message ResponseLoadHistory {
-    repeated HistoryMessage history = 1;
-    repeated User users = 2;
-}
-
-// Conversation from history
-// peer Peer of conversation
-// unreadCount plain messages unread messages count
-// sortDate date of conversation for sorting
-// senderUid Sender of top message (may be zero)
-// rid Random ID of top message (may be zero)
-// date Date of top message (can't be zero)
-// message Content of message
-message Dialog {
-    required Peer peer = 1;
-    required int32 unreadCount = 3;
-    required int64 sortDate = 4;
-    required int32 senderUid = 5;
-    required int64 rid = 6;
-    required int64 date = 7;
-    required bytes message = 8;
-    optional MessageState state = 9;
-}
-
-// API#0x68
-// ResponseLoadDialogs
-// Loading conversation history
-// minDate start date of conversation loading. Use 0 to load latest messages
-// limit limit maximum amount of messages (max is 100)
-message RequestLoadDialogs {
-    required int64 minDate = 1;
-    required int32 limit = 2;
-}
-
-// API#0x69
-message ResponseLoadDialogs {
-    repeated Group groups = 1;
-    repeated User users = 2;
-    repeated Dialog dialogs = 3;
 }
 
 //////////////////////////////////////////////////////
