@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(AMTiming, TAG_, NSString *)
   
 #line 38
   if (self->sectionName_ != nil) {
-    AMLog_dWithNSString_withNSString_(TAG_, JreStrcat("$$J$", self->sectionName_, @" loaded in ", (sectionStart_ - DKActorTime_currentTime()), @" ms"));
+    AMLog_dWithNSString_withNSString_(TAG_, JreStrcat("$$J$", self->sectionName_, @" loaded in ", (DKActorTime_currentTime() - sectionStart_), @" ms"));
     self->sectionName_ = nil;
   }
 }
