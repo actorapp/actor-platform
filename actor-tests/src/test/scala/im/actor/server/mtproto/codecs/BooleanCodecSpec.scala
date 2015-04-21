@@ -1,10 +1,10 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.bits._
-import scodec._
-import org.scalacheck._
 import org.scalacheck.Prop._
-import org.specs2.mutable.Specification
+import org.scalacheck._
+import org.scalatest.{ FlatSpec, Matchers }
+import scodec._
+import scodec.bits._
 
 object BooleanCodecProp extends Properties("BooleanCodec") {
   property("encode/decode") = forAll { (b: Boolean) =>
@@ -14,18 +14,16 @@ object BooleanCodecProp extends Properties("BooleanCodec") {
   }
 }
 
-class BooleanCodecSpec extends Specification {
-  "BooleanCodecSpec" should {
-    "encode Boolean" in {
-      boolean.encode(true).require should_== hex"1".bits
-      boolean.encode(false).require should_== hex"0".bits
-    }
+class BooleanCodecSpec extends FlatSpec with Matchers {
+  "BooleanCodecSpec" should "encode Boolean" in {
+    boolean.encode(true).require should ===(hex"1".bits)
+    boolean.encode(false).require should ===(hex"0".bits)
+  }
 
-    "decode bytes to Boolean" in {
-      val tail = BitVector(hex"feed")
-      boolean.decode(hex"00feed".bits).require should_== DecodeResult(false, tail)
-      boolean.decode(hex"01feed".bits).require should_== DecodeResult(true, tail)
-      boolean.decode(hex"fffeed".bits).require should_== DecodeResult(true, tail)
-    }
+  it should "decode bytes to Boolean" in {
+    val tail = BitVector(hex"feed")
+    boolean.decode(hex"00feed".bits).require should ===(DecodeResult(false, tail))
+    boolean.decode(hex"01feed".bits).require should ===(DecodeResult(true, tail))
+    boolean.decode(hex"fffeed".bits).require should ===(DecodeResult(true, tail))
   }
 }

@@ -1,11 +1,11 @@
 package im.actor.server.mtproto.codecs
 
-import test.utils.scalacheck.Generators._
-import scodec.bits._
-import scodec._
-import org.scalacheck._
 import org.scalacheck.Prop._
-import org.specs2.mutable.Specification
+import org.scalacheck._
+import org.scalatest.{ FlatSpec, Matchers }
+import scodec._
+import scodec.bits._
+import test.utils.scalacheck.Generators._
 
 object BytesCodecProp extends Properties("BytesCodec") {
   property("encode/decode") = forAll(genBV()) { (a: BitVector) =>
@@ -15,18 +15,16 @@ object BytesCodecProp extends Properties("BytesCodec") {
   }
 }
 
-class BytesCodecSpec extends Specification {
-  "BytesCodec" should {
-    "encode ByteVector" in {
-      val b = hex"feedfeedfeed".bits
-      bytes.encode(b).require should_== (hex"6".bits ++ b)
-    }
+class BytesCodecSpec extends FlatSpec with Matchers {
+  "BytesCodec" should "encode ByteVector" in {
+    val b = hex"feedfeedfeed".bits
+    bytes.encode(b).require should ===(hex"6".bits ++ b)
+  }
 
-    "decode bytes to ByteVector" in {
-      val tail = BitVector(hex"feed")
-      val b = hex"feedfeedfeed".bits
-      val res = bytes.decode(hex"6".bits ++ b ++ tail).require
-      res should_== DecodeResult(b, tail)
-    }
+  it should "decode bytes to ByteVector" in {
+    val tail = BitVector(hex"feed")
+    val b = hex"feedfeedfeed".bits
+    val res = bytes.decode(hex"6".bits ++ b ++ tail).require
+    res should ===(DecodeResult(b, tail))
   }
 }
