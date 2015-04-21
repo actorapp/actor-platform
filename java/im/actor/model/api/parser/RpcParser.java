@@ -43,13 +43,14 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 89: return RequestRemoveContact.fromBytes(payload);
             case 114: return RequestAddContact.fromBytes(payload);
             case 112: return RequestSearchContacts.fromBytes(payload);
-            case 14: return RequestSendEncryptedMessage.fromBytes(payload);
             case 92: return RequestSendMessage.fromBytes(payload);
             case 55: return RequestMessageReceived.fromBytes(payload);
             case 57: return RequestMessageRead.fromBytes(payload);
             case 98: return RequestDeleteMessage.fromBytes(payload);
             case 99: return RequestClearChat.fromBytes(payload);
             case 100: return RequestDeleteChat.fromBytes(payload);
+            case 118: return RequestLoadHistory.fromBytes(payload);
+            case 104: return RequestLoadDialogs.fromBytes(payload);
             case 65: return RequestCreateGroup.fromBytes(payload);
             case 85: return RequestEditGroupTitle.fromBytes(payload);
             case 86: return RequestEditGroupAvatar.fromBytes(payload);
@@ -57,8 +58,6 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 69: return RequestInviteUser.fromBytes(payload);
             case 70: return RequestLeaveGroup.fromBytes(payload);
             case 71: return RequestKickUser.fromBytes(payload);
-            case 118: return RequestLoadHistory.fromBytes(payload);
-            case 104: return RequestLoadDialogs.fromBytes(payload);
             case 27: return RequestTyping.fromBytes(payload);
             case 29: return RequestSetOnline.fromBytes(payload);
             case 77: return RequestrequestFileUrl.fromBytes(payload);
@@ -83,10 +82,10 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 8: return ResponseImportContacts.fromBytes(payload);
             case 88: return ResponseGetContacts.fromBytes(payload);
             case 113: return ResponseSearchContacts.fromBytes(payload);
-            case 66: return ResponseCreateGroup.fromBytes(payload);
-            case 115: return ResponseEditGroupAvatar.fromBytes(payload);
             case 119: return ResponseLoadHistory.fromBytes(payload);
             case 105: return ResponseLoadDialogs.fromBytes(payload);
+            case 66: return ResponseCreateGroup.fromBytes(payload);
+            case 115: return ResponseEditGroupAvatar.fromBytes(payload);
             case 78: return ResponserequestFileUrl.fromBytes(payload);
             case 121: return ResponserequestFileUploadUrl.fromBytes(payload);
             case 138: return ResponserequestFileUploadCompleted.fromBytes(payload);
