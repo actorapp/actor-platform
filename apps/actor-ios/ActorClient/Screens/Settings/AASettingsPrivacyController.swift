@@ -38,6 +38,8 @@ class AASettingsPrivacyController: AATableViewController {
         navigationItem.title = NSLocalizedString("PrivacyTitle", comment: "Controller title")
         
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
 //        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
 //        let messenger = CocoaMessenger.messenger().loadSessions()

@@ -9,7 +9,7 @@
 import Foundation
 
 
-var MainAppTheme = AppTheme()
+var MainAppTheme = LlectroTheme()//AppTheme()
 
 var isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 

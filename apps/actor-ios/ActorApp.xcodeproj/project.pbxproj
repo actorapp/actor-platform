@@ -688,6 +688,8 @@
 		067144521AB0947000364820 /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067144511AB0947000364820 /* AABubbleTextCell.swift */; };
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0671592E1ABC830E00D95719 /* CocoaNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592D1ABC830E00D95719 /* CocoaNetworking.swift */; };
+		0672D2011AE64CAB0001CD32 /* LlectroTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */; };
+		0672D2031AE676D60001CD32 /* AATableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2021AE676D60001CD32 /* AATableViewHeader.swift */; };
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
 		0699D4C11ADC80B20005AB9B /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4C01ADC80B20005AB9B /* AppTheme.swift */; };
 		0699D4C61ADC8D820005AB9B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
@@ -703,7 +705,6 @@
 		06A907D11AB7AE8200E087EA /* notification.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 06A907D01AB7AE8200E087EA /* notification.aiff */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
-		06ABC77F1AAF458B00C1B932 /* ContactsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
 		06ABC7831AAF57A000C1B932 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7821AAF57A000C1B932 /* MainTabController.swift */; };
 		06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */; };
@@ -2082,6 +2083,8 @@
 		067144511AB0947000364820 /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
 		0671592D1ABC830E00D95719 /* CocoaNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaNetworking.swift; sourceTree = "<group>"; };
+		0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LlectroTheme.swift; sourceTree = "<group>"; };
+		0672D2021AE676D60001CD32 /* AATableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewHeader.swift; sourceTree = "<group>"; };
 		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0699D4C01ADC80B20005AB9B /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		0699D4C51ADC8D670005AB9B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -2102,8 +2105,7 @@
 		06A907D01AB7AE8200E087EA /* notification.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = notification.aiff; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineListController.swift; sourceTree = "<group>"; };
-		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsViewController.swift; sourceTree = "<group>"; };
-		06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContactsViewController.xib; sourceTree = "<group>"; };
+		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabController.swift; path = ../MainTabController.swift; sourceTree = "<group>"; };
 		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineSlackListController.swift; sourceTree = "<group>"; };
@@ -2281,6 +2283,7 @@
 				05EDCD3A1ADDA97F00C57CEF /* AATitledCell.swift */,
 				05D4D31B1ADFA9A60080E6C7 /* AAMenuController.swift */,
 				05D4D31D1ADFB1D80080E6C7 /* AALongPressGestureRecognizer.swift */,
+				0672D2021AE676D60001CD32 /* AATableViewHeader.swift */,
 			);
 			name = Root;
 			sourceTree = "<group>";
@@ -4270,17 +4273,26 @@
 		0612BC901AE48FDB001EE387 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */,
 				06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */,
 				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
 			);
 			name = Main;
 			sourceTree = "<group>";
 		};
+		0672D1FF1AE64C670001CD32 /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				0699D4C01ADC80B20005AB9B /* AppTheme.swift */,
+				0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */,
+			);
+			name = Themes;
+			sourceTree = "<group>";
+		};
 		069FE6CA1AC017AA00C6C033 /* ScreensOld */ = {
 			isa = PBXGroup;
 			children = (
 				069FE6D21AC0203100C6C033 /* Common */,
-				069FE6D31AC0204A00C6C033 /* Main */,
 				069FE6D41AC0207A00C6C033 /* Views */,
 				065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */,
 				065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */,
@@ -4304,15 +4316,6 @@
 				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
 			);
 			name = Common;
-			sourceTree = "<group>";
-		};
-		069FE6D31AC0204A00C6C033 /* Main */ = {
-			isa = PBXGroup;
-			children = (
-				06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */,
-				06ABC77D1AAF458B00C1B932 /* ContactsViewController.xib */,
-			);
-			name = Main;
 			sourceTree = "<group>";
 		};
 		069FE6D41AC0207A00C6C033 /* Views */ = {
@@ -4394,7 +4397,7 @@
 				069FE6CA1AC017AA00C6C033 /* ScreensOld */,
 				2563889E1A99C09D00A5E0E3 /* Model */,
 				06E4842C1AB78D7E00AA272F /* Utils */,
-				0699D4C01ADC80B20005AB9B /* AppTheme.swift */,
+				0672D1FF1AE64C670001CD32 /* Themes */,
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
 				0603232D1ADF066500C73C0F /* App.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
@@ -4634,7 +4637,6 @@
 				06BFDB561AB1D14900F16E43 /* Roboto-Medium.ttf in Resources */,
 				06BFDB571AB1D14900F16E43 /* Roboto-Regular.ttf in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
-				06ABC77F1AAF458B00C1B932 /* ContactsViewController.xib in Resources */,
 				06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */,
 				06A907D11AB7AE8200E087EA /* notification.aiff in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
@@ -4884,6 +4886,7 @@
 				0612BB3C1AE4835D001EE387 /* SyncKeyValue.m in Sources */,
 				0612BA651AE4835D001EE387 /* RequestGetPublicKeys.m in Sources */,
 				0612BACF1AE4835D001EE387 /* UpdateUserLocalNameChanged.m in Sources */,
+				0672D2011AE64CAB0001CD32 /* LlectroTheme.swift in Sources */,
 				0612BA6B1AE4835D001EE387 /* RequestLoadDialogs.m in Sources */,
 				0612BB6E1AE4835D001EE387 /* JavaAtomicInteger.m in Sources */,
 				0612BC4A1AE4835D001EE387 /* ParametersWithSalt.m in Sources */,
@@ -5075,6 +5078,7 @@
 				0612BAAE1AE4835D001EE387 /* UpdateContactsAdded.m in Sources */,
 				0612BB471AE4835D001EE387 /* PhotoContent.m in Sources */,
 				05D4D31C1ADFA9A60080E6C7 /* AAMenuController.swift in Sources */,
+				0672D2031AE676D60001CD32 /* AATableViewHeader.swift in Sources */,
 				0612BA3C1AE4835D001EE387 /* EncryptedPackageV2Unsupported.m in Sources */,
 				0612BB3A1AE4835D001EE387 /* ObjectCache.m in Sources */,
 				0612BC111AE4835D001EE387 /* CRC32.m in Sources */,

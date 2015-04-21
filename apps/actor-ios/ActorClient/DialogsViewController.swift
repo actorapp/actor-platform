@@ -48,8 +48,10 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tableView = UITableView()
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.rowHeight = 76
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
         self.extendedLayoutIncludesOpaqueBars = true
         view.addSubview(tableView)
+        view.backgroundColor = MainAppTheme.list.bgColor
     }
     
     override func viewWillLayoutSubviews() {
@@ -68,15 +70,13 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func viewDidLoad() {
         
-        tableView.backgroundColor = Resources.BackyardColor
-        
         // Footer
-        var footer = UIView(frame: CGRectMake(0, 0, 320, 80));
+        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
         var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
         footerHint.textAlignment = NSTextAlignment.Center;
         footerHint.font = UIFont.systemFontOfSize(16);
-        footerHint.textColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
+        footerHint.textColor = MainAppTheme.list.hintColor
         footerHint.text = NSLocalizedString("DialogsHint", comment: "Swipe hint")
         footer.addSubview(footerHint);
         
@@ -87,20 +87,11 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         self.tableView.tableFooterView = footer;
         
-        var header = UIView(frame: CGRectMake(0, 0, 320, 0))
-        
-        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
-        self.tableView.tableHeaderView = header;
-        
         bindTable(tableView, fade: true);
         
         searchView = UISearchBar()
         searchView!.delegate = self
-        searchView!.frame = CGRectMake(0, 0, 0, 44)
+        searchView!.frame = CGRectMake(0, 0, 320, 44)
         
         MainAppTheme.search.styleSearchBar(searchView!)
         
@@ -111,7 +102,15 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        tableView.tableHeaderView = searchView
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
+        
+        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+        headerShadow.image = UIImage(named: "CardTop2");
+        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+        header.addSubview(headerShadow);
+        
+        tableView.tableHeaderView = header
         
         searchSource = AADialogsListSearchSource(searchDisplay: searchDisplay!)
         
@@ -153,6 +152,10 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Header hack
+        tableView.tableHeaderView?.setNeedsLayout()
+        tableView.tableFooterView?.setNeedsLayout()
         
         if (searchDisplay != nil && searchDisplay!.active) {
             MainAppTheme.search.applyStatusBar()

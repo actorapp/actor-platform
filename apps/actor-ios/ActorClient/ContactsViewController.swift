@@ -14,9 +14,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     // MARK: Public vars
     
-    @IBOutlet var rootView: UIView!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var emptyView: UIView!
+    var tableView: UITableView!
     
     var searchView: UISearchBar?
     var searchDisplay: UISearchDisplayController?
@@ -33,15 +31,38 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     }
     
     override init() {
-        super.init(nibName: "ContactsViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
         initCommon();
+    }
+    
+    func initCommon(){
+        
+        var title = "";
+        if (MainAppTheme.tab.showText) {
+            title = NSLocalizedString("TabPeople", comment: "People Title")
+        }
+        
+        tabBarItem = UITabBarItem(title: title,
+            image: MainAppTheme.tab.createUnselectedIcon("ic_people_outline"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_people_filled"));
+        
+        if (!MainAppTheme.tab.showText) {
+            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
+        
+        tableView = UITableView()
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.rowHeight = 76
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        self.extendedLayoutIncludesOpaqueBars = true
+        view.addSubview(tableView)
+        view.backgroundColor = MainAppTheme.list.bgColor
     }
     
     // MARK: -
     
     override func viewDidLoad() {
         self.extendedLayoutIncludesOpaqueBars = true
-        view.backgroundColor = UIColor.whiteColor()
         
         bindTable(tableView, fade: false);
         
@@ -58,12 +79,18 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        tableView.tableHeaderView = searchView
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
+        
+        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+        headerShadow.image = UIImage(named: "CardTop2");
+        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+        header.addSubview(headerShadow);
+        
+        tableView.tableHeaderView = header
         
         searchSource = ContactsSource(searchDisplay: searchDisplay!)
         
-        emptyView.hidden = true;
-    
         super.viewDidLoad();
         
         navigationItem.title = NSLocalizedString("TabPeople", comment: "People Title")
@@ -94,11 +121,21 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             tableView.deselectRowAtIndexPath(selected!, animated: animated);
         }
         
+        // Header hack
+        tableView.tableHeaderView?.setNeedsLayout()
+        tableView.tableFooterView?.setNeedsLayout()
+        
         if (searchDisplay != nil && searchDisplay!.active){
             MainAppTheme.search.applyStatusBar()
         } else {
             MainAppTheme.navigation.applyStatusBar()
         }
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -138,25 +175,6 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     // MARK: Methods
     
-    func initCommon(){
-        
-        var title = "";
-        if (MainAppTheme.tab.showText) {
-            title = NSLocalizedString("TabPeople", comment: "People Title")
-        }
-        
-        tabBarItem = UITabBarItem(title: title,
-            image: UIImage(named: "ic_people_outline")!
-                .tintImage(Resources.BarTintUnselectedColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: UIImage(named: "ic_people_filled")!
-                .tintImage(Resources.BarTintColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal));
-        
-        if (!MainAppTheme.tab.showText) {
-            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
-        }
-    }
     
     func doAddContact() {
         var alertView = UIAlertView(
