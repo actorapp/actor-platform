@@ -17,7 +17,7 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.api.util
-import im.actor.server.api.util.{ PhoneNumber, UserUtils }
+import im.actor.server.api.util.{ ContactsUtils, PhoneNumber, UserUtils }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.{ models, persist }
 
@@ -27,6 +27,7 @@ class ContactsServiceImpl(implicit
                           actorSystem: ActorSystem)
   extends ContactsService {
 
+  import ContactsUtils._
   import UserUtils._
   import im.actor.server.push.SeqUpdatesManager._
 
@@ -172,7 +173,7 @@ class ContactsServiceImpl(implicit
           if (accessHash == util.ACL.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
             persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None =>
-                addContactSendUpdate(client.userId, user.id, userPhoneNumber, None, user.accessSalt) map {
+                addContactSendUpdate(user.id, userPhoneNumber, None, user.accessSalt) map {
                   case (seq, state) => Ok(ResponseSeq(seq, state))
                 }
               case Some(contact) =>
@@ -212,20 +213,6 @@ class ContactsServiceImpl(implicit
     }
 
     db.run(toDBIOAction(authorizedAction))
-  }
-
-  private def addContactSendUpdate(clientUserId: Int,
-                                   userId: Int,
-                                   phoneNumber: Long,
-                                   name: Option[String],
-                                   accessSalt: String
-                                    )(
-                                    implicit client: AuthorizedClientData
-                                    ) = {
-    for {
-      _ <- persist.contact.UserContact.createOrRestore(clientUserId, userId, phoneNumber, name, accessSalt)
-      seqstate <- broadcastClientUpdate(UpdateContactsAdded(Vector(userId)))
-    } yield seqstate
   }
 
   private def createAllUserContacts(ownerUserId: Int, contacts: immutable.Seq[(User, String)]) = {

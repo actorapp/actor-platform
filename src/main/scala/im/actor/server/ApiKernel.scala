@@ -11,6 +11,7 @@ import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.PresenceManager
@@ -47,7 +48,8 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
       new MessagingServiceImpl,
       new GroupsServiceImpl,
       new SequenceServiceImpl,
-      new WeakServiceImpl)
+      new WeakServiceImpl,
+      new UsersServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 
