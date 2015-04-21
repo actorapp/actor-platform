@@ -12,6 +12,7 @@ import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.log.Log;
+import im.actor.model.network.ActorApi;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.CreateConnectionCallback;
@@ -184,7 +185,18 @@ public class ManagerActor extends Actor {
 
             final int id = NEXT_CONNECTION.getAndIncrement();
 
-            mtProto.getNetworkProvider().createConnection(id, endpoints.fetchEndpoint(), new ConnectionCallback() {
+            mtProto.getNetworkProvider().createConnection(id,
+                    ActorApi.MTPROTO_VERSION,
+                    ActorApi.API_MAJOR_VERSION,
+                    ActorApi.API_MINOR_VERSION,
+                    endpoints.fetchEndpoint(), new ConnectionCallback() {
+
+                @Override
+                public void onConnectionRedirect(String host, int port, int timeout) {
+                    // TODO: Implement better processing
+                    self().send(new ConnectionDie(id));
+                }
+
                 @Override
                 public void onMessage(byte[] data, int offset, int len) {
                     self().send(new InMessage(data, offset, len));
