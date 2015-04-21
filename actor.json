@@ -13,7 +13,7 @@
       "alias": "randomId"
     }
   ],
-  "obj-c-prefix": "AM",
+  "scala-package": "im.actor.api.rpc",
   "java-package": "im.actor.model.api",
   "sections": [
     {
@@ -5540,7 +5540,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "requestFileUrl",
+            "name": "GetFileUrl",
             "header": 77,
             "response": {
               "type": "anonymous",
@@ -5596,7 +5596,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "requestFileUploadUrl",
+            "name": "GetFileUploadUrl",
             "header": 97,
             "response": {
               "type": "anonymous",
@@ -5649,7 +5649,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "requestFileUploadCompleted",
+            "name": "CommitFileUpload",
             "header": 122,
             "response": {
               "type": "anonymous",
@@ -5688,7 +5688,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "requestFileUploadPart",
+            "name": "GetFileUploadPartUrl",
             "header": 142,
             "response": {
               "type": "anonymous",
@@ -5768,7 +5768,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "getParameters",
+            "name": "GetParameters",
             "header": 134,
             "response": {
               "type": "anonymous",

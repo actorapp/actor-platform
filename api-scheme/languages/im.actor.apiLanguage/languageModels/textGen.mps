@@ -272,13 +272,13 @@
         </node>
         <node concept="lc7rE" id="55bmeIQeWQ1" role="3cqZAp">
           <node concept="la8eA" id="55bmeIQeXbE" role="lcghm">
-            <property role="lacIc" value="&quot;obj-c-prefix&quot;:&quot;" />
+            <property role="lacIc" value="&quot;scala-package&quot;:&quot;" />
           </node>
           <node concept="l9hG8" id="55bmeIQeYcz" role="lcghm">
-            <node concept="2OqwBi" id="55bmeIQeYrO" role="lb14g">
+            <node concept="2OqwBi" id="gbd4oSlEYU" role="lb14g">
               <node concept="117lpO" id="55bmeIQeYpW" role="2Oq$k0" />
-              <node concept="3TrcHB" id="55bmeIQf02d" role="2OqNvi">
-                <ref role="3TsBF5" to="tsp6:55bmeIQ6G_m" resolve="objcPrefix" />
+              <node concept="3TrcHB" id="gbd4oSlPtb" role="2OqNvi">
+                <ref role="3TsBF5" to="tsp6:gbd4oSj9sA" resolve="scalaPackage" />
               </node>
             </node>
           </node>
