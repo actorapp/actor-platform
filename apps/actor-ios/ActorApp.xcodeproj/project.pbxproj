@@ -5513,6 +5513,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api-dev1.actor.im:443";
+				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
@@ -5606,6 +5607,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api-dev2.actor.im:443";
+				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
@@ -5699,9 +5701,10 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
+				APP_THEME = llectro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.messenger.llectro;
+				BUNDLE_ID = im.actor.messenger;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -5715,7 +5718,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = "";
+				HOCKEY = 3d1436f60ff37202a30db514ff8e2357;
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -5837,6 +5840,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
+				APP_THEME = llectro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.app;
@@ -5878,6 +5882,7 @@
 				API_KEY = "??";
 				API_PUSH_ID = 1;
 				API_URL = "tls://mtproto-api.actor.im:443";
+				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
@@ -5894,7 +5899,7 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = 4f3a3a595a9ba75c3bf57e959b1a02fd;
+				HOCKEY = 55a4a60200c0ace4b7a42599079c406b;
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

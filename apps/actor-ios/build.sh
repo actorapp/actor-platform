@@ -3,7 +3,7 @@
 PROJECT_PATH=`pwd`
 
 # Build without any codesign
-xcodebuild -workspace ActorApp.xcworkspace -scheme AppRelease DEPLOYMENT_LOCATION=yes DSTROOT=build DWARF_DSYM_FOLDER_PATH=build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO clean build
+xcodebuild -workspace ActorApp.xcworkspace -scheme $1 DEPLOYMENT_LOCATION=yes DSTROOT=build DWARF_DSYM_FOLDER_PATH=build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO clean build
 
 # Uncomment for building with codesign and stripping signature
 # xcodebuild -workspace ActorApp.xcworkspace -scheme ActorApp DEPLOYMENT_LOCATION=yes DSTROOT=build DWARF_DSYM_FOLDER_PATH=build build
@@ -20,4 +20,4 @@ codesign --force --sign 'iPhone Distribution: Ekstradiya OOO' --entitlements Bui
 # cd ../../
 
 # Package app
-xcrun -sdk iphoneos PackageApplication -v "$PROJECT_PATH/build/Applications/ActorApp.app" -o "$PROJECT_PATH/build/ActorApp.ipa"
+xcrun -sdk iphoneos PackageApplication -v "$PROJECT_PATH/build/Applications/ActorApp.app" -o "$PROJECT_PATH/build/$2.ipa"

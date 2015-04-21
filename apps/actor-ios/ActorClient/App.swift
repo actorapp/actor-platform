@@ -9,7 +9,8 @@
 import Foundation
 
 
-var MainAppTheme = LlectroTheme()//AppTheme()
+private let themeName = NSBundle.mainBundle().objectForInfoDictionaryKey("APP_THEME") as! String
+var MainAppTheme = ("llectro" == themeName) ? LlectroTheme()  : AppTheme()
 
 var isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
