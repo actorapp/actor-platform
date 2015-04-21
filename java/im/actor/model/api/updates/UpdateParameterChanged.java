@@ -17,50 +17,53 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class UpdateEmailContactRegistered extends Update {
+public class UpdateParameterChanged extends Update {
 
-    public static final int HEADER = 0x78;
-    public static UpdateEmailContactRegistered fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateEmailContactRegistered(), data);
+    public static final int HEADER = 0x83;
+    public static UpdateParameterChanged fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateParameterChanged(), data);
     }
 
-    private int emailId;
-    private int uid;
+    private String key;
+    private String value;
 
-    public UpdateEmailContactRegistered(int emailId, int uid) {
-        this.emailId = emailId;
-        this.uid = uid;
+    public UpdateParameterChanged(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public UpdateEmailContactRegistered() {
+    public UpdateParameterChanged() {
 
     }
 
-    public int getEmailId() {
-        return this.emailId;
+    public String getKey() {
+        return this.key;
     }
 
-    public int getUid() {
-        return this.uid;
+    public String getValue() {
+        return this.value;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.emailId = values.getInt(1);
-        this.uid = values.getInt(2);
+        this.key = values.getString(1);
+        this.value = values.optString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.emailId);
-        writer.writeInt(2, this.uid);
+        if (this.key == null) {
+            throw new IOException();
+        }
+        writer.writeString(1, this.key);
+        if (this.value != null) {
+            writer.writeString(2, this.value);
+        }
     }
 
     @Override
     public String toString() {
-        String res = "update EmailContactRegistered{";
-        res += "emailId=" + this.emailId;
-        res += ", uid=" + this.uid;
+        String res = "update ParameterChanged{";
         res += "}";
         return res;
     }

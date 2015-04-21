@@ -17,45 +17,43 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestGetPublicKeys extends Request<ResponseGetPublicKeys> {
+public class ResponserequestFileUploadCompleted extends Response {
 
-    public static final int HEADER = 0x6;
-    public static RequestGetPublicKeys fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestGetPublicKeys(), data);
+    public static final int HEADER = 0x8a;
+    public static ResponserequestFileUploadCompleted fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponserequestFileUploadCompleted(), data);
     }
 
-    private List<PublicKeyRequest> keys;
+    private FileLocation uploadedFileLocation;
 
-    public RequestGetPublicKeys(List<PublicKeyRequest> keys) {
-        this.keys = keys;
+    public ResponserequestFileUploadCompleted(FileLocation uploadedFileLocation) {
+        this.uploadedFileLocation = uploadedFileLocation;
     }
 
-    public RequestGetPublicKeys() {
+    public ResponserequestFileUploadCompleted() {
 
     }
 
-    public List<PublicKeyRequest> getKeys() {
-        return this.keys;
+    public FileLocation getUploadedFileLocation() {
+        return this.uploadedFileLocation;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        List<PublicKeyRequest> _keys = new ArrayList<PublicKeyRequest>();
-        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
-            _keys.add(new PublicKeyRequest());
-        }
-        this.keys = values.getRepeatedObj(1, _keys);
+        this.uploadedFileLocation = values.getObj(1, new FileLocation());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRepeatedObj(1, this.keys);
+        if (this.uploadedFileLocation == null) {
+            throw new IOException();
+        }
+        writer.writeObject(1, this.uploadedFileLocation);
     }
 
     @Override
     public String toString() {
-        String res = "rpc GetPublicKeys{";
-        res += "keys=" + this.keys.size();
+        String res = "tuple requestFileUploadCompleted{";
         res += "}";
         return res;
     }
