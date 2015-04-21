@@ -8,6 +8,7 @@ import im.actor.model.network.Endpoints;
 import im.actor.model.NetworkProvider;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.util.ExponentialBackoff;
 
 /**
  * Created by ex3ndr on 07.02.15.
@@ -20,6 +21,7 @@ public class AuthIdRetriever {
         Log.d(TAG, "Requesting AuthId");
 
         final boolean[] isFinished = new boolean[1];
+        final ExponentialBackoff backoff = new ExponentialBackoff();
         isFinished[0] = false;
 
         networkProvider.createConnection(0, endpoints.fetchEndpoint(), new ConnectionCallback() {
@@ -74,6 +76,7 @@ public class AuthIdRetriever {
                 }
 
                 Log.d(TAG, "Connection created");
+                backoff.onSuccess();
 
                 try {
                     DataOutput output = new DataOutput();
