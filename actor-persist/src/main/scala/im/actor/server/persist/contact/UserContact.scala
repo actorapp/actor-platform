@@ -1,19 +1,22 @@
 package im.actor.server.persist.contact
 
-import im.actor.server.models
-
-import scala.concurrent.ExecutionContext
-import scala.util.{ Success, Failure }
-
-import slick.dbio.DBIO
+import slick.dbio.Effect.Write
 import slick.driver.PostgresDriver.api._
+import slick.profile.FixedSqlAction
+
+import im.actor.server.models
 
 class UserContact(tag: Tag) extends Table[models.contact.UserContact](tag, "user_contacts") {
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
+
   def contactUserId = column[Int]("contact_user_id", O.PrimaryKey)
+
   def phoneNumber = column[Long]("phone_number")
+
   def name = column[Option[String]]("name")
+
   def accessSalt = column[String]("access_salt")
+
   def isDeleted = column[Boolean]("is_deleted")
 
   def * = (ownerUserId, contactUserId, phoneNumber, name, accessSalt, isDeleted) <> (models.contact.UserContact.tupled, models.contact.UserContact.unapply)
@@ -51,6 +54,10 @@ object UserContact {
 
   def findContactIdsWithLocalNames(ownerUserId: Int) =
     byOwnerUserIdNotDeleted(ownerUserId).map(c => (c.contactUserId, c.name)).result
+
+  def updateName(ownerUserId: Int, contactUserId: Int, name: Option[String]): FixedSqlAction[Int, NoStream, Write] = {
+    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
+  }
 
   def createOrRestore(ownerUserId: Int, contactUserId: Int, phoneNumber: Long, name: Option[String], accessSalt: String) = {
     val contact = models.contact.UserContact(ownerUserId, contactUserId, phoneNumber, name, accessSalt, false)
