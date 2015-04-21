@@ -616,21 +616,17 @@ message UpdateContactsRemoved {
 
 // Text message
 // text the text
-// extType type of extension. Now there are no extensions.
 // ext Optional bytes of extension
 message TextMessage {
     required string text = 1;
-    required int32 extType = 2;
     optional bytes ext = 3;
 }
 
 // Service message
 // text service message text
-// extType extension type. 0x01 => ServiceExUserAdded, 0x02 => ServiceExUserKicked, 0x03 => ServiveExUserLeft, 0x04 => ServiceExGroupCreated, 0x05 => ServiceExGroupChangedTitle, 0x06 => ServiceExGroupChangedAvatar
 // ext Extension
 message ServiceMessage {
     required string text = 1;
-    required int32 extType = 2;
     optional bytes ext = 3;
 }
 
@@ -679,7 +675,6 @@ message ServiceExEmailContactRegistered {
 // name name of file
 // mimeType mimetype of file
 // thumb optional thumb of file. JPEG less that 90x90 with 60-70 quality.
-// extType Extension type
 // ext Extension
 message DocumentMessage {
     required int64 fileId = 1;
@@ -691,7 +686,6 @@ message DocumentMessage {
     required string name = 4;
     required string mimeType = 5;
     optional FastThumb thumb = 6;
-    required int32 extType = 7;
     optional bytes ext = 8;
 }
 
