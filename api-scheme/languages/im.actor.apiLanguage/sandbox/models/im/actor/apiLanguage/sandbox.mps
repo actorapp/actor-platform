@@ -2349,11 +2349,6 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBkKA" resolve="text" />
         </node>
-        <node concept="NX1gA" id="EUEXKTmp7k" role="NXodf">
-          <property role="NX6R2" value="type of extension. Now there are no extensions." />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBkKH" resolve="extType" />
-        </node>
         <node concept="NX1gA" id="EUEXKTmpO4" role="NXodf">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Optional bytes of extension" />
@@ -2363,11 +2358,6 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="text" />
           <node concept="2m5ndX" id="GBscvBBkKE" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBkKH" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5ndE" id="GBscvBBkKN" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="GBscvBBkKQ" role="2m0hLx">
           <property role="2m7DUN" value="3" />
@@ -2384,6 +2374,7 @@
       </node>
       <node concept="w93zz" id="5NX0N0RThX2" role="2m5mJr">
         <property role="TrG5h" value="TextMessageEx" />
+        <property role="1FaRnq" value="true" />
       </node>
       <node concept="2m5naR" id="GBscvBBkLN" role="2m5mJr">
         <property role="TrG5h" value="ServiceMessage" />
@@ -2397,11 +2388,6 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBkMw" resolve="text" />
         </node>
-        <node concept="NX1gA" id="EUEXKTmrdI" role="NXodf">
-          <property role="NX6R2" value="extension type. 0x01 =&gt; ServiceExUserAdded, 0x02 =&gt; ServiceExUserKicked, 0x03 =&gt; ServiveExUserLeft, 0x04 =&gt; ServiceExGroupCreated, 0x05 =&gt; ServiceExGroupChangedTitle, 0x06 =&gt; ServiceExGroupChangedAvatar" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBkMB" resolve="extType" />
-        </node>
         <node concept="NX1gA" id="4zDDY4EQZpR" role="NXodf">
           <property role="NX6R2" value="Extension" />
           <property role="1GSvIU" value="compact" />
@@ -2411,11 +2397,6 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="text" />
           <node concept="2m5ndX" id="GBscvBBkM$" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBBkMB" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5ndE" id="55bmeIQctl7" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="GBscvBBkMK" role="2m0hLx">
           <property role="2m7DUN" value="3" />
@@ -2432,6 +2413,7 @@
       </node>
       <node concept="w93zz" id="55bmeIQ9med" role="2m5mJr">
         <property role="TrG5h" value="ServiceEx" />
+        <property role="1FaRnq" value="true" />
       </node>
       <node concept="2m5naR" id="GBscvBBkVP" role="2m5mJr">
         <property role="TrG5h" value="ServiceExUserAdded" />
@@ -2601,11 +2583,6 @@
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBBlpO" resolve="thumb" />
         </node>
-        <node concept="NX1gA" id="EUEXKTmCab" role="NXodf">
-          <property role="NX6R2" value="Extension type" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBBlqb" resolve="extType" />
-        </node>
         <node concept="NX1gA" id="55bmeIQgt3X" role="NXodf">
           <property role="NX6R2" value="Extension" />
           <property role="1GSvIU" value="compact" />
@@ -2668,11 +2645,6 @@
             </node>
           </node>
         </node>
-        <node concept="2m7Kf5" id="GBscvBBlqb" role="2m0hLx">
-          <property role="2m7DUN" value="7" />
-          <property role="TrG5h" value="extType" />
-          <node concept="2m5ndE" id="GBscvBBlqs" role="2m7DVh" />
-        </node>
         <node concept="2m7Kf5" id="GBscvBBlqv" role="2m0hLx">
           <property role="2m7DUN" value="8" />
           <property role="TrG5h" value="ext" />
@@ -2688,6 +2660,7 @@
       </node>
       <node concept="w93zz" id="55bmeIQ9FSf" role="2m5mJr">
         <property role="TrG5h" value="DocumentEx" />
+        <property role="1FaRnq" value="true" />
       </node>
       <node concept="2m5naR" id="GBscvBBl$N" role="2m5mJr">
         <property role="TrG5h" value="DocumentExPhoto" />
