@@ -258,7 +258,7 @@ object MTProto {
 
         optIndex match {
           case Some(index) =>
-            f map (xs => xs :+ ProtoPackage(Ack(index)))
+            f map (xs => Vector(ProtoPackage(Ack(index))) ++ xs) // FIXME: #perf do it in more efficient way
           case None => f
         }
       case (h: Handshake, _) => Future.successful {
