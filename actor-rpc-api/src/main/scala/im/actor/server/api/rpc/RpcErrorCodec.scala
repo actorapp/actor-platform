@@ -6,7 +6,6 @@ import scodec.codecs._
 import shapeless._
 
 import im.actor.api.rpc.RpcError
-import im.actor.api.rpc.codecs.WrongKeysErrorDataCodec
 import im.actor.server.mtproto.codecs._
 
 object RpcErrorCodec extends Codec[RpcError] {
@@ -16,11 +15,6 @@ object RpcErrorCodec extends Codec[RpcError] {
   {
     case code :: tag :: userMessage :: canTryAgain :: edData :: HNil =>
       tag match {
-        case "WRONG_KEYS" =>
-          WrongKeysErrorDataCodec.decode(edData).map {
-            case DecodeResult(ed, _) =>
-              RpcError(code, tag, userMessage, canTryAgain, Some(ed))
-          }
         case _ =>
           Attempt.Successful(RpcError(code, tag, userMessage, canTryAgain, None))
       }

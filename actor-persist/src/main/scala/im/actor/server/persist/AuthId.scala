@@ -29,6 +29,9 @@ object AuthId {
   def byAuthIdNotDeleted(authId: Long) =
     activeAuthIds.filter(a => a.id === authId)
 
+  def setUserData(authId: Long, userId: Int) =
+    byAuthIdNotDeleted(authId).map(a => a.userId).update(Some(userId))
+
   def setUserData(authId: Long, userId: Int, publicKeyHash: Long) =
     byAuthIdNotDeleted(authId).map(a => (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
 

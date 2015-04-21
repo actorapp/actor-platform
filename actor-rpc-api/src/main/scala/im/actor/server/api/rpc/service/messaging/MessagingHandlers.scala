@@ -5,24 +5,23 @@ import scala.concurrent._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.{ models, persist }
 
 private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl =>
 
-  import im.actor.server.api.util.PeerUtils._
+  import im.actor.api.rpc.Implicits._
   import im.actor.server.api.util.HistoryUtils._
+  import im.actor.server.api.util.PeerUtils._
   import im.actor.server.push.SeqUpdatesManager._
 
   override implicit val ec = actorSystem.dispatcher
 
-  override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: MessageContent, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+  override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
       withOutPeer(client.userId, outPeer) {
         // TODO: record social relation
@@ -50,7 +49,7 @@ private[messaging] trait MessagingHandlers {
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
 
             for {
-              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
+              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
               _ <- broadcastUserUpdate(outPeer.id, outUpdate)
               _ <- notifyClientUpdate(ownUpdate)
               seqstate <- persistAndPushUpdate(client.authId, update)
@@ -70,7 +69,7 @@ private[messaging] trait MessagingHandlers {
             for {
               userIds <- persist.GroupUser.findUserIds(outPeer.id)
               otherAuthIds <- persist.AuthId.findIdByUserIds(userIds.toSet).map(_.filterNot(_ == client.authId))
-              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.`type`, message.toByteArray)
+              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
               _ <- persistAndPushUpdates(otherAuthIds.toSet, outUpdate)
               seqstate <- persistAndPushUpdate(client.authId, update)
             } yield {
@@ -82,14 +81,4 @@ private[messaging] trait MessagingHandlers {
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
-
-  override def jhandleSendEncryptedMessage(peer: im.actor.api.rpc.peers.OutPeer,
-                                           randomId: Long,
-                                           encryptedMessage: Array[Byte],
-                                           keys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
-                                           ownKeys: Vector[im.actor.api.rpc.messaging.EncryptedAesKey],
-                                           clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[misc.ResponseSeqDate]] =
-    Future {
-      throw new Exception("not implemented")
-    }
 }

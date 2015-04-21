@@ -27,14 +27,12 @@ class AuthSessionTable(tag: Tag) extends Table[models.AuthSession](tag, "auth_se
 
   def authId = column[Long]("auth_id")
 
-  def publicKeyHash = column[Long]("public_key_hash")
-
   def deviceHash = column[Array[Byte]]("device_hash")
 
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
   def * =
-    (userId, id, authId, appId, appTitle, deviceTitle, deviceHash, authTime, authLocation, latitude, longitude, publicKeyHash) <>
+    (userId, id, authId, appId, appTitle, deviceTitle, deviceHash, authTime, authLocation, latitude, longitude) <>
       ((models.AuthSession.apply _).tupled, models.AuthSession.unapply)
 }
 

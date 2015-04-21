@@ -69,7 +69,6 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
       smsHash = smsHash,
       smsCode = "0000",
       name = fairy.person().fullName(),
-      publicKey = scala.util.Random.nextLong.toBinaryString.getBytes(),
       deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
       deviceTitle = "Specs virtual device",
       appId = 42,

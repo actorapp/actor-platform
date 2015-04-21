@@ -1,10 +1,11 @@
 package im.actor.server.api.rpc.service.auth
 
 
-import scala.concurrent._, forkjoin.ThreadLocalRandom
+import scala.concurrent._
+import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
 
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.ActorSystem
 import org.joda.time.DateTime
 import shapeless._
 import slick.dbio
@@ -17,18 +18,20 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.{ models, persist }
 import im.actor.server.session._
 
 class AuthServiceImpl(implicit
                       val sessionRegion: SessionRegion,
                       val actorSystem: ActorSystem,
                       val db: Database) extends AuthService with Helpers {
+
   import IdUtils._
 
   private trait SignType
+
   private case class Up(name: String, isSilent: Boolean) extends SignType
+
   private case object In extends SignType
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
@@ -49,9 +52,16 @@ class AuthServiceImpl(implicit
         sessionModels <- persist.AuthSession.findByUserId(client.userId)
       } yield {
         val sessionStructs = sessionModels map { sessionModel =>
+          val authHolder =
+            if (client.authId == sessionModel.authId) {
+              AuthHolder.ThisDevice
+            } else {
+              AuthHolder.OtherDevice
+            }
+
           AuthSession(
             sessionModel.id,
-            client.userId,
+            authHolder,
             sessionModel.appId,
             sessionModel.appTitle,
             sessionModel.deviceTitle,
@@ -69,8 +79,8 @@ class AuthServiceImpl(implicit
   }
 
   override def jhandleSendAuthCode(
-    rawPhoneNumber: Long, appId: Int, apiKey: String, clientData: ClientData
-  ): Future[HandlerResult[ResponseSendAuthCode]] = {
+                                    rawPhoneNumber: Long, appId: Int, apiKey: String, clientData: ClientData
+                                    ): Future[HandlerResult[ResponseSendAuthCode]] = {
     util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None =>
         Future.successful(Error(Errors.PhoneNumberInvalid))
@@ -82,7 +92,7 @@ class AuthServiceImpl(implicit
             val smsHash = genSmsHash()
             val smsCode = normPhoneNumber.toString match {
               case strNumber if strNumber.startsWith("7555") => strNumber(4).toString * 4
-              case _                                         => genSmsCode()
+              case _ => genSmsCode()
             }
             for (
               _ <- persist.AuthSmsCode.create(
@@ -101,8 +111,10 @@ class AuthServiceImpl(implicit
   }
 
   override def jhandleSendAuthCall(
-    phoneNumber: Long, smsHash: String, appId: Int, apiKey: String, clientData: ClientData
-  ): Future[HandlerResult[ResponseVoid]] = Future { throw new Exception("Not implemented") }
+                                    phoneNumber: Long, smsHash: String, appId: Int, apiKey: String, clientData: ClientData
+                                    ): Future[HandlerResult[ResponseVoid]] = Future {
+    throw new Exception("Not implemented")
+  }
 
 
   override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -115,60 +127,56 @@ class AuthServiceImpl(implicit
 
 
   override def jhandleSignIn(
-    rawPhoneNumber: Long,
-    smsHash: String,
-    smsCode: String,
-    publicKey: Array[Byte],
-    deviceHash: Array[Byte],
-    deviceTitle: String,
-    appId: Int,
-    appKey: String,
-    clientData: ClientData
-  ): Future[HandlerResult[ResponseAuth]] =
+                              rawPhoneNumber: Long,
+                              smsHash: String,
+                              smsCode: String,
+                              deviceHash: Array[Byte],
+                              deviceTitle: String,
+                              appId: Int,
+                              appKey: String,
+                              clientData: ClientData
+                              ): Future[HandlerResult[ResponseAuth]] =
     handleSign(
       In,
       rawPhoneNumber, smsHash, smsCode,
-      publicKey, deviceHash, deviceTitle, appId, appKey,
+      deviceHash, deviceTitle, appId, appKey,
       clientData
     )
 
   override def jhandleSignUp(
-    rawPhoneNumber: Long,
-    smsHash: String,
-    smsCode: String,
-    name: String,
-    publicKey: Array[Byte],
-    deviceHash: Array[Byte],
-    deviceTitle: String,
-    appId: Int,
-    appKey: String,
-    isSilent: Boolean,
-    clientData: ClientData
-  ): Future[HandlerResult[ResponseAuth]] =
+                              rawPhoneNumber: Long,
+                              smsHash: String,
+                              smsCode: String,
+                              name: String,
+                              deviceHash: Array[Byte],
+                              deviceTitle: String,
+                              appId: Int,
+                              appKey: String,
+                              isSilent: Boolean,
+                              clientData: ClientData
+                              ): Future[HandlerResult[ResponseAuth]] =
     handleSign(
       Up(name, isSilent),
       rawPhoneNumber, smsHash, smsCode,
-      publicKey, deviceHash, deviceTitle, appId, appKey,
+      deviceHash, deviceTitle, appId, appKey,
       clientData
     )
 
   private def handleSign(
-    signType: SignType,
-    rawPhoneNumber: Long,
-    smsHash: String,
-    smsCode: String,
-    rawPublicKey: Array[Byte],
-    deviceHash: Array[Byte],
-    deviceTitle: String,
-    appId: Int,
-    appKey: String,
-    clientData: ClientData
-  ): Future[HandlerResult[ResponseAuth]] = {
+                          signType: SignType,
+                          rawPhoneNumber: Long,
+                          smsHash: String,
+                          smsCode: String,
+                          deviceHash: Array[Byte],
+                          deviceTitle: String,
+                          appId: Int,
+                          appKey: String,
+                          clientData: ClientData
+                          ): Future[HandlerResult[ResponseAuth]] = {
     util.PhoneNumber.normalizeWithCountry(rawPhoneNumber) match {
       case None => Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) =>
         if (smsCode.isEmpty) Future.successful(Error(Errors.PhoneCodeEmpty))
-        else if (rawPublicKey.length == 0) Future.successful(Error(Errors.InvalidKey))
         else {
           val action = (for {
             optCode <- persist.AuthSmsCode.findByPhoneNumber(normPhoneNumber).headOption
@@ -186,43 +194,35 @@ class AuthServiceImpl(implicit
                     optPhone match {
                       // Phone does not exist, register the user
                       case None => withValidName(rawName) { name =>
-                        withValidPublicKey(rawPublicKey) { publicKey =>
-                          val rnd = ThreadLocalRandom.current()
-                          val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
-                          val user = models.User(userId, nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
+                        val rnd = ThreadLocalRandom.current()
+                        val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
+                        val user = models.User(userId, nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
 
-                          for {
-                            _ <- persist.User.create(user)
-                            _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
-                            pkHash = keyHash(publicKey)
-                            _ <- persist.UserPublicKey.create(models.UserPublicKey(userId, pkHash, publicKey))
-                            _ <- persist.AuthId.setUserData(clientData.authId, userId, pkHash)
-                            _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
-                          } yield {
-                            \/-(user :: pkHash :: HNil)
-                          }
+                        for {
+                          _ <- persist.User.create(user)
+                          _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
+                          _ <- persist.AuthId.setUserData(clientData.authId, userId)
+                          _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
+                        } yield {
+                          \/-(user :: HNil)
                         }
                       }
                       // Phone already exists, fall back to SignIn
                       case Some(phone) =>
-                        withValidPublicKey(rawPublicKey) { publicKey =>
-                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode, clientData)
-                        }
+                        signIn(clientData.authId, phone.userId, countryCode, clientData)
                     }
                   )
                 case In =>
-                  withValidPublicKey(rawPublicKey) { publicKey =>
-                    optPhone match {
-                      case None => DBIO.successful(Error(Errors.PhoneNumberUnoccupied))
-                      case Some(phone) =>
-                        persist.AuthSmsCode.deleteByPhoneNumber(normPhoneNumber).andThen(
-                          signIn(clientData.authId, phone.userId, publicKey, keyHash(publicKey), countryCode, clientData)
-                        )
-                    }
+                  optPhone match {
+                    case None => DBIO.successful(Error(Errors.PhoneNumberUnoccupied))
+                    case Some(phone) =>
+                      persist.AuthSmsCode.deleteByPhoneNumber(normPhoneNumber).andThen(
+                        signIn(clientData.authId, phone.userId, countryCode, clientData)
+                      )
                   }
               }
           }.flatMap {
-            case \/-(user :: pkHash :: HNil) =>
+            case \/-(user :: HNil) =>
               val rnd = ThreadLocalRandom.current()
               val authSession = models.AuthSession(
                 userId = user.id,
@@ -230,7 +230,6 @@ class AuthServiceImpl(implicit
                 authId = clientData.authId,
                 appId = appId,
                 appTitle = models.AuthSession.appTitleOf(appId),
-                publicKeyHash = pkHash,
                 deviceHash = deviceHash,
                 deviceTitle = deviceTitle,
                 authTime = DateTime.now,
@@ -251,7 +250,6 @@ class AuthServiceImpl(implicit
               } yield {
                 Ok(
                   ResponseAuth(
-                    pkHash,
                     userStruct,
                     misc.Config(300)
                   )
@@ -303,26 +301,14 @@ class AuthServiceImpl(implicit
   }
 
 
-  private def signIn(authId: Long, userId: Int, pkData: Array[Byte], pkHash: Long, countryCode: String, clientData: ClientData) = {
+  private def signIn(authId: Long, userId: Int, countryCode: String, clientData: ClientData) = {
     persist.User.find(userId).headOption.flatMap {
       case None => throw new Exception("Failed to retrieve user")
       case Some(user) =>
-        (for {
+        for {
           _ <- persist.User.setCountryCode(userId = userId, countryCode = countryCode)
-          _ <- persist.AuthId.setUserData(authId, userId, pkHash)
-          pkOpt <- persist.UserPublicKey.find(user.id, pkHash).headOption
-        } yield pkOpt).flatMap {
-          case None =>
-            for (
-              _ <- persist.UserPublicKey.create(models.UserPublicKey(userId = userId, hash = pkHash, data = pkData))
-            ) yield \/-(user :: pkHash :: HNil)
-          case Some(pk) =>
-            if (!pkData.sameElements(pk.data)) {
-              throw new Exception("Public key with the same hash already exists but not match with request's key data")
-            } else {
-              DBIO.successful(\/-(user :: pkHash :: HNil))
-            }
-        }
+          _ <- persist.AuthId.setUserData(authId, userId)
+        } yield \/-(user :: HNil)
     }
   }
 
