@@ -30,13 +30,13 @@ class AppText {
 }
 
 class AppChat {
-    var chatField: UIColor { get { return UIColor.lightGrayColor() } }
+    var chatField: UIColor { get { return UIColor.whiteColor() } }
     
     var attachColor: UIColor { get { return UIColor.RGB(0x5085CB) } }
     
     var sendEnabled: UIColor { get { return UIColor.RGB(0x50A1D6) } }
     
-    var sendDisabled: UIColor { get { return UIColor.alphaWhite(0.56) } }
+    var sendDisabled: UIColor { get { return UIColor.alphaBlack(0.56) } }
 }
 
 class ChatBubbles {
@@ -118,7 +118,7 @@ class ChatBubbles {
 class AppList {
     var actionColor : UIColor { get { return UIColor.RGB(0x5085CB) } }
     var bgColor: UIColor { get { return UIColor.whiteColor() } }
-    var bgSelectedColor : UIColor { get { return UIColor.RGB(0x5085CB) } }
+    var bgSelectedColor : UIColor { get { return UIColor.RGB(0xd9d9d9) } }
     
     var backyardColor : UIColor { get { return UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1) } }
     var separatorColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x1e/255.0) } }
