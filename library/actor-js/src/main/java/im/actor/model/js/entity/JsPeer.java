@@ -26,9 +26,9 @@ public class JsPeer extends JavaScriptObject {
     protected JsPeer() {
     }
 
-    public final native String getPeerType()/*-{ return this.peerType; }-*/;
+    public final native String getPeerType()/*-{ return this.type; }-*/;
 
-    public final native int getPeerId()/*-{ return this.peerId; }-*/;
+    public final native int getPeerId()/*-{ return this.id; }-*/;
 
     public final Peer convert() {
         if (getPeerType().equals("user")) {

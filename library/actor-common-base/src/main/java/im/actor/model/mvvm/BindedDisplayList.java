@@ -10,6 +10,7 @@ import im.actor.model.droidkit.engine.ListEngineDisplayExt;
 import im.actor.model.droidkit.engine.ListEngineDisplayListener;
 import im.actor.model.droidkit.engine.ListEngineDisplayLoadCallback;
 import im.actor.model.droidkit.engine.ListEngineItem;
+import im.actor.model.log.Log;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -19,7 +20,6 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private static final String TAG = "BindedDisplayList";
 
     private static final Comparator<ListEngineItem> COMPARATOR = new ListEngineComparator();
-
 
     private final ListEngineDisplayExt<T> listEngine;
     private final DisplayWindow window;
@@ -287,12 +287,14 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
         isLoadMoreForwardRequested = true;
         final int gen = currentGeneration;
+        Log.d(TAG, "Loading more items...");
+        final long start = System.currentTimeMillis();
         ListEngineDisplayLoadCallback<T> callback = cover(new ListEngineDisplayLoadCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
                 MVVMEngine.checkMainThread();
 
-                // Log.d(TAG, "Loaded more at generation " + gen + " with items " + items.size());
+                Log.d(TAG, "Items loaded in " + (System.currentTimeMillis() - start) + " ms");
 
                 window.completeForwardLoading();
 

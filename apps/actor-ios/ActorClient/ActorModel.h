@@ -20,6 +20,8 @@
 #import "java/util/List.h"
 #import "java/util/ArrayList.h"
 #import "java/util/HashSet.h"
+#import "java/util/Map.h"
+#import "java/util/HashMap.h"
 
 // Messenger
 
@@ -36,6 +38,8 @@
 #import "im/actor/model/NotificationProvider.h"
 #import "im/actor/model/NetworkProvider.h"
 #import "im/actor/model/DispatcherProvider.h"
+#import "im/actor/model/LocaleProvider.h"
+#import "im/actor/model/PhoneBookProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -112,6 +116,9 @@
 #import "im/actor/model/entity/content/FileSource.h"
 #import "im/actor/model/entity/content/FileLocalSource.h"
 #import "im/actor/model/entity/content/FileRemoteSource.h"
+#import "im/actor/model/entity/PhoneBookContact.h"
+#import "im/actor/model/entity/PhoneBookPhone.h"
+#import "im/actor/model/entity/PhoneBookEmail.h"
 #import "im/actor/model/entity/ContentType.h"
 #import "im/actor/model/entity/FileReference.h"
 
@@ -126,8 +133,8 @@
 #import "im/actor/model/viewmodel/UserPresence.h"
 #import "im/actor/model/viewmodel/UploadFileVMCallback.h"
 #import "im/actor/model/viewmodel/UploadFileVM.h"
-#import "im/actor/model/viewmodel/DownloadCallback.h"
-#import "im/actor/model/viewmodel/UploadCallback.h"
+#import "im/actor/model/viewmodel/FileCallback.h"
+#import "im/actor/model/viewmodel/UploadFileCallback.h"
 #import "im/actor/model/viewmodel/AppStateVM.h"
 
 // Misc
@@ -139,5 +146,6 @@
 // API
 
 #import "im/actor/model/api/AuthSession.h"
+#import "im/actor/model/network/RpcException.h"
 
 #endif

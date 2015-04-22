@@ -26,4 +26,5 @@ target 'ActorApp' do
 	pod 'DZNPhotoPickerController'
 	pod 'HockeySDK'
 	pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+    pod 'JTSImageViewController'
 end

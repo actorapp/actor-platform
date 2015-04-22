@@ -53,6 +53,7 @@ android {
     def URL_DEV1 = "\"tls://mtproto-api-dev1.actor.im:443\"";
     def URL_DEV1_PLAIN = "\"tcp://mtproto-api-dev1.actor.im:8080\"";
     def URL_DEV2 = "\"tls://mtproto-api-dev2.actor.im:443\"";
+    def URL_LOCAL = "\"tcp://192.168.1.189:8080\"";
 
     def HOCKEY_MAIN = "\"38d528f118a899bbd503bda195609003\""
     def HOCKEY_DEV1 = "\"e2fb9a8444e1d8a5d90dba0e0c9ed534\""
@@ -160,8 +161,11 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
             applicationIdSuffix ".debug"
 
+            // buildConfigField STRING, API_URL, URL_LOCAL
+            buildConfigField STRING, API_URL, URL_DEV1_PLAIN
             buildConfigField STRING, MINT, NULL
             buildConfigField BOOLEAN, ENABLE_PHONE_BOOK, FALSE
+            // buildConfigField STRING, API_URL, URL_DEV1_PLAIN
         }
 
         applicationVariants.all { variant ->
@@ -198,8 +202,8 @@ android {
         }
 
         debug {
-            // res.srcDirs = ['src/themes/dev',  'src/themes/dark',  'src/material-icons']
-            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
+            res.srcDirs = ['src/themes/dev', 'src/material-icons']
+            // res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 

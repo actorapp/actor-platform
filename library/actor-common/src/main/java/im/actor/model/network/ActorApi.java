@@ -10,6 +10,11 @@ import im.actor.model.network.parser.Response;
  * Created by ex3ndr on 08.02.15.
  */
 public class ActorApi {
+
+    public static final int MTPROTO_VERSION = 1;
+    public static final int API_MAJOR_VERSION = 1;
+    public static final int API_MINOR_VERSION = 0;
+
     private ActorRef apiBroker;
 
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,

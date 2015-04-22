@@ -30,6 +30,8 @@
                              withInt:(jint)ofs
                              withInt:(jint)len;
 
+- (void)writeBytesWithByteArray:(IOSByteArray *)v;
+
 - (void)writeBytesWithByteArray:(IOSByteArray *)v
                         withInt:(jint)ofs
                         withInt:(jint)len;

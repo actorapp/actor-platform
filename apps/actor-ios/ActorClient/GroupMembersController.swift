@@ -34,7 +34,7 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         
         view.addSubview(tokenFieldView!)
         
-        bindTable(contactsTable)
+        bindTable(contactsTable, fade: true)
         
         super.viewDidLoad()
     }

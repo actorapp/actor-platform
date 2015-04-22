@@ -10,7 +10,7 @@
 #include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/viewmodel/DownloadCallback.h"
+#include "im/actor/model/viewmodel/FileCallback.h"
 #include "im/actor/model/viewmodel/FileVM.h"
 #include "im/actor/model/viewmodel/FileVMCallback.h"
 
@@ -18,14 +18,14 @@
  @public
   ImActorModelModulesModules *modules_;
   AMFileReference *location_;
-  id<AMDownloadCallback> callback_;
+  id<AMFileCallback> callback_;
   id<AMFileVMCallback> vmCallback_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(AMFileVM, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMFileVM, location_, AMFileReference *)
-J2OBJC_FIELD_SETTER(AMFileVM, callback_, id<AMDownloadCallback>)
+J2OBJC_FIELD_SETTER(AMFileVM, callback_, id<AMFileCallback>)
 J2OBJC_FIELD_SETTER(AMFileVM, vmCallback_, id<AMFileVMCallback>)
 
 @interface AMFileVM_OnDownloading () {
@@ -55,62 +55,62 @@ J2OBJC_FIELD_SETTER(AMFileVM_OnDownloaded, fileSystemReference_, id<AMFileSystem
 J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
 
 
-#line 11
+#line 13
 @implementation AMFileVM
 
 
-#line 17
+#line 28
 - (instancetype)initWithAMFileReference:(AMFileReference *)location
                             withBoolean:(jboolean)isAutostart
          withImActorModelModulesModules:(ImActorModelModulesModules *)modules
                    withAMFileVMCallback:(id<AMFileVMCallback>)vmCallback {
   if (self = [super init]) {
     
-#line 19
+#line 30
     self->modules_ = modules;
     
-#line 20
+#line 31
     self->location_ = location;
     
-#line 21
+#line 32
     self->vmCallback_ = vmCallback;
     
-#line 22
+#line 33
     self->callback_ = [[AMFileVM_$1 alloc] initWithAMFileVM:self];
     
-#line 38
-    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindFileWithAMFileReference:location withBoolean:isAutostart withAMDownloadCallback:callback_];
+#line 49
+    [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindFileWithAMFileReference:location withBoolean:isAutostart withAMFileCallback:callback_];
   }
   return self;
 }
 
 
-#line 42
+#line 53
 - (void)onObjectReceivedWithId:(id)obj {
   
-#line 43
+#line 54
   if ([obj isKindOfClass:[AMFileVM_OnNotDownloaded class]]) {
     [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onNotDownloaded];
   }
   else
-#line 45
+#line 56
   if ([obj isKindOfClass:[AMFileVM_OnDownloading class]]) {
     [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadingWithFloat:[((AMFileVM_OnDownloading *) nil_chk(((AMFileVM_OnDownloading *) check_class_cast(obj, [AMFileVM_OnDownloading class])))) getProgress]];
   }
   else
-#line 47
+#line 58
   if ([obj isKindOfClass:[AMFileVM_OnDownloaded class]]) {
     [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadedWithAMFileSystemReference:[((AMFileVM_OnDownloaded *) nil_chk(((AMFileVM_OnDownloaded *) check_class_cast(obj, [AMFileVM_OnDownloaded class])))) getFileSystemReference]];
   }
 }
 
 
-#line 53
+#line 68
 - (void)detach {
   
-#line 54
+#line 69
   [super detach];
-  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:[((AMFileReference *) nil_chk(location_)) getFileId] withAMDownloadCallback:callback_ withBoolean:NO];
+  [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:[((AMFileReference *) nil_chk(location_)) getFileId] withAMFileCallback:callback_ withBoolean:NO];
 }
 
 - (void)copyAllFieldsTo:(AMFileVM *)other {
@@ -126,7 +126,7 @@ J2OBJC_FIELD_SETTER(AMFileVM_$1, this$0_, AMFileVM *)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM)
 
 
-#line 58
+#line 73
 @implementation AMFileVM_OnNotDownloaded
 
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$ {
@@ -138,26 +138,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnNotDownloaded)
 
 
-#line 62
+#line 77
 @implementation AMFileVM_OnDownloading
 
 
-#line 65
+#line 80
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$
                        withFloat:(jfloat)progress {
   if (self = [super init]) {
     
-#line 66
+#line 81
     self->progress_ = progress;
   }
   return self;
 }
 
 
-#line 69
+#line 84
 - (jfloat)getProgress {
   
-#line 70
+#line 85
   return progress_;
 }
 
@@ -171,26 +171,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnNotDownloaded)
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnDownloading)
 
 
-#line 74
+#line 89
 @implementation AMFileVM_OnDownloaded
 
 
-#line 77
+#line 92
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$
        withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
   if (self = [super init]) {
     
-#line 78
+#line 93
     self->fileSystemReference_ = fileSystemReference;
   }
   return self;
 }
 
 
-#line 81
+#line 96
 - (id<AMFileSystemReference>)getFileSystemReference {
   
-#line 82
+#line 97
   return fileSystemReference_;
 }
 
@@ -206,24 +206,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnDownloaded)
 @implementation AMFileVM_$1
 
 
-#line 24
+#line 35
 - (void)onNotDownloaded {
   
-#line 25
+#line 36
   [this$0_ postWithId:[[AMFileVM_OnNotDownloaded alloc] initWithAMFileVM:this$0_]];
 }
 
 
-#line 29
+#line 40
 - (void)onDownloadingWithFloat:(jfloat)progress {
   [this$0_ postWithId:[[AMFileVM_OnDownloading alloc] initWithAMFileVM:this$0_ withFloat:progress]];
 }
 
 
-#line 34
+#line 45
 - (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
   
-#line 35
+#line 46
   [this$0_ postWithId:[[AMFileVM_OnDownloaded alloc] initWithAMFileVM:this$0_ withAMFileSystemReference:reference]];
 }
 

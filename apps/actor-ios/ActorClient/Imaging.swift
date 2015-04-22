@@ -26,7 +26,30 @@ extension UIImage {
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
+        if (self.capInsets.bottom != 0 || self.capInsets.top != 0 || self.capInsets.left != 0 || self.capInsets.right != 0) {
+            return image.resizableImageWithCapInsets(capInsets, resizingMode: resizingMode)
+        }
+        
         return image;
+    }
+    
+    func tintBgImage(color: UIColor) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.size,false,UIScreen.mainScreen().scale);
+        
+        var rect = CGRectZero;
+        rect.size = self.size;
+        // Composite tint color at its own opacity.
+        color.set();
+        UIRectFill(rect);
+
+        // Mask tint color-swatch to this image's opaque mask.
+        // We want behaviour like NSCompositeDestinationIn on Mac OS X.
+        self.drawInRect(rect, blendMode: kCGBlendModeOverlay, alpha: 1.0)
+        
+        var image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+
+        return image
     }
     
     func roundImage(newSize: Int) -> UIImage {
@@ -38,7 +61,7 @@ extension UIImage {
         
         CGContextAddPath(context, CGPathCreateWithEllipseInRect(CGRect(origin: CGPointZero, size: nSize),nil));
         CGContextClip(context);
-        self.drawInRect(CGRect(origin: CGPointZero, size: nSize));
+        self.drawInRect(CGRect(origin: CGPointMake(-1, -1), size: CGSize(width: (newSize+2), height: (newSize+2))));
         
         // Border
         
@@ -61,7 +84,7 @@ extension UIImage {
         UIBezierPath(roundedRect: CGRectMake(0, 0, w, h), cornerRadius: roundSize).addClip()
 //        CGContextClip(context);
         
-        self.drawInRect(CGRect(origin: CGPointZero, size: nSize));
+        self.drawInRect(CGRect(origin: CGPointMake(-1, -1), size: CGSize(width: (w+2), height: (h+2))));
 
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -88,7 +111,7 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(nSize, false, 1.0);
         var context = UIGraphicsGetCurrentContext();
         
-        self.drawInRect(CGRect(origin: CGPointZero, size: nSize));
+        self.drawInRect(CGRect(origin: CGPointMake(-1, -1), size: CGSize(width: (w+2), height: (h+2))));
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
@@ -108,7 +131,7 @@ class Imaging {
         return image
     }
     
-    class func avatarPlaceholder(index: jint, size: Int, title:NSString) -> UIImage {
+    class func avatarPlaceholder(index: jint, size: Int, title: NSString, rounded: Bool) -> UIImage {
         var color = Resources.placeHolderColors[Int(abs(index)) % Resources.placeHolderColors.count].CGColor;
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: size, height: size), false, UIScreen.mainScreen().scale);
@@ -117,7 +140,13 @@ class Imaging {
         // Background
         
         CGContextSetFillColorWithColor(context, color);
-        CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
+        
+        if rounded {
+            CGContextAddArc(context, CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
+        } else {
+            CGContextAddRect(context, CGRect(x: 0, y: 0, width: size, height: size))
+        }
+        
         CGContextDrawPath(context, kCGPathFill);
 
         // Text
@@ -137,9 +166,11 @@ class Imaging {
         
         // Border
         
-        CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor);
-        CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
-        CGContextDrawPath(context, kCGPathStroke);
+        if rounded {
+            CGContextSetStrokeColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x10/255.0).CGColor);
+            CGContextAddArc(context,CGFloat(size)/2, CGFloat(size)/2, CGFloat(size)/2, CGFloat(M_PI * 0), CGFloat(M_PI * 2), 0);
+            CGContextDrawPath(context, kCGPathStroke);
+        }
         
         var image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();

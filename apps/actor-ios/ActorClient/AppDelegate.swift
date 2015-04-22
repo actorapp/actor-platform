@@ -19,83 +19,25 @@ import Foundation
     // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-        
-        application.statusBarStyle = UIStatusBarStyle.LightContent
 
-        var navAppearance = UINavigationBar.appearance();
-        navAppearance.tintColor = UIColor.whiteColor();
-        navAppearance.barTintColor = Resources.PrimaryColor;
-//        navAppearance.backgroundColor = Resources.PrimaryColor;
-//        navAppearance.setBackgroundImage(Imaging.imageWithColor(Resources.PrimaryColor, size: CGSize(width: 1, height: 46)), forBarMetrics: UIBarMetrics.Default)
-        navAppearance.shadowImage = UIImage(named: "CardBottom2")
-        navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()];
-        navAppearance.translucent = true;
-//
-
+        // Apply styles
         
-//        var textFieldAppearance = UITextField.appearance();
-//        textFieldAppearance.tintColor = Resources.TintColor;
+        MainAppTheme.navigation.applyAppearance(application)
+        MainAppTheme.tab.applyAppearance(application)
+        MainAppTheme.search.applyAppearance(application)
         
-        //var searchBarAppearance = UISearchBar.appearance();
-        //searchBarAppearance.tintColor = Resources.TintColor;
         
-
-//         273c52
-        
-        UITabBar.appearance().translucent = false
-        UITabBar.appearance().tintColor = Resources.BarTintColor;
-//        UITabBar.appearance().backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 1, height: 46))
-        UITabBar.appearance().shadowImage = UIImage(named: "CardTop2");
-//        UITabBar.appearance().selectionIndicatorImage = Imaging.imageWithColor(UIColor(red: 0xeb/255.0, green: 0xed/255.0, blue: 0xf2/255.0, alpha: 1), size: CGSize(width: 1, height: 46)).resizableImageWithCapInsets(UIEdgeInsetsZero);
-        
-        //        setTitleTextAttributes(NSForegroundColorAttributeName, );
-        
-        //        var barButtonItemAppearance = UIBarButtonItem.appearance();
-        //        barButtonItemAppearance
-        
-        //        [UINavigationBar appearance].tintColor = [UIColor whiteColor];
-        //        [UINavigationBar appearance].barTintColor = BAR_COLOR;
-        //        [UINavigationBar appearance].backgroundColor = BAR_COLOR;
-        //        [UINavigationBar appearance].titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
-        //        [UITextField appearance].tintColor = BAR_COLOR;
-        //        [UISearchBar appearance].tintColor = BAR_COLOR;
-        //        //[UISearchBar appearance].backgroundImage = [UIImage new];
-        //        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class],nil]
-        //        setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
-        //
-        //        [UITableViewCell appearance].tintColor = BAR_COLOR;
-        //        [UITableView appearance].sectionIndexColor = BAR_COLOR;
-        //        [UITabBar appearance].tintColor = BAR_COLOR;
-        //        
-        //        [MagicalRecord setupAutoMigratingCoreDataStack];
-        //        
-        //        [CocoaMessenger messenger];
-
-        
-        var rootController = MainTabController()
-    
-        window = UIWindow(frame: UIScreen.mainScreen().bounds);
-        window?.rootViewController = rootController;
-        window?.makeKeyAndVisible();
-        window?.backgroundColor = UIColor.whiteColor()
-        
-        if (MSG.isLoggedIn() == false) {
-            let phoneController = AAAuthPhoneController()
-            var loginNavigation = AANavigationController(rootViewController: phoneController)
-            loginNavigation.navigationBar.tintColor = Resources.BarTintColor
-            loginNavigation.makeBarTransparent()
-            rootController.presentViewController(loginNavigation, animated: false, completion: nil)
+        // Register notifications
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
         } else {
-            if application.respondsToSelector("registerUserNotificationSettings:") {
-                let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-                let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
-                application.registerUserNotificationSettings(settings)
-                application.registerForRemoteNotifications()
-            } else {
-                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
-            }
+            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
         }
         
+        // Register hockey app
         if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
             if (hockey.trim().size() > 0) {
                 BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
@@ -105,17 +47,57 @@ import Foundation
             }
         }
         
-        binder.bind(MSG.getAppState().getIsAppLoaded(), closure: { (value: Any?) -> () in
-            if let loaded = value as? JavaLangBoolean {
-                if Bool(loaded.booleanValue()) == true {
-                    rootController.hideAppIsSyncingPlaceholder()
-                } else {
-                    rootController.showAppIsSyncingPlaceholder()
-                }
-            }
-        })
+        // Creating main window
+        
+        window = UIWindow(frame: UIScreen.mainScreen().bounds);
+        window?.backgroundColor = UIColor.whiteColor()
+        
+        if (MSG.isLoggedIn()) {
+            onLoggedIn()
+        } else {
+            // Create root layout for login
+            
+            let phoneController = AAAuthPhoneController()
+            var loginNavigation = AANavigationController(rootViewController: phoneController)
+            loginNavigation.navigationBar.tintColor = Resources.BarTintColor
+            loginNavigation.makeBarTransparent()
+            
+            window?.rootViewController = loginNavigation
+            window?.makeKeyAndVisible();
+        }
+        
         
         return true;
+    }
+    
+    func onLoggedIn() {
+        // Create root layout for app
+        var rootController : UIViewController? = nil
+        if (isIPad) {
+            var splitController = MainSplitViewController()
+            splitController.viewControllers = [MainTabController(), NoSelectionController()]
+            
+            rootController = splitController
+        } else {
+            var tabController = MainTabController()
+            binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
+                if (empty!.booleanValue()) {
+                    if (loaded!.booleanValue()) {
+                        tabController.showAppIsEmptyPlaceholder()
+                    } else {
+                        tabController.showAppIsSyncingPlaceholder()
+                    }
+                } else {
+                    tabController.hidePlaceholders()
+                }
+            }
+            rootController = tabController
+        }
+        
+        window?.rootViewController = rootController!
+        window?.makeKeyAndVisible();
+        
+
     }
     
     func applicationWillEnterForeground(application: UIApplication) {

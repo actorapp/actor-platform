@@ -22,14 +22,14 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, currentFailureCount_, AMAtomicIntegerC
 J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
 
 
-#line 7
+#line 10
 @implementation AMExponentialBackoff
 
 
-#line 18
+#line 25
 - (jlong)exponentialWait {
   
-#line 19
+#line 26
   jlong maxDelay = AMExponentialBackoff_MIN_DELAY + ((AMExponentialBackoff_MAX_DELAY - AMExponentialBackoff_MIN_DELAY) / AMExponentialBackoff_MAX_FAILURE_COUNT) * [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) get];
   @synchronized(random_) {
     return J2ObjCFpToLong(([((JavaUtilRandom *) nil_chk(random_)) nextFloat] * maxDelay));
@@ -37,10 +37,10 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
 }
 
 
-#line 25
+#line 35
 - (void)onFailure {
   
-#line 26
+#line 36
   jint val = [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) incrementAndGet];
   if (val > 50) {
     [currentFailureCount_ compareAndSetWithInt:val withInt:AMExponentialBackoff_MAX_FAILURE_COUNT];
@@ -48,28 +48,28 @@ J2OBJC_FIELD_SETTER(AMExponentialBackoff, random_, JavaUtilRandom *)
 }
 
 
-#line 32
+#line 45
 - (void)onSuccess {
   
-#line 33
+#line 46
   [self reset];
 }
 
 
-#line 36
+#line 52
 - (void)reset {
   
-#line 37
+#line 53
   [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) setWithInt:0];
 }
 
 - (instancetype)init {
   if (self = [super init]) {
     currentFailureCount_ = DKEnvironment_createAtomicIntWithInt_(
-#line 14
+#line 16
     1);
     random_ =
-#line 16
+#line 18
     [[JavaUtilRandom alloc] init];
   }
   return self;

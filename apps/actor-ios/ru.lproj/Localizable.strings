@@ -1,0 +1,197 @@
+/* 
+  Localizations.strings
+  ActorApp
+
+  Created by Stepan Korshakov on 14.04.15.
+  Copyright (c) 2015 Actor LLC. All rights reserved.
+*/
+
+/*
+ * Main Screen
+ */
+
+"TabMessages" = "Сообщения";
+
+"TabPeople" = "Люди";
+
+"TabSettings" = "Настройки";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Добавить Контакт";
+
+"ContactsAddHint" = "Укажите номер телефона";
+
+"ContactsActionInvite" = "Пригласить друзей";
+
+"ContactsActionAdd" = "Добавить друга";
+
+/*
+ * Dialogs
+ */
+
+"DialogsHint" = "Проведите для удаления";
+
+/*
+ * Settings
+ */
+
+"SettingsEdit" = "Изменить";
+
+"SettingsSetPhoto" = "Поменять Фото";
+
+"SettingsSecurity" = "Безопасность";
+
+"SettingsEditHeader" = "Измените свое имя";
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Изменить имя";
+
+"ProfileSendMessage" = "Отправить сообщение";
+
+"ProfileNotifications" = "Оповещения";
+
+"ProfileAddToContacts" = "Добавить в контакты";
+
+"ProfileRemoveFromContacts" = "Удалить из контактов";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "Измените тему группы";
+
+"GroupSetPhoto" = "Поменять фото группы";
+
+"GroupNotifications" = "Оповещения";
+
+"GroupSettings" = "НАСТРОЙКИ";
+
+"GroupMembers" = "{0} УЧАСТНИКИ";
+
+"GroupAddParticipant" = "Добавить в группу...";
+
+"GroupLeave" = "Покинуть группу";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "Новое сообщение";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Приватность и безопасность";
+
+"PrivacyTerminate" = "Удалить все другие сессии";
+
+"PrivacyTerminateHint" = "Выход со всех устройств кроме этого.";
+
+/*
+ * Chat
+ */
+
+"ChatPlaceholder" = "Введите текст...";
+
+"ChatSend" = "Отпр.";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Пригласите своих друзей";
+
+"Placeholder_Empty_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+
+"Placeholder_Empty_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Loading_Title" = "Синхронизируемся";
+
+"Placeholder_Loading_Message" = "Пожалуйста, подождите пока мы инициализируем приложение.";
+
+"Placeholder_Contacts_Title" = "Пригласите своих друзей";
+
+"Placeholder_Contacts_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
+
+"Placeholder_Contacts_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Dialogs_Title" = "Начать общение";
+
+"Placeholder_Dialogs_Message" = "Выберите контакт из списка контактов или нажмине кнопку \"написать\" для начала общения.";
+
+"Placeholder_Group_Title" = "Не участник группы";
+
+"Placeholder_Group_Message" = "К сожалению, Вы больше не являетесь участником этой группы.";
+
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "Ваш Телефон";
+
+"AuthPhoneNumberHint" = "Ваш номер телефона";
+
+"AuthPhoneHint" = "Пожалуйста, укажите Вашу страну и номер телефона.";
+
+"AuthPhoneTooShort" = "Номер телефона слишком короткий";
+
+"AuthCodeFieldHint" = "Код активации";
+
+"AuthCodeHint" = "Мы отправили Вам SMS с кодом активации.";
+
+"AuthProfileTitle" = "Ваш профиль";
+
+"AuthProfileAddPhoto1" = "добавить";
+
+"AuthProfileAddPhoto2" = "фото";
+
+"AuthProfileNameHint" = "Ваше имя";
+
+"AuthProfileHint" = "Введите свое имя и фото";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "Ru";
+
+"InviteText" = "Привет! Давай продолжим наше общение в Акторе https://actor.im/dl";
+
+"PhotoRemove" = "Удалить фото";
+
+"PhotoCamera" = "Снять фото";
+
+"PhotoLibrary" = "Фотоархив";
+
+"NavigationEdit" = "Изменить";
+
+"NavigationDone" = "Готово";
+
+"NavigationBack" = "";
+
+"NavigationNext" = "Далее";
+
+"AlertCancel" = "Отмена";
+
+"AlertNext" = "Далее";
+
+"AlertSave" = "Сохранить";
+
+"AlertOk" = "OK";
+
+"UnsupportedContent" = "Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Неправильный номер телефона. Пожалуйста, повторите попытку.";
+
+"ErrorCodeExpired" = "Код устарел. Пожалуйста, начните авторизацию с начала.";

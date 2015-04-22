@@ -229,12 +229,12 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   
 #line 128
   if (count < 0) {
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Count can't be negative"];
+    @throw [[JavaIoIOException alloc] initWithNSString:@"Count can't be negative"];
   }
   
 #line 132
   if (count > BSLimits_MAX_BLOCK_SIZE) {
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Unable to read more than 1 MB"];
+    @throw [[JavaIoIOException alloc] initWithNSString:@"Unable to read more than 1 MB"];
   }
   
 #line 140

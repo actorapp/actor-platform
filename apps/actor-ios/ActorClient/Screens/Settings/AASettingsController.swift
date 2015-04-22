@@ -14,11 +14,14 @@ class AASettingsController: AATableViewController {
     // MARK: Private vars
     
     private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
+    private let TitledCellIdentifier = "TitledCellIdentifier"
     private let CellIdentifier = "CellIdentifier"
     
     private let uid: Int
     private var user: AMUserVM?
     private var binder = Binder()
+    
+    private var phones: JavaUtilArrayList?
     
     // MARK: -
     // MARK: Constructors
@@ -26,7 +29,7 @@ class AASettingsController: AATableViewController {
     init() {
         uid = Int(MSG.myUid())
         
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.Plain)
         initCommon()
     }
 
@@ -41,10 +44,19 @@ class AASettingsController: AATableViewController {
         
         user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
         
-        navigationItem.title = "Settings" // TODO: Localize
-        navigationItem.rightBarButtonItem = editButtonItem()
+        navigationItem.title = NSLocalizedString("TabSettings", comment: "Settings Title")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: NSLocalizedString("SettingsEdit", comment: "Edtit Action"),
+            style: UIBarButtonItemStyle.Plain,
+            target: self,
+            action: "editProfile")
         
+        view.backgroundColor = MainAppTheme.list.bgColor
+        
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
+        tableView.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
         
         tableView.reloadData()
@@ -75,21 +87,36 @@ class AASettingsController: AATableViewController {
                 }
             }
         })
+        
+        binder.bind(user!.getPhones(), closure: { (phones: JavaUtilArrayList?) -> () in
+            if phones != nil {
+                self.phones = phones
+                self.tableView.reloadData()
+            }
+        })
     }
     
     func initCommon(){
-        var icon = UIImage(named: "ic_settings_blue_24")!;
-//        tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarSystemItem.TopRated, tag: 0)
-        tabBarItem = UITabBarItem(title: "Settings",
-            image: icon.tintImage(Resources.BarTintUnselectedColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: icon);
-//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+        
+        var title = "";
+        if (MainAppTheme.tab.showText) {
+            title = NSLocalizedString("TabSettings", comment: "Settings Title")
+        }
+        
+        tabBarItem = UITabBarItem(title: title,
+            image: MainAppTheme.tab.createUnselectedIcon("ic_settings_outline"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_settings_filled"))
+        
+        if (!MainAppTheme.tab.showText) {
+            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         MSG.onProfileOpen(jint(uid))
+        
+        MainAppTheme.navigation.applyStatusBar()
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -100,10 +127,15 @@ class AASettingsController: AATableViewController {
     // MARK: -
     // MARK: Methods
     
-    private func askSetPhoto() {
-        var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo") // TODO: Localize
-        actionSheet.addButtonWithTitle("Delete Photo")
-        actionSheet.destructiveButtonIndex = 3
+    private func askSetPhoto(pressedView: UIView) {
+        var actionSheet = UIActionSheet(title: nil, delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            destructiveButtonTitle: nil,
+            otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
+        if (user!.getAvatar().get() != nil) {
+            actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
+            actionSheet.destructiveButtonIndex = 3
+        }
         actionSheet.showInView(view)
     }
     
@@ -112,6 +144,21 @@ class AASettingsController: AATableViewController {
         var thumb = image.resizeSquare(200, maxH: 200);
         UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
         MSG.changeAvatarWithNSString("/tmp/avatar.jpg")
+    }
+    
+    // MARK: -
+    // MARK: Setters
+    
+    func editProfile() {
+        var alertView = UIAlertView(title: nil,
+            message: NSLocalizedString("SettingsEditHeader", comment: "Title"),
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel Title"))
+        alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
+        alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.show()
     }
     
     // MARK: -
@@ -124,9 +171,6 @@ class AASettingsController: AATableViewController {
             
             if let username = user!.getName().get() as? String {
                 cell.setUsername(username)
-                cell.usernameChangedBlock = { (newUsername: String) -> () in
-                    self.execute(MSG.editMyNameWithNSString(newUsername))
-                }
             }
             
         }
@@ -139,8 +183,32 @@ class AASettingsController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setTitle("Set Profile Photo") // TODO: Localize
+        cell.setContent(NSLocalizedString("SettingsSetPhoto", comment: "Edit Photo"))
         cell.setLeftInset(15.0)
+        
+        cell.setBottomSeparatorLeftInset(15.0)
+        cell.showBottomSeparator()
+        
+        return cell
+    }
+    
+    private func phoneCell(indexPath: NSIndexPath) -> AATitledCell {
+        var cell: AATitledCell = tableView.dequeueReusableCellWithIdentifier(TitledCellIdentifier, forIndexPath: indexPath) as! AATitledCell
+        
+        cell.setLeftInset(15.0)
+        
+        if let phone = phones!.getWithInt(jint(indexPath.row)) as? AMUserPhone {
+            cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
+        }
+        
+        cell.showBottomSeparator()
+        
+        var phonesCount = Int(phones!.size());
+        if indexPath.row == phonesCount - 1 {
+            cell.setBottomSeparatorLeftInset(0.0)
+        } else {
+            cell.setBottomSeparatorLeftInset(15.0)
+        }
         
         return cell
     }
@@ -149,8 +217,11 @@ class AASettingsController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
-        cell.setTitle("Notifications and Sounds") // TODO: Localize
+        cell.setContent("Notifications and Sounds") // TODO: Localize
         cell.setLeftInset(15.0)
+        
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -159,8 +230,11 @@ class AASettingsController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
-        cell.setTitle("Privacy and Security") // TODO: Localize
+        cell.setContent(NSLocalizedString("SettingsSecurity", comment: "Security Title"))
         cell.setLeftInset(15.0)
+        
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -169,14 +243,21 @@ class AASettingsController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 4
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch (section) {
         case 0:
-            return 2
+            return 1
         case 1:
+            return 1
+        case 2:
+            if phones == nil {
+                return 0
+            }
+            return Int(phones!.size());
+        case 3:
             return 1
         default:
             return 0
@@ -186,9 +267,11 @@ class AASettingsController: AATableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 && indexPath.row == 0 {
             return userInfoCell(indexPath)
-        } else if indexPath.section == 0 && indexPath.row == 1 {
-            return setProfilePhotoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
+            return setProfilePhotoCell(indexPath)
+        } else if indexPath.section == 2 {
+            return phoneCell(indexPath)
+        } else if indexPath.section == 3 && indexPath.row == 0 {
 //            return notificationsCell(indexPath)
 //        } else if indexPath.section == 1 && indexPath.row == 1 {
             return privacyCell(indexPath)
@@ -197,7 +280,7 @@ class AASettingsController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 0 && indexPath.row == 0
+        return false
     }
     
     // MARK: -
@@ -206,9 +289,9 @@ class AASettingsController: AATableViewController {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        if indexPath.section == 0 && indexPath.row == 1 {
-            askSetPhoto()
-        } else if indexPath.section == 1 && indexPath.row == 0 {
+        if indexPath.section == 1 && indexPath.row == 0 {
+            askSetPhoto(tableView.cellForRowAtIndexPath(indexPath)!)
+        } else if indexPath.section == 3 && indexPath.row == 0 {
 //            navigateToNotificationsSettings()
 //        } else if indexPath.section == 1 && indexPath.row == 1 {
             navigateToPrivacySettings()
@@ -217,18 +300,33 @@ class AASettingsController: AATableViewController {
 
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 89
+            return 200
+        } else if phones != nil && indexPath.section == 2 {
+            return 55
         }
         return 44
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            if (!Resources.IsDarkTheme) {
-                return CGFloat.min
-            }
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section < 2 {
+            return 0.0
         }
-        return tableView.sectionHeaderHeight
+        return CGFloat(15.0)
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section < 3 {
+            return 0.0
+        }
+        return CGFloat(15.0)
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView {
+        return UIView()
+    }
+    
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView {
+        return UIView()
     }
     
     // MARK: -
@@ -252,23 +350,23 @@ class AASettingsController: AATableViewController {
 // MARK: UIActionSheet Delegate
 
 extension AASettingsController: UIActionSheetDelegate {
-    
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
-        let title = actionSheet.buttonTitleAtIndex(buttonIndex)
+
+        // Cancel button
+        if (buttonIndex == 0) {
+            return
+        }
         
-        // TODO: Localize
-        if title == "Choose Photo" || title == "Take Photo" {
-            let takePhoto = (title == "Take Photo")
+        if (buttonIndex == 1 || buttonIndex == 2) {
+            let takePhoto = (buttonIndex == 1)
             var picker = UIImagePickerController()
             picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             picker.delegate = self
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
-            
-        } else if title == "Delete Photo" {
+        } else if (buttonIndex == 3) {
             MSG.removeAvatar()
         }
     }
-    
 }
 
 // MARK: -
@@ -278,6 +376,7 @@ extension AASettingsController: UIImagePickerControllerDelegate {
     
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyStatusBar()
         
         changeAvatarToImage(image)
         
@@ -285,6 +384,8 @@ extension AASettingsController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyStatusBar()
+        
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
         
         changeAvatarToImage(image)
@@ -293,6 +394,7 @@ extension AASettingsController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -306,3 +408,18 @@ extension AASettingsController: UINavigationControllerDelegate {
     
     
 }
+
+// MARK: -
+// MARK: UIAlertView Delegate
+
+extension AASettingsController: UIAlertViewDelegate {
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if (buttonIndex == 1) {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                execute(MSG.editMyNameWithNSString(textField.text))
+            }
+        }
+    }
+}
+

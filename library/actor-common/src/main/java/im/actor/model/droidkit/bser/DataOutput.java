@@ -83,6 +83,10 @@ public class DataOutput {
         writeBytes(v, ofs, len);
     }
 
+    public void writeBytes(byte[] v) {
+        writeBytes(v, 0, v.length);
+    }
+
     public void writeBytes(byte[] v, int ofs, int len) {
         if (len > Limits.MAX_BLOCK_SIZE) {
             throw new IllegalArgumentException("Unable to write more than 1 MB");

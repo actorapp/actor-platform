@@ -34,13 +34,13 @@ class AATableViewController: AAViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: nil, action: nil) // TODO: Localize
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment:"Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func loadView() {
         super.loadView()
         
-        view.backgroundColor = UIColor.whiteColor()
+        // view.backgroundColor = UIColor.whiteColor()
         
         tableView = UITableView(frame: view.bounds, style: tableViewStyle)
         tableView.delegate = self
@@ -70,6 +70,15 @@ class AATableViewController: AAViewController {
     private func placeholderViewFrame() -> CGRect {
         let navigationBarHeight: CGFloat = 64.0 + Utils.retinaPixel() // TODO: if will be landscape then change to manual calc
         return CGRect(x: 0, y: navigationBarHeight, width: view.bounds.size.width, height: view.bounds.size.height - navigationBarHeight)
+    }
+    
+    // MARK: -
+    // MARK: Layout
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        tableView.frame = view.bounds;
     }
     
 }
