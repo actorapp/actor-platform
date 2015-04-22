@@ -137,7 +137,7 @@
         for (NSString *line in [self linesOfResource]) {
             NSArray *tokens = [line componentsSeparatedByString:@";"];
             NSString *key = [tokens[1] lowercaseString];
-            minLengths[key] = (tokens.count >= 5) ? tokens[4] : @5;
+            minLengths[key] = (tokens.count >= 5) ? tokens[4] : @"5";
         }
     }
     return minLengths;
