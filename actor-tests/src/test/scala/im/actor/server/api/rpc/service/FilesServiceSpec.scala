@@ -89,7 +89,6 @@ class FilesServiceSpec extends BaseServiceSuite {
 
     val parts = List(resp1, resp2) map {
       case (size, Ok(ResponseGetFileUploadPartUrl(urlStr))) =>
-        println(urlStr)
         val url = new URL(urlStr)
         val connection = url.openConnection().asInstanceOf[HttpURLConnection]
         connection.setDoOutput(true)
@@ -100,7 +99,6 @@ class FilesServiceSpec extends BaseServiceSuite {
         out.write(partContents)
         out.close()
         val responseCode = connection.getResponseCode()
-        println(connection.getResponseMessage)
         responseCode should ===(200)
         partContents
     }
