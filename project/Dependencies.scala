@@ -30,6 +30,9 @@ object Dependencies {
     val flywayCore      = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP        = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
 
+    val amazonaws       = "com.amazonaws"                 %  "aws-java-sdk"                  % "1.9.31"
+    val awsWrap         = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
+
     val bcprov          = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
 
     val libPhoneNumber  = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
@@ -79,7 +82,7 @@ object Dependencies {
   val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec, protobuf, scalazCore)
 
   val rpcApi = common ++ Seq(
-    akkaSlf4j, akkaActor, bcprov, libPhoneNumber, shapeless
+    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, libPhoneNumber, shapeless
   )
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)

@@ -18,6 +18,7 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
+import im.actor.server.api.util.ACL
 import im.actor.server.{ models, persist }
 import im.actor.server.session._
 
@@ -196,11 +197,11 @@ class AuthServiceImpl(implicit
                       case None => withValidName(rawName) { name =>
                         val rnd = ThreadLocalRandom.current()
                         val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
-                        val user = models.User(userId, nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
+                        val user = models.User(userId, ACL.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
 
                         for {
                           _ <- persist.User.create(user)
-                          _ <- persist.UserPhone.create(phoneId, userId, nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
+                          _ <- persist.UserPhone.create(phoneId, userId, ACL.nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
                           _ <- persist.AuthId.setUserData(clientData.authId, userId)
                           _ <- persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {
