@@ -24,5 +24,5 @@ xcrun -sdk iphoneos PackageApplication -v "$PROJECT_PATH/build/Applications/Acto
 
 # Acrhive dSYM files
 cd build
-zip $2.dSYM.zip ActorApp.app.dSYM
+zip -r $2.dSYM.zip ActorApp.app.dSYM
 cd ..
