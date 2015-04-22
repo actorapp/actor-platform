@@ -21,3 +21,8 @@ codesign --force --sign 'iPhone Distribution: Ekstradiya OOO' --entitlements Bui
 
 # Package app
 xcrun -sdk iphoneos PackageApplication -v "$PROJECT_PATH/build/Applications/ActorApp.app" -o "$PROJECT_PATH/build/$2.ipa"
+
+# Acrhive dSYM files
+cd build
+zip $2.zip ActorApp.app.dSYM
+cd ..
