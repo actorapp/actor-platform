@@ -35,9 +35,11 @@ class AASettingsPrivacyController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Privacy and Security" // TODO: Localize
+        navigationItem.title = NSLocalizedString("PrivacyTitle", comment: "Controller title")
         
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
 //        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
 //        let messenger = CocoaMessenger.messenger().loadSessions()
@@ -59,7 +61,7 @@ class AASettingsPrivacyController: AATableViewController {
     private func terminateSessionsCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setTitle("Terminate all other sessions") // TODO: Localize
+        cell.setContent(NSLocalizedString("PrivacyTerminate", comment: "Terminate action"))
         cell.style = AATableViewCellStyle.Normal
         
         return cell
@@ -93,7 +95,7 @@ class AASettingsPrivacyController: AATableViewController {
     
     func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section > 0 { return nil }
-        return "Logs out all devices except for this one." // TODO: Localize
+        return NSLocalizedString("PrivacyTerminateHint", comment: "Terminate hint")
     }
     
     // MARK: -

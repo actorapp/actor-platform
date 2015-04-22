@@ -7,7 +7,6 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
@@ -37,56 +36,53 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppEmpty_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 
 
-#line 10
+#line 9
 @implementation AMAppStateVM
 
 
-#line 21
+#line 25
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
     
-#line 22
+#line 26
     self->modules_ = modules;
     
-#line 23
+#line 27
     self->isDialogsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.dialogs.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getPreferences])) getBool:@"app.dialogs.empty" withDefault:YES])];
     
-#line 24
+#line 28
     self->isContactsEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.contacts.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.empty" withDefault:YES])];
     
-#line 25
+#line 29
     self->isAppEmpty_ = [[AMValueModel alloc] initWithNSString:@"app.empty" withId:JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.empty" withDefault:YES])];
     
-#line 27
+#line 31
     self->isBookImported_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.imported" withDefault:NO];
     
-#line 28
+#line 32
     self->isDialogsLoaded_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.dialogs.loaded" withDefault:NO];
     
-#line 29
+#line 33
     self->isContactsLoaded_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBool:@"app.contacts.loaded" withDefault:NO];
     
-#line 31
+#line 35
     self->isAppLoaded_ = [[AMValueModel alloc] initWithNSString:@"app.loaded" withId:JavaLangBoolean_valueOfWithBoolean_(isBookImported_ && isDialogsLoaded_ && isContactsLoaded_)];
-    
-#line 33
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", JreStrcat("$Z", @"init: ", isBookImported_));
   }
   return self;
 }
 
 
-#line 36
+#line 38
 - (void)updateLoaded {
   AMAppStateVM_updateLoaded(self);
 }
 
 
-#line 45
+#line 50
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
     
-#line 46
+#line 51
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isDialogsEmpty_)) get])) booleanValue] != isEmpty) {
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.dialogs.empty" withValue:isEmpty];
       [isDialogsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
@@ -101,11 +97,11 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 }
 
 
-#line 58
+#line 68
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty {
   @synchronized(self) {
     
-#line 59
+#line 69
     if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(isContactsEmpty_)) get])) booleanValue] != isEmpty) {
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.empty" withValue:isEmpty];
       [isContactsEmpty_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(isEmpty)];
@@ -120,14 +116,12 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 }
 
 
-#line 71
+#line 84
 - (void)onPhoneImported {
   @synchronized(self) {
     
-#line 72
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onPhoneImported");
+#line 85
     if (!isBookImported_) {
-      AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onPhoneImported:apply");
       isBookImported_ = YES;
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.imported" withValue:YES];
       AMAppStateVM_updateLoaded(self);
@@ -136,14 +130,12 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 }
 
 
-#line 81
+#line 95
 - (void)onDialogsLoaded {
   @synchronized(self) {
     
-#line 82
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onDialogsLoaded");
+#line 96
     if (!isDialogsLoaded_) {
-      AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onDialogsLoaded:apply");
       isDialogsLoaded_ = YES;
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.dialogs.loaded" withValue:YES];
       AMAppStateVM_updateLoaded(self);
@@ -152,14 +144,12 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 }
 
 
-#line 91
+#line 106
 - (void)onContactsLoaded {
   @synchronized(self) {
     
-#line 92
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onContactsLoaded");
+#line 107
     if (!isContactsLoaded_) {
-      AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onContactsLoaded:apply");
       isContactsLoaded_ = YES;
       [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putBool:@"app.contacts.loaded" withValue:YES];
       AMAppStateVM_updateLoaded(self);
@@ -168,34 +158,34 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 }
 
 
-#line 102
+#line 119
 - (AMValueModel *)getIsDialogsEmpty {
   
-#line 103
+#line 120
   return isDialogsEmpty_;
 }
 
 
-#line 106
+#line 128
 - (AMValueModel *)getIsContactsEmpty {
   
-#line 107
+#line 129
   return isContactsEmpty_;
 }
 
 
-#line 110
+#line 137
 - (AMValueModel *)getIsAppLoaded {
   
-#line 111
+#line 138
   return isAppLoaded_;
 }
 
 
-#line 114
+#line 146
 - (AMValueModel *)getIsAppEmpty {
   
-#line 115
+#line 147
   return isAppEmpty_;
 }
 
@@ -215,11 +205,9 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 
 void AMAppStateVM_updateLoaded(AMAppStateVM *self) {
   
-#line 37
-  AMLog_dWithNSString_withNSString_(@"AppStateVM", @"updateLoaded");
+#line 39
   jboolean val = self->isBookImported_ && self->isDialogsLoaded_ && self->isContactsLoaded_;
   if ([((JavaLangBoolean *) nil_chk([((AMValueModel *) nil_chk(self->isAppLoaded_)) get])) booleanValue] != val) {
-    AMLog_dWithNSString_withNSString_(@"AppStateVM", @"updateLoaded:apply");
     [self->isAppLoaded_ changeWithId:JavaLangBoolean_valueOfWithBoolean_(val)];
   }
 }

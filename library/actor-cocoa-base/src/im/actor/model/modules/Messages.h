@@ -63,6 +63,8 @@
 
 - (id<DKListEngine>)getConversationEngineWithAMPeer:(AMPeer *)peer;
 
+- (id<DKListEngine>)getMediaEngineWithAMPeer:(AMPeer *)peer;
+
 - (DKActorRef *)getDialogsActor;
 
 - (DKActorRef *)getDialogsHistoryActor;

@@ -76,8 +76,10 @@ import Foundation
     
     static let TintDarkColor = UIColor(red: 38/255.0, green: 109/255.0, blue: 204/255.0, alpha: 1.0);
     static let TintColor = UIColor(red: 80/255.0, green: 133/255.0, blue: 204/255.0, alpha: 1.0);
+    
     static let BarTintColor = TintColor;
-    static let BarTintUnselectedColor = UIColor(red: 171/255.0, green: 182/255.0, blue: 202/255.0, alpha: 1);
+    static let BarTintUnselectedColor = UIColor.RGB(0x5085CB, alpha: 0.56);
+    
     static let SearchBgColor = UIColor(red: 217/255.0, green: 218/255.0, blue: 220/255.0, alpha: 1)
     
     static let placeHolderColors : [UIColor] = [
@@ -91,12 +93,11 @@ import Foundation
     
     static let TextPrimaryColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0);
     static let TextSecondaryColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0);
-    static let SeparatorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0x1e/255.0)
     
     static let BackyardColor = UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
     static let SecondaryTint = UIColor(red: 0xb5/255.0, green: 0xb6/255.0, blue: 0xb7/255.0, alpha: 1)
     
-    static let SecondaryLightText = UIColor(red: 1, green: 1, blue: 1, alpha: 128/255.0)
+    static let SecondaryLightText = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
     static let PrimaryLightText = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
     
     static let SelectorColor = UIColor(red: 0, green: 0, blue: 0, alpha: 60/255.0)
@@ -105,6 +106,8 @@ import Foundation
     static let SecondaryDarkText = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
     
     static let PlaceholderText = UIColor(red: 200/255.0, green: 200/255.0, blue: 200/255.0, alpha: 1.0)
+    
+    static let HintText = UIColor(red: 80/255.0, green: 80/255.0, blue: 80/255.0, alpha: 1.0)
 }
 
 

@@ -55,6 +55,9 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
   }
   
 #line 29
+  v = v & (jint) 0xFFFFFFFF;
+  
+#line 31
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 56)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 48)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 40)) & (jint) 0xFF);
@@ -66,15 +69,15 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 }
 
 
-#line 39
+#line 41
 - (void)writeIntWithInt:(jint)v {
   
-#line 40
+#line 42
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 4) {
     BSDataOutput_expandWithInt_(self, offset_ + 4);
   }
   
-#line 44
+#line 46
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 24)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 16)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 8)) & (jint) 0xFF);
@@ -82,10 +85,10 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 }
 
 
-#line 50
+#line 52
 - (void)writeByteWithByte:(jbyte)v {
   
-#line 51
+#line 53
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 1) {
     BSDataOutput_expandWithInt_(self, offset_ + 1);
   }
@@ -93,10 +96,10 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 }
 
 
-#line 57
+#line 59
 - (void)writeByteWithInt:(jint)v {
   
-#line 58
+#line 60
   if (v < 0) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Value can't be negative"];
   }
@@ -110,37 +113,45 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 }
 
 
-#line 70
+#line 72
 - (void)writeVarIntWithLong:(jlong)v {
   
-#line 71
+#line 73
   while ((v & (jlong) 0xffffffffffffff80l) != 0l) {
     [self writeByteWithInt:(jint) ((v & (jint) 0x7f) | (jint) 0x80)];
     URShiftAssignLong(&v, 7);
   }
   
-#line 76
+#line 78
   [self writeByteWithInt:(jint) (v & (jint) 0x7f)];
 }
 
 
-#line 79
+#line 81
 - (void)writeProtoBytesWithByteArray:(IOSByteArray *)v
                              withInt:(jint)ofs
                              withInt:(jint)len {
   
-#line 80
+#line 82
   [self writeVarIntWithLong:len];
   [self writeBytesWithByteArray:v withInt:ofs withInt:len];
 }
 
 
-#line 84
+#line 86
+- (void)writeBytesWithByteArray:(IOSByteArray *)v {
+  
+#line 87
+  [self writeBytesWithByteArray:v withInt:0 withInt:((IOSByteArray *) nil_chk(v))->size_];
+}
+
+
+#line 90
 - (void)writeBytesWithByteArray:(IOSByteArray *)v
                         withInt:(jint)ofs
                         withInt:(jint)len {
   
-#line 85
+#line 91
   if (len > BSLimits_MAX_BLOCK_SIZE) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Unable to write more than 1 MB"];
   }
@@ -154,7 +165,7 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Inconsistent sizes"];
   }
   
-#line 98
+#line 104
   if (((IOSByteArray *) nil_chk(data_))->size_ < offset_ + v->size_) {
     BSDataOutput_expandWithInt_(self, offset_ + v->size_);
   }
@@ -164,51 +175,51 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 }
 
 
-#line 106
+#line 112
 - (void)writeProtoLongsWithLongArray:(IOSLongArray *)values {
   
-#line 107
+#line 113
   if (((IOSLongArray *) nil_chk(values))->size_ > BSLimits_MAX_PROTO_REPEATED) {
     @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:JreStrcat("$I", @"Values can't be more than ", BSLimits_MAX_PROTO_REPEATED)];
   }
   [self writeVarIntWithLong:values->size_];
   {
     IOSLongArray *a__ =
-#line 111
+#line 117
     values;
     jlong const *b__ = a__->buffer_;
     jlong const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jlong l = *b__++;
       
-#line 112
+#line 118
       [self writeLongWithLong:l];
     }
   }
 }
 
 
-#line 116
+#line 122
 - (void)writeProtoStringWithNSString:(NSString *)value {
   
-#line 117
+#line 123
   IOSByteArray *data = [((NSString *) nil_chk(value)) getBytesWithCharsetName:@"UTF-8"];
   [self writeProtoBytesWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
 }
 
 
-#line 121
+#line 127
 - (void)writeProtoBoolWithBoolean:(jboolean)v {
   
-#line 122
+#line 128
   [self writeByteWithInt:v ? 1 : 0];
 }
 
 
-#line 125
+#line 131
 - (IOSByteArray *)toByteArray {
   
-#line 126
+#line 132
   IOSByteArray *res = [IOSByteArray newArrayWithLength:offset_];
   for (jint i = 0; i < offset_; i++) {
     *IOSByteArray_GetRef(res, i) = IOSByteArray_Get(nil_chk(data_), i);
@@ -217,30 +228,30 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 }
 
 
-#line 133
+#line 139
 - (void)writeASN1LengthWithInt:(jint)length {
   
-#line 134
+#line 140
   if (length > 127) {
     jint size = 1;
     jint val = length;
     
-#line 138
+#line 144
     while ((URShiftAssignInt(&val, 8)) != 0) {
       size++;
     }
     
-#line 142
+#line 148
     [self writeByteWithInt:(size | (jint) 0x80) & (jint) 0xFF];
     
-#line 144
+#line 150
     for (jint i = (size - 1) * 8; i >= 0; i -= 8) {
       [self writeByteWithInt:(RShift32(length, i)) & (jint) 0xFF];
     }
   }
   else {
     
-#line 148
+#line 154
     [self writeByteWithInt:length & (jint) 0xFF];
   }
 }

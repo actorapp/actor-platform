@@ -19,7 +19,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     override init() {
         super.init(nibName: "ComposeController", bundle: nil)
         
-        self.navigationItem.title = "New Message";
+        self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
         self.extendedLayoutIncludesOpaqueBars = true
     }
 
@@ -28,30 +28,15 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     }
     
     override func viewDidLoad() {
+        view.backgroundColor = UIColor.whiteColor()
         
-        bindTable(tableView)
+        bindTable(tableView, fade: true)
         
         searchView = UISearchBar()
-        searchView!.searchBarStyle = UISearchBarStyle.Default
-        searchView!.barStyle = UIBarStyle.Default
-        searchView!.translucent = false
-
-        let image = UIImage(named: "SearchBarBg")!
-        searchView?.setSearchFieldBackgroundImage(image.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
-
-        // Enabled color
-        searchView!.barTintColor = UIColor.whiteColor()
-        
-        // Disabled color
-        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 320, height: 44))
-        searchView!.backgroundColor = UIColor.whiteColor()
-        
-        // Enabled Cancel button color
-        searchView!.tintColor = Resources.TintColor
-        
-        searchView!.placeholder = "";
         searchView!.delegate = self
         searchView!.frame = CGRectMake(0, 0, 0, 44)
+        
+        MainAppTheme.search.styleSearchBar(searchView!)
         
         searchDisplay = UISearchDisplayController(searchBar: searchView, contentsController: self)
         searchDisplay?.searchResultsDelegate = self
@@ -60,8 +45,16 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        tableView.tableHeaderView = searchView
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
         
+        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+        headerShadow.image = UIImage(named: "CardTop2");
+        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+        header.addSubview(headerShadow);
+        
+        tableView.tableHeaderView = header
+ 
         searchSource = ContactsSource(searchDisplay: searchDisplay!)
 
         super.viewDidLoad()
@@ -82,7 +75,9 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
         var conversationController = AAConversationController(peer: AMPeer.userWithInt(peerId))
+        conversationController.hidesBottomBarWhenPushed = true
         navigationController!.pushViewController(conversationController, animated: true)
+        MainAppTheme.navigation.applyStatusBar()
     }
 
 }

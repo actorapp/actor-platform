@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AAAuthPhoneController: AAViewController {
+class AAAuthPhoneController: AAAuthController {
     
     // MARK: - 
     // MARK: Private vars
@@ -22,6 +22,7 @@ class AAAuthPhoneController: AAViewController {
     private var countryCodeLabel: UILabel!
     private var phoneTextField: ABPhoneField!
     private var hintLabel: UILabel!
+    private var navigationBarSeparator: UIView!
     
     // MARK: - 
     // MARK: Public vars
@@ -54,26 +55,24 @@ class AAAuthPhoneController: AAViewController {
         
         view.backgroundColor = UIColor.whiteColor()
         
-        let screenSize = UIScreen.mainScreen().bounds.size
-        let isWidescreen = screenSize.width > 320 || screenSize.height > 480
-        
-        grayBackground = UIView(frame: CGRect(x: 0.0, y: 0.0, width: screenSize.width, height: isWidescreen ? 131.0 : 90.0))
+        grayBackground = UIView()
         grayBackground.backgroundColor = UIColor.RGB(0xf2f2f2)
         view.addSubview(grayBackground)
         
         titleLabel = UILabel()
         titleLabel.backgroundColor = UIColor.clearColor()
         titleLabel.textColor = UIColor.blackColor()
-        titleLabel.font = UIFont(name: "HelveticaNeue-Light", size: 30.0)
-        titleLabel.text = "Your Phone" // TODO: Localize
-        titleLabel.sizeToFit()
-        titleLabel.frame = CGRect(x: (screenSize.width - titleLabel.frame.size.width) / 2.0, y: isWidescreen ? 71.0 : 48.0, width: titleLabel.frame.size.width, height: titleLabel.frame.size.height)
+        titleLabel.font = isIPad
+            ? UIFont(name: "HelveticaNeue-Thin", size: 50.0)
+            : UIFont(name: "HelveticaNeue-Light", size: 30.0)
+        
+        titleLabel.text = NSLocalizedString("AuthPhoneTitle", comment: "Title")
         grayBackground.addSubview(titleLabel)
         
         let countryImage: UIImage! = UIImage(named: "ModernAuthCountryButton")
         let countryImageHighlighted: UIImage! = UIImage(named: "ModernAuthCountryButtonHighlighted")
         
-        countryButton = UIButton(frame: CGRect(x: 0.0, y: grayBackground.frame.origin.y + grayBackground.bounds.size.height, width: screenSize.width, height: countryImage.size.height))
+        countryButton = UIButton()
         countryButton.setBackgroundImage(countryImage.stretchableImageWithLeftCapWidth(Int(countryImage.size.width / 2), topCapHeight: 0), forState: UIControlState.Normal)
         countryButton.setBackgroundImage(countryImageHighlighted.stretchableImageWithLeftCapWidth(Int(countryImageHighlighted.size.width / 2), topCapHeight: 0), forState: UIControlState.Highlighted)
         countryButton.titleLabel?.font = UIFont.systemFontOfSize(20.0)
@@ -86,26 +85,23 @@ class AAAuthPhoneController: AAViewController {
         
         let phoneImage: UIImage! = UIImage(named: "ModernAuthPhoneBackground")
         phoneBackgroundView = UIImageView(image: phoneImage.stretchableImageWithLeftCapWidth(Int(phoneImage.size.width / 2), topCapHeight: 0))
-        phoneBackgroundView.frame = CGRect(x: 0, y: countryButton.frame.origin.y + 57, width: screenSize.width, height: phoneImage.size.height)
         view.addSubview(phoneBackgroundView)
         
-        let countryCodeLabelTopSpacing: CGFloat = 3.0
-        countryCodeLabel = UILabel(frame: CGRect(x: 14, y: countryCodeLabelTopSpacing, width: 68, height: phoneBackgroundView.frame.size.height - countryCodeLabelTopSpacing))
+        countryCodeLabel = UILabel()
         countryCodeLabel.font = UIFont.systemFontOfSize(20.0)
         countryCodeLabel.backgroundColor = UIColor.clearColor()
         countryCodeLabel.textAlignment = NSTextAlignment.Center
         phoneBackgroundView.addSubview(countryCodeLabel)
         
-        phoneTextField = ABPhoneField(frame: CGRect(x: 96.0, y: phoneBackgroundView.frame.origin.y + 1, width: screenSize.width - 96.0 - 10.0, height: phoneBackgroundView.frame.size.height - 2))
+        phoneTextField = ABPhoneField()
         phoneTextField.font = UIFont.systemFontOfSize(20.0)
         phoneTextField.backgroundColor = UIColor.whiteColor()
-        phoneTextField.placeholder = "Your phone number" // TODO: Localize
+        phoneTextField.placeholder = NSLocalizedString("AuthPhoneNumberHint", comment: "Hint")
         phoneTextField.keyboardType = UIKeyboardType.NumberPad;
         phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         view.addSubview(phoneTextField)
         
-        let separatorHeight: CGFloat = Utils.isRetina() ? 0.5 : 1.0;
-        var navigationBarSeparator = UIView(frame: CGRect(x: 0.0, y: grayBackground.bounds.size.height, width: screenSize.width, height: separatorHeight))
+        navigationBarSeparator = UIView()
         navigationBarSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
         view.addSubview(navigationBarSeparator)
         
@@ -117,20 +113,66 @@ class AAAuthPhoneController: AAViewController {
         hintLabel.textAlignment = NSTextAlignment.Center
         hintLabel.contentMode = UIViewContentMode.Center
         hintLabel.numberOfLines = 0
-        hintLabel.text = "Please confirm your country code and enter your phone number." // TODO: Localize
-        let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
-        hintLabel.frame = CGRect(x: (screenSize.width - hintLabelSize.width) / 2.0, y: CGFloat(isWidescreen ? 274.0 : 214.0), width: hintLabelSize.width, height: hintLabelSize.height);
-        view.addSubview(hintLabel)
+        hintLabel.text = NSLocalizedString("AuthPhoneHint", comment: "Hint")
+                view.addSubview(hintLabel)
         
-        var nextBarButton = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
+        var nextBarButton = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next Title"), style: UIBarButtonItemStyle.Done, target: self, action: Selector("nextButtonPressed")) // TODO: Localize
         navigationItem.rightBarButtonItem = nextBarButton
         
         currentIso = phoneTextField.currentIso
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        let screenSize = UIScreen.mainScreen().bounds.size
+        let isWidescreen = screenSize.width > 320 || screenSize.height > 480
+        let isPortraint = screenSize.width < screenSize.height
+        
+        let bgSize = isIPad
+            ? (isPortraint ? 304.0: 140)
+            : (isWidescreen ? 131.0 : 90.0)
+        grayBackground.frame = CGRect(x: 0.0, y: 0.0, width: screenSize.width, height: CGFloat(bgSize))
+        
+        let padding = isIPad
+            ? (isPortraint ? 48 : 20)
+            : (20)
+        titleLabel.sizeToFit()
+        titleLabel.frame = CGRect(x: (screenSize.width - titleLabel.frame.size.width) / 2.0, y: grayBackground.frame.height - titleLabel.frame.size.height - CGFloat(padding), width: titleLabel.frame.size.width, height: titleLabel.frame.size.height)
+        
+        navigationBarSeparator.frame = CGRect(x: 0, y: grayBackground.bounds.size.height, width: screenSize.width, height: retinaPixel)
+        
+        let fieldWidth : CGFloat = isIPad
+            ? (520)
+            : (screenSize.width)
+        
+        let countryImage: UIImage! = UIImage(named: "ModernAuthCountryButton")
+        countryButton.frame = CGRect(x: (screenSize.width - fieldWidth) / 2, y: grayBackground.frame.origin.y + grayBackground.bounds.size.height, width: fieldWidth, height: countryImage.size.height)
+        
+        let phoneImage: UIImage! = UIImage(named: "ModernAuthPhoneBackground")
+        phoneBackgroundView.frame = CGRect(x: (screenSize.width - fieldWidth) / 2, y: countryButton.frame.origin.y + 57, width: fieldWidth, height: phoneImage.size.height)
+        
+        let countryCodeLabelTopSpacing: CGFloat = 3.0
+        countryCodeLabel.frame = CGRect(x: 14, y: countryCodeLabelTopSpacing, width: 68, height: phoneBackgroundView.frame.size.height - countryCodeLabelTopSpacing)
+        
+        phoneTextField.frame = CGRect(x: (screenSize.width - fieldWidth) / 2 + 96.0, y: phoneBackgroundView.frame.origin.y + 1, width: fieldWidth - 96.0 - 10.0, height: phoneBackgroundView.frame.size.height - 2)
+        
+        let hintPadding : CGFloat = isIPad
+            ? (isPortraint ? 460.0: 274.0)
+            : (isWidescreen ? 274.0 : 214.0)
+        
+        let hintLabelSize = hintLabel.sizeThatFits(CGSize(width: 278.0, height: CGFloat.max))
+        hintLabel.frame = CGRect(x: (screenSize.width - hintLabelSize.width) / 2.0, y: hintPadding, width: hintLabelSize.width, height: hintLabelSize.height);
+    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         phoneTextField.becomeFirstResponder()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        MainAppTheme.navigation.applyAuthStatusBar()
     }
     
     // MARK: -
@@ -139,18 +181,33 @@ class AAAuthPhoneController: AAViewController {
     func nextButtonPressed() {
         let numberLength = count(phoneTextField.phoneNumber) as Int
         let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
-        if (numberLength != numberRequiredLength) {
-            SVProgressHUD.showErrorWithStatus("Wrong phone length")
+        if (numberLength < numberRequiredLength) {
+            SVProgressHUD.showErrorWithStatus(NSLocalizedString("AuthPhoneTooShort", comment: "Too short error"))
         } else {
-            
-            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)), successBlock: { (val) -> () in
-                self.navigateToSms()
-                }, failureBlock: { (val) -> () in
-                    if let exception = val as? JavaLangException {
-                        println("\(exception.getLocalizedMessage())") // TODO: Show popup?
+            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
+                successBlock: { (val) -> () in
+                    self.navigateToSms()
+                },
+                failureBlock: { (val) -> () in
+                    var message = "Unknown error"
+                    var canTryAgain = false
+                    
+                    if let exception = val as? AMRpcException {
+                        var tag = exception.getTag()
+                        if (tag == "PHONE_NUMBER_INVALID") {
+                            message = NSLocalizedString("ErrorPhoneIncorrect", comment: "PHONE_NUMBER_INVALID error")
+                        } else {
+                            message = exception.getLocalizedMessage()
+                        }
+                        canTryAgain = exception.isCanTryAgain()
+                    } else if let exception = val as? JavaLangException {
+                        message = exception.getLocalizedMessage()
+                        canTryAgain = true
                     }
+                    
+                    var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
+                    alertView.show()
             })
-
         }
     }
     
@@ -168,9 +225,8 @@ class AAAuthPhoneController: AAViewController {
     func navigateToSms() {
         var smsController = AAAuthSmsController()
         smsController.phoneNumber = "+\(phoneTextField.formattedPhoneNumber)"
-        navigationController!.pushViewController(smsController, animated: true)
+        navigateNext(smsController, removeCurrent: false)
     }
-    
 }
 
 // MARK: -
@@ -181,5 +237,4 @@ extension AAAuthPhoneController: AAAuthCountriesControllerDelegate {
     func countriesController(countriesController: AAAuthCountriesController, didChangeCurrentIso currentIso: String) {
         self.currentIso = currentIso
     }
-    
 }

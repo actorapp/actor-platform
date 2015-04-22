@@ -44,6 +44,11 @@ extension jint {
         return NSNumber(int: self)
     }
 }
+extension JavaLangLong {
+    func toNSNumber() -> NSNumber {
+        return NSNumber(longLong: self.longLongValue())
+    }
+}
 
 extension DKListEngineRecord {
     func dbQuery() -> AnyObject {

@@ -34,6 +34,7 @@ import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
 import im.actor.model.network.parser.RpcScope;
 import im.actor.model.util.AtomicLongCompat;
+import im.actor.model.util.ExponentialBackoff;
 
 /**
  * Created by ex3ndr on 08.02.15.
@@ -63,6 +64,7 @@ public class ApiBroker extends Actor {
     private MTProto proto;
 
     private NetworkProvider networkProvider;
+    private ExponentialBackoff authIdBackOff = new ExponentialBackoff();
 
     public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
                      NetworkProvider networkProvider) {
@@ -117,8 +119,10 @@ public class ApiBroker extends Actor {
             @Override
             public void onFailure() {
                 Log.d(TAG, "Key creation failure");
-                // TODO: Add back off
-                self().send(new RequestAuthId());
+                authIdBackOff.onFailure();
+                long delay = authIdBackOff.exponentialWait();
+                Log.d(TAG, "Key creation delay in " + delay + " ms");
+                self().send(new RequestAuthId(), delay);
             }
         });
     }

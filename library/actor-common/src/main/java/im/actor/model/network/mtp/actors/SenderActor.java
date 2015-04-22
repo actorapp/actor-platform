@@ -1,17 +1,22 @@
 package im.actor.model.network.mtp.actors;
 
-import im.actor.model.droidkit.actors.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorSelection;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.Props;
+import im.actor.model.log.Log;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.Container;
 import im.actor.model.network.mtp.entity.MessageAck;
 import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.network.util.MTUids;
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by ex3ndr on 02.09.14.
@@ -53,26 +58,27 @@ public class SenderActor extends Actor {
     @Override
     public void onReceive(Object message) {
         if (message instanceof SendMessage) {
-            // Log.d(TAG, "Received SendMessage #" + ((SendMessage) message).mid);
+            Log.d(TAG, "Received SendMessage #" + ((SendMessage) message).mid);
+
             SendMessage sendMessage = (SendMessage) message;
             ProtoMessage holder = new ProtoMessage(sendMessage.mid, sendMessage.message);
             unsentPackages.put(holder.getMessageId(), holder);
             doSend(holder);
         } else if (message instanceof ConnectionCreated) {
-            // Log.d(TAG, "Received ConnectionCreated");
+            Log.d(TAG, "Received ConnectionCreated");
 
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
-                // Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
                 toSend.add(unsentPackage);
             }
 
             doSend(toSend);
         } else if (message instanceof ForgetMessage) {
-            // Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
+            Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
             unsentPackages.remove(((ForgetMessage) message).mid);
         } else if (message instanceof ConfirmMessage) {
-            // Log.d(TAG, "Confirming message #" + ((ConfirmMessage) message).mid);
+            Log.d(TAG, "Confirming message #" + ((ConfirmMessage) message).mid);
             confirm.add(((ConfirmMessage) message).mid);
             if (confirm.size() >= ACK_THRESHOLD) {
                 self().sendOnce(new ForceAck());
@@ -84,25 +90,25 @@ public class SenderActor extends Actor {
                 return;
             }
             // Log
-//            String acks = "";
-//            for (Long l : confirm) {
-//                if (acks.length() != 0) {
-//                    acks += ",";
-//                }
-//                acks += "#" + l;
-//            }
-//            Log.d(TAG, "Sending acks " + acks);
+            String acks = "";
+            for (Long l : confirm) {
+                if (acks.length() != 0) {
+                    acks += ",";
+                }
+                acks += "#" + l;
+            }
+            Log.d(TAG, "Sending acks " + acks);
 
             MessageAck messageAck = buildAck();
             confirm.clear();
             doSend(new ProtoMessage(MTUids.nextId(), messageAck.toByteArray()));
         } else if (message instanceof NewSession) {
-            // Log.w(TAG, "Received NewSessionCreated");
+            Log.w(TAG, "Received NewSessionCreated");
 
             // Resending all messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
-                // Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
                 toSend.add(unsentPackage);
             }
 

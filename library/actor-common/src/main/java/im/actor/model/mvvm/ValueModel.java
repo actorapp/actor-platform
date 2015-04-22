@@ -2,8 +2,10 @@ package im.actor.model.mvvm;
 
 import java.util.ArrayList;
 
+import im.actor.model.annotation.MainThread;
+
 /**
- * Created by ex3ndr on 19.02.15.
+ * Value Model for syncing values from background with UI
  */
 public class ValueModel<T> {
 
@@ -11,15 +13,33 @@ public class ValueModel<T> {
     private String name;
     private volatile T value;
 
+    /**
+     * Create ValueModel
+     *
+     * @param name         name of variable
+     * @param defaultValue default value
+     */
     public ValueModel(String name, T defaultValue) {
         this.name = name;
         this.value = defaultValue;
     }
 
+    /**
+     * Get current value
+     *
+     * @return the value
+     */
     public T get() {
         return value;
     }
 
+    /**
+     * Changing value from any thread. We are not expect simulatenous updates from different threads,
+     * just only one thread
+     *
+     * @param value
+     * @return is value changed
+     */
     public boolean change(T value) {
         if (this.value != null && value != null && value.equals(this.value)) {
             return false;
@@ -33,15 +53,26 @@ public class ValueModel<T> {
         return true;
     }
 
-    // We expect that subscribe will be called only on UI Thread
+    /**
+     * Subscribe to value updates
+     *
+     * @param listener update listener
+     */
+    @MainThread
     public void subscribe(ValueChangedListener<T> listener) {
-        MVVMEngine.checkMainThread();
         subscribe(listener, true);
     }
 
-    // We expect that subscribe will be called only on UI Thread
+    /**
+     * Subscribe to value updates
+     *
+     * @param listener update listener
+     * @param notify   perform notify about current value
+     */
+    @MainThread
     public void subscribe(ValueChangedListener<T> listener, boolean notify) {
         MVVMEngine.checkMainThread();
+
         if (listeners.contains(listener)) {
             return;
         }
@@ -51,9 +82,15 @@ public class ValueModel<T> {
         }
     }
 
-    // We expect that subscribe will be called only on UI Thread
+    /**
+     * Remove subscription for updates
+     *
+     * @param listener update listener
+     */
+    @MainThread
     public void unsubscribe(ValueChangedListener<T> listener) {
         MVVMEngine.checkMainThread();
+
         listeners.remove(listener);
     }
 

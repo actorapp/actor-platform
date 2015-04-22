@@ -20,7 +20,7 @@ task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
 // Translate java to objc
 task j2objc(type: Exec, dependsOn: ['copySources']) {
 
-    /*Properties properties = new Properties()
+    Properties properties = new Properties()
     properties.load(project.file('local.properties').newDataInputStream())
 
     executable "${properties.get("j2objcDir")}/j2objc"
@@ -41,7 +41,7 @@ task j2objc(type: Exec, dependsOn: ['copySources']) {
         srcFiles.each { file ->
             args file.path
         }
-    }*/
+    }
 }
 
 task build(dependsOn: ['j2objc']) {

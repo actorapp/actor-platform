@@ -50,166 +50,169 @@ NSString * ImActorModelModulesBaseModule_STORAGE_SEARCH_ = @"search";
 NSString * ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = 
 #line 29
 @"chat_";
-NSString * ImActorModelModulesBaseModule_STORAGE_PENDING_ = 
+NSString * ImActorModelModulesBaseModule_STORAGE_CHAT_MEDIA_PREFIX_ = 
 #line 30
+@"chat_media_";
+NSString * ImActorModelModulesBaseModule_STORAGE_PENDING_ = 
+#line 31
 @"chat_pending";
 NSString * ImActorModelModulesBaseModule_STORAGE_CURSOR_ = 
-#line 31
+#line 32
 @"chat_cursor";
 
 
-#line 35
+#line 36
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self = [super init]) {
     
-#line 36
+#line 37
     self->modules__ = modules;
   }
   return self;
 }
 
 
-#line 39
+#line 40
 - (ImActorModelModulesModules *)modules {
   
-#line 40
+#line 41
   return modules__;
 }
 
 
-#line 43
+#line 44
 - (ImActorModelModulesUpdates *)updates {
   
-#line 44
+#line 45
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getUpdatesModule];
 }
 
 
-#line 47
+#line 48
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   
-#line 48
-  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) runOnUiThread:runnable];
+#line 49
+  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) postToMainThread:runnable];
 }
 
 
-#line 51
+#line 52
 - (DKActorRef *)sendActor {
   
-#line 52
+#line 53
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getSendMessageActor];
 }
 
 
-#line 55
+#line 56
 - (DKActorRef *)dialogsActor {
   
-#line 56
+#line 57
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor];
 }
 
 
-#line 59
+#line 60
 - (DKActorRef *)dialogsHistoryActor {
   
-#line 60
+#line 61
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsHistoryActor];
 }
 
 
-#line 63
+#line 64
 - (DKActorRef *)ownReadActor {
   
-#line 64
+#line 65
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getOwnReadActor];
 }
 
 
-#line 67
+#line 68
 - (DKActorRef *)plainReceiveActor {
   
-#line 68
+#line 69
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReceiverActor];
 }
 
 
-#line 71
+#line 72
 - (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer {
   
-#line 72
+#line 73
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationActorWithAMPeer:peer];
 }
 
 
-#line 75
+#line 76
 - (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer {
   
-#line 76
+#line 77
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationHistoryActorWithAMPeer:peer];
 }
 
 
-#line 79
+#line 80
 - (id<DKPreferencesStorage>)preferences {
   
-#line 80
+#line 81
   return [((ImActorModelModulesModules *) nil_chk(modules__)) getPreferences];
 }
 
 
-#line 83
+#line 84
 - (id<AMCryptoProvider>)crypto {
   
-#line 84
+#line 85
   return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getCryptoProvider];
 }
 
 
-#line 87
+#line 88
 - (id<AMStorageProvider>)storage {
   
-#line 88
+#line 89
   return [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getStorageProvider];
 }
 
 
-#line 91
+#line 92
 - (jint)myUid {
   
-#line 92
+#line 93
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getAuthModule])) myUid];
 }
 
 
-#line 95
+#line 96
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
   
-#line 96
+#line 97
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback];
 }
 
 
-#line 99
+#line 100
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request {
   
-#line 100
+#line 101
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:[[ImActorModelModulesBaseModule_$1 alloc] init]];
 }
 
 
-#line 113
+#line 114
 - (id<DKKeyValueEngine>)users {
   
-#line 114
+#line 115
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
 
 
-#line 117
+#line 118
 - (id<DKKeyValueEngine>)groups {
   
-#line 118
+#line 119
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroups];
 }
 
@@ -225,12 +228,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 @implementation ImActorModelModulesBaseModule_$1
 
 
-#line 102
+#line 103
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
 }
 
 
-#line 107
+#line 108
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 

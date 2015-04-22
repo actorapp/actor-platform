@@ -13,9 +13,9 @@ class AADialogsListSearchCell: AATableViewCell {
     // MARK: -
     // MARK: Private vars
     
-    private let avatarView: AvatarView = AvatarView(frameSize: 48);
+    private let avatarView: AAAvatarView = AAAvatarView(frameSize: 48, type: AAAvatarType.Rounded);
     private let titleView: UILabel = UILabel();
-    private let separatorView = TableViewSeparator(color: Resources.SeparatorColor);
+    private let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor);
     
     private var bindedFile: jlong? = nil;
     private var avatarCallback: CocoaDownloadCallback? = nil;

@@ -9,12 +9,13 @@
 import UIKit;
 
 class DialogCell: UITableViewCell {
-    let avatarView: AvatarView = AvatarView(frameSize: 48);
+    
+    let avatarView = AAAvatarView(frameSize: 48, type: AAAvatarType.Rounded);
     let titleView: UILabel = UILabel();
     let messageView: UILabel = UILabel();
     let dateView: UILabel = UILabel();
     let statusView: UIImageView = UIImageView();
-    let separatorView = TableViewSeparator(color: Resources.SeparatorColor);
+    let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor);
     
     var bindedFile: jlong? = nil;
     var avatarCallback: CocoaDownloadCallback? = nil;
@@ -22,14 +23,16 @@ class DialogCell: UITableViewCell {
     init(reuseIdentifier:String) {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
         
+        backgroundColor = MainAppTheme.list.bgColor
+        
         titleView.font = UIFont(name: "Roboto-Medium", size: 19);
-        titleView.textColor = Resources.TextPrimaryColor;
+        titleView.textColor = MainAppTheme.list.dialogTitle
         
         messageView.font = UIFont(name: "HelveticaNeue", size: 16);
-        messageView.textColor = Resources.TextSecondaryColor;
+        messageView.textColor = MainAppTheme.list.dialogText
         
         dateView.font = UIFont(name: "HelveticaNeue", size: 14);
-        dateView.textColor = Resources.TextSecondaryColor
+        dateView.textColor = MainAppTheme.list.dialogDate
         
         dateView.textAlignment = NSTextAlignment.Right;
         statusView.contentMode = UIViewContentMode.Center;
@@ -40,6 +43,10 @@ class DialogCell: UITableViewCell {
         self.contentView.addSubview(dateView)
         self.contentView.addSubview(statusView)
         self.contentView.addSubview(separatorView)
+        
+        var selectedView = UIView()
+        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
+        selectedBackgroundView = selectedView
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -73,23 +80,23 @@ class DialogCell: UITableViewCell {
         var messageState = UInt(dialog.getStatus().ordinal());
         
         if (messageState == AMMessageState.PENDING.rawValue) {
-            self.statusView.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 64/255.0)
-            self.statusView.image = Resources.iconClock;
+            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSending
+            self.statusView.image =  Resources.iconClock;
             self.statusView.hidden = false;
         } else if (messageState == AMMessageState.READ.rawValue) {
-            self.statusView.tintColor = UIColor(red: 126/255.0, green: 168/255.0, blue: 239/255.0, alpha: 1.0)
+            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogRead
             self.statusView.image = Resources.iconCheck2;
             self.statusView.hidden = false;
         } else if (messageState == AMMessageState.RECEIVED.rawValue) {
-            self.statusView.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 64/255.0)
+            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogReceived
             self.statusView.image = Resources.iconCheck2;
             self.statusView.hidden = false;
         } else if (messageState == AMMessageState.SENT.rawValue) {
-            self.statusView.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 64/255.0)
+            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogSent
             self.statusView.image = Resources.iconCheck1;
             self.statusView.hidden = false;
         } else if (messageState == AMMessageState.ERROR.rawValue) {
-            self.statusView.tintColor = UIColor(red: 210/255.0, green: 74/255.0, blue: 67/255.0, alpha: 64/255.0)
+            self.statusView.tintColor = MainAppTheme.bubbles.statusDialogError
             self.statusView.image = Resources.iconError;
             self.statusView.hidden = false;
         } else {

@@ -363,7 +363,6 @@ public class ChatActivity extends BaseActivity {
         emojiKeyboard.setSizeForSoftKeyboard();
 
 
-
         emojiKeyboard.setOnEmojiconBackspaceClickedListener(new EmojiKeyboardPopup.OnEmojiconBackspaceClickedListener() {
             @Override
             public void onClick(View v) {
@@ -398,8 +397,8 @@ public class ChatActivity extends BaseActivity {
         emojiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!emojiKeyboard.isShowing()){
-                    if(emojiKeyboard.isSoftwareKeyBoardOpen()){
+                if (!emojiKeyboard.isShowing()) {
+                    if (emojiKeyboard.isSoftwareKeyBoardOpen()) {
                         emojiKeyboard.showAtBottom();
                         changeEmojiKeyboardIcon(emojiButton, R.drawable.button_keyboard);
                     } else {
@@ -413,15 +412,17 @@ public class ChatActivity extends BaseActivity {
                 }
 
                 //If popup is showing, simply dismiss it to show the undelying text keyboard
-                else{
+                else {
                     emojiKeyboard.dismiss();
                 }
             }
         });
     }
-    private void changeEmojiKeyboardIcon(TintImageView iconToBeChanged, int drawableResourceId){
+
+    private void changeEmojiKeyboardIcon(TintImageView iconToBeChanged, int drawableResourceId) {
         iconToBeChanged.setResource(drawableResourceId);
     }
+
     @Override
     public void onResume() {
         super.onResume();

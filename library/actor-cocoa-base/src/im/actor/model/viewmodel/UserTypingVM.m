@@ -39,25 +39,17 @@ J2OBJC_FIELD_SETTER(AMUserTypingVM, userTyping_, AMValueModel *)
 
 
 #line 17
-- (void)onTypingStart {
+- (jint)getUid {
   
 #line 18
-  [((AMValueModel *) nil_chk(userTyping_)) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+  return uid_;
 }
 
 
 #line 21
-- (void)onTypingEnd {
-  
-#line 22
-  [((AMValueModel *) nil_chk(userTyping_)) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
-}
-
-
-#line 25
 - (AMValueModel *)getTyping {
   
-#line 26
+#line 22
   return userTyping_;
 }
 

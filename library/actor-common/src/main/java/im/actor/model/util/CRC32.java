@@ -1,5 +1,8 @@
 package im.actor.model.util;
 
+/**
+ * CRC32 Implementation
+ */
 public class CRC32 {
     /**
      * The crc data checksum so far.

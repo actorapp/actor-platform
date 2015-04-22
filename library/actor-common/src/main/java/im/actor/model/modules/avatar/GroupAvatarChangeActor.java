@@ -134,8 +134,10 @@ public class GroupAvatarChangeActor extends ModuleActor {
             @Override
             public void onResult(ResponseSeq response) {
                 updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                        response.getState(), UpdateUserAvatarChanged.HEADER,
-                        new UpdateUserAvatarChanged(myUid(), null).toByteArray()));
+                        response.getState(), UpdateGroupAvatarChanged.HEADER,
+                        new UpdateGroupAvatarChanged(gid, rid, myUid(),
+                                // TODO: Fix time
+                                null, System.currentTimeMillis()).toByteArray()));
 
                 // After update applied turn of uploading state
                 updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
