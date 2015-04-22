@@ -54,6 +54,7 @@ object Dependencies {
     val jodaConvert     = "org.joda"                      %  "joda-convert"                  % "1.7"
 
     val commonsCodec    = "commons-codec"                 % "commons-codec"                  % "1.10"
+    val commonsIo       = "commons-io"                    % "commons-io"                     % "2.4"
   }
 
   object Testing {
@@ -82,7 +83,7 @@ object Dependencies {
   val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec, protobuf, scalazCore)
 
   val rpcApi = common ++ Seq(
-    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, libPhoneNumber, shapeless
+    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, commonsIo, libPhoneNumber, shapeless
   )
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)

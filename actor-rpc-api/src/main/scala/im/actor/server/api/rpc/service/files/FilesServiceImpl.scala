@@ -13,6 +13,7 @@ import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.model._
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
+import org.apache.commons.io.FileUtils
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files._
@@ -195,7 +196,7 @@ class FilesServiceImpl(bucketName: String)
 
   private def deleteDir(dir: File): Future[Unit] = {
     Future {
-      Files.delete(dir.toPath)
+      FileUtils.deleteDirectory(dir)
     }
   }
 }
