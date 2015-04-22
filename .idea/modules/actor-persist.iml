@@ -15,7 +15,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../actor-persist/target/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-persist/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-persist/target/resource_managed/test" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../actor-persist/target" />
+      <excludeFolder url="file://$MODULE_DIR$/../../actor-persist/target/resolution-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../../actor-persist/target/streams" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

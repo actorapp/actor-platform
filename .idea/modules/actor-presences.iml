@@ -15,7 +15,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../actor-presences/target/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-presences/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../actor-presences/target/resource_managed/test" type="java-test-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../actor-presences/target" />
+      <excludeFolder url="file://$MODULE_DIR$/../../actor-presences/target/resolution-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../../actor-presences/target/streams" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
