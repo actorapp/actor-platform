@@ -41,6 +41,4 @@ private[auth] trait Helpers extends PublicKeyHelpers {
       DBIO.successful(Error(validationFailed("PUBLIC_KEY_INVALID", x))),
       f
     )
-
-  def nextAccessSalt(rnd: ThreadLocalRandom): String = rnd.nextLong().toString
 }

@@ -1,5 +1,7 @@
 package im.actor.server.api.util
 
+import scala.concurrent.forkjoin.ThreadLocalRandom
+
 import akka.actor.ActorSystem
 import java.nio.ByteBuffer
 import java.security.MessageDigest
@@ -34,4 +36,6 @@ object ACL {
 
   def fileAccessHash(fileId: Long, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$fileId:$accessSalt:${secretKey()}")
+
+  def nextAccessSalt(rnd: ThreadLocalRandom): String = rnd.nextLong().toString
 }
