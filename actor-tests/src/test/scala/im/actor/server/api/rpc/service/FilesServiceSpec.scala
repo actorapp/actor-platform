@@ -29,7 +29,7 @@ class FilesServiceSpec extends BaseServiceSuite {
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
-  val bucketName = "actor-uploads"
+  val bucketName = "actor-uploads-test"
   implicit val client = new AmazonS3ScalaClient(awsCredentials)
   implicit val transferManager = new TransferManager(awsCredentials)
 

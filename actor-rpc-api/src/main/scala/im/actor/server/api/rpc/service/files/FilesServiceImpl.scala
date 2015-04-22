@@ -124,16 +124,17 @@ class FilesServiceImpl(bucketName: String)
         case Some(file) =>
           for {
             parts <- persist.FilePart.findByFileId(file.id)
-            dir <- DBIO.from(createTempDir())
+            tempDir <- DBIO.from(createTempDir())
             download = FutureTransfer.listenFor {
-              transferManager.downloadDirectory(bucketName, s"upload_part_${file.s3UploadKey}", dir)
+              transferManager.downloadDirectory(bucketName, s"upload_part_${file.s3UploadKey}", tempDir)
             } map (_.waitForCompletion())
             _ <- DBIO.from(download)
-            concatFile <- DBIO.from(concatFiles(dir, parts map (_.s3UploadKey)))
+            concatFile <- DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
             upload = FutureTransfer.listenFor {
               transferManager.upload(bucketName, s"file_${file.id}", concatFile)
             } map (_.waitForCompletion())
             _ <- DBIO.from(upload)
+            _ <- DBIO.from(deleteDir(tempDir))
             _ <- persist.File.setUploaded(file.id)
           } yield {
             Ok(ResponseCommitFileUpload(FileLocation(file.id, ACL.fileAccessHash(file.id, file.accessSalt))))
@@ -189,6 +190,12 @@ class FilesServiceImpl(bucketName: String)
       outStream.close()
 
       concatFile
+    }
+  }
+
+  private def deleteDir(dir: File): Future[Unit] = {
+    Future {
+      Files.delete(dir.toPath)
     }
   }
 }
