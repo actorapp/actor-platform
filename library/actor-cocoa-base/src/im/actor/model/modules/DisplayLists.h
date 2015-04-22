@@ -38,6 +38,8 @@
 - (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
                                         withBoolean:(jboolean)isGlobalList;
 
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
+
 - (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList;
 
 @end

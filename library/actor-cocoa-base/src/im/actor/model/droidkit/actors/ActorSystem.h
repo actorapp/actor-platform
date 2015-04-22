@@ -11,7 +11,7 @@
 @class DKActorSelection;
 @class DKProps;
 @class JavaUtilHashMap;
-@protocol ImActorModelDroidkitActorsDebugTraceInterface;
+@protocol DKTraceInterface;
 
 #include "J2ObjC_header.h"
 
@@ -37,9 +37,9 @@
 - (DKActorRef *)actorOfWithDKProps:(DKProps *)props
                       withNSString:(NSString *)path;
 
-- (id<ImActorModelDroidkitActorsDebugTraceInterface>)getTraceInterface;
+- (id<DKTraceInterface>)getTraceInterface;
 
-- (void)setTraceInterfaceWithImActorModelDroidkitActorsDebugTraceInterface:(id<ImActorModelDroidkitActorsDebugTraceInterface>)traceInterface;
+- (void)setTraceInterfaceWithDKTraceInterface:(id<DKTraceInterface>)traceInterface;
 
 @end
 

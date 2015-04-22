@@ -305,7 +305,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   
 #line 137
   if (seq <= self->seq_) {
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, JreStrcat("$IC", @"Ignored SeqUpdate {seq:", seq, '}'));
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, JreStrcat("$I$IC", @"Ignored SeqUpdate {seq:", seq, @", currentSeq: ", self->seq_, '}'));
     return;
   }
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, JreStrcat("$IC", @"SeqUpdate {seq:", seq, '}'));

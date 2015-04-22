@@ -6,6 +6,7 @@
 #ifndef _AMServiceGroupUserLeave_H_
 #define _AMServiceGroupUserLeave_H_
 
+@class AMAbsContent_ContentTypeEnum;
 @class IOSByteArray;
 
 #include "J2ObjC_header.h"
@@ -15,6 +16,8 @@
 }
 
 + (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (instancetype)init;
 

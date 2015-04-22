@@ -14,7 +14,7 @@
 
 @protocol AMNetworkProvider < NSObject, JavaObject >
 
-- (void)createConnection:(jint)connectionId withEndpoint:(AMConnectionEndpoint *)endpoint withCallback:(id<AMConnectionCallback>)callback withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
+- (void)createConnection:(jint)connectionId withMTProtoVersion:(jint)mtprotoVersion withApiMajorVersion:(jint)apiMajorVersion withApiMinorVersion:(jint)apiMinorVersion withEndpoint:(AMConnectionEndpoint *)endpoint withCallback:(id<AMConnectionCallback>)callback withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
 
 @end
 

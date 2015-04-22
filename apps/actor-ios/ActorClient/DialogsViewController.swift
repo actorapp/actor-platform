@@ -10,8 +10,7 @@ import UIKit
 
 class DialogsViewController: EngineListController, UISearchBarDelegate, UISearchDisplayDelegate {
 
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var loadingView: UIView!
+    var tableView: UITableView!
     
     var searchView: UISearchBar?
     var searchDisplay: UISearchDisplayController?
@@ -26,18 +25,39 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     override init() {
-        super.init(nibName: "DialogsViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
         
         initCommon(); 
     }
     
     func initCommon(){
-        var icon = UIImage(named: "ic_letter_blue_24")!;
-        tabBarItem = UITabBarItem(title: "Chats",
-            image: icon.tintImage(Resources.BarTintUnselectedColor)
-                .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
-            selectedImage: icon);
-//        tabBarItem.imageInsets=UIEdgeInsetsMake(6, 0, -6, 0);
+        
+        var title = "";
+        if (MainAppTheme.tab.showText) {
+            title = NSLocalizedString("TabMessages", comment: "Messages Title")
+        }
+        
+        tabBarItem = UITabBarItem(title: title,
+            image: MainAppTheme.tab.createUnselectedIcon("ic_chats_outline"),
+            selectedImage: MainAppTheme.tab.createSelectedIcon("ic_chats_filled"))
+     
+        if (!MainAppTheme.tab.showText) {
+            tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+        }
+        
+        tableView = UITableView()
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.rowHeight = 76
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
+        self.extendedLayoutIncludesOpaqueBars = true
+        view.addSubview(tableView)
+        view.backgroundColor = MainAppTheme.list.bgColor
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -50,16 +70,14 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func viewDidLoad() {
         
-        tableView.backgroundColor = Resources.BackyardColor
-        
         // Footer
-        var footer = UIView(frame: CGRectMake(0, 0, 320, 80));
+        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
         var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
         footerHint.textAlignment = NSTextAlignment.Center;
         footerHint.font = UIFont.systemFontOfSize(16);
-        footerHint.textColor = UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1)
-        footerHint.text = "Swipe for more options";
+        footerHint.textColor = MainAppTheme.list.hintColor
+        footerHint.text = NSLocalizedString("DialogsHint", comment: "Swipe hint")
         footer.addSubview(footerHint);
         
         var shadow = UIImageView(image: UIImage(named: "CardBottom2"));
@@ -69,41 +87,13 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         
         self.tableView.tableFooterView = footer;
         
-        var header = UIView(frame: CGRectMake(0, 0, 320, 0))
-        
-        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
-        self.tableView.tableHeaderView = header;
-        
-        loadingView.hidden = true;
-        
-        bindTable(tableView);
-        
+        bindTable(tableView, fade: true);
         
         searchView = UISearchBar()
-        searchView!.searchBarStyle = UISearchBarStyle.Default
-        searchView!.barStyle = UIBarStyle.Default
-        searchView!.translucent = false
-        
-        let image = UIImage(named: "SearchBarBg")!
-        searchView?.setSearchFieldBackgroundImage(image.stretchableImageWithLeftCapWidth(7, topCapHeight: 0), forState: UIControlState.Normal)
-        
-        // Enabled color
-        searchView!.barTintColor = UIColor.whiteColor()
-        
-        // Disabled color
-        searchView!.backgroundImage = Imaging.imageWithColor(UIColor.whiteColor(), size: CGSize(width: 320, height: 44))
-        searchView!.backgroundColor = UIColor.whiteColor()
-        
-        // Enabled Cancel button color
-        searchView!.tintColor = Resources.TintColor
-        
-        searchView!.placeholder = "";
         searchView!.delegate = self
-        searchView!.frame = CGRectMake(0, 0, 0, 44)
+        searchView!.frame = CGRectMake(0, 0, 320, 44)
+        
+        MainAppTheme.search.styleSearchBar(searchView!)
         
         searchDisplay = UISearchDisplayController(searchBar: searchView, contentsController: self)
         searchDisplay?.searchResultsDelegate = self
@@ -112,23 +102,38 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        tableView.tableHeaderView = searchView
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
+        
+        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+        headerShadow.image = UIImage(named: "CardTop2");
+        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+        header.addSubview(headerShadow);
+        
+        tableView.tableHeaderView = header
         
         searchSource = AADialogsListSearchSource(searchDisplay: searchDisplay!)
         
         super.viewDidLoad();
         
-        navigationItem.title = "Chats"; // Localize
+        navigationItem.title = NSLocalizedString("TabMessages", comment: "Messages Title")
         navigationItem.leftBarButtonItem = editButtonItem()
+        navigationItem.leftBarButtonItem!.title = NSLocalizedString("NavigationEdit", comment: "Edit Title");
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
         
-        placeholder.setImage(nil, title: "Empty", subtitle: "Your dialog list is empty. You can start chat by pressing top right button.")
+        placeholder.setImage(
+            UIImage(named: "chat_list_placeholder"),
+            title: NSLocalizedString("Placeholder_Dialogs_Title", comment: "Placeholder Title"),
+            subtitle: NSLocalizedString("Placeholder_Dialogs_Message", comment: "Placeholder Message"))
+        
         binder.bind(MSG.getAppState().getIsDialogsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
+                    self.navigationItem.leftBarButtonItem = nil
                     self.showPlaceholder()
                 } else {
                     self.hidePlaceholder()
+                    self.navigationItem.leftBarButtonItem = self.editButtonItem()
                 }
             }
         })
@@ -140,12 +145,44 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         MSG.onDialogsOpen();
     }
     
+    
+    override func viewDidDisappear(animated: Bool) {
+        MSG.onDialogsClosed();
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Header hack
+        tableView.tableHeaderView?.setNeedsLayout()
+        tableView.tableFooterView?.setNeedsLayout()
+        
+        if (searchDisplay != nil && searchDisplay!.active) {
+            MainAppTheme.search.applyStatusBar()
+        } else {
+            MainAppTheme.navigation.applyStatusBar()
+        }
+    }
+    
     // MARK: -
     // MARK: Setters
     
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
+        
+        if (editing) {
+            self.navigationItem.leftBarButtonItem!.title = NSLocalizedString("NavigationDone", comment: "Done Title");
+            self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Done;
+            
+            navigationItem.rightBarButtonItem = nil
+        }
+        else {
+            self.navigationItem.leftBarButtonItem!.title = NSLocalizedString("NavigationEdit", comment: "Edit Title");
+            self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Bordered;
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "navigateToCompose")
+        }
         
         if editing == true {
             navigationItem.rightBarButtonItem = nil
@@ -185,7 +222,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
         if (tableView == self.tableView) {
             var dialog = objectAtIndexPath(indexPath) as! AMDialog
             navigateToMessagesWithPeer(dialog.getPeer())
@@ -195,23 +231,16 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        MSG.onDialogsClosed();
-    }
-    
     // MARK: -
     // MARK: Navigation
     
     func navigateToCompose() {
-        let composeController = ComposeController()
-        composeController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(composeController, animated: true)
+        navigateDetail(ComposeController())
     }
     
     private func navigateToMessagesWithPeer(peer: AMPeer) {
-        let conversationController = AAConversationController(peer: peer)
-        conversationController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(conversationController, animated: true);
+        navigateDetail(AAConversationController(peer: peer))
+        MainAppTheme.navigation.applyStatusBar()
     }
     
 }

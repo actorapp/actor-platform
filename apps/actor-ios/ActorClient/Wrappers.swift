@@ -30,7 +30,7 @@ class CocoaCallback: NSObject, AMCommandCallback {
     }
 }
 
-class CocoaDownloadCallback : NSObject, AMDownloadCallback {
+class CocoaDownloadCallback : NSObject, AMFileCallback {
     
     let notDownloaded: (()->())?
     let onDownloading: ((progress: Double) -> ())?
@@ -61,7 +61,7 @@ class CocoaDownloadCallback : NSObject, AMDownloadCallback {
     }
 }
 
-class CocoaUploadCallback : NSObject, AMUploadCallback {
+class CocoaUploadCallback : NSObject, AMUploadFileCallback {
     
     let notUploaded: (()->())?
     let onUploading: ((progress: Double) -> ())?
@@ -74,14 +74,14 @@ class CocoaUploadCallback : NSObject, AMUploadCallback {
     }
     
     func onNotUploading() {
-        notUploaded?();
+        self.notUploaded?();
     }
     
     func onUploaded() {
-        onUploadedClosure?()
+        self.onUploadedClosure?()
     }
     
     func onUploadingWithFloat(progress: jfloat) {
-        onUploading?(progress: Double(progress))
+        self.onUploading?(progress: Double(progress))
     }
 }

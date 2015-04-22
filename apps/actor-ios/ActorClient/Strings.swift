@@ -31,6 +31,14 @@ extension String {
         return substringToIndex(advance(startIndex, realCount));
     }
     
+    func strip(set: NSCharacterSet) -> String {
+        return "".join(componentsSeparatedByCharactersInSet(set))
+    }
+    
+    func toLong() -> Int64? {
+        return NSNumberFormatter().numberFromString(self)?.longLongValue
+    }
+    
     func smallValue() -> String {
         let trimmed = trim();
         if (trimmed.isEmpty){

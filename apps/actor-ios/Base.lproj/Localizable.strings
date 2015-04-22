@@ -1,0 +1,197 @@
+/* 
+  Localizations.strings
+  ActorApp
+
+  Created by Stepan Korshakov on 14.04.15.
+  Copyright (c) 2015 Actor LLC. All rights reserved.
+*/
+
+/*
+ * Main Screen
+ */
+
+"TabMessages" = "Messages";
+
+"TabPeople" = "People";
+
+"TabSettings" = "Settings";
+
+/*
+ * Contacts
+ */
+
+"ContactsAddHeader" = "Add Contact";
+
+"ContactsAddHint" = "Please, specify phone number";
+
+"ContactsActionInvite" = "Tell Friends about Actor";
+
+"ContactsActionAdd" = "Add Friend";
+
+/*
+ * Dialogs
+ */
+
+"DialogsHint" = "Swipe for more options";
+
+/*
+ * Settings
+ */
+
+"SettingsEdit" = "Edit";
+
+"SettingsSetPhoto" = "Set Profile Photo";
+
+"SettingsSecurity" = "Privacy and Security";
+
+"SettingsEditHeader" = "Change your name";
+
+/*
+ * Profile
+ */
+
+"ProfileEditHeader" = "Change name";
+
+"ProfileSendMessage" = "Send Message";
+
+"ProfileNotifications" = "Notifications";
+
+"ProfileAddToContacts" = "Add to Contacts";
+
+"ProfileRemoveFromContacts" = "Remove from Contacts";
+
+/*
+ * Group
+ */
+
+"GroupEditHeader" = "Change group theme";
+
+"GroupSetPhoto" = "Set Group Photo";
+
+"GroupNotifications" = "Notifications";
+
+"GroupSettings" = "SETTINGS";
+
+"GroupMembers" = "{0} MEMBERS";
+
+"GroupAddParticipant" = "Add Prticipant...";
+
+"GroupLeave" = "Leave group";
+
+/*
+ * Compose
+ */
+
+"ComposeTitle" = "New Message";
+
+/*
+ * Privacy
+ */
+
+"PrivacyTitle" = "Privacy and Security";
+
+"PrivacyTerminate" = "Terminate all other sessions";
+
+"PrivacyTerminateHint" = "Logs out all devices except for this one.";
+
+/*
+ * Chat
+ */
+
+"ChatPlaceholder" = "Enter text...";
+
+"ChatSend" = "Send";
+
+/*
+ * Placeholders
+ */
+
+"Placeholder_Empty_Title" = "Invite your friends";
+
+"Placeholder_Empty_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+
+"Placeholder_Empty_Action" = "TELL A FRIEND";
+
+"Placeholder_Loading_Title" = "Sync in progress";
+
+"Placeholder_Loading_Message" = "Please, wait couple minutes while we enable your app.";
+
+"Placeholder_Contacts_Title" = "Invite your friends";
+
+"Placeholder_Contacts_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
+
+"Placeholder_Contacts_Action" = "TELL A FRIEND";
+
+"Placeholder_Dialogs_Title" = "Start messaging";
+
+"Placeholder_Dialogs_Message" = "Pick a contact from your contacts list or press write button at upper right corner to start the conversation right now.";
+
+"Placeholder_Group_Title" = "Not a member";
+
+"Placeholder_Group_Message" = "Unfortunately, you are not a member of this group.";
+
+/*
+ * Auth
+ */
+
+"AuthPhoneTitle" = "Your Phone";
+
+"AuthPhoneNumberHint" = "Your phone number";
+
+"AuthPhoneHint" = "Please condifm your country code and enter your phone number.";
+
+"AuthPhoneTooShort" = "Phone number too short";
+
+"AuthCodeFieldHint" = "Code";
+
+"AuthCodeHint" = "We have sent you an SMS with the code.";
+
+"AuthProfileTitle" = "Your Info";
+
+"AuthProfileAddPhoto1" = "add";
+
+"AuthProfileAddPhoto2" = "photo";
+
+"AuthProfileNameHint" = "Your name";
+
+"AuthProfileHint" = "Enter your name and add a pofile picture";
+
+/*
+ * Common Elements
+ */
+
+"CurrentLocale" = "En";
+
+"InviteText" = "Hi! Let's switch to Actor! https://actor.im/dl";
+
+"PhotoRemove" = "Delete Photo";
+
+"PhotoCamera" = "Take Photo";
+
+"PhotoLibrary" = "Media Library";
+
+"NavigationEdit" = "Edit";
+
+"NavigationDone" = "Done";
+
+"NavigationBack" = "";
+
+"NavigationNext" = "Next";
+
+"AlertCancel" = "Cancel";
+
+"AlertNext" = "Next";
+
+"AlertSave" = "Save";
+
+"AlertOk" = "OK";
+
+"UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
+
+/*
+ * Errors
+ */
+
+"ErrorPhoneIncorrect" = "Entered phone number is invalid. Please try again.";
+
+"ErrorCodeExpired" = "Code expired. Please, start authentication again.";

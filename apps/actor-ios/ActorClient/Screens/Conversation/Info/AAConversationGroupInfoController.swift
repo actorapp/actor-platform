@@ -34,7 +34,7 @@ class AAConversationGroupInfoController: AATableViewController {
     init (gid: Int) {
         self.gid = gid
         
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.Plain)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -46,10 +46,12 @@ class AAConversationGroupInfoController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Group Info" // TODO: Localize
+        view.backgroundColor = MainAppTheme.list.bgColor
         
         group = MSG.getGroups().getWithLong(jlong(gid)) as? AMGroupVM;
         
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableView.registerClass(AAConversationGroupInfoUserCell.self, forCellReuseIdentifier: UserCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
@@ -61,6 +63,7 @@ class AAConversationGroupInfoController: AATableViewController {
             if cell != nil {
                 cell!.setGroupName(value!)
             }
+            self.title = value!
         })
         
         binder.bind(group!.getAvatar(), closure: { (value: AMAvatar?) -> () in
@@ -81,44 +84,37 @@ class AAConversationGroupInfoController: AATableViewController {
         binder.bind(group!.isMember(), closure: { (member: JavaLangBoolean?) -> () in
             if member != nil {
                 if Bool(member!.booleanValue()) == true {
-                    self.navigationItem.rightBarButtonItem = self.editButtonItem()
+                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+                        title: NSLocalizedString("NavigationEdit", comment: "Edit Title"),
+                        style: UIBarButtonItemStyle.Plain,
+                        target: self, action: "editName")
                     
                     self.hidePlaceholder()
                 } else {
                     self.navigationItem.rightBarButtonItem = nil
-                    self.showPlaceholderWithImage(nil, title: "Not a member", subtitle: "Unfortunately, you are not a member of this group.")
+                    
+                    self.showPlaceholderWithImage(
+                        UIImage(named: "contacts_list_placeholder"),
+                        title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),
+                        subtitle: NSLocalizedString("Placeholder_Group_Message", comment: "Message Title"))
                 }
             }
         })
-        
-        // TODO: Allow cancellation
     }
     
     // MARK: -
     // MARK: Setters
     
-    override func setEditing(editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        
-        var cell = tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell
-        
-        if cell != nil {
-            if editing == true {
-                groupNameTextField = cell!.groupNameTextField
-            }
-        }
-        
-        if groupNameTextField != nil {
-            if editing == true {
-                groupNameTextField!.becomeFirstResponder()
-            } else {
-                groupNameTextField!.resignFirstResponder()
-                groupNameTextField = nil
-            }
-        }
-        
-        tableView.beginUpdates()
-        tableView.endUpdates()
+    func editName() {
+        var alertView = UIAlertView(title: nil,
+            message: NSLocalizedString("GroupEditHeader", comment: "Change name"),
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel titlte"))
+        alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save titlte"))
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
+        alertView.textFieldAtIndex(0)!.text = group!.getName().get() as! String
+        alertView.show()
     }
     
     // MARK: -
@@ -128,9 +124,6 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AAConversationGroupInfoCell = tableView.dequeueReusableCellWithIdentifier(GroupInfoCellIdentifier, forIndexPath: indexPath) as! AAConversationGroupInfoCell
         
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.groupNameChangedBlock = { (groupName: String) -> () in
-            self.execute(MSG.editGroupTitleWithInt(jint(self.gid), withNSString: groupName))
-        }
         
         return cell
     }
@@ -139,8 +132,11 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setTitle("Set Group Photo") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupSetPhoto", comment: "Set Group Photo"))
         cell.setLeftInset(15.0)
+        
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(0.0)
         
         return cell
     }
@@ -149,7 +145,7 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Switch
-        cell.setTitle("Notifications") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupNotifications", comment: "Notifications"))
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
@@ -160,6 +156,12 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.switchBlock = { (on: Bool) -> () in
             MSG.changeNotificationsEnabledWithAMPeer(groupPeer, withBoolean: on)
         }
+        
+        cell.showTopSeparator()
+        cell.setTopSeparatorLeftInset(0.0)
+        
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(0.0)
         
         return cell
     }
@@ -183,6 +185,14 @@ class AAConversationGroupInfoController: AATableViewController {
         
         cell.setLeftInset(65.0)
         
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(15.0)
+        
+        if indexPath.row == 0 {
+            cell.showTopSeparator()
+            cell.setTopSeparatorLeftInset(0.0)
+        }
+        
         return cell
     }
     
@@ -190,9 +200,12 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
-        cell.setTitle("Add Participant...") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupAddParticipant", comment: "Add Prticipant"))
         cell.setLeftInset(65.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
+        
+        cell.showBottomSeparator()
+        cell.setBottomSeparatorLeftInset(0.0)
         
         return cell
     }
@@ -201,9 +214,15 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.DestructiveCentered
-        cell.setTitle("Leave group") // TODO: Localize
+        cell.setContent(NSLocalizedString("GroupLeave", comment: "Leave group"))
         cell.setLeftInset(15.0)
         cell.selectionStyle = UITableViewCellSelectionStyle.Default
+        
+        cell.setTopSeparatorLeftInset(0.0)
+        cell.showTopSeparator()
+        
+        cell.setBottomSeparatorLeftInset(0.0)
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -212,9 +231,16 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: Methods
     
     private func askSetPhoto() {
-        var actionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "Take Photo", "Choose Photo") // TODO: Localize
-        actionSheet.addButtonWithTitle("Delete Photo")
-        actionSheet.destructiveButtonIndex = 3
+        var actionSheet = UIActionSheet(title: nil,
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            destructiveButtonTitle: nil,
+            otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Camera"))
+        
+        if (group?.getAvatar().get() != nil) {
+            actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
+            actionSheet.destructiveButtonIndex = 3
+        }
         actionSheet.showInView(view)
     }
     
@@ -229,21 +255,23 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 2
+            return 1
         case 1:
             return 1
         case 2:
+            return 1
+        case 3:
             if groupMembers != nil {
                 return Int(groupMembers!.length()) + 1
             }
             return 0
-        case 3:
+        case 4:
             return 1
         default:
             return 0
@@ -251,20 +279,20 @@ class AAConversationGroupInfoController: AATableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if indexPath.section == 0 && indexPath.row == 0 {
+        if indexPath.section == 0 {
             return groupInfoCell(indexPath)
-        } else if indexPath.section == 0 && indexPath.row == 1 {
-            return setGroupPhotoCell(indexPath)
         } else if indexPath.section == 1 {
-            return notificationsCell(indexPath)
+            return setGroupPhotoCell(indexPath)
         } else if indexPath.section == 2 {
+            return notificationsCell(indexPath)
+        } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount {
                 return setupUserCellForIndexPath(indexPath)
             } else {
                 return addParticipantCell(indexPath)
             }
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             return leaveConversationCell(indexPath)
         }
         return UITableViewCell()
@@ -285,16 +313,6 @@ class AAConversationGroupInfoController: AATableViewController {
         return UITableViewCellEditingStyle.None
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 1 {
-            return "SETTINGS" // TODO: Localize
-        } else if section == 2 {
-            let groupMembersCount = (groupMembers != nil) ? Int(groupMembers!.length()) : 0
-            return "\(groupMembersCount) MEMBERS" // TODO: Localize
-        }
-        return ""
-    }
-    
     // MARK: - 
     // MARK: UITableView Delegate
     
@@ -304,9 +322,9 @@ class AAConversationGroupInfoController: AATableViewController {
         // TODO: Allow to change group photo? 
         // TODO: Allow to delete participants if I am a creator?
         
-        if indexPath.section == 0 && indexPath.row == 1 {
+        if indexPath.section == 1 && indexPath.row == 0 {
             askSetPhoto()
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount {
                 
@@ -318,15 +336,15 @@ class AAConversationGroupInfoController: AATableViewController {
             } else {
                 showAddParticipants()
             }
-        } else if indexPath.section == 3 {
+        } else if indexPath.section == 4 {
             execute(MSG.leaveGroupWithInt(jint(gid)))
         }
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 {
-            return (editing ? 160 : 150)
-        } else if indexPath.section == 2 {
+        if indexPath.section == 0 {
+            return 200.0
+        } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount - 1 {
                 return 48
@@ -336,11 +354,36 @@ class AAConversationGroupInfoController: AATableViewController {
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {
-            return CGFloat.min
+        if section < 2 {
+            return 0.0
         }
-        return tableView.sectionHeaderHeight
+        return 15.0
     }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return 0.0
+        }
+        return 15.0
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView {
+        return UIView()
+    }
+    
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView {
+        return UIView()
+    }
+    
+//    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if section == 2 {
+//            return "SETTINGS" // TODO: Localize
+//        } else if section == 3 {
+//            let groupMembersCount = (groupMembers != nil) ? Int(groupMembers!.length()) : 0
+//            return "\(groupMembersCount) MEMBERS" // TODO: Localize
+//        }
+//        return ""
+//    }
     
     // MARK: -
     // MARK: Navigation
@@ -365,21 +408,20 @@ class AAConversationGroupInfoController: AATableViewController {
 extension AAConversationGroupInfoController: UIActionSheetDelegate {
     
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
-        let title = actionSheet.buttonTitleAtIndex(buttonIndex)
-        
-        // TODO: Localize
-        if title == "Choose Photo" || title == "Take Photo" {
-            let takePhoto = (title == "Take Photo")
+        if (buttonIndex == 0) {
+            return
+        }
+
+        if (buttonIndex == 1 || buttonIndex == 2) {
+            let takePhoto = (buttonIndex == 1)
             var picker = UIImagePickerController()
             picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             picker.delegate = self
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
-            
-        } else if title == "Delete Photo" {
-            MSG.removeGroupAvatarWithInt(jint(gid)) // TODO: Why request is not working?
+        } else if (buttonIndex == 3) {
+            MSG.removeGroupAvatarWithInt(jint(gid))
         }
     }
-    
 }
 
 // MARK: -
@@ -389,6 +431,7 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyStatusBar()
 
         changeAvatarToImage(image)
         
@@ -396,6 +439,7 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
 
         changeAvatarToImage(image)
@@ -404,6 +448,7 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate {
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
@@ -416,4 +461,19 @@ extension AAConversationGroupInfoController: UINavigationControllerDelegate {
     
     
     
+}
+
+// MARK: -
+// MARK: UIAlertView Delegate
+
+extension AAConversationGroupInfoController: UIAlertViewDelegate {
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        if (buttonIndex == 1) {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                execute(MSG.editGroupTitleWithInt(jint(gid), withNSString: textField.text))
+            }
+        }
+    }
 }

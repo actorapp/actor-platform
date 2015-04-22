@@ -9,12 +9,14 @@
 import Foundation
 class ContactsBaseController: EngineListController {
     
-    override func bindTable(table: UITableView) {
+    override func bindTable(table: UITableView, fade: Bool) {
+        view.backgroundColor = MainAppTheme.list.bgColor
+        
         table.rowHeight = 56
         table.separatorStyle = UITableViewCellSeparatorStyle.None
-        table.backgroundColor = Resources.BackyardColor
+        table.backgroundColor = MainAppTheme.list.backyardColor
         
-        var footer = UIView(frame: CGRectMake(0, 0, 320, 80));
+        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
         //        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
         //        footerHint.textAlignment = NSTextAlignment.Center;
@@ -28,20 +30,22 @@ class ContactsBaseController: EngineListController {
         shadow.contentMode = UIViewContentMode.ScaleToFill;
         footer.addSubview(shadow);
         
+        table.tableFooterView = footer
         // Header
         
-        var header = UIView(frame: CGRectMake(0, 0, 320, 0))
+//        var header = UIView(frame: CGRectMake(0, 0, 320, 0))
+//        
+//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+//        headerShadow.image = UIImage(named: "CardTop2");
+//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+//        header.addSubview(headerShadow);
+//        
+//        table.tableHeaderView = header
         
-        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
-        table.tableHeaderView = header
-        table.tableFooterView = footer
-        
-        super.bindTable(table)
+        super.bindTable(table, fade: fade)
     }
+    
+
     
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
         let reuseId = "cell_contact";
@@ -57,7 +61,7 @@ class ContactsBaseController: EngineListController {
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
         var contact = item as! AMContact;
-        let isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
+        let isLast = tableView.numberOfSections() == 1 && indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
         
         // Building short name
         var shortName : String? = nil;
@@ -65,10 +69,10 @@ class ContactsBaseController: EngineListController {
             shortName = contact.getName().smallValue();
         } else {
             var prevContact = objectAtIndexPath(NSIndexPath(forRow: indexPath.row-1, inSection: indexPath.section)) as! AMContact;
-            
+        
             var prevName = prevContact.getName().smallValue();
             var name = contact.getName().smallValue();
-            
+        
             if (prevName != name){
                 shortName = name;
             }

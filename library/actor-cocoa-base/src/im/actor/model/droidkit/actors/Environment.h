@@ -40,6 +40,8 @@
 
 + (jlong)getCurrentTime;
 
++ (jlong)getCurrentSyncedTime;
+
 + (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_;
 
 + (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_;
@@ -67,6 +69,8 @@ FOUNDATION_EXPORT DKActorDispatcher *DKEnvironment_createDispatcherWithNSString_
 FOUNDATION_EXPORT jlong DKEnvironment_getActorTime();
 
 FOUNDATION_EXPORT jlong DKEnvironment_getCurrentTime();
+
+FOUNDATION_EXPORT jlong DKEnvironment_getCurrentSyncedTime();
 
 FOUNDATION_EXPORT AMAtomicIntegerCompat *DKEnvironment_createAtomicIntWithInt_(jint init_);
 

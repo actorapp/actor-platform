@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +36,7 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.viewmodel.FileCallback;
 import im.actor.model.viewmodel.UserVM;
+import uk.co.senab.photoview.DefaultOnDoubleTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 import static im.actor.messenger.app.Core.getImageLoader;
@@ -266,7 +266,7 @@ public class PictureActivity extends ActionBarActivity {
                 @Override
                 public void onImageLoaded(BitmapReference bitmap) {
                     attacher = new PhotoViewAttacher(imageView);
-                    attacher.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+                    attacher.setOnDoubleTapListener(new DefaultOnDoubleTapListener(attacher) {
                         @Override
                         public boolean onSingleTapConfirmed(MotionEvent e) {
                             if (!uiIsHidden) {
@@ -274,19 +274,19 @@ public class PictureActivity extends ActionBarActivity {
                             } else {
                                 showSystemUi();
                             }
-                            return false;
+                            return super.onSingleTapConfirmed(e);
                         }
 
                         @Override
                         public boolean onDoubleTap(MotionEvent e) {
                             if (!uiIsHidden)
                                 hideSystemUi();
-                            return true;
+                            return super.onDoubleTap(e);
                         }
 
                         @Override
                         public boolean onDoubleTapEvent(MotionEvent e) {
-                            return true;
+                            return super.onDoubleTapEvent(e);
                         }
                     });
                 }
