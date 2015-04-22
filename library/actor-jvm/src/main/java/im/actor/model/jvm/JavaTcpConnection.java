@@ -71,7 +71,7 @@ public class JavaTcpConnection implements Connection {
         this.sentPackets = 0;
         this.receivedPackets = 0;
 
-        Log.d(TAG, "Creating socket...");
+        // Log.d(TAG, "Creating socket...");
         switch (endpoint.getType()) {
             case TCP:
                 socket = new Socket();
@@ -86,11 +86,11 @@ public class JavaTcpConnection implements Connection {
         this.socket.setKeepAlive(false);
         this.socket.setTcpNoDelay(true);
 
-        Log.d(TAG, "Connecting socket...");
+        // Log.d(TAG, "Connecting socket...");
 
         this.socket.connect(new InetSocketAddress(endpoint.getHost(), endpoint.getPort()), CONNECTION_TIMEOUT);
 
-        Log.d(TAG, "Performing handshake...");
+        // Log.d(TAG, "Performing handshake...");
 
         // Init socket streams
         inputStream = this.socket.getInputStream();
@@ -110,7 +110,7 @@ public class JavaTcpConnection implements Connection {
         outputStream.write(handshakeRequest.toByteArray());
         outputStream.flush();
 
-        Log.d(TAG, "Reading handshake response...");
+        // Log.d(TAG, "Reading handshake response...");
         // Handshake response
         socket.setSoTimeout(HANDSHAKE_TIMEOUT);
         byte[] data = readBytes(3 + 32);
@@ -135,7 +135,7 @@ public class JavaTcpConnection implements Connection {
             throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
         }
 
-        Log.d(TAG, "Handshake completed.");
+        // Log.d(TAG, "Handshake completed.");
 
         readerThread = new ReaderThread();
         writerThread = new WriterThread();
@@ -277,7 +277,7 @@ public class JavaTcpConnection implements Connection {
                     }
 
                     // Reading package headers
-                    Log.d(TAG, "Waiting for frame header...");
+                    // Log.d(TAG, "Waiting for frame header...");
                     byte[] packageHeader = readBytes(9);
                     DataInput dataInput = new DataInput(packageHeader);
                     int receivedPackageIndex = dataInput.readInt();
@@ -290,7 +290,7 @@ public class JavaTcpConnection implements Connection {
                     int size = dataInput.readInt();
 
                     // Reading package body
-                    Log.d(TAG, "Reading frame body for #" + receivedPackageIndex);
+                    // Log.d(TAG, "Reading frame body for #" + receivedPackageIndex);
                     byte[] body = readBytes(size + 4);
                     dataInput = new DataInput(body);
                     byte[] contents = dataInput.readBytes(size);
@@ -306,26 +306,26 @@ public class JavaTcpConnection implements Connection {
 
                     // Processing package
                     if (header == HEADER_PROTO) {
-                        Log.d(TAG, "Received proto frame");
+                        // Log.d(TAG, "Received proto frame");
                         callback.onMessage(contents, 0, contents.length);
 
                         DataOutput ackPackage = new DataOutput();
                         ackPackage.writeInt(receivedPackageIndex);
                         post(HEADER_ACK, ackPackage.toByteArray());
                     } else if (header == HEADER_PING) {
-                        Log.d(TAG, "Received ping frame");
+                        // Log.d(TAG, "Received ping frame");
                         post(HEADER_PONG, contents);
                     } else if (header == HEADER_PONG) {
-                        Log.d(TAG, "Received pong frame");
+                        // Log.d(TAG, "Received pong frame");
                         DataInput pongInput = new DataInput(contents);
                         int pongLen = pongInput.readInt();
                         if (pongLen != 8) {
-                            Log.w(TAG, "Pong invalid content length, got: " + pongLen);
+                            // Log.w(TAG, "Pong invalid content length, got: " + pongLen);
                             continue;
                         }
                         onServerPong(pongInput.readLong());
                     } else if (header == HEADER_ACK) {
-                        Log.d(TAG, "Received ack frame");
+                        // Log.d(TAG, "Received ack frame");
                         DataInput ackContent = new DataInput(contents);
                         int frameId = ackContent.readInt();
                         onServerAck(frameId);
@@ -343,7 +343,7 @@ public class JavaTcpConnection implements Connection {
                         int errorCode = drop.readByte();
                         int messageLen = drop.readInt();
                         String message = new String(drop.readBytes(messageLen), "UTF-8");
-                        Log.d(TAG, "Received drop frame: " + message);
+                        // Log.d(TAG, "Received drop frame: " + message);
 
                         throw new IOException("Received drop frame: " + message);
                     } else {
@@ -405,7 +405,7 @@ public class JavaTcpConnection implements Connection {
                     }
 
                     // Start package send
-                    Log.d(TAG, "Sending frame #" + sentPackets);
+                    // Log.d(TAG, "Sending frame #" + sentPackets);
 
                     // Prepare package
                     final int packageId = sentPackets++;
@@ -425,7 +425,7 @@ public class JavaTcpConnection implements Connection {
                             TimerTask timeoutTask = new TimerTask() {
                                 @Override
                                 public void run() {
-                                    Log.d(TAG, "Response #" + packageId + " not received in time");
+                                    // Log.d(TAG, "Response #" + packageId + " not received in time");
                                     close();
                                 }
                             };
@@ -484,7 +484,7 @@ public class JavaTcpConnection implements Connection {
 
         @Override
         public void run() {
-            Log.d(TAG, "Ping #" + pingId + " is timed out");
+            // Log.d(TAG, "Ping #" + pingId + " is timed out");
             close();
         }
     }
@@ -498,7 +498,7 @@ public class JavaTcpConnection implements Connection {
 
         @Override
         public void run() {
-            Log.d(TAG, "Response #" + frameId + " not received in time");
+            // Log.d(TAG, "Response #" + frameId + " not received in time");
             close();
         }
     }
@@ -522,7 +522,7 @@ public class JavaTcpConnection implements Connection {
             }
             DIE_TIMER.schedule(pingTimeout, RESPONSE_TIMEOUT);
 
-            Log.d(TAG, "Performing ping #" + pingId + "...");
+            // Log.d(TAG, "Performing ping #" + pingId + "...");
             post(HEADER_PING, dataOutput.toByteArray());
         }
     }
