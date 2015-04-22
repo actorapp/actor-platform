@@ -39,6 +39,7 @@
 #import "im/actor/model/NetworkProvider.h"
 #import "im/actor/model/DispatcherProvider.h"
 #import "im/actor/model/LocaleProvider.h"
+#import "im/actor/model/PhoneBookProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -115,6 +116,9 @@
 #import "im/actor/model/entity/content/FileSource.h"
 #import "im/actor/model/entity/content/FileLocalSource.h"
 #import "im/actor/model/entity/content/FileRemoteSource.h"
+#import "im/actor/model/entity/PhoneBookContact.h"
+#import "im/actor/model/entity/PhoneBookPhone.h"
+#import "im/actor/model/entity/PhoneBookEmail.h"
 #import "im/actor/model/entity/ContentType.h"
 #import "im/actor/model/entity/FileReference.h"
 
