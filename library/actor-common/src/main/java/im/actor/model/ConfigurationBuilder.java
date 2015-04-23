@@ -38,6 +38,13 @@ public class ConfigurationBuilder {
 
     private ApiConfiguration apiConfiguration;
 
+    private HttpDownloaderProvider httpDownloaderProvider;
+
+    public ConfigurationBuilder setHttpDownloaderProvider(HttpDownloaderProvider httpDownloaderProvider) {
+        this.httpDownloaderProvider = httpDownloaderProvider;
+        return this;
+    }
+
     /**
      * Set API Configuration
      *
@@ -296,6 +303,6 @@ public class ConfigurationBuilder {
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
-                enableFilesLogging);
+                enableFilesLogging, httpDownloaderProvider);
     }
 }

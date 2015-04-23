@@ -1,13 +1,12 @@
 package im.actor.model.modules;
 
 import im.actor.model.Configuration;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.i18n.I18nEngine;
-import im.actor.model.log.Log;
 import im.actor.model.modules.utils.PreferenceApiStorage;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
-import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.util.Timing;
 
 /**
@@ -20,6 +19,7 @@ public class Modules {
     private final Auth auth;
     private final AppStateModule appStateModule;
 
+    private boolean isAppVisible;
     private volatile PreferencesStorage preferences;
     private volatile Users users;
     private volatile Groups groups;
@@ -119,8 +119,14 @@ public class Modules {
         timing.end();
 
         // Notify about app visible
-        presence.onAppVisible();
-        notifications.onAppVisible();
+        if (isAppVisible) {
+            presence.onAppVisible();
+            notifications.onAppVisible();
+        } else {
+            // Doesn't notify presence to avoid unessessary setOnline request
+            // presence.onAppHidden();
+            notifications.onAppHidden();
+        }
     }
 
     public PreferencesStorage getPreferences() {
@@ -201,6 +207,22 @@ public class Modules {
 
     public SearchModule getSearch() {
         return search;
+    }
+
+    public void onAppVisible() {
+        isAppVisible = true;
+        if (getPresenceModule() != null) {
+            getPresenceModule().onAppVisible();
+            getNotifications().onAppVisible();
+        }
+    }
+
+    public void onAppHidden() {
+        isAppVisible = false;
+        if (getPresenceModule() != null) {
+            getPresenceModule().onAppHidden();
+            getNotifications().onAppHidden();
+        }
     }
 
     private class ActorApiCallbackImpl implements ActorApiCallback {
