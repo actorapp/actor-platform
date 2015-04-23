@@ -18,18 +18,21 @@ import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.api.util
 import im.actor.server.api.util.{ ContactsUtils, PhoneNumber, UserUtils }
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(implicit
                           val seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                          val socialManagerRegion: SocialManagerRegion,
                           db: Database,
                           actorSystem: ActorSystem)
   extends ContactsService {
 
   import ContactsUtils._
   import UserUtils._
-  import im.actor.server.push.SeqUpdatesManager._
+  import SocialManager._
+  import SeqUpdatesManager._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)
@@ -70,11 +73,9 @@ class ContactsServiceImpl(implicit
 
               userStructsSalts.foldLeft((immutable.Seq.empty[(User, String)], immutable.Set.empty[Int], userPhoneNumbers)) {
                 case ((userStructSalts, newContactIds, _), userStructSalt) =>
-                  (
-                    userStructSalts :+ userStructSalt,
+                  (userStructSalts :+ userStructSalt,
                     newContactIds + userStructSalt._1.id,
-                    userPhoneNumbers
-                    )
+                    userPhoneNumbers)
               }
             }
 
@@ -89,12 +90,11 @@ class ContactsServiceImpl(implicit
               }
 
               if (userStructsSalts.nonEmpty) {
-                newContactIds foreach { id =>
-                  // TODO: record social relation
-                }
+                val socialActions = newContactIds.toSeq map (id => DBIO.from(recordRelation(id, client.userId)))
 
                 for {
                   _ <- createAllUserContacts(client.userId, userStructsSalts)
+                  _ <- DBIO.sequence(socialActions)
                   seqstate <- broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector))
                 } yield {
                   Ok(ResponseImportContacts(userStructsSalts.toVector.map(_._1), seqstate._1, seqstate._2))
@@ -201,11 +201,9 @@ class ContactsServiceImpl(implicit
               for {
                 userPhones <- persist.UserPhone.findByNumbers(filteredPhones)
                 users <- userStructs(userPhones.map(_.userId).toSet)
-              } yield {
-                // TODO: record social relations
-
-                Ok(ResponseSearchContacts(users.toVector))
-              }
+                socialActions = userPhones map (p => DBIO.from(recordRelation(p.userId, client.userId)))
+                _ <- DBIO.sequence(socialActions)
+              } yield Ok(ResponseSearchContacts(users.toVector))
             case None =>
               DBIO.successful(Ok(ResponseSearchContacts(Vector.empty)))
           }

@@ -7,11 +7,12 @@ import scalaz._, std.either._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseSendAuthCode }
+import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.PublicKey
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.session.Session
+import im.actor.server.social.SocialManager
 import im.actor.server.{ models, persist }
 
 class AuthServiceSpec extends BaseServiceSuite {
@@ -23,6 +24,8 @@ class AuthServiceSpec extends BaseServiceSuite {
 
   "SignUp handler" should "respond ok to a valid request" in (s.signUp().e1)
 
+  it should "send ContactRegistered updates" in (s.signUp().e2)
+
   "SignIn handler" should "respond with PhoneNumberUnoccupied if phone is not registered" in (s.signIn().unoccupied)
 
   it should "respond ok to a valid request" in (s.signIn().valid)
@@ -33,6 +36,7 @@ class AuthServiceSpec extends BaseServiceSuite {
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val rpcApiService = system.actorOf(RpcApiService.props())
     implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
 
@@ -56,14 +60,14 @@ class AuthServiceSpec extends BaseServiceSuite {
     }
 
     case class signUp() {
-      val authId = createAuthId()(service.db)
-      val sessionId = createSessionId()
-      val phoneNumber = buildPhone()
-      val smsHash = getSmsHash(authId, phoneNumber)
-
-      implicit val clientData = ClientData(authId, sessionId, None)
-
       def e1() = {
+        val authId = createAuthId()(service.db)
+        val sessionId = createSessionId()
+        val phoneNumber = buildPhone()
+        val smsHash = getSmsHash(authId, phoneNumber)
+
+        implicit val clientData = ClientData(authId, sessionId, None)
+
         val request = service.handleSignUp(
           phoneNumber = phoneNumber,
           smsHash = smsHash,
@@ -80,6 +84,50 @@ class AuthServiceSpec extends BaseServiceSuite {
           resp should matchPattern {
             case Ok(ResponseAuth( _, _)) =>
           }
+        }
+      }
+
+      def e2() = {
+        val (user, authId, _) = createUser()
+
+        val unregPhoneNumber = buildPhone()
+
+        {
+          val authId = createAuthId()(service.db)
+          val sessionId = createSessionId()
+          val smsHash = getSmsHash(authId, unregPhoneNumber)
+
+          Await.result(db.run(persist.contact.UnregisteredContact.create(unregPhoneNumber, user.id)), 5.seconds)
+
+          implicit val clientData = ClientData(authId, sessionId, None)
+
+          val request = service.handleSignUp(
+            phoneNumber = unregPhoneNumber,
+            smsHash = smsHash,
+            smsCode = "0000",
+            name = "Wayne Brain",
+            deviceHash = Array(4, 5, 6),
+            deviceTitle = "Specs virtual device",
+            appId = 1,
+            appKey = "appKey",
+            isSilent = false
+          )
+
+          whenReady(request) { resp =>
+            resp should matchPattern {
+              case Ok(ResponseAuth(_, _)) =>
+            }
+          }
+        }
+
+        Thread.sleep(1000)
+
+        whenReady(db.run(persist.sequence.SeqUpdate.find(authId).head)) { update =>
+          update.header should ===(UpdateContactRegistered.header)
+        }
+
+        whenReady(db.run(persist.contact.UnregisteredContact.find(unregPhoneNumber))) { unregContacts =>
+          unregContacts shouldBe empty
         }
       }
     }

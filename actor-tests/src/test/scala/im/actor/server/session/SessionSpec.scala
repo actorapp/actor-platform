@@ -21,6 +21,7 @@ import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientData }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.presences.PresenceManager
+import im.actor.server.social.SocialManager
 import im.actor.server.{ persist, SqlSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -48,6 +49,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
   implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val socialManagerRegion = SocialManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
   implicit val sessionRegion = Session.startRegion(
     Some(

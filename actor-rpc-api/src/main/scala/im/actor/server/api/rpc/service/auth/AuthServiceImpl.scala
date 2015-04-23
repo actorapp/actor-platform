@@ -2,10 +2,12 @@ package im.actor.server.api.rpc.service.auth
 
 
 import scala.concurrent._
+import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
 
 import akka.actor.ActorSystem
+import akka.util.Timeout
 import org.joda.time.DateTime
 import shapeless._
 import slick.dbio
@@ -15,19 +17,26 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
+import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc._
 import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
-import im.actor.server.api.util.ACL
-import im.actor.server.{ models, persist }
+import im.actor.server.api.util.{ ContactsUtils, ACL }
+import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
 import im.actor.server.session._
+import im.actor.server.social.{ SocialManagerRegion, SocialManager }
+import im.actor.server.{ models, persist }
 
 class AuthServiceImpl(implicit
                       val sessionRegion: SessionRegion,
+                      val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+                      val socialManagerRegion: SocialManagerRegion,
                       val actorSystem: ActorSystem,
                       val db: Database) extends AuthService with Helpers {
 
   import IdUtils._
+  import SocialManager._
+  import SeqUpdatesManager._
 
   private trait SignType
 
@@ -36,6 +45,8 @@ class AuthServiceImpl(implicit
   private case object In extends SignType
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
+
+  implicit val timeout = Timeout(5.seconds) // TODO: configurable
 
   object Errors {
     val AuthSessionNotFound = RpcError(404, "AUTH_SESSION_NOT_FOUND", "Auth session not found.", false, None)
@@ -79,9 +90,10 @@ class AuthServiceImpl(implicit
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleSendAuthCode(
-                                    rawPhoneNumber: Long, appId: Int, apiKey: String, clientData: ClientData
-                                    ): Future[HandlerResult[ResponseSendAuthCode]] = {
+  override def jhandleSendAuthCode(rawPhoneNumber: Long,
+                                   appId: Int,
+                                   apiKey: String,
+                                   clientData: ClientData): Future[HandlerResult[ResponseSendAuthCode]] = {
     util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None =>
         Future.successful(Error(Errors.PhoneNumberInvalid))
@@ -111,11 +123,14 @@ class AuthServiceImpl(implicit
     }
   }
 
-  override def jhandleSendAuthCall(
-                                    phoneNumber: Long, smsHash: String, appId: Int, apiKey: String, clientData: ClientData
-                                    ): Future[HandlerResult[ResponseVoid]] = Future {
-    throw new Exception("Not implemented")
-  }
+  override def jhandleSendAuthCall(phoneNumber: Long,
+                                   smsHash: String,
+                                   appId: Int,
+                                   apiKey: String,
+                                   clientData: ClientData): Future[HandlerResult[ResponseVoid]] =
+    Future {
+      throw new Exception("Not implemented")
+    }
 
 
   override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -127,53 +142,45 @@ class AuthServiceImpl(implicit
   }
 
 
-  override def jhandleSignIn(
-                              rawPhoneNumber: Long,
-                              smsHash: String,
-                              smsCode: String,
-                              deviceHash: Array[Byte],
-                              deviceTitle: String,
-                              appId: Int,
-                              appKey: String,
-                              clientData: ClientData
-                              ): Future[HandlerResult[ResponseAuth]] =
+  override def jhandleSignIn(rawPhoneNumber: Long,
+                             smsHash: String,
+                             smsCode: String,
+                             deviceHash: Array[Byte],
+                             deviceTitle: String,
+                             appId: Int,
+                             appKey: String,
+                             clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     handleSign(
       In,
       rawPhoneNumber, smsHash, smsCode,
       deviceHash, deviceTitle, appId, appKey,
-      clientData
-    )
+      clientData)
 
-  override def jhandleSignUp(
-                              rawPhoneNumber: Long,
-                              smsHash: String,
-                              smsCode: String,
-                              name: String,
-                              deviceHash: Array[Byte],
-                              deviceTitle: String,
-                              appId: Int,
-                              appKey: String,
-                              isSilent: Boolean,
-                              clientData: ClientData
-                              ): Future[HandlerResult[ResponseAuth]] =
+  override def jhandleSignUp(rawPhoneNumber: Long,
+                             smsHash: String,
+                             smsCode: String,
+                             name: String,
+                             deviceHash: Array[Byte],
+                             deviceTitle: String,
+                             appId: Int,
+                             appKey: String,
+                             isSilent: Boolean,
+                             clientData: ClientData): Future[HandlerResult[ResponseAuth]] =
     handleSign(
       Up(name, isSilent),
       rawPhoneNumber, smsHash, smsCode,
       deviceHash, deviceTitle, appId, appKey,
-      clientData
-    )
+      clientData)
 
-  private def handleSign(
-                          signType: SignType,
-                          rawPhoneNumber: Long,
-                          smsHash: String,
-                          smsCode: String,
-                          deviceHash: Array[Byte],
-                          deviceTitle: String,
-                          appId: Int,
-                          appKey: String,
-                          clientData: ClientData
-                          ): Future[HandlerResult[ResponseAuth]] = {
+  private def handleSign(signType: SignType,
+                         rawPhoneNumber: Long,
+                         smsHash: String,
+                         smsCode: String,
+                         deviceHash: Array[Byte],
+                         deviceTitle: String,
+                         appId: Int,
+                         appKey: String,
+                         clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     util.PhoneNumber.normalizeWithCountry(rawPhoneNumber) match {
       case None => Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) =>
@@ -243,6 +250,10 @@ class AuthServiceImpl(implicit
                 prevSessions <- persist.AuthSession.findByUserIdAndDeviceHash(user.id, deviceHash)
                 _ <- DBIO.sequence(prevSessions map logout)
                 _ <- persist.AuthSession.create(authSession)
+                _ <- signType match {
+                  case Up(_, isSilent) => markContactRegistered(user, normPhoneNumber, isSilent)
+                  case _ => DBIO.successful(())
+                }
                 userStruct <- util.UserUtils.userStruct(
                   user,
                   None,
@@ -310,6 +321,31 @@ class AuthServiceImpl(implicit
           _ <- persist.User.setCountryCode(userId = userId, countryCode = countryCode)
           _ <- persist.AuthId.setUserData(authId, userId)
         } yield \/-(user :: HNil)
+    }
+  }
+
+  private def markContactRegistered(user: models.User, phoneNumber: Long, isSilent: Boolean): DBIO[Unit] = {
+    val date = new DateTime
+
+    persist.contact.UnregisteredContact.find(phoneNumber) flatMap { contacts =>
+      // TODO: use service-level logging
+      actorSystem.log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
+
+      val update = UpdateContactRegistered(user.id, isSilent, date.getMillis)
+
+      // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
+      val actions = contacts map { contact =>
+        for {
+          _ <- DBIO.from(recordRelation(user.id, contact.ownerUserId))
+          _ <- persist.contact.UserContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
+          _ <- broadcastUserUpdate(contact.ownerUserId, update)
+        } yield ()
+      }
+
+      for {
+        _ <- DBIO.sequence(actions)
+        _ <- persist.contact.UnregisteredContact.deleteAll(phoneNumber)
+      } yield ()
     }
   }
 
