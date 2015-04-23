@@ -330,6 +330,7 @@ dependencies {
     }
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
+
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.facebook.fresco:fresco:0.1.0+'

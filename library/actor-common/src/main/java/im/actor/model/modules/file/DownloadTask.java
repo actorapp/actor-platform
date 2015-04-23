@@ -1,12 +1,15 @@
 package im.actor.model.modules.file;
 
 import im.actor.model.FileSystemProvider;
-import im.actor.model.api.rpc.RequestGetFile;
-import im.actor.model.api.rpc.ResponseGetFile;
+import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.api.FileLocation;
+import im.actor.model.api.rpc.RequestGetFileUrl;
+import im.actor.model.api.rpc.ResponseGetFileUrl;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.OutputFile;
+import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
@@ -26,12 +29,14 @@ public class DownloadTask extends ModuleActor {
     private FileReference fileReference;
     private ActorRef manager;
     private FileSystemProvider fileSystemProvider;
+    private HttpDownloaderProvider downloaderProvider;
 
     private FileSystemReference destReference;
     private OutputFile outputFile;
 
     private boolean isCompleted;
 
+    private String fileUrl;
     private int blockSize = 8 * 1024;
     private int blocksCount;
     private int nextBlock = 0;
@@ -62,6 +67,15 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
+        downloaderProvider = modules().getConfiguration().getHttpDownloaderProvider();
+        if (downloaderProvider == null) {
+            reportError();
+            if (LOG) {
+                Log.d(TAG, "No HTTP Support available");
+            }
+            return;
+        }
+
         destReference = fileSystemProvider.createTempFile();
         if (destReference == null) {
             reportError();
@@ -80,7 +94,32 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        startDownload();
+        requestUrl();
+    }
+
+    private void requestUrl() {
+        if (LOG) {
+            Log.d(TAG, "Loading url...");
+        }
+        request(new RequestGetFileUrl(new FileLocation(fileReference.getFileId(),
+                fileReference.getAccessHash())), new RpcCallback<ResponseGetFileUrl>() {
+            @Override
+            public void onResult(ResponseGetFileUrl response) {
+                fileUrl = response.getUrl();
+                if (LOG) {
+                    Log.d(TAG, "Loaded file url: " + fileUrl);
+                }
+                startDownload();
+            }
+
+            @Override
+            public void onError(RpcException e) {
+                if (LOG) {
+                    Log.d(TAG, "Unable to load file url");
+                }
+                reportError();
+            }
+        });
     }
 
     private void startDownload() {
@@ -150,30 +189,38 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void downloadPart(final int blockIndex, final int fileOffset) {
-        request(new RequestGetFile(new im.actor.model.api.FileLocation(fileReference.getFileId(),
-                fileReference.getAccessHash()), fileOffset, blockSize), new RpcCallback<ResponseGetFile>() {
+        downloaderProvider.downloadPart(fileUrl, fileOffset, blockSize, new FileDownloadCallback() {
             @Override
-            public void onResult(ResponseGetFile response) {
-                downloaded++;
-                if (LOG) {
-                    Log.d(TAG, "Download part #" + blockIndex + " completed");
-                }
-                if (!outputFile.write(fileOffset, response.getPayload(), 0,
-                        response.getPayload().length)) {
-                    reportError();
-                    return;
-                }
-                currentDownloads--;
-                reportProgress(downloaded / (float) blocksCount);
-                checkQueue();
+            public void onDownloaded(final byte[] data) {
+                self().send(new Runnable() {
+                    @Override
+                    public void run() {
+                        downloaded++;
+                        if (LOG) {
+                            Log.d(TAG, "Download part #" + blockIndex + " completed");
+                        }
+                        if (!outputFile.write(fileOffset, data, 0, data.length)) {
+                            reportError();
+                            return;
+                        }
+                        currentDownloads--;
+                        reportProgress(downloaded / (float) blocksCount);
+                        checkQueue();
+                    }
+                });
             }
 
             @Override
-            public void onError(RpcException e) {
-                if (LOG) {
-                    Log.d(TAG, "Download part #" + blockIndex + " failure");
-                }
-                reportError();
+            public void onDownloadFailure() {
+                self().send(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (LOG) {
+                            Log.d(TAG, "Download part #" + blockIndex + " failure");
+                        }
+                        reportError();
+                    }
+                });
             }
         });
     }

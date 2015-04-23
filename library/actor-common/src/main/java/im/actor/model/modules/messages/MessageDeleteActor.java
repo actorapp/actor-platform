@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.OutPeer;
+import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestDeleteMessage;
-import im.actor.model.api.rpc.ResponseVoid;
+import im.actor.model.api.rpc.ResponseSeq;
+import im.actor.model.api.updates.UpdateMessageDelete;
 import im.actor.model.droidkit.engine.SyncKeyValue;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Modules;
@@ -58,15 +60,18 @@ public class MessageDeleteActor extends ModuleActor {
 
     public void performDelete(final Peer peer, final List<Long> rids) {
         final OutPeer outPeer = buidOutPeer(peer);
-        request(new RequestDeleteMessage(outPeer, rids), new RpcCallback<ResponseVoid>() {
+        final im.actor.model.api.Peer apiPeer = buildApiPeer(peer);
+        request(new RequestDeleteMessage(outPeer, rids), new RpcCallback<ResponseSeq>() {
+
             @Override
-            public void onResult(ResponseVoid response) {
+            public void onResult(ResponseSeq response) {
                 if (deleteStorage.getPendingDeletions().containsKey(peer)) {
                     deleteStorage.getPendingDeletions().get(peer).getRids().removeAll(rids);
                     saveStorage();
                 }
-                // TODO: Fix API?
-                // updates().onUpdateReceived(new SeqUpdate());
+
+                updates().onUpdateReceived(new SeqUpdate(response.getSeq(),response.getState(),
+                        UpdateMessageDelete.HEADER,new UpdateMessageDelete(apiPeer, rids).toByteArray()));
             }
 
             @Override

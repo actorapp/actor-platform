@@ -33,17 +33,11 @@ public class UpdatesParser extends BaseParser<Update> {
             case 98: return UpdateEmailTitleChanged.fromBytes(payload);
             case 102: return UpdateEmailMoved.fromBytes(payload);
             case 86: return UpdateUserContactsChanged.fromBytes(payload);
-            case 100: return UpdateUserStateChanged.fromBytes(payload);
             case 5: return UpdateContactRegistered.fromBytes(payload);
-            case 120: return UpdateEmailContactRegistered.fromBytes(payload);
             case 40: return UpdateContactsAdded.fromBytes(payload);
             case 41: return UpdateContactsRemoved.fromBytes(payload);
-            case 1: return UpdateEncryptedMessage.fromBytes(payload);
             case 55: return UpdateMessage.fromBytes(payload);
             case 4: return UpdateMessageSent.fromBytes(payload);
-            case 18: return UpdateEncryptedReceived.fromBytes(payload);
-            case 52: return UpdateEncryptedRead.fromBytes(payload);
-            case 53: return UpdateEncryptedReadByMe.fromBytes(payload);
             case 54: return UpdateMessageReceived.fromBytes(payload);
             case 19: return UpdateMessageRead.fromBytes(payload);
             case 50: return UpdateMessageReadByMe.fromBytes(payload);
@@ -57,13 +51,12 @@ public class UpdatesParser extends BaseParser<Update> {
             case 44: return UpdateGroupMembersUpdate.fromBytes(payload);
             case 38: return UpdateGroupTitleChanged.fromBytes(payload);
             case 39: return UpdateGroupAvatarChanged.fromBytes(payload);
-            case 2: return UpdateNewDevice.fromBytes(payload);
-            case 37: return UpdateRemovedDevice.fromBytes(payload);
             case 6: return UpdateTyping.fromBytes(payload);
             case 7: return UpdateUserOnline.fromBytes(payload);
             case 8: return UpdateUserOffline.fromBytes(payload);
             case 9: return UpdateUserLastSeen.fromBytes(payload);
             case 33: return UpdateGroupOnline.fromBytes(payload);
+            case 131: return UpdateParameterChanged.fromBytes(payload);
             case 42: return UpdateConfig.fromBytes(payload);
         }
         throw new IOException();

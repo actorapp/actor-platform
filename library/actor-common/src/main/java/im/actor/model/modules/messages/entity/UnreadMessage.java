@@ -20,13 +20,11 @@ public class UnreadMessage extends BserObject {
     private Peer peer;
     private long rid;
     private long sortDate;
-    private boolean isEncrypted;
 
-    public UnreadMessage(Peer peer, long rid, long sortDate,boolean isEncrypted) {
+    public UnreadMessage(Peer peer, long rid, long sortDate) {
         this.peer = peer;
         this.rid = rid;
         this.sortDate = sortDate;
-        this.isEncrypted = isEncrypted;
     }
 
     public UnreadMessage() {
@@ -45,16 +43,11 @@ public class UnreadMessage extends BserObject {
         return sortDate;
     }
 
-    public boolean isEncrypted() {
-        return isEncrypted;
-    }
-
     @Override
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromUniqueId(values.getLong(1));
         rid = values.getLong(2);
         sortDate = values.getLong(3);
-        isEncrypted = values.getBool(5);
     }
 
     @Override
@@ -62,7 +55,6 @@ public class UnreadMessage extends BserObject {
         writer.writeLong(1, peer.getUnuqueId());
         writer.writeLong(2, rid);
         writer.writeLong(3, sortDate);
-        writer.writeBool(5, isEncrypted);
     }
 
     @Override
