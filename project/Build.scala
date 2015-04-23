@@ -1,3 +1,5 @@
+package im.actor
+
 import akka.sbt.AkkaKernelPlugin
 import akka.sbt.AkkaKernelPlugin.{Dist, distBootClass, distJvmOptions, outputDirectory}
 import im.actor.SbtActorApi
