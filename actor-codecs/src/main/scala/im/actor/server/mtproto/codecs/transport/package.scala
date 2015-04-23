@@ -1,6 +1,6 @@
 package im.actor.server.mtproto.codecs
 
-import scodec.{ codecs => C, _ }
+import scodec.{ codecs ⇒ C, _ }
 
 import im.actor.server.mtproto.transport._
 
@@ -37,12 +37,12 @@ package object transport {
 
   def mtprotoCodec(header: Int): GenCodec[_, MTProto] =
     header match {
-      case MTPackage.header => MTPackageCodec.map(_.asInstanceOf[MTProto])
-      case Ping.header => PingCodec.map(_.asInstanceOf[MTProto])
-      case Pong.header => PongCodec.map(_.asInstanceOf[MTProto])
-      case Drop.header => DropCodec.map(_.asInstanceOf[MTProto])
-      case Redirect.header => RedirectCodec.map(_.asInstanceOf[MTProto])
-      case InternalError.header => InternalErrorCodec.map(_.asInstanceOf[MTProto])
-      case Ack.header => AckCodec.map(_.asInstanceOf[MTProto])
+      case MTPackage.header     ⇒ MTPackageCodec.map(_.asInstanceOf[MTProto])
+      case Ping.header          ⇒ PingCodec.map(_.asInstanceOf[MTProto])
+      case Pong.header          ⇒ PongCodec.map(_.asInstanceOf[MTProto])
+      case Drop.header          ⇒ DropCodec.map(_.asInstanceOf[MTProto])
+      case Redirect.header      ⇒ RedirectCodec.map(_.asInstanceOf[MTProto])
+      case InternalError.header ⇒ InternalErrorCodec.map(_.asInstanceOf[MTProto])
+      case Ack.header           ⇒ AckCodec.map(_.asInstanceOf[MTProto])
     }
 }

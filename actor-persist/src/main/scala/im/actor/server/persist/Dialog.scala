@@ -26,8 +26,8 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
   def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) <> (applyDialog.tupled, unapplyDialog)
 
-  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime) => models.Dialog = {
-    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) =>
+  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime) ⇒ models.Dialog = {
+    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) ⇒
       models.Dialog(
         userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
@@ -37,9 +37,9 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
       )
   }
 
-  def unapplyDialog: models.Dialog => Option[(Int, Int, Int, DateTime, DateTime, DateTime)] = { dialog =>
+  def unapplyDialog: models.Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime)] = { dialog ⇒
     models.Dialog.unapply(dialog).map {
-      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt) =>
+      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt) ⇒
         (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt)
     }
   }
@@ -49,52 +49,48 @@ object Dialog {
   val dialogs = TableQuery[DialogTable]
 
   def byUserIdPeer(userId: Int, peer: models.Peer) =
-    dialogs.filter(d => d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id)
+    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id)
 
   def create(dialog: models.Dialog) =
     dialogs += dialog
 
   def createIfNotExists(dialog: models.Dialog)(implicit ec: ExecutionContext) = {
     for {
-      dOpt <- find(dialog.userId, dialog.peer)
-      res <- if (dOpt.isEmpty) create(dialog) else DBIO.successful(0)
+      dOpt ← find(dialog.userId, dialog.peer)
+      res ← if (dOpt.isEmpty) create(dialog) else DBIO.successful(0)
     } yield res
   }
 
   def find(userId: Int, peer: models.Peer) =
-    dialogs.filter(d => d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
+    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
 
   def findByUser(userId: Int, startDate: DateTime, limit: Int) =
     dialogs
-      .filter(d => d.userId === userId && d.lastMessageDate >= startDate)
+      .filter(d ⇒ d.userId === userId && d.lastMessageDate >= startDate)
       .take(limit)
       .result
 
-
-  def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)
-                           (implicit ec: ExecutionContext) = {
+  def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastMessageDate).update(lastMessageDate) flatMap {
-      case 0 =>
+      case 0 ⇒
         create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0)))
-      case x => DBIO.successful(x)
+      case x ⇒ DBIO.successful(x)
     }
   }
 
-  def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)
-                          (implicit ec: ExecutionContext) = {
+  def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastReceivedAt).update(lastReceivedAt) flatMap {
-      case 0 =>
+      case 0 ⇒
         create(models.Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0)))
-      case x => DBIO.successful(x)
+      case x ⇒ DBIO.successful(x)
     }
   }
 
-  def updateLastReadAt(userId: Int, peer: models.Peer, lastReadAt: DateTime)
-                      (implicit ec: ExecutionContext) = {
+  def updateLastReadAt(userId: Int, peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastReadAt).update(lastReadAt) flatMap {
-      case 0 =>
+      case 0 ⇒
         create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt))
-      case x => DBIO.successful(x)
+      case x ⇒ DBIO.successful(x)
     }
   }
 

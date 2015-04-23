@@ -5,9 +5,9 @@ import scodec.bits.BitVector
 
 @SerialVersionUID(1L)
 case class Dialog(
-  userId: Int,
-  peer: Peer,
+  userId:          Int,
+  peer:            Peer,
   lastMessageDate: DateTime,
-  lastReceivedAt: DateTime,
-  lastReadAt: DateTime
+  lastReceivedAt:  DateTime,
+  lastReadAt:      DateTime
 )

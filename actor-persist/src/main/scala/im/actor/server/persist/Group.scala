@@ -30,7 +30,8 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
   def avatarChangeRandomId = column[Long]("avatar_change_random_id")
 
   def * =
-    (id,
+    (
+      id,
       creatorUserId,
       accessHash,
       title,
@@ -40,9 +41,10 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       titleChangeRandomId,
       avatarChangerUserId,
       avatarChangedAt,
-      avatarChangeRandomId) <>(models.FullGroup.tupled, models.FullGroup.unapply)
+      avatarChangeRandomId
+    ) <> (models.FullGroup.tupled, models.FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, createdAt) <>(models.Group.tupled, models.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, createdAt) <> (models.Group.tupled, models.Group.unapply)
 }
 
 object Group {
@@ -60,18 +62,19 @@ object Group {
       titleChangeRandomId = randomId,
       avatarChangerUserId = group.creatorUserId,
       avatarChangedAt = group.createdAt,
-      avatarChangeRandomId = randomId)
+      avatarChangeRandomId = randomId
+    )
   }
 
   def find(id: Int) =
-    groups.filter(g => g.id === id).map(_.asGroup).result
+    groups.filter(g ⇒ g.id === id).map(_.asGroup).result
 
   def findFull(id: Int) =
-    groups.filter(g => g.id === id).result
+    groups.filter(g ⇒ g.id === id).result
 
   def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: DateTime) =
     groups
       .filter(_.id === id)
-      .map(g => (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
+      .map(g ⇒ (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
       .update((title, changerUserId, date, randomId))
 }

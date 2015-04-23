@@ -48,39 +48,39 @@ object Event extends DefaultJsonProtocol {
 
   implicit object RpcErrorWrites extends RootJsonWriter[RpcError] {
     def write(e: RpcError) = JsObject(
-      "kind" -> JsString(e.kind.toString),
-      "code" -> JsNumber(e.code),
-      "message" -> JsString(e.message)
+      "kind" → JsString(e.kind.toString),
+      "code" → JsNumber(e.code),
+      "message" → JsString(e.message)
     )
   }
   implicit object SmsSentSuccessfullyWrites extends RootJsonWriter[SmsSentSuccessfully] {
     def write(e: SmsSentSuccessfully) = JsObject(
-      "body" -> JsString(e.body),
-      "gateResponse" -> JsString(e.gateResponse)
+      "body" → JsString(e.body),
+      "gateResponse" → JsString(e.gateResponse)
     )
   }
   implicit object SmsFailureWrites extends RootJsonWriter[SmsFailure] {
     def write(e: SmsFailure) = JsObject(
-      "body" -> JsString(e.body),
-      "gateResponse" -> JsString(e.gateResponse)
+      "body" → JsString(e.body),
+      "gateResponse" → JsString(e.gateResponse)
     )
   }
   implicit object AuthCodeSentWrites extends RootJsonWriter[AuthCodeSent] {
     def write(e: AuthCodeSent) = JsObject(
-      "smsHash" -> JsString(e.smsHash),
-      "smsCode" -> JsString(e.smsCode)
+      "smsHash" → JsString(e.smsHash),
+      "smsCode" → JsString(e.smsCode)
     )
   }
   implicit object SignedInWrites extends RootJsonWriter[SignedIn] {
     def write(e: SignedIn) = JsObject(
-      "smsHash" -> JsString(e.smsHash),
-      "smsCode" -> JsString(e.smsCode)
+      "smsHash" → JsString(e.smsHash),
+      "smsCode" → JsString(e.smsCode)
     )
   }
   implicit object SignedUpWrites extends RootJsonWriter[SignedUp] {
     def write(e: SignedUp) = JsObject(
-      "smsHash" -> JsString(e.smsHash),
-      "smsCode" -> JsString(e.smsCode)
+      "smsHash" → JsString(e.smsHash),
+      "smsCode" → JsString(e.smsCode)
     )
   }
 }

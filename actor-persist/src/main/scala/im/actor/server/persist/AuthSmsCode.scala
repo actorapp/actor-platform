@@ -11,7 +11,7 @@ class AuthSmsCodeTable(tag: Tag) extends Table[models.AuthSmsCode](tag, "auth_sm
 
   def smsCode = column[String]("sms_code")
 
-  def * = (phoneNumber, smsHash, smsCode) <>(models.AuthSmsCode.tupled, models.AuthSmsCode.unapply)
+  def * = (phoneNumber, smsHash, smsCode) <> (models.AuthSmsCode.tupled, models.AuthSmsCode.unapply)
 }
 
 object AuthSmsCode {

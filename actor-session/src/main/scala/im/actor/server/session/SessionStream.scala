@@ -23,7 +23,7 @@ private[session] object SessionStream {
   case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
 
   def graph(rpcApiService: ActorRef)(implicit system: ActorSystem) =
-    FlowGraph.partial() { implicit builder =>
+    FlowGraph.partial() { implicit builder ⇒
       import FlowGraph.Implicits._
 
       val discriminator = builder.add(new SessionMessageDiscriminator)

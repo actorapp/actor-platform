@@ -7,7 +7,7 @@ import akka.stream.actor.ActorPublisher
 import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
 import scodec.bits.BitVector
 
-import im.actor.server.mtproto.{transport => T}
+import im.actor.server.mtproto.{ transport ⇒ T }
 import im.actor.server.session.{ SessionRegion, SessionMessage }
 
 private[frontend] object SessionClient {
@@ -23,18 +23,18 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
   private[this] var buf = Vector.empty[T.MTProto]
 
   def receive = {
-    case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) =>
+    case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) ⇒
       sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
-    case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) =>
+    case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) ⇒
       if (buf.isEmpty && totalDemand > 0) {
         onNext(T.ProtoPackage(p))
       } else {
         buf :+= p
         deliverBuf()
       }
-    case Request(_) =>
+    case Request(_) ⇒
       deliverBuf()
-    case Cancel =>
+    case Cancel ⇒
       context.stop(self)
   }
 
@@ -44,11 +44,11 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
       if (totalDemand <= Int.MaxValue) {
         val (use, keep) = buf.splitAt(totalDemand.toInt)
         buf = keep
-        use.foreach { p => onNext(T.ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(T.ProtoPackage(p)) }
       } else {
         val (use, keep) = buf.splitAt(Int.MaxValue)
         buf = keep
-        use.foreach { p => onNext(T.ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(T.ProtoPackage(p)) }
         deliverBuf()
       }
     }

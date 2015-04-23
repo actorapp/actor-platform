@@ -31,8 +31,8 @@ class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "h
   def * = (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) <>
     (applyHistoryMessage.tupled, unapplyHistoryMessage)
 
-  private def applyHistoryMessage: (Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime]) => models.HistoryMessage = {
-    case (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) =>
+  private def applyHistoryMessage: (Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime]) ⇒ models.HistoryMessage = {
+    case (userId, peerType, peerId, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) ⇒
       models.HistoryMessage(
         userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
@@ -45,9 +45,9 @@ class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "h
       )
   }
 
-  private def unapplyHistoryMessage: models.HistoryMessage => Option[(Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime])] = { historyMessage =>
+  private def unapplyHistoryMessage: models.HistoryMessage ⇒ Option[(Int, Int, Int, DateTime, Int, Long, Int, Array[Byte], Option[DateTime])] = { historyMessage ⇒
     models.HistoryMessage.unapply(historyMessage) map {
-      case (userId, peer, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) =>
+      case (userId, peer, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt) ⇒
         (userId, peer.typ.toInt, peer.id, date, senderUserId, randomId, messageContentHeader, messageContentData, deletedAt)
     }
   }
@@ -66,15 +66,15 @@ object HistoryMessage {
 
   def find(userId: Int, peer: models.Peer, dateOpt: Option[DateTime], limit: Int): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] = {
     val baseQuery = notDeletedMessages
-      .filter(m =>
-      m.userId === userId &&
-        m.peerType === peer.typ.toInt &&
-        m.peerId === peer.id)
+      .filter(m ⇒
+        m.userId === userId &&
+          m.peerType === peer.typ.toInt &&
+          m.peerId === peer.id)
 
     val query = dateOpt match {
-      case Some(date) =>
+      case Some(date) ⇒
         baseQuery.filter(_.date <= date).sortBy(_.date.desc)
-      case None =>
+      case None ⇒
         baseQuery.sortBy(_.date.asc)
     }
 
@@ -83,26 +83,26 @@ object HistoryMessage {
 
   def find(userId: Int, peer: models.Peer): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] =
     notDeletedMessages
-      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .sortBy(_.date.desc)
       .result
 
   def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
     notDeletedMessages
-      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
-      .filter(m => m.date > lastReadAt && m.senderUserId =!= userId)
+      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= userId)
       .length
       .result
 
   def deleteAll(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
     notDeletedMessages
-      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .map(_.deletedAt)
       .update(Some(new DateTime))
 
   def delete(userId: Int, peer: models.Peer, randomIds: Set[Long]) =
     notDeletedMessages
-      .filter(m => m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .filter(_.randomId inSet randomIds)
       .map(_.deletedAt)
       .update(Some(new DateTime))

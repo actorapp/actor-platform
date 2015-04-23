@@ -45,14 +45,14 @@ object AuthSession {
     sessions += session
 
   def find(userId: Int, id: Int) =
-    activeSessions.filter(s => s.userId === userId && s.id === id).result
+    activeSessions.filter(s ⇒ s.userId === userId && s.id === id).result
 
   def findByUserId(userId: Int) =
     activeSessions.filter(_.userId === userId).result
 
   def findByUserIdAndDeviceHash(userId: Int, deviceHash: Array[Byte]) =
-    activeSessions.filter(s => s.userId === userId && s.deviceHash === deviceHash).result
+    activeSessions.filter(s ⇒ s.userId === userId && s.deviceHash === deviceHash).result
 
   def delete(userId: Int, id: Int) =
-    activeSessions.filter(s => s.userId === userId && s.id === id).map(_.deletedAt).update(Some(new DateTime))
+    activeSessions.filter(s ⇒ s.userId === userId && s.id === id).map(_.deletedAt).update(Some(new DateTime))
 }

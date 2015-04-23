@@ -26,22 +26,22 @@ object UserContact {
   val contacts = TableQuery[UserContact]
 
   def byPK(ownerUserId: Int, contactUserId: Int) =
-    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
+    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
 
   def byOwnerUserIdNotDeleted(ownerUserId: Int) =
-    contacts.filter(c => c.ownerUserId === ownerUserId && c.isDeleted === false)
+    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.isDeleted === false)
 
   def byPKNotDeleted(ownerUserId: Int, contactUserId: Int) =
-    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
+    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
 
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
-    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
+    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
 
   def find(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
   def findIds(ownerUserId: Int, contactUserIds: Set[Int]) =
-    contacts.filter(c => c.isDeleted === false && c.ownerUserId === ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
+    contacts.filter(c ⇒ c.isDeleted === false && c.ownerUserId === ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
 
   def findIds_all(ownerUserId: Int) =
     contacts.filter(_.ownerUserId === ownerUserId).map(_.contactUserId).result
@@ -50,13 +50,13 @@ object UserContact {
     byPKNotDeleted(ownerUserId, contactUserId).map(_.name).result
 
   def findContactIdsAll(ownerUserId: Int) =
-    contacts.filter(c => c.ownerUserId === ownerUserId).map(_.contactUserId).result
+    contacts.filter(c ⇒ c.ownerUserId === ownerUserId).map(_.contactUserId).result
 
   def findContactIdsWithLocalNames(ownerUserId: Int) =
-    byOwnerUserIdNotDeleted(ownerUserId).map(c => (c.contactUserId, c.name)).result
+    byOwnerUserIdNotDeleted(ownerUserId).map(c ⇒ (c.contactUserId, c.name)).result
 
   def updateName(ownerUserId: Int, contactUserId: Int, name: Option[String]): FixedSqlAction[Int, NoStream, Write] = {
-    contacts.filter(c => c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
+    contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
   }
 
   def createOrRestore(ownerUserId: Int, contactUserId: Int, phoneNumber: Long, name: Option[String], accessSalt: String) = {

@@ -8,12 +8,14 @@ import slick.dbio.DBIO
 import im.actor.server.{ models, persist }
 
 object HistoryUtils {
-  def writeHistoryMessage(fromPeer: models.Peer,
-                          toPeer: models.Peer,
-                          date: DateTime,
-                          randomId: Long,
-                          messageContentHeader: Int,
-                          messageContentData: Array[Byte])(implicit ec: ExecutionContext) = {
+  def writeHistoryMessage(
+    fromPeer:             models.Peer,
+    toPeer:               models.Peer,
+    date:                 DateTime,
+    randomId:             Long,
+    messageContentHeader: Int,
+    messageContentData:   Array[Byte]
+  )(implicit ec: ExecutionContext) = {
     requirePrivatePeer(fromPeer)
     requireDifferentPeers(fromPeer, toPeer)
 
@@ -41,16 +43,16 @@ object HistoryUtils {
       )
 
       for {
-        _ <- persist.HistoryMessage.create(Seq(outMessage, inMessage))
-        _ <- persist.Dialog.updateLastMessageDate(fromPeer.id, toPeer, date)
-        res <- persist.Dialog.updateLastMessageDate(toPeer.id, fromPeer, date)
+        _ ← persist.HistoryMessage.create(Seq(outMessage, inMessage))
+        _ ← persist.Dialog.updateLastMessageDate(fromPeer.id, toPeer, date)
+        res ← persist.Dialog.updateLastMessageDate(toPeer.id, fromPeer, date)
       } yield res
     } else if (toPeer.typ == models.PeerType.Group) {
-      persist.GroupUser.findUserIds(toPeer.id) flatMap { groupUserIds =>
+      persist.GroupUser.findUserIds(toPeer.id) flatMap { groupUserIds ⇒
 
         // TODO: #perf eliminate double loop
 
-        val historyMessages = groupUserIds.map { groupUserId =>
+        val historyMessages = groupUserIds.map { groupUserId ⇒
           models.HistoryMessage(groupUserId, toPeer, date, fromPeer.id, randomId, messageContentHeader, messageContentData, None)
         }
 
@@ -69,17 +71,17 @@ object HistoryUtils {
     requireDifferentPeers(byPeer, peer)
 
     peer.typ match {
-      case models.PeerType.Private =>
+      case models.PeerType.Private ⇒
         // TODO: #perf do in single query
         DBIO.sequence(Seq(
           persist.Dialog.updateLastReceivedAt(peer.id, models.Peer.privat(byPeer.id), date),
           persist.Dialog.updateLastReceivedAt(byPeer.id, peer, date)
         ))
-      case models.PeerType.Group =>
-        persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds =>
+      case models.PeerType.Group ⇒
+        persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds ⇒
           // TODO: #perf update dialogs in one query
 
-          val actions = groupUserIds.view.filterNot(_ == byPeer.id) map { groupUserId =>
+          val actions = groupUserIds.view.filterNot(_ == byPeer.id) map { groupUserId ⇒
             persist.Dialog.updateLastReceivedAt(groupUserId, models.Peer.group(peer.id), date)
           }
 
@@ -93,17 +95,17 @@ object HistoryUtils {
     requireDifferentPeers(byPeer, peer)
 
     peer.typ match {
-      case models.PeerType.Private =>
+      case models.PeerType.Private ⇒
         // TODO: #perf do in single query
         DBIO.sequence(Seq(
           persist.Dialog.updateLastReadAt(peer.id, models.Peer.privat(byPeer.id), date),
           persist.Dialog.updateLastReadAt(byPeer.id, peer, date)
         ))
-      case models.PeerType.Group =>
-        persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds =>
+      case models.PeerType.Group ⇒
+        persist.GroupUser.findUserIds(peer.id) flatMap { groupUserIds ⇒
           // TODO: #perf update dialogs in one query
 
-          val actions = groupUserIds.view.filterNot(_ == byPeer.id) map { groupUserId =>
+          val actions = groupUserIds.view.filterNot(_ == byPeer.id) map { groupUserId ⇒
             persist.Dialog.updateLastReadAt(groupUserId, models.Peer.group(peer.id), date)
           }
 

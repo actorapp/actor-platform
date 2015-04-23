@@ -13,7 +13,7 @@ trait HistoryImplicits {
       val in = CodedInputStream.newInstance(model.messageContentData)
       try {
         Message.parseFrom(in) match {
-          case Right(messageContent) =>
+          case Right(messageContent) ⇒
             val state = if (model.userId == model.senderUserId) {
               if (model.date.getMillis < lastReadAt.getMillis) {
                 Some(MessageState.Read)
@@ -27,10 +27,10 @@ trait HistoryImplicits {
             }
 
             HistoryMessage(senderUserId = model.senderUserId, randomId = model.randomId, date = model.date.getMillis, message = messageContent, state = state)
-          case Left(e) => throw new Exception(s"Failed to parse message content $e")
+          case Left(e) ⇒ throw new Exception(s"Failed to parse message content $e")
         }
       } catch {
-        case e: Throwable =>
+        case e: Throwable ⇒
           println(e)
           println(e.getStackTrace.toList)
           throw e

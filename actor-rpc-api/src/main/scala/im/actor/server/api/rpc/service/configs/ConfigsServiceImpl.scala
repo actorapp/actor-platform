@@ -18,19 +18,19 @@ class ConfigsServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleEditParameter(rawKey: String, rawValue: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client =>
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val key = rawKey.trim
       val value =
         rawValue match {
-          case "" => None
-          case s => Some(s)
+          case "" ⇒ None
+          case s  ⇒ Some(s)
         }
 
       val update = UpdateParameterChanged(key, value)
 
       for {
-        _ <- persist.configs.Parameter.createOrUpdate(models.configs.Parameter(client.userId, key, value))
-        seqstate <- broadcastClientUpdate(update)
+        _ ← persist.configs.Parameter.createOrUpdate(models.configs.Parameter(client.userId, key, value))
+        seqstate ← broadcastClientUpdate(update)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 
@@ -38,11 +38,11 @@ class ConfigsServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, 
   }
 
   override def jhandleGetParameters(clientData: ClientData): Future[HandlerResult[ResponseGetParameters]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client =>
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
-        params <- persist.configs.Parameter.find(client.userId)
+        params ← persist.configs.Parameter.find(client.userId)
       } yield {
-        val paramsStructs = params map { param =>
+        val paramsStructs = params map { param ⇒
           Parameter(param.key, param.value.getOrElse(""))
         }
 

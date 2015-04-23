@@ -22,30 +22,30 @@ object UserPublicKey {
     pkeys.filter(_.deletedAt.isEmpty)
 
   private def activeByUserId(userId: Int) =
-    active.filter(p => p.userId === userId && p.deletedAt.isEmpty)
+    active.filter(p ⇒ p.userId === userId && p.deletedAt.isEmpty)
 
   def create(pk: models.UserPublicKey) =
     pkeys += pk
 
   def delete(userId: Int, hash: Long) =
-    pkeys.filter(p => p.userId === userId && p.hash === hash).map(_.deletedAt).update(Some(new DateTime))
+    pkeys.filter(p ⇒ p.userId === userId && p.hash === hash).map(_.deletedAt).update(Some(new DateTime))
 
   def find(userId: Int, hash: Long) =
-    active.filter(p => p.userId === userId && p.hash === hash).result
+    active.filter(p ⇒ p.userId === userId && p.hash === hash).result
 
   def findByUserId(userId: Int) =
     active.filter(_.userId === userId).result
 
-  def findKeyHashes(userId: Int)  =
+  def findKeyHashes(userId: Int) =
     activeByUserId(userId).map(_.hash).result
 
   def findByUserHashes(pairs: Set[(Int, Long)]) = {
     // TODO: type-based size checking
     require(pairs.size > 0)
 
-    active.filter { pk =>
+    active.filter { pk ⇒
       pairs.view.map {
-        case (userId, hash) => pk.userId === userId && pk.hash === hash
+        case (userId, hash) ⇒ pk.userId === userId && pk.hash === hash
       }.reduceLeft(_ || _)
     }.result
   }

@@ -26,8 +26,7 @@ object MTProto {
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def flow(maxBufferSize: Int, sessionRegion: SessionRegion)
-          (implicit db: Database, system: ActorSystem, timeout: Timeout) = {
+  def flow(maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db))
     val authSource = Source(ActorPublisher[MTTransport](authManager))
 
@@ -37,22 +36,22 @@ object MTProto {
     val (watchManager, watchSource) = SourceWatchManager[MTTransport](authManager)
 
     val mtprotoFlow = Flow[ByteString]
-      .transform(() => MTProto.parse(maxBufferSize))
+      .transform(() ⇒ MTProto.parse(maxBufferSize))
       .mapAsyncUnordered(MTProto.handlePackage(_, authManager, sessionClient))
-      .mapConcat(msgs => msgs.toVector)
+      .mapConcat(msgs ⇒ msgs.toVector)
 
     val mapRespFlow = Flow[MTTransport]
-      .transform(() => MTProto.mapResponse(system))
+      .transform(() ⇒ MTProto.mapResponse(system))
 
     val completeSink = Sink.onComplete {
-      case x =>
+      case x ⇒
         system.log.debug("Completing {}", x)
         watchManager ! PoisonPill
         authManager ! PoisonPill
         sessionClient ! PoisonPill
     }
 
-    Flow() { implicit builder =>
+    Flow() { implicit builder ⇒
       import FlowGraph.Implicits._
 
       val bcast = builder.add(Broadcast[ByteString](2))
@@ -110,67 +109,66 @@ object MTProto {
       override def onPush(chunk: ByteString, ctx: Context[(MTTransport, Option[Int])]): Directive = {
         val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
         newState._1 match {
-          case FailedState(msg) =>
+          case FailedState(msg) ⇒
             system.log.debug("Failed to parse connection-level {}", msg)
             // ctx.fail(new IllegalStateException(msg))
             ctx.pushAndFinish((ProtoPackage(Drop(0, 0, msg)), None))
-          case _ =>
+          case _ ⇒
             parserState = newState
             emit(res.iterator, ctx)
         }
       }
 
       @tailrec
-      private def doParse(state: ParserStep, buf: BitVector)
-                         (pSeq: Vector[(MTTransport, Option[Int])]): (ParseState, Vector[(MTTransport, Option[Int])]) = {
+      private def doParse(state: ParserStep, buf: BitVector)(pSeq: Vector[(MTTransport, Option[Int])]): (ParseState, Vector[(MTTransport, Option[Int])]) = {
         if (buf.isEmpty) {
           ((state, buf), pSeq)
         } else state match {
-          case HandshakeHeader =>
+          case HandshakeHeader ⇒
             if (buf.length >= handshakeHeaderSize) {
               handshakeHeader.decode(buf).toEither match {
-                case Right(res) =>
+                case Right(res) ⇒
                   // system.log.debug("Handshake header {}", res.value)
                   doParse(HandshakeData(res.value), res.remainder)(pSeq)
-                case Left(e) =>
+                case Left(e) ⇒
                   // system.log.debug("Failed to parse Handshake header {}", e)
                   failedState(e.message)
               }
             } else {
               ((HandshakeHeader, buf), pSeq)
             }
-          case state @ HandshakeData(header) =>
+          case state @ HandshakeData(header) ⇒
             // FIXME: compute once
             // FIXME: check if fits into Int
             val bitsLength = (header.dataLength * byteSize).toInt
 
             if (buf.length >= bitsLength) {
               handshakeData(header.dataLength).decode(buf).toEither match {
-                case Right(res) =>
+                case Right(res) ⇒
                   // system.log.debug("Handshake data {}", res)
                   val handshake = Handshake(header.protoVersion, header.apiMajorVersion, header.apiMinorVersion, res.value)
                   doParse(AwaitPackageHeader, res.remainder)(Vector((handshake, None)))
-                case Left(e) =>
+                case Left(e) ⇒
                   // system.log.debug("Failed to parse handshake data: {}", e)
                   failedState(e.message)
               }
             } else {
               ((state, buf), pSeq)
             }
-          case AwaitPackageHeader =>
+          case AwaitPackageHeader ⇒
             if (buf.length < transportPackageHeader.sizeBound.lowerBound) {
               ((AwaitPackageHeader, buf), pSeq)
             } else {
               transportPackageHeader.decode(buf).toEither match {
-                case Right(headerRes) =>
+                case Right(headerRes) ⇒
                   // system.log.debug("Transport package header {}", headerRes)
                   doParse(AwaitPackageBody(headerRes.value), headerRes.remainder)(pSeq)
-                case Left(e) =>
+                case Left(e) ⇒
                   // system.log.debug("failed to parse package header", e)
                   failedState(e.message)
               }
             }
-          case state @ AwaitPackageBody(TransportPackageHeader(index, header, size)) =>
+          case state @ AwaitPackageBody(TransportPackageHeader(index, header, size)) ⇒
             val bitsLength = size * byteSize + int32Bits
 
             if (buf.size < bitsLength) {
@@ -178,15 +176,15 @@ object MTProto {
             } else {
               val (body, remainder) = buf.splitAt(bitsLength)
               (new SignedMTProtoDecoder(header, size)).decode(body).toEither match {
-                case Right(DecodeResult(body, BitVector.empty)) =>
+                case Right(DecodeResult(body, BitVector.empty)) ⇒
                   doParse(AwaitPackageHeader, remainder)(pSeq :+ ((ProtoPackage(body), Some(index))))
-                case Right(_) =>
+                case Right(_) ⇒
                   failedState("Body length is more than body itself")
-                case Left(e) =>
+                case Left(e) ⇒
                   failedState(e.message)
               }
             }
-          case _: FailedState =>
+          case _: FailedState ⇒
             ((state, BitVector.empty), Vector.empty)
         }
 
@@ -198,7 +196,7 @@ object MTProto {
     private[this] var packageIndex: Int = -1
 
     override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
-      case h @ Handshake(protoVersion, apiMajorVersion, _, _) =>
+      case h @ Handshake(protoVersion, apiMajorVersion, _, _) ⇒
         val resBits = handshakeResponse.encode(h).require
         val res = ByteString(resBits.toByteBuffer)
         // system.log.debug("Sending bytes {}", resBits)
@@ -208,7 +206,7 @@ object MTProto {
         }
 
         ctx.push(res)
-      case ProtoPackage(p) =>
+      case ProtoPackage(p) ⇒
         packageIndex += 1
         val pkg = TransportPackage(packageIndex, p)
         // system.log.debug("Sending TransportPackage {}", pkg)
@@ -218,36 +216,33 @@ object MTProto {
         // system.log.debug("Sending bytes {}", resBits)
 
         p match {
-          case _: Drop =>
+          case _: Drop ⇒
             ctx.pushAndFinish(res)
-          case _ =>
+          case _ ⇒
             ctx.push(res)
         }
-      case SilentClose => ctx.finish()
+      case SilentClose ⇒ ctx.finish()
     }
 
     override def onPull(ctx: Context[ByteString]): Directive = ctx.pull()
   }
 
-  def handlePackage(req: (MTTransport, Option[Int]), authManager: ActorRef, sessionClient: ActorRef)
-                   (implicit system: ActorSystem, timeout: Timeout): Future[Seq[MTTransport]] = {
+  def handlePackage(req: (MTTransport, Option[Int]), authManager: ActorRef, sessionClient: ActorRef)(implicit system: ActorSystem, timeout: Timeout): Future[Seq[MTTransport]] = {
     import system.dispatcher
 
-
-
     req match {
-      case (p @ ProtoPackage(body), optIndex) =>
+      case (p @ ProtoPackage(body), optIndex) ⇒
         @inline def withAck(p: ProtoPackage): Seq[ProtoPackage] =
           ackSeq() :+ p
 
         @inline def ackSeq(): Seq[ProtoPackage] =
-          optIndex.map(index => Seq(ProtoPackage(Ack(index)))).getOrElse(Seq.empty)
+          optIndex.map(index ⇒ Seq(ProtoPackage(Ack(index)))).getOrElse(Seq.empty)
 
         body match {
-          case m: MTPackage =>
+          case m: MTPackage ⇒
             if (m.authId == 0) {
               authManager.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTTransport].map(Seq(_)).recover {
-                case e: AskTimeoutException =>
+                case e: AskTimeoutException ⇒
                   val msg = s"handleAsk within $timeout"
                   system.log.error(e, msg)
                   withAck(ProtoPackage(InternalError(0, 0, msg))) // FIXME: send drop
@@ -257,18 +252,18 @@ object MTProto {
 
               Future.successful(ackSeq())
             }
-          case Ping(bytes) => Future.successful(withAck(ProtoPackage(Pong(bytes))))
-          case Pong(bytes) => Future.successful(ackSeq())
-          case m => Future.successful(ackSeq())
+          case Ping(bytes) ⇒ Future.successful(withAck(ProtoPackage(Pong(bytes))))
+          case Pong(bytes) ⇒ Future.successful(ackSeq())
+          case m           ⇒ Future.successful(ackSeq())
         }
-      case (h: Handshake, _) => Future.successful {
+      case (h: Handshake, _) ⇒ Future.successful {
         val sha256Sign = BitVector(DigestUtils.sha256(h.bytes.toByteArray))
         val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
         val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
         val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
         Seq(Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign))
       }
-      case (SilentClose, _) =>
+      case (SilentClose, _) ⇒
         system.log.debug("SilentClose")
         // FIXME: do the real silent close?
         throw new Exception("SilentClose handler is not implemented")

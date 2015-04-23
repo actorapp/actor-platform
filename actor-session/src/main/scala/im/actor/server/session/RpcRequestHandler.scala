@@ -9,7 +9,7 @@ import akka.stream.actor._
 import scodec.bits._
 
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.mtproto.protocol.{MessageAck, ProtoMessage, RpcResponseBox}
+import im.actor.server.mtproto.protocol.{ MessageAck, ProtoMessage, RpcResponseBox }
 
 object RpcRequestHandler {
   private[session] def props(rpcApiService: ActorRef) = Props(classOf[RpcRequestHandler], rpcApiService)
@@ -25,7 +25,7 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
   implicit val ec = context.dispatcher
 
   def receive = subscriber.orElse(publisher).orElse {
-    case unmatched =>
+    case unmatched ⇒
       log.error("Unmatched msg {}", unmatched)
   }
 
@@ -36,8 +36,8 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
   private[this] var requestQueue = Map.empty[Long, BitVector]
 
   def subscriber: Receive = {
-    case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) =>
-      requestQueue += (messageId -> requestBytes)
+    case OnNext(HandleRpcRequest(messageId, requestBytes, clientData)) ⇒
+      requestQueue += (messageId → requestBytes)
       assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
       log.debug("Publishing acknowledge for messageId: {}", messageId)
@@ -45,7 +45,7 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
 
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
-    case RpcApiService.RpcResponse(messageId, responseBytes) =>
+    case RpcApiService.RpcResponse(messageId, responseBytes) ⇒
       requestQueue -= messageId
 
       log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
@@ -60,9 +60,9 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
   private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
 
   def publisher: Receive = {
-    case Request(_) =>
+    case Request(_) ⇒
       deliverBuf()
-    case Cancel =>
+    case Cancel ⇒
       context.stop(self)
   }
 
@@ -78,11 +78,11 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
   @tailrec final def deliverBuf(): Unit = {
     if (isActive && totalDemand > 0)
       protoMessageQueue.dequeueOption match {
-        case Some((el, q)) =>
+        case Some((el, q)) ⇒
           protoMessageQueue = q
           onNext(el)
           deliverBuf()
-        case None =>
+        case None ⇒
       }
   }
 }

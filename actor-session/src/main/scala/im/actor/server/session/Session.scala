@@ -26,11 +26,11 @@ object Session {
   import SessionMessage._
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, sessionId, payload) => (authId.toString + "-" + sessionId.toString, env)
+    case env @ Envelope(authId, sessionId, payload) ⇒ (authId.toString + "-" + sessionId.toString, env)
   }
 
-  private[this] val shardResolver: ShardRegion.ShardResolver = msg => msg match {
-    case Envelope(authId, sessionId, _) => (authId % 32).toString // TODO: configurable
+  private[this] val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+    case Envelope(authId, sessionId, _) ⇒ (authId % 32).toString // TODO: configurable
   }
 
   def startRegion(props: Option[Props])(implicit system: ActorSystem): SessionRegion =
@@ -40,17 +40,17 @@ object Session {
         entryProps = props,
         idExtractor = idExtractor,
         shardResolver = shardResolver
-      ))
+      )
+    )
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(rpcApiService: ActorRef)
-           (implicit
-            seqUpdManagerRegion: SeqUpdatesManagerRegion,
-            weakUpdManagerRegion: WeakUpdatesManagerRegion,
-            presenceManagerRegion: PresenceManagerRegion,
-            db: Database,
-            materializer: FlowMaterializer): Props =
+  def props(rpcApiService: ActorRef)(implicit
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                                     weakUpdManagerRegion:  WeakUpdatesManagerRegion,
+                                     presenceManagerRegion: PresenceManagerRegion,
+                                     db:                    Database,
+                                     materializer:          FlowMaterializer): Props =
     Props(
       classOf[Session],
       rpcApiService,
@@ -58,16 +58,16 @@ object Session {
       weakUpdManagerRegion,
       presenceManagerRegion,
       db,
-      materializer)
+      materializer
+    )
 }
 
-class Session(rpcApiService: ActorRef)
-             (implicit
-              seqUpdManagerRegion: SeqUpdatesManagerRegion,
-              weakUpdManagerRegion: WeakUpdatesManagerRegion,
-              presenceManagerRegion: PresenceManagerRegion,
-              db: Database,
-              materializer: FlowMaterializer)
+class Session(rpcApiService: ActorRef)(implicit
+  seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                                       weakUpdManagerRegion:  WeakUpdatesManagerRegion,
+                                       presenceManagerRegion: PresenceManagerRegion,
+                                       db:                    Database,
+                                       materializer:          FlowMaterializer)
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionMessage._
@@ -80,7 +80,7 @@ class Session(rpcApiService: ActorRef)
   def receive = waitingForEnvelope
 
   def waitingForEnvelope: Receive = {
-    case env @ Envelope(authId, sessionId, _) =>
+    case env @ Envelope(authId, sessionId, _) ⇒
       stash()
       context.become(waitingForSessionInfo)
 
@@ -88,16 +88,16 @@ class Session(rpcApiService: ActorRef)
       // TODO: refactor
       val infoAction = {
         for {
-          authIdModelOpt <- persist.AuthId.find(authId).headOption
-          infoModel <- persist.SessionInfo.find(authId, sessionId).headOption.map(_.getOrElse(models.SessionInfo(authId, sessionId, None)))
+          authIdModelOpt ← persist.AuthId.find(authId).headOption
+          infoModel ← persist.SessionInfo.find(authId, sessionId).headOption.map(_.getOrElse(models.SessionInfo(authId, sessionId, None)))
         } yield {
           authIdModelOpt match {
-            case Some(models.AuthId(_, Some(userId), _)) =>
+            case Some(models.AuthId(_, Some(userId), _)) ⇒
               persist.SessionInfo.updateUserId(authId, sessionId, Some(userId))
               models.SessionInfo(authId, sessionId, Some(userId))
-            case Some(models.AuthId(_, None, _)) =>
+            case Some(models.AuthId(_, None, _)) ⇒
               infoModel
-            case None =>
+            case None ⇒
               infoModel
           }
         }
@@ -106,39 +106,38 @@ class Session(rpcApiService: ActorRef)
       val infoFuture = db.run(infoAction)
 
       infoFuture.pipeTo(self)
-    case msg => stash()
+    case msg ⇒ stash()
   }
 
   def waitingForSessionInfo: Receive = {
-    case info: models.SessionInfo =>
+    case info: models.SessionInfo ⇒
       optUserId = info.optUserId
       unstashAll()
       context.become(anonymous)
-    case msg => stash()
+    case msg ⇒ stash()
   }
 
   def anonymous: Receive = {
-    case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) =>
+    case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) ⇒
       val client = sender()
 
       recordClient(client)
 
-      withValidMessageBox(client, messageBoxBytes) { mb =>
+      withValidMessageBox(client, messageBoxBytes) { mb ⇒
         sendProtoMessage(authId, sessionId)(client, NewSession(sessionId, mb.messageId))
 
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props())
 
         val graph = SessionStream.graph(rpcApiService)(context.system)
 
-        val flow = FlowGraph.closed(graph) { implicit b =>
-          g =>
-            import FlowGraph.Implicits._
+        val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
+          import FlowGraph.Implicits._
 
-            val source = b.add(Source(ActorPublisher[SessionStream.SessionStreamMessage](sessionMessagePublisher)))
-            val sink = b.add(Sink.foreach[ProtoMessage](m => self ! SendProtoMessage(m)))
+          val source = b.add(Source(ActorPublisher[SessionStream.SessionStreamMessage](sessionMessagePublisher)))
+          val sink = b.add(Sink.foreach[ProtoMessage](m ⇒ self ! SendProtoMessage(m)))
 
-            source ~> g.inlet
-            g.outlet ~> sink
+          source ~> g.inlet
+          g.outlet ~> sink
         }
 
         flow.run()
@@ -149,13 +148,13 @@ class Session(rpcApiService: ActorRef)
 
         context.become(resolved(authId, sessionId, sessionMessagePublisher, updatesPusher))
       }
-    case Terminated(client) =>
+    case Terminated(client) ⇒
       clients -= client
-    case unmatched => handleUnmatched(unmatched)
+    case unmatched ⇒ handleUnmatched(unmatched)
   }
 
   def resolved(authId: Long, sessionId: Long, publisher: ActorRef, updatesPusher: ActorRef): Receive = {
-    case env @ Envelope(eauthId, esessionId, msg) =>
+    case env @ Envelope(eauthId, esessionId, msg) ⇒
       val client = sender()
 
       recordClient(client)
@@ -164,12 +163,12 @@ class Session(rpcApiService: ActorRef)
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
         handleSessionMessage(authId, sessionId, client, msg, publisher, updatesPusher)
-    case SendProtoMessage(protoMessage) =>
+    case SendProtoMessage(protoMessage) ⇒
       log.debug("Sending proto message {}", protoMessage)
       sendProtoMessage(authId, sessionId, protoMessage)
-    case Terminated(client) =>
+    case Terminated(client) ⇒
       clients -= client
-    case unmatched => handleUnmatched(unmatched)
+    case unmatched ⇒ handleUnmatched(unmatched)
   }
 
   private def recordClient(client: ActorRef): Unit = {
@@ -179,27 +178,29 @@ class Session(rpcApiService: ActorRef)
     }
   }
 
-  private def handleSessionMessage(authId: Long,
-                                   sessionId: Long,
-                                   client: ActorRef,
-                                   message: SessionMessage,
-                                   publisher: ActorRef,
-                                   updatesPusher: ActorRef): Unit = {
+  private def handleSessionMessage(
+    authId:        Long,
+    sessionId:     Long,
+    client:        ActorRef,
+    message:       SessionMessage,
+    publisher:     ActorRef,
+    updatesPusher: ActorRef
+  ): Unit = {
     log.debug("Session message {}", message)
     message match {
-      case HandleMessageBox(messageBoxBytes) =>
-        withValidMessageBox(client, messageBoxBytes)(mb => publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId)))
-      case SendProtoMessage(protoMessage) =>
+      case HandleMessageBox(messageBoxBytes) ⇒
+        withValidMessageBox(client, messageBoxBytes)(mb ⇒ publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId)))
+      case SendProtoMessage(protoMessage) ⇒
         sendProtoMessage(authId, sessionId, protoMessage)
-      case SubscribeToOnline(userIds) =>
+      case SubscribeToOnline(userIds) ⇒
         updatesPusher ! UpdatesPusher.SubscribeToUserPresences(userIds)
-      case SubscribeFromOnline(userIds) =>
+      case SubscribeFromOnline(userIds) ⇒
         updatesPusher ! UpdatesPusher.UnsubscribeFromUserPresences(userIds)
-      case SubscribeToGroupOnline(groupIds) =>
+      case SubscribeToGroupOnline(groupIds)   ⇒
       // TODO: implement
-      case SubscribeFromGroupOnline(groupIds) =>
+      case SubscribeFromGroupOnline(groupIds) ⇒
       // TODO: implement
-      case UserAuthorized(userId) =>
+      case UserAuthorized(userId) ⇒
         log.debug("User {} authorized session {}", userId, sessionId)
 
         this.optUserId = Some(userId)
@@ -213,10 +214,10 @@ class Session(rpcApiService: ActorRef)
     clients foreach (_.tell(packProtoMessage(authId, sessionId, message), self))
   }
 
-  private def withValidMessageBox(client: ActorRef, messageBoxBytes: Array[Byte])(f: MessageBox => Unit): Unit =
+  private def withValidMessageBox(client: ActorRef, messageBoxBytes: Array[Byte])(f: MessageBox ⇒ Unit): Unit =
     decodeMessageBox(messageBoxBytes) match {
-      case Some(mb) => f(mb)
-      case None =>
+      case Some(mb) ⇒ f(mb)
+      case None ⇒
         log.warning("Failed to parse MessageBox. Droping client.")
         client ! Drop(0, 0, "Cannot parse MessageBox")
         context.stop(self)
@@ -224,8 +225,8 @@ class Session(rpcApiService: ActorRef)
 
   private def decodeMessageBox(messageBoxBytes: Array[Byte]): Option[MessageBox] =
     MessageBoxCodec.decode(BitVector(messageBoxBytes)).toEither match {
-      case Right(DecodeResult(mb, _)) => Some(mb)
-      case _ => None
+      case Right(DecodeResult(mb, _)) ⇒ Some(mb)
+      case _                          ⇒ None
     }
 
   private def boxProtoMessage(message: ProtoMessage): MessageBox = {

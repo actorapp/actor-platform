@@ -28,7 +28,7 @@ object Build extends sbt.Build {
   )
 
   lazy val defaultSettings =
-    buildSettings ++
+    buildSettings ++ Formatting.formatSettings ++
       Seq(
         initialize ~= { _ =>
           if (sys.props("java.specification.version") != "1.8")
