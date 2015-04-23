@@ -123,14 +123,19 @@ class MTProtoClientActor extends Actor with ActorLogging {
         case _ => DecodeResult(Seq.empty, newBuffer)
       } match {
         case Attempt.Successful(DecodeResult(decodedTps, remainder)) =>
+          val decodedTpsWithoutAcks = decodedTps filterNot (_.body.isInstanceOf[Ack])
+
           if (!consumers.isEmpty) {
-            val newTps = tps ++ decodedTps
+            val newTps = tps ++ decodedTpsWithoutAcks
 
-            consumers.head ! newTps.headOption
-
-            context.become(receiving(connection, buffer, newTps.tail, consumers.tail), discardOld = true)
+            newTps match {
+              case tp :: tps =>
+                consumers.head ! Some(tp)
+                context.become(receiving(connection, buffer, tps, consumers.tail), discardOld = true)
+              case Nil =>
+            }
           } else {
-            context.become(receiving(connection, buffer, tps ++ decodedTps, consumers), discardOld = true)
+            context.become(receiving(connection, buffer, tps ++ decodedTpsWithoutAcks, consumers), discardOld = true)
           }
         case Attempt.Failure(e) => // should never happen
           log.error("Failed to decode TransportPackage: {}", e)
