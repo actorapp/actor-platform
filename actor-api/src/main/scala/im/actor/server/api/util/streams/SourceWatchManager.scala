@@ -10,8 +10,8 @@ class SourceWatchManager[T](actorRef: ActorRef) extends Actor with ActorLogging 
   context.watch(actorRef)
 
   def receive = {
-    case Request(_) =>
-    case Terminated(`actorRef`)  =>
+    case Request(_) ⇒
+    case Terminated(`actorRef`) ⇒
       log.error("Terminated: {}", actorRef)
       onError(new Throwable("actor terminated"))
   }

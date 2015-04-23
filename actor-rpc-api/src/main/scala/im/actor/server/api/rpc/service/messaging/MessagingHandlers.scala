@@ -14,7 +14,7 @@ import im.actor.api.rpc.peers._
 import im.actor.server.{ models, persist }
 
 private[messaging] trait MessagingHandlers {
-  self: MessagingServiceImpl =>
+  self: MessagingServiceImpl ⇒
 
   import im.actor.api.rpc.Implicits._
   import im.actor.server.api.util.HistoryUtils._
@@ -27,14 +27,14 @@ private[messaging] trait MessagingHandlers {
   implicit val timeout = Timeout(5.seconds) // TODO: configurable
 
   override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client =>
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(client.userId, outPeer) {
         // TODO: record social relation
         val dateTime = new DateTime
         val dateMillis = dateTime.getMillis
 
         outPeer.`type` match {
-          case PeerType.Private =>
+          case PeerType.Private ⇒
             val ownUpdate = UpdateMessage(
               peer = outPeer.asPeer,
               senderUserId = client.userId,
@@ -54,30 +54,31 @@ private[messaging] trait MessagingHandlers {
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
 
             for {
-              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
-              _ <- broadcastUserUpdate(outPeer.id, outUpdate)
-              _ <- DBIO.from(recordRelation(client.userId, outPeer.id)) // TODO: configurable
-              _ <- notifyClientUpdate(ownUpdate)
-              seqstate <- persistAndPushUpdate(client.authId, update)
+              _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
+              _ ← broadcastUserUpdate(outPeer.id, outUpdate)
+              _ ← DBIO.from(recordRelation(client.userId, outPeer.id)) // TODO: configurable
+              _ ← notifyClientUpdate(ownUpdate)
+              seqstate ← persistAndPushUpdate(client.authId, update)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
-          case PeerType.Group =>
+          case PeerType.Group ⇒
             val outUpdate = UpdateMessage(
               peer = Peer(PeerType.Group, outPeer.id),
               senderUserId = client.userId,
               date = dateMillis,
               randomId = randomId,
-              message = message)
+              message = message
+            )
 
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
 
             for {
-              userIds <- persist.GroupUser.findUserIds(outPeer.id)
-              otherAuthIds <- persist.AuthId.findIdByUserIds(userIds.toSet).map(_.filterNot(_ == client.authId))
-              _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
-              _ <- persistAndPushUpdates(otherAuthIds.toSet, outUpdate)
-              seqstate <- persistAndPushUpdate(client.authId, update)
+              userIds ← persist.GroupUser.findUserIds(outPeer.id)
+              otherAuthIds ← persist.AuthId.findIdByUserIds(userIds.toSet).map(_.filterNot(_ == client.authId))
+              _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
+              _ ← persistAndPushUpdates(otherAuthIds.toSet, outUpdate)
+              seqstate ← persistAndPushUpdate(client.authId, update)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }

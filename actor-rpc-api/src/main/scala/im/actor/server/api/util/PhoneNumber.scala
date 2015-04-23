@@ -8,10 +8,10 @@ object PhoneNumber {
   def normalizeStr(number: String, defaultCountry: String = ""): Option[Long] = {
     val phoneUtil = PhoneNumberUtil.getInstance()
     Try(phoneUtil.parse(number, defaultCountry)) match {
-      case Success(p) =>
+      case Success(p) ⇒
         val phoneNumber = p.getCountryCode * Math.pow(10L, (sizeOf(p.getNationalNumber) + 1).toDouble).longValue + p.getNationalNumber
         Some(phoneNumber)
-      case _ => None
+      case _ ⇒ None
     }
   }
 
@@ -22,10 +22,10 @@ object PhoneNumber {
   def normalizeWithCountry(number: Long, defaultCountry: String = ""): Option[(Long, String)] = {
     val phoneUtil = PhoneNumberUtil.getInstance()
     Try(phoneUtil.parse(s"+$number", defaultCountry)) match {
-      case Success(p) =>
+      case Success(p) ⇒
         val phoneNumber = p.getCountryCode * Math.pow(10L, (sizeOf(p.getNationalNumber) + 1).toDouble).longValue + p.getNationalNumber
         Some((phoneNumber, phoneUtil.getRegionCodeForCountryCode(p.getCountryCode)))
-      case _ => None
+      case _ ⇒ None
     }
   }
 

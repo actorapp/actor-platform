@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.sequence.WeakUpdate
 import im.actor.api.rpc.weak.{ UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
-import im.actor.api.rpc.{ UpdateBox => ProtoUpdateBox, Update }
+import im.actor.api.rpc.{ UpdateBox ⇒ ProtoUpdateBox, Update }
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
 
@@ -28,25 +28,24 @@ object UpdatesPusher {
   @SerialVersionUID(1L)
   case class UnsubscribeFromUserPresences(userIds: Set[Int])
 
-  def props(authId: Long, session: ActorRef)
-           (implicit
-            seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-            weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-            presenceManagerRegion: PresenceManagerRegion) =
+  def props(authId: Long, session: ActorRef)(implicit
+    seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+                                             weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
+                                             presenceManagerRegion:    PresenceManagerRegion) =
     Props(
       classOf[UpdatesPusher],
       authId,
       session,
       seqUpdatesManagerRegion,
       weakUpdatesManagerRegion,
-      presenceManagerRegion)
+      presenceManagerRegion
+    )
 }
 
-private[push] class UpdatesPusher(authId: Long, session: ActorRef)
-                                 (implicit
-                                  seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-                                  weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-                                  presenceManagerRegion: PresenceManagerRegion) extends Actor with ActorLogging {
+private[push] class UpdatesPusher(authId: Long, session: ActorRef)(implicit
+  seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+                                                                   weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
+                                                                   presenceManagerRegion:    PresenceManagerRegion) extends Actor with ActorLogging {
 
   import UpdatesPusher._
   import im.actor.server.session.SessionMessage._
@@ -63,48 +62,48 @@ private[push] class UpdatesPusher(authId: Long, session: ActorRef)
   }
 
   def receive = {
-    case SubscribeToSeq =>
+    case SubscribeToSeq ⇒
       SeqUpdatesManager.subscribe(authId, self) onFailure {
-        case e =>
+        case e ⇒
           self ! SubscribeToSeq
           log.error(e, "Failed to subscribe to sequence updates")
       }
-    case SubscribeToWeak =>
+    case SubscribeToWeak ⇒
       WeakUpdatesManager.subscribe(authId, self) onFailure {
-        case e =>
+        case e ⇒
           self ! SubscribeToWeak
           log.error(e, "Failed to subscribe to weak updates")
       }
-    case cmd @ SubscribeToUserPresences(userIds) =>
-      userIds foreach { userId =>
+    case cmd @ SubscribeToUserPresences(userIds) ⇒
+      userIds foreach { userId ⇒
         PresenceManager.subscribe(userId, self) onFailure {
-          case e =>
+          case e ⇒
             self ! cmd
             log.error(e, "Failed to subscribe to presences")
         }
       }
-    case cmd @ UnsubscribeFromUserPresences(userIds) =>
-      userIds foreach { userId =>
+    case cmd @ UnsubscribeFromUserPresences(userIds) ⇒
+      userIds foreach { userId ⇒
         PresenceManager.unsubscribe(userId, self) onFailure {
-          case e =>
+          case e ⇒
             self ! cmd
             log.error(e, "Failed to subscribe from presences")
         }
       }
-    case updateBox: ProtoUpdateBox =>
+    case updateBox: ProtoUpdateBox ⇒
       sendUpdateBox(updateBox)
-    case PresenceState(userId, presence, lastSeenAt) =>
+    case PresenceState(userId, presence, lastSeenAt) ⇒
       log.debug("presence: {}, lastSeenAt {}", presence, lastSeenAt)
 
       val update: Update =
         presence match {
-          case Online =>
+          case Online ⇒
             UpdateUserOnline(userId)
-          case Offline =>
+          case Offline ⇒
             lastSeenAt match {
-              case Some(date) =>
+              case Some(date) ⇒
                 UpdateUserLastSeen(userId, date.getMillis / 1000)
-              case None =>
+              case None ⇒
                 UpdateUserOffline(userId)
             }
         }

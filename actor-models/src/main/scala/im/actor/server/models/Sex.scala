@@ -25,8 +25,8 @@ case object Female extends Sex {
 
 object Sex {
   def fromInt(i: Int): Sex = i match {
-    case 1 => NoSex
-    case 2 => Male
-    case 3 => Female
+    case 1 ⇒ NoSex
+    case 2 ⇒ Male
+    case 3 ⇒ Female
   }
 }

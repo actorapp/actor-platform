@@ -14,17 +14,18 @@ object ContactsUtils {
 
   import im.actor.server.push.SeqUpdatesManager._
 
-  def addContactSendUpdate(userId: Int,
-                           phoneNumber: Long,
-                           name: Option[String],
-                           accessSalt: String)
-                          (implicit
-                           client: AuthorizedClientData,
-                           ec: ExecutionContext,
-                           seqUpdManagerRegion: SeqUpdatesManagerRegion): DBIOAction[(Sequence, Array[Byte]), NoStream, Write with All] = {
+  def addContactSendUpdate(
+    userId:      Int,
+    phoneNumber: Long,
+    name:        Option[String],
+    accessSalt:  String
+  )(implicit
+    client: AuthorizedClientData,
+    ec:                  ExecutionContext,
+    seqUpdManagerRegion: SeqUpdatesManagerRegion): DBIOAction[(Sequence, Array[Byte]), NoStream, Write with All] = {
     for {
-      _ <- persist.contact.UserContact.createOrRestore(client.userId, userId, phoneNumber, name, accessSalt)
-      seqstate <- broadcastClientUpdate(UpdateContactsAdded(Vector(userId)))
+      _ ← persist.contact.UserContact.createOrRestore(client.userId, userId, phoneNumber, name, accessSalt)
+      seqstate ← broadcastClientUpdate(UpdateContactsAdded(Vector(userId)))
     } yield seqstate
   }
 }

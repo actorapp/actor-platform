@@ -16,7 +16,7 @@ object PeerType {
   }
 
   def fromInt(id: Int) = id match {
-    case 1 => Private
-    case 2 => Group
+    case 1 ⇒ Private
+    case 2 ⇒ Group
   }
 }

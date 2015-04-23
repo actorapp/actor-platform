@@ -16,8 +16,8 @@ import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.sequence.SeqUpdate
-import im.actor.api.{ rpc => api }
-import im.actor.server.{ models, persist => p }
+import im.actor.api.{ rpc ⇒ api }
+import im.actor.server.{ models, persist ⇒ p }
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
 
@@ -51,14 +51,14 @@ object SeqUpdatesManager {
   @SerialVersionUID(1L)
   private case class SeqChanged(sequence: Int) extends PersistentEvent
 
-  private val noop1: Any => Unit = _ => ()
+  private val noop1: Any ⇒ Unit = _ ⇒ ()
 
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) => (authId.toString, env)
+    case env @ Envelope(authId, payload) ⇒ (authId.toString, env)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg => msg match {
-    case Envelope(authId, _) => (authId % 32).toString // TODO: configurable
+  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+    case Envelope(authId, _) ⇒ (authId % 32).toString // TODO: configurable
   }
 
   // TODO: configurable
@@ -67,11 +67,11 @@ object SeqUpdatesManager {
 
   private def startRegion(props: Option[Props])(implicit system: ActorSystem): SeqUpdatesManagerRegion =
     SeqUpdatesManagerRegion(ClusterSharding(system).start(
-    typeName = "SeqUpdatesManager",
-    entryProps = props,
-    idExtractor = idExtractor,
-    shardResolver = shardResolver
-  ))
+      typeName = "SeqUpdatesManager",
+      entryProps = props,
+      idExtractor = idExtractor,
+      shardResolver = shardResolver
+    ))
 
   def startRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
 
@@ -79,17 +79,15 @@ object SeqUpdatesManager {
 
   def getSeqState(authId: Long)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
     for {
-      seqstate <- DBIO.from(region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
+      seqstate ← DBIO.from(region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
     } yield seqstate
   }
 
-  def persistAndPushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])
-                          (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
     DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData, userIds, groupIds))
   }
 
-  def persistAndPushUpdate(authId: Long, update: api.Update)
-                          (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(authId: Long, update: api.Update)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -98,8 +96,7 @@ object SeqUpdatesManager {
     persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)
   }
 
-  def persistAndPushUpdates(authIds: Set[Long], update: api.Update)
-                           (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def persistAndPushUpdates(authIds: Set[Long], update: api.Update)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -108,75 +105,72 @@ object SeqUpdatesManager {
     DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
   }
 
-  def broadcastUpdateAll(userIds: Set[Int], update: api.Update)
-                        (implicit
-                         region: SeqUpdatesManagerRegion,
-                         ec: ExecutionContext,
-                         client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
+  def broadcastUpdateAll(userIds: Set[Int], update: api.Update)(implicit
+    region: SeqUpdatesManagerRegion,
+                                                                ec:     ExecutionContext,
+                                                                client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (refUserIds, refGroupIds) = updateRefs(update)
 
     for {
-      authIds <- p.AuthId.findIdByUserIds(userIds + client.userId)
-      seqstates <- DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds)))
-      seqstate <- persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds)
+      authIds ← p.AuthId.findIdByUserIds(userIds + client.userId)
+      seqstates ← DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds)))
+      seqstate ← persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds)
     } yield (seqstate, seqstates)
   }
 
-  def broadcastUserUpdate(userId: Int,
-                          update: api.Update)
-                         (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def broadcastUserUpdate(
+    userId: Int,
+    update: api.Update
+  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
     for {
-      authIds <- p.AuthId.findIdByUserId(userId)
-      seqstates <- DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
+      authIds ← p.AuthId.findIdByUserId(userId)
+      seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
     } yield seqstates
   }
 
-  def broadcastClientUpdate(update: api.Update)
-                           (implicit
+  def broadcastClientUpdate(update: api.Update)(implicit
     region: SeqUpdatesManagerRegion,
-    client: api.AuthorizedClientData, ec: ExecutionContext): DBIO[SequenceState] = {
+                                                client: api.AuthorizedClientData, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
     for {
-      otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      _ <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
-      ownseqstate <- persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds)
+      otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
+      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
+      ownseqstate ← persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds)
     } yield ownseqstate
   }
 
-  def notifyClientUpdate(update: api.Update)
-                        (implicit
-                         region: SeqUpdatesManagerRegion,
-                         client: api.AuthorizedClientData,
-                         ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def notifyClientUpdate(update: api.Update)(implicit
+    region: SeqUpdatesManagerRegion,
+                                             client: api.AuthorizedClientData,
+                                             ec:     ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
     for {
-      otherAuthIds <- p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      seqstates <- DBIO.sequence(otherAuthIds map (authId => persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
+      otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
+      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
     } yield seqstates
   }
 
   def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext) = {
     val timestamp = bytesToTimestamp(state)
-    for (updates <- p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1))
-      yield {
-        if (updates.length > MaxDifferenceUpdates) {
-          (updates.take(updates.length - 1), true)
-        } else {
-          (updates, false)
-        }
+    for (updates ← p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1)) yield {
+      if (updates.length > MaxDifferenceUpdates) {
+        (updates.take(updates.length - 1), true)
+      } else {
+        (updates, false)
       }
+    }
   }
 
   def updateRefs(update: api.Update): (Set[Int], Set[Int]) = {
@@ -194,54 +188,53 @@ object SeqUpdatesManager {
     def users(userIds: Seq[Int]): (Set[Int], Set[Int]) = (userIds.toSet, Set.empty)
 
     update match {
-      case _: api.misc.UpdateConfig => empty
-      case _: api.configs.UpdateParameterChanged => empty
-      case api.messaging.UpdateChatClear(peer) => (Set.empty, Set(peer.id))
-      case api.messaging.UpdateChatDelete(peer) => (Set.empty, Set(peer.id))
-      case api.messaging.UpdateMessage(peer, senderUserId, _, _, _) =>
+      case _: api.misc.UpdateConfig              ⇒ empty
+      case _: api.configs.UpdateParameterChanged ⇒ empty
+      case api.messaging.UpdateChatClear(peer)   ⇒ (Set.empty, Set(peer.id))
+      case api.messaging.UpdateChatDelete(peer)  ⇒ (Set.empty, Set(peer.id))
+      case api.messaging.UpdateMessage(peer, senderUserId, _, _, _) ⇒
         val refs = peerRefs(peer)
         refs.copy(_1 = refs._1 + senderUserId)
-      case api.messaging.UpdateMessageDelete(peer, _) => peerRefs(peer)
-      case api.messaging.UpdateMessageRead(peer, _, _) => peerRefs(peer)
-      case api.messaging.UpdateMessageReadByMe(peer, _) => peerRefs(peer)
-      case api.messaging.UpdateMessageReceived(peer, _, _) => peerRefs(peer)
-      case api.messaging.UpdateMessageSent(peer, _, _) => peerRefs(peer)
-      case api.groups.UpdateGroupAvatarChanged(groupId, userId, _, _, _) => (Set(userId), Set(groupId))
-      case api.groups.UpdateGroupInvite(groupId, inviteUserId, _, _) => (Set(inviteUserId), Set(groupId))
-      case api.groups.UpdateGroupMembersUpdate(groupId, members) => (members.map(_.userId).toSet ++ members.map(_.inviterUserId).toSet, Set(groupId)) // TODO: #perf use foldLeft
-      case api.groups.UpdateGroupTitleChanged(groupId, userId, _, _, _) => (Set(userId), Set(groupId))
-      case api.groups.UpdateGroupUserAdded(groupId, userId, inviterUserId, _, _) => (Set(userId, inviterUserId), Set(groupId))
-      case api.groups.UpdateGroupUserKick(groupId, userId, kickerUserId, _, _) => (Set(userId, kickerUserId), Set(groupId))
-      case api.groups.UpdateGroupUserLeave(groupId, userId, _, _) => (Set(userId), Set(groupId))
-      case api.contacts.UpdateContactRegistered(userId, _, _) => singleUser(userId)
-      case api.contacts.UpdateContactsAdded(userIds) => users(userIds)
-      case api.contacts.UpdateContactsRemoved(userIds) => users(userIds)
-      case api.users.UpdateEmailMoved(_, userId) => singleUser(userId)
-      case _: api.users.UpdateEmailTitleChanged => empty
-      case api.users.UpdatePhoneMoved(_, userId) => singleUser(userId)
-      case _: api.users.UpdatePhoneTitleChanged => empty
-      case api.users.UpdateUserAvatarChanged(userId, _) => singleUser(userId)
-      case api.users.UpdateUserContactsChanged(userId, _, _) => singleUser(userId)
-      case api.users.UpdateUserEmailAdded(userId, _) => singleUser(userId)
-      case api.users.UpdateUserEmailRemoved(userId, _) => singleUser(userId)
-      case api.users.UpdateUserLocalNameChanged(userId, _) => singleUser(userId)
-      case api.users.UpdateUserNameChanged(userId, _) => singleUser(userId)
-      case api.users.UpdateUserPhoneAdded(userId, _) => singleUser(userId)
-      case api.users.UpdateUserPhoneRemoved(userId, _) => singleUser(userId)
-      case api.users.UpdateUserStateChanged(userId, _) => singleUser(userId)
-      case api.weak.UpdateGroupOnline(groupId, _) => singleGroup(groupId)
-      case api.weak.UpdateTyping(peer, userId, _) =>
+      case api.messaging.UpdateMessageDelete(peer, _)                            ⇒ peerRefs(peer)
+      case api.messaging.UpdateMessageRead(peer, _, _)                           ⇒ peerRefs(peer)
+      case api.messaging.UpdateMessageReadByMe(peer, _)                          ⇒ peerRefs(peer)
+      case api.messaging.UpdateMessageReceived(peer, _, _)                       ⇒ peerRefs(peer)
+      case api.messaging.UpdateMessageSent(peer, _, _)                           ⇒ peerRefs(peer)
+      case api.groups.UpdateGroupAvatarChanged(groupId, userId, _, _, _)         ⇒ (Set(userId), Set(groupId))
+      case api.groups.UpdateGroupInvite(groupId, inviteUserId, _, _)             ⇒ (Set(inviteUserId), Set(groupId))
+      case api.groups.UpdateGroupMembersUpdate(groupId, members)                 ⇒ (members.map(_.userId).toSet ++ members.map(_.inviterUserId).toSet, Set(groupId)) // TODO: #perf use foldLeft
+      case api.groups.UpdateGroupTitleChanged(groupId, userId, _, _, _)          ⇒ (Set(userId), Set(groupId))
+      case api.groups.UpdateGroupUserAdded(groupId, userId, inviterUserId, _, _) ⇒ (Set(userId, inviterUserId), Set(groupId))
+      case api.groups.UpdateGroupUserKick(groupId, userId, kickerUserId, _, _)   ⇒ (Set(userId, kickerUserId), Set(groupId))
+      case api.groups.UpdateGroupUserLeave(groupId, userId, _, _)                ⇒ (Set(userId), Set(groupId))
+      case api.contacts.UpdateContactRegistered(userId, _, _)                    ⇒ singleUser(userId)
+      case api.contacts.UpdateContactsAdded(userIds)                             ⇒ users(userIds)
+      case api.contacts.UpdateContactsRemoved(userIds)                           ⇒ users(userIds)
+      case api.users.UpdateEmailMoved(_, userId)                                 ⇒ singleUser(userId)
+      case _: api.users.UpdateEmailTitleChanged                                  ⇒ empty
+      case api.users.UpdatePhoneMoved(_, userId)                                 ⇒ singleUser(userId)
+      case _: api.users.UpdatePhoneTitleChanged                                  ⇒ empty
+      case api.users.UpdateUserAvatarChanged(userId, _)                          ⇒ singleUser(userId)
+      case api.users.UpdateUserContactsChanged(userId, _, _)                     ⇒ singleUser(userId)
+      case api.users.UpdateUserEmailAdded(userId, _)                             ⇒ singleUser(userId)
+      case api.users.UpdateUserEmailRemoved(userId, _)                           ⇒ singleUser(userId)
+      case api.users.UpdateUserLocalNameChanged(userId, _)                       ⇒ singleUser(userId)
+      case api.users.UpdateUserNameChanged(userId, _)                            ⇒ singleUser(userId)
+      case api.users.UpdateUserPhoneAdded(userId, _)                             ⇒ singleUser(userId)
+      case api.users.UpdateUserPhoneRemoved(userId, _)                           ⇒ singleUser(userId)
+      case api.users.UpdateUserStateChanged(userId, _)                           ⇒ singleUser(userId)
+      case api.weak.UpdateGroupOnline(groupId, _)                                ⇒ singleGroup(groupId)
+      case api.weak.UpdateTyping(peer, userId, _) ⇒
         val refs = peerRefs(peer)
         refs.copy(_1 = refs._1 + userId)
-      case api.weak.UpdateUserLastSeen(userId, _) => singleUser(userId)
-      case api.weak.UpdateUserOffline(userId) => singleUser(userId)
-      case api.weak.UpdateUserOnline(userId) => singleUser(userId)
+      case api.weak.UpdateUserLastSeen(userId, _) ⇒ singleUser(userId)
+      case api.weak.UpdateUserOffline(userId)     ⇒ singleUser(userId)
+      case api.weak.UpdateUserOnline(userId)      ⇒ singleUser(userId)
     }
   }
 
-  private[push] def subscribe(authId: Long, consumer: ActorRef)
-                             (implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+  private[push] def subscribe(authId: Long, consumer: ActorRef)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
   }
 
   private def bytesToTimestamp(bytes: Array[Byte]): Long = {
@@ -290,17 +283,17 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   private[this] var consumers: Set[ActorRef] = Set.empty
 
   def receiveInitiated: Receive = {
-    case Envelope(_, GetSequenceState) =>
+    case Envelope(_, GetSequenceState) ⇒
       sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
-    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds)) =>
+    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds)) ⇒
       pushUpdate(authId, header, updBytes, userIds, groupIds)
-    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)) =>
+    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, userIds, groupIds, { seqstate: SequenceState =>
+      pushUpdate(authId, header, serializedData, userIds, groupIds, { seqstate: SequenceState ⇒
         replyTo ! seqstate
       })
-    case Envelope(authId, Subscribe(consumer: ActorRef)) =>
+    case Envelope(authId, Subscribe(consumer: ActorRef)) ⇒
       if (!consumers.contains(consumer)) {
         context.watch(consumer)
       }
@@ -310,26 +303,26 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       log.debug("Consumer subscribed {}", consumer)
 
       sender() ! SubscribeAck(consumer)
-    case ReceiveTimeout =>
+    case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
         context.parent ! Passivate(stopMessage = PoisonPill)
       }
-    case Terminated(consumer) =>
+    case Terminated(consumer) ⇒
       log.debug("Consumer unsubscribed {}", consumer)
       consumers -= consumer
   }
 
   def stashing: Receive = {
-    case Initiated(authId, timestamp) =>
+    case Initiated(authId, timestamp) ⇒
       lastTimestamp = timestamp
 
       unstashAll()
       context.become(receiveInitiated)
-    case msg => stash()
+    case msg ⇒ stash()
   }
 
   def waitingForEnvelope: Receive = {
-    case env @ Envelope(authId, _) =>
+    case env @ Envelope(authId, _) ⇒
       stash()
       context.become(stashing)
 
@@ -337,32 +330,31 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       implicit val ec = context.dispatcher
 
       val timestampFuture: Future[Long] = for {
-        seqUpdOpt <- db.run(p.sequence.SeqUpdate.find(authId).headOption)
+        seqUpdOpt ← db.run(p.sequence.SeqUpdate.find(authId).headOption)
       } yield {
-          seqUpdOpt.map(_.timestamp).getOrElse(0)
-        }
+        seqUpdOpt.map(_.timestamp).getOrElse(0)
+      }
 
       timestampFuture.onFailure {
-        case e =>
+        case e ⇒
           log.error(e, "Failed loading last update")
           context.parent ! Passivate(stopMessage = PoisonPill)
       }
 
       timestampFuture.map(Initiated(authId, _)).pipeTo(self)
-    case msg => stash()
+    case msg ⇒ stash()
   }
 
   override def receiveCommand: Receive = waitingForEnvelope
 
   override def receiveRecover: Receive = {
-    case SeqChanged(value) =>
+    case SeqChanged(value) ⇒
       log.debug("Recovery: SeqChanged {}", value)
       seq = value
-    case RecoveryCompleted =>
+    case RecoveryCompleted ⇒
       log.debug("Recovery: Completed, seq: {}", seq)
       seq += IncrementOnStart - 1
   }
-
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
@@ -374,7 +366,7 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
     pushUpdate(authId, header, serializedData, userIds, groupIds, noop1)
   }
 
-  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int], cb: SequenceState => Unit): Unit = {
+  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int], cb: SequenceState ⇒ Unit): Unit = {
     // TODO: pinned dispatcher?
     implicit val ec = context.dispatcher
 
@@ -384,17 +376,17 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)
 
       db.run(p.sequence.SeqUpdate.create(seqUpdate))
-        .map(_ => ())
+        .map(_ ⇒ ())
         .andThen {
-        case Success(_) =>
-          consumers foreach { consumer =>
-            consumer ! SeqUpdate(seqUpdate.seq, timestampToBytes(seqUpdate.timestamp), seqUpdate.header, seqUpdate.serializedData)
-          }
+          case Success(_) ⇒
+            consumers foreach { consumer ⇒
+              consumer ! SeqUpdate(seqUpdate.seq, timestampToBytes(seqUpdate.timestamp), seqUpdate.header, seqUpdate.serializedData)
+            }
 
-          log.debug("Pushed update seq: {}", seq)
-        case Failure(err) =>
-          log.error(err, "Failed to push update") // TODO: throw exception?
-      }
+            log.debug("Pushed update seq: {}", seq)
+          case Failure(err) ⇒
+            log.error(err, "Failed to push update") // TODO: throw exception?
+        }
     }
 
     seq += 1
@@ -404,11 +396,11 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
 
     // TODO: DRY this
     if (seq % (IncrementOnStart / 2) == 0) {
-      persist(SeqChanged(seq)) { _ =>
-        push(seq, timestamp) foreach (_ => cb(sequenceState(seq, timestampToBytes(timestamp))))
+      persist(SeqChanged(seq)) { _ ⇒
+        push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
       }
     } else {
-      push(seq, timestamp) foreach (_ => cb(sequenceState(seq, timestampToBytes(timestamp))))
+      push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
     }
   }
 

@@ -9,8 +9,8 @@ object AvatarData {
   object TypeVal {
     def fromInt(i: Int): TypeVal =
       i match {
-        case 1 => OfUser
-        case 2 => OfGroup
+        case 1 ⇒ OfUser
+        case 2 ⇒ OfGroup
       }
   }
   trait TypeValImpl[T] extends TypeVal
@@ -39,40 +39,40 @@ object AvatarData {
 }
 
 case class AvatarData(
-  entityType: AvatarData.TypeVal,
-  entityId: Long,
-  smallAvatarFileId: Option[Long],
+  entityType:          AvatarData.TypeVal,
+  entityId:            Long,
+  smallAvatarFileId:   Option[Long],
   smallAvatarFileHash: Option[Long],
   smallAvatarFileSize: Option[Int],
-  largeAvatarFileId: Option[Long],
+  largeAvatarFileId:   Option[Long],
   largeAvatarFileHash: Option[Long],
   largeAvatarFileSize: Option[Int],
-  fullAvatarFileId: Option[Long],
-  fullAvatarFileHash: Option[Long],
-  fullAvatarFileSize: Option[Int],
-  fullAvatarWidth: Option[Int],
-  fullAvatarHeight: Option[Int]
+  fullAvatarFileId:    Option[Long],
+  fullAvatarFileHash:  Option[Long],
+  fullAvatarFileSize:  Option[Int],
+  fullAvatarWidth:     Option[Int],
+  fullAvatarHeight:    Option[Int]
 ) {
   lazy val smallOpt =
     for (
-      id <- smallAvatarFileId;
-      hash <- smallAvatarFileHash;
-      size <- smallAvatarFileSize
+      id ← smallAvatarFileId;
+      hash ← smallAvatarFileHash;
+      size ← smallAvatarFileSize
     ) yield (id, hash, size)
 
   lazy val largeOpt =
     for (
-      id <- largeAvatarFileId;
-      hash <- largeAvatarFileHash;
-      size <- largeAvatarFileSize
+      id ← largeAvatarFileId;
+      hash ← largeAvatarFileHash;
+      size ← largeAvatarFileSize
     ) yield (id, hash, size)
 
   lazy val fullOpt =
     for (
-      id <- fullAvatarFileId;
-      hash <- fullAvatarFileHash;
-      size <- fullAvatarFileSize;
-      w <- fullAvatarWidth;
-      h <- fullAvatarHeight
+      id ← fullAvatarFileId;
+      hash ← fullAvatarFileHash;
+      size ← fullAvatarFileSize;
+      w ← fullAvatarWidth;
+      h ← fullAvatarHeight
     ) yield (id, hash, size, w, h)
 }

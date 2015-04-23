@@ -30,8 +30,8 @@ package object rpc extends {
       -\/(e)
     def unapply(v: RpcError \/ _) =
       v match {
-        case -\/(e) => Some(e)
-        case _ => None
+        case -\/(e) ⇒ Some(e)
+        case _      ⇒ None
       }
   }
 
@@ -41,20 +41,20 @@ package object rpc extends {
 
     def unapply[T <: OkResp[RpcResponse]](v: _ \/ T)(implicit m: ClassTag[T]) =
       v match {
-        case \/-(t) => Some(t)
-        case -\/(_) => None
+        case \/-(t) ⇒ Some(t)
+        case -\/(_) ⇒ None
       }
   }
 
-  def authorizedAction[R](clientData: ClientData)(f: AuthorizedClientData => DBIOAction[RpcError \/ R, NoStream, Nothing])(implicit db: Database): Future[RpcError \/ R] = {
+  def authorizedAction[R](clientData: ClientData)(f: AuthorizedClientData ⇒ DBIOAction[RpcError \/ R, NoStream, Nothing])(implicit db: Database): Future[RpcError \/ R] = {
     val authorizedAction = requireAuth(clientData).map(f)
     db.run(toDBIOAction(authorizedAction))
   }
 
   def requireAuth(implicit clientData: ClientData): MaybeAuthorized[AuthorizedClientData] =
     clientData.optUserId match {
-      case Some(userId) => Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId))
-      case None         => NotAuthorized
+      case Some(userId) ⇒ Authorized(AuthorizedClientData(clientData.authId, clientData.sessionId, userId))
+      case None         ⇒ NotAuthorized
     }
 
   def toDBIOAction[R](

@@ -14,6 +14,6 @@ object RpcOkCodec extends Codec[RpcOk] {
   def encode(rok: RpcOk) = codec.encode(rok.response)
 
   def decode(buf: BitVector) = codec.decode(buf).map {
-    case DecodeResult(rsp, rem) => DecodeResult(RpcOk(rsp), rem)
+    case DecodeResult(rsp, rem) ⇒ DecodeResult(RpcOk(rsp), rem)
   }
 }

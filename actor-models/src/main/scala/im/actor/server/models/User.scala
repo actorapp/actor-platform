@@ -25,18 +25,18 @@ object UserState {
   }
 
   def fromInt(i: Int): UserState = i match {
-    case 1 => Registered
-    case 2 => Email
-    case 3 => Deleted
+    case 1 ⇒ Registered
+    case 2 ⇒ Email
+    case 3 ⇒ Deleted
   }
 }
 
 @SerialVersionUID(1L)
 case class User(
-  id: Int,
-  accessSalt: String,
-  name: String,
+  id:          Int,
+  accessSalt:  String,
+  name:        String,
   countryCode: String,
-  sex: Sex,
-  state: UserState
+  sex:         Sex,
+  state:       UserState
 )

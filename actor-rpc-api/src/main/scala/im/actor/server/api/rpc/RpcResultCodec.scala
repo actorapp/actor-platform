@@ -17,6 +17,6 @@ object RpcResultCodec extends Codec[RpcResult] {
   def encode(res: RpcResult) = codec.encode(res)
 
   def decode(buf: BitVector) = codec.decode(buf).map {
-    case DecodeResult(rsp, rem) => DecodeResult(rsp, rem)
+    case DecodeResult(rsp, rem) ⇒ DecodeResult(rsp, rem)
   }
 }

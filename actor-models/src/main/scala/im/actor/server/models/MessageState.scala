@@ -21,8 +21,8 @@ object MessageState {
   }
 
   def fromInt(i: Int): MessageState = i match {
-    case 1 => Sent
-    case 2 => Received
-    case 3 => Read
+    case 1 ⇒ Sent
+    case 2 ⇒ Received
+    case 3 ⇒ Read
   }
 }

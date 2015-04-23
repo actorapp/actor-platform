@@ -49,17 +49,16 @@ object PresenceManager {
   case class PresenceState(userId: Int, presence: Presence, lastSeenAt: Option[DateTime])
 
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) => (authId.toString, env)
+    case env @ Envelope(authId, payload) ⇒ (authId.toString, env)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg => msg match {
-    case Envelope(authId, _) => (authId % 32).toString // TODO: configurable
+  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+    case Envelope(authId, _) ⇒ (authId % 32).toString // TODO: configurable
   }
 
-  private def startRegion(props: Option[Props])
-                         (implicit
-                          system: ActorSystem,
-                          db: Database): PresenceManagerRegion =
+  private def startRegion(props: Option[Props])(implicit
+    system: ActorSystem,
+                                                db: Database): PresenceManagerRegion =
     PresenceManagerRegion(ClusterSharding(system).start(
       typeName = "PresenceManager",
       entryProps = props,
@@ -73,19 +72,16 @@ object PresenceManager {
 
   def props(implicit db: Database) = Props(classOf[PresenceManager], db)
 
-  def subscribe(userId: Int, consumer: ActorRef)
-               (implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+  def subscribe(userId: Int, consumer: ActorRef)(implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ref.ask(Envelope(userId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
   }
 
-  def unsubscribe(userId: Int, consumer: ActorRef)
-                 (implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+  def unsubscribe(userId: Int, consumer: ActorRef)(implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ref.ask(Envelope(userId, Unsubscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
   }
 
-  def subscribe(userIds: Set[Int], consumer: ActorRef)
-               (implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] =
-    Future.sequence(userIds map (subscribe(_, consumer))) map (_ => ())
+  def subscribe(userIds: Set[Int], consumer: ActorRef)(implicit region: PresenceManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] =
+    Future.sequence(userIds map (subscribe(_, consumer))) map (_ ⇒ ())
 
   def presenceSetOnline(userId: Int, timeout: Long)(implicit region: PresenceManagerRegion): Unit = {
     region.ref ! Envelope(userId, UserPresenceChange(Online, timeout))
@@ -114,28 +110,29 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
   private[this] var lastSeenAt: Option[DateTime] = None
 
   def receive = {
-    case Envelope(userId, _) =>
+    case Envelope(userId, _) ⇒
       stash()
 
       db.run(persist.presences.UserPresence.find(userId).map {
-        case Some(userPresence) =>
+        case Some(userPresence) ⇒
           self ! Initialized(userPresence.lastSeenAt)
-        case None =>
+        case None ⇒
           persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, None))
           self ! Initialized(None)
-      }).onFailure { case e =>
-        log.error(e, "Failed to recover PresenceManager state")
-        self ! PoisonPill
+      }).onFailure {
+        case e ⇒
+          log.error(e, "Failed to recover PresenceManager state")
+          self ! PoisonPill
       }
-    case Initialized(lastSeenAt: Option[DateTime]) =>
+    case Initialized(lastSeenAt: Option[DateTime]) ⇒
       unstashAll()
       this.lastSeenAt = lastSeenAt
       context.become(working)
-    case msg => stash()
+    case msg ⇒ stash()
   }
 
   def working: Receive = {
-    case Envelope(userId, Subscribe(consumer)) =>
+    case Envelope(userId, Subscribe(consumer)) ⇒
       if (!consumers.contains(consumer)) {
         context.watch(consumer)
         consumers += consumer
@@ -143,12 +140,12 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
 
       sender ! SubscribeAck(consumer)
       deliverState(userId)
-    case Envelope(userId, Unsubscribe(consumer)) =>
+    case Envelope(userId, Unsubscribe(consumer)) ⇒
       consumers -= consumer
       sender ! UnsubscribeAck(consumer)
-    case Terminated(consumer) =>
+    case Terminated(consumer) ⇒
       consumers -= consumer
-    case Envelope(userId, change @ UserPresenceChange(presence, timeout)) =>
+    case Envelope(userId, change @ UserPresenceChange(presence, timeout)) ⇒
       log.debug("userId: {}, change: {}", userId, change)
 
       scheduledTimeout map (_.cancel())
@@ -164,20 +161,21 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
         db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, this.lastSeenAt)))
 
         scheduledTimeout = Some(
-          context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, 0))))
+          context.system.scheduler.scheduleOnce(timeout.millis, self, Envelope(userId, UserPresenceChange(Offline, 0)))
+        )
       }
 
       if (needDeliver) {
         deliverState(userId)
       }
-    case ReceiveTimeout =>
+    case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
         context.parent ! Passivate(stopMessage = PoisonPill)
       }
   }
 
   private def deliverState(userId: Int): Unit = {
-    consumers foreach { consumer =>
+    consumers foreach { consumer ⇒
       consumer ! PresenceState(userId, this.lastChange.presence, this.lastSeenAt)
     }
   }

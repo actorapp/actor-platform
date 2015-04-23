@@ -31,41 +31,39 @@ object WeakUpdatesManager {
   private[push] case class SubscribeAck(consumer: ActorRef) extends Message
 
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) => (authId.toString, env)
+    case env @ Envelope(authId, payload) ⇒ (authId.toString, env)
   }
 
-  private val shardResolver: ShardRegion.ShardResolver = msg => msg match {
-    case Envelope(authId, _) => (authId % 32).toString // TODO: configurable
+  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+    case Envelope(authId, _) ⇒ (authId % 32).toString // TODO: configurable
   }
 
   private def startRegion(props: Option[Props])(implicit system: ActorSystem): WeakUpdatesManagerRegion =
     WeakUpdatesManagerRegion(ClusterSharding(system).start(
-    typeName = "WeakUpdatesManager",
-    entryProps = props,
-    idExtractor = idExtractor,
-    shardResolver = shardResolver
-  ))
+      typeName = "WeakUpdatesManager",
+      entryProps = props,
+      idExtractor = idExtractor,
+      shardResolver = shardResolver
+    ))
 
   def startRegion()(implicit system: ActorSystem): WeakUpdatesManagerRegion = startRegion(Some(Props(classOf[WeakUpdatesManager])))
 
   def startRegionProxy()(implicit system: ActorSystem): WeakUpdatesManagerRegion = startRegion(None)
 
-  def broadcastUserWeakUpdate(userId: Int, update: Update)
-                             (implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext): DBIO[Unit] = {
+  def broadcastUserWeakUpdate(userId: Int, update: Update)(implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext): DBIO[Unit] = {
     val header = update.header
     val serializedData = update.toByteArray
     val msg = PushUpdate(header, serializedData)
 
-    for (authIds <- persist.AuthId.findIdByUserId(userId)) yield {
-      authIds foreach { authId =>
+    for (authIds ← persist.AuthId.findIdByUserId(userId)) yield {
+      authIds foreach { authId ⇒
         region.ref ! Envelope(authId, msg)
       }
     }
   }
 
-  private[push] def subscribe(authId: Long, consumer: ActorRef)
-                             (implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ => ())
+  private[push] def subscribe(authId: Long, consumer: ActorRef)(implicit region: WeakUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
   }
 }
 
@@ -78,15 +76,15 @@ class WeakUpdatesManager extends Actor with ActorLogging {
   def receive = working(Set.empty)
 
   def working(consumers: Set[ActorRef]): Receive = {
-    case Envelope(authId, PushUpdate(header, serializedData)) =>
+    case Envelope(authId, PushUpdate(header, serializedData)) ⇒
       consumers foreach (_ ! WeakUpdate(System.currentTimeMillis(), header, serializedData))
-    case Envelope(_, Subscribe(consumer)) =>
+    case Envelope(_, Subscribe(consumer)) ⇒
       context.watch(consumer)
       context.become(working(consumers + consumer))
       sender() ! SubscribeAck(consumer)
 
       log.debug("Consumer subscribed {}", consumer)
-    case Terminated(consumer) =>
+    case Terminated(consumer) ⇒
       context.become(working(consumers - consumer))
   }
 }

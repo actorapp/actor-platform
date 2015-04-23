@@ -11,12 +11,12 @@ case class AuthSession(
 
 object AuthSession {
   def appTitleOf(appId: Int) = appId match {
-    case 0 => "Android Official"
-    case 1 => "Android Official"
-    case 2 => "iOS Official"
-    case 3 => "Web Official"
-    case 42 => "Tests"
-    case _ => "Unknown"
+    case 0  ⇒ "Android Official"
+    case 1  ⇒ "Android Official"
+    case 2  ⇒ "iOS Official"
+    case 3  ⇒ "Web Official"
+    case 42 ⇒ "Tests"
+    case _  ⇒ "Unknown"
   }
 }
 //  def build(

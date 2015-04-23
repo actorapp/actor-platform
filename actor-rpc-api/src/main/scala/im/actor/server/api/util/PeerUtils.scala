@@ -15,115 +15,108 @@ import im.actor.server.{ models, persist }
 object PeerUtils {
   def withOutPeer[R <: RpcResponse](
     clientUserId: Int,
-    outPeer: OutPeer
+    outPeer:      OutPeer
   )(
-    f: => DBIO[RpcError \/ R]
+    f: ⇒ DBIO[RpcError \/ R]
   )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     outPeer.`type` match {
-      case PeerType.Private =>
+      case PeerType.Private ⇒
         (for {
-          optUser <- persist.User.find(outPeer.id).headOption
-          usererrOrUser <- validUser(optUser)
-          hasherrOrUser <- DBIO.successful(usererrOrUser.map(validUserAccessHash(outPeer.accessHash, _)))
+          optUser ← persist.User.find(outPeer.id).headOption
+          usererrOrUser ← validUser(optUser)
+          hasherrOrUser ← DBIO.successful(usererrOrUser.map(validUserAccessHash(outPeer.accessHash, _)))
         } yield hasherrOrUser).flatMap {
-          case Error(err) => DBIO.successful(Error(err))
-          case _          => f
+          case Error(err) ⇒ DBIO.successful(Error(err))
+          case _          ⇒ f
         }
-      case PeerType.Group =>
+      case PeerType.Group ⇒
         (for {
-          optGroup <- persist.Group.find(outPeer.id).headOption
-          grouperrOrGroup <- validGroup(optGroup)
-          hasherrOrGroup <- DBIO.successful(grouperrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
+          optGroup ← persist.Group.find(outPeer.id).headOption
+          grouperrOrGroup ← validGroup(optGroup)
+          hasherrOrGroup ← DBIO.successful(grouperrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
         } yield hasherrOrGroup).flatMap {
-          case Error(err) => DBIO.successful(Error(err))
-          case _ => f
+          case Error(err) ⇒ DBIO.successful(Error(err))
+          case _          ⇒ f
         }
     }
   }
 
-  def withUserOutPeer[R <: RpcResponse](userOutPeer: UserOutPeer)
-                                                 (f: => DBIO[RpcError \/ R])
-                                                 (implicit
-                                                   client: AuthorizedClientData,
-                                                   actorSystem: ActorSystem,
-                                                   ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withUserOutPeer[R <: RpcResponse](userOutPeer: UserOutPeer)(f: ⇒ DBIO[RpcError \/ R])(implicit
+    client: AuthorizedClientData,
+                                                                                            actorSystem: ActorSystem,
+                                                                                            ec:          ExecutionContext): DBIO[RpcError \/ R] = {
     renderCheckResult(Seq(checkUserPeer(userOutPeer.userId, userOutPeer.accessHash)), f)
   }
 
-  def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)
-                                        (f: models.FullGroup => DBIO[RpcError \/ R])
-                                        (implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
     persist.Group.findFull(groupOutPeer.groupId).headOption flatMap {
-      case Some(group) =>
+      case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {
           DBIO.successful(Error(CommonErrors.InvalidAccessHash))
         } else {
           f(group)
         }
-      case None =>
+      case None ⇒
         DBIO.successful(Error(CommonErrors.GroupNotFound))
     }
   }
 
-  def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[UserOutPeer])
-                                                  (f: => DBIO[RpcError \/ R])
-                                                  (implicit
-                                                   client: AuthorizedClientData,
-                                                   actorSystem: ActorSystem,
-                                                   ec: ExecutionContext): DBIO[RpcError \/ R] = {
+  def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[UserOutPeer])(f: ⇒ DBIO[RpcError \/ R])(implicit
+    client: AuthorizedClientData,
+                                                                                                             actorSystem: ActorSystem,
+                                                                                                             ec:          ExecutionContext): DBIO[RpcError \/ R] = {
     val checkOptsFutures = userOutPeers map {
-      case UserOutPeer(userId, accessHash) =>
+      case UserOutPeer(userId, accessHash) ⇒
         checkUserPeer(userId, accessHash)
     }
 
     renderCheckResult(checkOptsFutures, f)
   }
 
-  def withKickableGroupMember[R <: RpcResponse](groupOutPeer: GroupOutPeer,
-                                                kickUserOutPeer: UserOutPeer)
-                                               (f: models.FullGroup => DBIO[RpcError \/ R])
-                                               (implicit
-                                                 client: AuthorizedClientData,
-                                                 actorSystem: ActorSystem,
-                                                 ec: ExecutionContext): DBIO[RpcError \/ R] = {
-    withGroupOutPeer(groupOutPeer) { group =>
+  def withKickableGroupMember[R <: RpcResponse](
+    groupOutPeer:    GroupOutPeer,
+    kickUserOutPeer: UserOutPeer
+  )(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit
+    client: AuthorizedClientData,
+                                               actorSystem: ActorSystem,
+                                               ec:          ExecutionContext): DBIO[RpcError \/ R] = {
+    withGroupOutPeer(groupOutPeer) { group ⇒
       persist.GroupUser.find(group.id, kickUserOutPeer.userId).flatMap {
-        case Some(models.GroupUser(_, _, inviterUserId, _)) =>
+        case Some(models.GroupUser(_, _, inviterUserId, _)) ⇒
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
             DBIO.successful(Error(RpcError(403, "NO_PERMISSION", "You are permitted to kick this user.", false, None)))
           }
-        case None => DBIO.successful(Error(RpcError(404, "USER_NOT_FOUND", "User is not a group member.", false, None)))
+        case None ⇒ DBIO.successful(Error(RpcError(404, "USER_NOT_FOUND", "User is not a group member.", false, None)))
       }
     }
   }
 
-  private def checkUserPeer(userId: Int, accessHash: Long)
-                           (implicit
-                            client: AuthorizedClientData,
-                            actorSystem: ActorSystem,
-                            ec: ExecutionContext): DBIO[Option[Boolean]] = {
+  private def checkUserPeer(userId: Int, accessHash: Long)(implicit
+    client: AuthorizedClientData,
+                                                           actorSystem: ActorSystem,
+                                                           ec:          ExecutionContext): DBIO[Option[Boolean]] = {
     for {
-      userOpt <- persist.User.find(userId).headOption
+      userOpt ← persist.User.find(userId).headOption
     } yield {
-      userOpt map (u => ACL.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
+      userOpt map (u ⇒ ACL.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
     }
   }
 
   private def validUser(optUser: Option[models.User]) = {
     optUser match {
-      case Some(user) =>
+      case Some(user) ⇒
         DBIO.successful(\/-(user))
-      case None => DBIO.successful(Error(CommonErrors.UserNotFound))
+      case None ⇒ DBIO.successful(Error(CommonErrors.UserNotFound))
     }
   }
 
   private def validGroup(optGroup: Option[models.Group]) = {
     optGroup match {
-      case Some(group) =>
+      case Some(group) ⇒
         DBIO.successful(\/-(group))
-      case None => DBIO.successful(Error(CommonErrors.GroupNotFound))
+      case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
     }
   }
 
@@ -143,9 +136,8 @@ object PeerUtils {
     }
   }
 
-  private def renderCheckResult[R <: RpcResponse](checkOptsActions: Seq[DBIO[Option[Boolean]]], f: => DBIO[RpcError \/ R])
-                                                 (implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
-    DBIO.sequence(checkOptsActions) flatMap { checkOpts =>
+  private def renderCheckResult[R <: RpcResponse](checkOptsActions: Seq[DBIO[Option[Boolean]]], f: ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    DBIO.sequence(checkOptsActions) flatMap { checkOpts ⇒
       if (checkOpts.contains(None)) {
         DBIO.successful(Error(RpcError(404, "PEER_NOT_FOUND", "Peer not found.", false, None)))
       } else if (checkOpts.flatten.contains(false)) {

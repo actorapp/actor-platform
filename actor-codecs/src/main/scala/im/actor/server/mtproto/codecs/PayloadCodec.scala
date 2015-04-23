@@ -10,8 +10,8 @@ class PayloadCodec[A](codec: Codec[A]) extends Codec[A] {
 
   def decode(buf: BitVector) = {
     for {
-      t <- bytes.decode(buf)
-      res <- codec.decode(t.value)
+      t ← bytes.decode(buf)
+      res ← codec.decode(t.value)
     } yield DecodeResult(res.value, t.remainder)
   }
 }
