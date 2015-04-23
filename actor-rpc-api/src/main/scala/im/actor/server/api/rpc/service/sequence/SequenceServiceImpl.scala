@@ -25,7 +25,6 @@ class SequenceServiceImpl(implicit
                           val sessionRegion: SessionRegion,
                           db: Database,
                           actorSystem: ActorSystem) extends SequenceService {
-
   import SeqUpdatesManager._
   import GroupUtils._
   import UserUtils._

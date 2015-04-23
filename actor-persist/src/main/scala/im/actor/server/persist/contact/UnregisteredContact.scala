@@ -25,4 +25,10 @@ object UnregisteredContact {
   def createIfNotExists(phoneNumber: Long, ownerUserId: Int) = {
     create(phoneNumber, ownerUserId).asTry
   }
+
+  def find(phoneNumber: Long) =
+    ucontacts.filter(_.phoneNumber === phoneNumber).result
+
+  def deleteAll(phoneNumber: Long) =
+    ucontacts.filter(_.phoneNumber === phoneNumber).delete
 }

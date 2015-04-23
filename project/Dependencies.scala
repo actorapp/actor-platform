@@ -100,6 +100,8 @@ object Dependencies {
 
   val presences = common :+ akkaContrib
 
+  val social = common :+ akkaContrib
+
   val codecs = common ++ Seq(scalazCore, scodecBits, scodecCore)
 
   val models = common ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)

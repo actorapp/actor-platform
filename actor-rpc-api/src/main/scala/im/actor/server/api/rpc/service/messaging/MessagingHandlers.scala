@@ -1,7 +1,9 @@
 package im.actor.server.api.rpc.service.messaging
 
 import scala.concurrent._
+import scala.concurrent.duration._
 
+import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -18,8 +20,11 @@ private[messaging] trait MessagingHandlers {
   import im.actor.server.api.util.HistoryUtils._
   import im.actor.server.api.util.PeerUtils._
   import im.actor.server.push.SeqUpdatesManager._
+  import im.actor.server.social.SocialManager._
 
   override implicit val ec = actorSystem.dispatcher
+
+  implicit val timeout = Timeout(5.seconds) // TODO: configurable
 
   override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client =>
@@ -51,6 +56,7 @@ private[messaging] trait MessagingHandlers {
             for {
               _ <- writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
               _ <- broadcastUserUpdate(outPeer.id, outUpdate)
+              _ <- DBIO.from(recordRelation(client.userId, outPeer.id)) // TODO: configurable
               _ <- notifyClientUpdate(ownUpdate)
               seqstate <- persistAndPushUpdate(client.authId, update)
             } yield {

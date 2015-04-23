@@ -9,6 +9,7 @@ import im.actor.api.{ rpc => api }, api._
 import im.actor.server.api.util
 import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.social.SocialManager
 
 class ContactsServiceSpec extends BaseServiceSuite {
   behavior of "Contacts Service"
@@ -27,6 +28,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion: PresenceManagerRegion = PresenceManager.startRegion()
+    implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val rpcApiService = buildRpcApiService()
     implicit val sessionRegion = buildSessionRegion(rpcApiService)
 

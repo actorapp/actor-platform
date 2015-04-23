@@ -1,6 +1,5 @@
 package im.actor.server.api.rpc.service
 
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ MessageState, TextMessage }
 import im.actor.api.rpc.misc.ResponseVoid
@@ -9,6 +8,7 @@ import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util.ACL
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.social.SocialManager
 
 class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "MessagingServiceHistoryService"
@@ -20,6 +20,8 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
   implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val socialManagerRegion = SocialManager.startRegion()
+
   val rpcApiService = buildRpcApiService()
   implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
