@@ -31,14 +31,14 @@ private[auth] trait Helpers extends PublicKeyHelpers {
   def withValidName[A, E <: Effect](n: String)(f: String ⇒ DBIOAction[RpcError \/ A, NoStream, E]): DBIOAction[RpcError \/ A, NoStream, E] =
     validName(n).fold(
       x ⇒
-      DBIO.successful(Error(validationFailed("NAME_INVALID", x))),
+        DBIO.successful(Error(validationFailed("NAME_INVALID", x))),
       f
     )
 
   def withValidPublicKey[A, E <: Effect](k: Array[Byte])(f: Array[Byte] ⇒ DBIOAction[RpcError \/ A, NoStream, E]): DBIOAction[RpcError \/ A, NoStream, E] =
     validPublicKey(k).fold(
       x ⇒
-      DBIO.successful(Error(validationFailed("PUBLIC_KEY_INVALID", x))),
+        DBIO.successful(Error(validationFailed("PUBLIC_KEY_INVALID", x))),
       f
     )
 }

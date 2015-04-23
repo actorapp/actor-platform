@@ -95,7 +95,7 @@ class FilesServiceSpec extends BaseServiceSuite {
         val connection = url.openConnection().asInstanceOf[HttpURLConnection]
         connection.setDoOutput(true)
         connection.setRequestMethod("PUT")
-        connection.addRequestProperty("Content-Type", "multipart/form-data")
+        connection.addRequestProperty("Content-Type", "application/octet-stream")
         val out = new OutputStreamWriter(connection.getOutputStream)
         val partContents = ("." * size)
         out.write(partContents)
