@@ -1,3 +1,5 @@
+package im.actor
+
 import sbt._
 
 object Configs {
