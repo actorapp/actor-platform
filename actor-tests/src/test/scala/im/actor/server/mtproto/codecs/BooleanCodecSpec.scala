@@ -7,7 +7,7 @@ import scodec._
 import scodec.bits._
 
 object BooleanCodecProp extends Properties("BooleanCodec") {
-  property("encode/decode") = forAll { (b: Boolean) =>
+  property("encode/decode") = forAll { (b: Boolean) ⇒
     val tail = BitVector(hex"feed")
     val buf = boolean.encode(b).require ++ tail
     boolean.decode(buf).require == DecodeResult(b, tail)

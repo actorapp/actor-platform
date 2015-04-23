@@ -40,8 +40,8 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
-    whenReady(service.handleGetState()) { res =>
-      res should matchPattern { case Ok(ResponseSeq(999, _)) => }
+    whenReady(service.handleGetState()) { res ⇒
+      res should matchPattern { case Ok(ResponseSeq(999, _)) ⇒ }
     }
   }
 
@@ -53,15 +53,15 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val (userIds, groupIds) = updateRefs(update)
 
-    val actions = for (a <- 1 to 600) yield {
+    val actions = for (a ← 1 to 600) yield {
       persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds)
     }
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
 
-    whenReady(service.handleGetDifference(0, Array.empty)) { res =>
+    whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
       res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups, phones, emails)) if updates.length == 100 =>
+        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups, phones, emails)) if updates.length == 100 ⇒
       }
     }
   }

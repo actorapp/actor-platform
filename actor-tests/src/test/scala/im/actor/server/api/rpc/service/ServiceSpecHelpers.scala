@@ -8,7 +8,7 @@ import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.{ rpc => api }
+import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.models
 import im.actor.server.persist
@@ -82,25 +82,23 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def buildRpcApiService()(implicit system: ActorSystem, db: Database) = system.actorOf(RpcApiService.props())
 
-  def buildSessionRegion(rpcApiService: ActorRef)
-                        (implicit
-                         seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                         weakUpdManagerRegion: WeakUpdatesManagerRegion,
-                         presenceManagerRegion: PresenceManagerRegion,
-                         system: ActorSystem,
-                         db: Database,
-                         flowMaterializer: FlowMaterializer) =
+  def buildSessionRegion(rpcApiService: ActorRef)(implicit
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+                                                  weakUpdManagerRegion:  WeakUpdatesManagerRegion,
+                                                  presenceManagerRegion: PresenceManagerRegion,
+                                                  system:                ActorSystem,
+                                                  db:                    Database,
+                                                  flowMaterializer:      FlowMaterializer) =
     Session.startRegion(Some(Session.props(rpcApiService)))
 
-  def buildAuthService()
-                      (implicit
-                       sessionRegion: SessionRegion,
-                       seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-                       socialManagerRegion: SocialManagerRegion,
-                       system: ActorSystem,
-                       database: Database) = new auth.AuthServiceImpl
+  def buildAuthService()(implicit
+    sessionRegion: SessionRegion,
+                         seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+                         socialManagerRegion:     SocialManagerRegion,
+                         system:                  ActorSystem,
+                         database:                Database) = new auth.AuthServiceImpl
 
-  protected def withoutLogs[A](f: => A)(implicit system: ActorSystem): A = {
+  protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
     val logLevel = logger.getLevel()
     logger.setLevel(ch.qos.logback.classic.Level.OFF)

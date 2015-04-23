@@ -55,9 +55,9 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", None))) { resp =>
+        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", None))) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseSeqDate(1000, _, _)) =>
+            case Ok(ResponseSeqDate(1000, _, _)) ⇒
           }
         }
       }
@@ -72,14 +72,13 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", None))) { resp =>
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", None))) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseSeqDate(1001, _, _)) =>
+            case Ok(ResponseSeqDate(1001, _, _)) ⇒
           }
         }
 
-
-        whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { u =>
+        whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { u ⇒
           u.header should ===(UpdateMessage.header)
         }
       }
@@ -105,7 +104,6 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
       def markReceived() = {
 
-
         val startDate = {
           implicit val clientData = clientData1
 
@@ -113,11 +111,11 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
           val sendMessages = Future.sequence(Seq(
             service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", None)),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None))),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
-          whenReady(sendMessages)(_ => ())
+          whenReady(sendMessages)(_ ⇒ ())
 
           startDate
         }
@@ -125,20 +123,20 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         {
           implicit val clientData = clientData2
 
-          whenReady(service.handleMessageReceived(user1Peer, startDate + 2000)) { resp =>
+          whenReady(service.handleMessageReceived(user1Peer, startDate + 2000)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseVoid) =>
+              case Ok(ResponseVoid) ⇒
             }
           }
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog =>
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog ⇒
             dialog.lastReceivedAt.getMillis should be < startDate + 3000
             dialog.lastReceivedAt.getMillis should be > startDate + 1000
           }
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate =>
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
             lastUpdate.header should ===(UpdateMessageReceived.header)
           }
         }
@@ -152,11 +150,11 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
           val sendMessages = Future.sequence(Seq(
             service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", None)),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None))),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
-          whenReady(sendMessages)(_ => ())
+          whenReady(sendMessages)(_ ⇒ ())
 
           startDate
         }
@@ -164,24 +162,24 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         {
           implicit val clientData = clientData2
 
-          whenReady(service.handleMessageRead(user1Peer, startDate + 2000)) { resp =>
+          whenReady(service.handleMessageRead(user1Peer, startDate + 2000)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseVoid) =>
+              case Ok(ResponseVoid) ⇒
             }
           }
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog =>
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog ⇒
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
           }
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate =>
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
             lastUpdate.header should ===(UpdateMessageRead.header)
           }
 
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { lastUpdate =>
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { lastUpdate ⇒
             lastUpdate.header should ===(UpdateMessageReadByMe.header)
           }
         }
@@ -212,23 +210,23 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
           val sendMessages = Future.sequence(Seq(
             service.handleSendMessage(groupOutPeer.asOutPeer, 1L, TextMessage("Hi Shiva 1", None)),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", None))),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", None)))
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
-          whenReady(sendMessages)(_ => ())
+          whenReady(sendMessages)(_ ⇒ ())
         }
 
         {
           implicit val clientData = clientData2
 
-          whenReady(service.handleMessageReceived(groupOutPeer.asOutPeer, startDate + 2000)) { resp =>
+          whenReady(service.handleMessageReceived(groupOutPeer.asOutPeer, startDate + 2000)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseVoid) =>
+              case Ok(ResponseVoid) ⇒
             }
           }
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog =>
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog ⇒
             dialog.lastReceivedAt.getMillis should be < startDate + 3000
             dialog.lastReceivedAt.getMillis should be > startDate + 1000
           }
@@ -237,7 +235,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         {
           implicit val clientData = clientData1
 
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate =>
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
             lastUpdate.header should ===(UpdateMessageReceived.header)
           }
         }
@@ -251,34 +249,34 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
           val sendMessages = Future.sequence(Seq(
             service.handleSendMessage(groupOutPeer.asOutPeer, 1L, TextMessage("Hi Shiva 1", None)),
-            futureSleep(1500).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", None))),
-            futureSleep(3000).flatMap(_ => service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", None)))
+            futureSleep(1500).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi Shiva 2", None))),
+            futureSleep(3000).flatMap(_ ⇒ service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi Shiva 3", None)))
           ))
 
-          whenReady(sendMessages)(_ => ())
+          whenReady(sendMessages)(_ ⇒ ())
         }
 
         {
           implicit val clientData = clientData2
 
-          whenReady(service.handleMessageRead(groupOutPeer.asOutPeer, startDate + 2000)) { resp =>
+          whenReady(service.handleMessageRead(groupOutPeer.asOutPeer, startDate + 2000)) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseVoid) =>
+              case Ok(ResponseVoid) ⇒
             }
           }
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog =>
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog ⇒
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
           }
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate =>
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
             lastUpdate.header should ===(UpdateMessageRead.header)
           }
 
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { lastUpdate =>
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { lastUpdate ⇒
             lastUpdate.header should ===(UpdateMessageReadByMe.header)
           }
         }

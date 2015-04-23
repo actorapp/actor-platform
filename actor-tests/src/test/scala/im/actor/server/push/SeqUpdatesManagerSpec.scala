@@ -6,7 +6,7 @@ import akka.testkit._
 import com.typesafe.config._
 import org.specs2.specification.core.Fragments
 
-import im.actor.api.{ rpc => api }
+import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.SqlSpecHelpers
 import im.actor.util.testing._
 
@@ -14,7 +14,8 @@ class SeqUpdatesManagerSpec extends ActorSuite(
   ActorSpecification.createSystem(
     ConfigFactory.parseString("""
       push.seq-updates-manager.receive-timeout = 1 second
-                              """))
+                              """)
+  )
 ) with SqlSpecHelpers {
   behavior of "SeqUpdatesManager"
 
@@ -52,7 +53,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
       msg._1 should ===(2000)
     }
 
-    for (a <- 1 to 600)
+    for (a ← 1 to 600)
       probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, userIds, groupIds)))
 
     probe.expectNoMsg(4.seconds)
