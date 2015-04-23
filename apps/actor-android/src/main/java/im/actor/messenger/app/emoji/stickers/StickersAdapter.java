@@ -44,13 +44,18 @@ public class StickersAdapter extends RecyclerView.Adapter {
         final String packId = stickerPack.getId();
         final String stickerId = stickerPack.getStickerId(position + this.page * 8);
         Uri uri = Uri.parse("file://" + Stickers.getFile(packId, stickerId));
-        ((ImageView) holder.itemView).setImageURI(uri);
+        ((SimpleDraweeView) holder.itemView).setImageURI(uri);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onStickerClickListener.onStickerClick(packId, stickerId);
             }
         });
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        ((SimpleDraweeView)holder.itemView).setImageURI(null);
     }
 
     @Override
