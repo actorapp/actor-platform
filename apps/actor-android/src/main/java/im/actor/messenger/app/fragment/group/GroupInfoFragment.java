@@ -178,7 +178,7 @@ public class GroupInfoFragment extends BaseFragment {
                     "" + mediaCount
             );
         }
-        header.findViewById(R.id.sharedContainer).setVisibility(View.GONE);
+        // header.findViewById(R.id.sharedContainer).setVisibility(View.GONE);
 
 
         //Members
