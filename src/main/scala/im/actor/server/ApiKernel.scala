@@ -11,6 +11,7 @@ import akka.kernel.Bootable
 import com.typesafe.config.ConfigFactory
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
@@ -22,6 +23,7 @@ import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.session.Session
+import im.actor.server.social.SocialManager
 
 class ApiKernel extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
@@ -43,6 +45,7 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val socialManagerRegion = SocialManager.startRegion()
 
     val rpcApiService = system.actorOf(RpcApiService.props())
     implicit val sessionRegion = Session.startRegion(
@@ -65,7 +68,8 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
       new SequenceServiceImpl,
       new WeakServiceImpl,
       new UsersServiceImpl,
-      new FilesServiceImpl(s3BucketName))
+      new FilesServiceImpl(s3BucketName),
+      new ConfigsServiceImpl)
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 

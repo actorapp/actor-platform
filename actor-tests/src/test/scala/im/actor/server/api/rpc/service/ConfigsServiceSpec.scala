@@ -8,6 +8,7 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
+import im.actor.server.social.SocialManager
 
 class ConfigsServiceSpec extends BaseServiceSuite {
   behavior of "Configs Service"
@@ -20,6 +21,7 @@ class ConfigsServiceSpec extends BaseServiceSuite {
   implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
   implicit val authService = buildAuthService()
 

@@ -11,6 +11,7 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.social.SocialManager
 
 class SequenceServiceSpec extends BaseServiceSuite {
 
@@ -22,6 +23,8 @@ class SequenceServiceSpec extends BaseServiceSuite {
   implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val socialManagerRegion = SocialManager.startRegion()
+
   val rpcApiService = buildRpcApiService()
   implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
