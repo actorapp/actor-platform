@@ -381,7 +381,8 @@ public class PictureActivity extends ActionBarActivity {
         @Override
         public void onDestroyView() {
             super.onDestroyView();
-            attacher.cleanup();
+            if(attacher!=null)
+                attacher.cleanup();
         }
 
         @Override

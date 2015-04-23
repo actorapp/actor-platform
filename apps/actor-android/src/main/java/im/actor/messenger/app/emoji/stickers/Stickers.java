@@ -51,7 +51,7 @@ public class Stickers {
 
     public static String getFile(String packId, String stickerId) {
         Context context = AppContext.getContext();
-        File sourceFile = context.getFileStreamPath("sticker_" + stickerId + ".png");
+        File sourceFile = context.getFileStreamPath("sticker_"+packId+"_" + stickerId + ".png");
         try {
             InputStream fileIS = AppContext.getContext().getAssets().open("stickers_pack_" + packId + "/sticker_" + stickerId + ".png");
             IOUtils.copy(fileIS, sourceFile);
