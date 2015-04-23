@@ -38,6 +38,10 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
 
 class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
 
+    let TAG_HANDSHAKE = 1
+    let TAG_PACKAGE_HEADER = 2
+    let TAG_PACKAGE_BODY = 3
+    
     let handshakeTimeout = 5.0
     
     let connectionTimeout = 5.0
@@ -65,7 +69,7 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
     
     // Initialize connection
     func start() {
-        NSLog("🎍#\(connectionId) Connecting...")
+        NSLog("🎍#\(connectionId) Connecting to \(endpoint.getHost()):\(endpoint.getPort())...")
         gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0))
         gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: connectionTimeout, error: nil)
     }
@@ -105,7 +109,7 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         gcdSocket?.writeData(dataToWrite, withTimeout: -1, tag: 0)
 
         NSLog("🎍#\(connectionId) Request Handshake response...")
-        gcdSocket?.readDataToLength(35, withTimeout: handshakeTimeout, tag: 5)
+        gcdSocket?.readDataToLength(35, withTimeout: handshakeTimeout, tag: TAG_HANDSHAKE)
     }
     
     // Handshake response
@@ -116,6 +120,19 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         
         NSLog("🎍#\(connectionId) Handshake response received \(mtprotoVersion),\(apiMajorVersion),\(apiMinorVersion) ")
     }
+    
+    func requestReadHeader() {
+        NSLog("🎍#\(connectionId) Request reading header...")
+        gcdSocket?.readDataToLength(4, withTimeout: -1, tag: TAG_PACKAGE_HEADER)
+    }
+    
+    func headerRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        
+    }
+    
+//    func requestReadBody() {
+//        
+//    }
 
     func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         if (isSocketOpen) {
@@ -150,7 +167,7 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
 //    }
     
     func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
-        if (tag == 5) {
+        if (tag == TAG_HANDSHAKE) {
             handshakeReponse(sock, didReadData: data)
         } else if (tag == 0) {
             // Header
