@@ -20,19 +20,19 @@ object ContainerCodec extends Codec[Container] {
     def f(count: Int, xs: BitVector)(items: Seq[MessageBox]): Attempt[DecodeResult[Seq[MessageBox]]] = {
       if (count > items.length) {
         MessageBoxCodec.decode(xs) match {
-          case Attempt.Successful(DecodeResult(MessageBox(_, _: Container), bs)) =>
+          case Attempt.Successful(DecodeResult(MessageBox(_, _: Container), bs)) ⇒
             Attempt.failure(Err("Container cannot be nested"))
-          case Attempt.Successful(DecodeResult(mb, bs)) =>
+          case Attempt.Successful(DecodeResult(mb, bs)) ⇒
             f(count, bs)(items.:+(mb))
-          case Attempt.Failure(e) =>
+          case Attempt.Failure(e) ⇒
             Attempt.failure(e)
         }
       } else Attempt.successful(DecodeResult(items, xs))
     }
 
     for {
-      lenTup <- varint.decode(buf)
-      itemsTup <- f(lenTup.value.toInt, lenTup.remainder)(Seq.empty)
+      lenTup ← varint.decode(buf)
+      itemsTup ← f(lenTup.value.toInt, lenTup.remainder)(Seq.empty)
     } yield DecodeResult(Container(itemsTup.value), itemsTup.remainder)
   }
 }

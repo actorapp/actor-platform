@@ -5,16 +5,20 @@ import scodec.bits.BitVector
 sealed trait MTTransport
 
 @SerialVersionUID(1L)
-case class HandshakeHeader(protoVersion: Byte,
-                           apiMajorVersion: Byte,
-                           apiMinorVersion: Byte,
-                           dataLength: Int)
+case class HandshakeHeader(
+  protoVersion:    Byte,
+  apiMajorVersion: Byte,
+  apiMinorVersion: Byte,
+  dataLength:      Int
+)
 
 @SerialVersionUID(1L)
-case class Handshake(protoVersion: Byte,
-                     apiMajorVersion: Byte,
-                     apiMinorVersion: Byte,
-                     bytes: BitVector) extends MTTransport
+case class Handshake(
+  protoVersion:    Byte,
+  apiMajorVersion: Byte,
+  apiMinorVersion: Byte,
+  bytes:           BitVector
+) extends MTTransport
 
 @SerialVersionUID(1L)
 case class ProtoPackage(m: MTProto) extends MTTransport

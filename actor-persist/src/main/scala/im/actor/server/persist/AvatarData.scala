@@ -27,7 +27,8 @@ class AvatarDataTable(tag: Tag) extends Table[models.AvatarData](tag, "avatar_da
     smallAvatarFileId, smallAvatarFileHash, smallAvatarFileSize,
     largeAvatarFileId, largeAvatarFileHash, largeAvatarFileSize,
     fullAvatarFileId, fullAvatarFileHash, fullAvatarFileSize,
-    fullAvatarWidth, fullAvatarHeight)
+    fullAvatarWidth, fullAvatarHeight
+  )
 
   def * = (entityType, entityId) ++ adReps <> (models.AvatarData.apply _ tupled, models.AvatarData.unapply)
 }
@@ -41,10 +42,10 @@ object AvatarData {
     adatas += data
 
   def byType(typ: models.AvatarData.TypeVal) =
-    adatas.filter(d => d.entityType === typ)
+    adatas.filter(d ⇒ d.entityType === typ)
 
   def byTypeAndId(typ: models.AvatarData.TypeVal, id: Long) =
-    byType(typ).filter(d => d.entityId === id)
+    byType(typ).filter(d ⇒ d.entityId === id)
 
   def find(typ: models.AvatarData.TypeVal, id: Long) =
     byTypeAndId(typ, id).result
@@ -53,5 +54,5 @@ object AvatarData {
     byTypeAndId(models.AvatarData.OfUser, userId.toLong).result
 
   def findByUserIds(userIds: Set[Int]) =
-    byType(models.AvatarData.OfUser).filter(d => d.entityId inSet userIds.map(_.toLong)).result
+    byType(models.AvatarData.OfUser).filter(d ⇒ d.entityId inSet userIds.map(_.toLong)).result
 }

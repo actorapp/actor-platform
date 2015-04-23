@@ -15,7 +15,7 @@ class AuthIdTable(tag: Tag) extends Table[models.AuthId](tag, "auth_ids") {
 
   def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (id, userId, publicKeyHash) <>(models.AuthId.tupled, models.AuthId.unapply)
+  def * = (id, userId, publicKeyHash) <> (models.AuthId.tupled, models.AuthId.unapply)
 }
 
 object AuthId {
@@ -27,25 +27,25 @@ object AuthId {
     authIds += models.AuthId(authId, userId, publicKeyHash)
 
   def byAuthIdNotDeleted(authId: Long) =
-    activeAuthIds.filter(a => a.id === authId)
+    activeAuthIds.filter(a ⇒ a.id === authId)
 
   def setUserData(authId: Long, userId: Int) =
-    byAuthIdNotDeleted(authId).map(a => a.userId).update(Some(userId))
+    byAuthIdNotDeleted(authId).map(a ⇒ a.userId).update(Some(userId))
 
   def setUserData(authId: Long, userId: Int, publicKeyHash: Long) =
-    byAuthIdNotDeleted(authId).map(a => (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
+    byAuthIdNotDeleted(authId).map(a ⇒ (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
 
   def find(authId: Long) =
     byAuthIdNotDeleted(authId).result
 
   def findByUserId(userId: Int) =
-    activeAuthIds.filter(a => a.userId === userId).result
+    activeAuthIds.filter(a ⇒ a.userId === userId).result
 
   def findIdByUserId(userId: Int) =
-    activeAuthIds.filter(a => a.userId === userId).map(_.id).result
+    activeAuthIds.filter(a ⇒ a.userId === userId).map(_.id).result
 
   def findIdByUserIds(userIds: Set[Int]) =
-    activeAuthIds.filter(a => a.userId inSet userIds).map(_.id).result
+    activeAuthIds.filter(a ⇒ a.userId inSet userIds).map(_.id).result
 
   def delete(id: Long) =
     activeAuthIds.filter(_.id === id).map(_.deletedAt).update(Some(new DateTime))

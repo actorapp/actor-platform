@@ -15,7 +15,7 @@ class FileTable(tag: Tag) extends Table[models.File](tag, "files") {
 
   def isUploaded = column[Boolean]("is_uploaded")
 
-  def * = (id, accessSalt, s3UploadKey, isUploaded) <>(models.File.tupled, models.File.unapply)
+  def * = (id, accessSalt, s3UploadKey, isUploaded) <> (models.File.tupled, models.File.unapply)
 }
 
 object File {

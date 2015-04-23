@@ -49,8 +49,8 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
 
     val rpcApiService = system.actorOf(RpcApiService.props())
     implicit val sessionRegion = Session.startRegion(
-      Some(Session.props(rpcApiService)))
-
+      Some(Session.props(rpcApiService))
+    )
 
     val s3BucketName = s3Config.getString("bucket")
     val awsKey = s3Config.getString("key")
@@ -69,7 +69,8 @@ class ApiKernel extends Bootable with DbInit with FlywayInit {
       new WeakServiceImpl,
       new UsersServiceImpl,
       new FilesServiceImpl(s3BucketName),
-      new ConfigsServiceImpl)
+      new ConfigsServiceImpl
+    )
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 

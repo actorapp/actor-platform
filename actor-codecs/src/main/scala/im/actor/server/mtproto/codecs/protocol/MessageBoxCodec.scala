@@ -10,18 +10,18 @@ object MessageBoxCodec extends Codec[MessageBox] {
   def sizeBound = SizeBound.unknown
 
   private val protoMessageCodec = discriminated[ProtoMessage].by(uint8)
-    .\(Container.header) { case r: Container => r} (ContainerCodec)
-    .\(MessageAck.header) { case r: MessageAck => r} (MessageAckCodec)
-    .\(NewSession.header) { case r: NewSession => r} (NewSessionCodec)
-    .\(RequestAuthId.header) { case r: RequestAuthId => r} (RequestAuthIdCodec)
-    .\(ResponseAuthId.header) { case r: ResponseAuthId => r} (ResponseAuthIdCodec)
-    .\(RequestResend.header) { case r: RequestResend => r} (RequestResendCodec)
-    .\(RpcRequestBox.header) { case r: RpcRequestBox => r} (RpcRequestBoxCodec)
-    .\(RpcResponseBox.header) { case r: RpcResponseBox => r} (RpcResponseBoxCodec)
-    .\(UnsentMessage.header) { case r: UnsentMessage => r} (UnsentMessageCodec)
-    .\(UnsentResponse.header) { case r: UnsentResponse => r} (UnsentResponseCodec)
-    .\(UpdateBox.header) { case r: UpdateBox => r} (UpdateBoxCodec)
-    .\(0, _ => true) { case a => a } (DiscriminatedErrorCodec("MessageBox"))
+    .\(Container.header) { case r: Container ⇒ r }(ContainerCodec)
+    .\(MessageAck.header) { case r: MessageAck ⇒ r }(MessageAckCodec)
+    .\(NewSession.header) { case r: NewSession ⇒ r }(NewSessionCodec)
+    .\(RequestAuthId.header) { case r: RequestAuthId ⇒ r }(RequestAuthIdCodec)
+    .\(ResponseAuthId.header) { case r: ResponseAuthId ⇒ r }(ResponseAuthIdCodec)
+    .\(RequestResend.header) { case r: RequestResend ⇒ r }(RequestResendCodec)
+    .\(RpcRequestBox.header) { case r: RpcRequestBox ⇒ r }(RpcRequestBoxCodec)
+    .\(RpcResponseBox.header) { case r: RpcResponseBox ⇒ r }(RpcResponseBoxCodec)
+    .\(UnsentMessage.header) { case r: UnsentMessage ⇒ r }(UnsentMessageCodec)
+    .\(UnsentResponse.header) { case r: UnsentResponse ⇒ r }(UnsentResponseCodec)
+    .\(UpdateBox.header) { case r: UpdateBox ⇒ r }(UpdateBoxCodec)
+    .\(0, _ ⇒ true) { case a ⇒ a }(DiscriminatedErrorCodec("MessageBox"))
 
   private val codec = (int64 :: PayloadCodec(protoMessageCodec)).as[MessageBox]
 

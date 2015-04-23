@@ -10,8 +10,8 @@ object RpcRequestMessageCodec extends Codec[RpcRequestMessage] {
   def sizeBound = SizeBound.unknown
 
   private val rpcRequestCodec = discriminated[RpcRequestMessage].by(uint8)
-//    .\(RpcRequest.header) { case r: RpcRequest => r} (RpcRequestCodec)
-    .\(0, _ => true) { case a => a } (DiscriminatedErrorCodec("RpcRequestBox"))
+    //    .\(RpcRequest.header) { case r: RpcRequest => r} (RpcRequestCodec)
+    .\(0, _ ⇒ true) { case a ⇒ a }(DiscriminatedErrorCodec("RpcRequestBox"))
 
   private val codec = PayloadCodec(rpcRequestCodec)
 

@@ -30,14 +30,14 @@ object GroupUser {
     groupUsers ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt))
 
   def find(groupId: Int) =
-    groupUsers.filter(g => g.groupId === groupId).result
+    groupUsers.filter(g ⇒ g.groupId === groupId).result
 
   def find(groupId: Int, userId: Int) =
-    groupUsers.filter(g => g.groupId === groupId && g.userId === userId).result.headOption
+    groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).result.headOption
 
   def findUserIds(groupId: Int) =
-    groupUsers.filter(g => g.groupId === groupId).map(_.userId).result
+    groupUsers.filter(g ⇒ g.groupId === groupId).map(_.userId).result
 
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
-    groupUsers.filter(g => g.groupId === groupId && g.userId === userId).delete
+    groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).delete
 }

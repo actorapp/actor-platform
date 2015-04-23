@@ -32,7 +32,7 @@ class SeqUpdateTable(tag: Tag) extends Table[models.sequence.SeqUpdate](tag, "se
     if (str.isEmpty) {
       Set.empty
     } else {
-      str.split(',').map(x => x.toInt).toSet
+      str.split(',').map(x ⇒ x.toInt).toSet
     }
   }
 }
@@ -52,5 +52,5 @@ object SeqUpdate {
     updates.filter(_.authId === authId).sortBy(_.timestamp.desc).result
 
   def findAfter(authId: Long, timestamp: Long, limit: Int) =
-    updates.filter(u => u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).take(limit).result
+    updates.filter(u ⇒ u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).take(limit).result
 }

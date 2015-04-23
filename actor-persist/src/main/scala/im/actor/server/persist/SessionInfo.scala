@@ -21,8 +21,8 @@ object SessionInfo {
     infos += models.SessionInfo(authId, sessionId, optUserId)
 
   def find(authId: Long, sessionId: Long) =
-    infos.filter(i => i.authId === authId && i.sessionId === sessionId).result
+    infos.filter(i ⇒ i.authId === authId && i.sessionId === sessionId).result
 
   def updateUserId(authId: Long, sessionId: Long, optUserId: Option[Int]) =
-    infos.filter(i => i.authId === authId && i.sessionId === sessionId).map(_.optUserId).update(optUserId)
+    infos.filter(i ⇒ i.authId === authId && i.sessionId === sessionId).map(_.optUserId).update(optUserId)
 }

@@ -16,7 +16,7 @@ class RpcRequestBoxHandler(rpcApiHandler: ActorRef) extends ActorSubscriber {
   }
 
   def receive: Receive = {
-    case OnNext((client, messageId, bodyBytes)) =>
+    case OnNext((client, messageId, bodyBytes)) ⇒
 
   }
 }

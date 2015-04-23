@@ -36,11 +36,11 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
   private[this] var buf = Vector.empty[MTProto]
 
   def receive = {
-    case FrontendPackage(p) =>
+    case FrontendPackage(p) ⇒
       val replyTo = sender()
       MessageBoxCodec.decode(p.messageBytes).toEither match {
-        case Right(res) => handleMessageBox(p.authId, p.sessionId, res.value, replyTo)
-        case Left(e) => replyTo ! ProtoPackage(Drop(0, 0, e.message))
+        case Right(res) ⇒ handleMessageBox(p.authId, p.sessionId, res.value, replyTo)
+        case Left(e)    ⇒ replyTo ! ProtoPackage(Drop(0, 0, e.message))
       }
     /*case SessionPackage(p) =>
       if (buf.isEmpty && totalDemand > 0)
@@ -49,9 +49,9 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
         buf :+= p
         deliverBuf()
       }*/
-    case Request(_) =>
+    case Request(_) ⇒
       deliverBuf()
-    case Cancel =>
+    case Cancel ⇒
       context.stop(self)
   }
 
@@ -68,7 +68,7 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
     if (pAuthId == 0L) {
       if (pSessionId != 0L) sendDrop("sessionId must be equal to zero")
       else mb.body match {
-        case RequestAuthId() =>
+        case RequestAuthId() ⇒
           val f =
             if (authId == 0L) {
               authId = rand.nextLong()
@@ -76,10 +76,10 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
             } else Future.successful(())
 
           f.onComplete {
-            case Success(_) => sendPackage(mb.messageId, ResponseAuthId(authId))
-            case Failure(e) => sendDrop(e.getMessage)
+            case Success(_) ⇒ sendPackage(mb.messageId, ResponseAuthId(authId))
+            case Failure(e) ⇒ sendDrop(e.getMessage)
           }
-        case _ => sendDrop("not a RequestAuthId message")
+        case _ ⇒ sendDrop("not a RequestAuthId message")
       }
     } else {
       log.error("AuthorizationManager can handle packages with authId: 0 only")
@@ -92,11 +92,11 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
       if (totalDemand <= Int.MaxValue) {
         val (use, keep) = buf.splitAt(totalDemand.toInt)
         buf = keep
-        use.foreach { p => onNext(ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(ProtoPackage(p)) }
       } else {
         val (use, keep) = buf.splitAt(Int.MaxValue)
         buf = keep
-        use.foreach { p => onNext(ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(ProtoPackage(p)) }
         deliverBuf()
       }
     }

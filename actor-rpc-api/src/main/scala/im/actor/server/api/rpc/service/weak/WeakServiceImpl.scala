@@ -14,36 +14,36 @@ import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManager, WeakUpdatesManagerRegion }
 
 class WeakServiceImpl(implicit
-                      weakUpdManagerRegion: WeakUpdatesManagerRegion,
+  weakUpdManagerRegion: WeakUpdatesManagerRegion,
                       presenceManagerRegion: PresenceManagerRegion,
-                      db: Database,
-                      actorSystem: ActorSystem) extends WeakService {
+                      db:                    Database,
+                      actorSystem:           ActorSystem) extends WeakService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleTyping(peer: OutPeer, typingType: TypingType.TypingType, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client =>
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       val action = peer.`type` match {
-        case PeerType.Private =>
+        case PeerType.Private ⇒
           val update = UpdateTyping(Peer(PeerType.Private, client.userId), client.userId, typingType)
 
           WeakUpdatesManager.broadcastUserWeakUpdate(peer.id, update)
-        case PeerType.Group =>
+        case PeerType.Group ⇒
           val update = UpdateTyping(Peer(PeerType.Group, peer.id), client.userId, typingType)
 
           for {
-            otherUserIds <- persist.GroupUser.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
-            _ <- DBIO.sequence(otherUserIds map (WeakUpdatesManager.broadcastUserWeakUpdate(_, update)))
+            otherUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.filterNot(_ == client.userId))
+            _ ← DBIO.sequence(otherUserIds map (WeakUpdatesManager.broadcastUserWeakUpdate(_, update)))
           } yield ()
       }
 
-      for (_ <- action) yield Ok(ResponseVoid)
+      for (_ ← action) yield Ok(ResponseVoid)
     }
 
     db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleSetOnline(isOnline: Boolean, timeout: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val authorizedAction = requireAuth(clientData).map { client =>
+    val authorizedAction = requireAuth(clientData).map { client ⇒
 
       if (isOnline) {
         PresenceManager.presenceSetOnline(client.userId, timeout)

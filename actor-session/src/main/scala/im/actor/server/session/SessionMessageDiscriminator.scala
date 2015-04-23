@@ -20,7 +20,8 @@ class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[
 
 class SessionMessageDiscriminator(implicit actorSystem: ActorSystem)
   extends FlexiRoute[SessionStreamMessage, SessionMessageDiscriminatorShape](
-    new SessionMessageDiscriminatorShape, OperationAttributes.name("SessionMessageDiscriminator")) {
+    new SessionMessageDiscriminatorShape, OperationAttributes.name("SessionMessageDiscriminator")
+  ) {
 
   import FlexiRoute._
 
@@ -30,7 +31,7 @@ class SessionMessageDiscriminator(implicit actorSystem: ActorSystem)
 
   override def createRouteLogic(p: PortT) = new RouteLogic[SessionStreamMessage] {
     override def initialState = State[Any](DemandFromAll(p.outlets)) {
-      (ctx, _, element) =>
+      (ctx, _, element) ⇒
         // log.debug("Discriminator element: {}", element)
 
         handleElement(ctx, element)
@@ -42,11 +43,11 @@ class SessionMessageDiscriminator(implicit actorSystem: ActorSystem)
 
     private def handleElement(ctx: RouteLogicContext, element: SessionStreamMessage): Unit = {
       element match {
-        case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) =>
+        case HandleMessageBox(MessageBox(messageId, RpcRequestBox(bodyBytes)), clientData) ⇒
           ctx.emit(p.outRpc)(HandleRpcRequest(messageId, bodyBytes, clientData))
-        case e: SubscribeToPresences =>
+        case e: SubscribeToPresences ⇒
           ctx.emit(p.outSubscribe)(e)
-        case unmatched =>
+        case unmatched ⇒
           actorSystem.log.debug("Unmatched {}", unmatched)
           ctx.emit(p.outUnmatched)(unmatched)
       }

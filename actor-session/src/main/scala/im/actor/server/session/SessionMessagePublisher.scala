@@ -23,15 +23,15 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
   private[this] var messageQueue = immutable.Queue.empty[SessionStreamMessage]
 
   def receive = {
-    case (mb: MessageBox, clientData: ClientData) =>
+    case (mb: MessageBox, clientData: ClientData) ⇒
       log.info("MessageBox: {} clientData: {}", mb, clientData)
 
       mb.body match {
-        case Container(bodies) =>
+        case Container(bodies) ⇒
           val messages = bodies.map(HandleMessageBox(_, clientData))
           messageQueue = messageQueue.enqueue(messages.toList)
           deliverBuf()
-        case _ =>
+        case _ ⇒
           if (messageQueue.isEmpty && totalDemand > 0)
             onNext(HandleMessageBox(mb, clientData))
           else {
@@ -39,22 +39,22 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
             deliverBuf()
           }
       }
-    case Request(_) =>
+    case Request(_) ⇒
       deliverBuf()
-    case Cancel =>
+    case Cancel ⇒
       context.stop(self)
-    case unmatched =>
+    case unmatched ⇒
       log.debug("Unmatched {}", unmatched)
   }
 
   @tailrec final def deliverBuf(): Unit =
     if (isActive && totalDemand > 0)
       messageQueue.dequeueOption match {
-        case Some((el, queue)) =>
+        case Some((el, queue)) ⇒
           messageQueue = queue
           onNext(el)
           deliverBuf()
-        case None =>
+        case None ⇒
       }
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {

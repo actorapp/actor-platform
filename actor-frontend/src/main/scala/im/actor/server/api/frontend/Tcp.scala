@@ -26,14 +26,14 @@ object Tcp {
 
     val connections = StreamTcp().bind(serverAddress)
 
-    connections runForeach { conn =>
+    connections runForeach { conn ⇒
       log.info(s"Client connected from: ${conn.remoteAddress}")
 
       try {
         val flow = MTProto.flow(maxBufferSize, sessionRegion)
         conn.handleWith(flow)
       } catch {
-        case e: Exception =>
+        case e: Exception ⇒
           log.error(e, "Failed to create connection flow")
       }
     }

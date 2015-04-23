@@ -32,10 +32,10 @@ object Ws {
 
     val sessionRegion = Session.startRegionProxy()
 
-    val flow = Flow() { implicit builder =>
+    val flow = Flow() { implicit builder ⇒
       import FlowGraph.Implicits._
 
-      val toBs = builder.add(Flow[Frame].map { case BinaryFrame(bs) => bs })
+      val toBs = builder.add(Flow[Frame].map { case BinaryFrame(bs) ⇒ bs })
       val fromBs = builder.add(Flow[ByteString].map(BinaryFrame(_)))
 
       toBs ~> MTProto.flow(maxBufferSize, sessionRegion) ~> fromBs
@@ -45,9 +45,9 @@ object Ws {
 
     val server = system.actorOf(WebSocketServer.props(), "frontend-ws")
     (server ? WebSocketMessage.Bind(interface, port)).map {
-      case Bound(_, connections) =>
+      case Bound(_, connections) ⇒
         Source(connections).runForeach {
-          case WebSocketMessage.Connection(inbound, outbound) =>
+          case WebSocketMessage.Connection(inbound, outbound) ⇒
             flow.runWith(Source(inbound), Sink(outbound))
         }
     }

@@ -21,12 +21,11 @@ import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.server.api.util.ACL
 import im.actor.server.{ models, persist }
 
-class FilesServiceImpl(bucketName: String)
-                      (implicit
-                       s3Client: AmazonS3ScalaClient,
-                       transferManager: TransferManager,
-                       db: Database,
-                       actorSystem: ActorSystem) extends FilesService {
+class FilesServiceImpl(bucketName: String)(implicit
+  s3Client: AmazonS3ScalaClient,
+                                           transferManager: TransferManager,
+                                           db:              Database,
+                                           actorSystem:     ActorSystem) extends FilesService {
 
   import scala.collection.JavaConverters._
 
@@ -38,9 +37,9 @@ class FilesServiceImpl(bucketName: String)
   }
 
   override def jhandleGetFileUrl(location: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] = {
-    val authorizedAction = requireAuth(clientData).map { client =>
+    val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.File.find(location.fileId) flatMap {
-        case Some(file) =>
+        case Some(file) ⇒
           if (ACL.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
             val presignedRequest = new GeneratePresignedUrlRequest(bucketName, s"file_${file.id}")
             val timeout = 1.day
@@ -51,14 +50,14 @@ class FilesServiceImpl(bucketName: String)
             presignedRequest.setMethod(HttpMethod.GET)
 
             for {
-              url <- DBIO.from(s3Client.generatePresignedUrlRequest(presignedRequest))
+              url ← DBIO.from(s3Client.generatePresignedUrlRequest(presignedRequest))
             } yield {
               Ok(ResponseGetFileUrl(url.toString, timeout.toSeconds.toInt))
             }
           } else {
             DBIO.successful(Error(Errors.LocationInvalid))
           }
-        case None => DBIO.successful(Error(Errors.LocationInvalid))
+        case None ⇒ DBIO.successful(Error(Errors.LocationInvalid))
       }
     }
 
@@ -66,7 +65,7 @@ class FilesServiceImpl(bucketName: String)
   }
 
   override def jhandleGetFileUploadUrl(expectedSize: Int, clientData: ClientData): Future[HandlerResult[ResponseGetFileUploadUrl]] = {
-    val authorizedAction = requireAuth(clientData).map { client =>
+    val authorizedAction = requireAuth(clientData).map { client ⇒
       val rnd = ThreadLocalRandom.current()
       val id = rnd.nextLong()
       val salt = ACL.nextAccessSalt(rnd)
@@ -79,8 +78,8 @@ class FilesServiceImpl(bucketName: String)
       presignedRequest.setMethod(HttpMethod.PUT)
 
       for {
-        _ <- persist.File.create(id, salt, key)
-        url <- DBIO.from(s3Client.generatePresignedUrlRequest(presignedRequest))
+        _ ← persist.File.create(id, salt, key)
+        url ← DBIO.from(s3Client.generatePresignedUrlRequest(presignedRequest))
       } yield {
         Ok(ResponseGetFileUploadUrl(url.toString, key.getBytes()))
       }
@@ -90,11 +89,11 @@ class FilesServiceImpl(bucketName: String)
   }
 
   override def jhandleGetFileUploadPartUrl(partNumber: Int, partSize: Int, uploadKey: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetFileUploadPartUrl]] = {
-    val authorizedAction = requireAuth(clientData).map { client =>
+    val authorizedAction = requireAuth(clientData).map { client ⇒
       val key = new String(uploadKey)
 
       persist.File.findByKey(key) flatMap {
-        case Some(file) =>
+        case Some(file) ⇒
           val partKey = s"upload_part_${file.s3UploadKey}_${partNumber}"
           val request = new GeneratePresignedUrlRequest(bucketName, partKey)
           val expiration = new java.util.Date
@@ -104,12 +103,12 @@ class FilesServiceImpl(bucketName: String)
           request.setContentType("application/octet-stream")
 
           for {
-            url <- DBIO.from(s3Client.generatePresignedUrlRequest(request))
-            _ <- persist.FilePart.create(file.id, partNumber, partSize, partKey)
+            url ← DBIO.from(s3Client.generatePresignedUrlRequest(request))
+            _ ← persist.FilePart.create(file.id, partNumber, partSize, partKey)
           } yield {
             Ok(ResponseGetFileUploadPartUrl(url.toString))
           }
-        case None =>
+        case None ⇒
           DBIO.successful(Error(Errors.FileNotFound))
       }
     }
@@ -118,29 +117,29 @@ class FilesServiceImpl(bucketName: String)
   }
 
   override def jhandleCommitFileUpload(uploadKey: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseCommitFileUpload]] = {
-    val authorizedAction = requireAuth(clientData).map { client =>
+    val authorizedAction = requireAuth(clientData).map { client ⇒
       val key = new String(uploadKey)
 
       persist.File.findByKey(key) flatMap {
-        case Some(file) =>
+        case Some(file) ⇒
           for {
-            parts <- persist.FilePart.findByFileId(file.id)
-            tempDir <- DBIO.from(createTempDir())
+            parts ← persist.FilePart.findByFileId(file.id)
+            tempDir ← DBIO.from(createTempDir())
             download = FutureTransfer.listenFor {
               transferManager.downloadDirectory(bucketName, s"upload_part_${file.s3UploadKey}", tempDir)
             } map (_.waitForCompletion())
-            _ <- DBIO.from(download)
-            concatFile <- DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
+            _ ← DBIO.from(download)
+            concatFile ← DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
             upload = FutureTransfer.listenFor {
               transferManager.upload(bucketName, s"file_${file.id}", concatFile)
             } map (_.waitForCompletion())
-            _ <- DBIO.from(upload)
-            _ <- DBIO.from(deleteDir(tempDir))
-            _ <- persist.File.setUploaded(file.id)
+            _ ← DBIO.from(upload)
+            _ ← DBIO.from(deleteDir(tempDir))
+            _ ← persist.File.setUploaded(file.id)
           } yield {
             Ok(ResponseCommitFileUpload(FileLocation(file.id, ACL.fileAccessHash(file.id, file.accessSalt))))
           }
-        case None =>
+        case None ⇒
           DBIO.successful(Error(Errors.FileNotFound))
       }
     }
@@ -159,7 +158,7 @@ class FilesServiceImpl(bucketName: String)
   }
 
   private def etags(responses: Seq[CopyPartResult]): java.util.List[PartETag] = {
-    val xs = responses map { response =>
+    val xs = responses map { response ⇒
       new PartETag(response.getPartNumber(), response.getETag())
     }
 
@@ -181,10 +180,9 @@ class FilesServiceImpl(bucketName: String)
       val dirPath = dir.toPath
       val concatFile = dirPath.resolve("concatenated").toFile
 
-
       val outStream = new FileOutputStream(concatFile)
 
-      fileNames foreach { fileName =>
+      fileNames foreach { fileName ⇒
         Files.copy(dirPath.resolve(fileName), outStream)
       }
 
