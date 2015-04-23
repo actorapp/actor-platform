@@ -7,7 +7,7 @@ import scodec._
 import scodec.bits._
 
 object StringCodecProp extends Properties("StringCodec") {
-  property("encode/decode") = forAll { (a: String) =>
+  property("encode/decode") = forAll { (a: String) ⇒
     val tail = BitVector(hex"feed")
     val buf = string.encode(a).require ++ tail
     string.decode(buf).require == DecodeResult(a, tail)

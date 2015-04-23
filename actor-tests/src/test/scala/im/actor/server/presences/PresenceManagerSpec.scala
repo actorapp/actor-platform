@@ -32,7 +32,7 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   val userId = 1
 
   def e1() = {
-    whenReady(subscribe(userId, probe.ref)){_ => }
+    whenReady(subscribe(userId, probe.ref)) { _ ⇒ }
   }
 
   def e2() = {
@@ -42,13 +42,13 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   def e3() = {
     presenceSetOnline(userId, 500)
     val lastSeenAt = probe.expectMsgPF() {
-      case PresenceState(1, Online, Some(ls)) =>
+      case PresenceState(1, Online, Some(ls)) ⇒
         ls
     }
 
     presenceSetOffline(userId, 100)
     probe.expectMsgPF() {
-      case PresenceState(1, Offline, Some(ls)) =>
+      case PresenceState(1, Offline, Some(ls)) ⇒
         ls should ===(lastSeenAt)
     }
   }
@@ -56,14 +56,14 @@ class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   def e4() = {
     presenceSetOnline(userId, 100)
     val lastSeenAt = probe.expectMsgPF() {
-      case PresenceState(1, Online, Some(ls)) =>
+      case PresenceState(1, Online, Some(ls)) ⇒
         ls
     }
 
     Thread.sleep(200)
 
     probe.expectMsgPF() {
-      case PresenceState(1, Offline, Some(ls)) =>
+      case PresenceState(1, Offline, Some(ls)) ⇒
         ls should ===(lastSeenAt)
     }
   }
