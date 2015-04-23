@@ -51,9 +51,9 @@ class AuthServiceSpec extends BaseServiceSuite {
       implicit val clientData = ClientData(authId, sessionId, None)
 
       def e1() = {
-        whenReady(service.handleSendAuthCode(phoneNumber, 1, "apiKey")) { resp =>
+        whenReady(service.handleSendAuthCode(phoneNumber, 1, "apiKey")) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseSendAuthCode(_, false)) =>
+            case Ok(ResponseSendAuthCode(_, false)) ⇒
           }
         }
       }
@@ -80,9 +80,9 @@ class AuthServiceSpec extends BaseServiceSuite {
           isSilent = false
         )
 
-        whenReady(request) { resp =>
+        whenReady(request) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseAuth( _, _)) =>
+            case Ok(ResponseAuth(_, _)) ⇒
           }
         }
       }
@@ -113,20 +113,20 @@ class AuthServiceSpec extends BaseServiceSuite {
             isSilent = false
           )
 
-          whenReady(request) { resp =>
+          whenReady(request) { resp ⇒
             resp should matchPattern {
-              case Ok(ResponseAuth(_, _)) =>
+              case Ok(ResponseAuth(_, _)) ⇒
             }
           }
         }
 
         Thread.sleep(1000)
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(authId).head)) { update =>
+        whenReady(db.run(persist.sequence.SeqUpdate.find(authId).head)) { update ⇒
           update.header should ===(UpdateContactRegistered.header)
         }
 
-        whenReady(db.run(persist.contact.UnregisteredContact.find(unregPhoneNumber))) { unregContacts =>
+        whenReady(db.run(persist.contact.UnregisteredContact.find(unregPhoneNumber))) { unregContacts ⇒
           unregContacts shouldBe empty
         }
       }
@@ -152,9 +152,9 @@ class AuthServiceSpec extends BaseServiceSuite {
           appKey = "appKey"
         )
 
-        whenReady(request) { resp =>
+        whenReady(request) { resp ⇒
           resp should matchPattern {
-            case -\/(service.Errors.PhoneNumberUnoccupied) =>
+            case -\/(service.Errors.PhoneNumberUnoccupied) ⇒
           }
         }
       }
@@ -179,9 +179,9 @@ class AuthServiceSpec extends BaseServiceSuite {
           appKey = "appKey"
         )
 
-        val rsp = whenReady(request) { resp =>
+        val rsp = whenReady(request) { resp ⇒
           resp should matchPattern {
-            case Ok(rsp: ResponseAuth) =>
+            case Ok(rsp: ResponseAuth) ⇒
           }
 
           resp.toOption.get
@@ -212,9 +212,9 @@ class AuthServiceSpec extends BaseServiceSuite {
             deviceTitle = "Specs virtual device",
             appId = 1,
             appKey = "appKey"
-          )) { resp =>
+          )) { resp ⇒
             resp should matchPattern {
-              case Ok(rsp: ResponseAuth) =>
+              case Ok(rsp: ResponseAuth) ⇒
             }
           }
         }
@@ -235,20 +235,20 @@ class AuthServiceSpec extends BaseServiceSuite {
             deviceTitle = "Specs virtual device",
             appId = 1,
             appKey = "appKey"
-          )) { resp =>
+          )) { resp ⇒
             resp should matchPattern {
-              case Ok(rsp: ResponseAuth) =>
+              case Ok(rsp: ResponseAuth) ⇒
             }
           }
         }
 
-        whenReady(db.run(persist.AuthId.findByUserId(user.id))) { authIds =>
+        whenReady(db.run(persist.AuthId.findByUserId(user.id))) { authIds ⇒
           val ids = authIds.map(_.id)
           ids should contain(authId2)
           ids shouldNot contain(authId1)
         }
 
-        whenReady(db.run(persist.AuthSession.findByUserId(user.id))) { sessions =>
+        whenReady(db.run(persist.AuthSession.findByUserId(user.id))) { sessions ⇒
           val ids = sessions.map(_.authId)
           ids should contain(authId2)
           ids shouldNot contain(authId1)

@@ -8,13 +8,13 @@ import scodec.bits._
 
 object LongsCodecProp extends Properties("LongsCodec") {
   def genLong() = for {
-    n <- Gen.choose(Long.MinValue, Long.MaxValue)
-    tail <- genLongs()
+    n ← Gen.choose(Long.MinValue, Long.MaxValue)
+    tail ← genLongs()
   } yield Vector(n) ++ tail
 
   def genLongs(): Gen[Vector[Long]] = Gen.oneOf(genLong(), Gen.const(Vector[Long]()))
 
-  property("encode/decode") = forAll(genLongs()) { (v: Vector[Long]) =>
+  property("encode/decode") = forAll(genLongs()) { (v: Vector[Long]) ⇒
     val tail = BitVector(hex"feed")
     val buf = longs.encode(v).require ++ tail
     longs.decode(buf).require == DecodeResult(v, tail)

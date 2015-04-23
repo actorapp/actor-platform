@@ -14,14 +14,13 @@ import im.actor.server.api.util.ACL
 import im.actor.server.persist
 
 trait GroupsServiceHelpers {
-  protected def createGroup(title: String, userIds: Set[Int])
-                           (implicit
-                            clientData: ClientData,
-                            db: Database,
-                            service: GroupsService,
-                            actorSystem: ActorSystem): ResponseCreateGroup = {
+  protected def createGroup(title: String, userIds: Set[Int])(implicit
+    clientData: ClientData,
+                                                              db:          Database,
+                                                              service:     GroupsService,
+                                                              actorSystem: ActorSystem): ResponseCreateGroup = {
     val users = Await.result(db.run(persist.User.findByIds(userIds)), 5.seconds)
-    val userPeers = users.map(user => UserOutPeer(user.id, ACL.userAccessHash(clientData.authId, user)))
+    val userPeers = users.map(user ⇒ UserOutPeer(user.id, ACL.userAccessHash(clientData.authId, user)))
     val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), 5.seconds)
     result.toOption.get
   }

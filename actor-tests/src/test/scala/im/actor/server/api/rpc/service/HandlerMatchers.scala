@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.{ rpc => api }
+import im.actor.api.{ rpc ⇒ api }
 import org.specs2._, matcher._
 
 trait HandlerMatchers extends DisjunctionMatchers {

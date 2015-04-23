@@ -53,7 +53,9 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
   val rpcApiService = system.actorOf(RpcApiService.props())
   implicit val sessionRegion = Session.startRegion(
     Some(
-      Session.props(rpcApiService)))
+      Session.props(rpcApiService)
+    )
+  )
 
   val authService = new AuthServiceImpl
   val sequenceService = new SequenceServiceImpl
@@ -105,7 +107,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       expectMessageAck(authId, sessionId, messageId)
 
       expectRpcResult() should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, false)) =>
+        case RpcOk(ResponseSendAuthCode(_, false)) ⇒
       }
     }
 
@@ -141,7 +143,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       expectMessageAck(authId, sessionId, secondMessageId)
       expectRpcResult() should matchPattern {
-        case RpcOk(ResponseAuth(_, _)) =>
+        case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
       val encodedSignOutRequest = RequestCodec.encode(Request(RequestSignOut)).require
@@ -151,7 +153,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       expectMessageAck(authId, sessionId, thirdMessageId)
       expectRpcResult() should matchPattern {
-        case RpcOk(ResponseVoid) =>
+        case RpcOk(ResponseVoid) ⇒
       }
     }
 
@@ -189,7 +191,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       val authResult = expectRpcResult()
       authResult should matchPattern {
-        case RpcOk(ResponseAuth(_, _)) =>
+        case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
@@ -197,7 +199,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val update = UpdateContactRegistered(1, true, 1L)
       Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(update)), 1.second)
 
-      expectSeqUpdate(authId, sessionId).update should === (update.toByteArray)
+      expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
 
     def e6() = {
@@ -234,7 +236,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       val authResult = expectRpcResult()
       authResult should matchPattern {
-        case RpcOk(ResponseAuth(_, _)) =>
+        case RpcOk(ResponseAuth(_, _)) ⇒
       }
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
@@ -242,7 +244,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       val update = UpdateContactRegistered(1, true, 1L)
       Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(clientData.userId, update)), 1.second)
 
-      expectWeakUpdate(authId, sessionId).update should === (update.toByteArray)
+      expectWeakUpdate(authId, sessionId).update should ===(update.toByteArray)
     }
 
     def e7() = {
@@ -280,7 +282,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
         val authResult = expectRpcResult()
         authResult should matchPattern {
-          case RpcOk(ResponseAuth(_, _)) =>
+          case RpcOk(ResponseAuth(_, _)) ⇒
         }
       }
 
@@ -297,7 +299,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
         val subscribeResult = expectRpcResult()
         subscribeResult should matchPattern {
-          case RpcOk(ResponseVoid) =>
+          case RpcOk(ResponseVoid) ⇒
         }
       }
 
@@ -322,14 +324,14 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
     private def expectRpcResult(): RpcResult = {
       Option(probe.receiveOne(5.seconds)) match {
-        case Some(MTPackage(authId, sessionId, mbBytes)) =>
+        case Some(MTPackage(authId, sessionId, mbBytes)) ⇒
           MessageBoxCodec.decode(mbBytes).require.value.body match {
-            case RpcResponseBox(messageId, rpcResultBytes) =>
+            case RpcResponseBox(messageId, rpcResultBytes) ⇒
               RpcResultCodec.decode(rpcResultBytes).require.value
-            case msg => throw new Exception(s"Expected RpcResponseBox but got $msg")
+            case msg ⇒ throw new Exception(s"Expected RpcResponseBox but got $msg")
           }
-        case Some(msg) => throw new Exception(s"Expected MTPackage but got $msg")
-        case None => throw new Exception("No rpc response")
+        case Some(msg) ⇒ throw new Exception(s"Expected MTPackage but got $msg")
+        case None      ⇒ throw new Exception("No rpc response")
       }
     }
 
@@ -354,7 +356,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
     private def expectMessageBox(authId: Long, sessionId: Long): MessageBox = {
       val packageBody = probe.expectMsgPF() {
-        case MTPackage(aid, sid, body) if aid == authId && sid == sessionId => body
+        case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒ body
       }
 
       MessageBoxCodec.decode(packageBody).require.value

@@ -43,12 +43,12 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { s =>
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { s ⇒
       s.header should ===(UpdateGroupInvite.header)
     }
 
-    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds =>
-      userIds.toSet should === (Set(user1.id, user2.id))
+    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
+      userIds.toSet should ===(Set(user1.id, user2.id))
     }
   }
 
@@ -65,23 +65,24 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp =>
+    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseSeqDate(1001, _, _)) =>
+        case Ok(ResponseSeqDate(1001, _, _)) ⇒
       }
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates =>
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates ⇒
       updates.map(_.header) should ===(
         Seq(
           UpdateGroupMembersUpdate.header,
           UpdateGroupAvatarChanged.header,
           UpdateGroupTitleChanged.header,
           UpdateGroupInvite.header
-        ))
+        )
+      )
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { update =>
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { update ⇒
       update.header should ===(UpdateGroupUserAdded.header)
     }
   }
@@ -95,18 +96,18 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp =>
+    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseSeqDate(1001, _, _)) =>
+        case Ok(ResponseSeqDate(1001, _, _)) ⇒
       }
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1))) { updates =>
-      updates.head.header should === (UpdateGroupTitleChanged.header)
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1))) { updates ⇒
+      updates.head.header should ===(UpdateGroupTitleChanged.header)
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates =>
-      updates.head.header should === (UpdateGroupTitleChanged.header)
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates ⇒
+      updates.head.header should ===(UpdateGroupTitleChanged.header)
     }
   }
 }

@@ -8,7 +8,7 @@ import scodec.bits._
 import test.utils.scalacheck.Generators._
 
 object BytesCodecProp extends Properties("BytesCodec") {
-  property("encode/decode") = forAll(genBV()) { (a: BitVector) =>
+  property("encode/decode") = forAll(genBV()) { (a: BitVector) ⇒
     val tail = BitVector(hex"feed")
     val buf = bytes.encode(a).require ++ tail
     bytes.decode(buf).require == DecodeResult(a, tail)

@@ -9,7 +9,7 @@ import scodec.bits._
 object VarIntCodecProp extends Properties("VarIntCodec") {
   val integers = Gen.choose(Long.MinValue, Long.MaxValue)
 
-  property("encode/decode") = forAll(integers) { (a: Long) =>
+  property("encode/decode") = forAll(integers) { (a: Long) ⇒
     val tail = BitVector(hex"feed")
     val buf = varint.encode(a).require ++ tail
     varint.decode(buf).require == DecodeResult(a.abs, tail)

@@ -29,7 +29,6 @@ private[messaging] trait MessagingHandlers {
   override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeer(client.userId, outPeer) {
-        // TODO: record social relation
         val dateTime = new DateTime
         val dateMillis = dateTime.getMillis
 

@@ -100,7 +100,7 @@ class FilesServiceImpl(bucketName: String)(implicit
           expiration.setTime(expiration.getTime + 1.day.toMillis)
           request.setMethod(HttpMethod.PUT)
           request.setExpiration(expiration)
-          request.setContentType("application/octet-stream")
+          request.setContentType("multipart/form-data")
 
           for {
             url ← DBIO.from(s3Client.generatePresignedUrlRequest(request))

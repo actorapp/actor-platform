@@ -34,23 +34,23 @@ class ConfigsServiceSpec extends BaseServiceSuite {
   implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
   def e1() = {
-    whenReady(service.handleEditParameter("par1", "val1")) { resp =>
+    whenReady(service.handleEditParameter("par1", "val1")) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseSeq(_, _)) =>
+        case Ok(ResponseSeq(_, _)) ⇒
       }
     }
 
-    whenReady(service.handleEditParameter("par1", "val2")) { resp =>
+    whenReady(service.handleEditParameter("par1", "val2")) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseSeq(_, _)) =>
+        case Ok(ResponseSeq(_, _)) ⇒
       }
     }
   }
 
   def e2() = {
-    whenReady(service.handleGetParameters()) { resp =>
+    whenReady(service.handleGetParameters()) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseGetParameters(Vector(Parameter("par1", "val2")))) =>
+        case Ok(ResponseGetParameters(Vector(Parameter("par1", "val2")))) ⇒
       }
     }
   }
