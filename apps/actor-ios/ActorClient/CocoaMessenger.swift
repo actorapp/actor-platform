@@ -33,7 +33,9 @@ get{
         builder.setEnableNetworkLogging(true)
         
         // Connection
-        builder.addEndpoint(NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String);
+        var url = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
+        NSLog("url: \(url)")
+        builder.addEndpoint(url);
         
         var deviceKey = NSUUID().UUIDString;
         

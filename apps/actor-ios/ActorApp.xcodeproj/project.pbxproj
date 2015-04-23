@@ -5496,7 +5496,7 @@
 				API_ID = 1;
 				API_KEY = "??";
 				API_PUSH_ID = 1;
-				API_URL = "tls://mtproto-api-dev1.actor.im:443";
+				API_URL = "tcp://mtproto-api-dev1.actor.im:8080";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
@@ -5589,7 +5589,7 @@
 				API_ID = 1;
 				API_KEY = "??";
 				API_PUSH_ID = 1;
-				API_URL = "tls://mtproto-api-dev2.actor.im:443";
+				API_URL = "tcp://mtproto-api-dev1.actor.im:8080";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
@@ -5682,7 +5682,7 @@
 				API_ID = 1;
 				API_KEY = "??";
 				API_PUSH_ID = 1;
-				API_URL = "tls://mtproto-api.actor.im:443";
+				API_URL = "tcp://mtproto-api-dev1.actor.im:8080";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger.llectro;
@@ -5820,7 +5820,7 @@
 				API_ID = 1;
 				API_KEY = "??";
 				API_PUSH_ID = 1;
-				API_URL = "tls://mtproto-api-dev1.actor.im:443";
+				API_URL = "tcp://mtproto-api-dev1.actor.im:8080";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.app;
@@ -5861,7 +5861,7 @@
 				API_ID = 1;
 				API_KEY = "??";
 				API_PUSH_ID = 1;
-				API_URL = "tls://mtproto-api.actor.im:443";
+				API_URL = "tcp://mtproto-api-dev1.actor.im:8080";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.messenger;
