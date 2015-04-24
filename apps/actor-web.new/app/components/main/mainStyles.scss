@@ -4,8 +4,9 @@
   margin-top: 32px;
   margin-bottom: 32px;
   overflow: hidden;
-  @media (max-width: 960px) {
+  @media (max-width: 1024px) {
     height: 100%;
+    width: 100%;
     margin-top: 0;
     margin-bottom: 0;
     border-radius: 0;
