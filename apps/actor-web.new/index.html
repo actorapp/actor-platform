@@ -7,13 +7,26 @@
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body ng-cloak ng-controller="mainController as main">
+<body ng-cloak ng-controller="mainController as main" layout="row" layout-align="center start" layout-align-sm="start start">
 
-<div class="main">
-    <div ui-view="toolbar"></div>
+<div class="main" layout="row">
+    <md-sidenav md-component-id="left" class="md-sidenav-left" md-is-locked-open="main.$mdMedia('gt-sm')">
+        <md-toolbar>
+            <h2 class="md-toolbar-tools"></h2>
+        </md-toolbar>
+        <md-content></md-content>
+    </md-sidenav>
+    <div flex layout="column">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button ng-click="main.openSidebar()" ng-if="!main.$mdMedia('gt-sm')" class="md-icon-button" aria-label="Menu">
+                    <md-icon md-svg-icon="bower_components/material-design-icons/navigation/svg/production/ic_menu_36px.svg"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-content layout-padding flex id="content"></md-content>
 
-    <div ui-view="login"></div>
-    <div ui-view="content"></div>
+    </div>
 </div>
 
 <script src="bower_components/angular/angular.min.js"></script>
