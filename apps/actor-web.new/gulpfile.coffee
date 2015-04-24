@@ -4,6 +4,7 @@ connect = require 'gulp-connect'
 concat = require 'gulp-concat'
 sass = require 'gulp-sass'
 coffee = require 'gulp-coffee'
+autoprefixer = require 'gulp-autoprefixer'
 sourcemaps = require 'gulp-sourcemaps'
 
 gulp.task 'coffee', ->
@@ -20,6 +21,7 @@ gulp.task 'sass', ->
   .pipe sourcemaps.init()
   .pipe sass().on('error', gutil.log)
   .pipe concat 'styles.css'
+  .pipe autoprefixer()
   .pipe sourcemaps.write()
   .pipe gulp.dest './assets/css'
   .pipe connect.reload()

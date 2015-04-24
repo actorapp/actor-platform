@@ -1,0 +1,13 @@
+<div>
+    <md-subheader>Unread Messages</md-subheader>
+    <md-list layout-padding flex>
+        <md-list-item class="md-3-line" ng-repeat="message in main.messages">
+            <img ng-src="{{message.face}}" class="md-avatar" alt="{{message.who}}">
+            <div class="md-list-item-text">
+                <h3>{{message.what}}</h3>
+                <h4>{{message.who}}</h4>
+                <p>{{message.notes}}</p>
+            </div>
+        </md-list-item>
+    </md-list>
+</div>
