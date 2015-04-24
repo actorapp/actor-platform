@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="actorWeb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body ng-cloak ng-controller="mainController as main">
+
+<div class="main">
+    <div ui-view="toolbar"></div>
+
+    <div ui-view="login"></div>
+    <div ui-view="content"></div>
+</div>
+
+<script src="bower_components/angular/angular.min.js"></script>
+
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>
