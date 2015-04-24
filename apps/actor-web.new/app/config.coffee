@@ -6,12 +6,12 @@ config = ($stateProvider, $urlRouterProvider) ->
       views:
         'toolbar': templateUrl: 'app/shared/toolbar/toolbarDefaultView.html'
         'sidebar': templateUrl: 'app/shared/sidebar/sidebarDefaultView.html'
+        'content': templateUrl: 'app/components/main/mainView.html'
 
     .state 'login',
       url: '/login'
       views:
-        'toolbar': templateUrl: 'app/shared/toolbar/toolbarLoginView.html'
-        'login': templateUrl: 'app/components/login/loginView.html'
+        'content': templateUrl: 'app/components/login/loginView.html'
 
   $urlRouterProvider
     .otherwise '/'

@@ -1,5 +1,12 @@
-<header>
-    <img src="assets/img/logo_400x400.png" alt="actor"/>
-    <h2>Actor</h2>
-</header>
+<div class="md-toolbar-tools">
+    <md-button ng-click="main.openSidebar()" ng-if="!main.$mdMedia('gt-sm')" class="md-icon-button" aria-label="Menu">
+        <md-icon md-svg-icon="bower_components/material-design-icons/navigation/svg/production/ic_menu_24px.svg"></md-icon>
+    </md-button>
 
+    <span flex></span>
+
+    <md-button class="md-icon-button" aria-label="New message">
+        <md-icon md-svg-icon="bower_components/material-design-icons/editor/svg/production/ic_insert_drive_file_24px.svg"></md-icon>
+        Attachments
+    </md-button>
+</div>
