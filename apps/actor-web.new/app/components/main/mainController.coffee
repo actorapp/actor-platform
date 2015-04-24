@@ -1,8 +1,16 @@
 class MainController
-  constructor: ->
+  constructor: (@$mdSidenav, @$mdMedia, @$mdBottomSheet) ->
     console.log 'MainController'
+    console.log 'openBottomSheet'
+    @$mdBottomSheet.show
+      templateUrl: 'app/shared/bottomSheet/bottomSheetView.html'
+      parent: '#content'
 
-MainController.$inject = []
+  openSidebar: ->
+    console.log 'openSidebar'
+    @$mdSidenav('left').toggle()
+
+MainController.$inject = ['$mdSidenav', '$mdMedia', '$mdBottomSheet']
 
 angular
   .module 'actorWeb'
