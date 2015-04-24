@@ -2,14 +2,15 @@
 @import 'variables';
 @import '../../bower_components/normalize.css/normalize.css';
 
+html {
+  background-color: $bodyColor;
+}
 body {
   background-color: $bodyColor;
   background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
   background-size: 100% 300px;
   background-repeat: no-repeat;
-  padding-top: 100px;
   @media (max-width: 599px) {
-    padding-top: 0;
     background-image: none;
     header {
       background-color: $baseColor;
@@ -39,7 +40,7 @@ body {
 
 .main {
   margin: 0 auto;
-  max-width: 360px;
+  //max-width: 360px;
   background: rgb(255, 255, 255);
   position: relative;
   border-radius: 4px;
@@ -47,33 +48,51 @@ body {
   //box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, .26);
 
   box-shadow: 0 1px 1px rgba(97, 127, 152, .2), 1px 0 0 rgba(97, 127, 152, 0.1), -1px 0 0 rgba(97, 127, 152, 0.1);
+  > div > md-content {
+    overflow: hidden;
+    border-radius: 0 0 4px 0;
+  }
+  > div {
+    overflow: hidden;
+    border-radius: 0 0 4px 0;
+  }
 }
 
-header {
-  padding: 0 16px;
-  font-size: 0;
+md-toolbar.md-default-theme {
   background-color: rgb(250,250,250);
-  border-bottom: 1px solid rgb(228,227,227);
-  img {
-    width: 40px;
-    height: 40px;
-    display: inline-block;
-    margin: 12px 12px 12px 0;
-    vertical-align: middle;
+  border-bottom: 1px solid rgb(239,239,239);
+  box-shadow: none;
+  md-icon {
+    color: rgb(160,160,160);
   }
-  h2 {
-    vertical-align: middle;
-    display: inline-block;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-    color: rgb(114,114,114);
-    font-family: RobotoDraft, Roboto, 'Helvetica Neue', sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    height: 32px;
-    margin: 16px 0;
-    line-height: 32px;
+  .md-toolbar-tools {
+    color: rgb(160,160,160);
+    & > .md-button:first-child {
+      margin-left: -8px;
+      margin-right: 6px;
+    }
+
   }
+  //img {
+  //  width: 40px;
+  //  height: 40px;
+  //  display: inline-block;
+  //  margin: 12px 12px 12px 0;
+  //  vertical-align: middle;
+  //}
+  //h2 {
+  //  vertical-align: middle;
+  //  display: inline-block;
+  //  -webkit-font-smoothing: antialiased;
+  //  box-sizing: border-box;
+  //  color: rgb(114,114,114);
+  //  font-family: RobotoDraft, Roboto, 'Helvetica Neue', sans-serif;
+  //  font-size: 20px;
+  //  font-weight: 500;
+  //  height: 32px;
+  //  margin: 16px 0;
+  //  line-height: 32px;
+  //}
 }
 
 .login {
@@ -96,6 +115,7 @@ header {
 }
 
 .md-button {
+  &.md-primary {
     background-color: $baseColor !important;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.26) !important;
     font-size: 14px;
@@ -103,6 +123,7 @@ header {
     &:hover {
       box-shadow: 0 8px 17px rgba(0, 0, 0, .2) !important;
     }
+  }
   &.md-big {
     line-height: 36px;
     padding: 0 16px;
