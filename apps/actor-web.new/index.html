@@ -2,7 +2,7 @@
 <html ng-app="actorWeb">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
@@ -10,7 +10,7 @@
 <body ng-cloak ng-controller="mainController as main" layout="row" layout-align="center start" layout-align-sm="start start">
 
 <div class="main" layout="row">
-    <md-sidenav md-component-id="left" class="md-sidenav-left" md-is-locked-open="main.$mdMedia('gt-sm')">
+    <md-sidenav md-component-id="left" class="md-sidenav-left" md-is-locked-open="main.$mdMedia('gt-md')">
         <md-toolbar>
             <h2 class="md-toolbar-tools"></h2>
         </md-toolbar>
@@ -19,13 +19,14 @@
     <div flex layout="column">
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <md-button ng-click="main.openSidebar()" ng-if="!main.$mdMedia('gt-sm')" class="md-icon-button" aria-label="Menu">
+                <md-button ng-click="main.openSidebar()" ng-if="!main.$mdMedia('gt-md')" class="md-icon-button" aria-label="Menu">
                     <md-icon md-svg-icon="bower_components/material-design-icons/navigation/svg/production/ic_menu_36px.svg"></md-icon>
                 </md-button>
             </div>
         </md-toolbar>
-        <md-content layout-padding flex id="content"></md-content>
-
+        <md-content layout-padding flex id="content">
+            
+        </md-content>
     </div>
 </div>
 
