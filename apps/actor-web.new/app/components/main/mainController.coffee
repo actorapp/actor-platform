@@ -6,70 +6,18 @@ class MainController
 #      parent: '#content'
 
   messages: [
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
     who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
+    notes: "A robot may not injure a human being or, through inaction, allow a human being to come to harm.
+            A robot must obey the orders given it by human beings, except where such orders would conflict with the First Law.
+            A robot must protect its own existence as long as such protection does not conflict with the First or Second Law."
   ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
+    who: 'Степан',
+    notes: "Проверка блин"
   ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
     who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
+    notes: 'Brunch this weekend?',
   ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
     who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
-    notes: " I'll be in your neighborhood doing errands"
-  ,
-    face : '/img/list/60.jpeg',
-    what: 'Brunch this weekend?',
-    who: 'Min Li Chan',
-    when: '3:08PM',
     notes: " I'll be in your neighborhood doing errands"
   ]
 

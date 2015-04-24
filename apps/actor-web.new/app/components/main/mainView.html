@@ -1,11 +1,10 @@
-<div>
-    <md-subheader>Unread Messages</md-subheader>
+<div flex>
+    <md-subheader>Old Messages</md-subheader>
     <md-list layout-padding flex>
         <md-list-item class="md-3-line" ng-repeat="message in main.messages">
-            <img ng-src="{{message.face}}" class="md-avatar" alt="{{message.who}}">
-            <div class="md-list-item-text">
-                <h3>{{message.what}}</h3>
-                <h4>{{message.who}}</h4>
+            <img class="md-avatar" ng-src="http://api.adorable.io/avatars/48/{{ message.who }}.png" alt="{{ message.who }}"/>
+            <div class="md-list-item-text" flex>
+                <h3>{{message.who}}</h3>
                 <p>{{message.notes}}</p>
             </div>
         </md-list-item>

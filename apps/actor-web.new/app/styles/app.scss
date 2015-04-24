@@ -1,4 +1,5 @@
-@charset 'UTF-8';
+@charset "UTF-8";
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,500,700,300&subset=latin,cyrillic);
 @import 'variables';
 @import '../../bower_components/normalize.css/normalize.css';
 
@@ -11,40 +12,27 @@ html {
 body {
   background-color: transparent;
   padding: 24px;
+  text-rendering: optimizeLegibility;
   transition: padding .4s cubic-bezier(.25,.8,.25,1);
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   @media (max-width: 1024px) {
-    //border-top: 1px solid rgb(239,239,239);
     padding: 0;
-    .main {
-      max-width: 100%;
-      width: 100%;
-        border-radius: 0;
-        //background-color: transparent;
-        //box-shadow: none;
-        overflow: visible;
-      .login {
-        //margin-top: 16px;
-        //margin-right: 16px;
-        //margin-left: 16px;
-        //border-radius: 0 0 4px 4px;
-        //background: rgb(255, 255, 255);
-        //box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, .26);
-      }
-    }
   }
 
 }
 
 .main {
   margin: 0 auto;
-  //max-width: 360px;
   background: rgb(255, 255, 255);
   position: relative;
-  //border-radius: 4px;
   overflow: hidden;
-  //box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, .26);
 
   box-shadow: 0 1px 1px rgba(97, 127, 152, .2), 1px 0 0 rgba(97, 127, 152, 0.1), -1px 0 0 rgba(97, 127, 152, 0.1);
+  @media (max-width: 1024px) {
+    width: 100%;
+    border-radius: 0;
+    overflow: visible;
+  }
 }
 
 md-toolbar.md-default-theme {
@@ -70,26 +58,6 @@ md-toolbar.md-default-theme {
     }
 
   }
-  //img {
-  //  width: 40px;
-  //  height: 40px;
-  //  display: inline-block;
-  //  margin: 12px 12px 12px 0;
-  //  vertical-align: middle;
-  //}
-  //h2 {
-  //  vertical-align: middle;
-  //  display: inline-block;
-  //  -webkit-font-smoothing: antialiased;
-  //  box-sizing: border-box;
-  //  color: rgb(114,114,114);
-  //  font-family: RobotoDraft, Roboto, 'Helvetica Neue', sans-serif;
-  //  font-size: 20px;
-  //  font-weight: 500;
-  //  height: 32px;
-  //  margin: 16px 0;
-  //  line-height: 32px;
-  //}
 }
 
 .login-image {
@@ -99,21 +67,15 @@ md-toolbar.md-default-theme {
   background-repeat: no-repeat;
 }
 .login {
-  max-width: 360px;
-  .subheader {
-    display: inline;
-    font-family: RobotoDraft, Roboto, 'Helvetica Neue', sans-serif;
-    font-size: 14px;
-    color: rgba(0,0,0,.54);
-    font-weight: 500;
-    height: auto;
-    line-height: 14px;
-  }
   form {
     padding: 0 16px 16px;
     p {
-      font-size: 14px;
-      color: rgba(0,0,0,.3)
+      max-width: 340px;
+      padding: 0 4px;
+      font-size: 20px;
+      color: rgba(0,0,0,.4);
+      font-weight: 400;
+      line-height: 36px;
     }
   }
 }
@@ -141,7 +103,6 @@ md-toolbar.md-default-theme {
     background-color: $baseColor !important;
     box-shadow: 0 2px 5px 0 rgba(0,0,0,.26) !important;
     font-size: 14px;
-    font-weight: 500;
     &:hover {
       box-shadow: 0 8px 17px rgba(0, 0, 0, .2) !important;
     }
@@ -156,8 +117,8 @@ md-toolbar.md-default-theme {
   &.md-icon-button {
     color: inherit !important;
     text-transform: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 500;
     span {
       vertical-align: middle;
       padding-right: 4px;
@@ -170,5 +131,54 @@ md-toolbar.md-default-theme {
   }
   .md-input {
     border-color: $baseColor;
+  }
+}
+
+md-list {
+  display: block;
+  padding: 8px 0 !important;
+}
+md-list-item {
+  padding: 0 16px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  &.md-3-line {
+    text-overflow: ellipsis;
+    align-items: flex-start;
+  }
+  > .md-avatar {
+    width: 40px;
+    height: 40px;
+    margin: 8px 16px 8px 0;
+    border-radius: 50%;
+    box-sizing: content-box;
+    overflow: hidden;
+  }
+  > .md-list-item-text {
+    margin: 8px 0;
+    h3 {
+      color: rgba(0,0,0,.85);
+      font-size: 16px;
+      height: 12px;
+      font-weight: 500;
+      line-height: 12px;
+      margin: 4px 0 6px;
+    }
+    h4 {
+      font-size: 14px;
+      font-weight: normal;
+      height: 10px;
+      line-height: 10px;
+      margin: 10px 0 5px;
+    }
+    p {
+      color: rgb(37,37,37);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      margin: 4px 0 0;
+    }
   }
 }
