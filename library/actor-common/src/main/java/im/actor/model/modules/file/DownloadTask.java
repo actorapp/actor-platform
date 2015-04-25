@@ -189,7 +189,7 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void downloadPart(final int blockIndex, final int fileOffset) {
-        downloaderProvider.downloadPart(fileUrl, fileOffset, blockSize, new FileDownloadCallback() {
+        downloaderProvider.downloadPart(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
             @Override
             public void onDownloaded(final byte[] data) {
                 self().send(new Runnable() {
