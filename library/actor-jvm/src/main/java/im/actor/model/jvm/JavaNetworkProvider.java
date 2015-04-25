@@ -22,13 +22,18 @@ public class JavaNetworkProvider implements NetworkProvider {
             public void run() {
                 try {
                     createCallback.onConnectionCreated(
-                            new JavaTcpConnection(
+                            new JavaOldTcpConnection(
                                     connectionId,
-                                    mtprotoVersion,
-                                    apiMajorVersion,
-                                    apiMinorVersion,
                                     endpoint,
                                     callback));
+//                    createCallback.onConnectionCreated(
+//                            new JavaTcpConnection(
+//                                    connectionId,
+//                                    mtprotoVersion,
+//                                    apiMajorVersion,
+//                                    apiMinorVersion,
+//                                    endpoint,
+//                                    callback));
                 } catch (Exception e) {
                     e.printStackTrace();
                     createCallback.onConnectionCreateError();
