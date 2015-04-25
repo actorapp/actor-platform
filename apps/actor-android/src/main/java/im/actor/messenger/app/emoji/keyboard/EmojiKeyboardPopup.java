@@ -43,6 +43,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.stickers.Stickers;
@@ -243,12 +245,7 @@ public class EmojiKeyboardPopup extends PopupWindow
             }
         });
         
-        // emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
-        emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
-        emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
-        emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
-        emojiPagerIndicator.setUnderlineHeight(0);
-        emojiPagerIndicator.setTabPaddingLeftRight(0);
+
 
         return keyboardView;
     }
@@ -339,7 +336,7 @@ public class EmojiKeyboardPopup extends PopupWindow
         PagerSlidingTabStrip emojiPagerIndicator = (PagerSlidingTabStrip) emojiPagerView.findViewById(R.id.emoji_pager_indicator);
         View backspace = emojiPagerView.findViewById(R.id.backspace);
 
-        emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
+        emojiPagerIndicator.setTabBackground(R.drawable.clickable_background);
         emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
         emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
         emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
