@@ -56,6 +56,7 @@ public class Core {
 
         // Integrations
         if (BuildConfig.MINT != null) {
+            Mint.disableNetworkMonitoring();
             Mint.initAndStartSession(application, BuildConfig.MINT);
         }
         Fresco.initialize(application);
