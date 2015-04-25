@@ -15,10 +15,16 @@ body {
   text-rendering: optimizeLegibility;
   transition: padding .4s cubic-bezier(.25,.8,.25,1);
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  @media (max-height: 600px) {
+    padding-top: 0;
+    padding-bottom: 0;
+    .main {
+      border-radius: 0;
+    }
+  }
   @media (max-width: 1024px) {
     padding: 0;
   }
-
 }
 
 .main {
@@ -26,6 +32,7 @@ body {
   background: rgb(255, 255, 255);
   position: relative;
   overflow: hidden;
+  border-radius: 4px;
 
   box-shadow: 0 1px 1px rgba(97, 127, 152, .2), 1px 0 0 rgba(97, 127, 152, 0.1), -1px 0 0 rgba(97, 127, 152, 0.1);
   @media (max-width: 1024px) {
@@ -180,5 +187,12 @@ md-list-item {
       line-height: 20px;
       margin: 4px 0 0;
     }
+  }
+}
+
+.md-sidenav-left {
+  border-radius: 4px 0 0 4px;
+  @media (max-width: 1024px) {
+    border-radius: 0;
   }
 }
