@@ -126,7 +126,7 @@
             android:id="@+id/mediaContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/selector"
+            android:background="@drawable/clickable_background"
             android:paddingRight="8dp">
 
             <im.actor.messenger.app.view.TintImageView
@@ -158,7 +158,7 @@
             android:id="@+id/docsContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/selector"
+            android:background="@drawable/clickable_background"
             android:paddingRight="8dp">
 
             <im.actor.messenger.app.view.TintImageView
