@@ -24,11 +24,11 @@ public class RequestLoadDialogs extends Request<ResponseLoadDialogs> {
         return Bser.parse(new RequestLoadDialogs(), data);
     }
 
-    private long startDate;
+    private long minDate;
     private int limit;
 
-    public RequestLoadDialogs(long startDate, int limit) {
-        this.startDate = startDate;
+    public RequestLoadDialogs(long minDate, int limit) {
+        this.minDate = minDate;
         this.limit = limit;
     }
 
@@ -36,8 +36,8 @@ public class RequestLoadDialogs extends Request<ResponseLoadDialogs> {
 
     }
 
-    public long getStartDate() {
-        return this.startDate;
+    public long getMinDate() {
+        return this.minDate;
     }
 
     public int getLimit() {
@@ -46,20 +46,20 @@ public class RequestLoadDialogs extends Request<ResponseLoadDialogs> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.startDate = values.getLong(1);
+        this.minDate = values.getLong(1);
         this.limit = values.getInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.startDate);
+        writer.writeLong(1, this.minDate);
         writer.writeInt(2, this.limit);
     }
 
     @Override
     public String toString() {
         String res = "rpc LoadDialogs{";
-        res += "startDate=" + this.startDate;
+        res += "minDate=" + this.minDate;
         res += ", limit=" + this.limit;
         res += "}";
         return res;

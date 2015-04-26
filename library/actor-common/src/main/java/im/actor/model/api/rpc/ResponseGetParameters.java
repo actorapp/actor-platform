@@ -17,53 +17,44 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestEncryptedReceived extends Request<ResponseVoid> {
+public class ResponseGetParameters extends Response {
 
-    public static final int HEADER = 0x74;
-    public static RequestEncryptedReceived fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestEncryptedReceived(), data);
+    public static final int HEADER = 0x87;
+    public static ResponseGetParameters fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseGetParameters(), data);
     }
 
-    private OutPeer peer;
-    private long rid;
+    private List<Parameter> parameters;
 
-    public RequestEncryptedReceived(OutPeer peer, long rid) {
-        this.peer = peer;
-        this.rid = rid;
+    public ResponseGetParameters(List<Parameter> parameters) {
+        this.parameters = parameters;
     }
 
-    public RequestEncryptedReceived() {
+    public ResponseGetParameters() {
 
     }
 
-    public OutPeer getPeer() {
-        return this.peer;
-    }
-
-    public long getRid() {
-        return this.rid;
+    public List<Parameter> getParameters() {
+        return this.parameters;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new OutPeer());
-        this.rid = values.getLong(3);
+        List<Parameter> _parameters = new ArrayList<Parameter>();
+        for (int i = 0; i < values.getRepeatedCount(1); i ++) {
+            _parameters.add(new Parameter());
+        }
+        this.parameters = values.getRepeatedObj(1, _parameters);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.peer == null) {
-            throw new IOException();
-        }
-        writer.writeObject(1, this.peer);
-        writer.writeLong(3, this.rid);
+        writer.writeRepeatedObj(1, this.parameters);
     }
 
     @Override
     public String toString() {
-        String res = "rpc EncryptedReceived{";
-        res += "peer=" + this.peer;
-        res += ", rid=" + this.rid;
+        String res = "tuple GetParameters{";
         res += "}";
         return res;
     }

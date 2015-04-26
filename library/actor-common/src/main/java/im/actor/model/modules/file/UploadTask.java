@@ -1,17 +1,19 @@
 package im.actor.model.modules.file;
 
-import im.actor.model.api.UploadConfig;
-import im.actor.model.api.rpc.RequestCompleteUpload;
-import im.actor.model.api.rpc.RequestStartUpload;
-import im.actor.model.api.rpc.RequestUploadPart;
-import im.actor.model.api.rpc.ResponseCompleteUpload;
-import im.actor.model.api.rpc.ResponseStartUpload;
-import im.actor.model.api.rpc.ResponseVoid;
+import im.actor.model.FileSystemProvider;
+import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.api.rpc.RequestCommitFileUpload;
+import im.actor.model.api.rpc.RequestGetFileUploadPartUrl;
+import im.actor.model.api.rpc.RequestGetFileUploadUrl;
+import im.actor.model.api.rpc.ResponseCommitFileUpload;
+import im.actor.model.api.rpc.ResponseGetFileUploadPartUrl;
+import im.actor.model.api.rpc.ResponseGetFileUploadUrl;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
+import im.actor.model.http.FileUploadCallback;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.EntityConverter;
@@ -34,6 +36,9 @@ public class UploadTask extends ModuleActor {
     private String fileName;
     private String descriptor;
 
+    private FileSystemProvider fileSystemProvider;
+    private HttpDownloaderProvider downloaderProvider;
+
     private FileSystemReference srcReference;
     private InputFile inputFile;
 
@@ -49,7 +54,7 @@ public class UploadTask extends ModuleActor {
     private int uploaded;
     private int uploadCount;
 
-    private UploadConfig uploadConfig;
+    private byte[] uploadConfig;
     private CRC32 crc32;
 
     public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, Modules modules) {
@@ -64,7 +69,25 @@ public class UploadTask extends ModuleActor {
 
     @Override
     public void preStart() {
-        srcReference = config().getFileSystemProvider().fileFromDescriptor(descriptor);
+        fileSystemProvider = config().getFileSystemProvider();
+        if (fileSystemProvider == null) {
+            if (LOG) {
+                Log.d(TAG, "File system is not available");
+            }
+            reportError();
+            return;
+        }
+
+        downloaderProvider = config().getHttpDownloaderProvider();
+        if (downloaderProvider == null) {
+            if (LOG) {
+                Log.d(TAG, "HTTP support is not available");
+            }
+            reportError();
+            return;
+        }
+
+        srcReference = fileSystemProvider.fileFromDescriptor(descriptor);
         if (srcReference == null) {
             if (LOG) {
                 Log.d(TAG, "Error during file reference creating");
@@ -73,7 +96,7 @@ public class UploadTask extends ModuleActor {
             return;
         }
 
-        destReference = config().getFileSystemProvider().createTempFile();
+        destReference = fileSystemProvider.createTempFile();
         if (destReference == null) {
             if (LOG) {
                 Log.d(TAG, "Error during file dest reference creating");
@@ -116,24 +139,26 @@ public class UploadTask extends ModuleActor {
             Log.d(TAG, "Starting uploading " + blocksCount + " blocks");
             Log.d(TAG, "Requesting upload config...");
         }
-        request(new RequestStartUpload(), new RpcCallback<ResponseStartUpload>() {
-            @Override
-            public void onResult(ResponseStartUpload response) {
-                if (LOG) {
-                    Log.d(TAG, "Upload config loaded");
-                }
-                uploadConfig = response.getConfig();
-                checkQueue();
-            }
 
-            @Override
-            public void onError(RpcException e) {
-                if (LOG) {
-                    Log.d(TAG, "Upload config load error");
-                }
-                reportError();
-            }
-        });
+        request(new RequestGetFileUploadUrl(srcReference.getSize()),
+                new RpcCallback<ResponseGetFileUploadUrl>() {
+                    @Override
+                    public void onResult(ResponseGetFileUploadUrl response) {
+                        if (LOG) {
+                            Log.d(TAG, "Upload config loaded");
+                        }
+                        uploadConfig = response.getUploadKey();
+                        checkQueue();
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        if (LOG) {
+                            Log.d(TAG, "Upload config load error");
+                        }
+                        reportError();
+                    }
+                });
     }
 
     private void checkQueue() {
@@ -154,14 +179,14 @@ public class UploadTask extends ModuleActor {
             inputFile.close();
             outputFile.close();
 
-            request(new RequestCompleteUpload(uploadConfig, blocksCount, crc), new RpcCallback<ResponseCompleteUpload>() {
+            request(new RequestCommitFileUpload(uploadConfig), new RpcCallback<ResponseCommitFileUpload>() {
                 @Override
-                public void onResult(ResponseCompleteUpload response) {
+                public void onResult(ResponseCommitFileUpload response) {
                     if (LOG) {
                         Log.d(TAG, "Upload completed...");
                     }
 
-                    FileReference location = EntityConverter.convert(response.getLocation(), fileName, srcReference.getSize());
+                    FileReference location = EntityConverter.convert(response.getUploadedFileLocation(), fileName, srcReference.getSize());
 
                     FileSystemReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
 
@@ -221,25 +246,46 @@ public class UploadTask extends ModuleActor {
     }
 
     private void uploadPart(final int blockIndex, final int offset, final byte[] data) {
-        request(new RequestUploadPart(uploadConfig, offset, data), new RpcCallback<ResponseVoid>() {
-            @Override
-            public void onResult(ResponseVoid response) {
-                if (LOG) {
-                    Log.d(TAG, "Block #" + blockIndex + " uploaded");
-                }
-                uploadCount--;
-                uploaded++;
+        request(new RequestGetFileUploadPartUrl(blockIndex, blockSize, uploadConfig),
+                new RpcCallback<ResponseGetFileUploadPartUrl>() {
+                    @Override
+                    public void onResult(ResponseGetFileUploadPartUrl response) {
+                        downloaderProvider.uploadPart(response.getUrl(), data, new FileUploadCallback() {
+                            @Override
+                            public void onUploaded() {
+                                self().send(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (LOG) {
+                                            Log.d(TAG, "Block #" + blockIndex + " uploaded");
+                                        }
+                                        uploadCount--;
+                                        uploaded++;
 
-                reportProgress(uploaded / (float) blocksCount);
+                                        reportProgress(uploaded / (float) blocksCount);
 
-                checkQueue();
-            }
+                                        checkQueue();
+                                    }
+                                });
+                            }
 
-            @Override
-            public void onError(RpcException e) {
-                reportError();
-            }
-        });
+                            @Override
+                            public void onUploadFailure() {
+                                self().send(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        reportError();
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        reportError();
+                    }
+                });
     }
 
     private void reportError() {

@@ -16,55 +16,49 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class EncryptedDocumentV1VExideo extends EncryptedDocumentV1Ex {
+public class Parameter extends BserObject {
 
-    private int width;
-    private int height;
-    private int duration;
+    private String key;
+    private String value;
 
-    public EncryptedDocumentV1VExideo(int width, int height, int duration) {
-        this.width = width;
-        this.height = height;
-        this.duration = duration;
+    public Parameter(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public EncryptedDocumentV1VExideo() {
+    public Parameter() {
 
     }
 
-    public int getHeader() {
-        return 2;
+    public String getKey() {
+        return this.key;
     }
 
-    public int getWidth() {
-        return this.width;
-    }
-
-    public int getHeight() {
-        return this.height;
-    }
-
-    public int getDuration() {
-        return this.duration;
+    public String getValue() {
+        return this.value;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.width = values.getInt(1);
-        this.height = values.getInt(2);
-        this.duration = values.getInt(3);
+        this.key = values.getString(1);
+        this.value = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.width);
-        writer.writeInt(2, this.height);
-        writer.writeInt(3, this.duration);
+        if (this.key == null) {
+            throw new IOException();
+        }
+        writer.writeString(1, this.key);
+        if (this.value == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.value);
     }
 
     @Override
     public String toString() {
-        String res = "struct EncryptedDocumentV1VExideo{";
+        String res = "struct Parameter{";
         res += "}";
         return res;
     }
