@@ -11,7 +11,7 @@
 						    <button type="button" class="login_button" ng-click="sendPhone(user)">Sign in</button>
 						</div>  
 					</form>
-					<form ng-submit="sendCode(user)" >
+					<form ng-submit="sendCode(user)">
 						<div ng-hide="codeHide" id="login_code">
 							<div class="login_header">Enter code.</div>
 						    <input type="text" id="activation_code" class="login_input" placeholder="Activation code" ng-model="user.activation_code">
