@@ -17,43 +17,54 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class ResponseStartUpload extends Response {
+public class ResponseGetFileUploadUrl extends Response {
 
-    public static final int HEADER = 0x13;
-    public static ResponseStartUpload fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseStartUpload(), data);
+    public static final int HEADER = 0x79;
+    public static ResponseGetFileUploadUrl fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseGetFileUploadUrl(), data);
     }
 
-    private UploadConfig config;
+    private String url;
+    private byte[] uploadKey;
 
-    public ResponseStartUpload(UploadConfig config) {
-        this.config = config;
+    public ResponseGetFileUploadUrl(String url, byte[] uploadKey) {
+        this.url = url;
+        this.uploadKey = uploadKey;
     }
 
-    public ResponseStartUpload() {
+    public ResponseGetFileUploadUrl() {
 
     }
 
-    public UploadConfig getConfig() {
-        return this.config;
+    public String getUrl() {
+        return this.url;
+    }
+
+    public byte[] getUploadKey() {
+        return this.uploadKey;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.config = values.getObj(1, new UploadConfig());
+        this.url = values.getString(1);
+        this.uploadKey = values.getBytes(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.config == null) {
+        if (this.url == null) {
             throw new IOException();
         }
-        writer.writeObject(1, this.config);
+        writer.writeString(1, this.url);
+        if (this.uploadKey == null) {
+            throw new IOException();
+        }
+        writer.writeBytes(2, this.uploadKey);
     }
 
     @Override
     public String toString() {
-        String res = "tuple StartUpload{";
+        String res = "tuple GetFileUploadUrl{";
         res += "}";
         return res;
     }

@@ -27,7 +27,7 @@ public class ResponseAuth extends Response {
     private User user;
     private Config config;
 
-    public ResponseAuth(long publicKeyHash, User user, Config config) {
+    public ResponseAuth(User user, Config config) {
         this.user = user;
         this.config = config;
     }
@@ -35,7 +35,6 @@ public class ResponseAuth extends Response {
     public ResponseAuth() {
 
     }
-
 
     public User getUser() {
         return this.user;
