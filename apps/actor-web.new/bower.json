@@ -17,6 +17,7 @@
     "angular-ui-router": "~0.2.13",
     "normalize.css": "~3.0.3",
     "angular-material": "~0.8.3",
-    "material-design-icons": "~1.0.1"
+    "material-design-icons": "~1.0.1",
+    "ngstorage": "~0.3.0"
   }
 }

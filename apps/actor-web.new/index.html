@@ -9,7 +9,7 @@
 
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Actor Web">
     <link rel="apple-touch-icon" href="assets/img/logo_96x96.png">
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/logo_76x76.png">
@@ -40,7 +40,7 @@
                 ui-view="sidebar"></md-sidenav>
 
     <md-content flex layout="column">
-        <md-toolbar ng-cloak ui-view="toolbar" ng-if="!$state.includes('login')"></md-toolbar>
+        <md-toolbar ui-view="toolbar" ng-if="!$state.includes('login')"></md-toolbar>
         <md-content ui-view="content" flex id="content" layout="row"></md-content>
     </md-content>
 </div>
@@ -53,6 +53,7 @@
 <script src="bower_components/angular/angular.min.js"></script>
 
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="bower_components/ngstorage/ngStorage.min.js"></script>
 
 <script src="bower_components/angular-aria/angular-aria.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>

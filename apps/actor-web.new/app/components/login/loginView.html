@@ -1,17 +1,35 @@
-<div flex layout="column" layout-align="center center">
+<div flex layout="column" layout-align="center center" ng-controller="loginController as login">
     <div class="login">
-        <!--<md-subheader class="md-no-sticky">Sign in</md-subheader>-->
-        <!--<h2 class="subheader">Sign in</h2>-->
-        <form name="loginForm" role="form" class="login__form">
+        <form name="authPhoneForm"
+              role="form"
+              ng-submit="login.requestCode(login.phone)"
+              ng-if="!login.isCodeRequested">
+
             <p>Please enter your full phone number for recieve authorization code.</p>
             <md-input-container>
                 <label>Phone number</label>
-                <input required type="tel" name="phone" ng-model="login.phone">
+                <input required type="tel" ng-model="login.phone">
             </md-input-container>
             <footer layout="row">
                 <span flex></span>
                 <md-button class="md-primary md-raised md-big">Request code</md-button>
             </footer>
         </form>
+        <form name="authCodeForm"
+              role="form"
+              ng-submit="login.checkCode(login.authCode)"
+              ng-if="login.isCodeRequested">
+
+            <p>We sent authorization code to your phone. Please enter it below.</p>
+            <md-input-container>
+                <label>Auth code</label>
+                <input required type="text" ng-model="login.authCode">
+            </md-input-container>
+            <footer layout="row">
+                <span flex></span>
+                <md-button class="md-primary md-raised md-big">Validate code</md-button>
+            </footer>
+        </form>
+
     </div>
 </div>

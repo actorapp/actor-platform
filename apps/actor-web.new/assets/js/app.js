@@ -1,65 +1,132 @@
-angular.module('actorWeb', ['ui.router', 'ngMaterial']);
+angular.module('actorWeb', ['ui.router', 'ngMaterial', 'ngStorage']);
 
-var config;
+var ActorConfig;
 
-config = function($stateProvider, $urlRouterProvider) {
-  $stateProvider.state('home', {
-    url: '/',
-    views: {
-      'toolbar': {
-        templateUrl: 'app/shared/toolbar/toolbarDefaultView.html'
-      },
-      'sidebar': {
-        templateUrl: 'app/shared/sidebar/sidebarDefaultView.html'
-      },
-      'content': {
-        templateUrl: 'app/components/main/mainView.html'
+ActorConfig = (function() {
+  function ActorConfig($stateProvider, $urlRouterProvider) {
+    $stateProvider.state('home', {
+      url: '/',
+      views: {
+        'sidebar': {
+          templateUrl: 'app/shared/sidebar/sidebarDefaultView.html'
+        },
+        'content': {
+          templateUrl: 'app/components/main/mainView.html'
+        },
+        'toolbar': {
+          templateUrl: 'app/shared/toolbar/toolbarDefaultView.html'
+        }
       }
-    }
-  }).state('login', {
-    url: '/login',
-    views: {
-      'content': {
-        templateUrl: 'app/components/login/loginView.html'
+    }).state('login', {
+      url: '/login',
+      data: {
+        noLogin: true
+      },
+      views: {
+        'content': {
+          templateUrl: 'app/components/login/loginView.html'
+        }
       }
-    }
-  });
-  return $urlRouterProvider.otherwise('/');
-};
+    });
+    $urlRouterProvider.otherwise('/');
+  }
 
-angular.module('actorWeb').config(config).run(function($rootScope, $state, $stateParams) {
-  $rootScope.$state = $state;
-  return $rootScope.$stateParams = $stateParams;
-});
+  return ActorConfig;
+
+})();
+
+ActorConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
+
+angular.module('actorWeb').config(ActorConfig);
+
+var ActorRun;
+
+ActorRun = (function() {
+  function ActorRun($rootScope, $state, $stateParams, actorService) {
+    console.log('[AW]Run');
+    $rootScope.$state = $state;
+    $rootScope.$stateParams = $stateParams;
+    $rootScope.isLogedIn = null;
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+      return actorService.checkAccess(event, toState, toParams, fromState, fromParams);
+    });
+  }
+
+  return ActorRun;
+
+})();
+
+ActorRun.$inject = ['$rootScope', '$state', '$stateParams', 'actorService'];
+
+angular.module('actorWeb').run(ActorRun);
+
+var LoginController;
+
+LoginController = (function() {
+  function LoginController(actorService) {
+    this.actorService = actorService;
+    console.log('[AW]LoginController constructor');
+  }
+
+  LoginController.prototype.isCodeRequested = false;
+
+  LoginController.prototype.requestCode = function(phone) {
+    console.log('[AW]LoginController requestCode()');
+    this.actorService.requestSms(phone);
+    return this.isCodeRequested = true;
+  };
+
+  LoginController.prototype.checkCode = function(code) {
+    console.log('[AW]LoginController checkCode()');
+    return this.actorService.sendCode(code);
+  };
+
+  return LoginController;
+
+})();
+
+LoginController.$inject = ['actorService'];
+
+angular.module('actorWeb').controller('loginController', LoginController);
 
 var MainController;
 
 MainController = (function() {
-  function MainController($mdSidenav, $mdMedia, $mdBottomSheet) {
+  function MainController($mdSidenav, $mdMedia, $mdBottomSheet, actorService) {
     this.$mdSidenav = $mdSidenav;
     this.$mdMedia = $mdMedia;
     this.$mdBottomSheet = $mdBottomSheet;
-    console.log('MainController');
+    this.actorService = actorService;
+    console.log('[AW]MainController constructor');
   }
 
   MainController.prototype.messages = [
     {
       who: 'Min Li Chan',
-      notes: "A robot may not injure a human being or, through inaction, allow a human being to come to harm. A robot must obey the orders given it by human beings, except where such orders would conflict with the First Law. A robot must protect its own existence as long as such protection does not conflict with the First or Second Law."
+      notes: ['A robot may not injure a human being or, through inaction, allow a human being to come to harm.', 'A robot must obey the orders given it by human beings, except where such orders would conflict with the First Law.', 'A robot must protect its own existence as long as such protection does not conflict with the First or Second Law.']
     }, {
-      who: 'Степан',
-      notes: "Проверка блин"
-    }, {
-      who: 'Min Li Chan',
-      notes: 'Brunch this weekend?'
+      who: 'Толян',
+      notes: ['Проверка блин']
     }, {
       who: 'Min Li Chan',
-      notes: " I'll be in your neighborhood doing errands"
+      notes: ['Brunch this weekend?']
+    }, {
+      who: 'Женя',
+      notes: ["I'll be in your neighborhood doing errands"]
     }
   ];
 
+  MainController.prototype.showBottomSheet = function() {
+    console.log('[AW]MainController showBottomSheet()');
+    return this.$mdBottomSheet.show({
+      templateUrl: 'app/shared/bottomSheet/bottomSheetView.html',
+      parent: '#content',
+      disableParentScroll: false
+    });
+  };
+
   MainController.prototype.openSidebar = function() {
-    console.log('openSidebar');
+    console.log('[AW]MainController openSidebar()');
     return this.$mdSidenav('left').toggle();
   };
 
