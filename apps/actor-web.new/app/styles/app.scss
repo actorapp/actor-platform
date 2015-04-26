@@ -76,8 +76,9 @@ md-toolbar.md-default-theme {
 .login {
   form {
     padding: 0 16px 16px;
+    max-width: 360px;
     p {
-      max-width: 340px;
+      text-align: center;
       padding: 0 4px;
       font-size: 20px;
       color: rgba(0,0,0,.4);
@@ -132,12 +133,15 @@ md-toolbar.md-default-theme {
     }
   }
 }
-.md-input-focused {
-  label {
-    color: $baseColor;
-  }
-  .md-input {
-    border-color: $baseColor;
+
+.md-default-theme {
+  .md-input-focused {
+    label {
+      color: $baseColor !important;
+    }
+    .md-input {
+      border-color: $baseColor !important;
+    }
   }
 }
 
