@@ -40,49 +40,17 @@ public class OwnReadActor extends ModuleActor {
         }
     }
 
-    public void onNewOutMessage(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
-
-        Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
-
-        // Marking all unread encrypted messages as read
-        long maxPlainReadDate = 0;
-        for (UnreadMessage u : unread) {
-            if (u.isEncrypted()) {
-                // TODO: Notify about encrypted message read
-            } else {
-                maxPlainReadDate = Math.max(u.getSortDate(), maxPlainReadDate);
-            }
-        }
-        unread.clear();
-
-        if (maxPlainReadDate > 0) {
-            modules().getMessagesModule().getPlainReadActor()
-                    .send(new PlainReaderActor.MarkRead(peer, maxPlainReadDate));
-        }
-
-        // Saving last read message
-        modules().getMessagesModule().saveReadState(peer, sortingDate);
-
-        // Resetting counter
-        modules().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.CounterChanged(peer, 0));
-    }
-
-    public void onNewInMessage(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
+    public void onNewInMessage(Peer peer, long rid, long sortingDate) {
         // Detecting if message already read
         long readState = modules().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
             // Already read
-            if (isEncrypted) {
-                // TODO: Notify about encrypted message read
-            } else {
-                // Nothing to do for plain messages: already read
-            }
+            return;
         }
 
         // Saving unread message to storage
         HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
-        unread.add(new UnreadMessage(peer, rid, sortingDate, isEncrypted));
+        unread.add(new UnreadMessage(peer, rid, sortingDate));
         saveStorage();
 
         // Updating counter
@@ -90,7 +58,7 @@ public class OwnReadActor extends ModuleActor {
                 .send(new DialogsActor.CounterChanged(peer, unread.size()));
     }
 
-    public void onMessageRead(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
+    public void onMessageRead(Peer peer, long sortingDate) {
         // Detecting if message already read
         long readState = modules().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
@@ -101,19 +69,11 @@ public class OwnReadActor extends ModuleActor {
         // Marking messages as read
         HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
 
-        long maxPlainReadDate = 0;
-        if (!isEncrypted) {
-            maxPlainReadDate = sortingDate;
-        }
+        long maxPlainReadDate = sortingDate;
         boolean removed = false;
         for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
             if (u.getSortDate() <= sortingDate) {
-                if (u.isEncrypted()) {
-                    // TODO: Notify about encrypted message read
-                } else {
-                    // Updating plain read date
-                    maxPlainReadDate = Math.max(u.getSortDate(), maxPlainReadDate);
-                }
+                maxPlainReadDate = Math.max(u.getSortDate(), maxPlainReadDate);
                 removed = true;
                 unread.remove(u);
             }
@@ -122,16 +82,9 @@ public class OwnReadActor extends ModuleActor {
             saveStorage();
         }
 
-        if (isEncrypted) {
-            // Marking current encrypted message
-//            system().actorOf(ReadEncryptedActor.messageReader())
-//                    .send(new ReadEncryptedActor.Read(chatType, chatId, rid));
-            // TODO: Notify about this encrypted message read
-        }
-
         if (maxPlainReadDate > 0) {
             modules().getMessagesModule().getPlainReadActor()
-                    .send(new PlainReaderActor.MarkRead(peer, maxPlainReadDate));
+                    .send(new CursorReaderActor.MarkRead(peer, maxPlainReadDate));
         }
 
         // Saving last read message
@@ -145,42 +98,19 @@ public class OwnReadActor extends ModuleActor {
     }
 
     public void onMessageReadByMe(Peer peer, long sortingDate) {
-        long msgRid = 0;
+
         long msgSortingDate = 0;
 
         // Finding suitable message
         Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
         for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
-            if (u.isEncrypted()) {
-                continue;
-            }
             if (u.getSortDate() <= sortingDate && u.getSortDate() > msgSortingDate) {
                 msgSortingDate = u.getSortDate();
-                msgRid = u.getRid();
             }
         }
 
         if (msgSortingDate > 0) {
-            onMessageRead(peer, msgRid, msgSortingDate, false);
-        }
-    }
-
-    public void onMessageReadByMeEncrypted(Peer peer, long rid) {
-        UnreadMessage unreadMessage = null;
-
-        Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
-        for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
-            if (!u.isEncrypted()) {
-                continue;
-            }
-            if (u.getRid() == rid) {
-                unreadMessage = u;
-                break;
-            }
-        }
-
-        if (unreadMessage != null) {
-            onMessageRead(peer, unreadMessage.getRid(), unreadMessage.getSortDate(), true);
+            onMessageRead(peer, msgSortingDate);
         }
     }
 
@@ -214,24 +144,15 @@ public class OwnReadActor extends ModuleActor {
 
     @Override
     public void onReceive(Object message) {
-        if (message instanceof NewOutMessage) {
-            NewOutMessage outMessage = (NewOutMessage) message;
-            onNewOutMessage(outMessage.getPeer(), outMessage.getRid(), outMessage.getSortingDate(),
-                    outMessage.isEncrypted());
-        } else if (message instanceof NewMessage) {
+        if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
-            onNewInMessage(newMessage.getPeer(), newMessage.getRid(), newMessage.getSortingDate(),
-                    newMessage.isEncrypted());
+            onNewInMessage(newMessage.getPeer(), newMessage.getRid(), newMessage.getSortingDate());
         } else if (message instanceof MessageRead) {
             MessageRead messageRead = (MessageRead) message;
-            onMessageRead(messageRead.getPeer(), messageRead.getRid(), messageRead.getSortingDate(),
-                    messageRead.isEncrypted());
+            onMessageRead(messageRead.getPeer(), messageRead.getSortingDate());
         } else if (message instanceof MessageReadByMe) {
             MessageReadByMe readByMe = (MessageReadByMe) message;
             onMessageReadByMe(readByMe.getPeer(), readByMe.getSortDate());
-        } else if (message instanceof MessageReadByMeEncrypted) {
-            MessageReadByMeEncrypted readByMeEncrypted = (MessageReadByMeEncrypted) message;
-            onMessageReadByMeEncrypted(readByMeEncrypted.getPeer(), readByMeEncrypted.getRid());
         } else if (message instanceof MessageDeleted) {
             MessageDeleted deleted = (MessageDeleted) message;
             onMessageDelete(deleted.getPeer(), deleted.getRids());
@@ -278,61 +199,19 @@ public class OwnReadActor extends ModuleActor {
 
     public static class MessageRead {
         Peer peer;
-        long rid;
         long sortingDate;
-        boolean isEncrypted;
 
-        public MessageRead(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
+        public MessageRead(Peer peer, long sortingDate) {
             this.peer = peer;
-            this.rid = rid;
             this.sortingDate = sortingDate;
-            this.isEncrypted = isEncrypted;
         }
 
         public Peer getPeer() {
             return peer;
         }
 
-        public long getRid() {
-            return rid;
-        }
-
         public long getSortingDate() {
             return sortingDate;
-        }
-
-        public boolean isEncrypted() {
-            return isEncrypted;
-        }
-    }
-
-    public static class NewOutMessage {
-        Peer peer;
-        long rid;
-        long sortingDate;
-        boolean isEncrypted;
-
-        public NewOutMessage(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
-            this.peer = peer;
-            this.rid = rid;
-            this.sortingDate = sortingDate;
-            this.isEncrypted = isEncrypted;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-
-        public long getSortingDate() {
-            return sortingDate;
-        }
-
-        public boolean isEncrypted() {
-            return isEncrypted;
         }
     }
 
@@ -340,13 +219,11 @@ public class OwnReadActor extends ModuleActor {
         Peer peer;
         long rid;
         long sortingDate;
-        boolean isEncrypted;
 
-        public NewMessage(Peer peer, long rid, long sortingDate, boolean isEncrypted) {
+        public NewMessage(Peer peer, long rid, long sortingDate) {
             this.peer = peer;
             this.rid = rid;
             this.sortingDate = sortingDate;
-            this.isEncrypted = isEncrypted;
         }
 
         public Peer getPeer() {
@@ -359,10 +236,6 @@ public class OwnReadActor extends ModuleActor {
 
         public long getSortingDate() {
             return sortingDate;
-        }
-
-        public boolean isEncrypted() {
-            return isEncrypted;
         }
     }
 

@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public abstract class DocumentEx extends BserObject {
-    public static DocumentEx fromBytes(int key, byte[] content) throws IOException {
+    public static DocumentEx fromBytes(byte[] src) throws IOException {
+        BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));
+        int key = values.getInt(1);
+        byte[] content = values.getBytes(2);
         switch(key) { 
             case 1: return Bser.parse(new DocumentExPhoto(), content);
             case 2: return Bser.parse(new DocumentExVideo(), content);
