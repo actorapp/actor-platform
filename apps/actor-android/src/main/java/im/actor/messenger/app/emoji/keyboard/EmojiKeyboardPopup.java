@@ -43,8 +43,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.stickers.Stickers;
@@ -189,6 +187,7 @@ public class EmojiKeyboardPopup extends PopupWindow
         View keyboardView = LayoutInflater.from(activity)
                 .inflate(R.layout.emoji_keyboard, null);
 
+<<<<<<< HEAD
         final FrameLayout emojiContainer = (FrameLayout) keyboardView.findViewById(R.id.emojiContainer);
         emojiContainer.addView(createEmojiPagerView());
 
@@ -197,6 +196,14 @@ public class EmojiKeyboardPopup extends PopupWindow
         recyclerView.setLayoutManager(new LinearLayoutManager(activity, OrientationHelper.HORIZONTAL, false));
         recyclerView.setAdapter(new RecyclerView.Adapter() {
             public int selected = 0;
+=======
+        // emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
+        emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
+        emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
+        emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
+        emojiPagerIndicator.setUnderlineHeight(0);
+        emojiPagerIndicator.setTabPaddingLeftRight(0);
+>>>>>>> master
 
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
