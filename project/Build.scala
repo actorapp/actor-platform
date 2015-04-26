@@ -2,14 +2,13 @@ package im.actor
 
 import akka.sbt.AkkaKernelPlugin
 import akka.sbt.AkkaKernelPlugin.{Dist, distBootClass, distJvmOptions, outputDirectory}
-import im.actor.SbtActorApi
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
   val Organization = "Actor IM"
-  val Version = "0.1-SNAPSHOT"
+  val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.11.6"
 
   lazy val buildSettings =
@@ -63,10 +62,11 @@ object Build extends sbt.Build {
         Seq(
           libraryDependencies ++= Dependencies.root,
           distJvmOptions in Dist := "-server -Xms256M -Xmx1024M",
-          distBootClass in Dist := "im.actor.server.ApiKernel",
+          distBootClass in Dist := "im.actor.server.Main",
           outputDirectory in Dist := file("target/dist"),
           Revolver.reStartArgs := Seq("im.actor.server.Main"),
           mainClass in Revolver.reStart := Some("im.actor.server.Main"),
+          mainClass in Compile := Some("im.actor.server.Main"),
           autoCompilerPlugins := true,
           scalacOptions in(Compile, doc) := Seq(
             "-groups",
