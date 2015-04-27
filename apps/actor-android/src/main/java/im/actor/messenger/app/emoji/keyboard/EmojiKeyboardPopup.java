@@ -42,8 +42,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.emoji.stickers.Stickers;
 import im.actor.messenger.app.emoji.stickers.StickersAdapter;
@@ -190,7 +188,7 @@ public class EmojiKeyboardPopup extends PopupWindow
         PagerSlidingTabStrip emojiPagerIndicator = (PagerSlidingTabStrip) keyboardView.findViewById(R.id.emoji_pager_indicator);
         View backspace = keyboardView.findViewById(R.id.backspace);
 
-        emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
+        // emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
         emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
         emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
         emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
