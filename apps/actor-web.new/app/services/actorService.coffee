@@ -5,9 +5,14 @@ class ActorService
     console.log '[AW]ActorService constructor'
     @isLoggedIn = @$sessionStorage.isLoggedIn
     window.jsAppLoaded = =>
-      @messenger = new actor.ActorApp
-      @uid = @messenger.getUid()
+      @initActor()
       @$rootScope.$broadcast 'actorReady'
+
+  initActor: ->
+    console.log '[AW]ActorService initActor'
+    @messenger = new actor.ActorApp
+    @uid = @messenger.getUid()
+    console.log '[AW]ActorService initActor: @uid:', @uid
 
 
   checkAccess: (event, toState, toParams, fromState, fromParams) ->
@@ -29,7 +34,7 @@ class ActorService
     @isLoggedIn = true
     @$rootScope.isLoggedIn = true
     @$sessionStorage.isLoggedIn = true
-    @$rootScope.$state.go('home')
+    @$rootScope.$state.go 'home'
     @$rootScope.$broadcast 'actorLoggedIn'
 
   setLoggedOut: () =>
@@ -37,7 +42,7 @@ class ActorService
     @isLoggedIn = false
     @$rootScope.isLoggedIn = false
     @$sessionStorage.isLoggedIn = false
-    @$rootScope.$state.go('login')
+    @$rootScope.$state.go 'login'
     @$rootScope.$broadcast 'actorLoggedOut'
 
   requestSms: (phone) ->
@@ -58,23 +63,26 @@ class ActorService
 
   getDialogs: (callback) ->
     console.log '[AW]ActorService getDialogs'
-    @messenger.bindDialogs (items) -> callback items
+    @messenger.bindDialogs (items) ->
+      console.log '[AW]ActorService getDialogs: items', items
+      callback items
 
   closeConversation: (peer) ->
     console.log '[AW]ActorService closeConversation'
+    console.log '[AW]ActorService closeConversation: peer:', peer
     @messenger.onConversationClosed peer
     @$rootScope.$broadcast 'closeConversation', peer
 
   openConversation: (peer) ->
     console.log '[AW]ActorService openConversation'
+    console.log '[AW]ActorService openConversation: peer:', peer
     @messenger.onConversationOpen peer
     @$rootScope.$broadcast 'openConversation', peer
 
   bindChat: (peer, callback) ->
     console.log '[AW]ActorService bindChat'
+    console.log '[AW]ActorService bindChat: peer:', peer
     @messenger.bindChat peer, callback
-
-  getMessages: (callback) ->
 
 
 ActorService.$inject = ['$rootScope', '$sessionStorage']
