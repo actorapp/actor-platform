@@ -17,29 +17,43 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestStartUpload extends Request<ResponseStartUpload> {
+public class ResponseCommitFileUpload extends Response {
 
-    public static final int HEADER = 0x12;
-    public static RequestStartUpload fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestStartUpload(), data);
+    public static final int HEADER = 0x8a;
+    public static ResponseCommitFileUpload fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseCommitFileUpload(), data);
     }
 
+    private FileLocation uploadedFileLocation;
 
-    public RequestStartUpload() {
+    public ResponseCommitFileUpload(FileLocation uploadedFileLocation) {
+        this.uploadedFileLocation = uploadedFileLocation;
+    }
 
+    public ResponseCommitFileUpload() {
+
+    }
+
+    public FileLocation getUploadedFileLocation() {
+        return this.uploadedFileLocation;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
+        this.uploadedFileLocation = values.getObj(1, new FileLocation());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        if (this.uploadedFileLocation == null) {
+            throw new IOException();
+        }
+        writer.writeObject(1, this.uploadedFileLocation);
     }
 
     @Override
     public String toString() {
-        String res = "rpc StartUpload{";
+        String res = "tuple CommitFileUpload{";
         res += "}";
         return res;
     }
