@@ -3,8 +3,11 @@ package im.actor.server
 import java.net.InetSocketAddress
 
 import akka.stream.ActorFlowMaterializer
+import com.google.android.gcm.server.Sender
+import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
+import com.relayrides.pushy.apns.{ ApnsEnvironment, PushManager, PushManagerConfiguration }
 
-import im.actor.api.rpc.auth.{ ResponseSendAuthCode, RequestSignUp, RequestSendAuthCode }
+import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignUp, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
@@ -19,7 +22,7 @@ import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
-import im.actor.server.mtproto.transport.{ Ack, MTPackage, ProtoPackage, TransportPackage }
+import im.actor.server.mtproto.transport.{ MTPackage, ProtoPackage, TransportPackage }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
@@ -39,6 +42,21 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
 
   implicit val db = initDb(ds)
   implicit val flowMaterializer = ActorFlowMaterializer()
+
+  val gcmConfig = system.settings.config.getConfig("push.gcm")
+  val apnsConfig = system.settings.config.getConfig("push.apns")
+
+  implicit val gcmSender = new Sender(gcmConfig.getString("key"))
+
+  implicit val apnsManager = new PushManager[SimpleApnsPushNotification](
+    ApnsEnvironment.getProductionEnvironment,
+    SSLContextUtil.createDefaultSSLContext(apnsConfig.getString("cert.path"), apnsConfig.getString("cert.password")),
+    null,
+    null,
+    null,
+    new PushManagerConfiguration(),
+    "ActorPushManager"
+  )
 
   implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
