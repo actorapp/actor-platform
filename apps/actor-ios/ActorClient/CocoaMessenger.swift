@@ -21,6 +21,7 @@ get{
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
         builder.setNetworkProvider(SwiftCocoaNetworkProvider())
+        builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(HttpProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
         builder.setStorageProvider(CocoaStorage(dbPath: dbPath))
         builder.setMainThreadProvider(CocoaMainThreadProvider())
@@ -31,6 +32,7 @@ get{
         builder.setDispatcherProvider(DispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setEnableNetworkLogging(true)
+        builder.setEnableFilesLoggingWithBoolean(true)
         
         // Connection
         var url = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String

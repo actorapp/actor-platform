@@ -26,7 +26,7 @@ public class AndroidHttpSupport implements HttpDownloaderProvider {
     public void downloadPart(String url, int startOffset, int size, int totalSize, final FileDownloadCallback callback) {
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Content-Range", "bytes " + startOffset + "-" + (startOffset + size) + "/" + totalSize)
+                .addHeader("Range", "bytes=" + startOffset + "-" + (startOffset + size))
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
