@@ -8,6 +8,7 @@ import org.specs2.specification.core.Fragments
 
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.SqlSpecHelpers
+import im.actor.server.api.ActorSpecHelpers
 import im.actor.util.testing._
 
 class SeqUpdatesManagerSpec extends ActorSuite(
@@ -16,7 +17,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
       push.seq-updates-manager.receive-timeout = 1 second
                               """)
   )
-) with SqlSpecHelpers {
+) with SqlSpecHelpers with ActorSpecHelpers {
   behavior of "SeqUpdatesManager"
 
   it should "increment seq on update push" in e1
@@ -25,7 +26,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
   implicit val (ds, db) = migrateAndInitDb()
 
-  val region = startRegion()
+  val region = buildSeqUpdManagerRegion()
   val probe = TestProbe()
 
   def e1() = {
@@ -34,13 +35,13 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     val (userIds, groupIds) = updateRefs(update)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None)))
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SequenceState]
       msg._1 should ===(1000)
     }
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(1001)
     }
@@ -48,18 +49,18 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     probe.expectNoMsg(1.5.seconds)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(2000)
     }
 
     for (a ← 1 to 600)
-      probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, userIds, groupIds)))
+      probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, userIds, groupIds, None)))
 
     probe.expectNoMsg(4.seconds)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(3500)
     }

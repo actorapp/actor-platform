@@ -345,7 +345,7 @@ class AuthServiceImpl(implicit
         for {
           _ ← DBIO.from(recordRelation(user.id, contact.ownerUserId))
           _ ← persist.contact.UserContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update)
+          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some("Contact registered"))
         } yield ()
       }
 

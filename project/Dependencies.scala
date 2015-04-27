@@ -49,6 +49,9 @@ object Dependencies {
 
     val shapeless       = "com.chuusai"                   %% "shapeless"                     % "2.1.0"
 
+    val gcmServer       = "com.google.android.gcm"        %  "gcm-server"                    % "1.0.2"
+    val pushy           = "com.relayrides"                %  "pushy"                         % "0.4.3"
+
     val logbackClassic  = "ch.qos.logback"                % "logback-classic"                % "1.1.2"
     val scalaLogging    = "com.typesafe.scala-logging"    %% "scala-logging"                 % "3.1.0"
 
@@ -96,7 +99,7 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val push = common :+ akkaContrib
+  val push = common ++ Seq(akkaContrib, gcmServer, pushy)
 
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
 

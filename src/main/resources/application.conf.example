@@ -9,6 +9,25 @@ jdbc {
 actor-server {
   persist.sql = ${jdbc}
 
+  files.s3 {
+    key = "JJR932RAEGJOI93R02I"
+    secret = "jJIuh329JIOfjaIJWFAWA9"
+    bucket = "actor-files"
+  }
+
+  push {
+    gcm {
+      key = "AIzaSyCAFyk6KvcLGsI2gfoIe-ODBLjyyhch5s0"
+    }
+
+    apns {
+      cert {
+        path = "/home/ubuntu/apns/certificate.pfx"
+        password = "Iashah4t"
+      }
+    }
+  }
+
   akka {
     log-dead-letters = 10
     log-dead-letters-during-shutdown = on

@@ -6,13 +6,17 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.util.Timeout
 import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.codecs.UpdateBoxCodec
+import im.actor.api.rpc.messaging.UpdateMessageSent
 import im.actor.api.rpc.sequence.WeakUpdate
 import im.actor.api.rpc.weak.{ UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
-import im.actor.api.rpc.{ UpdateBox ⇒ ProtoUpdateBox, Update }
+import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
+import im.actor.server.models
 import im.actor.server.mtproto.protocol.UpdateBox
-import im.actor.server.presences.{ PresenceManagerRegion, PresenceManager }
+import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
+import im.actor.server.session.SessionMessage
 
 object UpdatesPusher {
 
@@ -31,25 +35,38 @@ object UpdatesPusher {
   def props(authId: Long, session: ActorRef)(implicit
     seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
                                              weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-                                             presenceManagerRegion:    PresenceManagerRegion) =
+                                             presenceManagerRegion:    PresenceManagerRegion,
+                                             db:                       Database) =
     Props(
       classOf[UpdatesPusher],
       authId,
       session,
       seqUpdatesManagerRegion,
       weakUpdatesManagerRegion,
-      presenceManagerRegion
+      presenceManagerRegion,
+      db
     )
 }
 
-private[push] class UpdatesPusher(authId: Long, session: ActorRef)(implicit
-  seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-                                                                   weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-                                                                   presenceManagerRegion:    PresenceManagerRegion) extends Actor with ActorLogging {
+private[push] class UpdatesPusher(
+  authId:                                Long,
+  session:                               ActorRef,
+  implicit val seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
+  implicit val weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
+  implicit val presenceManagerRegion:    PresenceManagerRegion,
+  implicit val db:                       Database
+)
+  extends Actor with ActorLogging with Stash {
 
-  import UpdatesPusher._
-  import im.actor.server.session.SessionMessage._
   import PresenceManager._
+  import SessionMessage._
+  import UpdatesPusher._
+
+  @SerialVersionUID(1L)
+  private case class Initiated(
+    googlePushCredentials: Option[models.push.GooglePushCredentials],
+    applePushCredentials:  Option[models.push.ApplePushCredentials]
+  )
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
@@ -90,7 +107,11 @@ private[push] class UpdatesPusher(authId: Long, session: ActorRef)(implicit
             log.error(e, "Failed to subscribe from presences")
         }
       }
-    case updateBox: ProtoUpdateBox ⇒
+    case SeqUpdatesManager.UpdateReceived(updateBox) ⇒
+      if (updateBox.updateHeader != UpdateMessageSent.header) {
+        sendUpdateBox(updateBox)
+      }
+    case WeakUpdatesManager.UpdateReceived(updateBox) ⇒
       sendUpdateBox(updateBox)
     case PresenceState(userId, presence, lastSeenAt) ⇒
       log.debug("presence: {}, lastSeenAt {}", presence, lastSeenAt)

@@ -18,7 +18,7 @@ class ConfigsServiceSpec extends BaseServiceSuite {
   it should "get parameters" in e2()
 
   val rpcApiService = system.actorOf(RpcApiService.props())
-  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()

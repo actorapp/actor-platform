@@ -29,6 +29,9 @@ object User {
   def find(id: Int) =
     users.filter(_.id === id).result
 
+  def findName(id: Int) =
+    users.filter(_.id === id).map(_.name).result.headOption
+
   // TODO: #perf will it create prepared statement for each ids length?
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
