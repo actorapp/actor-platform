@@ -702,6 +702,7 @@
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
 		06A16C251ACA9F5700EA96BD /* ABActionShit.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A16C241ACA9F5700EA96BD /* ABActionShit.m */; };
+		06A5B0E51AEE8A47003E134A /* PhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */; };
 		06A907D11AB7AE8200E087EA /* notification.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 06A907D01AB7AE8200E087EA /* notification.aiff */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
@@ -713,10 +714,7 @@
 		06BC45151AB87ECB0003F59E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */; };
 		06BC45171AB889110003F59E /* CircullarProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45161AB889110003F59E /* CircullarProgress.swift */; };
 		06BFDB511AB1AD3800F16E43 /* DialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFDB501AB1AD3800F16E43 /* DialogCell.swift */; };
-		06BFDB551AB1D14900F16E43 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB521AB1D06B00F16E43 /* Roboto-Bold.ttf */; };
-		06BFDB561AB1D14900F16E43 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB531AB1D06B00F16E43 /* Roboto-Medium.ttf */; };
-		06BFDB571AB1D14900F16E43 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06BFDB541AB1D06B00F16E43 /* Roboto-Regular.ttf */; };
-		06C65EA61AE7C0C40064BACE /* PhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C65EA51AE7C0C40064BACE /* PhoneBookProvider.swift */; };
+		06C65EA61AE7C0C40064BACE /* (null) in Sources */ = {isa = PBXBuildFile; };
 		06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */; };
 		06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */; };
 		06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */; };
@@ -2102,6 +2100,7 @@
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
 		06A16C231ACA9F5700EA96BD /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABActionShit.h; sourceTree = "<group>"; };
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
+		06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneBookProvider.swift; sourceTree = "<group>"; };
 		06A907D01AB7AE8200E087EA /* notification.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = notification.aiff; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineListController.swift; sourceTree = "<group>"; };
@@ -4275,7 +4274,6 @@
 			name = Main;
 			sourceTree = "<group>";
 		};
-
 		0649DCE91AE6472200070F7D /* Providers */ = {
 			isa = PBXGroup;
 			children = (
@@ -4287,16 +4285,13 @@
 				063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */,
 				06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */,
 				06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */,
-				0699D4D71ADDB4C70005AB9B /* CocoaLocale.swift */,
 				06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */,
 				0671592D1ABC830E00D95719 /* CocoaNetworking.swift */,
-				25FAD8B11A9FF38E004F5E19 /* CocoaPhoneBookProvider.h */,
-				25FAD8B21A9FF38E004F5E19 /* CocoaPhoneBookProvider.m */,
+				06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */,
 			);
 			name = Providers;
-            sourceTree = "<group>";
-        };
-
+			sourceTree = "<group>";
+		};
 		0672D1FF1AE64C670001CD32 /* Themes */ = {
 			isa = PBXGroup;
 			children = (
@@ -4304,8 +4299,8 @@
 				0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */,
 			);
 			name = Themes;
-            sourceTree = "<group>";
-        };
+			sourceTree = "<group>";
+		};
 		069FE6CA1AC017AA00C6C033 /* ScreensOld */ = {
 			isa = PBXGroup;
 			children = (
@@ -4482,7 +4477,6 @@
 				06D8D8C11AB4390600A80E40 /* Conversions.swift */,
 				056911EF1ACF321300D4D209 /* CocoaExecution.swift */,
 				0699D4D71ADDB4C70005AB9B /* CocoaLocale.swift */,
-				06C65EA51AE7C0C40064BACE /* PhoneBookProvider.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -4822,7 +4816,7 @@
 				0612BC1B1AE4835D001EE387 /* FileVM.m in Sources */,
 				0612BB781AE4835D001EE387 /* AppStateModule.m in Sources */,
 				0612BA871AE4835D001EE387 /* RequestUploadPart.m in Sources */,
-				06C65EA61AE7C0C40064BACE /* PhoneBookProvider.swift in Sources */,
+				06C65EA61AE7C0C40064BACE /* (null) in Sources */,
 				0612BBE01AE4835D001EE387 /* SenderActor.m in Sources */,
 				06E484311AB7933100AA272F /* LruCache.swift in Sources */,
 				0612BB751AE4835D001EE387 /* LogProvider.m in Sources */,
@@ -5410,6 +5404,7 @@
 				0612BA891AE4835D001EE387 /* ResponseCompleteUpload.m in Sources */,
 				0612BB1D1AE4835D001EE387 /* BserUnknownField.m in Sources */,
 				0612BA4F1AE4835D001EE387 /* PublicKey.m in Sources */,
+				06A5B0E51AEE8A47003E134A /* PhoneBookProvider.swift in Sources */,
 				0699D4D81ADDB4C70005AB9B /* CocoaLocale.swift in Sources */,
 				0612BB8A1AE4835D001EE387 /* DialogsActor.m in Sources */,
 				0612BA791AE4835D001EE387 /* RequestSendMessage.m in Sources */,
