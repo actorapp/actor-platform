@@ -14,8 +14,7 @@
 @interface ImActorModelApiServiceEx : BSBserObject {
 }
 
-+ (ImActorModelApiServiceEx *)fromBytesWithInt:(jint)key
-                                 withByteArray:(IOSByteArray *)content;
++ (ImActorModelApiServiceEx *)fromBytesWithByteArray:(IOSByteArray *)src;
 
 - (jint)getHeader;
 
@@ -29,7 +28,7 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceEx)
 
 CF_EXTERN_C_BEGIN
 
-FOUNDATION_EXPORT ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithInt_withByteArray_(jint key, IOSByteArray *content);
+FOUNDATION_EXPORT ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithByteArray_(IOSByteArray *src);
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceEx)

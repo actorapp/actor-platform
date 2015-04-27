@@ -15,8 +15,12 @@
 #include "im/actor/model/api/DocumentExVoice.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserParser.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -28,16 +32,15 @@
 
 
 #line 20
-+ (ImActorModelApiDocumentEx *)fromBytesWithInt:(jint)key
-                                  withByteArray:(IOSByteArray *)content {
-  return ImActorModelApiDocumentEx_fromBytesWithInt_withByteArray_(key, content);
++ (ImActorModelApiDocumentEx *)fromBytesWithByteArray:(IOSByteArray *)src {
+  return ImActorModelApiDocumentEx_fromBytesWithByteArray_(src);
 }
 
 
-#line 30
+#line 33
 - (IOSByteArray *)buildContainer {
   
-#line 31
+#line 34
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -51,26 +54,29 @@
 
 @end
 
-ImActorModelApiDocumentEx *ImActorModelApiDocumentEx_fromBytesWithInt_withByteArray_(jint key, IOSByteArray *content) {
+ImActorModelApiDocumentEx *ImActorModelApiDocumentEx_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiDocumentEx_init();
   
 #line 21
+  BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
+  jint key = [values getIntWithInt:1];
+  IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     
-#line 22
+#line 25
     return ((ImActorModelApiDocumentExPhoto *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentExPhoto alloc] init], content));
     case 2:
     
-#line 23
+#line 26
     return ((ImActorModelApiDocumentExVideo *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentExVideo alloc] init], content));
     case 3:
     
-#line 24
+#line 27
     return ((ImActorModelApiDocumentExVoice *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentExVoice alloc] init], content));
     default:
     
-#line 25
+#line 28
     return [[ImActorModelApiDocumentExUnsupported alloc] initWithInt:key withByteArray:content];
   }
 }

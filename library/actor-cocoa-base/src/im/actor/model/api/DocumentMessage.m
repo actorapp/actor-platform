@@ -199,7 +199,7 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
   self->mimeType_ = [values getStringWithInt:5];
   self->thumb_ = [values optObjWithInt:6 withBSBserObject:[[ImActorModelApiFastThumb alloc] init]];
   if ([values optBytesWithInt:8] != nil) {
-    self->ext_ = ImActorModelApiDocumentEx_fromBytesWithInt_withByteArray_([values getIntWithInt:7], [values getBytesWithInt:8]);
+    self->ext_ = ImActorModelApiDocumentEx_fromBytesWithByteArray_([values getBytesWithInt:8]);
   }
 }
 
@@ -232,8 +232,7 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
     [writer writeObjectWithInt:6 withBSBserObject:self->thumb_];
   }
   if (self->ext_ != nil) {
-    [writer writeIntWithInt:7 withInt:[self->ext_ getHeader]];
-    [writer writeBytesWithInt:8 withByteArray:[self->ext_ toByteArray]];
+    [writer writeBytesWithInt:8 withByteArray:[self->ext_ buildContainer]];
   }
 }
 

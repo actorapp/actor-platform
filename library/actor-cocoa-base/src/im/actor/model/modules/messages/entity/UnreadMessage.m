@@ -21,7 +21,6 @@
   AMPeer *peer_;
   jlong rid_;
   jlong sortDate_;
-  jboolean isEncrypted__;
 }
 @end
 
@@ -36,102 +35,88 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 25
+#line 24
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-                      withLong:(jlong)sortDate
-                   withBoolean:(jboolean)isEncrypted {
+                      withLong:(jlong)sortDate {
   if (self = [super init]) {
     
-#line 26
+#line 25
     self->peer_ = peer;
     
-#line 27
+#line 26
     self->rid_ = rid;
     
-#line 28
+#line 27
     self->sortDate_ = sortDate;
-    
-#line 29
-    self->isEncrypted__ = isEncrypted;
   }
   return self;
 }
 
 
-#line 32
+#line 30
 - (instancetype)init {
   return [super init];
 }
 
 - (AMPeer *)getPeer {
   
-#line 37
+#line 35
   return peer_;
 }
 
 
-#line 40
+#line 38
 - (jlong)getRid {
   
-#line 41
+#line 39
   return rid_;
 }
 
 
-#line 44
+#line 42
 - (jlong)getSortDate {
   
-#line 45
+#line 43
   return sortDate_;
 }
 
 
-#line 48
-- (jboolean)isEncrypted {
-  
-#line 49
-  return isEncrypted__;
-}
-
-
-#line 53
+#line 47
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
   sortDate_ = [values getLongWithInt:3];
-  isEncrypted__ = [values getBoolWithInt:5];
 }
 
 
-#line 61
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   
-#line 62
+#line 55
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
   [writer writeLongWithInt:3 withLong:sortDate_];
-  [writer writeBoolWithInt:5 withBoolean:isEncrypted__];
 }
 
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 73
+#line 65
   ImActorModelModulesMessagesEntityUnreadMessage *that = (ImActorModelModulesMessagesEntityUnreadMessage *) check_class_cast(o, [ImActorModelModulesMessagesEntityUnreadMessage class]);
   
-#line 75
+#line 67
   if (rid_ != ((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(that))->rid_) return NO;
   if (![((AMPeer *) nil_chk(peer_)) isEqual:that->peer_]) return NO;
   
-#line 78
+#line 70
   return YES;
 }
 
 - (NSUInteger)hash {
   
-#line 83
+#line 75
   jint result = ((jint) [((AMPeer *) nil_chk(peer_)) hash]);
   result = 31 * result + (jint) (rid_ ^ (URShift64(rid_, 32)));
   return result;
@@ -142,7 +127,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
   other->peer_ = peer_;
   other->rid_ = rid_;
   other->sortDate_ = sortDate_;
-  other->isEncrypted__ = isEncrypted__;
 }
 
 @end
