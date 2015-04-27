@@ -4,7 +4,7 @@ class ActorRun
     $rootScope.$state = $state
     $rootScope.$stateParams = $stateParams
 
-    $rootScope.isLogedIn = null
+    $rootScope.isLoggedIn = null
     $rootScope.$on '$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->
       actorService.checkAccess(event, toState, toParams, fromState, fromParams)
 

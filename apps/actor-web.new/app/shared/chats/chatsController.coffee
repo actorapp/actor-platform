@@ -1,18 +1,28 @@
 class ChatsController
-  constructor: (@$scope, @actorService) ->
+  selectedChat: null
+
+  constructor: (@$rootScope, @actorService) ->
     console.log '[AW]ChatsController constructor'
-    @$scope.$on 'actor-ready', => @getChats()
+    @$rootScope.$on 'actorReady', => @getChats()
+
 
   getChats: ->
-    console.log '[AW]ChatsController getChats()'
-    @actorService.getDialogs (items) =>
-      items.forEach (item) ->
-        console.log item
+    console.log '[AW]ChatsController getChats'
+    @actorService.getDialogs (items) => @list = items
+    # console.log '[AW]ChatsController @list:', @list
 
-      @list = items
-    console.log '[AW]ChatsController @list:', @list
+  selectChat: (chat) ->
+    console.log '[AW]ChatsController selectChat'
+    # console.log '[AW]ChatsController @selectedChat', @selectedChat
+    if @selectedChat
+      @actorService.closeConversation @selectedChat
+    @selectedChat = chat
+    @actorService.openConversation @selectedChat
+    # @actorService.bindChat @selectedChat
 
-ChatsController.$inject = ['$scope', 'actorService']
+
+
+ChatsController.$inject = ['$rootScope', 'actorService']
 
 angular
   .module 'actorWeb'
