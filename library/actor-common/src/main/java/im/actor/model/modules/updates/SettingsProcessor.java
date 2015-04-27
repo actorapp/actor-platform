@@ -11,4 +11,8 @@ public class SettingsProcessor extends BaseModule {
     public SettingsProcessor(Modules modules) {
         super(modules);
     }
+
+    public void onSettingsChanged(String key, String value) {
+
+    }
 }
