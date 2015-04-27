@@ -3,14 +3,14 @@ class MainController
     console.log '[AW]MainController constructor'
 
   showBottomSheet: ->
-    console.log '[AW]MainController showBottomSheet()'
+    console.log '[AW]MainController showBottomSheet'
     @$mdBottomSheet.show
       templateUrl: 'app/shared/bottomSheet/bottomSheetView.html'
       parent: '#content'
       disableParentScroll: false
 
   openSidebar: ->
-    console.log '[AW]MainController openSidebar()'
+    console.log '[AW]MainController openSidebar'
     @$mdSidenav('left').toggle()
 
 MainController.$inject = ['$mdSidenav', '$mdMedia', '$mdBottomSheet', 'actorService']
