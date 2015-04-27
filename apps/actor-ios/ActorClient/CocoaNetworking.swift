@@ -21,8 +21,6 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
         withCallback callback: AMConnectionCallback!,
         withCreateCallback createCallback: AMCreateConnectionCallback!) {
         
-//        var connection = CocoaTcpConnection(connectionId: connectionId, connectionEndpoint: endpoint, connectionCallback: callback, createCallback: createCallback)
-
         var connection = SwiftCocoaConnection(connectionId: connectionId, withEndpoint: endpoint, withCallback: callback, connectionCreated: { (connection) -> () in
                 createCallback.onConnectionCreated(connection)
             }, connectionFailure: { (connection) -> () in
