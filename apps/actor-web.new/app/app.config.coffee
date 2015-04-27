@@ -5,8 +5,8 @@ class ActorConfig
         url: '/'
         views:
           'sidebar': templateUrl: 'app/shared/sidebar/sidebarDefaultView.html'
-          'content': templateUrl: 'app/components/main/mainView.html'
           'toolbar': templateUrl: 'app/shared/toolbar/toolbarDefaultView.html'
+          'content': templateUrl: 'app/shared/messages/messagesListView.html'
 
       .state 'login',
         url: '/login'

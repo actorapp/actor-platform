@@ -1,0 +1,15 @@
+<div flex ng-controller="messagesController as messages">
+  <md-subheader>New Messages</md-subheader>
+  <md-list layout-padding flex>
+      <md-list-item ng-repeat="message in messages.list">
+        <img class="md-avatar" ng-src="http://api.adorable.io/avatars/48/{{ message.who }}.png" alt="{{ message.who }}"/>
+        <div class="md-list-item-text" flex>
+            <h3 layout="row">
+              <span flex>{{ message.who }}</span>
+              <time>2min</time>
+            </h3>
+            <p ng-repeat="note in message.notes" ng-bind="note"></p>
+        </div>
+      </md-list-item>
+  </md-list>
+</div>

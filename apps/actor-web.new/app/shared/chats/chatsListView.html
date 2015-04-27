@@ -1,0 +1,15 @@
+<div flex ng-controller="chatsController as chats">
+  <md-subheader>Opened chats</md-subheader>
+  <md-list layout-padding flex class="chatlist">
+      <md-list-item ng-repeat="chat in chats.list" class="chatlist__item">
+        <img class="md-avatar chatlist__avatar" ng-src="{{ chat.peer.avatar }}.png" alt="{{ chat.peer.title }}"/>
+        <div class="md-list-item-text chatlist__text" flex>
+            <h3 layout="row">
+              <span flex class="chatlist__text__title">{{ chat.peer.title }}</span>
+              <time class="chatlist__text__timestamp">{{ chat.date }}</time>
+            </h3>
+            <p>{{ chat.text }}</p>
+        </div>
+      </md-list-item>
+  </md-list>
+</div>
