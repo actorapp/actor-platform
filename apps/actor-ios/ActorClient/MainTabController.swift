@@ -170,11 +170,11 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     }
     
     override func shouldAutorotate() -> Bool {
-        return true
+        return false
     }
     
     override func supportedInterfaceOrientations() -> Int {
-        return Int(UIInterfaceOrientationMask.All.rawValue)
+        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
     }
     
 }
