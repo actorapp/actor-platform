@@ -147,6 +147,14 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
         appIsEmptyPlaceholder.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
     }
     
+    override func shouldAutorotate() -> Bool {
+        return true
+    }
+    
+    override func supportedInterfaceOrientations() -> Int {
+        return Int(UIInterfaceOrientationMask.All.rawValue)
+    }
+    
 }
 
 extension MainTabController: MFMessageComposeViewControllerDelegate {

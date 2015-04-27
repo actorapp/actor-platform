@@ -10,11 +10,13 @@ import Foundation
 class ContactsBaseController: EngineListController {
     
     override func bindTable(table: UITableView, fade: Bool) {
+        view.backgroundColor = MainAppTheme.list.bgColor
+        
         table.rowHeight = 56
         table.separatorStyle = UITableViewCellSeparatorStyle.None
-        table.backgroundColor = Resources.BackyardColor
+        table.backgroundColor = MainAppTheme.list.backyardColor
         
-        var footer = UIView(frame: CGRectMake(0, 0, 320, 80));
+        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
         //        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
         //        footerHint.textAlignment = NSTextAlignment.Center;
@@ -28,17 +30,17 @@ class ContactsBaseController: EngineListController {
         shadow.contentMode = UIViewContentMode.ScaleToFill;
         footer.addSubview(shadow);
         
+        table.tableFooterView = footer
         // Header
         
-        var header = UIView(frame: CGRectMake(0, 0, 320, 0))
-        
-        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
-        table.tableHeaderView = header
-        table.tableFooterView = footer
+//        var header = UIView(frame: CGRectMake(0, 0, 320, 0))
+//        
+//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+//        headerShadow.image = UIImage(named: "CardTop2");
+//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+//        header.addSubview(headerShadow);
+//        
+//        table.tableHeaderView = header
         
         super.bindTable(table, fade: fade)
     }

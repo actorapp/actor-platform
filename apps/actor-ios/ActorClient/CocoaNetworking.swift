@@ -151,11 +151,11 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         }
     }
     
-    func requestReadHeader() {
-        NSLog("🎍#\(connectionId) Request reading header...")
-        gcdSocket?.readDataToLength(4, withTimeout: -1, tag: 0)
-        // gcdSocket?.readDataWithTimeout(-1, tag: 0)
-    }
+//    func requestReadHeader() {
+//        NSLog("🎍#\(connectionId) Request reading header...")
+//        gcdSocket?.readDataToLength(4, withTimeout: -1, tag: 0)
+//        // gcdSocket?.readDataWithTimeout(-1, tag: 0)
+//    }
     
     func requestReadBody(bodySize: UInt) {
         NSLog("🎍#\(connectionId) Request reading body \(bodySize)...")

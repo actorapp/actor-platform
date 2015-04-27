@@ -47,6 +47,11 @@ class AATableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textLabel!.font = UIFont.systemFontOfSize(17.0)
+        backgroundColor = MainAppTheme.list.bgColor
+        
+        var selectedView = UIView()
+        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
+        selectedBackgroundView = selectedView
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -59,7 +64,7 @@ class AATableViewCell: UITableViewCell {
     private func updateCellStyle() {
         switch (style) {
         case .Normal:
-            textLabel!.textColor = UIColor.blackColor()
+            textLabel!.textColor = MainAppTheme.list.textColor
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
@@ -77,14 +82,14 @@ class AATableViewCell: UITableViewCell {
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Switch:
-            textLabel!.textColor = UIColor.blackColor()
+            textLabel!.textColor = MainAppTheme.list.textColor
             setupSwitchIfNeeded()
             switcher?.hidden = false
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Blue: // TODO: Maybe rename?
 //            textLabel!.textColor = UIColor.RGB(0x007ee5)
-            textLabel!.textColor = Resources.BarTintColor
+            textLabel!.textColor = MainAppTheme.list.actionColor
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
@@ -96,7 +101,7 @@ class AATableViewCell: UITableViewCell {
             accessoryType = UITableViewCellAccessoryType.None
             break
         case .Navigation:
-            textLabel!.textColor = UIColor.blackColor()
+            textLabel!.textColor = MainAppTheme.list.textColor
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
@@ -122,7 +127,7 @@ class AATableViewCell: UITableViewCell {
     func showTopSeparator() {
         if topSeparator == nil {
             topSeparator = UIView()
-            topSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+            topSeparator!.backgroundColor = MainAppTheme.list.separatorColor
         }
         
         if topSeparator!.superview == nil {
@@ -137,7 +142,7 @@ class AATableViewCell: UITableViewCell {
     func showBottomSeparator() {
         if bottomSeparator == nil {
             bottomSeparator = UIView()
-            bottomSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+            bottomSeparator!.backgroundColor = MainAppTheme.list.separatorColor
         }
         
         if bottomSeparator!.superview == nil {
@@ -179,11 +184,11 @@ class AATableViewCell: UITableViewCell {
         
         if !highlighted {
             if topSeparator != nil {
-                topSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+                topSeparator!.backgroundColor = MainAppTheme.list.separatorColor
             }
             
             if bottomSeparator != nil {
-                bottomSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+                bottomSeparator!.backgroundColor = MainAppTheme.list.separatorColor
             }
         }
     }
@@ -193,11 +198,11 @@ class AATableViewCell: UITableViewCell {
         
         if !selected {
             if topSeparator != nil {
-                topSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+                topSeparator!.backgroundColor = MainAppTheme.list.separatorColor
             }
             
             if bottomSeparator != nil {
-                bottomSeparator!.backgroundColor = UIColor.RGB(0xc8c7cc)
+                bottomSeparator!.backgroundColor = MainAppTheme.list.separatorColor
             }
         }
     }
