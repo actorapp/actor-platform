@@ -10,15 +10,33 @@ import Foundation
 
 class AppTheme {
     
-    var navigation = AppNavigationBar()
+    var navigation: AppNavigationBar { get { return AppNavigationBar() } }
     
-    var tab = AppTabBar()
+    var tab: AppTabBar { get { return AppTabBar() } }
     
-    var search = AppSearchBar()
+    var search: AppSearchBar { get { return AppSearchBar() } }
     
-    var list = AppList()
+    var list: AppList { get { return AppList() } }
     
-    var bubbles = ChatBubbles()
+    var bubbles: ChatBubbles { get { return ChatBubbles() } }
+    
+    var text: AppText { get { return AppText() } }
+    
+    var chat: AppChat { get { return AppChat() } }
+}
+
+class AppText {
+    var textPrimary: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
+}
+
+class AppChat {
+    var chatField: UIColor { get { return UIColor.lightGrayColor() } }
+    
+    var attachColor: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    
+    var sendEnabled: UIColor { get { return UIColor.RGB(0x50A1D6) } }
+    
+    var sendDisabled: UIColor { get { return UIColor.alphaWhite(0.56) } }
 }
 
 class ChatBubbles {
@@ -42,6 +60,18 @@ class ChatBubbles {
     var statusMediaPassive : UIColor { get { return UIColor.whiteColor() } }
     // TODO: Fix
     var statusMediaDanger : UIColor { get { return UIColor.redColor() } }
+    
+    var statusDialogActive : UIColor { get { return UIColor.RGB(0x3397f9) } }
+    var statusDialogPassive : UIColor { get { return UIColor.alphaBlack(0.27) } }
+    // TODO: Fix
+    var statusDialogDanger : UIColor { get { return UIColor.redColor() } }
+
+    // Dialog-based colors
+    var statusDialogSending : UIColor { get { return statusDialogPassive } }
+    var statusDialogSent : UIColor { get { return statusDialogPassive } }
+    var statusDialogReceived : UIColor { get { return statusDialogPassive } }
+    var statusDialogRead : UIColor { get { return statusDialogActive } }
+    var statusDialogError : UIColor { get { return statusDialogDanger } }
     
     // Text-based bubble colors
     var statusSending : UIColor { get { return statusPassive } }
@@ -81,60 +111,36 @@ class ChatBubbles {
     
     // Service-based bubble colors
     var serviceBg: UIColor { get { return UIColor.RGB(0x2D394A, alpha: 0.56) } }
+    
+    var chatBgTint: UIColor { get { return UIColor.RGB(0xe7e0c4) } }
 }
 
 class AppList {
+    var actionColor : UIColor { get { return UIColor.RGB(0x5085CB) } }
+    var bgColor: UIColor { get { return UIColor.whiteColor() } }
+    var bgSelectedColor : UIColor { get { return UIColor.RGB(0x5085CB) } }
     
-    var actionColor : UIColor {
-        get {
-            return UIColor.RGB(0x5085CB)
-        }
-    }
+    var backyardColor : UIColor { get { return UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1) } }
+    var separatorColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x1e/255.0) } }
     
-    var backyardColor : UIColor {
-        get {
-            return UIColor(red: 238/255.0, green: 238/255.0, blue: 238/255.0, alpha: 1)
-        }
-    }
+    var textColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
+    var hintColor : UIColor { get { return UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1) } }
+//     var arrowColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     
-    var separatorColor : UIColor {
-        get {
-            return UIColor(red: 0, green: 0, blue: 0, alpha: 0x1e/255.0)
-        }
-    }
+    var dialogTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
+    var dialogText: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0) } }
+    var dialogDate: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0) } }
+    
+    var contactsTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
+    var contactsShortTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
 }
 
 class AppSearchBar {
-    
-    var statusBarLightContent : Bool {
-        get {
-            return false
-        }
-    }
-    
-    var backgroundColor : UIColor {
-        get {
-            return UIColor.RGB(0xf1f1f1)
-        }
-    }
-    
-    var cancelColor : UIColor {
-        get {
-            return UIColor.RGB(0x8E8E93)
-        }
-    }
-    
-    var fieldBackgroundColor: UIColor {
-        get {
-            return UIColor.whiteColor()
-        }
-    }
-    
-    var fieldTextColor: UIColor {
-        get {
-            return UIColor.blackColor().alpha(0.56)
-        }
-    }
+    var statusBarLightContent : Bool { get { return false } }
+    var backgroundColor : UIColor { get { return UIColor.RGB(0xf1f1f1) } }
+    var cancelColor : UIColor { get { return UIColor.RGB(0x8E8E93) } }
+    var fieldBackgroundColor: UIColor { get { return UIColor.whiteColor() } }
+    var fieldTextColor: UIColor { get { return UIColor.blackColor().alpha(0.56) } }
     
     func applyAppearance(application: UIApplication) {
         
@@ -181,51 +187,18 @@ class AppTabBar {
     
     private let mainColor = UIColor.RGB(0x5085CB)
     
-    var backgroundColor : UIColor {
-        get {
-            return UIColor.whiteColor()
-        }
-    }
+    var backgroundColor : UIColor { get { return UIColor.whiteColor() } }
+    var isTransculent : Bool { get { return true } }
     
-    var isTransculent : Bool {
-        get {
-            return true
-        }
-    }
-
-    var showText : Bool {
-        get {
-            return true
-        }
-    }
+    var showText : Bool { get { return true } }
     
-    var selectedIconColor: UIColor {
-        get {
-            return mainColor
-        }
-    }
-    var selectedTextColor : UIColor {
-        get {
-            return mainColor
-        }
-    }
+    var selectedIconColor: UIColor { get { return mainColor } }
+    var selectedTextColor : UIColor { get { return mainColor } }
     
-    var unselectedIconColor:UIColor {
-        get {
-            return mainColor.alpha(0.56)
-        }
-    }
-    var unselectedTextColor : UIColor {
-        get {
-            return mainColor.alpha(0.56)
-        }
-    }
+    var unselectedIconColor:UIColor { get { return mainColor.alpha(0.56) } }
+    var unselectedTextColor : UIColor { get { return mainColor.alpha(0.56) } }
     
-    var barShadow : String? {
-        get {
-            return "CardTop2"
-        }
-    }
+    var barShadow : String? { get { return "CardTop2" } }
     
     func createSelectedIcon(name: String) -> UIImage {
         return UIImage(named: name)!.tintImage(selectedIconColor)
@@ -263,47 +236,15 @@ class AppTabBar {
 
 class AppNavigationBar {
     
-    var statusBarLightContent : Bool {
-        get {
-            return true
-        }
-    }
-
-    var barColor:UIColor {
-        get {
-            return UIColor.RGB(0x5085CB)
-        }
-    }
+    var statusBarLightContent : Bool { get { return true } }
+    var barColor:UIColor { get { return UIColor.RGB(0x5085CB) } }
     
-    var titleColor: UIColor {
-        get {
-            return UIColor.whiteColor()
-        }
-    }
+    var titleColor: UIColor { get { return UIColor.whiteColor() } }
+    var subtitleColor: UIColor { get { return UIColor.whiteColor() } }
+    var subtitleActiveColor: UIColor { get { return UIColor.whiteColor() } }
     
-    var subtitleColor: UIColor {
-        get {
-            return UIColor.whiteColor()
-        }
-    }
-    
-    var subtitleActiveColor: UIColor {
-        get {
-            return UIColor.whiteColor()
-        }
-    }
-    
-    var isTransculent : Bool {
-        get {
-            return false
-        }
-    }
-    
-    var shadowImage : String? {
-        get {
-            return nil
-        }
-    }
+    var isTransculent : Bool { get { return false } }
+    var shadowImage : String? { get { return nil } }
     
     func applyAppearance(application: UIApplication) {
         // StatusBar style

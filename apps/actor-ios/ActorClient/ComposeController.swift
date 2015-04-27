@@ -45,8 +45,16 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        tableView.tableHeaderView = searchView
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
         
+        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+        headerShadow.image = UIImage(named: "CardTop2");
+        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+        header.addSubview(headerShadow);
+        
+        tableView.tableHeaderView = header
+ 
         searchSource = ContactsSource(searchDisplay: searchDisplay!)
 
         super.viewDidLoad()
