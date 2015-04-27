@@ -64,11 +64,19 @@ object Dialog {
   def find(userId: Int, peer: models.Peer) =
     dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
 
-  def findByUser(userId: Int, startDate: DateTime, limit: Int) =
-    dialogs
-      .filter(d ⇒ d.userId === userId && d.lastMessageDate >= startDate)
-      .take(limit)
-      .result
+  def findByUser(userId: Int, dateOpt: Option[DateTime], limit: Int) = {
+    val baseQuery = dialogs
+      .filter(d ⇒ d.userId === userId)
+
+    val query = dateOpt match {
+      case Some(date) ⇒
+        baseQuery.filter(_.lastMessageDate <= date).sortBy(_.lastMessageDate.desc)
+      case None ⇒
+        baseQuery.sortBy(_.lastMessageDate.asc)
+    }
+
+    query.take(limit).result
+  }
 
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastMessageDate).update(lastMessageDate) flatMap {
