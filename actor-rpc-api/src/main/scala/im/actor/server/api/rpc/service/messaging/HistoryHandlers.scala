@@ -32,7 +32,7 @@ trait HistoryHandlers {
 
           for {
             _ ← markMessagesReceived(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
-            _ ← broadcastUserUpdate(peer.id, update)
+            _ ← broadcastUserUpdate(peer.id, update, None)
           } yield {
             Ok(ResponseVoid)
           }
@@ -44,7 +44,7 @@ trait HistoryHandlers {
             otherGroupUserIds ← persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
             otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
             _ ← markMessagesReceived(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
-            _ ← persistAndPushUpdates(otherAuthIds, update)
+            _ ← persistAndPushUpdates(otherAuthIds, update, None)
           } yield {
             Ok(ResponseVoid)
           }
@@ -66,8 +66,8 @@ trait HistoryHandlers {
 
           for {
             _ ← markMessagesRead(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
-            _ ← broadcastUserUpdate(peer.id, update)
-            _ ← broadcastClientUpdate(ownUpdate)
+            _ ← broadcastUserUpdate(peer.id, update, None)
+            _ ← broadcastClientUpdate(ownUpdate, None)
           } yield {
             Ok(ResponseVoid)
           }
@@ -81,8 +81,8 @@ trait HistoryHandlers {
             otherGroupUserIds ← persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
             otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
             _ ← markMessagesRead(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
-            _ ← persistAndPushUpdates(otherAuthIds, update)
-            _ ← broadcastClientUpdate(ownUpdate)
+            _ ← persistAndPushUpdates(otherAuthIds, update, None)
+            _ ← broadcastClientUpdate(ownUpdate, None)
           } yield {
             Ok(ResponseVoid)
           }
@@ -99,7 +99,7 @@ trait HistoryHandlers {
 
       for {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
-        seqstate ← broadcastClientUpdate(update)
+        seqstate ← broadcastClientUpdate(update, None)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 
@@ -113,7 +113,7 @@ trait HistoryHandlers {
       for {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         _ ← persist.Dialog.delete(client.userId, peer.asModel)
-        seqstate ← broadcastClientUpdate(update)
+        seqstate ← broadcastClientUpdate(update, None)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 
@@ -181,7 +181,7 @@ trait HistoryHandlers {
 
       for {
         _ ← persist.HistoryMessage.delete(client.userId, peer.asModel, randomIds.toSet)
-        seqstate ← broadcastClientUpdate(update)
+        seqstate ← broadcastClientUpdate(update, None)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 

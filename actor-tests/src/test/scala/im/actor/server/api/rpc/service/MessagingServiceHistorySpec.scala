@@ -17,7 +17,7 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
 
   it should "Load dialogs" in s.dialogs
 
-  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()

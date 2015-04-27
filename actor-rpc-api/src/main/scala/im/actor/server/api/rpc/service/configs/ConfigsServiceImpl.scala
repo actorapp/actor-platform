@@ -30,7 +30,7 @@ class ConfigsServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, 
 
       for {
         _ ← persist.configs.Parameter.createOrUpdate(models.configs.Parameter(client.userId, key, value))
-        seqstate ← broadcastClientUpdate(update)
+        seqstate ← broadcastClientUpdate(update, None)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 

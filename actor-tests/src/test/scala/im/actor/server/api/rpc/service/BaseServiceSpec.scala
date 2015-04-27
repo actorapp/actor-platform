@@ -6,6 +6,7 @@ import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
 import im.actor.server.SqlSpecHelpers
+import im.actor.server.api.ActorSpecHelpers
 import im.actor.util.testing._
 
 trait BaseServiceSuite
@@ -14,7 +15,8 @@ trait BaseServiceSuite
   with ScalaFutures
   with Matchers
   with SqlSpecHelpers
-  with ServiceSpecHelpers {
+  with ServiceSpecHelpers
+  with ActorSpecHelpers {
   implicit lazy val (ds, db) = migrateAndInitDb()
   implicit val flowMaterializer = ActorFlowMaterializer()
 

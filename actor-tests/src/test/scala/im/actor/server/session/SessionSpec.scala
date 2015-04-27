@@ -19,6 +19,7 @@ import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.api.rpc.sequence.{ RequestSubscribeToOnline, WeakUpdate, SeqUpdate }
 import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientData }
+import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.presences.PresenceManager
 import im.actor.server.social.SocialManager
@@ -31,7 +32,7 @@ import im.actor.server.mtproto.transport._
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.util.testing._
 
-class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers {
+class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
   behavior of "Session actor"
 
   it should "send Drop on message on wrong message box" in sessions().e1
@@ -46,7 +47,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
   implicit val (ds, db) = migrateAndInitDb()
   implicit val ec = system.dispatcher
 
-  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
@@ -197,7 +198,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
 
       val update = UpdateContactRegistered(1, true, 1L)
-      Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(update)), 1.second)
+      Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(update, None)), 1.second)
 
       expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
     }

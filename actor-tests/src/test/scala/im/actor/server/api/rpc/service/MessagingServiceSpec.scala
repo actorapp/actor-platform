@@ -31,7 +31,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   it should "mark messages read and send updates (group)" in s.historyGroup.markRead
 
   object s {
-    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()

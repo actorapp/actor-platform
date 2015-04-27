@@ -25,7 +25,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
   "AddContact handler" should "add contact after remove" in (s.addremove.addAfterRemove)
 
   object s {
-    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion: PresenceManagerRegion = PresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
