@@ -22,26 +22,15 @@
 
 - (void)preStart;
 
-- (void)onNewOutMessageWithAMPeer:(AMPeer *)peer
-                         withLong:(jlong)rid
-                         withLong:(jlong)sortingDate
-                      withBoolean:(jboolean)isEncrypted;
-
 - (void)onNewInMessageWithAMPeer:(AMPeer *)peer
                         withLong:(jlong)rid
-                        withLong:(jlong)sortingDate
-                     withBoolean:(jboolean)isEncrypted;
+                        withLong:(jlong)sortingDate;
 
 - (void)onMessageReadWithAMPeer:(AMPeer *)peer
-                       withLong:(jlong)rid
-                       withLong:(jlong)sortingDate
-                    withBoolean:(jboolean)isEncrypted;
+                       withLong:(jlong)sortingDate;
 
 - (void)onMessageReadByMeWithAMPeer:(AMPeer *)peer
                            withLong:(jlong)sortingDate;
-
-- (void)onMessageReadByMeEncryptedWithAMPeer:(AMPeer *)peer
-                                    withLong:(jlong)rid;
 
 - (void)onMessageDeleteWithAMPeer:(AMPeer *)peer
                  withJavaUtilList:(id<JavaUtilList>)rids;
@@ -108,23 +97,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadBy
 @interface ImActorModelModulesMessagesOwnReadActor_MessageRead : NSObject {
  @public
   AMPeer *peer_;
-  jlong rid_;
   jlong sortingDate_;
-  jboolean isEncrypted__;
 }
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid
-                      withLong:(jlong)sortingDate
-                   withBoolean:(jboolean)isEncrypted;
+                      withLong:(jlong)sortingDate;
 
 - (AMPeer *)getPeer;
 
-- (jlong)getRid;
-
 - (jlong)getSortingDate;
-
-- (jboolean)isEncrypted;
 
 @end
 
@@ -137,58 +118,22 @@ CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 
-@interface ImActorModelModulesMessagesOwnReadActor_NewOutMessage : NSObject {
- @public
-  AMPeer *peer_;
-  jlong rid_;
-  jlong sortingDate_;
-  jboolean isEncrypted__;
-}
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid
-                      withLong:(jlong)sortingDate
-                   withBoolean:(jboolean)isEncrypted;
-
-- (AMPeer *)getPeer;
-
-- (jlong)getRid;
-
-- (jlong)getSortingDate;
-
-- (jboolean)isEncrypted;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_NewOutMessage)
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_NewOutMessage, peer_, AMPeer *)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_NewOutMessage)
-
 @interface ImActorModelModulesMessagesOwnReadActor_NewMessage : NSObject {
  @public
   AMPeer *peer_;
   jlong rid_;
   jlong sortingDate_;
-  jboolean isEncrypted__;
 }
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-                      withLong:(jlong)sortingDate
-                   withBoolean:(jboolean)isEncrypted;
+                      withLong:(jlong)sortingDate;
 
 - (AMPeer *)getPeer;
 
 - (jlong)getRid;
 
 - (jlong)getSortingDate;
-
-- (jboolean)isEncrypted;
 
 @end
 

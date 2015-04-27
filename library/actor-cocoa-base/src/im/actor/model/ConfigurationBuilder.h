@@ -12,6 +12,7 @@
 @protocol AMCryptoProvider;
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
+@protocol AMHttpDownloaderProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -25,6 +26,8 @@
 
 @interface AMConfigurationBuilder : NSObject {
 }
+
+- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider;
 
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 

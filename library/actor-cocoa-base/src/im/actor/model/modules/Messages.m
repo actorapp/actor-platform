@@ -41,12 +41,12 @@
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/messages/ConversationActor.h"
 #include "im/actor/model/modules/messages/ConversationHistoryActor.h"
+#include "im/actor/model/modules/messages/CursorReaderActor.h"
+#include "im/actor/model/modules/messages/CursorReceiverActor.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/DialogsHistoryActor.h"
 #include "im/actor/model/modules/messages/MessageDeleteActor.h"
 #include "im/actor/model/modules/messages/OwnReadActor.h"
-#include "im/actor/model/modules/messages/PlainReaderActor.h"
-#include "im/actor/model/modules/messages/PlainReceiverActor.h"
 #include "im/actor/model/modules/messages/SenderActor.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
@@ -359,10 +359,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$11_$4_$2, val$e_, AMRpcExceptio
   self->ownReadActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesOwnReadActor_class_(), [[ImActorModelModulesMessages_$3 alloc] initWithImActorModelModulesMessages:self]) withNSString:
 #line 92
   @"actor/read/own"];
-  self->plainReadActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesPlainReaderActor_class_(), [[ImActorModelModulesMessages_$4 alloc] initWithImActorModelModulesMessages:self]) withNSString:
+  self->plainReadActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesCursorReaderActor_class_(), [[ImActorModelModulesMessages_$4 alloc] initWithImActorModelModulesMessages:self]) withNSString:
 #line 98
   @"actor/plain/read"];
-  self->plainReceiverActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesPlainReceiverActor_class_(), [[ImActorModelModulesMessages_$5 alloc] initWithImActorModelModulesMessages:self]) withNSString:
+  self->plainReceiverActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesCursorReceiverActor_class_(), [[ImActorModelModulesMessages_$5 alloc] initWithImActorModelModulesMessages:self]) withNSString:
 #line 104
   @"actor/plain/receive"];
   self->sendMessageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesMessagesSenderActor_class_(), [[ImActorModelModulesMessages_$6 alloc] initWithImActorModelModulesMessages:self]) withNSString:
@@ -611,12 +611,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$11_$4_$2, val$e_, AMRpcExceptio
 
 #line 254
 - (void)onInMessageShownWithAMPeer:(AMPeer *)peer
-                          withLong:(jlong)rid
-                          withLong:(jlong)sortDate
-                       withBoolean:(jboolean)isEncrypted {
+                          withLong:(jlong)sortDate {
   
 #line 255
-  [((DKActorRef *) nil_chk(ownReadActor_)) sendWithId:[[ImActorModelModulesMessagesOwnReadActor_MessageRead alloc] initWithAMPeer:peer withLong:rid withLong:sortDate withBoolean:isEncrypted]];
+  [((DKActorRef *) nil_chk(ownReadActor_)) sendWithId:[[ImActorModelModulesMessagesOwnReadActor_MessageRead alloc] initWithAMPeer:peer withLong:sortDate]];
 }
 
 
@@ -838,10 +836,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$3)
 
 
 #line 95
-- (ImActorModelModulesMessagesPlainReaderActor *)create {
+- (ImActorModelModulesMessagesCursorReaderActor *)create {
   
 #line 96
-  return [[ImActorModelModulesMessagesPlainReaderActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
+  return [[ImActorModelModulesMessagesCursorReaderActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$ {
@@ -862,10 +860,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$4)
 
 
 #line 101
-- (ImActorModelModulesMessagesPlainReceiverActor *)create {
+- (ImActorModelModulesMessagesCursorReceiverActor *)create {
   
 #line 102
-  return [[ImActorModelModulesMessagesPlainReceiverActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
+  return [[ImActorModelModulesMessagesCursorReceiverActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
 }
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$ {

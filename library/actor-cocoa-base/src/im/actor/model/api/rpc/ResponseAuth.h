@@ -22,13 +22,10 @@
 
 + (ImActorModelApiRpcResponseAuth *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithLong:(jlong)publicKeyHash
-     withImActorModelApiUser:(ImActorModelApiUser *)user
-   withImActorModelApiConfig:(ImActorModelApiConfig *)config;
+- (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)user
+                  withImActorModelApiConfig:(ImActorModelApiConfig *)config;
 
 - (instancetype)init;
-
-- (jlong)getPublicKeyHash;
 
 - (ImActorModelApiUser *)getUser;
 

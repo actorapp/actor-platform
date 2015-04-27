@@ -10,7 +10,8 @@
 @class AMRpcException;
 @class DKSyncKeyValue;
 @class IOSLongArray;
-@class ImActorModelApiRpcResponseVoid;
+@class ImActorModelApiPeer;
+@class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesMessagesEntityDeleteStorage;
 @class ImActorModelModulesModules;
 @protocol JavaUtilList;
@@ -67,13 +68,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesMessageDeleteActor_DeleteM
 @interface ImActorModelModulesMessagesMessageDeleteActor_$1 : NSObject < AMRpcCallback > {
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessagesMessageDeleteActor:(ImActorModelModulesMessagesMessageDeleteActor *)outer$
                                                            withAMPeer:(AMPeer *)capture$0
-                                                     withJavaUtilList:(id<JavaUtilList>)capture$1;
+                                                     withJavaUtilList:(id<JavaUtilList>)capture$1
+                                              withImActorModelApiPeer:(ImActorModelApiPeer *)capture$2;
 
 @end
 
