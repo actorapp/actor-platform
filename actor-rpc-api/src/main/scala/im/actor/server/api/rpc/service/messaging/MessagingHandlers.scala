@@ -5,22 +5,29 @@ import scala.concurrent.duration._
 
 import akka.util.Timeout
 import org.joda.time.DateTime
+import slick.dbio
+import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
+import im.actor.server.api.util.{ ContactsUtils, HistoryUtils, PeerUtils, UserUtils }
+import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.social.SocialManager
 import im.actor.server.{ models, persist }
 
 private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl ⇒
 
   import im.actor.api.rpc.Implicits._
-  import im.actor.server.api.util.HistoryUtils._
-  import im.actor.server.api.util.PeerUtils._
-  import im.actor.server.push.SeqUpdatesManager._
-  import im.actor.server.social.SocialManager._
+  import HistoryUtils._
+  import PeerUtils._
+  import SeqUpdatesManager._
+  import SocialManager._
+  import UserUtils._
+  import ContactsUtils._
 
   override implicit val ec = actorSystem.dispatcher
 
@@ -54,10 +61,12 @@ private[messaging] trait MessagingHandlers {
 
             for {
               _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
-              _ ← broadcastUserUpdate(outPeer.id, outUpdate)
-              _ ← DBIO.from(recordRelation(client.userId, outPeer.id)) // TODO: configurable
-              _ ← notifyClientUpdate(ownUpdate)
-              seqstate ← persistAndPushUpdate(client.authId, update)
+              clientUser ← getClientUserUnsafe
+              pushText ← getPushText(outUpdate.message, clientUser, outPeer.id)
+              _ ← broadcastUserUpdate(outPeer.id, outUpdate, Some(pushText))
+              _ ← DBIO.from(recordRelation(client.userId, outPeer.id))
+              _ ← notifyClientUpdate(ownUpdate, None)
+              seqstate ← persistAndPushUpdate(client.authId, update, None)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
@@ -73,11 +82,9 @@ private[messaging] trait MessagingHandlers {
             val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
 
             for {
-              userIds ← persist.GroupUser.findUserIds(outPeer.id)
-              otherAuthIds ← persist.AuthId.findIdByUserIds(userIds.toSet).map(_.filterNot(_ == client.authId))
               _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
-              _ ← persistAndPushUpdates(otherAuthIds.toSet, outUpdate)
-              seqstate ← persistAndPushUpdate(client.authId, update)
+              _ ← broadcastGroupMessage(outPeer.id, outUpdate)
+              seqstate ← persistAndPushUpdate(client.authId, update, None)
             } yield {
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
             }
@@ -87,4 +94,46 @@ private[messaging] trait MessagingHandlers {
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
+
+  private def broadcastGroupMessage(groupId: Int, update: UpdateMessage)(implicit clientData: AuthorizedClientData) = {
+    val updateHeader = update.header
+    val updateData = update.toByteArray
+    val (updateUserIds, updateGroupIds) = updateRefs(update)
+
+    for {
+      userIds ← persist.GroupUser.findUserIds(groupId)
+      clientUser ← getClientUserUnsafe
+      seqstates ← DBIO.sequence(userIds.view.filterNot(_ == clientData.userId) map { userId ⇒
+        for {
+          pushText ← getPushText(update.message, clientUser, userId)
+          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText))
+        } yield seqstates
+      }) map (_.flatten)
+      selfseqstates ← notifyClientUpdate(updateHeader, updateData, updateUserIds, updateGroupIds, None)
+    } yield seqstates ++ selfseqstates
+  }
+
+  private def getPushText(message: Message, clientUser: models.User, outUser: Int): dbio.DBIOAction[String, NoStream, Read] = {
+    message match {
+      case TextMessage(text, _) ⇒
+        for (localName ← getLocalNameOrDefault(outUser, clientUser))
+          yield formatAuthored(localName, text)
+      case dm: DocumentMessage ⇒
+        getLocalNameOrDefault(outUser, clientUser) map { localName ⇒
+          dm.ext match {
+            case Some(_: DocumentExPhoto) ⇒
+              formatAuthored(localName, "Photo")
+            case Some(_: DocumentExVideo) ⇒
+              formatAuthored(localName, "Video")
+            case _ ⇒
+              formatAuthored(localName, dm.name)
+          }
+        }
+      case unsupported ⇒
+        actorSystem.log.error("Unsupported message content {}", unsupported)
+        DBIO.successful("")
+    }
+  }
+
+  private def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
 }

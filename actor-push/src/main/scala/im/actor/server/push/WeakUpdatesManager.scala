@@ -30,6 +30,9 @@ object WeakUpdatesManager {
   @SerialVersionUID(1L)
   private[push] case class SubscribeAck(consumer: ActorRef) extends Message
 
+  @SerialVersionUID(1L)
+  case class UpdateReceived(update: WeakUpdate)
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(authId, payload) ⇒ (authId.toString, env)
   }
@@ -77,7 +80,7 @@ class WeakUpdatesManager extends Actor with ActorLogging {
 
   def working(consumers: Set[ActorRef]): Receive = {
     case Envelope(authId, PushUpdate(header, serializedData)) ⇒
-      consumers foreach (_ ! WeakUpdate(System.currentTimeMillis(), header, serializedData))
+      consumers foreach (_ ! UpdateReceived(WeakUpdate(System.currentTimeMillis(), header, serializedData)))
     case Envelope(_, Subscribe(consumer)) ⇒
       context.watch(consumer)
       context.become(working(consumers + consumer))

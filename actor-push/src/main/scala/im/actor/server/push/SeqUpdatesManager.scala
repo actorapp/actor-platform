@@ -12,9 +12,14 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
+import com.google.android.gcm.server.{ Message ⇒ GCMMessage, Sender ⇒ GCMSender }
+import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
+import com.relayrides.pushy.apns.{ PushManager ⇒ APNSPushManager }
+import scodec.bits.BitVector
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.{ models, persist ⇒ p }
@@ -32,16 +37,37 @@ object SeqUpdatesManager {
   private[push] case object GetSequenceState extends Message
 
   @SerialVersionUID(1L)
-  private[push] case class PushUpdate(header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]) extends Message
+  private[push] case class PushUpdate(
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  ) extends Message
 
   @SerialVersionUID(1L)
-  private[push] case class PushUpdateGetSequenceState(header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]) extends Message
+  private[push] case class PushUpdateGetSequenceState(
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  ) extends Message
 
   @SerialVersionUID(1L)
   private[push] case class Subscribe(consumer: ActorRef) extends Message
 
   @SerialVersionUID(1L)
   private[push] case class SubscribeAck(consumer: ActorRef) extends Message
+
+  @SerialVersionUID(1L)
+  private[push] case class GooglePushCredentialsUpdated(credsOpt: Option[models.push.GooglePushCredentials]) extends Message
+
+  @SerialVersionUID(1L)
+  private[push] case class ApplePushCredentialsUpdated(credsOpt: Option[models.push.ApplePushCredentials]) extends Message
+
+  @SerialVersionUID(1L)
+  case class UpdateReceived(update: SeqUpdate)
 
   type Sequence = Int
   type SequenceState = (Int, Array[Byte])
@@ -73,7 +99,12 @@ object SeqUpdatesManager {
       shardResolver = shardResolver
     ))
 
-  def startRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = startRegion(Some(Props(classOf[SeqUpdatesManager], db)))
+  def startRegion()(implicit
+    system: ActorSystem,
+                    gcmSender:       GCMSender,
+                    apnsPushManager: APNSPushManager[SimpleApnsPushNotification],
+                    db:              Database): SeqUpdatesManagerRegion =
+    startRegion(Some(Props(classOf[SeqUpdatesManager], gcmSender, apnsPushManager, db)))
 
   def startRegionProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = startRegion(None)
 
@@ -83,83 +114,132 @@ object SeqUpdatesManager {
     } yield seqstate
   }
 
-  def persistAndPushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int])(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
-    DBIO.from(pushUpdateGetSeqState(region, authId, header, serializedData, userIds, groupIds))
+  def persistAndPushUpdate(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
+    DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, userIds, groupIds, pushText))
   }
 
-  def persistAndPushUpdate(authId: Long, update: api.Update)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(authId: Long, update: api.Update, pushText: Option[String])(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     val (userIds, groupIds) = updateRefs(update)
 
-    persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)
+    persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText)
   }
 
-  def persistAndPushUpdates(authIds: Set[Long], update: api.Update)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def persistAndPushUpdates(authIds: Set[Long], update: api.Update, pushText: Option[String])(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
     val (userIds, groupIds) = updateRefs(update)
 
-    DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
+    DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText)))
   }
 
-  def broadcastUpdateAll(userIds: Set[Int], update: api.Update)(implicit
+  def broadcastUpdateAll(
+    userIds:  Set[Int],
+    update:   api.Update,
+    pushText: Option[String]
+  )(implicit
     region: SeqUpdatesManagerRegion,
-                                                                ec:     ExecutionContext,
-                                                                client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
+    ec:     ExecutionContext,
+    client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (refUserIds, refGroupIds) = updateRefs(update)
 
     for {
       authIds ← p.AuthId.findIdByUserIds(userIds + client.userId)
-      seqstates ← DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds)))
-      seqstate ← persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds)
+      seqstates ← DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds, pushText)))
+      seqstate ← persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds, pushText)
     } yield (seqstate, seqstates)
   }
 
   def broadcastUserUpdate(
-    userId: Int,
-    update: api.Update
-  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+    userId:   Int,
+    update:   api.Update,
+    pushText: Option[String]
+  )(implicit
+    region: SeqUpdatesManagerRegion,
+    ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
+    broadcastUserUpdate(userId, header, serializedData, userIds, groupIds, pushText)
+  }
+
+  def broadcastUserUpdate(
+    userId:         Int,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  )(implicit
+    region: SeqUpdatesManagerRegion,
+    ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     for {
       authIds ← p.AuthId.findIdByUserId(userId)
-      seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds)))
+      seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText)))
     } yield seqstates
   }
 
-  def broadcastClientUpdate(update: api.Update)(implicit
+  def broadcastClientUpdate(update: api.Update, pushText: Option[String])(implicit
     region: SeqUpdatesManagerRegion,
-                                                client: api.AuthorizedClientData, ec: ExecutionContext): DBIO[SequenceState] = {
+                                                                          client: api.AuthorizedClientData,
+                                                                          ec:     ExecutionContext): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
     for {
       otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
-      ownseqstate ← persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds)
+      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText)))
+      ownseqstate ← persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds, pushText)
     } yield ownseqstate
   }
 
-  def notifyClientUpdate(update: api.Update)(implicit
+  def notifyClientUpdate(update: api.Update, pushText: Option[String])(implicit
     region: SeqUpdatesManagerRegion,
-                                             client: api.AuthorizedClientData,
-                                             ec:     ExecutionContext): DBIO[Seq[SequenceState]] = {
+                                                                       client: api.AuthorizedClientData,
+                                                                       ec:     ExecutionContext): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
+    notifyClientUpdate(header, serializedData, userIds, groupIds, pushText)
+  }
+
+  def notifyClientUpdate(
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  )(implicit
+    region: SeqUpdatesManagerRegion,
+    client: api.AuthorizedClientData,
+    ec:     ExecutionContext) = {
     for {
       otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds)))
+      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText)))
     } yield seqstates
+  }
+
+  def setUpdatedGooglePushCredentials(authId: Long, credsOpt: Option[models.push.GooglePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {
+    seqUpdManagerRegion.ref ! Envelope(authId, GooglePushCredentialsUpdated(credsOpt))
+  }
+
+  def setUpdatedApplePushCredentials(authId: Long, credsOpt: Option[models.push.ApplePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {
+    seqUpdManagerRegion.ref ! Envelope(authId, ApplePushCredentialsUpdated(credsOpt))
   }
 
   def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext) = {
@@ -249,23 +329,46 @@ object SeqUpdatesManager {
     ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
   }
 
-  private def pushUpdateGetSeqState(region: SeqUpdatesManagerRegion, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Future[SequenceState] = {
-    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)))(OperationTimeout).mapTo[SequenceState]
+  private def pushUpdateGetSeqState(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  )(implicit region: SeqUpdatesManagerRegion): Future[SequenceState] = {
+    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText)))(OperationTimeout).mapTo[SequenceState]
   }
 
-  private def pushUpdate(region: SeqUpdatesManagerRegion, authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
-    region.ref ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds))
+  private def pushUpdate(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  )(implicit region: SeqUpdatesManagerRegion): Unit = {
+    region.ref ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds, pushText))
   }
 }
 
-class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with ActorLogging {
+class SeqUpdatesManager(
+  gcmSender:       GCMSender,
+  apnsPushManager: APNSPushManager[SimpleApnsPushNotification],
+  db:              Database
+) extends PersistentActor with Stash with ActorLogging {
 
   import ShardRegion.Passivate
 
   import SeqUpdatesManager._
 
   @SerialVersionUID(1L)
-  private case class Initiated(authId: Long, timestamp: Long)
+  private case class Initiated(
+    authId:         Long,
+    timestamp:      Long,
+    googleCredsOpt: Option[models.push.GooglePushCredentials],
+    appleCredsOpt:  Option[models.push.ApplePushCredentials]
+  )
 
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
@@ -281,16 +384,18 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   private[this] var lastTimestamp: Long = 0
   // TODO: feed this value from db on actor startup
   private[this] var consumers: Set[ActorRef] = Set.empty
+  private[this] var googleCredsOpt: Option[models.push.GooglePushCredentials] = None
+  private[this] var appleCredsOpt: Option[models.push.ApplePushCredentials] = None
 
   def receiveInitiated: Receive = {
     case Envelope(_, GetSequenceState) ⇒
       sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
-    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds)) ⇒
-      pushUpdate(authId, header, updBytes, userIds, groupIds)
-    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds)) ⇒
+    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds, pushText)) ⇒
+      pushUpdate(authId, header, updBytes, userIds, groupIds, pushText)
+    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText)) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, userIds, groupIds, { seqstate: SequenceState ⇒
+      pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, { seqstate: SequenceState ⇒
         replyTo ! seqstate
       })
     case Envelope(authId, Subscribe(consumer: ActorRef)) ⇒
@@ -303,6 +408,10 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       log.debug("Consumer subscribed {}", consumer)
 
       sender() ! SubscribeAck(consumer)
+    case Envelope(_, GooglePushCredentialsUpdated(credsOpt)) ⇒
+      this.googleCredsOpt = credsOpt
+    case Envelope(_, ApplePushCredentialsUpdated(credsOpt)) ⇒
+      this.appleCredsOpt = credsOpt
     case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
         context.parent ! Passivate(stopMessage = PoisonPill)
@@ -313,8 +422,10 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
   }
 
   def stashing: Receive = {
-    case Initiated(authId, timestamp) ⇒
-      lastTimestamp = timestamp
+    case Initiated(authId, timestamp, googleCredsOpt, appleCredsOpt) ⇒
+      this.lastTimestamp = timestamp
+      this.googleCredsOpt = googleCredsOpt
+      this.appleCredsOpt = appleCredsOpt
 
       unstashAll()
       context.become(receiveInitiated)
@@ -329,19 +440,24 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
       // TODO: pinned dispatcher?
       implicit val ec = context.dispatcher
 
-      val timestampFuture: Future[Long] = for {
+      val initiatedFuture: Future[Initiated] = for {
         seqUpdOpt ← db.run(p.sequence.SeqUpdate.find(authId).headOption)
-      } yield {
-        seqUpdOpt.map(_.timestamp).getOrElse(0)
-      }
+        googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
+        appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
+      } yield Initiated(
+        authId,
+        seqUpdOpt.map(_.timestamp).getOrElse(0),
+        googleCredsOpt,
+        appleCredsOpt
+      )
 
-      timestampFuture.onFailure {
+      initiatedFuture.onFailure {
         case e ⇒
-          log.error(e, "Failed loading last update")
+          log.error(e, "Failed initiating SeqUpdatesManager")
           context.parent ! Passivate(stopMessage = PoisonPill)
       }
 
-      timestampFuture.map(Initiated(authId, _)).pipeTo(self)
+      initiatedFuture.pipeTo(self)
     case msg ⇒ stash()
   }
 
@@ -362,17 +478,30 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
     log.error(reason, "SeqUpdatesManager exception, message option: {}", message)
   }
 
-  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int]): Unit = {
-    pushUpdate(authId, header, serializedData, userIds, groupIds, noop1)
+  private def pushUpdate(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String]
+  ): Unit = {
+    pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, noop1)
   }
 
-  private def pushUpdate(authId: Long, header: Int, serializedData: Array[Byte], userIds: Set[Int], groupIds: Set[Int], cb: SequenceState ⇒ Unit): Unit = {
-    // TODO: pinned dispatcher?
+  private def pushUpdate(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String],
+    cb:             SequenceState ⇒ Unit
+  ): Unit = {
+    // TODO: #perf pinned dispatcher?
     implicit val ec = context.dispatcher
 
     def push(seq: Int, timestamp: Long): Future[Unit] = {
-      // TODO: push it
-
       val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)
 
       db.run(p.sequence.SeqUpdate.create(seqUpdate))
@@ -380,7 +509,26 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
         .andThen {
           case Success(_) ⇒
             consumers foreach { consumer ⇒
-              consumer ! SeqUpdate(seqUpdate.seq, timestampToBytes(seqUpdate.timestamp), seqUpdate.header, seqUpdate.serializedData)
+              consumer ! UpdateReceived(
+                SeqUpdate(
+                  seqUpdate.seq,
+                  timestampToBytes(seqUpdate.timestamp),
+                  seqUpdate.header,
+                  seqUpdate.serializedData
+                )
+              )
+            }
+
+            if (header != UpdateMessageSent.header) {
+              googleCredsOpt foreach { creds ⇒
+                if (header == UpdateMessage.header) {
+                  deliverGooglePush(creds, authId, seqUpdate.seq)
+                }
+              }
+
+              appleCredsOpt foreach { creds ⇒
+                deliverApplePush(creds, authId, seqUpdate.seq, pushText)
+              }
             }
 
             log.debug("Pushed update seq: {}", seq)
@@ -421,4 +569,41 @@ class SeqUpdatesManager(db: Database) extends PersistentActor with Stash with Ac
 
   private def sequenceState(sequence: Int, state: Array[Byte]): SequenceState =
     (sequence, state)
+
+  private def deliverGooglePush(creds: models.push.GooglePushCredentials, authId: Long, seq: Int): Unit = {
+    log.debug("Delivering google push, authId: {}, seq: {}", authId, seq)
+
+    val message = (new GCMMessage.Builder)
+      .collapseKey(authId.toString)
+      .addData("seq", seq.toString)
+      .build()
+
+    // TODO: configurable retries
+    // TODO: #perf pinned dispatcher
+    implicit val ec = context.dispatcher
+
+    val resultFuture = Future { blocking { gcmSender.send(message, creds.regId, 3) } }
+    resultFuture map { result ⇒
+      log.debug("Delivery result messageId: {}, error: {}", result.getMessageId, result.getErrorCodeName)
+    }
+  }
+
+  private def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String]): Unit = {
+    log.debug("Delivering apple push, authId: {}, seq: {}", authId, seq)
+
+    val builder = new ApnsPayloadBuilder
+
+    textOpt foreach (builder.setAlertBody)
+    builder.addCustomProperty("seq", seq)
+    builder.setContentAvailable(true)
+
+    val payload = builder.buildWithDefaultMaximumLength()
+
+    BitVector.fromHex(creds.token) match { // TODO: #perf do it only once
+      case Some(tokenBits) ⇒
+        apnsPushManager.getQueue.put(new SimpleApnsPushNotification(tokenBits.toByteArray, payload))
+      case None ⇒
+        log.error("Cannot decode token from hex")
+    }
+  }
 }

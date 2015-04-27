@@ -28,6 +28,14 @@ class GroupsServiceImpl(implicit
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
+  object PushTexts {
+    val Added = "User added"
+    val Invited = "You are invited to a group"
+    val Kicked = "User kicked"
+    val Left = "User left"
+    val TitleChanged = "Group title changed"
+  }
+
   override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = Future {
     throw new Exception("Not implemented")
   }
@@ -42,7 +50,7 @@ class GroupsServiceImpl(implicit
         for {
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update)
+          (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Kicked))
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
       }
     }
@@ -59,7 +67,7 @@ class GroupsServiceImpl(implicit
 
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update)
+          (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Left))
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
       }
     }
@@ -90,8 +98,8 @@ class GroupsServiceImpl(implicit
           _ ← persist.Group.create(group, randomId)
           _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
           // TODO: write service message groupCreated
-          _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update)).toSeq)
-          seqstate ← broadcastClientUpdate(update)
+          _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update, Some("You are invited to a group"))).toSeq)
+          seqstate ← broadcastClientUpdate(update, None)
         } yield {
           Ok(ResponseCreateGroup(
             groupPeer = GroupOutPeer(group.id, group.accessHash),
@@ -137,10 +145,10 @@ class GroupsServiceImpl(implicit
 
               for {
                 _ ← persist.GroupUser.create(fullGroup.id, userOutPeer.userId, client.userId, date)
-                _ ← DBIO.sequence(invitingUserUpdates map (broadcastUserUpdate(userOutPeer.userId, _)))
+                _ ← DBIO.sequence(invitingUserUpdates map (broadcastUserUpdate(userOutPeer.userId, _, Some(PushTexts.Invited))))
                 // TODO: #perf the following broadcasts do update serializing per each user
-                _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate)))
-                seqstate ← broadcastClientUpdate(userAddedUpdate)
+                _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added))))
+                seqstate ← broadcastClientUpdate(userAddedUpdate, None)
                 // TODO: write service message
               } yield {
                 Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
@@ -168,7 +176,7 @@ class GroupsServiceImpl(implicit
           _ ← persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)
           // TODO: write service message
           userIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastUpdateAll(userIds.toSet, update)
+          (seqstate, _) ← broadcastUpdateAll(userIds.toSet, update, Some(PushTexts.TitleChanged))
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
       }
     }

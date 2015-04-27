@@ -20,7 +20,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
   it should "get state" in e1
   it should "get difference" in e2
 
-  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
@@ -54,7 +54,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val (userIds, groupIds) = updateRefs(update)
 
     val actions = for (a ← 1 to 600) yield {
-      persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds)
+      persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None)
     }
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)

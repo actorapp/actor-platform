@@ -95,7 +95,7 @@ class ContactsServiceImpl(implicit
                 for {
                   _ ← createAllUserContacts(client.userId, userStructsSalts)
                   _ ← DBIO.sequence(socialActions)
-                  seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector))
+                  seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector), None)
                 } yield {
                   Ok(ResponseImportContacts(userStructsSalts.toVector.map(_._1), seqstate._1, seqstate._2))
                 }
@@ -146,8 +146,8 @@ class ContactsServiceImpl(implicit
           if (accessHash == util.ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
               _ ← persist.contact.UserContact.delete(client.userId, userId)
-              _ ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None))
-              seqstate ← broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)))
+              _ ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None)
+              seqstate ← broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None)
             } yield {
               Ok(ResponseSeq(seqstate._1, seqstate._2))
             }
