@@ -1,11 +1,30 @@
 .chatlist {
   &__item {}
   &__avatar {
-    width: 48px !important;
-    height: 48px !important;
-    margin-right: 16px !important;
+    margin: 8px 16px 8px 0;
+    .md_avatar, .no-avatar {
+      margin: 0 !important;
+      width: 48px !important;
+      height: 48px !important;
+      border-radius: 100%;
+    }
+    .no-avatar {
+      span {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        display: block;
+        height: 100%;
+        font-size: 18px;
+        line-height: 48px;
+        color: rgb(255,255,255);
+      }
+    }
   }
   &__text {
+    h3 {
+      margin-top: 6px !important;
+    }
     &__title {
       font-size: 14px !important;
       color: rgb(22,22,22) !important;
@@ -14,6 +33,10 @@
       color: rgb(190,190,190) !important;
       font-size: 12px !important;
       text-transform: lowercase !important;
+    }
+    p {
+      color: rgb(148,148,148) !important;
+      font-size: 13px !important;
     }
   }
 }
