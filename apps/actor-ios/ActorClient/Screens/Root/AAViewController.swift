@@ -87,7 +87,7 @@ class AAViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
-        placeholder.frame = view.bounds
+        placeholder.frame = CGRectMake(0, 64, view.bounds.width, view.bounds.height - 64)
     }
     
     // MARK: -
