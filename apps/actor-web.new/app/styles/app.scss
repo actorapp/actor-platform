@@ -81,23 +81,7 @@ md-toolbar.md-default-theme {
     }
   }
 }
-.md-subheader {
-  &.md-no-sticky {
-    &:after {
-      animation: none !important;
-      box-shadow: none;
-    }
-    &.md-sticky-clone {
-      display: none;
-    }
-  }
-  &.md-sticky-clone {
-    padding-top: 17px;
-  }
-  &:not(.md-sticky-no-effect)[sticky-state=active] {
-    margin-top: 0;
-  }
-}
+
 .md-button {
   &.md-primary {
     font-size: 14px;
