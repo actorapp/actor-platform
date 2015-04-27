@@ -66,15 +66,13 @@ class ActorService
     @$rootScope.$broadcast 'closeConversation', peer
 
   openConversation: (peer) ->
-    console.log '[AW]ActorService openConversation', peer
-    @messenger.getUid()
+    console.log '[AW]ActorService openConversation'
     @messenger.onConversationOpen peer
     @$rootScope.$broadcast 'openConversation', peer
 
-  bindChat: (peer, render, callback) ->
-    console.log '[AW]ActorService bindChat'#, peer, render
-    @messenger.bindChat (peer, render) -> callback items
-    # @messenger.bindChat peer, render
+  bindChat: (peer, callback) ->
+    console.log '[AW]ActorService bindChat'
+    @messenger.bindChat peer, callback
 
   getMessages: (callback) ->
 

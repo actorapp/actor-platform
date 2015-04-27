@@ -3,18 +3,17 @@ class MessagesController
 
   constructor: (@$rootScope, @actorService) ->
     console.log '[AW]MessagesController constructor'
-    @$rootScope.$on 'openConversation', (event, args) =>
-      # @actorService.bindChat args, @renderMessages
-      @getMessages(args)
+    @$rootScope.$on 'openConversation', (event, peer) =>
+      @getMessages(peer)
 
   getMessages: (peer) ->
     console.log '[AW]MessagesController getMessages', peer
-    # @actorService.getMessages (messages) =>
-    #   @list = messages
-    #   console.log @list
+    @actorService.bindChat peer, @renderMessages
 
-  renderMessages: ->
-    console.log '[AW]MessagesController renderMessages'
+  renderMessages: (messages) =>
+    console.log '[AW]MessagesController renderMessages', messages
+    @list = messages
+
 
 MessagesController.$inject = ['$rootScope', 'actorService']
 
