@@ -51,8 +51,10 @@ class AASettingsController: AATableViewController {
             target: self,
             action: "editProfile")
         
+        view.backgroundColor = MainAppTheme.list.bgColor
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        tableView.backgroundColor = Resources.BackyardColor
+        tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
         tableView.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)

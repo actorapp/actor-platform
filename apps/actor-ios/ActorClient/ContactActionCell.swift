@@ -20,6 +20,8 @@ class ContactActionCell: BasicCell {
         iconView.contentMode = UIViewContentMode.Center
         self.contentView.addSubview(titleView)
         self.contentView.addSubview(iconView)
+        
+        backgroundColor = MainAppTheme.list.bgColor
     }
 
     required init(coder aDecoder: NSCoder) {

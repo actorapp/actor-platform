@@ -9,7 +9,7 @@
 import Foundation
 
 class BasicCell : UITableViewCell {
-    let separatorView = TableViewSeparator(color: Resources.SeparatorColor)
+    let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor)
     let separatorPadding: Int
     
     init(reuseIdentifier:String, separatorPadding: Int) {
