@@ -5,7 +5,6 @@ class ChatsController
     console.log '[AW]ChatsController constructor'
     @$rootScope.$on 'actorReady', => @getChats()
 
-
   getChats: ->
     console.log '[AW]ChatsController getChats'
     @actorService.getDialogs (items) => @list = items
