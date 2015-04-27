@@ -7,11 +7,13 @@ class MessagesController
       @getMessages(peer)
 
   getMessages: (peer) ->
-    console.log '[AW]MessagesController getMessages', peer
+    console.log '[AW]MessagesController getMessages'
+    console.log '[AW]MessagesController getMessages: peer:', peer
     @actorService.bindChat peer, @renderMessages
 
   renderMessages: (messages) =>
-    console.log '[AW]MessagesController renderMessages', messages
+    console.log '[AW]MessagesController renderMessages'
+    console.log '[AW]MessagesController renderMessages: messages:', messages
     @list = messages
 
 
