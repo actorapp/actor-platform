@@ -121,9 +121,10 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
     case env @ Envelope(userId, RelationsNoted(notedUserIds)) ⇒
       val uniqUserIds = notedUserIds.diff(userIds).filterNot(_ == userId)
 
-      context.become(working(userIds ++ uniqUserIds))
-
-      db.run(persist.social.Relation.create(userId, uniqUserIds)).map(_ ⇒ Ack).pipeTo(sender())
+      if (uniqUserIds.nonEmpty) {
+        context.become(working(userIds ++ uniqUserIds))
+        db.run(persist.social.Relation.create(userId, uniqUserIds)).map(_ ⇒ Ack).pipeTo(sender())
+      }
     case env @ Envelope(userId, RelationNoted(notedUserId)) ⇒
       if (!userIds.contains(userId) && userId != notedUserId) {
         context.become(working(userIds + userId))
