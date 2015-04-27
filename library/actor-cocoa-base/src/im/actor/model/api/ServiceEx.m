@@ -19,8 +19,12 @@
 #include "im/actor/model/api/ServiceExUserLeft.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserParser.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
@@ -32,16 +36,15 @@
 
 
 #line 20
-+ (ImActorModelApiServiceEx *)fromBytesWithInt:(jint)key
-                                 withByteArray:(IOSByteArray *)content {
-  return ImActorModelApiServiceEx_fromBytesWithInt_withByteArray_(key, content);
++ (ImActorModelApiServiceEx *)fromBytesWithByteArray:(IOSByteArray *)src {
+  return ImActorModelApiServiceEx_fromBytesWithByteArray_(src);
 }
 
 
-#line 34
+#line 37
 - (IOSByteArray *)buildContainer {
   
-#line 35
+#line 38
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -55,42 +58,45 @@
 
 @end
 
-ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithInt_withByteArray_(jint key, IOSByteArray *content) {
+ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiServiceEx_init();
   
 #line 21
+  BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
+  jint key = [values getIntWithInt:1];
+  IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     
-#line 22
+#line 25
     return ((ImActorModelApiServiceExUserAdded *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExUserAdded alloc] init], content));
     case 2:
     
-#line 23
+#line 26
     return ((ImActorModelApiServiceExUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExUserKicked alloc] init], content));
     case 3:
     
-#line 24
+#line 27
     return ((ImActorModelApiServiceExUserLeft *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExUserLeft alloc] init], content));
     case 4:
     
-#line 25
+#line 28
     return ((ImActorModelApiServiceExGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExGroupCreated alloc] init], content));
     case 5:
     
-#line 26
+#line 29
     return ((ImActorModelApiServiceExChangedTitle *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExChangedTitle alloc] init], content));
     case 6:
     
-#line 27
+#line 30
     return ((ImActorModelApiServiceExChangedAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExChangedAvatar alloc] init], content));
     case 7:
     
-#line 28
+#line 31
     return ((ImActorModelApiServiceExEmailContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExEmailContactRegistered alloc] init], content));
     default:
     
-#line 29
+#line 32
     return [[ImActorModelApiServiceExUnsupported alloc] initWithInt:key withByteArray:content];
   }
 }

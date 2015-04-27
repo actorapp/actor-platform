@@ -20,12 +20,12 @@
 
 + (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithLong:(jlong)startDate
+- (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit;
 
 - (instancetype)init;
 
-- (jlong)getStartDate;
+- (jlong)getMinDate;
 
 - (jint)getLimit;
 

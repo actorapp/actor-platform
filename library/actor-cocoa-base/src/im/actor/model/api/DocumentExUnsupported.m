@@ -60,7 +60,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDocumentExUnsupported, content_, IOSByteArray
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   
 #line 41
-  [((BSBserWriter *) nil_chk(writer)) writeRawWithByteArray:content_];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:key_];
+  [writer writeBytesWithInt:2 withByteArray:content_];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiDocumentExUnsupported *)other {

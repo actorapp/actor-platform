@@ -24,7 +24,6 @@
                 withNSString:(NSString *)smsHash
                 withNSString:(NSString *)smsCode
                 withNSString:(NSString *)name
-               withByteArray:(IOSByteArray *)publicKey
                withByteArray:(IOSByteArray *)deviceHash
                 withNSString:(NSString *)deviceTitle
                      withInt:(jint)appId
@@ -40,8 +39,6 @@
 - (NSString *)getSmsCode;
 
 - (NSString *)getName;
-
-- (IOSByteArray *)getPublicKey;
 
 - (IOSByteArray *)getDeviceHash;
 

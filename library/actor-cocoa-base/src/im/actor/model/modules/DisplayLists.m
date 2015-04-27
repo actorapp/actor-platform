@@ -186,51 +186,51 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
     hook = [[ImActorModelModulesDisplayLists_$2 alloc] initWithImActorModelModulesDisplayLists:self withAMPeer:peer];
   }
   
-#line 132
+#line 131
   AMBindedDisplayList *chatList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
-#line 133
+#line 132
   isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:hook];
   [chatList initTopWithBoolean:NO];
   return chatList;
 }
 
 
-#line 138
+#line 137
 - (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer {
   
-#line 139
+#line 138
   AMMVVMEngine_checkMainThread();
   
-#line 141
+#line 140
   id<DKListEngine> mediaEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getMediaEngineWithAMPeer:peer];
   if (!([DKListEngineDisplayExt_class_() isInstance:mediaEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Media ListEngine must implement ListEngineDisplayExt for using global list"];
   }
   
-#line 146
+#line 145
   AMBindedDisplayList *mediaList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
-#line 147
+#line 146
   NO withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
   [mediaList initTopWithBoolean:NO];
   return mediaList;
 }
 
 
-#line 152
+#line 151
 - (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList {
   
-#line 153
+#line 152
   AMMVVMEngine_checkMainThread();
   
-#line 155
+#line 154
   id<DKListEngine> contactsEngine = [((ImActorModelModulesSearchModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSearch])) getSearchList];
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Search ListEngine must implement ListEngineDisplayExt for using global list"];
   }
   
-#line 160
+#line 159
   AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
-#line 161
+#line 160
   isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
   [contactList initEmpty];
   return contactList;
@@ -290,9 +290,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists_$1)
 #line 123
 - (void)onItemTouchedWithId:(AMMessage *)item {
   if ([((AMMessage *) nil_chk(item)) getSenderId] != [this$0_ myUid]) {
-    
-#line 126
-    [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getMessagesModule])) onInMessageShownWithAMPeer:val$peer_ withLong:[item getRid] withLong:[item getSortDate] withBoolean:NO];
+    [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getMessagesModule])) onInMessageShownWithAMPeer:val$peer_ withLong:[item getSortDate]];
   }
 }
 
