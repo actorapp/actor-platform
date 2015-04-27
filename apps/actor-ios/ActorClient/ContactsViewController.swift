@@ -236,7 +236,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             messageComposeController.recipients = recipients
             messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
             presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-                MainAppTheme.navigation.applyStatusBar()
+                MainAppTheme.navigation.applyStatusBarFast()
             })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
