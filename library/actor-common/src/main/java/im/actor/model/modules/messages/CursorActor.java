@@ -13,14 +13,14 @@ import im.actor.model.modules.utils.ModuleActor;
 /**
  * Created by ex3ndr on 17.02.15.
  */
-public abstract class PlainCursorActor extends ModuleActor {
+public abstract class CursorActor extends ModuleActor {
 
     private PlainCursorsStorage plainCursorsStorage;
     private HashSet<Peer> inProgress = new HashSet<Peer>();
     private long cursorId;
     private SyncKeyValue keyValue;
 
-    public PlainCursorActor(long cursorId, Modules messenger) {
+    public CursorActor(long cursorId, Modules messenger) {
         super(messenger);
         this.cursorId = cursorId;
         this.keyValue = messenger.getMessagesModule().getCursorStorage();

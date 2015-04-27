@@ -46,7 +46,7 @@ public class ServiceMessage extends Message {
     public void parse(BserValues values) throws IOException {
         this.text = values.getString(1);
         if (values.optBytes(3) != null) {
-            this.ext = ServiceEx.fromBytes(values.getInt(2), values.getBytes(3));
+            this.ext = ServiceEx.fromBytes(values.getBytes(3));
         }
     }
 
@@ -57,8 +57,7 @@ public class ServiceMessage extends Message {
         }
         writer.writeString(1, this.text);
         if (this.ext != null) {
-            writer.writeInt(2, this.ext.getHeader());
-            writer.writeBytes(3, this.ext.toByteArray());
+            writer.writeBytes(3, this.ext.buildContainer());
         }
     }
 

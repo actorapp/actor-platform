@@ -129,7 +129,8 @@ android {
         }
 
         dev1alt {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1 alt)\""
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1 plain)\""
+            applicationIdSuffix ".dev1plain"
             signingConfig signingConfigs.release
 
             buildConfigField STRING, API_URL, URL_DEV1_PLAIN
@@ -330,6 +331,7 @@ dependencies {
     }
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
+
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.facebook.fresco:fresco:0.1.0+'
@@ -363,6 +365,6 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleModul']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt']) {
 
 }
