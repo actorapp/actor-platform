@@ -5954,7 +5954,7 @@
 		};
 		2537F8541A966B9D004A02E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D890431BAB17750EE5196FE /* Pods-ActorApp.debug.xcconfig */;
+			baseConfigurationReference = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
@@ -5996,7 +5996,7 @@
 		};
 		2537F8551A966B9D004A02E9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */;
+			baseConfigurationReference = 06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
 				API_ID = 1;
 				API_KEY = "??";
