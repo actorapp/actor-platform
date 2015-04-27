@@ -64,6 +64,8 @@ class LlectroBubbles: ChatBubbles {
 class LlectroList : AppList {
     override var actionColor : UIColor { get { return UIColor.RGB(0x50A1D6) } }
     override var bgColor: UIColor { get { return UIColor.RGB(0x3C4A60) } }
+    override var bgSelectedColor : UIColor { get { return UIColor.RGB(0x50A1D6) } }
+    
     override var backyardColor : UIColor { get { return UIColor.RGB(0x2D394A) } }
     override var separatorColor : UIColor { get { return UIColor.RGB(0x6C7787) } }
     
