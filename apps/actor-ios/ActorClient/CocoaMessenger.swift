@@ -25,7 +25,7 @@ get{
         builder.setStorageProvider(CocoaStorage(dbPath: dbPath))
         builder.setMainThreadProvider(CocoaMainThreadProvider())
         builder.setLocaleProvider(CocoaLocale())
-        builder.setPhoneBookProvider(CocoaPhoneBookProvider())
+        builder.setPhoneBookProvider(PhoneBookProvider())
         builder.setCryptoProvider(CocoaCryptoProvider())
         builder.setFileSystemProvider(CocoaFileSystem())
         builder.setDispatcherProvider(DispatcherProvider())
