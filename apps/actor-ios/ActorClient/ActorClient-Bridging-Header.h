@@ -4,7 +4,6 @@
 #import "IOSClass.h"
 #import "ActorModel.h"
 #import <FMDB/FMDB.h>
-#import "CocoaPhoneBookProvider.h"
 #import "CocoaTcpConnection.h"
 #import "SThreadPoolTask.h"
 #import "SThreadPool.h"
@@ -18,6 +17,7 @@
 #import <CocoaAsyncSocket/GCDAsyncSocket.h>
 #import <VENTokenField/VENTokenField.h>
 #import <HockeySDK/HockeySDK.h>
+#import <AddressBook/AddressBook.h>
 #import "JTSImageViewController/JTSImageViewController.h"
 #import "SVProgressHUD.h"
 #import "MMAnonymousClass.h"
