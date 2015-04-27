@@ -1,26 +1,24 @@
 class ActorService
-  constructor: (@rootScope, @sessionStorage) ->
+  constructor: (@$rootScope, @$sessionStorage) ->
     console.log '[AW]ActorService constructor'
-    @isLoggedIn = @sessionStorage.isLoggedIn
-    @initMessenger (messenger) => @messenger = messenger
-
-  initMessenger: (callback) ->
-    console.log '[AW]ActorService initMessenger()'
-    window.jsAppLoaded = -> callback new actor.ActorApp
+    @isLoggedIn = @$sessionStorage.isLoggedIn
+    window.jsAppLoaded = =>
+      @messenger = new actor.ActorApp
+      @$rootScope.$broadcast 'actor-ready'
 
   setLoggedIn: () =>
     console.log '[AW]ActorService setLoggedIn()'
     @isLoggedIn = true
-    @rootScope.isLogedIn = true
-    @sessionStorage.isLogedIn = true
-    @rootScope.$state.go('home')
+    @$rootScope.isLogedIn = true
+    @$sessionStorage.isLogedIn = true
+    @$rootScope.$state.go('home')
 
   setLoggedOut: () =>
     console.log '[AW]ActorService setLoggedOut()'
     @isLoggedIn = false
-    @rootScope.isLogedIn = false
-    @sessionStorage.isLogedIn = false
-    @rootScope.$state.go('login')
+    @$rootScope.isLogedIn = false
+    @$sessionStorage.isLogedIn = false
+    @$rootScope.$state.go('login')
 
   requestSms: (phone) ->
     console.log '[AW]ActorService requestSms()'
@@ -46,19 +44,23 @@ class ActorService
       console.log '[AW]ActorService sendCode(): canTryAgain:', canTryAgain
       console.log '[AW]ActorService sendCode(): state:', state
 
+  getDialogs: (callback) ->
+    console.log '[AW]ActorService getDialogs()'
+    @messenger.bindDialogs (items) -> callback items
+
   checkAccess: (event, toState, toParams, fromState, fromParams) ->
     if toState.data != undefined
       if toState.data.noLogin != undefined && toState.data.noLogin
         console.log '[AW]ActorService checkAccess(): before login'
         return
     else
-      if @sessionStorage.isLogedIn
+      if @$sessionStorage.isLogedIn
         console.log '[AW]ActorService checkAccess(): authenticated'
-        @rootScope.isLogedIn = @sessionStorage.isLogedIn
+        @$rootScope.isLogedIn = @$sessionStorage.isLogedIn
       else
         console.log '[AW]ActorService checkAccess(): redirect to login'
         event.preventDefault()
-        @rootScope.$state.go('login')
+        @$rootScope.$state.go('login')
 
 ActorService.$inject = ['$rootScope', '$sessionStorage']
 
