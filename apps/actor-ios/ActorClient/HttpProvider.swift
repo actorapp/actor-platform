@@ -8,31 +8,42 @@
 
 import Foundation
 class HttpProvider: NSObject, AMHttpDownloaderProvider {
+    
+    let queue:NSOperationQueue = NSOperationQueue()
+    
     func downloadPartWithNSString(url: String!, withInt startOffset: jint, withInt size: jint, withInt totalSize: jint, withImActorModelHttpFileDownloadCallback callback: ImActorModelHttpFileDownloadCallback!) {
 
-        var nsUrl = NSURL(string: url)!
-        var request = NSMutableURLRequest(URL: nsUrl)
-        request.HTTPMethod = "GET"
-        request.timeoutInterval = 60
-        request.HTTPShouldHandleCookies=false
-        request.addValue("bytes \(startOffset)-\(startOffset+size)/\(totalSize)", forHTTPHeaderField: "Content-Range")
+        var header = "bytes=\(startOffset)-\(startOffset + size)"
         
-        let queue:NSOperationQueue = NSOperationQueue()
+        var request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        request.HTTPShouldHandleCookies = false
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
+        request.setValue(header, forHTTPHeaderField: "Range")
+        request.HTTPMethod = "GET"
         
         NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
-            
-            callback.onDownloadedWithByteArray(data.toJavaBytes)
-            
-//            var err: NSError
-            
-//            var jsonResult: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil) as NSDictionary
-//             println("AsSynchronous\(jsonResult)")
-            
-            
+            if (error != nil) {
+                callback.onDownloadFailure()
+            } else {
+                callback.onDownloadedWithByteArray(data.toJavaBytes())
+            }
         })
     }
     
     func uploadPartWithNSString(url: String!, withByteArray contents: IOSByteArray!, withImActorModelHttpFileUploadCallback callback: ImActorModelHttpFileUploadCallback!) {
+        var request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        request.HTTPShouldHandleCookies = false
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
+        request.HTTPMethod = "PUT"
+        request.HTTPBody = contents.toNSData()
+        request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         
+        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+            if (error != nil) {
+                callback.onUploadFailure()
+            } else {
+                callback.onUploaded()
+            }
+        })
     }
 }
