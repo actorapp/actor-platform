@@ -36,6 +36,10 @@ extension NSData {
         self.getBytes(&raw, range: NSMakeRange(offset, 4))
         return raw.bigEndian
     }
+    
+    func readNSData(offset: Int, len: Int) -> NSData {
+        return self.subdataWithRange(NSMakeRange(Int(offset), Int(len)))
+    }
 }
 
 extension NSMutableData {
