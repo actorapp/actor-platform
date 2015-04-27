@@ -101,7 +101,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             title:  NSLocalizedString("Placeholder_Contacts_Title", comment: "Placeholder Title"),
             subtitle: NSLocalizedString("Placeholder_Contacts_Message", comment: "Placeholder Message"),
             actionTitle: NSLocalizedString("Placeholder_Contacts_Action", comment: "Placeholder Action"),
-            actionTarget: self, actionSelector: Selector("showSmsInvitation"))
+            subtitle2: NSLocalizedString("Placeholder_Contacts_Message2", comment: "Placeholder Message2"),
+            actionTarget: self, actionSelector: Selector("showSmsInvitation"),
+            action2title: nil,
+            action2Selector: nil)
         binder.bind(MSG.getAppState().getIsContactsEmpty(), closure: { (value: Any?) -> () in
             if let empty = value as? JavaLangBoolean {
                 if Bool(empty.booleanValue()) == true {
@@ -203,7 +206,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         if (tableView == self.tableView && indexPath.section == 1) {
-            if (indexPath.row == 1) {
+            if (indexPath.row == 0) {
                 showSmsInvitation()
             } else {
                 doAddContact()

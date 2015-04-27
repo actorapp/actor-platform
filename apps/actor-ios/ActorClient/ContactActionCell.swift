@@ -22,6 +22,10 @@ class ContactActionCell: BasicCell {
         self.contentView.addSubview(iconView)
         
         backgroundColor = MainAppTheme.list.bgColor
+        
+        var selectedView = UIView()
+        selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
+        selectedBackgroundView = selectedView
     }
 
     required init(coder aDecoder: NSCoder) {
