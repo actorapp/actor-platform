@@ -122,7 +122,7 @@ md-toolbar.md-default-theme {
 
 md-list {
   display: block;
-  padding: 8px 0 !important;
+  /* padding: 8px 0 !important; */
 }
 md-list-item {
   display: flex;
@@ -132,39 +132,6 @@ md-list-item {
   align-items: center;
   flex: 1;
   align-items: flex-start;
-  .md-avatar {
-    overflow: hidden;
-    box-sizing: content-box;
-    width: 40px;
-    height: 40px;
-    margin: 8px 16px 8px 0;
-    border-radius: 50%;
-  }
-  .md-list-item-text {
-    margin: 8px 0;
-    h3 {
-      font-size: 16px;
-      font-weight: 500;
-      line-height: 12px;
-      height: 12px;
-      margin: 4px 0 6px;
-      color: rgba(0,0,0,.85);
-    }
-    h4 {
-      font-size: 14px;
-      font-weight: normal;
-      line-height: 10px;
-      height: 10px;
-      margin: 10px 0 5px;
-    }
-    p {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 20px;
-      margin: 4px 0 0;
-      color: rgb(37,37,37);
-    }
-  }
 }
 .md-sidenav-left {
   border-radius: 4px 0 0 4px;

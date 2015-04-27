@@ -1,24 +1,22 @@
 class MessagesController
-  constructor: () ->
-    console.log '[AW]MessagesController constructor'
+  list: null
 
-  list: [
-    who: 'Min Li Chan',
-    notes: [
-      'A robot may not injure a human being or, through inaction, allow a human being to come to harm.'
-      'A robot must obey the orders given it by human beings, except where such orders would conflict with the First Law.'
-      'A robot must protect its own existence as long as such protection does not conflict with the First or Second Law.'
-    ]
-  ,
-    who: 'Толян',
-    notes: ['Проверка блин']
-  ,
-    who: 'Min Li Chan',
-    notes: ['Brunch this weekend?']
-  ,
-    who: 'Женя',
-    notes: ["I'll be in your neighborhood doing errands"]
-  ]
+  constructor: (@$rootScope, @actorService) ->
+    console.log '[AW]MessagesController constructor'
+    @$rootScope.$on 'openConversation', (event, args) =>
+      # @actorService.bindChat args, @renderMessages
+      @getMessages(args)
+
+  getMessages: (peer) ->
+    console.log '[AW]MessagesController getMessages', peer
+    # @actorService.getMessages (messages) =>
+    #   @list = messages
+    #   console.log @list
+
+  renderMessages: ->
+    console.log '[AW]MessagesController renderMessages'
+
+MessagesController.$inject = ['$rootScope', 'actorService']
 
 angular
   .module 'actorWeb'

@@ -1,5 +1,15 @@
+@import '../../styles/variables';
+
 .chatlist {
-  &__item {}
+  padding: 0;
+  &__item {
+    &--selected {
+      background-color: $baseColor;
+      * { // TODO: fix it
+        color: rgb(255,255,255) !important;
+      }
+    }
+  }
   &__avatar {
     margin: 8px 16px 8px 0;
     .md_avatar, .no-avatar {
@@ -17,26 +27,41 @@
         height: 100%;
         font-size: 18px;
         line-height: 48px;
+        font-weight: 700;
+        text-shadow: 0 -1px 5px rgba(0,0,0,.07);
         color: rgb(255,255,255);
       }
     }
   }
   &__text {
-    h3 {
-      margin-top: 6px !important;
-    }
+    margin: 8px 0;
+
     &__title {
-      font-size: 14px !important;
-      color: rgb(22,22,22) !important;
-    }
-    &__timestamp {
-      color: rgb(190,190,190) !important;
-      font-size: 12px !important;
-      text-transform: lowercase !important;
+      font-weight: 500;
+      line-height: 12px;
+      height: 12px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: rgb(22,22,22);
+      md-icon {
+        width: 16px;
+        height: 16px;
+        margin-top: -2px;
+        vertical-align: middle;
+      }
+      &__timestamp {
+        color: rgb(190,190,190);
+        font-size: 12px;
+        text-transform: lowercase;
+      }
     }
     p {
-      color: rgb(148,148,148) !important;
-      font-size: 13px !important;
+      color: rgb(148,148,148);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px;
+      margin: 4px 0 0;
+
     }
   }
 }
