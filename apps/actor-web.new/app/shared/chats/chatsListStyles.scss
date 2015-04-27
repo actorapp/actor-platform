@@ -1,0 +1,19 @@
+.chatlist {
+  &__item {}
+  &__avatar {
+    width: 48px !important;
+    height: 48px !important;
+    margin-right: 16px !important;
+  }
+  &__text {
+    &__title {
+      font-size: 14px !important;
+      color: rgb(22,22,22) !important;
+    }
+    &__timestamp {
+      color: rgb(190,190,190) !important;
+      font-size: 12px !important;
+      text-transform: lowercase !important;
+    }
+  }
+}
