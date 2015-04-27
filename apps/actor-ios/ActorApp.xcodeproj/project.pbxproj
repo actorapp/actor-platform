@@ -723,6 +723,7 @@
 		06A5B8D01AEE9AFB003E134A /* Pack.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B6441AEE9AFB003E134A /* Pack.m */; };
 		06A5B8D11AEE9AFB003E134A /* Shorts.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B6461AEE9AFB003E134A /* Shorts.m */; };
 		06A5B8D21AEE9AFB003E134A /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B6481AEE9AFB003E134A /* Strings.m */; };
+		06A5B8D41AEE9CB2003E134A /* HttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */; };
 		06A907D11AB7AE8200E087EA /* notification.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 06A907D01AB7AE8200E087EA /* notification.aiff */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
@@ -2161,6 +2162,7 @@
 		06A5B6461AEE9AFB003E134A /* Shorts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shorts.m; sourceTree = "<group>"; };
 		06A5B6471AEE9AFB003E134A /* Strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		06A5B6481AEE9AFB003E134A /* Strings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Strings.m; sourceTree = "<group>"; };
+		06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpProvider.swift; sourceTree = "<group>"; };
 		06A907D01AB7AE8200E087EA /* notification.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = notification.aiff; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineListController.swift; sourceTree = "<group>"; };
@@ -2464,6 +2466,7 @@
 				06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */,
 				0671592D1ABC830E00D95719 /* CocoaNetworking.swift */,
 				06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */,
+				06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */,
 			);
 			name = Providers;
 			sourceTree = "<group>";
@@ -5095,6 +5098,7 @@
 				06A5B6AF1AEE9AFB003E134A /* RequestSendMessage.m in Sources */,
 				06A5B70C1AEE9AFB003E134A /* UpdateUserNameChanged.m in Sources */,
 				06A5B7631AEE9AFB003E134A /* ContainerHelpers.m in Sources */,
+				06A5B8D41AEE9CB2003E134A /* HttpProvider.swift in Sources */,
 				06A5B8841AEE9AFB003E134A /* CBCBlockCipher.m in Sources */,
 				06A5B6CD1AEE9AFB003E134A /* ResponseImportContacts.m in Sources */,
 				06A5B8BB1AEE9AFB003E134A /* FiniteField.m in Sources */,

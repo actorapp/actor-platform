@@ -22,6 +22,8 @@
 #import "java/util/HashSet.h"
 #import "java/util/Map.h"
 #import "java/util/HashMap.h"
+//#import "IOSClass.h"
+//#import "IOSPrimitiveArray.h"
 
 // Messenger
 
@@ -40,6 +42,7 @@
 #import "im/actor/model/DispatcherProvider.h"
 #import "im/actor/model/LocaleProvider.h"
 #import "im/actor/model/PhoneBookProvider.h"
+#import "im/actor/model/HttpDownloaderProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -48,6 +51,8 @@
 #import "im/actor/model/network/CreateConnectionCallback.h"
 #import "im/actor/model/network/ConnectionEndpoint.h"
 #import "im/actor/model/network/ConnectionCallback.h"
+#import "im/actor/model/http/FileDownloadCallback.h"
+#import "im/actor/model/http/FileUploadCallback.h"
 
 #import "im/actor/model/crypto/CryptoKeyPair.h"
 #import "im/actor/model/jvm/JavaRandomProvider.h"
