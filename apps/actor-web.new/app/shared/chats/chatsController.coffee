@@ -8,10 +8,7 @@ class ChatsController
     @actorService.getDialogs (items) =>
       items.forEach (item) ->
         console.log item
-        if !item.peer.avatar
-          item.peer.avatar = 'http://api.adorable.io/avatars/48/'
-          item.peer.avatar += item.peer.peer.id
-          item.peer.avatar += '.png';
+
       @list = items
     console.log '[AW]ChatsController @list:', @list
 
