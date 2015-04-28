@@ -1,14 +1,13 @@
 package im.actor.api
 
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect._
 
-import scalaz._, std.either._
-import slick.dbio.{ DBIO, DBIOAction }
+import scalaz._, Scalaz._
+import slick.dbio.{ DBIO, DBIOAction, Effect }
 import slick.driver.PostgresDriver.api._
 
 package object rpc extends {
-  import slick.dbio.Effect
   import slick.dbio.NoStream
 
   object Implicits extends PeersImplicits with GroupsImplicits with HistoryImplicits
@@ -61,4 +60,23 @@ package object rpc extends {
     authorizedAction: MaybeAuthorized[DBIOAction[RpcError \/ R, NoStream, Nothing]]
   ): DBIOAction[RpcError \/ R, NoStream, Nothing] =
     authorizedAction.getOrElse(DBIO.successful(-\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))))
+
+  type SimpleDBIOAction[A] = DBIOAction[A, NoStream, Effect]
+
+  type DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A]
+
+  object DBIOResult {
+    def point[A](a: A): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(a.right))
+    def fromDBIO[A](fa: SimpleDBIOAction[A])(implicit ec: ExecutionContext): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](fa.map(_.right))
+    def fromEither[A](va: RpcResult \/ A): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(va))
+    def fromEither[A, B](failure: B ⇒ RpcResult)(va: B \/ A): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(va.leftMap(failure)))
+    def fromOption[A](failure: RpcResult)(oa: Option[A]): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(oa \/> failure))
+    def fromDBIOOption[A](failure: RpcResult)(foa: SimpleDBIOAction[Option[A]])(implicit ec: ExecutionContext): DBIORpcResult[A] =
+      EitherT[SimpleDBIOAction, RpcResult, A](foa.map(_ \/> failure))
+    def fromDBIOEither[A, B](failure: B ⇒ RpcResult)(fva: SimpleDBIOAction[B \/ A])(implicit ec: ExecutionContext): DBIORpcResult[A] =
+      EitherT[SimpleDBIOAction, RpcResult, A](fva.map(_.leftMap(failure)))
+  }
+
+  def constructResult(result: DBIORpcResult[RpcResult])(implicit ec: ExecutionContext): DBIOAction[RpcResult, NoStream, Effect] =
+    result.run.map { _.fold(identity, identity) }
 }
