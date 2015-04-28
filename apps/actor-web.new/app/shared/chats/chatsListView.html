@@ -7,7 +7,7 @@
                     ng-click="chats.selectChat(chat.peer.peer)">
         <div class="chatlist__avatar">
           <img class="md-avatar" ng-src="{{ chat.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.avatar" />
-          <div class="no-avatar" ng-if="!chat.avatar" style="background-color: {{ chat.peer.placeholder }}">
+          <div class="no-avatar no-avatar--{{ chat.peer.placeholder }}" ng-if="!chat.avatar">
             <span>{{ chat.peer.title | limitTo:1 }}</span>
           </div>
         </div>

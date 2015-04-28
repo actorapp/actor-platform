@@ -7,7 +7,7 @@
 
         <div class="messages__list__item__avatar">
             <img class="md-avatar" ng-src="{{ message.sender.avatar }}" alt="{{ message.sender.title }}" ng-if="message.sender.avatar" />
-            <div class="no-avatar" ng-if="!message.sender.avatar" style="background-color: {{ message.sender.placeholder }}">
+            <div class="no-avatar no-avatar--{{ message.sender.placeholder }}" ng-if="!message.sender.avatar">
               <span>{{ message.sender.title | limitTo:1 }}</span>
             </div>
           </div>
