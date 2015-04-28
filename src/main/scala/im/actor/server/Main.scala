@@ -19,6 +19,7 @@ import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
@@ -90,7 +91,8 @@ class Main extends Bootable with DbInit with FlywayInit {
       new UsersServiceImpl,
       new FilesServiceImpl(s3BucketName),
       new ConfigsServiceImpl,
-      new PushServiceImpl
+      new PushServiceImpl,
+      new ProfileServiceImpl(s3BucketName)
     )
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
