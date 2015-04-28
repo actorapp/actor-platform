@@ -15,8 +15,12 @@
   &__footer {
     color: rgb(144,144,144);
     .md-icon-button {
+      margin-right: 4px;
       md-icon {
         margin-right: 4px;
+      }
+      &:last-child {
+        margin-right: 0;
       }
     }
   }

@@ -1,9 +1,10 @@
 class LoginController
-  constructor: (@actorService) ->
-    console.log '[AW]LoginController constructor'
-
   isCodeRequested: false
-  allow: false
+
+  constructor: (@$rootScope, @actorService) ->
+    console.log '[AW]LoginController constructor'
+    @$rootScope.$state.go 'home' if @actorService.isLoggedIn
+
 
   requestCode: (phone) ->
     console.log '[AW]LoginController requestCode'
@@ -14,7 +15,7 @@ class LoginController
     console.log '[AW]LoginController checkCode'
     @actorService.sendCode code
 
-LoginController.$inject = ['actorService']
+LoginController.$inject = ['$rootScope', 'actorService']
 
 angular
   .module 'actorWeb'
