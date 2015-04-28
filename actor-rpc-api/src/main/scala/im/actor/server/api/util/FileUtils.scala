@@ -13,8 +13,7 @@ import slick.dbio
 import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.models
-import im.actor.server.models.FileLocation
+import im.actor.api.rpc.files.FileLocation
 import im.actor.server.persist
 
 object FileUtils {
@@ -48,11 +47,13 @@ object FileUtils {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
     val accessSalt = ACL.nextAccessSalt(rnd)
+    val sizeF = getFileLength(file)
 
     for {
       _ ← persist.File.create(id, accessSalt, s3Key(id))
       _ ← DBIO.from(upload(bucketName, id, file))
-    } yield models.FileLocation(id, ACL.fileAccessHash(id, accessSalt))
+      _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s))
+    } yield FileLocation(id, ACL.fileAccessHash(id, accessSalt))
   }
 
   def upload(bucketName: String, id: Long, file: File)(
@@ -78,6 +79,14 @@ object FileUtils {
     Future {
       blocking {
         org.apache.commons.io.FileUtils.deleteDirectory(dir)
+      }
+    }
+  }
+
+  def getFileLength(file: File)(implicit ec: ExecutionContext): Future[Long] = {
+    Future {
+      blocking {
+        file.length()
       }
     }
   }

@@ -2,6 +2,7 @@ package im.actor.server.api.util
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Success, Failure }
 
 import akka.actor.ActorSystem
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -60,22 +61,19 @@ object AvatarUtils {
     rnd:        ThreadLocalRandom,
     bucketName: String
   )(implicit transferManager: TransferManager, db: Database, ec: ExecutionContext, system: ActorSystem) = {
-    val smallFileId = rnd.nextLong()
+    /*val smallFileId = rnd.nextLong()
     val smallAccessSalt = ACL.nextAccessSalt(rnd)
 
     val largeFileId = rnd.nextLong()
-    val largeAccessSalt = ACL.nextAccessSalt(rnd)
+    val largeAccessSalt = ACL.nextAccessSalt(rnd)*/
 
     persist.File.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         downloadFile(bucketName, fullFileId) flatMap {
           case Some(fullFile) ⇒
-            for {
+            val action = for {
               fullAimg ← DBIO.from(AsyncImage(fullFile))
               (fiw, fih) = dimensions(fullAimg)
-
-              _ ← persist.File.create(smallFileId, smallAccessSalt, s3Key(smallFileId))
-              _ ← persist.File.create(largeFileId, largeAccessSalt, s3Key(largeFileId))
 
               smallAimg ← DBIO.from(resizeToSmall(fullAimg))
               largeAimg ← DBIO.from(resizeToLarge(fullAimg))
@@ -86,20 +84,20 @@ object AvatarUtils {
               _ ← DBIO.from(smallAimg.writer(Format.JPEG).write(smallFile))
               _ ← DBIO.from(largeAimg.writer(Format.JPEG).write(largeFile))
 
-              _ ← DBIO.from(upload(bucketName, smallFileId, smallFile))
-              _ ← DBIO.from(upload(bucketName, largeFileId, largeFile))
+              smallFileLocation ← uploadFile(bucketName, smallFile)
+              largeFileLocation ← uploadFile(bucketName, largeFile)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 
               val smallImage = AvatarImage(
-                FileLocation(smallFileId, ACL.fileAccessHash(smallFileId, smallAccessSalt)),
+                smallFileLocation,
                 smallAimg.width,
                 smallAimg.height,
                 smallFile.length().toInt
               )
 
               val largeImage = AvatarImage(
-                FileLocation(largeFileId, ACL.fileAccessHash(largeFileId, largeAccessSalt)),
+                largeFileLocation,
                 largeAimg.width,
                 largeAimg.height,
                 largeFile.length().toInt
@@ -113,6 +111,11 @@ object AvatarUtils {
               )
 
               Some(Avatar(Some(smallImage), Some(largeImage), Some(fullImage)))
+            }
+
+            action.asTry map {
+              case Success(res) ⇒ res
+              case Failure(e)   ⇒ None
             }
           case None ⇒ DBIO.successful(None)
         }
