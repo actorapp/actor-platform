@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service
 
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import com.amazonaws.services.s3.transfer.TransferManager
+
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging.{ MessageState, TextMessage }
 import im.actor.api.rpc.misc.ResponseVoid
@@ -25,8 +28,12 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
   val rpcApiService = buildRpcApiService()
   implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit val transferManager = new TransferManager(awsCredentials)
+
   implicit val service = new messaging.MessagingServiceImpl
-  implicit val groupsService = new GroupsServiceImpl
+  implicit val groupsService = new GroupsServiceImpl(bucketName)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 

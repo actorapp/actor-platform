@@ -33,11 +33,6 @@ class FilesServiceImpl(bucketName: String)(
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  object Errors {
-    val FileNotFound = RpcError(404, "FILE_NOT_FOUND", "File not found.", false, None)
-    val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
-  }
-
   override def jhandleGetFileUrl(location: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.File.find(location.fileId) flatMap {

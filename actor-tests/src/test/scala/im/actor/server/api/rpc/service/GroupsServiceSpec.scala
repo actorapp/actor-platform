@@ -2,6 +2,9 @@ package im.actor.server.api.rpc.service
 
 import scala.util.Random
 
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import com.amazonaws.services.s3.transfer.TransferManager
+
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
@@ -29,7 +32,11 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   val rpcApiService = buildRpcApiService()
   implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
-  implicit val service = new GroupsServiceImpl
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit val transferManager = new TransferManager(awsCredentials)
+
+  implicit val service = new GroupsServiceImpl(bucketName)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 

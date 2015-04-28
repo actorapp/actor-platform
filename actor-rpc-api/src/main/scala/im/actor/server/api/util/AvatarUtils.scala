@@ -19,6 +19,8 @@ object AvatarUtils {
 
   import FileUtils._
 
+  val AvatarSizeLimit = 1024 * 1024 // TODO: configurable
+
   def avatar(ad: models.AvatarData) =
     (ad.smallOpt, ad.largeOpt, ad.fullOpt) match {
       case (None, None, None) ⇒ None
@@ -61,12 +63,6 @@ object AvatarUtils {
     rnd:        ThreadLocalRandom,
     bucketName: String
   )(implicit transferManager: TransferManager, db: Database, ec: ExecutionContext, system: ActorSystem) = {
-    /*val smallFileId = rnd.nextLong()
-    val smallAccessSalt = ACL.nextAccessSalt(rnd)
-
-    val largeFileId = rnd.nextLong()
-    val largeAccessSalt = ACL.nextAccessSalt(rnd)*/
-
     persist.File.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         downloadFile(bucketName, fullFileId) flatMap {

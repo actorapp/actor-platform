@@ -14,7 +14,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
-import im.actor.server.api.util.{ ACL, AvatarUtils }
+import im.actor.server.api.util.{ FileUtils, ACL, AvatarUtils }
 import im.actor.server.models
 import im.actor.server.persist
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
@@ -30,53 +30,36 @@ class ProfileServiceImpl(bucketName: String)(
 ) extends ProfileService {
 
   import AvatarUtils._
+  import FileUtils._
   import SeqUpdatesManager._
   import SocialManager._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   implicit val timeout = Timeout(5.seconds) // TODO: configurable
-  val SizeLimit = 1024 * 1024
-
-  // TODO: move file checks into FileUtils
-  object Errors {
-    val FileNotFound = RpcError(404, "FILE_NOT_FOUND", "File not found.", false, None)
-    val FileTooLarge = RpcError(400, "FILE_TOO_LARGE", "File is too large.", false, None)
-    val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
-  }
 
   override def jhandleEditAvatar(fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
     // TODO: flatten
 
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.File.find(fileLocation.fileId) flatMap {
-        case Some(file) ⇒
-          if (!file.isUploaded) {
-            DBIO.successful(Error(Errors.LocationInvalid))
-          } else if (file.size > SizeLimit) {
-            DBIO.successful(Error(Errors.FileTooLarge))
-          } else if (ACL.fileAccessHash(file.id, file.accessSalt) != fileLocation.accessHash) {
-            DBIO.successful(Error(Errors.LocationInvalid))
-          } else {
-            scaleAvatar(file.id, ThreadLocalRandom.current(), bucketName) flatMap {
-              case Some(avatar) ⇒
-                val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
+      withFileLocation(fileLocation, AvatarSizeLimit) {
+        scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
+          case Some(avatar) ⇒
+            val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
 
-                val update = UpdateUserAvatarChanged(client.userId, Some(avatar))
+            val update = UpdateUserAvatarChanged(client.userId, Some(avatar))
 
-                for {
-                  _ ← persist.AvatarData.createOrUpdate(avatarData)
-                  relatedUserIds ← DBIO.from(getRelations(client.userId))
-                  _ ← broadcastUpdateAll(relatedUserIds, update, None)
-                  seqstate ← broadcastClientUpdate(update, None)
-                } yield {
-                  Ok(ResponseEditAvatar(avatar, seqstate._1, seqstate._2))
-                }
-              case None ⇒
-                DBIO.successful(Error(Errors.LocationInvalid))
+            for {
+              _ ← persist.AvatarData.createOrUpdate(avatarData)
+              relatedUserIds ← DBIO.from(getRelations(client.userId))
+              _ ← broadcastUpdateAll(relatedUserIds, update, None)
+              seqstate ← broadcastClientUpdate(update, None)
+            } yield {
+              Ok(ResponseEditAvatar(avatar, seqstate._1, seqstate._2))
             }
-          }
-        case None ⇒ DBIO.successful(Error(Errors.FileNotFound))
+          case None ⇒
+            DBIO.successful(Error(Errors.LocationInvalid))
+        }
       }
     }
 

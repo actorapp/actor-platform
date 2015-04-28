@@ -85,7 +85,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new AuthServiceImpl,
       new ContactsServiceImpl,
       new MessagingServiceImpl,
-      new GroupsServiceImpl,
+      new GroupsServiceImpl(s3BucketName),
       new SequenceServiceImpl,
       new WeakServiceImpl,
       new UsersServiceImpl,

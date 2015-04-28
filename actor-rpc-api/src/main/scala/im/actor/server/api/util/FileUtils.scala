@@ -4,6 +4,7 @@ import java.io.File
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
+import scalaz.\/
 
 import akka.actor.ActorSystem
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -13,10 +14,18 @@ import slick.dbio
 import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.persist
 
 object FileUtils {
+  // TODO: move file checks into FileUtils
+  object Errors {
+    val FileNotFound = RpcError(404, "FILE_NOT_FOUND", "File not found.", false, None)
+    val FileTooLarge = RpcError(400, "FILE_TOO_LARGE", "File is too large.", false, None)
+    val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
+  }
+
   def downloadFile(bucketName: String, id: Long)(
     implicit
     transferManager: TransferManager,
@@ -88,6 +97,22 @@ object FileUtils {
       blocking {
         file.length()
       }
+    }
+  }
+
+  def withFileLocation[R <: RpcResponse](fileLocation: FileLocation, maxSize: Int)(f: ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext, s: ActorSystem) = {
+    persist.File.find(fileLocation.fileId) flatMap {
+      case Some(file) ⇒
+        if (!file.isUploaded) {
+          DBIO.successful(Error(Errors.LocationInvalid))
+        } else if (file.size > maxSize) {
+          DBIO.successful(Error(Errors.FileTooLarge))
+        } else if (ACL.fileAccessHash(file.id, file.accessSalt) != fileLocation.accessHash) {
+          DBIO.successful(Error(Errors.LocationInvalid))
+        } else {
+          f
+        }
+      case None ⇒ DBIO.successful(Error(Errors.FileNotFound))
     }
   }
 }
