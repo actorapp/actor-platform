@@ -13,7 +13,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
+import im.actor.api.rpc.users.{ UpdatePhoneTitleChanged, UpdateUserAvatarChanged, UpdateUserNameChanged }
 import im.actor.server.api.util.{ FileUtils, ACL, AvatarUtils }
 import im.actor.server.models
 import im.actor.server.persist
@@ -100,9 +100,17 @@ class ProfileServiceImpl(bucketName: String)(
   }
 
   override def jhandleChangePhoneTitle(phoneId: Int, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    Future {
-      throw new Exception("Not implemented")
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      val update = UpdatePhoneTitleChanged(phoneId, title)
+
+      for {
+        relatedUserIds ← DBIO.from(getRelations(client.userId))
+        _ ← broadcastUpdateAll(relatedUserIds, update, None)
+        seqstate ← broadcastClientUpdate(update, None)
+      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
+
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {

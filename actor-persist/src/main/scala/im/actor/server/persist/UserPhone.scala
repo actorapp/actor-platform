@@ -7,8 +7,8 @@ import im.actor.server.models
 import slick.driver.PostgresDriver.api._
 
 class UserPhoneTable(tag: Tag) extends Table[models.UserPhone](tag, "user_phones") {
-  def id = column[Int]("id", O.PrimaryKey)
   def userId = column[Int]("user_id", O.PrimaryKey)
+  def id = column[Int]("id", O.PrimaryKey)
   def accessSalt = column[String]("access_salt")
   def number = column[Long]("number")
   def title = column[String]("title")
@@ -37,4 +37,7 @@ object UserPhone {
 
   def create(id: Int, userId: Int, accessSalt: String, number: Long, title: String): FixedSqlAction[Int, NoStream, Write] =
     phones += models.UserPhone(id, userId, accessSalt, number, title)
+
+  def updateTitle(userId: Int, id: Int, title: String) =
+    phones.filter(p ⇒ p.userId === userId && p.id === id).map(_.title).update(title)
 }
