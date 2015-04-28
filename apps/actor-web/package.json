@@ -2,6 +2,7 @@
   "name": "actor-web",
   "version": "0.0.2",
   "description": "Actor Web Application.",
+  "main": "main.js", 
   "authors": [
     "Oleg Shilov <me@olegshilov.com>"
   ],
