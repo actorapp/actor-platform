@@ -20,7 +20,9 @@
               </span>
               <time class="chatlist__text__title__timestamp">{{ chat.date }}</time>
             </h3>
-            <p>{{ chat.text }}</p>
+            <p>
+              {{ chat.text | truncate : 25 }}
+            </p>
         </div>
       </md-list-item>
   </md-list>
