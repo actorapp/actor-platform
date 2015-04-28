@@ -41,6 +41,9 @@ object AvatarData {
   def create(data: models.AvatarData) =
     adatas += data
 
+  def createOrUpdate(data: models.AvatarData) =
+    adatas.insertOrUpdate(data)
+
   def byType(typ: models.AvatarData.TypeVal) =
     adatas.filter(d ⇒ d.entityType === typ)
 

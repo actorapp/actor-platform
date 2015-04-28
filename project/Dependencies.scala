@@ -49,6 +49,8 @@ object Dependencies {
 
     val shapeless       = "com.chuusai"                   %% "shapeless"                     % "2.1.0"
 
+    val scrImageCore    = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
+
     val gcmServer       = "com.google.android.gcm"        %  "gcm-server"                    % "1.0.2"
     val pushy           = "com.relayrides"                %  "pushy"                         % "0.4.3"
 
@@ -88,7 +90,8 @@ object Dependencies {
   val api = common ++ Seq(akkaSlf4j, akkaActor, akkaStream, commonsCodec, protobuf, scalazCore)
 
   val rpcApi = common ++ Seq(
-    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, commonsIo, libPhoneNumber, shapeless
+    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, commonsIo, libPhoneNumber, shapeless,
+    scrImageCore
   )
 
   val internalServices = common ++ Seq(akkaActor, akkaStream, scodecBits)

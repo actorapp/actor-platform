@@ -13,35 +13,32 @@ import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.model._
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
-import org.apache.commons.io.FileUtils
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.api.util.ACL
+import im.actor.server.api.util.{ FileUtils, ACL }
 import im.actor.server.{ models, persist }
 
-class FilesServiceImpl(bucketName: String)(implicit
-  s3Client: AmazonS3ScalaClient,
-                                           transferManager: TransferManager,
-                                           db:              Database,
-                                           actorSystem:     ActorSystem) extends FilesService {
+class FilesServiceImpl(bucketName: String)(
+  implicit
+  s3Client:        AmazonS3ScalaClient,
+  transferManager: TransferManager,
+  db:              Database,
+  actorSystem:     ActorSystem
+) extends FilesService {
 
   import scala.collection.JavaConverters._
+  import FileUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
-
-  object Errors {
-    val FileNotFound = RpcError(404, "FILE_NOT_FOUND", "File not found.", false, None)
-    val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
-  }
 
   override def jhandleGetFileUrl(location: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.File.find(location.fileId) flatMap {
         case Some(file) ⇒
           if (ACL.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
-            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, s"file_${file.id}")
+            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, FileUtils.s3Key(file.id))
             val timeout = 1.day
 
             val expiration = new java.util.Date
@@ -130,12 +127,13 @@ class FilesServiceImpl(bucketName: String)(implicit
             } map (_.waitForCompletion())
             _ ← DBIO.from(download)
             concatFile ← DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
+            fileLengthF = getFileLength(concatFile)
             upload = FutureTransfer.listenFor {
               transferManager.upload(bucketName, s"file_${file.id}", concatFile)
             } map (_.waitForCompletion())
             _ ← DBIO.from(upload)
             _ ← DBIO.from(deleteDir(tempDir))
-            _ ← persist.File.setUploaded(file.id)
+            _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.File.setUploaded(file.id, size))
           } yield {
             Ok(ResponseCommitFileUpload(FileLocation(file.id, ACL.fileAccessHash(file.id, file.accessSalt))))
           }
@@ -165,14 +163,6 @@ class FilesServiceImpl(bucketName: String)(implicit
     mutable.Seq(xs: _*).asJava
   }
 
-  // FIXME: #perf pinned dispatcher
-
-  private def createTempDir(): Future[File] = {
-    Future {
-      com.google.common.io.Files.createTempDir()
-    }
-  }
-
   // FIXME: #perf use nio and pinned dispatcher
 
   private def concatFiles(dir: File, fileNames: Seq[String]): Future[File] = {
@@ -189,12 +179,6 @@ class FilesServiceImpl(bucketName: String)(implicit
       outStream.close()
 
       concatFile
-    }
-  }
-
-  private def deleteDir(dir: File): Future[Unit] = {
-    Future {
-      FileUtils.deleteDirectory(dir)
     }
   }
 }

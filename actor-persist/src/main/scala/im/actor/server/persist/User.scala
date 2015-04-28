@@ -26,6 +26,9 @@ object User {
   def setCountryCode(userId: Int, countryCode: String) =
     users.filter(_.id === userId).map(_.countryCode).update(countryCode)
 
+  def setName(userId: Int, name: String) =
+    users.filter(_.id === userId).map(_.name).update(name)
+
   def find(id: Int) =
     users.filter(_.id === id).result
 

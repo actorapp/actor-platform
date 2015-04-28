@@ -4,6 +4,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
+import com.amazonaws.services.s3.transfer.TransferManager
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -14,16 +15,22 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.rpc.util.IdUtils
+import im.actor.server.api.util.{ AvatarUtils, FileUtils }
 import im.actor.server.api.util.PeerUtils._
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.{ models, persist }
 
-class GroupsServiceImpl(implicit
-  val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                        val db:          Database,
-                        val actorSystem: ActorSystem) extends GroupsService {
+class GroupsServiceImpl(bucketName: String)(
+  implicit
+  seqUpdManagerRegion: SeqUpdatesManagerRegion,
+  transferManager:     TransferManager,
+  db:                  Database,
+  actorSystem:         ActorSystem
+) extends GroupsService {
 
+  import AvatarUtils._
+  import FileUtils._
   import IdUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
@@ -36,8 +43,51 @@ class GroupsServiceImpl(implicit
     val TitleChanged = "Group title changed"
   }
 
-  override def jhandleEditGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = Future {
-    throw new Exception("Not implemented")
+  override def jhandleEditGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+        withFileLocation(fileLocation, AvatarSizeLimit) {
+          scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
+            case Some(avatar) ⇒
+              val date = new DateTime
+              val avatarData = getAvatarData(models.AvatarData.OfGroup, fullGroup.id, avatar)
+
+              val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, Some(avatar), date.getMillis, randomId)
+
+              for {
+                _ ← persist.AvatarData.createOrUpdate(avatarData)
+                groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
+                _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
+                seqstate ← broadcastClientUpdate(update, None)
+              } yield {
+                Ok(ResponseEditGroupAvatar(avatar, seqstate._1, seqstate._2, date.getMillis))
+              }
+            case None ⇒
+              DBIO.successful(Error(Errors.LocationInvalid))
+          }
+        }
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+  override def jhandleRemoveGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+        val date = new DateTime
+        val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, None, date.getMillis, randomId)
+
+        for {
+          _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfGroup, fullGroup.id.toLong))
+          groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
+          _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
+          seqstate ← broadcastClientUpdate(update, None)
+        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+      }
+    }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
   override def jhandleKickUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
@@ -114,11 +164,6 @@ class GroupsServiceImpl(implicit
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
-
-  override def jhandleRemoveGroupAvatar(groupPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] =
-    Future {
-      throw new Exception("Not implemented")
-    }
 
   override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
