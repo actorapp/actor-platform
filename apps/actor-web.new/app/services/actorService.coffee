@@ -1,22 +1,31 @@
 class ActorService
   messenger: null
   currentPeer: null
+  isReady: false
+  isLoggedIn: false
 
   constructor: (@$rootScope, @$sessionStorage) ->
     console.log '[AW]ActorService constructor'
-    @isLoggedIn = @$sessionStorage.isLoggedIn
     window.jsAppLoaded = =>
       @initActor()
+      console.log '[AW]ActorService $broadcast: actorReady'
       @$rootScope.$broadcast 'actorReady'
 
   initActor: ->
     console.log '[AW]ActorService initActor'
     @messenger = new actor.ActorApp
-    @uid = @messenger.getUid()
-    console.log '[AW]ActorService initActor: @uid:', @uid
+    @isReady = true
+    @isLoggedIn = @messenger.isLoggedIn()
+    console.log '[AW]ActorService initActor: @isReady', @isReady
+    # @isLoggedIn = @messenger.isLoggedIn
+    console.log '[AW]ActorService initActor: @isLoggedIn:', @isLoggedIn
+    @setLoggedIn() if @isLoggedIn
+    # @uid = @messenger.getUid()
+    # console.log '[AW]ActorService initActor: @uid:', @uid
 
 
   checkAccess: (event, toState, toParams, fromState, fromParams) ->
+    console.log '[AW]ActorService checkAccess'
     if toState.data != undefined
       if toState.data.noLogin != undefined && toState.data.noLogin
         console.log '[AW]ActorService checkAccess: before login'
