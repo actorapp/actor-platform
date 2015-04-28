@@ -81,7 +81,6 @@ md-toolbar.md-default-theme {
     }
   }
 }
-
 .md-button {
   &.md-primary {
     font-size: 14px;
@@ -124,7 +123,6 @@ md-toolbar.md-default-theme {
     }
   }
 }
-
 md-list {
   display: block;
 }
@@ -141,5 +139,28 @@ md-list-item {
   border-radius: 4px 0 0 4px;
   @media (max-width: 1024px) {
     border-radius: 0;
+  }
+}
+.no-avatar {
+  &--lblue {
+    background-color: $lblueColor;
+  }
+  &--blue {
+    background-color: $blueColor;
+  }
+  &--purple {
+    background-color: $purpleColor;
+  }
+  &--red {
+    background-color: $redColor;
+  }
+  &--orange {
+    background-color: $orangeColor;
+  }
+  &--yellow {
+    background-color: $yellowColor;
+  }
+  &--green {
+    background-color: $greenColor;
   }
 }
