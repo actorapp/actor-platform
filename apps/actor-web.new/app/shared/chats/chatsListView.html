@@ -11,17 +11,33 @@
             <span>{{ chat.peer.title | limitTo:1 }}</span>
           </div>
         </div>
-        <div class="md-list-item-text chatlist__text" flex>
-            <h3 layout="row" class="chatlist__text__title">
+        <div class="md-list-item-text chatlist__body" flex>
+            <h3 layout="row" class="chatlist__body__title">
               <span flex >
                 <md-icon md-svg-icon="bower_components/material-design-icons/social/svg/production/ic_group_24px.svg"
-                         ng-if="chat.peer.peer.type == 'group'"></md-icon>
+                         ng-if="chat.peer.peer.type == 'group'"
+                         class="chatlist__body__title__icon"></md-icon>
                 {{ chat.peer.title }}
               </span>
-              <time class="chatlist__text__title__timestamp">{{ chat.date }}</time>
+              <time class="chatlist__body__title__timestamp">{{ chat.date }}</time>
             </h3>
-            <p>
-              {{ chat.text | truncate : 25 }}
+            <p class="chatlist__body__message"  ng-if="chat.state != 'unknown'">
+              <md-icon md-svg-icon="bower_components/material-design-icons/device/svg/production/ic_access_time_24px.svg"
+                       ng-if="chat.state == 'pending'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--penging"></md-icon>
+              <md-icon md-svg-icon="bower_components/material-design-icons/action/svg/production/ic_done_24px.svg"
+                       ng-if="chat.state == 'sent'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--sent"></md-icon>
+              <md-icon md-svg-icon="bower_components/material-design-icons/action/svg/production/ic_done_all_24px.svg"
+                       ng-if="chat.state == 'received'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--received"></md-icon>
+              <md-icon md-svg-icon="bower_components/material-design-icons/action/svg/production/ic_done_all_24px.svg"
+                       ng-if="chat.state == 'read'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--read"></md-icon>
+              <md-icon md-svg-icon="bower_components/material-design-icons/action/svg/production/ic_report_problem_24px.svg"
+                       ng-if="chat.state == 'error'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--error"></md-icon>
+              {{ chat.text | truncate : 23 }}
             </p>
         </div>
       </md-list-item>
