@@ -67,9 +67,18 @@ class ProfileServiceImpl(bucketName: String)(
   }
 
   override def jhandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    Future {
-      throw new Exception("Not implemented")
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      val update = UpdateUserAvatarChanged(client.userId, None)
+
+      for {
+        _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfUser, client.userId.toLong))
+        relatedUserIds ← DBIO.from(getRelations(client.userId))
+        _ ← broadcastUpdateAll(relatedUserIds, update, None)
+        seqstate ← broadcastClientUpdate(update, None)
+      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
+
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
   override def jhandleDetachEmail(email: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
