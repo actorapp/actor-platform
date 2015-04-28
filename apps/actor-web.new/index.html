@@ -29,9 +29,10 @@
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body ng-cloak ng-controller="mainController as main" layout="row">
+<body ng-cloak layout="row">
 
-<div class="main" layout="row">
+<div class="main" layout="row" ng-controller="mainController as main" >
+
     <md-sidenav md-component-id="left"
                 class="md-sidenav-left"
                 md-is-locked-open="main.$mdMedia('gt-sm')"
@@ -41,8 +42,10 @@
 
     <md-content flex layout="column">
         <md-toolbar ui-view="toolbar" ng-if="!$state.includes('login')"></md-toolbar>
-        <md-content ui-view="content" flex id="content" layout="column"></md-content>
+        <md-content ui-view="content" flex layout="column" scroll-glue></md-content>
+        <md-content ui-view="compose"></md-content>
     </md-content>
+
 </div>
 
 <script src="assets/libs/actor/ActorMessenger.nocache.js"></script>
@@ -58,6 +61,7 @@
 <script src="bower_components/angular-aria/angular-aria.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
+<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
 
 <script src="assets/js/app.js"></script>
 </body>
