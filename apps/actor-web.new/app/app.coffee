@@ -3,4 +3,5 @@ angular
     'ui.router'
     'ngMaterial'
     'ngStorage'
+    'luegg.directives'
   ]

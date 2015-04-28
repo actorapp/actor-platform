@@ -20,8 +20,8 @@ gulp.task 'sass', ->
   gulp.src ['./app/**/*.scss']
   .pipe sourcemaps.init()
   .pipe sass().on('error', gutil.log)
-  .pipe concat 'styles.css'
   .pipe autoprefixer()
+  .pipe concat 'styles.css'
   .pipe sourcemaps.write()
   .pipe gulp.dest './assets/css'
   .pipe connect.reload()
