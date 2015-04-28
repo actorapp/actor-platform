@@ -1,8 +1,11 @@
 <div ng-controller="composeController as compose">
   <div class="compose" ng-if="compose.isEnabled">
-    <form name="composeForm" role="form">
+    <form name="composeForm" role="form" ng-submit="compose.sendMessage()">
 
-      <textarea name="message" class="compose__message" ng-model="compose.message" placeholder="Type your message..."></textarea>
+      <textarea class="compose__message"
+                ng-model="compose.message"
+                ng-keypress="compose.onTyping()"
+                placeholder="Type your message..."></textarea>
 
       <footer layout="row" class="compose__footer">
 
