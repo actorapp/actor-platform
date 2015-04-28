@@ -142,6 +142,9 @@ md-list-item {
   }
 }
 .no-avatar {
+  &--empty {
+    background-color: $emptyColor;
+  }
   &--lblue {
     background-color: $lblueColor;
   }
