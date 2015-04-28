@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.util.ACL
+
 import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
@@ -10,7 +12,6 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.util.ACL
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }

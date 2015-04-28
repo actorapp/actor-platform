@@ -139,14 +139,14 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorCodecs, actorCommonsApi, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial)
+  ).dependsOn(actorCodecs, actorCommonsApi, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial, actorUtils)
 
   lazy val actorSms = Project(
     id = "actor-sms",
     base = file("actor-sms"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
   )
-
+  
   lazy val actorSocial = Project(
     id = "actor-social",
     base = file("actor-social"),
@@ -178,6 +178,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.models
     )
   )
+  
   lazy val actorPersist = Project(
     id = "actor-persist",
     base = file("actor-persist"),
@@ -189,10 +190,21 @@ object Build extends sbt.Build {
   lazy val actorDashboard = Project(
     id = "actor-dashboard",
     base = file("actor-dashboard"),
-    settings = defaultSettings
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.dashboard
+    )
   )
     .enablePlugins(PlayScala)
-    .dependsOn(actorPersist)
+    .dependsOn(actorPersist, actorUtils)
+
+  lazy val actorUtils = Project(
+    id = "actor-utils",
+    base = file("actor-utils"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.utils
+    )
+  )
+    .dependsOn(actorModels)
 
   lazy val actorTests = Project(
     id = "actor-tests",

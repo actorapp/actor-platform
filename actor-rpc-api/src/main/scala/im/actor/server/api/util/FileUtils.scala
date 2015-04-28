@@ -2,6 +2,7 @@ package im.actor.server.api.util
 
 import java.io.File
 
+import im.actor.server.util.ACL
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 import scalaz.\/

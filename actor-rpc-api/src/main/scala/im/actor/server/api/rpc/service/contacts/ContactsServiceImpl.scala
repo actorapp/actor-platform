@@ -2,6 +2,9 @@ package im.actor.server.api.rpc.service.contacts
 
 import java.security.MessageDigest
 
+import im.actor.server
+import im.actor.server.util.{ PhoneNumber, ACL }
+
 import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -17,7 +20,7 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.api.util
-import im.actor.server.api.util.{ ContactsUtils, PhoneNumber, UserUtils }
+import im.actor.server.api.util.{ ContactsUtils, UserUtils }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.{ models, persist }
@@ -150,7 +153,7 @@ class ContactsServiceImpl(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
         case Some(contact) ⇒
-          if (accessHash == util.ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
+          if (accessHash == ACL.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
               _ ← persist.contact.UserContact.delete(client.userId, userId)
               _ ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None)
@@ -177,7 +180,7 @@ class ContactsServiceImpl(
         (optUser, optNumber map (_.number))
       }).flatMap {
         case (Some(user), Some(userPhoneNumber)) ⇒
-          if (accessHash == util.ACL.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
+          if (accessHash == server.util.ACL.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
             persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None ⇒
                 addContactSendUpdate(user.id, userPhoneNumber, None, user.accessSalt) map {

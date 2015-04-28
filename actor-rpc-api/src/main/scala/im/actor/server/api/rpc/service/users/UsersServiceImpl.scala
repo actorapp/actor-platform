@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.users
 
+import im.actor.server.util.ACL
+
 import scala.concurrent.{ Future, ExecutionContext }
 
 import akka.actor._
@@ -7,7 +9,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.server.api.util.{ ContactsUtils, ACL }
+import im.actor.server.api.util.ContactsUtils
 import im.actor.server.persist
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
