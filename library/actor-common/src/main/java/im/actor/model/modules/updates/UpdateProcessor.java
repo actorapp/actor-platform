@@ -233,7 +233,9 @@ public class UpdateProcessor extends BaseModule {
             groupsProcessor.onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
                     ((UpdateGroupMembersUpdate) update).getMembers());
         } else if (update instanceof UpdateParameterChanged) {
-
+            settingsProcessor.onSettingsChanged(
+                    ((UpdateParameterChanged) update).getKey(),
+                    ((UpdateParameterChanged) update).getValue());
         }
     }
 
