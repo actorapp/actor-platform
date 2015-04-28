@@ -33,7 +33,7 @@
       }
     }
   }
-  &__text {
+  &__body {
     margin: 8px 0;
 
     &__title {
@@ -43,10 +43,12 @@
       margin: 6px 0;
       font-size: 14px;
       color: rgb(22,22,22);
-      md-icon {
+      &__icon {
         width: 16px;
         height: 16px;
         margin-top: -2px;
+        margin-right: 2px;
+        color: inherit;
         vertical-align: middle;
       }
       &__timestamp {
@@ -55,12 +57,27 @@
         text-transform: lowercase;
       }
     }
-    p {
+    &__message {
       color: rgb(148,148,148);
       font-size: 13px;
       font-weight: 400;
       line-height: 20px;
       margin: 4px 0 0;
+      &__icon {
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        margin-top: -2px;
+        &--penging {}
+        &--sent {}
+        &--received {}
+        &--read {
+          color: $baseColor;
+        }
+        &--error {
+          color: #962e00;
+        }
+      }
     }
   }
 }

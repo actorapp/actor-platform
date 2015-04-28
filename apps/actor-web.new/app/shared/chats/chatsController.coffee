@@ -18,9 +18,8 @@ class ChatsController
     console.log '[AW]MessagesController renderConversations'
     console.log '[AW]MessagesController renderConversations: list:', list
     @$timeout =>
-      @$scope.$apply (@scope) =>
-        @list = list
-        @$rootScope.$broadcast 'renderConversations'
+      @list = list
+      @$rootScope.$broadcast 'renderConversations'
 
   selectChat: (peer) ->
     console.log '[AW]ChatsController selectChat'
