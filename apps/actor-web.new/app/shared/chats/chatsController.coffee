@@ -1,27 +1,32 @@
 class ChatsController
-  selectedChat: null
+  list: undefined
 
-  constructor: (@$rootScope, @actorService) ->
+  constructor: (@$scope, @$rootScope, @$timeout, @actorService) ->
     console.log '[AW]ChatsController constructor'
     @$rootScope.$on 'actorReady', =>
       console.log '[AW]ChatsController constructor: actorReady fired.'
-      @getChats()
-    # @$rootScope.$on 'actorLoggedIn', => @getChats()
+      @getConversations()
 
-  getChats: ->
+  getConversations: ->
     console.log '[AW]ChatsController getChats'
-    @actorService.getDialogs (items) => @list = items
-    console.log '[AW]ChatsController getChats: @list:', @list
+    @actorService.bindDialogs (items) => @renderConversations items
 
-  selectChat: (chat) ->
+  renderConversations: (list) =>
+    console.log '[AW]MessagesController renderConversations'
+    console.log '[AW]MessagesController renderConversations: list:', list
+    @$timeout =>
+      @$scope.$apply (@scope) =>
+        @list = list
+        @$rootScope.$broadcast 'renderConversations'
+
+  selectChat: (peer) ->
     console.log '[AW]ChatsController selectChat'
-    console.log '[AW]ChatsController selectChat: @selectedChat:', @selectedChat
-    if @selectedChat
-      @actorService.closeConversation @selectedChat
-    @selectedChat = chat
-    @actorService.openConversation @selectedChat
+    if @actorService.currentPeer
+      @actorService.closeConversation @actorService.currentPeer
 
-ChatsController.$inject = ['$rootScope', 'actorService']
+    @actorService.openConversation peer
+
+ChatsController.$inject = ['$scope', '$rootScope', '$timeout', 'actorService']
 
 angular
   .module 'actorWeb'
