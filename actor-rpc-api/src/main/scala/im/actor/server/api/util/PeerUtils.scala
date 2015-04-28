@@ -1,5 +1,7 @@
 package im.actor.server.api.util
 
+import im.actor.server.util.ACL
+
 import scala.concurrent.ExecutionContext
 import scala.collection.immutable
 import scalaz._
@@ -121,7 +123,7 @@ object PeerUtils {
   }
 
   private def validUserAccessHash(accessHash: Long, user: models.User)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
-    if (accessHash == util.ACL.userAccessHash(client.authId, user)) {
+    if (accessHash == ACL.userAccessHash(client.authId, user)) {
       \/-(user)
     } else {
       Error(CommonErrors.InvalidAccessHash)

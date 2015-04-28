@@ -3,6 +3,8 @@ package im.actor.server.api.rpc.service.files
 import java.io.{ File, FileOutputStream }
 import java.nio.file.Files
 
+import im.actor.server.util.ACL
+
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -17,7 +19,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.api.util.{ FileUtils, ACL }
+import im.actor.server.api.util.{ FileUtils }
 import im.actor.server.{ models, persist }
 
 class FilesServiceImpl(bucketName: String)(
