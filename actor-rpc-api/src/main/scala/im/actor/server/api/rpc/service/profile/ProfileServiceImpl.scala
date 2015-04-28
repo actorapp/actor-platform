@@ -36,10 +36,12 @@ class ProfileServiceImpl(bucketName: String)(
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   implicit val timeout = Timeout(5.seconds) // TODO: configurable
+  val SizeLimit = 1024 * 1024
 
   // TODO: move file checks into FileUtils
   object Errors {
     val FileNotFound = RpcError(404, "FILE_NOT_FOUND", "File not found.", false, None)
+    val FileTooLarge = RpcError(400, "FILE_TOO_LARGE", "File is too large.", false, None)
     val LocationInvalid = RpcError(400, "LOCATION_INVALID", "", false, None)
   }
 
@@ -49,7 +51,13 @@ class ProfileServiceImpl(bucketName: String)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       persist.File.find(fileLocation.fileId) flatMap {
         case Some(file) ⇒
-          if (ACL.fileAccessHash(file.id, file.accessSalt) == fileLocation.accessHash) {
+          if (!file.isUploaded) {
+            DBIO.successful(Error(Errors.LocationInvalid))
+          } else if (file.size > SizeLimit) {
+            DBIO.successful(Error(Errors.FileTooLarge))
+          } else if (ACL.fileAccessHash(file.id, file.accessSalt) != fileLocation.accessHash) {
+            DBIO.successful(Error(Errors.LocationInvalid))
+          } else {
             scaleAvatar(file.id, ThreadLocalRandom.current(), bucketName) flatMap {
               case Some(avatar) ⇒
                 val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
@@ -67,8 +75,6 @@ class ProfileServiceImpl(bucketName: String)(
               case None ⇒
                 DBIO.successful(Error(Errors.LocationInvalid))
             }
-          } else {
-            DBIO.successful(Error(Errors.LocationInvalid))
           }
         case None ⇒ DBIO.successful(Error(Errors.FileNotFound))
       }

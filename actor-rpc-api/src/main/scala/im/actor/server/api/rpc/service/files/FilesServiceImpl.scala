@@ -132,12 +132,13 @@ class FilesServiceImpl(bucketName: String)(
             } map (_.waitForCompletion())
             _ ← DBIO.from(download)
             concatFile ← DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
+            fileLengthF = getFileLength(concatFile)
             upload = FutureTransfer.listenFor {
               transferManager.upload(bucketName, s"file_${file.id}", concatFile)
             } map (_.waitForCompletion())
             _ ← DBIO.from(upload)
             _ ← DBIO.from(deleteDir(tempDir))
-            _ ← persist.File.setUploaded(file.id)
+            _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.File.setUploaded(file.id, size))
           } yield {
             Ok(ResponseCommitFileUpload(FileLocation(file.id, ACL.fileAccessHash(file.id, file.accessSalt))))
           }

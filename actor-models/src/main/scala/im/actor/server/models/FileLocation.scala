@@ -4,7 +4,7 @@ package im.actor.server.models
 case class FileLocation(fileId: Long, accessHash: Long)
 
 @SerialVersionUID(1L)
-case class File(id: Long, accessSalt: String, s3UploadKey: String, isUploaded: Boolean)
+case class File(id: Long, accessSalt: String, s3UploadKey: String, isUploaded: Boolean, size: Long)
 
 @SerialVersionUID(1L)
 case class FilePart(fileId: Long, number: Int, size: Int, s3UploadKey: String)
