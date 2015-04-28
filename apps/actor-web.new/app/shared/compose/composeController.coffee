@@ -6,22 +6,27 @@ class ComposeController
   constructor: (@$rootScope, @actorService) ->
     console.log '[AW]ComposeController constructor'
 
-    @$rootScope.$on 'actorReady', =>
-      console.log '[AW]ComposeController constructor: actorReady fired.'
-
+    @$rootScope.$on 'renderMessages', =>
+      console.log '[AW]ComposeController constructor: renderMessages fired.'
       @enableCompose()
-
 
   enableCompose: ->
     console.log '[AW]ComposeController enableCompose'
-
+    @isEnabled = true
     @message = @draft if @draft
     console.log '[AW]ComposeController enableCompose: @message:', @message
     console.log '[AW]ComposeController enableCompose: @draft:', @draft
 
-    @isEnabled = true
-    console.log '[AW]ComposeController enableCompose: @isEnabled:', @isEnabled
+  onTyping: ->
+    console.log '[AW]ComposeController onTyping'
+    @actorService.onTyping()
 
+  sendMessage: ->
+    console.log '[AW]ComposeController sendMessage'
+    console.log '[AW]ComposeController sendMessage: @message:', @message
+    console.log '[AW]ComposeController sendMessage: @draft:', @draft
+    @actorService.sendMessage @actorService.currentPeer, @message
+    @message = null
 
   # selectChat: (chat) ->
   #   console.log '[AW]ComposeController selectChat'

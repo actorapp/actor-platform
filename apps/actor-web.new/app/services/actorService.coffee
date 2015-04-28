@@ -1,5 +1,6 @@
 class ActorService
   messenger: null
+  currentPeer: null
 
   constructor: (@$rootScope, @$sessionStorage) ->
     console.log '[AW]ActorService constructor'
@@ -61,7 +62,7 @@ class ActorService
       console.log '[AW]ActorService sendCode: error'
 
 
-  getDialogs: (callback) ->
+  bindDialogs: (callback) ->
     console.log '[AW]ActorService getDialogs'
     @messenger.bindDialogs (items) ->
       console.log '[AW]ActorService getDialogs: items', items
@@ -76,6 +77,7 @@ class ActorService
   openConversation: (peer) ->
     console.log '[AW]ActorService openConversation'
     console.log '[AW]ActorService openConversation: peer:', peer
+    @setCurrentPeer peer
     @messenger.onConversationOpen peer
     @$rootScope.$broadcast 'openConversation', peer
 
@@ -83,6 +85,21 @@ class ActorService
     console.log '[AW]ActorService bindChat'
     console.log '[AW]ActorService bindChat: peer:', peer
     @messenger.bindChat peer, callback
+
+  setCurrentPeer: (peer) ->
+    console.log '[AW]ActorService setCurrentPeer'
+    console.log '[AW]ActorService setCurrentPeer: peer:', peer
+    @currentPeer = peer
+
+  onTyping: ->
+    console.log '[AW]ActorService onTyping'
+    @messenger.onTyping @currentPeer
+
+  sendMessage: (peer, message) ->
+    console.log '[AW]ActorService sendMessage'
+    console.log '[AW]ActorService sendMessage: message:', message
+    console.log '[AW]ActorService sendMessage: peer:', peer
+    @messenger.sendMessage peer, message
 
 
 ActorService.$inject = ['$rootScope', '$sessionStorage']
