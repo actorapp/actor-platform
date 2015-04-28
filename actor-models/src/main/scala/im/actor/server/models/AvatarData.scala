@@ -1,7 +1,5 @@
 package im.actor.server.models
 
-import scala.collection.immutable
-
 object AvatarData {
   trait TypeVal {
     def toInt: Int

@@ -15,14 +15,16 @@ class FileTable(tag: Tag) extends Table[models.File](tag, "files") {
 
   def isUploaded = column[Boolean]("is_uploaded")
 
-  def * = (id, accessSalt, s3UploadKey, isUploaded) <> (models.File.tupled, models.File.unapply)
+  def size = column[Long]("size")
+
+  def * = (id, accessSalt, s3UploadKey, isUploaded, size) <> (models.File.tupled, models.File.unapply)
 }
 
 object File {
   val files = TableQuery[FileTable]
 
   def create(id: Long, accessSalt: String, s3UploadKey: String): FixedSqlAction[Int, NoStream, Write] =
-    files += models.File(id, accessSalt, s3UploadKey, false)
+    files += models.File(id, accessSalt, s3UploadKey, false, 0)
 
   def find(id: Long): SqlAction[Option[models.File], NoStream, Read] =
     files.filter(_.id === id).result.headOption
@@ -30,6 +32,6 @@ object File {
   def findByKey(key: String) =
     files.filter(_.s3UploadKey === key).result.headOption
 
-  def setUploaded(id: Long) =
-    files.filter(_.id === id).map(_.isUploaded).update(true)
+  def setUploaded(id: Long, size: Long) =
+    files.filter(_.id === id).map(f ⇒ (f.isUploaded, f.size)).update((true, size))
 }
