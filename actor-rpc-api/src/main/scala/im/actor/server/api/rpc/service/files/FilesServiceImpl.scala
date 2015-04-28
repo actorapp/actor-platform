@@ -13,21 +13,23 @@ import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.model._
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
-import org.apache.commons.io.FileUtils
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.api.util.ACL
+import im.actor.server.api.util.{ FileUtils, ACL }
 import im.actor.server.{ models, persist }
 
-class FilesServiceImpl(bucketName: String)(implicit
-  s3Client: AmazonS3ScalaClient,
-                                           transferManager: TransferManager,
-                                           db:              Database,
-                                           actorSystem:     ActorSystem) extends FilesService {
+class FilesServiceImpl(bucketName: String)(
+  implicit
+  s3Client:        AmazonS3ScalaClient,
+  transferManager: TransferManager,
+  db:              Database,
+  actorSystem:     ActorSystem
+) extends FilesService {
 
   import scala.collection.JavaConverters._
+  import FileUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -41,7 +43,7 @@ class FilesServiceImpl(bucketName: String)(implicit
       persist.File.find(location.fileId) flatMap {
         case Some(file) ⇒
           if (ACL.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
-            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, s"file_${file.id}")
+            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, FileUtils.s3Key(file.id))
             val timeout = 1.day
 
             val expiration = new java.util.Date
@@ -165,14 +167,6 @@ class FilesServiceImpl(bucketName: String)(implicit
     mutable.Seq(xs: _*).asJava
   }
 
-  // FIXME: #perf pinned dispatcher
-
-  private def createTempDir(): Future[File] = {
-    Future {
-      com.google.common.io.Files.createTempDir()
-    }
-  }
-
   // FIXME: #perf use nio and pinned dispatcher
 
   private def concatFiles(dir: File, fileNames: Seq[String]): Future[File] = {
@@ -189,12 +183,6 @@ class FilesServiceImpl(bucketName: String)(implicit
       outStream.close()
 
       concatFile
-    }
-  }
-
-  private def deleteDir(dir: File): Future[Unit] = {
-    Future {
-      FileUtils.deleteDirectory(dir)
     }
   }
 }

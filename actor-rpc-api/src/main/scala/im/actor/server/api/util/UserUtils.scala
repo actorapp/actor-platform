@@ -33,7 +33,7 @@ object UserUtils {
         phones = phones map (_.id) toVector,
         emails = emails map (_.id) toVector,
         userState = users.UserState.apply(u.state.toInt),
-        avatar = adOpt flatMap (Avatar.avatar)
+        avatar = adOpt flatMap (AvatarUtils.avatar)
       )
     }
 
@@ -58,7 +58,7 @@ object UserUtils {
         phones = phones map (_.id) toVector,
         emails = emails map (_.id) toVector,
         userState = users.UserState.apply(u.state.toInt),
-        avatar = adOpt flatMap (Avatar.avatar)
+        avatar = adOpt flatMap (AvatarUtils.avatar)
       )
     }
 
