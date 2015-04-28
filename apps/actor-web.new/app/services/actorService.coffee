@@ -1,7 +1,7 @@
 class ActorService
   messenger: null
   currentPeer: null
-  isReady: false
+  # isReady: false
   isLoggedIn: false
 
   constructor: (@$rootScope, @$sessionStorage) ->
@@ -14,10 +14,9 @@ class ActorService
   initActor: ->
     console.log '[AW]ActorService initActor'
     @messenger = new actor.ActorApp
-    @isReady = true
+    # @isReady = true
     @isLoggedIn = @messenger.isLoggedIn()
-    console.log '[AW]ActorService initActor: @isReady', @isReady
-    # @isLoggedIn = @messenger.isLoggedIn
+    # console.log '[AW]ActorService initActor: @isReady', @isReady
     console.log '[AW]ActorService initActor: @isLoggedIn:', @isLoggedIn
     @setLoggedIn() if @isLoggedIn
     # @uid = @messenger.getUid()
@@ -29,6 +28,7 @@ class ActorService
     if toState.data != undefined
       if toState.data.noLogin != undefined && toState.data.noLogin
         console.log '[AW]ActorService checkAccess: before login'
+        @setLoggedIn() if @isLoggedIn
         return
     else
       if @$sessionStorage.isLoggedIn
