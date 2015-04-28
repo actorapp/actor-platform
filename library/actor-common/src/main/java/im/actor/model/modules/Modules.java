@@ -100,6 +100,8 @@ public class Modules {
         timing.end();
 
         timing = new Timing("ACCOUNT_RUN");
+        timing.section("Settings");
+        settings.run();
         timing.section("Files");
         filesModule.run();
         timing.section("Search");
