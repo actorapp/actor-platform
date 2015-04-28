@@ -69,7 +69,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
     new AuthServiceImpl,
     new ContactsServiceImpl,
     new MessagingServiceImpl,
-    new GroupsServiceImpl,
     new SequenceServiceImpl
   )
 
