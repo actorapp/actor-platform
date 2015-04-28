@@ -28,7 +28,6 @@ class ActorService
     if toState.data != undefined
       if toState.data.noLogin != undefined && toState.data.noLogin
         console.log '[AW]ActorService checkAccess: before login'
-        @setLoggedIn() if @isLoggedIn
         return
     else
       if @$sessionStorage.isLoggedIn
