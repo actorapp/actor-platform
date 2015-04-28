@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.util.ACL
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
@@ -10,7 +12,6 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup }
 import im.actor.api.rpc.peers.UserOutPeer
-import im.actor.server.api.util.ACL
 import im.actor.server.persist
 
 trait GroupsServiceHelpers {

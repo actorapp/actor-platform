@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service.auth
 
+import im.actor.server
+import im.actor.server.util.{ PhoneNumber, ACL }
+
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -20,7 +23,7 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc._
 import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
-import im.actor.server.api.util.{ ContactsUtils, ACL }
+import im.actor.server.util.PhoneNumber.normalizeWithCountry
 import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
 import im.actor.server.session._
 import im.actor.server.sms.ActivationContext
@@ -99,7 +102,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     apiKey:         String,
     clientData:     ClientData
   ): Future[HandlerResult[ResponseSendAuthCode]] = {
-    util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
+    PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None ⇒
         Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some(normPhoneNumber) ⇒
@@ -194,7 +197,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     appKey:         String,
     clientData:     ClientData
   ): Future[HandlerResult[ResponseAuth]] = {
-    util.PhoneNumber.normalizeWithCountry(rawPhoneNumber) match {
+    normalizeWithCountry(rawPhoneNumber) match {
       case None ⇒ Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) ⇒
         if (smsCode.isEmpty) Future.successful(Error(Errors.PhoneCodeEmpty))

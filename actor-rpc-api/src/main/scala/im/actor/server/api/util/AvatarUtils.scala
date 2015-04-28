@@ -1,5 +1,7 @@
 package im.actor.server.api.util
 
+import im.actor.server.util.ACL
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
