@@ -3,6 +3,9 @@ class ChatsController
 
   constructor: (@$scope, @$rootScope, @$timeout, @actorService) ->
     console.log '[AW]ChatsController constructor'
+    if @actorService.isLoggedIn
+      console.log '[AW]ChatsController constructor: getConversations() if @actorService.isLoggedIn.'
+      @getConversations()
     @$rootScope.$on 'actorReady', =>
       console.log '[AW]ChatsController constructor: actorReady fired.'
       @getConversations()
