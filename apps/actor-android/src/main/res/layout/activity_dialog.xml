@@ -2,7 +2,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -78,14 +77,14 @@
             android:layout_height="56dp"
             android:layout_gravity="right|bottom">
 
-            <im.actor.messenger.app.view.TintImageView
+            <ImageView
                 android:id="@+id/ib_emoji"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/selector_flat"
+                android:background="@drawable/clickable_background"
                 android:padding="7dp"
-                app:tintColor="#bbb"
-                app:src="@drawable/button_emoji" />
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_emoji" />
         </FrameLayout>
         <FrameLayout
             android:layout_width="56dp"
