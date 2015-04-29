@@ -42,11 +42,6 @@ object User {
   def find(id: Int) =
     users.filter(_.id === id).result
 
-  def updateName(id: Int, name: String) =
-    users.filter(_.id === id).
-      map(_.name).
-      update(name)
-
   def findName(id: Int) =
     users.filter(_.id === id).map(_.name).result.headOption
 

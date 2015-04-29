@@ -77,7 +77,7 @@ class Users extends Controller {
     request.body.validate[Option[String]].map { optName ⇒
       db.run {
         for {
-          _ ← optName.map { persist.User.updateName(id, _) } getOrElse DBIO.successful(Ok)
+          _ ← optName.map { persist.User.setName(id, _) } getOrElse DBIO.successful(Ok)
         } yield Accepted
       }
     } getOrElse Future(BadRequest)
