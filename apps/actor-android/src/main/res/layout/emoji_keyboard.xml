@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="#eee"
+    android:background="#f5f6f7"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <FrameLayout

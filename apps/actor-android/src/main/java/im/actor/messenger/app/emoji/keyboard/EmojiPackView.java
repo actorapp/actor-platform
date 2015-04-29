@@ -94,7 +94,21 @@ public class EmojiPackView extends View {
                         if (index >= 0 && index < smileyIds.length) {
                             if (onEmojiClickListener != null) {
                                 playSoundEffect(SoundEffectConstants.CLICK);
-                                onEmojiClickListener.onEmojiClicked(smileyIds[index]);
+
+                                long smileId = smileyIds[index];
+                                String smile =  null;
+                                char a = (char) (smileId & 0xFFFFFFFF);
+                                char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
+                                char c = (char) ((smileId >> 32) & 0xFFFFFFFF);
+                                char d = (char) ((smileId >> 48) & 0xFFFFFFFF);
+                                if (c != 0 && d != 0) {
+                                    smile = "" + d + c + b + a;
+                                } else if (b != 0) {
+                                    smile = b + "" + a;
+                                } else {
+                                    smile = "" + a;
+                                }
+                                onEmojiClickListener.onEmojiClicked(smile);
                             }
                         }
                     }

@@ -16,6 +16,7 @@
 
 package im.actor.messenger.app.emoji.keyboard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -46,7 +47,6 @@ import android.widget.RelativeLayout;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.stickers.Stickers;
 import im.actor.messenger.app.emoji.stickers.StickersAdapter;
 import im.actor.messenger.app.emoji.stickers.StickersPack;
@@ -65,22 +65,24 @@ public class EmojiKeyboardPopup extends PopupWindow
     OnStickerClickListener onStickerClickListener;
     OnEmojiconBackspaceClickedListener onEmojiconBackspaceClickedListener;
     OnSoftKeyboardOpenCloseListener onSoftKeyboardOpenCloseListener;
-    View rootView;
-    BaseActivity activity;
+    Activity activity;
+    private View decorView;
+    private boolean softKeyboardListeningEnabled = true;
 
 
-    public EmojiKeyboardPopup(View rootView, BaseActivity activity) {
+    public EmojiKeyboardPopup(Activity activity) {
         super(activity);
         this.activity = activity;
-        this.rootView = rootView;
+        decorView = activity.getWindow().getDecorView();
         setBackgroundDrawable(null);
         if (Build.VERSION.SDK_INT >= 21) {
             setElevation(0);
         }
         setContentView(createView());
-        setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        listenSoftKeyboard();
+        //setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         //default size
-        setSize((int) activity.getResources().getDimension(R.dimen.keyboard_height), LayoutParams.MATCH_PARENT);
+        setSize(LayoutParams.MATCH_PARENT, (int) activity.getResources().getDimension(R.dimen.keyboard_height));
     }
 
     public void setOnSoftKeyboardOpenCloseListener(OnSoftKeyboardOpenCloseListener listener) {
@@ -100,20 +102,38 @@ public class EmojiKeyboardPopup extends PopupWindow
     }
 
 
-    public void showAtBottom() {
-        showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+    public void show() {
+        if (isSoftwareKeyBoardOpened()) {
+            showAtLocation(decorView, Gravity.BOTTOM, 0, 0);
+        } else {
+            resizeWindow(true);
+            showAtLocation(decorView, Gravity.BOTTOM, 0, 0);
+        }
+    }
+
+    private void resizeWindow(boolean keyboard) {
+
+        if(keyboard){
+            softKeyboardListeningEnabled = false;
+            decorView.invalidate();
+            decorView.requestLayout();
+        } else {
+            if (!softKeyboardListeningEnabled) {
+                softKeyboardListeningEnabled = true;
+            }
+        }
     }
 
 
     public void showAtBottomPending() {
-        if (isSoftwareKeyBoardOpen())
-            showAtBottom();
+        if (isSoftwareKeyBoardOpened())
+            show();
         else
             pendingOpen = true;
     }
 
 
-    public Boolean isSoftwareKeyBoardOpen() {
+    public Boolean isSoftwareKeyBoardOpened() {
         return isOpened;
     }
 
@@ -121,19 +141,23 @@ public class EmojiKeyboardPopup extends PopupWindow
     @Override
     public void dismiss() {
         super.dismiss();
-        EmojiRecentsController
-                .getInstance(activity).saveRecents();
+        if(!isSoftwareKeyBoardOpened()){
+            resizeWindow(false);
+        }
     }
 
 
-    public void setSizeForSoftKeyboard() {
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+    public void listenSoftKeyboard() {
+        decorView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                if(!softKeyboardListeningEnabled){
+                    return;
+                }
                 Rect r = new Rect();
-                rootView.getWindowVisibleDisplayFrame(r);
+                decorView.getWindowVisibleDisplayFrame(r);
 
-                int screenHeight = rootView.getRootView()
+                int screenHeight = decorView.getRootView()
                         .getHeight();
                 int heightDifference = screenHeight
                         - (r.bottom - r.top);
@@ -167,14 +191,12 @@ public class EmojiKeyboardPopup extends PopupWindow
                             onSoftKeyboardOpenCloseListener.onKeyboardOpen(keyBoardHeight);
                     }
                     isOpened = true;
-                    if (pendingOpen) {
-                        showAtBottom();
-                        pendingOpen = false;
-                    }
                 } else {
                     isOpened = false;
                     if (onSoftKeyboardOpenCloseListener != null)
                         onSoftKeyboardOpenCloseListener.onKeyboardClose();
+                    if(isShowing())
+                        dismiss();
                 }
             }
         });
@@ -189,10 +211,9 @@ public class EmojiKeyboardPopup extends PopupWindow
         View keyboardView = LayoutInflater.from(activity)
                 .inflate(R.layout.emoji_keyboard, null);
 
-        // emojiPagerIndicator.setTabBackground(R.drawable.md_btn_selector_ripple);
 
         final FrameLayout emojiContainer = (FrameLayout) keyboardView.findViewById(R.id.emojiContainer);
-        emojiContainer.addView(createEmojiPagerView());
+        emojiContainer.addView(createSmilesPager());
 
         RecyclerView recyclerView = (RecyclerView) keyboardView.findViewById(R.id.indicator);
         recyclerView.setHasFixedSize(true);
@@ -222,7 +243,7 @@ public class EmojiKeyboardPopup extends PopupWindow
                         notifyItemChanged(oldSelected);
                         View view = null;
                         if (position == 0) {
-                            view = createEmojiPagerView();
+                            view = createSmilesPager();
                         } else {
                             view = createStickersPagerView(position - 1);
                         }
@@ -232,7 +253,7 @@ public class EmojiKeyboardPopup extends PopupWindow
                 });
                 SimpleDraweeView packImageView = (SimpleDraweeView) holder.itemView;
                 if (position == 0) {
-                    packImageView.setImageResource(R.drawable.button_emoji);
+                    packImageView.setImageResource(R.drawable.ic_emoji);
                     packImageView.setPadding(0, 0, 0, 0);
                 } else {
                     StickersPack pack = Stickers.getPacks()[position - 1];
@@ -246,7 +267,7 @@ public class EmojiKeyboardPopup extends PopupWindow
                 return 3;
             }
         });
-        //emojiContainer.addView(createEmojiPagerView());
+        //emojiContainer.addView(createSmilesPager());
 
         /**/
 
@@ -321,7 +342,6 @@ public class EmojiKeyboardPopup extends PopupWindow
 
     public interface OnSoftKeyboardOpenCloseListener {
         void onKeyboardOpen(int keyBoardHeight);
-
         void onKeyboardClose();
     }
 
@@ -331,8 +351,8 @@ public class EmojiKeyboardPopup extends PopupWindow
         void onClick(View v);
     }
 
-    public View createEmojiPagerView() {
-        View emojiPagerView = LayoutInflater.from(activity).inflate(R.layout.emoji_container_page, null);
+    public View createSmilesPager() {
+        View emojiPagerView = LayoutInflater.from(activity).inflate(R.layout.emoji_smiles_pager, null);
 
         ViewPager emojiPager = (ViewPager) emojiPagerView.findViewById(R.id.emoji_pager);
 
@@ -341,9 +361,9 @@ public class EmojiKeyboardPopup extends PopupWindow
         View backspace = emojiPagerView.findViewById(R.id.backspace);
 
         emojiPagerIndicator.setTabBackground(R.drawable.clickable_background);
-        emojiPagerIndicator.setIndicatorColorResource(R.color.main_tab_selected);
-        emojiPagerIndicator.setIndicatorHeight(Screen.dp(4));
-        emojiPagerIndicator.setDividerColorResource(R.color.main_tab_divider);
+        emojiPagerIndicator.setIndicatorColorResource(R.color.primary);
+        emojiPagerIndicator.setIndicatorHeight(Screen.dp(2));
+        emojiPagerIndicator.setDividerColor(0x00000000);
         emojiPagerIndicator.setUnderlineHeight(0);
         emojiPagerIndicator.setTabPaddingLeftRight(0);
 
@@ -383,7 +403,7 @@ public class EmojiKeyboardPopup extends PopupWindow
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_item_page, null);
+            View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_smiles_page, null);
             ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojiPackContainer);
 
             long[] emojiPack = new long[0];
@@ -415,9 +435,9 @@ public class EmojiKeyboardPopup extends PopupWindow
 
             emojiPackView.setOnEmojiClickListener(new OnEmojiClickListener() {
                 @Override
-                public void onEmojiClicked(long smileId) {
+                public void onEmojiClicked(String smile) {
                     if (onEmojiClickListener != null)
-                        onEmojiClickListener.onEmojiClicked(smileId);
+                        onEmojiClickListener.onEmojiClicked(smile);
                 }
             });
 
@@ -440,7 +460,7 @@ public class EmojiKeyboardPopup extends PopupWindow
 
             ImageButton tabView = new ImageButton(activity);
             //if(position==0){
-            tabView.setImageResource(R.drawable.button_emoji);
+            tabView.setImageResource(R.drawable.ic_emoji);
             tabView.setPadding(24, 0, 24, 0);
             //} else{
                     /*tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
