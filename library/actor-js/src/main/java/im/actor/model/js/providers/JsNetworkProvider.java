@@ -10,10 +10,9 @@ import im.actor.model.network.CreateConnectionCallback;
  * Created by ex3ndr on 21.02.15.
  */
 public class JsNetworkProvider implements NetworkProvider {
-    
+
     @Override
-    public void createConnection(int connectionId, ConnectionEndpoint endpoint,
-                                 ConnectionCallback callback, CreateConnectionCallback createCallback) {
+    public void createConnection(int connectionId, int mtprotoVersion, int apiMajorVersion, int apiMinorVersion, ConnectionEndpoint endpoint, ConnectionCallback callback, CreateConnectionCallback createCallback) {
         String url;
         if (endpoint.getType() == ConnectionEndpoint.Type.WS) {
             url = "ws://" + endpoint.getHost() + ":" + endpoint.getPort() + "/";

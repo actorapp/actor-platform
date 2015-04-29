@@ -4,22 +4,17 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint8Array;
+import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.log.Log;
+
+import java.util.Random;
 
 /**
  * Created by ex3ndr on 07.02.15.
  */
 public class WebSocket {
-    /**
-     * @return <code>True</code> if the WebSocket component is supported by the current browser
-     */
-    public static native boolean IsSupported() /*-{
-        if ($wnd.WebSocket) {
-            return true;
-        } else {
-            return false;
-        }
-    }-*/;
+
+    private static final Random RANDOM = new Random();
 
     private final JavaScriptObject jsWebSocket;
     private final WebSocketCallback callback;
@@ -31,6 +26,33 @@ public class WebSocket {
         this.callback = callback;
         this.jsWebSocket = createJSWebSocket(url, this);
     }
+
+    private void onOpen() {
+        Log.d("WS", "onOpen");
+        callback.onOpen();
+    }
+
+    private void onMessage(ArrayBuffer message) {
+        Log.d("WS", "onMessage:" + message);
+        Uint8Array array = TypedArrays.createUint8Array(message);
+        byte[] res = new byte[array.length()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (byte) (array.get(i));
+        }
+        callback.onMessage(res);
+    }
+
+    private void onError() {
+        Log.d("WS", "onError");
+        callback.onClose();
+    }
+
+    private void onClose() {
+        Log.d("WS", "onClose");
+        callback.onClose();
+    }
+
+    // Native interfaces
 
     public native void send(Uint8Array message) /*-{
         if (message == null)
@@ -85,28 +107,14 @@ public class WebSocket {
         return jsWebSocket;
     }-*/;
 
-    private void onOpen() {
-        Log.d("WS", "onOpen");
-        callback.onOpen();
-    }
-
-    private void onMessage(ArrayBuffer message) {
-        Log.d("WS", "onMessage:" + message);
-        Uint8Array array = TypedArrays.createUint8Array(message);
-        byte[] res = new byte[array.length()];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = (byte) (array.get(i));
+    /**
+     * @return <code>True</code> if the WebSocket component is supported by the current browser
+     */
+    public static native boolean IsSupported() /*-{
+        if ($wnd.WebSocket) {
+            return true;
+        } else {
+            return false;
         }
-        callback.onMessage(res);
-    }
-
-    private void onError() {
-        Log.d("WS", "onError");
-        callback.onClose();
-    }
-
-    private void onClose() {
-        Log.d("WS", "onClose");
-        callback.onClose();
-    }
+    }-*/;
 }

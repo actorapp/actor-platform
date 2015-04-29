@@ -37,7 +37,7 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
 
-        configuration.addEndpoint("wss://mtproto-api.actor.im:9082");
+        configuration.addEndpoint("ws://mtproto-api-dev1.actor.im:8843");
 
         messenger = new JsMessenger(configuration.build());
 
