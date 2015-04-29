@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.utils.AuthAction
 import controllers.utils.Db._
 import controllers.utils.JsonConstructors._
 import im.actor.server.{ models, persist }
@@ -7,15 +8,13 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.mvc.{ Action, BodyParsers, Controller }
+import play.api.mvc.{ BodyParsers, Controller }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
 class Users extends Controller {
-
-  val auth_token = "auth_token"
 
   implicit val userPhoneWrites = new Writes[models.UserPhone] {
     def writes(phone: models.UserPhone): JsValue = Json.obj(
@@ -39,7 +38,7 @@ class Users extends Controller {
 
   implicit val userUpdateReads: Reads[Option[String]] = (JsPath \ "name").readNullable[String](length)
 
-  def get(id: Int) = Action.async { request ⇒
+  def get(id: Int) = AuthAction.async { request ⇒
     db.run {
       for {
         optUser ← persist.User.find(id).headOption
@@ -51,7 +50,7 @@ class Users extends Controller {
     }
   }
 
-  def create = Action.async(BodyParsers.parse.json) { request ⇒
+  def create = AuthAction.async(BodyParsers.parse.json) { request ⇒
     request.body.validate[Lang2UserAndPhone].map { userAndPhone ⇒
       db.run {
         userAndPhone(request.acceptLanguages.headOption) match {
@@ -73,7 +72,7 @@ class Users extends Controller {
     } getOrElse Future(BadRequest)
   }
 
-  def update(id: Int) = Action.async(BodyParsers.parse.json) { request ⇒
+  def update(id: Int) = AuthAction.async(BodyParsers.parse.json) { request ⇒
     request.body.validate[Option[String]].map { optName ⇒
       db.run {
         for {
@@ -83,7 +82,7 @@ class Users extends Controller {
     } getOrElse Future(BadRequest)
   }
 
-  def delete(id: Int) = Action.async { request ⇒
+  def delete(id: Int) = AuthAction.async { request ⇒
     db.run {
       for {
         _ ← persist.User.markDeleted(id)
@@ -91,7 +90,7 @@ class Users extends Controller {
     }
   }
 
-  def list(page: Int, perPage: Int) = Action.async { request ⇒
+  def list(page: Int, perPage: Int) = AuthAction.async { request ⇒
     db.run {
       for {
         usersAndPhones ← (for {

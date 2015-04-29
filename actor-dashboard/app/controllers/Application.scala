@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.utils.AuthAction
 import controllers.utils.Db._
 import controllers.utils.JsonConstructors._
 import im.actor.server.persist
@@ -33,10 +34,12 @@ class Application extends Controller {
           optAuthCode ← persist.AuthSmsCode.findByPhoneNumber(form.email.toLong).headOption //TODO: write persist.AuthSmsCode.findByEmail(form.email) implementation
         } yield (optManager, optAuthCode)).flatMap {
           case (Some(manager), Some(authCode)) ⇒
-            val res = if (form.passphrase == authCode.smsCode)
-              Ok(Json.toJson(Map(auth_token → manager.authToken))).withSession(auth_token → manager.authToken)
-            else BadRequest(Json.toJson(Map("message" → "wrong authCode")))
-            DBIO.successful(res)
+            DBIO.successful {
+              if (form.passphrase == authCode.smsCode)
+                Ok(Json.toJson(Map(auth_token → manager.authToken)))
+              else
+                BadRequest(Json.toJson(Map("message" → "wrong authCode")))
+            }
           case (None, _) ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "no such account"))))
           case (_, None) ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "auth code error"))))
         }
@@ -44,8 +47,9 @@ class Application extends Controller {
     }.getOrElse(Future(BadRequest))
   }
 
-  def logout() = Action(BodyParsers.parse.json) { request ⇒
-    request.session.get(auth_token).
-      map { token ⇒ Ok.withNewSession } getOrElse forbidden("You are not logged in")
+  def logout(email: String) = AuthAction(BodyParsers.parse.json) { request ⇒
+    nextAuthToken(email)
+    Ok
   }
+
 }

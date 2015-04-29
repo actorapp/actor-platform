@@ -23,8 +23,8 @@ class Managers extends Controller {
   )(makeManager _)
 
   def create = Action.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[models.Manager] map { value ⇒
-      db.run(persist.Manager.create(value)).
+    request.body.validate[models.Manager] map { manager ⇒
+      db.run(persist.Manager.create(manager)).
         map { res ⇒ Created }.
         recover { case e: SQLException ⇒ BadRequest(e.getMessage) }
     } getOrElse Future(BadRequest)
