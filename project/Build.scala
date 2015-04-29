@@ -125,6 +125,12 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSocial)
 
+  lazy val actorSms = Project(
+    id = "actor-sms",
+    base = file("actor-sms"),
+    settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
+  )
+
   lazy val actorSocial = Project(
     id = "actor-social",
     base = file("actor-social"),
