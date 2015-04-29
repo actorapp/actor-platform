@@ -1,18 +1,15 @@
 package im.actor.server.api.util
 
-import im.actor.server.util.ACL
-
-import scala.concurrent.ExecutionContext
-import scala.collection.immutable
-import scalaz._
-
 import akka.actor._
-import slick.dbio.{ DBIO, Effect }
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.peers._
-import im.actor.server.api.util
+import im.actor.server.util.ACL
 import im.actor.server.{ models, persist }
+import slick.dbio.DBIO
+
+import scala.collection.immutable
+import scala.concurrent.ExecutionContext
+import scalaz._
 
 object PeerUtils {
   def withOutPeer[R <: RpcResponse](

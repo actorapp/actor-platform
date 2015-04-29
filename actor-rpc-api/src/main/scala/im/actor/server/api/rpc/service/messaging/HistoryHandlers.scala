@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.messaging
 
+import im.actor.server.util.HistoryUtils
+
 import scala.concurrent.Future
 
 import org.joda.time.DateTime
@@ -10,7 +12,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
-import im.actor.server.api.util.{ GroupUtils, HistoryUtils, UserUtils }
+import im.actor.server.api.util.{ GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 trait HistoryHandlers {

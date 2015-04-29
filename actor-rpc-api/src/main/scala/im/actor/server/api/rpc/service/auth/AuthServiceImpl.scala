@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service.auth
 
 import im.actor.server
-import im.actor.server.util.{ PhoneNumber, ACL }
+import im.actor.server.util.{ IdUtils, PhoneNumber, ACL }
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -21,7 +21,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc._
-import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
 import im.actor.server.util.PhoneNumber.normalizeWithCountry
 import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }

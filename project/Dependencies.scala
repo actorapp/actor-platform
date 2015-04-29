@@ -127,7 +127,7 @@ object Dependencies {
 
   val dashboard = shared :+ scalazCore
 
-  val utils = shared ++ Seq(akkaActor, libPhoneNumber)
+  val utils = shared ++ Seq(akkaActor, libPhoneNumber, slick)
 
   val tests = shared ++ Seq(
     jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
