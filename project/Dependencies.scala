@@ -16,7 +16,7 @@ object Dependencies {
     val akkaContrib     = "com.typesafe.akka"             %% "akka-contrib"                  % V.akka
     val akkaKernel      = "com.typesafe.akka"             %% "akka-kernel"                   % V.akka
     val akkaStream      = "com.typesafe.akka"             %% "akka-stream-experimental"      % V.akkaExperimental
-    val akkaHttp        = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
+    val akkaHttp        = "com.typesafe.akka"             %% "akka-http-scala-experimental"  % V.akkaExperimental
     val akkaHttpCore    = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpSpray   = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j       = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
@@ -107,6 +107,8 @@ object Dependencies {
   val persist = common ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = common :+ akkaContrib
+
+  val sms = common ++ Seq(akkaActor, akkaHttp)
 
   val social = common :+ akkaContrib
 
