@@ -28,16 +28,18 @@ import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
+import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
 
 class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
 
-  val sqlConfig = serverConfig.getConfig("persist.sql")
-  val s3Config = serverConfig.getConfig("files.s3")
-  val gcmConfig = serverConfig.getConfig("push.gcm")
   val apnsConfig = serverConfig.getConfig("push.apns")
+  val gcmConfig = serverConfig.getConfig("push.gcm")
+  val s3Config = serverConfig.getConfig("files.s3")
+  val sqlConfig = serverConfig.getConfig("persist.sql")
+  val smsConfig = serverConfig.getConfig("sms")
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
@@ -81,8 +83,10 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val client = new AmazonS3ScalaClient(awsCredentials)
     implicit val transferManager = new TransferManager(awsCredentials)
 
+    val activationContext = SmsActivation.newContext(smsConfig)
+
     val services = Seq(
-      new AuthServiceImpl,
+      new AuthServiceImpl(activationContext),
       new ContactsServiceImpl,
       new MessagingServiceImpl,
       new GroupsServiceImpl(s3BucketName),

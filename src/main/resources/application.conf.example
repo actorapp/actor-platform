@@ -28,6 +28,20 @@ actor-server {
     }
   }
 
+  sms {
+    clickatell {
+      user = "martin"
+      password = "Chooth9u"
+      api-id = "101010"
+    }
+
+    twilio {
+      account = "009520053b00386d1173f3988c55d192"
+      token = "401b30e3b8b5d629635a5c613cdb7919"
+      from = "+12345667"
+    }
+  }
+
   akka {
     log-dead-letters = 10
     log-dead-letters-during-shutdown = on
