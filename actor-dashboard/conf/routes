@@ -1,6 +1,6 @@
 #login/logout
 POST          /login                     @controllers.Application.login
-POST          /logout                    @controllers.Application.logout
+POST          /logout                    @controllers.Application.logout(email: String)
 
 #managers
 POST          /managers                  @controllers.Managers.create

@@ -16,6 +16,8 @@ object JsonConstructors {
 
   private val rnd = ThreadLocalRandom.current()
 
+  def nextAuthToken(email: String) = "TODO" //TODO: replace authToken in db
+
   def makeManager(name: String, lastName: String, domain: String, email: String): models.Manager = {
     val id = rnd.nextInt(Int.MaxValue) + 1
     val authToken = DigestUtils.sha256(name + lastName)
