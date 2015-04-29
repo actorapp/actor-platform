@@ -1,0 +1,23 @@
+.main {
+  width: 1024px;
+  height: 100%;
+  overflow: hidden;
+  @media (max-width: 1024px) {
+    height: 100%;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-radius: 0;
+  }
+}
+
+md-bottom-sheet {
+  background-color: rgb(250,250,250);
+  border-bottom: 1px solid rgb(239,239,239);
+  box-shadow: none;
+  z-index: 50;
+  min-height: 120px;
+}
+.md-bottom-sheet-backdrop {
+  display: none;
+}

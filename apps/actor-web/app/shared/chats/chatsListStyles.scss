@@ -1,0 +1,83 @@
+@import '../../styles/variables';
+
+.chatlist {
+  padding: 0;
+  &__item {
+    &--selected {
+      background-color: $baseColor;
+      * { // TODO: fix it
+        color: rgb(255,255,255) !important;
+      }
+    }
+  }
+  &__avatar {
+    margin: 8px 16px 8px 0;
+    .md_avatar, .no-avatar {
+      margin: 0 !important;
+      width: 48px !important;
+      height: 48px !important;
+      border-radius: 100%;
+    }
+    .no-avatar {
+      span {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        display: block;
+        height: 100%;
+        font-size: 18px;
+        line-height: 48px;
+        font-weight: 700;
+        text-shadow: 0 -1px 5px rgba(0,0,0,.07);
+        color: rgb(255,255,255);
+      }
+    }
+  }
+  &__body {
+    margin: 8px 0;
+
+    &__title {
+      font-weight: 500;
+      line-height: 12px;
+      height: 12px;
+      margin: 6px 0;
+      font-size: 14px;
+      color: rgb(22,22,22);
+      &__icon {
+        width: 16px;
+        height: 16px;
+        margin-top: -2px;
+        margin-right: 2px;
+        color: inherit;
+        vertical-align: middle;
+      }
+      &__timestamp {
+        color: rgb(190,190,190);
+        font-size: 12px;
+        text-transform: lowercase;
+      }
+    }
+    &__message {
+      color: rgb(148,148,148);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 20px;
+      margin: 4px 0 0;
+      &__icon {
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        margin-top: -2px;
+        &--penging {}
+        &--sent {}
+        &--received {}
+        &--read {
+          color: $baseColor;
+        }
+        &--error {
+          color: #962e00;
+        }
+      }
+    }
+  }
+}

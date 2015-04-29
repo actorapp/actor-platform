@@ -1,0 +1,26 @@
+<div ng-controller="messagesController as messages" flex class="messages">
+  <!-- <md-subheader>New Messages</md-subheader> -->
+
+  <md-list flex layout-padding class="messages__list">
+      <md-list-item class="messages__list__item"
+                    ng-repeat="message in messages.list">
+
+        <div class="messages__list__item__avatar">
+            <img class="md-avatar" ng-src="{{ message.sender.avatar }}" alt="{{ message.sender.title }}" ng-if="message.sender.avatar" />
+            <div class="no-avatar no-avatar--{{ message.sender.placeholder }}" ng-if="!message.sender.avatar">
+              <span>{{ message.sender.title | limitTo:1 }}</span>
+            </div>
+          </div>
+
+        <div class="md-list-item-text messages__list__item__body" flex>
+            <h3 layout="row" class="messages__list__item__body__title">
+              <span flex>{{ message.sender.title }}</span>
+              <time class="messages__list__item__body__timestamp">{{ message.date }}</time>
+            </h3>
+            <p ng-if="message.content.content == 'text'">{{  message.content.text }}</p>
+            <p class="unsupported" ng-if="message.content.content == 'unsupported'">Unsupported content</p>
+        </div>
+
+      </md-list-item>
+  </md-list>
+</div>
