@@ -1,4 +1,4 @@
-package im.actor.server.api.frontend
+/*package im.actor.server.api.frontend
 
 import java.util.concurrent.TimeUnit
 
@@ -53,3 +53,4 @@ object Ws {
     }
   }
 }
+*/ 

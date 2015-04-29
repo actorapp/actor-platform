@@ -2,9 +2,9 @@ package im.actor.server.session
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.stream.FanOutShape
 import akka.stream.FanOutShape._
 import akka.stream.scaladsl._
+import akka.stream.{ FanOutShape, OperationAttributes }
 
 import im.actor.server.mtproto.protocol._
 import im.actor.server.session.SessionStream._
