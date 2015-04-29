@@ -76,7 +76,7 @@ object Dependencies {
 
     val jfairy          = "io.codearte.jfairy"            %  "jfairy"                        % "0.3.1" % "test"
 
-    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.2-SNAPSHOT" % "test,e2e"
+    val utilTesting     = "im.actor"                      %% "actor-util-testing"            % "0.0.2" % "test,e2e"
   }
 
   import Compile._, Testing._
