@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.util
+package im.actor.server.util
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 

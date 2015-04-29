@@ -1,11 +1,10 @@
-package im.actor.server.api.util
+package im.actor.server.util
 
-import scala.concurrent.ExecutionContext
-
+import im.actor.server.{ models, persist }
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
-import im.actor.server.{ models, persist }
+import scala.concurrent.ExecutionContext
 
 object HistoryUtils {
   def writeHistoryMessage(
