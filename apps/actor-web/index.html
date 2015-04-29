@@ -1,32 +1,70 @@
-<!doctype html>
-<html lang="en" ng-app="App">
+<!DOCTYPE html>
+<html ng-app="actorWeb">
 <head>
-    <title>Actor App</title>
+    <title>Actor</title>
 
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
- 
-	<link href="css/app.css" rel="stylesheet">
-	
-	 <link href='http://fonts.googleapis.com/css?family=Roboto:400,400italic,500,500italic,700,700italic,900,900italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
-	 
-	<script type="text/javascript" language="javascript" src="js/crypto/core.js"></script>
-    <script type="text/javascript" language="javascript" src="js/crypto/sha256.js"></script>
-    <script type="text/javascript" language="javascript" src="js/crypto/jsencrypt.min.js"></script>
-    <script type="text/javascript" language="javascript" src="js/angular/angular.js"></script> 
-    <script type="text/javascript" language="javascript" src="js/angular/angular-route.min.js"></script> 
-    <script type="text/javascript" language="javascript" src="js/angular/angular-sanitize.min.js"></script> 
-    <script type="text/javascript" language="javascript" src="ActorMessenger/ActorMessenger.nocache.js"></script>
-    <script type="text/javascript" language="javascript" src="js/scrollglue.js"></script>
-    <script type="text/javascript" language="javascript" src="js/app.js"></script> 
-    <script type="text/javascript" language="javascript" src="js/controllers.js"></script> 
-    <script type="text/javascript" language="javascript" src="js/directives.js"></script>  
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Actor Web">
+    <link rel="apple-touch-icon" href="assets/img/ios_logo_96x96.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/ios_logo_76x76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/ios_logo_120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/ios_logo_152x152.png">
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileColor" content="#4B6D97">
+    <meta name="msapplication-TileImage" content="assets/img/win8_logo_144x144.png">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="assets/img/favicon_logo_32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/img/favicon_logo_96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
+
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
+<body ng-cloak layout="row">
 
-<body> 
-  <div class="app_view" ng-view> </div>
- 
+<div class="main" layout="row" ng-controller="mainController as main" >
+
+    <md-sidenav md-component-id="left"
+                class="md-sidenav-left"
+                md-is-locked-open="main.$mdMedia('gt-sm')"
+                ng-class="{'login-image': $state.includes('login')}"
+                flex
+                ui-view="sidebar"></md-sidenav>
+
+    <md-content flex layout="column">
+        <md-toolbar ui-view="toolbar" ng-if="!$state.includes('login')"></md-toolbar>
+        <md-content ui-view="content" flex layout="column" scroll-glue></md-content>
+        <md-content ui-view="compose"></md-content>
+    </md-content>
+
+</div>
+
+<script src="ActorMessenger/ActorMessenger.nocache.js"></script>
+<script src="assets/libs/crypto/core.js"></script>
+<script src="assets/libs/crypto/sha256.js"></script>
+<script src="assets/libs/crypto/jsencrypt.min.js"></script>
+
+<script src="bower_components/angular/angular.min.js"></script>
+
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="bower_components/ngstorage/ngStorage.min.js"></script>
+
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
+<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
+
+<script src="assets/js/app.js"></script>
 </body>
-
 </html>

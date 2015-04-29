@@ -1,0 +1,28 @@
+<div ng-controller="composeController as compose">
+  <div class="compose" ng-if="compose.isEnabled">
+    <form name="composeForm" role="form" ng-submit="compose.sendMessage()" enter-submit="compose.sendMessage()">
+
+      <textarea class="compose__message"
+                ng-model="compose.message"
+                ng-keypress="compose.onTyping()"
+                placeholder="Type your message..."></textarea>
+
+      <footer layout="row" class="compose__footer">
+
+        <md-button class="md-icon-button" aria-label="Send file">
+          <md-icon md-svg-icon="bower_components/material-design-icons/file/svg/production/ic_attachment_24px.svg"></md-icon>
+          Send file
+        </md-button>
+        <md-button class="md-icon-button" aria-label="Send photo">
+          <md-icon md-svg-icon="bower_components/material-design-icons/image/svg/production/ic_photo_camera_24px.svg"></md-icon>
+          Send photo
+        </md-button>
+
+        <span flex></span>
+
+        <md-button class="md-primary md-raised md-big">Send</md-button>
+
+      </footer>
+    </form>
+  </div>
+</div>
