@@ -4,7 +4,6 @@ import scala.concurrent.duration._
 
 import akka.testkit._
 import com.typesafe.config._
-import org.specs2.specification.core.Fragments
 
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.SqlSpecHelpers
