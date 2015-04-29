@@ -22,6 +22,7 @@ import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientDat
 import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.presences.PresenceManager
+import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ persist, SqlSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
@@ -58,7 +59,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
     )
   )
 
-  val authService = new AuthServiceImpl
+  val authService = new AuthServiceImpl(new DummyActivationContext)
   val sequenceService = new SequenceServiceImpl
 
   rpcApiService ! RpcApiService.AttachService(authService)

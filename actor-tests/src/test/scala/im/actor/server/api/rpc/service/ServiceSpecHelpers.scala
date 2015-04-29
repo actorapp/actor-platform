@@ -15,6 +15,7 @@ import im.actor.server.persist
 import im.actor.server.presences.PresenceManagerRegion
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionRegion, Session }
+import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManagerRegion
 
 trait PersistenceHelpers {
@@ -91,12 +92,14 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
                                                   flowMaterializer:      FlowMaterializer) =
     Session.startRegion(Some(Session.props(rpcApiService)))
 
-  def buildAuthService()(implicit
-    sessionRegion: SessionRegion,
-                         seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-                         socialManagerRegion:     SocialManagerRegion,
-                         system:                  ActorSystem,
-                         database:                Database) = new auth.AuthServiceImpl
+  def buildAuthService()(
+    implicit
+    sessionRegion:           SessionRegion,
+    seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+    socialManagerRegion:     SocialManagerRegion,
+    system:                  ActorSystem,
+    database:                Database
+  ) = new auth.AuthServiceImpl(new DummyActivationContext)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
