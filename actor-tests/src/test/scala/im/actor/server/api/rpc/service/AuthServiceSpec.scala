@@ -12,6 +12,7 @@ import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.session.Session
+import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ models, persist }
 
@@ -41,7 +42,7 @@ class AuthServiceSpec extends BaseServiceSuite {
     implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
 
     implicit val ec = system.dispatcher
-    implicit val service = new auth.AuthServiceImpl
+    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext)
 
     object sendAuthCode {
       val authId = createAuthId()(service.db)

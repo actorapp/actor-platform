@@ -23,15 +23,18 @@ import im.actor.server.api.util
 import im.actor.server.api.util.{ ContactsUtils, ACL }
 import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
 import im.actor.server.session._
+import im.actor.server.sms.ActivationContext
 import im.actor.server.social.{ SocialManagerRegion, SocialManager }
 import im.actor.server.{ models, persist }
 
-class AuthServiceImpl(implicit
-  val sessionRegion: SessionRegion,
-                      val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-                      val socialManagerRegion:     SocialManagerRegion,
-                      val actorSystem:             ActorSystem,
-                      val db:                      Database) extends AuthService with Helpers {
+class AuthServiceImpl(activationContext: ActivationContext)(
+  implicit
+  val sessionRegion:           SessionRegion,
+  val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
+  val socialManagerRegion:     SocialManagerRegion,
+  val actorSystem:             ActorSystem,
+  val db:                      Database
+) extends AuthService with Helpers {
 
   import IdUtils._
   import SocialManager._
@@ -364,7 +367,7 @@ class AuthServiceImpl(implicit
   }
 
   private def sendSmsCode(authId: Long, phoneNumber: Long, code: String): Unit = {
-
+    activationContext.send(authId, phoneNumber, code)
   }
 
   private def genSmsCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(6)

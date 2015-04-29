@@ -26,6 +26,7 @@ import im.actor.server.mtproto.transport.{ MTPackage, ProtoPackage, TransportPac
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
+import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.util.testing._
 
@@ -66,7 +67,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
   implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
 
   val services = Seq(
-    new AuthServiceImpl,
+    new AuthServiceImpl(new DummyActivationContext),
     new ContactsServiceImpl,
     new MessagingServiceImpl,
     new SequenceServiceImpl

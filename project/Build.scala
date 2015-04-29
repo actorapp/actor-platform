@@ -123,7 +123,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSocial)
+  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial)
 
   lazy val actorSms = Project(
     id = "actor-sms",
