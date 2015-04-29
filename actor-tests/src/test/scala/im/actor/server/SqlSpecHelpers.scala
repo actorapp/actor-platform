@@ -3,7 +3,6 @@ package im.actor.server
 import com.typesafe.config._
 import slick.jdbc.JdbcDataSource
 import im.actor.server.db.{ FlywayInit, DbInit }
-import org.specs2.specification._
 import slick.driver.PostgresDriver.api.Database
 
 trait SqlSpecHelpers extends FlywayInit with DbInit {
