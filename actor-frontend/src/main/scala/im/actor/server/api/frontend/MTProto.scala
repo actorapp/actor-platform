@@ -25,6 +25,7 @@ object MTProto {
 
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
+  val mapParallelism = 4 // TODO: #perf tune up and make it configurable
 
   def flow(maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db))
@@ -37,7 +38,7 @@ object MTProto {
 
     val mtprotoFlow = Flow[ByteString]
       .transform(() ⇒ MTProto.parse(maxBufferSize))
-      .mapAsyncUnordered(MTProto.handlePackage(_, authManager, sessionClient))
+      .mapAsyncUnordered(mapParallelism, MTProto.handlePackage(_, authManager, sessionClient))
       .mapConcat(msgs ⇒ msgs.toVector)
 
     val mapRespFlow = Flow[MTTransport]
@@ -106,7 +107,7 @@ object MTProto {
     private def failedState(msg: String) = ((FailedState(msg), BitVector.empty), Vector.empty)
 
     def initial = new State {
-      override def onPush(chunk: ByteString, ctx: Context[(MTTransport, Option[Int])]): Directive = {
+      override def onPush(chunk: ByteString, ctx: Context[(MTTransport, Option[Int])]) = {
         val (newState, res) = doParse(parserState._1, parserState._2 ++ BitVector(chunk.toByteBuffer))(Vector.empty)
         newState._1 match {
           case FailedState(msg) ⇒
@@ -195,7 +196,7 @@ object MTProto {
   def mapResponse(system: ActorSystem) = new PushPullStage[MTTransport, ByteString] {
     private[this] var packageIndex: Int = -1
 
-    override def onPush(elem: MTTransport, ctx: Context[ByteString]): Directive = elem match {
+    override def onPush(elem: MTTransport, ctx: Context[ByteString]) = elem match {
       case h @ Handshake(protoVersion, apiMajorVersion, _, _) ⇒
         val resBits = handshakeResponse.encode(h).require
         val res = ByteString(resBits.toByteBuffer)
@@ -224,7 +225,7 @@ object MTProto {
       case SilentClose ⇒ ctx.finish()
     }
 
-    override def onPull(ctx: Context[ByteString]): Directive = ctx.pull()
+    override def onPull(ctx: Context[ByteString]) = ctx.pull()
   }
 
   def handlePackage(req: (MTTransport, Option[Int]), authManager: ActorRef, sessionClient: ActorRef)(implicit system: ActorSystem, timeout: Timeout): Future[Seq[MTTransport]] = {

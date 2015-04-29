@@ -1,17 +1,17 @@
 package im.actor.server
 
+import akka.actor._
+import akka.kernel.Bootable
+import akka.stream.ActorFlowMaterializer
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.google.android.gcm.server.Sender
-import com.relayrides.pushy.apns.{ PushManagerConfiguration, ApnsEnvironment, PushManager }
 import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
-
-import im.actor.server.api.frontend.{ Tcp, Ws }
-import akka.actor._
-import akka.stream.ActorFlowMaterializer
-import akka.kernel.Bootable
+import com.relayrides.pushy.apns.{ ApnsEnvironment, PushManager, PushManagerConfiguration }
 import com.typesafe.config.ConfigFactory
+
+import im.actor.server.api.frontend.TcpFrontend
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -26,7 +26,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.PresenceManager
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.Session
 import im.actor.server.social.SocialManager
 
@@ -97,8 +97,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 
-    Tcp.start(serverConfig, sessionRegion)
-    //Ws.start(serverConfig)
+    TcpFrontend.start(serverConfig, sessionRegion)
   }
 
   def shutdown() = {

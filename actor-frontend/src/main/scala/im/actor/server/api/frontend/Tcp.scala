@@ -1,6 +1,5 @@
 package im.actor.server.api.frontend
 
-import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
@@ -13,7 +12,7 @@ import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
 
-object Tcp {
+object TcpFrontend {
   def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     val log = Logging.getLogger(system, this)
     val config = appConf.getConfig("frontend.tcp")
@@ -22,9 +21,8 @@ object Tcp {
     val maxBufferSize = config.getBytes("max-buffer-size").toInt
     val interface = config.getString("interface")
     val port = config.getInt("port")
-    val serverAddress = new InetSocketAddress(interface, port)
 
-    val connections = StreamTcp().bind(serverAddress)
+    val connections = Tcp().bind(interface, port)
 
     connections runForeach { conn ⇒
       log.info(s"Client connected from: ${conn.remoteAddress}")
