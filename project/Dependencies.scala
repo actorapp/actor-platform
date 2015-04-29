@@ -4,8 +4,8 @@ import sbt._
 
 object Dependencies {
   object V {
-    val akka = "2.3.9"
-    val akkaExperimental = "1.0-M5"
+    val akka = "2.3.10"
+    val akkaExperimental = "1.0-RC1"
     val scalaz = "7.1.1"
     val slick = "3.0.0-RC3"
     val scalatest = "2.2.4"
@@ -20,7 +20,7 @@ object Dependencies {
     val akkaHttpCore    = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpSpray   = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j       = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
-    val akkaStreamWS    = "pt"                            %% "akka-stream-websocket"         % "0.1-SNAPSHOT"
+    //val akkaStreamWS    = "pt"                            %% "akka-stream-websocket"         % "0.1-SNAPSHOT"
 
     val eaioUuid        = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
@@ -115,7 +115,7 @@ object Dependencies {
   val models = common ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)
 
   val frontend = common ++ Seq(
-    akkaSlf4j, akkaActor, akkaKernel, akkaStream, akkaStreamWS,
+    akkaSlf4j, akkaActor, akkaKernel, akkaStream,
     scodecBits, scodecCore,
     scalazCore, scalazConcurrent
   )
