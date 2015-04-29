@@ -43,6 +43,7 @@
 
     <color name="selector_selected">#66999999</color>
     <color name="selector_hover">#33999999</color>
+    <color name="selector_ripple">#ffffffff</color>
 
     <color name="selector_selected_inv">#40cccccc</color>
     <color name="selector_hover_inv">#20cccccc</color>

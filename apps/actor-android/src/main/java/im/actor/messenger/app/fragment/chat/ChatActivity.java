@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -99,6 +98,7 @@ public class ChatActivity extends BaseActivity {
     private boolean isTypingDisabled = false;
 
     private boolean isCompose = false;
+    private EmojiKeyboardPopup emojiKeyboard;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -313,33 +313,20 @@ public class ChatActivity extends BaseActivity {
         });
 
 
-        View rootView = findViewById(R.id.root);
-        final TintImageView emojiButton = (TintImageView) findViewById(R.id.ib_emoji);
-        final EmojiKeyboardPopup emojiKeyboard = new EmojiKeyboardPopup(rootView, this);
+        final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
+        emojiKeyboard = new EmojiKeyboardPopup(this);
 
         emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
             @Override
             public void onStickerClick(String packId, String stickerId) {
-
                 messenger().sendPhoto(peer, Stickers.getFile(packId, stickerId));
             }
         });
 
         emojiKeyboard.setOnEmojiClickListener(new OnEmojiClickListener() {
             @Override
-            public void onEmojiClicked(long smileId) {
-                String smile =  null;
-                char a = (char) (smileId & 0xFFFFFFFF);
-                char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
-                char c = (char) ((smileId >> 32) & 0xFFFFFFFF);
-                char d = (char) ((smileId >> 48) & 0xFFFFFFFF);
-                if (c != 0 && d != 0) {
-                    smile = "" + d + c + b + a;
-                } else if (b != 0) {
-                    smile = b + "" + a;
-                } else {
-                    smile = "" + a;
-                }
+            public void onEmojiClicked(String smile) {
+
 
                 int selectionEnd = messageBody.getSelectionEnd();
                 if (selectionEnd < 0) {
@@ -360,13 +347,12 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
-        emojiKeyboard.setSizeForSoftKeyboard();
+        //emojiKeyboard.setSizeForSoftKeyboard();
 
 
         emojiKeyboard.setOnEmojiconBackspaceClickedListener(new EmojiKeyboardPopup.OnEmojiconBackspaceClickedListener() {
             @Override
             public void onClick(View v) {
-
                 KeyEvent event = new KeyEvent(
                         0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
                 messageBody.dispatchKeyEvent(event);
@@ -376,11 +362,11 @@ public class ChatActivity extends BaseActivity {
 
             @Override
             public void onDismiss() {
-                changeEmojiKeyboardIcon(emojiButton, R.drawable.button_emoji);
+                changeEmojiKeyboardIcon(emojiButton, R.drawable.ic_emoji);
             }
         });
 
-        emojiKeyboard.setOnSoftKeyboardOpenCloseListener(new EmojiKeyboardPopup.OnSoftKeyboardOpenCloseListener() {
+        /*emojiKeyboard.setOnSoftKeyboardOpenCloseListener(new EmojiKeyboardPopup.OnSoftKeyboardOpenCloseListener() {
 
             @Override
             public void onKeyboardOpen(int keyBoardHeight) {
@@ -392,35 +378,23 @@ public class ChatActivity extends BaseActivity {
                 if (emojiKeyboard.isShowing())
                     emojiKeyboard.dismiss();
             }
-        });
+        });*/
 
         emojiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!emojiKeyboard.isShowing()) {
-                    if (emojiKeyboard.isSoftwareKeyBoardOpen()) {
-                        emojiKeyboard.showAtBottom();
-                        changeEmojiKeyboardIcon(emojiButton, R.drawable.button_keyboard);
-                    } else {
-                        messageBody.setFocusableInTouchMode(true);
-                        messageBody.requestFocus();
-                        emojiKeyboard.showAtBottomPending();
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(messageBody, InputMethodManager.SHOW_IMPLICIT);
-                        changeEmojiKeyboardIcon(emojiButton, R.drawable.button_keyboard);
-                    }
-                }
-
-                //If popup is showing, simply dismiss it to show the undelying text keyboard
-                else {
+                    emojiKeyboard.show();
+                    changeEmojiKeyboardIcon(emojiButton, R.drawable.ic_keyboard);
+                } else {
                     emojiKeyboard.dismiss();
                 }
             }
         });
     }
 
-    private void changeEmojiKeyboardIcon(TintImageView iconToBeChanged, int drawableResourceId) {
-        iconToBeChanged.setResource(drawableResourceId);
+    private void changeEmojiKeyboardIcon(ImageView iconToBeChanged, int drawableResourceId) {
+        iconToBeChanged.setImageResource(drawableResourceId);
     }
 
     @Override
@@ -620,10 +594,19 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(emojiKeyboard.isShowing()){
+            emojiKeyboard.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 break;
             case R.id.clear:
                 new AlertDialog.Builder(this)
