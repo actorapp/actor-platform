@@ -9,6 +9,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.mvc.{ Action, BodyParsers, Controller }
 import slick.dbio.DBIO
+import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
@@ -27,8 +28,7 @@ class Users extends Controller {
     def writes(user: models.User): JsValue = Json.obj(
       "id" → user.id,
       "name" → user.name,
-      "sex" → user.sex.toInt,
-      "state" → user.state.toInt
+      "sex" → user.sex.toInt
     )
   }
 
@@ -36,6 +36,8 @@ class Users extends Controller {
     (JsPath \ "name").read[String](length) and
     (JsPath \ "phone").read[String](length)
   )(makeUserAndPhone _)
+
+  implicit val userUpdateReads: Reads[Option[String]] = (JsPath \ "name").readNullable[String](length)
 
   def get(id: Int) = Action.async { request ⇒
     db.run {
@@ -71,10 +73,43 @@ class Users extends Controller {
     } getOrElse Future(BadRequest)
   }
 
-  def update(id: Int) = TODO
+  def update(id: Int) = Action.async(BodyParsers.parse.json) { request ⇒
+    request.body.validate[Option[String]].map { optName ⇒
+      db.run {
+        for {
+          _ ← optName.map { persist.User.updateName(id, _) } getOrElse DBIO.successful(Ok)
+        } yield Accepted
+      }
+    } getOrElse Future(BadRequest)
+  }
 
-  def delete(id: Int) = TODO
+  def delete(id: Int) = Action.async { request ⇒
+    db.run {
+      for {
+        _ ← persist.User.markDeleted(id)
+      } yield Accepted
+    }
+  }
 
-  def list(page: Int, perPage: Int) = TODO
+  def list(page: Int, perPage: Int) = Action.async { request ⇒
+    db.run {
+      for {
+        usersAndPhones ← (for {
+          (u, up) ← persist.User.page(page, perPage) joinLeft persist.UserPhone.phones on (_.id === _.userId)
+        } yield (u, up)).result
+        result ← DBIO.successful(
+          usersAndPhones.
+            foldLeft(Map[Int, (models.User, List[models.UserPhone])]()) { (acc, el) ⇒
+              val (user, optPhone) = el
+              optPhone.map { phone ⇒
+                acc.get(user.id).map { tuple ⇒
+                  acc.updated(user.id, (tuple._1, phone :: tuple._2))
+                } getOrElse acc.updated(user.id, (user, List(phone)))
+              } getOrElse acc.updated(user.id, (user, List()))
+            }.values.map { e ⇒ Json.toJson(e._1).as[JsObject] + ("phones" → Json.toJson(e._2)) }
+        )
+      } yield Ok(Json.toJson(result))
+    }
+  }
 
 }
