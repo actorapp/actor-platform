@@ -4,6 +4,9 @@
 }
 
 .user {
+  &--padded-left {
+    margin-left: 8px;
+  }
   &__avatar {
     margin: 12px 12px 12px 0;
     .no-avatar {
@@ -31,6 +34,9 @@
   &__profile-link {
     line-height: 12px;
     font-size: 11px;
+    margin: 0;
+    display: inline-block;
+    padding: 0;
     /* margin-top: -1px; */
     text-transform: lowercase;
   }
