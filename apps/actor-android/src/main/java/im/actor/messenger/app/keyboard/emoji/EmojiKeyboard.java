@@ -21,13 +21,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -41,6 +46,7 @@ import im.actor.messenger.app.keyboard.emoji.smiles.SmilePagerAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.OnStickerClickListener;
 import im.actor.messenger.app.keyboard.emoji.stickers.SitckersPagerAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.Stickers;
+import im.actor.messenger.app.keyboard.emoji.stickers.StickersFullpackAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
@@ -112,6 +118,13 @@ public class EmojiKeyboard extends BaseKeyboard
         emojiPager.addView(createSmilesPager());
 
         PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) keyboardView.findViewById(R.id.indicator);
+        indicator.setTabBackground(R.drawable.clickable_background);
+        indicator.setIndicatorColorResource(R.color.primary);
+        indicator.setIndicatorHeight(Screen.dp(2));
+        indicator.setDividerColor(0x00000000);
+        indicator.setUnderlineHeight(0);
+        indicator.setTabPaddingLeftRight(0);
+        indicator.setTabLayoutParams(new LinearLayout.LayoutParams(Screen.dp(50), Screen.dp(50)));
         indicator.setViewPager(emojiPager);
 
 
@@ -153,7 +166,6 @@ public class EmojiKeyboard extends BaseKeyboard
 
             SimpleDraweeView tabView = new SimpleDraweeView(context);
             tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            tabView.setLayoutParams(new RecyclerView.LayoutParams(Screen.dp(50), Screen.dp(50)));
             tabView.setBackgroundResource(R.drawable.clickable_background);
             if (position == 0) {
                 tabView.setImageResource(R.drawable.ic_emoji);
@@ -166,9 +178,6 @@ public class EmojiKeyboard extends BaseKeyboard
             return tabView;
         }
     }
-
-
-
 
 
     private View createSmilesPager() {
@@ -203,13 +212,17 @@ public class EmojiKeyboard extends BaseKeyboard
     }
 
     private View createStickersPagerView(int packId) {
-        View stickerPagerView = LayoutInflater.from(activity).inflate(R.layout.sticker_container_page, null);
+        /*View stickerPagerView = LayoutInflater.from(activity).inflate(R.layout.sticker_container_page, null);
         ViewPager stickerPager = (ViewPager) stickerPagerView.findViewById(R.id.sticker_pager);
 
         SitckersPagerAdapter stickersPager = new SitckersPagerAdapter(this, Stickers.getPacks()[packId]);
 
         stickerPager.setAdapter(stickersPager);
-        return stickerPagerView;
+        return stickerPagerView;*/
+        RecyclerView recyclerView = new RecyclerView(activity);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, OrientationHelper.VERTICAL));
+        recyclerView.setAdapter(new StickersFullpackAdapter(activity, this, Stickers.getPacks()[packId], 0));
+        return recyclerView;
     }
 
 }
