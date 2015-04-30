@@ -1,8 +1,7 @@
 package im.actor.server.dashboard.controllers
 
-import im.actor.server.dashboard.controllers.utils.JsonConstructors._
-import im.actor.server.dashboard.controllers.utils._
-import im.actor.server.{ models, persist }
+import scala.concurrent.Future
+
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -11,11 +10,13 @@ import play.api.mvc.{ BodyParsers, Controller }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.Future
+import im.actor.server.dashboard.controllers.utils.JsonConstructors._
+import im.actor.server.dashboard.controllers.utils._
+import im.actor.server.{ models, persist }
 
 class Users extends Controller {
 
-  def db = Db.db
+  protected val db = Db.db
 
   implicit val userPhoneWrites = new Writes[models.UserPhone] {
     def writes(phone: models.UserPhone): JsValue = Json.obj(
@@ -86,7 +87,7 @@ class Users extends Controller {
   def delete(id: Int) = AuthAction.async { request ⇒
     db.run {
       for {
-        _ ← persist.User.markDeleted(id)
+        _ ← persist.User.setDeletedAt(id)
       } yield Accepted
     }
   }

@@ -1,9 +1,7 @@
 package im.actor.server.dashboard.controllers
 
-import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db, JsonConstructors }
-import Db._
-import JsonConstructors._
-import im.actor.server.persist
+import scala.concurrent.Future
+
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -11,13 +9,14 @@ import play.api.libs.json._
 import play.api.mvc.{ Action, BodyParsers, Controller }
 import slick.dbio._
 
-import scala.concurrent.Future
+import im.actor.server.dashboard.controllers.utils.AuthAction
+import im.actor.server.dashboard.controllers.utils.Db._
+import im.actor.server.dashboard.controllers.utils.JsonConstructors._
+import im.actor.server.persist
 
 class Application extends Controller {
 
   case class LoginForm(email: String, passphrase: String)
-
-  val auth_token = "auth_token"
 
   implicit val loginFormReads: Reads[LoginForm] = (
     (JsPath \ "email").read[String](email) and
@@ -36,7 +35,7 @@ class Application extends Controller {
           case (Some(manager), Some(authCode)) ⇒
             DBIO.successful {
               if (form.passphrase == authCode.smsCode)
-                Ok(Json.toJson(Map(auth_token → manager.authToken)))
+                Ok(Json.toJson(Map("auth-token" → manager.authToken)))
               else
                 BadRequest(Json.toJson(Map("message" → "wrong authCode")))
             }

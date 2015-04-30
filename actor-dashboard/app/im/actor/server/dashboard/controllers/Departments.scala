@@ -2,9 +2,9 @@ package im.actor.server.dashboard.controllers
 
 import play.api.mvc.Controller
 
-class Nodes extends Controller {
+class Departments extends Controller {
 
-  def users(nodeId: Int, page: Int, perPage: Int) = TODO
+  def users(deptId: Int, page: Int, perPage: Int) = TODO
 
   def create = TODO
 

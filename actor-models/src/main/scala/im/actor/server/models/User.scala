@@ -1,8 +1,8 @@
 package im.actor.server.models
 
-import org.joda.time.DateTime
-
 import scala.language.postfixOps
+
+import org.joda.time.DateTime
 
 sealed trait UserState {
   def toInt: Int

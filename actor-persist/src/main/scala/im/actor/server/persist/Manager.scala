@@ -1,7 +1,8 @@
 package im.actor.server.persist
 
-import im.actor.server.models
 import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
 
 class ManagerTable(tag: Tag) extends Table[models.Manager](tag, "managers") {
   def id = column[Int]("id", O.PrimaryKey)

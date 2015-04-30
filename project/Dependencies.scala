@@ -82,7 +82,8 @@ object Dependencies {
     val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test,e2e"
   }
 
-  import Compile._, Testing._
+  import Compile._
+  import Testing._
 
   val shared = Seq(logbackClassic, scalaLogging)
 

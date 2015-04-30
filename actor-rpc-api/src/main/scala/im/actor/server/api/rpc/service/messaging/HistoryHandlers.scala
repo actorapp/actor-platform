@@ -1,7 +1,5 @@
 package im.actor.server.api.rpc.service.messaging
 
-import im.actor.server.util.HistoryUtils
-
 import scala.concurrent.Future
 
 import org.joda.time.DateTime
@@ -13,6 +11,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
 import im.actor.server.api.util.{ GroupUtils, UserUtils }
+import im.actor.server.util.HistoryUtils
 import im.actor.server.{ models, persist }
 
 trait HistoryHandlers {
@@ -21,8 +20,8 @@ trait HistoryHandlers {
   import GroupUtils._
   import HistoryUtils._
   import UserUtils._
-  import im.actor.server.push.SeqUpdatesManager._
   import im.actor.api.rpc.Implicits._
+  import im.actor.server.push.SeqUpdatesManager._
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { client ⇒

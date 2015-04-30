@@ -1,7 +1,5 @@
 package im.actor.server.api.rpc.service.groups
 
-import im.actor.server.util.IdUtils
-
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -16,10 +14,11 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
-import im.actor.server.api.util.{ AvatarUtils, FileUtils }
 import im.actor.server.api.util.PeerUtils._
+import im.actor.server.api.util.{ AvatarUtils, FileUtils }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.util.IdUtils
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String)(
