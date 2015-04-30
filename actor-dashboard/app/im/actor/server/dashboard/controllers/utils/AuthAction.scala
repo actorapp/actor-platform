@@ -1,6 +1,6 @@
-package controllers.utils
+package im.actor.server.dashboard.controllers.utils
 
-import controllers.utils.Db._
+import Db._
 import im.actor.server.persist
 import play.api.mvc._
 import play.api.mvc.Results._
@@ -18,7 +18,7 @@ object AuthAction extends ActionBuilder[Request] {
       List(
         email.map(manager.email === _),
         token.map(manager.authToken === _)
-      ).collect({ case Some(criteria) ⇒ criteria }).reduceLeftOption(_ && _).get
+      ).collect({ case Some(criteria) ⇒ criteria }).reduceLeftOption(_ && _).getOrElse(false: Rep[Boolean])
     } map { _.id }
     db.run {
       query.length.result.map { count ⇒ if (count > 0) block(request) else Future(Unauthorized) }

@@ -1,6 +1,6 @@
-package controllers.utils
+package im.actor.server.dashboard.controllers.utils
 
-import controllers.Lang2UserAndPhone
+import im.actor.server.dashboard.controllers.Lang2UserAndPhone
 import im.actor.server.models
 import im.actor.server.util.{ ACL, PhoneNumber }
 import org.apache.commons.codec.digest.DigestUtils
