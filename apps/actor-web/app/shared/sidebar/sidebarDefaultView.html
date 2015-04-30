@@ -1,5 +1,17 @@
 <md-toolbar>
     <div class="md-toolbar-tools">
+      <div class="user" layout="row">
+          <div class="user__avatar">
+            <div class="no-avatar no-avatar--lblue">
+              <span>U</span>
+            </div>
+          </div>
+          <div class="user__body" flex>
+            <p class="user__name">User name</p>
+            <a class="user__profile-link" href="">My profile</a>
+          </div>
+        </div>
+
         <h2>
             <span></span>
         </h2>
@@ -16,4 +28,4 @@
     </div>
 </md-toolbar>
 
-<md-content ng-include="'app/shared/chats/chatsListView.html'"></md-content>
+<md-content ng-include="'app/shared/chats/chatsListView.html'" flex layout="column"></md-content>
