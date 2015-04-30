@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
@@ -13,14 +15,14 @@ import im.actor.messenger.R;
 /**
  * Created by Jesus Christ. Amen.
  */
-public class StickersAdapter extends RecyclerView.Adapter {
+public class StickersPageAdapter extends RecyclerView.Adapter {
     private final Context context;
     private final OnStickerClickListener onStickerClickListener;
     private final StickersPack stickerPack;
     private final int page;
     private final int itemHeight;
 
-    public StickersAdapter(Context context, OnStickerClickListener onStickerClickListener, StickersPack stickerPack, int page, int itemHeight) {
+    public StickersPageAdapter(Context context, OnStickerClickListener onStickerClickListener, StickersPack stickerPack, int page, int itemHeight) {
         this.context = context;
         this.onStickerClickListener = onStickerClickListener;
         this.stickerPack = stickerPack;
@@ -30,7 +32,7 @@ public class StickersAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        SimpleDraweeView drawee = new SimpleDraweeView(context);
+        SimpleDraweeView drawee = new SimpleDraweeView(context, new GenericDraweeHierarchyBuilder(context.getResources()).setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE).build());
         drawee.setAdjustViewBounds(true);
         drawee.setBackgroundResource(R.drawable.clickable_background);
         return new RecyclerView.ViewHolder(drawee) {

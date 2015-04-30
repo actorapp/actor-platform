@@ -30,6 +30,8 @@ import java.util.Locale;
 
 public class PagerSlidingTabStrip extends FrameLayout {
 
+
+
     public interface IconTabProvider {
         public int getPageIconResId(int position, Context context);
     }
@@ -495,6 +497,10 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
     public int getTabPaddingLeftRight() {
         return tabPadding;
+    }
+
+    public void setTabLayoutParams(LinearLayout.LayoutParams tabLayoutParams) {
+        this.expandedTabLayoutParams = tabLayoutParams;
     }
 
     @Override
