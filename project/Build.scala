@@ -47,9 +47,7 @@ object Build extends sbt.Build {
           "-Xlint"
         ) ++ compilerWarnings,
         javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
-        javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
-        parallelExecution in Test := false,
-        fork in Test := true
+        javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation")
       )
 
   lazy val root = Project(
