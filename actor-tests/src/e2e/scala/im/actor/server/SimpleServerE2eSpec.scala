@@ -103,7 +103,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
-      client.send(ProtoPackage(mtPackage))
+      client.send(mtPackage)
 
       expectNewSession(sessionId, messageId)
       expectMessageAck(messageId)
@@ -131,7 +131,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
-      client.send(ProtoPackage(mtPackage))
+      client.send(mtPackage)
 
       expectMessageAck(messageId)
 
@@ -146,7 +146,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
       val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
-      client.send(ProtoPackage(mtPackage))
+      client.send(mtPackage)
 
       expectMessageAck(messageId)
 
