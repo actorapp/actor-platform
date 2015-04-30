@@ -1,8 +1,5 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server
-import im.actor.server.util.ACL
-
 import scala.concurrent._
 import scala.concurrent.duration._
 
@@ -14,6 +11,7 @@ import im.actor.server.api.util
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.util.ACLUtils
 
 class ContactsServiceSpec extends BaseServiceSuite {
   behavior of "Contacts Service"
@@ -42,7 +40,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
     implicit val ec = system.dispatcher
 
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
-      Await.result(service.handleAddContact(userId, ACL.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
+      Await.result(service.handleAddContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
     }
 
     object getcontacts {
@@ -85,7 +83,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
 
       val (user2, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
-      val user2AccessHash = server.util.ACL.userAccessHash(authId, user2.id, user2Model.accessSalt)
+      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
 
       implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 

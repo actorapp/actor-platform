@@ -2,18 +2,17 @@ package im.actor.server.dashboard.controllers
 
 import java.sql.SQLException
 
-import im.actor.server.dashboard.controllers.utils.{ Db, JsonConstructors }
-import Db._
-import im.actor.server.dashboard.controllers.utils.JsonConstructors
-import JsonConstructors._
-import im.actor.server.{ models, persist }
+import scala.concurrent.Future
+
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.mvc.{ Action, BodyParsers, Controller }
 
-import scala.concurrent.Future
+import im.actor.server.dashboard.controllers.utils.Db._
+import im.actor.server.dashboard.controllers.utils.JsonConstructors._
+import im.actor.server.{ models, persist }
 
 class Managers extends Controller {
 

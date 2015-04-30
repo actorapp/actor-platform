@@ -1,7 +1,8 @@
 package im.actor.server.dashboard
 
-import im.actor.server.models
 import play.api.i18n.Lang
+
+import im.actor.server.models
 
 package object controllers {
 

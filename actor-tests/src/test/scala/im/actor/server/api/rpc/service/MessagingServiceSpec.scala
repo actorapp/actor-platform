@@ -1,9 +1,6 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server
-import im.actor.server.util.ACL
-
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.Future
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -11,15 +8,14 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.misc.{ ResponseVoid, ResponseSeqDate }
+import im.actor.api.rpc.misc.{ ResponseSeqDate, ResponseVoid }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.util
-import im.actor.server.models
-import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.social.SocialManager
+import im.actor.server.util.ACLUtils
+import im.actor.server.{ models, persist }
 
 class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "MessagingService"
@@ -57,7 +53,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
       val (user2, _, _) = createUser()
       val user2Model = getUserModel(user2.id)
-      val user2AccessHash = ACL.userAccessHash(authId, user2.id, user2Model.accessSalt)
+      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def sendMessage() = {
@@ -101,11 +97,11 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
 
       val user1Model = getUserModel(user1.id)
-      val user1AccessHash = server.util.ACL.userAccessHash(authId2, user1.id, user1Model.accessSalt)
+      val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
       val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
 
       val user2Model = getUserModel(user2.id)
-      val user2AccessHash = server.util.ACL.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+      val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def markReceived() = {

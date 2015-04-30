@@ -1,10 +1,10 @@
 package im.actor.server.persist
 
-import slick.dbio.Effect.{ Write, Read }
+import slick.dbio.Effect.{ Read, Write }
+import slick.driver.PostgresDriver.api._
 import slick.profile.{ FixedSqlAction, FixedSqlStreamingAction }
 
 import im.actor.server.models
-import slick.driver.PostgresDriver.api._
 
 class UserPhoneTable(tag: Tag) extends Table[models.UserPhone](tag, "user_phones") {
   def userId = column[Int]("user_id", O.PrimaryKey)
