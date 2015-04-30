@@ -55,6 +55,16 @@ public class WebSocketAsyncConnection extends AsyncConnection {
         onReceived(res);
     }
 
+    private void onRawConnected() {
+        Log.d("WS", "Connected");
+        onConnected();
+    }
+
+    private void onRawClosed() {
+        Log.d("WS", "Closed");
+        onClosed();
+    }
+
     // Native interfaces
 
     public native void send(Uint8Array message) /*-{
@@ -90,15 +100,15 @@ public class WebSocketAsyncConnection extends AsyncConnection {
         jsWebSocket.binaryType = "arraybuffer"
 
         jsWebSocket.onopen = function () {
-            webSocket.@im.actor.model.js.providers.websocket.WebSocketAsyncConnection::onConnected()();
+            webSocket.@im.actor.model.js.providers.websocket.WebSocketAsyncConnection::onRawConnected()();
         }
 
         jsWebSocket.onclose = function () {
-            webSocket.@im.actor.model.js.providers.websocket.WebSocketAsyncConnection::onClosed()();
+            webSocket.@im.actor.model.js.providers.websocket.WebSocketAsyncConnection::onRawClosed()();
         }
 
         jsWebSocket.onerror = function () {
-            webSocket.@im.actor.model.js.providers.websocket.WebSocketAsyncConnection::onClosed()();
+            webSocket.@im.actor.model.js.providers.websocket.WebSocketAsyncConnection::onRawClosed()();
         }
 
         jsWebSocket.onmessage = function (socketResponse) {
