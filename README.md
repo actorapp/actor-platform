@@ -27,4 +27,5 @@ All compilation required to be executed on Mac OS.
 Following requirements are set for sources:
 * **Homebrew package manager**: http://brew.sh/ - Required for installing all required dependencies
 * **j2ObjC v0.9.6.1**: [Download release on GitHub](https://github.com/google/j2objc/releases) - Used for conversion of actor-common to Objective-C
+* **XCode 6.3+**: Required for iOS apps
 * **NodeJS package manager**: ```brew install npm``` - Used for Web/Electron apps
