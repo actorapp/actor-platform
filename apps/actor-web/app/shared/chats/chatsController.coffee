@@ -1,7 +1,7 @@
 class ChatsController
   list: undefined
 
-  constructor: (@$scope, @$rootScope, @$timeout, @actorService) ->
+  constructor: (@$rootScope, @$timeout, @actorService) ->
     console.log '[AW]ChatsController constructor'
     if @actorService.isLoggedIn
       console.log '[AW]ChatsController constructor: getConversations() if @actorService.isLoggedIn.'
@@ -25,10 +25,9 @@ class ChatsController
     console.log '[AW]ChatsController selectChat'
     if @actorService.currentPeer
       @actorService.closeConversation @actorService.currentPeer
-
     @actorService.openConversation peer
 
-ChatsController.$inject = ['$scope', '$rootScope', '$timeout', 'actorService']
+ChatsController.$inject = ['$rootScope', '$timeout', 'actorService']
 
 angular
   .module 'actorWeb'
