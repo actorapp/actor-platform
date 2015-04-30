@@ -5,12 +5,12 @@
     android:background="#f5f6f7"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <FrameLayout
+    <android.support.v4.view.ViewPager
         android:id="@+id/emojiContainer"
         android:layout_above="@+id/indicator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <android.support.v7.widget.RecyclerView
+    <im.actor.messenger.app.view.PagerSlidingTabStrip
         android:id="@+id/indicator"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

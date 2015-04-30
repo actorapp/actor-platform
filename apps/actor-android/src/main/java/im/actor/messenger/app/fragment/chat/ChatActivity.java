@@ -96,7 +96,7 @@ public class ChatActivity extends BaseActivity {
     private boolean isTypingDisabled = false;
 
     private boolean isCompose = false;
-    private BaseKeyboard emojiKeyboard;
+    private EmojiKeyboard emojiKeyboard;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -312,13 +312,13 @@ public class ChatActivity extends BaseActivity {
 
 
         final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
-        emojiKeyboard = new BaseKeyboard(this);
-        /*emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
+        emojiKeyboard = new EmojiKeyboard(this);
+        emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
             @Override
             public void onStickerClick(String packId, String stickerId) {
                 messenger().sendPhoto(peer, Stickers.getFile(packId, stickerId));
             }
-        });*/
+        });
 
         emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
 
