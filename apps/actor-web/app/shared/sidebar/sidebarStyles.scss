@@ -2,3 +2,36 @@
   //border-radius: 4px 0 0 4px;
   border-right: 1px solid rgb(233,233,233);
 }
+
+.user {
+  &__avatar {
+    margin: 12px 12px 12px 0;
+    .no-avatar {
+      margin: 0 !important;
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 100%;
+      span {
+        font-size: 14px;
+        line-height: 32px;
+      }
+    }
+  }
+  &__body {
+    color: rgb(118,118,118);
+    margin-top: 12px;
+  }
+  &__name {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 12px;
+    margin: 2px 0 0;
+    padding: 0;
+  }
+  &__profile-link {
+    line-height: 12px;
+    font-size: 11px;
+    /* margin-top: -1px; */
+    text-transform: lowercase;
+  }
+}
