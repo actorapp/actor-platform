@@ -181,7 +181,7 @@ android {
                 } else if (file.name == "actor-android-dev1.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev1alt.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Alt" + defaultConfig.versionName + ".apk")
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Plain-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev2.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-mchs.apk") {
