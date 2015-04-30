@@ -1,17 +1,24 @@
 package im.actor.model.js;
 
-import im.actor.model.js.angular.AngularValueCallback;
-import im.actor.model.js.utils.IdentityUtils;
-import im.actor.model.*;
-import im.actor.model.js.angular.AngularListCallback;
-import im.actor.model.js.entity.*;
-import im.actor.model.mvvm.MVVMEngine;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import im.actor.model.ApiConfiguration;
+import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.js.angular.AngularListCallback;
+import im.actor.model.js.angular.AngularValueCallback;
+import im.actor.model.js.entity.Enums;
+import im.actor.model.js.entity.JsAuthErrorClosure;
+import im.actor.model.js.entity.JsAuthSuccessClosure;
+import im.actor.model.js.entity.JsDialog;
+import im.actor.model.js.entity.JsMessage;
+import im.actor.model.js.entity.JsPeer;
+import im.actor.model.js.entity.JsUser;
+import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
+import im.actor.model.mvvm.MVVMEngine;
 
 /**
  * Created by ex3ndr on 21.02.15.
@@ -37,7 +44,7 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
 
-        configuration.addEndpoint("ws://mtproto-api-dev1.actor.im:8843");
+        configuration.addEndpoint("ws://mtproto-api-dev1.actor.im:8082");
 
         messenger = new JsMessenger(configuration.build());
 

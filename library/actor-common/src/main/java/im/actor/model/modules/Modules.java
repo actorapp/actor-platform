@@ -16,6 +16,7 @@ import im.actor.model.util.Timing;
 public class Modules {
     private final Configuration configuration;
     private final I18nEngine i18nEngine;
+    private final Analytics analytics;
     private final ActorApi actorApi;
     private final Auth auth;
     private final AppStateModule appStateModule;
@@ -49,6 +50,9 @@ public class Modules {
 
         timing.section("Preferences");
         this.preferences = configuration.getStorageProvider().createPreferencesStorage();
+
+        timing.section("Analytics");
+        this.analytics = new Analytics(this);
 
         timing.section("API");
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
@@ -218,8 +222,13 @@ public class Modules {
         return messenger;
     }
 
+    public Analytics getAnalytics() {
+        return analytics;
+    }
+
     public void onAppVisible() {
         isAppVisible = true;
+        analytics.trackAppVisible();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppVisible();
             getNotifications().onAppVisible();
@@ -228,6 +237,7 @@ public class Modules {
 
     public void onAppHidden() {
         isAppVisible = false;
+        analytics.trackAppHidden();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppHidden();
             getNotifications().onAppHidden();

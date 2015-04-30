@@ -1,5 +1,9 @@
 package im.actor.model.js.providers.websocket;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Random;
+
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
@@ -7,11 +11,6 @@ import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
-import im.actor.model.network.CreateConnectionCallback;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Random;
 
 /**
  * Created by ex3ndr on 29.04.15.
@@ -106,6 +105,7 @@ public class PlatformConnection implements Connection {
                     throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
                 }
 
+                Log.d(TAG, "Handshake successful");
                 isHandshakePerformed = true;
                 factoryCallback.onConnectionCreated(this);
             } catch (Exception e) {
@@ -113,7 +113,7 @@ public class PlatformConnection implements Connection {
                 close();
             }
         } else {
-
+            Log.d(TAG, "Reading full package");
         }
     }
 
