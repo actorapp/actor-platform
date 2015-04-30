@@ -1,9 +1,10 @@
 package im.actor.server.persist
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
-import im.actor.server.models
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
 
 class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   import SexColumnType._
@@ -31,7 +32,7 @@ object User {
   def setCountryCode(userId: Int, countryCode: String) =
     users.filter(_.id === userId).map(_.countryCode).update(countryCode)
 
-  def markDeleted(userId: Int) =
+  def setDeletedAt(userId: Int) =
     users.filter(_.id === userId).
       map(_.deletedAt).
       update(Some(new DateTime))

@@ -2,7 +2,6 @@ package im.actor.server.api.util
 
 import java.io.File
 
-import im.actor.server.util.ACL
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 import scalaz.\/
@@ -12,12 +11,13 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.FutureTransfer
 import slick.dbio
-import slick.dbio.Effect.{ Write, Read }
+import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.persist
+import im.actor.server.util.ACLUtils
 
 object FileUtils {
   // TODO: move file checks into FileUtils
@@ -56,14 +56,14 @@ object FileUtils {
   ): dbio.DBIOAction[FileLocation, NoStream, Write with Effect] = {
     val rnd = ThreadLocalRandom.current()
     val id = rnd.nextLong()
-    val accessSalt = ACL.nextAccessSalt(rnd)
+    val accessSalt = ACLUtils.nextAccessSalt(rnd)
     val sizeF = getFileLength(file)
 
     for {
       _ ← persist.File.create(id, accessSalt, s3Key(id))
       _ ← DBIO.from(upload(bucketName, id, file))
       _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s))
-    } yield FileLocation(id, ACL.fileAccessHash(id, accessSalt))
+    } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
   }
 
   def upload(bucketName: String, id: Long, file: File)(
@@ -108,7 +108,7 @@ object FileUtils {
           DBIO.successful(Error(Errors.LocationInvalid))
         } else if (file.size > maxSize) {
           DBIO.successful(Error(Errors.FileTooLarge))
-        } else if (ACL.fileAccessHash(file.id, file.accessSalt) != fileLocation.accessHash) {
+        } else if (ACLUtils.fileAccessHash(file.id, file.accessSalt) != fileLocation.accessHash) {
           DBIO.successful(Error(Errors.LocationInvalid))
         } else {
           f

@@ -1,6 +1,7 @@
 package im.actor.server.dashboard.controllers.utils
 
 import com.typesafe.config.ConfigFactory
+
 import im.actor.server.db.DbInit
 
 object Db extends DbInit {

@@ -1,20 +1,20 @@
 #login/logout
-POST          /login                     @controllers.Application.login
-POST          /logout                    @controllers.Application.logout(email: String)
+POST          /login                           @im.actor.server.dashboard.controllers.Application.login
+POST          /logout                          @im.actor.server.dashboard.controllers.Application.logout(email: String)
 
 #managers
-POST          /managers                  @controllers.Managers.create
+POST          /managers                        @im.actor.server.dashboard.controllers.Managers.create
 
 #users
-POST          /users                     @controllers.Users.create
-PUT           /users/:id                 @controllers.Users.update(id: Int)
-DELETE        /users/:id                 @controllers.Users.delete(id: Int)
-GET           /users/:id                 @controllers.Users.get(id: Int)
-GET           /users                     @controllers.Users.list(page: Int ?= 1, perPage: Int ?= 50)
+POST          /users                           @im.actor.server.dashboard.controllers.Users.create
+PUT           /users/:id                       @im.actor.server.dashboard.controllers.Users.update(id: Int)
+DELETE        /users/:id                       @im.actor.server.dashboard.controllers.Users.delete(id: Int)
+GET           /users/:id                       @im.actor.server.dashboard.controllers.Users.get(id: Int)
+GET           /users                           @im.actor.server.dashboard.controllers.Users.list(page: Int ?= 1, perPage: Int ?= 50)
 
-#nodes
-GET           /node/:nodeId/users        @controllers.Nodes.users(nodeId: Int, page: Int ?= 1, perPage: Int ?= 50)
-POST          /node                      @controllers.Nodes.create
-GET           /node/:id                  @controllers.Nodes.get(id: Int)
-PUT           /node/:id                  @controllers.Nodes.update(id: Int)
-DELETE        /node/:id                  @controllers.Nodes.delete(id: Int)
+#departments
+GET           /department/:deptId/users        @im.actor.server.dashboard.controllers.Departments.users(deptId: Int, page: Int ?= 1, perPage: Int ?= 50)
+POST          /department                      @im.actor.server.dashboard.controllers.Departments.create
+GET           /department/:id                  @im.actor.server.dashboard.controllers.Departments.get(id: Int)
+PUT           /department/:id                  @im.actor.server.dashboard.controllers.Departments.update(id: Int)
+DELETE        /department/:id                  @im.actor.server.dashboard.controllers.Departments.delete(id: Int)
