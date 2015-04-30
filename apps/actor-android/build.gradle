@@ -99,26 +99,6 @@ android {
             buildConfigField STRING, HOCKEY, HOCKEY_MAIN
         }
 
-        llectro {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
-            applicationIdSuffix ".llectro"
-            signingConfig signingConfigs.release
-            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
-        }
-
-        modul {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Modul)\""
-            applicationIdSuffix ".modul"
-            signingConfig signingConfigs.release
-            buildConfigField STRING, HOCKEY, HOCKEY_MODUL
-        }
-
-        mchs {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (МЧС)\""
-            applicationIdSuffix ".mchs"
-            signingConfig signingConfigs.release
-        }
-
         dev1 {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1)\""
             applicationIdSuffix ".dev1"
@@ -147,6 +127,13 @@ android {
         play {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
             signingConfig signingConfigs.release
+        }
+
+        llectro {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
+            applicationIdSuffix ".llectro"
+            signingConfig signingConfigs.release
+            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
         chrome {
@@ -180,15 +167,13 @@ android {
                 } else if (file.name == "actor-android-dev1.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev1alt.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Alt" + defaultConfig.versionName + ".apk")
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Plain-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev2.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-mchs.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-llectro.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-modul.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Modul-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
@@ -202,22 +187,11 @@ android {
 
         debug {
             res.srcDirs = ['src/themes/dev', 'src/material-icons']
-            // res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
         llectro {
             res.srcDirs = ['src/themes/main', 'src/themes/dark', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        modul {
-            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        mchs {
-            res.srcDirs = ['src/themes/mchs', 'src/material-icons']
             java.srcDirs = ['src/play/java']
         }
 
@@ -364,6 +338,6 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleModul']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2']) {
 
 }
