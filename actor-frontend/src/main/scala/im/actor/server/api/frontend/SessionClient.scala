@@ -2,13 +2,13 @@ package im.actor.server.api.frontend
 
 import scala.annotation.tailrec
 
-import akka.actor.{ Actor, ActorLogging, ActorRef, Props }
+import akka.actor.{ Actor, ActorLogging, Props }
 import akka.stream.actor.ActorPublisher
 import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
 import scodec.bits.BitVector
 
 import im.actor.server.mtproto.{ transport ⇒ T }
-import im.actor.server.session.{ SessionRegion, SessionMessage }
+import im.actor.server.session.{ SessionMessage, SessionRegion }
 
 private[frontend] object SessionClient {
   @SerialVersionUID(1L)
@@ -17,7 +17,7 @@ private[frontend] object SessionClient {
   def props(sessionRegion: SessionRegion) = Props(classOf[SessionClient], sessionRegion)
 }
 
-private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Actor with ActorLogging with ActorPublisher[T.MTTransport] {
+private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Actor with ActorLogging with ActorPublisher[T.MTProto] {
   import SessionClient.SendToSession
 
   private[this] var buf = Vector.empty[T.MTProto]
@@ -27,7 +27,7 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
       sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
     case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) ⇒
       if (buf.isEmpty && totalDemand > 0) {
-        onNext(T.ProtoPackage(p))
+        onNext(p)
       } else {
         buf :+= p
         deliverBuf()
@@ -44,11 +44,11 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
       if (totalDemand <= Int.MaxValue) {
         val (use, keep) = buf.splitAt(totalDemand.toInt)
         buf = keep
-        use.foreach { p ⇒ onNext(T.ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(p) }
       } else {
         val (use, keep) = buf.splitAt(Int.MaxValue)
         buf = keep
-        use.foreach { p ⇒ onNext(T.ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(p) }
         deliverBuf()
       }
     }

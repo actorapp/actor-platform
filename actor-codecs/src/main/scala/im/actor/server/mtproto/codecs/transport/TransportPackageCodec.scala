@@ -12,6 +12,7 @@ import im.actor.server.mtproto.transport._
 class MTProtoDecoder(header: Int) extends Decoder[MTProto] {
   override def decode(bits: BitVector) = {
     val decoder: Decoder[MTProto] = header match {
+      case Handshake.header     ⇒ HandshakeCodec.asDecoder
       case MTPackage.header     ⇒ MTPackageCodec.asDecoder
       case Ping.header          ⇒ PingCodec.asDecoder
       case Pong.header          ⇒ PongCodec.asDecoder
@@ -30,6 +31,7 @@ object MTProtoEncoder extends Encoder[MTProto] {
 
   override def encode(mtp: MTProto) = {
     mtp match {
+      case x: Handshake     ⇒ HandshakeCodec.encode(x)
       case x: MTPackage     ⇒ MTPackageCodec.encode(x)
       case x: Ping          ⇒ PingCodec.encode(x)
       case x: Pong          ⇒ PongCodec.encode(x)
