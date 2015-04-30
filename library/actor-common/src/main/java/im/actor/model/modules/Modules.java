@@ -1,6 +1,7 @@
 package im.actor.model.modules;
 
 import im.actor.model.Configuration;
+import im.actor.model.Messenger;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.modules.utils.PreferenceApiStorage;
@@ -18,6 +19,7 @@ public class Modules {
     private final ActorApi actorApi;
     private final Auth auth;
     private final AppStateModule appStateModule;
+    private final Messenger messenger;
 
     private boolean isAppVisible;
     private volatile PreferencesStorage preferences;
@@ -36,7 +38,8 @@ public class Modules {
     private volatile SearchModule search;
     private volatile Security security;
 
-    public Modules(Configuration configuration) {
+    public Modules(Messenger messenger, Configuration configuration) {
+        this.messenger = messenger;
         this.configuration = configuration;
 
         Timing timing = new Timing("MODULES_INIT");
@@ -209,6 +212,10 @@ public class Modules {
 
     public SearchModule getSearch() {
         return search;
+    }
+
+    public Messenger getMessenger() {
+        return messenger;
     }
 
     public void onAppVisible() {
