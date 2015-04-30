@@ -597,7 +597,7 @@ public class ChatActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
-
+        emojiKeyboard.destroy();
         messenger.saveDraft(peer, messageBody.getText().toString());
     }
 }
