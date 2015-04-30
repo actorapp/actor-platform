@@ -11,7 +11,9 @@ package object transport {
   val intLengthBits = IntLengthBitsCodec
   val intLengthString = IntLengthStringCodec
 
-  val HandshakeCodec = (C.byte :: C.byte :: C.byte :: C.bits).as[Handshake]
+  val HandshakeCodec = (C.byte :: C.byte :: C.byte :: intLengthBits).as[Handshake]
+
+  val HandshakeResponseCodec = (C.byte :: C.byte :: C.byte :: C.bits).as[HandshakeResponse]
 
   val MTPackageCodec = (C.int64 :: C.int64 :: C.bits).as[MTPackage]
 
@@ -33,13 +35,14 @@ package object transport {
 
   def mtprotoCodec(header: Int): GenCodec[_, MTProto] =
     header match {
-      case Handshake.header     ⇒ HandshakeCodec.map(_.asInstanceOf[MTProto])
-      case MTPackage.header     ⇒ MTPackageCodec.map(_.asInstanceOf[MTProto])
-      case Ping.header          ⇒ PingCodec.map(_.asInstanceOf[MTProto])
-      case Pong.header          ⇒ PongCodec.map(_.asInstanceOf[MTProto])
-      case Drop.header          ⇒ DropCodec.map(_.asInstanceOf[MTProto])
-      case Redirect.header      ⇒ RedirectCodec.map(_.asInstanceOf[MTProto])
-      case InternalError.header ⇒ InternalErrorCodec.map(_.asInstanceOf[MTProto])
-      case Ack.header           ⇒ AckCodec.map(_.asInstanceOf[MTProto])
+      case Handshake.header         ⇒ HandshakeCodec.map(_.asInstanceOf[MTProto])
+      case HandshakeResponse.header ⇒ HandshakeResponseCodec.map(_.asInstanceOf[MTProto])
+      case MTPackage.header         ⇒ MTPackageCodec.map(_.asInstanceOf[MTProto])
+      case Ping.header              ⇒ PingCodec.map(_.asInstanceOf[MTProto])
+      case Pong.header              ⇒ PongCodec.map(_.asInstanceOf[MTProto])
+      case Drop.header              ⇒ DropCodec.map(_.asInstanceOf[MTProto])
+      case Redirect.header          ⇒ RedirectCodec.map(_.asInstanceOf[MTProto])
+      case InternalError.header     ⇒ InternalErrorCodec.map(_.asInstanceOf[MTProto])
+      case Ack.header               ⇒ AckCodec.map(_.asInstanceOf[MTProto])
     }
 }

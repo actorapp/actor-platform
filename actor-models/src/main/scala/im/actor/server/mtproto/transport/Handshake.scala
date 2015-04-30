@@ -23,3 +23,17 @@ case class Handshake(
 object Handshake {
   val header = 0xFF
 }
+
+@SerialVersionUID(1L)
+case class HandshakeResponse(
+  protoVersion:    Byte,
+  apiMajorVersion: Byte,
+  apiMinorVersion: Byte,
+  sha256:          BitVector
+) extends MTProto {
+  override val header = HandshakeResponse.header
+}
+
+object HandshakeResponse {
+  val header = 0xFE
+}

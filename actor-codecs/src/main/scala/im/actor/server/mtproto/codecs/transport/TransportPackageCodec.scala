@@ -12,14 +12,15 @@ import im.actor.server.mtproto.transport._
 class MTProtoDecoder(header: Int) extends Decoder[MTProto] {
   override def decode(bits: BitVector) = {
     val decoder: Decoder[MTProto] = header match {
-      case Handshake.header     ⇒ HandshakeCodec.asDecoder
-      case MTPackage.header     ⇒ MTPackageCodec.asDecoder
-      case Ping.header          ⇒ PingCodec.asDecoder
-      case Pong.header          ⇒ PongCodec.asDecoder
-      case Drop.header          ⇒ DropCodec.asDecoder
-      case Redirect.header      ⇒ RedirectCodec.asDecoder
-      case InternalError.header ⇒ InternalErrorCodec.asDecoder
-      case Ack.header           ⇒ AckCodec.asDecoder
+      case Handshake.header         ⇒ HandshakeCodec.asDecoder
+      case HandshakeResponse.header ⇒ HandshakeResponseCodec.asDecoder
+      case MTPackage.header         ⇒ MTPackageCodec.asDecoder
+      case Ping.header              ⇒ PingCodec.asDecoder
+      case Pong.header              ⇒ PongCodec.asDecoder
+      case Drop.header              ⇒ DropCodec.asDecoder
+      case Redirect.header          ⇒ RedirectCodec.asDecoder
+      case InternalError.header     ⇒ InternalErrorCodec.asDecoder
+      case Ack.header               ⇒ AckCodec.asDecoder
     }
 
     decoder.decode(bits)
@@ -31,14 +32,15 @@ object MTProtoEncoder extends Encoder[MTProto] {
 
   override def encode(mtp: MTProto) = {
     mtp match {
-      case x: Handshake     ⇒ HandshakeCodec.encode(x)
-      case x: MTPackage     ⇒ MTPackageCodec.encode(x)
-      case x: Ping          ⇒ PingCodec.encode(x)
-      case x: Pong          ⇒ PongCodec.encode(x)
-      case x: Drop          ⇒ DropCodec.encode(x)
-      case x: Redirect      ⇒ RedirectCodec.encode(x)
-      case x: InternalError ⇒ InternalErrorCodec.encode(x)
-      case x: Ack           ⇒ AckCodec.encode(x)
+      case x: Handshake         ⇒ HandshakeCodec.encode(x)
+      case x: HandshakeResponse ⇒ HandshakeResponseCodec.encode(x)
+      case x: MTPackage         ⇒ MTPackageCodec.encode(x)
+      case x: Ping              ⇒ PingCodec.encode(x)
+      case x: Pong              ⇒ PongCodec.encode(x)
+      case x: Drop              ⇒ DropCodec.encode(x)
+      case x: Redirect          ⇒ RedirectCodec.encode(x)
+      case x: InternalError     ⇒ InternalErrorCodec.encode(x)
+      case x: Ack               ⇒ AckCodec.encode(x)
     }
   }
 }
