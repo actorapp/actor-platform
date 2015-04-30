@@ -21,3 +21,10 @@ Repo is separated to main library projects and app projects. Library contains al
 
 ## Using repo
 For working with repo you need to pull all sources and follow instructions in folder of project you need.
+
+## Build Machine requirements
+All compilation required to be executed on Mac OS.
+Following requirements are set for sources:
+* **Homebrew package manager**: http://brew.sh/ - Required for installing all required dependencies
+* **j2ObjC v0.9.6.1**: [Download release on GitHub](https://github.com/google/j2objc/releases) - Used for conversion of actor-common to Objective-C
+* **NodeJS package manager**: ```brew install npm``` - Used for Web/Electron apps
