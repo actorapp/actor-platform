@@ -1,4 +1,4 @@
-package im.actor.messenger.app.keyboard.emoji;
+package im.actor.messenger.app.keyboard.emoji.smiles;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.keyboard.emoji.smiles.SmilesPack;
 import im.actor.messenger.app.keyboard.emoji.smiles.SmilesPackView;
 import im.actor.messenger.app.keyboard.emoji.smiles.OnSmileClickListener;
@@ -21,11 +22,11 @@ import static im.actor.messenger.app.Core.core;
 /**
 * Created by Jesus Christ. Amen.
 */
-class EmojiPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
+public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
 
     private EmojiKeyboard emojiKeyboard;
 
-    public EmojiPagerAdapter(EmojiKeyboard emojiKeyboard) {
+    public SmilePagerAdapter(EmojiKeyboard emojiKeyboard) {
         this.emojiKeyboard = emojiKeyboard;
     }
 
