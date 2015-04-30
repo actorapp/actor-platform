@@ -1,5 +1,7 @@
 package im.actor.messenger.app.keyboard;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,11 +11,17 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.model.log.Log;
 
 /**
@@ -91,6 +99,41 @@ public class BaseKeyboard implements
 
         params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         windowManager.addView(emojiKeyboardView, params);
+        emojiKeyboardView.post(new Runnable() {
+            @Override
+            public void run() {
+                AlphaAnimation animation = new AlphaAnimation(0, 1);
+                animation.setDuration(400);
+                animation.setInterpolator(new MaterialInterpolator());
+                animation.setStartOffset(0);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        Log.d("BaseKeyboard", "onAnimationStart");
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        Log.d("BaseKeyboard", "onAnimationEnd");
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                        Log.d("BaseKeyboard", "onAnimationReset");
+                    }
+                });
+            }
+        });
+
+        emojiKeyboardView.setTranslationY(140);
+        emojiKeyboardView
+                .animate()
+                .y(0)
+                .setDuration(200)
+                .setStartDelay(0)
+                .setInterpolator(new DecelerateInterpolator(1.4f))
+                .start();
+
         if(keyboardStatusListener!=null)
             keyboardStatusListener.onShow();
     }
@@ -117,7 +160,22 @@ public class BaseKeyboard implements
     }
     private void dismissInternally(){
         if (dismissed && emojiKeyboardView != null) {
-            windowManager.removeView(emojiKeyboardView);
+            final View emojiKeyboardViewCopy = emojiKeyboardView;
+            emojiKeyboardView
+                    .animate()
+                    .y(140)
+                    .alpha(0.2f)
+                    .setDuration(200)
+                    .setStartDelay(0)
+                    .setInterpolator(new AccelerateInterpolator(1.5f))
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            windowManager.removeView(emojiKeyboardViewCopy);
+                        }
+                    })
+                    .start();
+
             emojiKeyboardView = null;
             if(keyboardStatusListener!=null)
                 keyboardStatusListener.onDismiss();
@@ -138,6 +196,10 @@ public class BaseKeyboard implements
     }
 
 
+    public void destroy() {
+        if(emojiKeyboardView!=null)
+            windowManager.removeView(emojiKeyboardView);
+    }
 
     @Override
     public void onGlobalLayout() {
