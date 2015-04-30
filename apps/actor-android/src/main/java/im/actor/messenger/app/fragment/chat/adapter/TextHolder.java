@@ -9,8 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.emoji.EmojiListener;
-import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
@@ -22,7 +22,7 @@ import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
-import static im.actor.messenger.app.emoji.EmojiProcessor.emoji;
+import static im.actor.messenger.app.keyboard.emoji.SmileProcessor.emoji;
 
 /**
  * Created by ex3ndr on 10.09.14.
@@ -41,7 +41,7 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
-    private EmojiListener emojiListener;
+    private SmilesListener smilesListener;
 
     public TextHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
@@ -101,20 +101,20 @@ public class TextHolder extends MessageHolder {
         }
         if (emoji().containsEmoji(spannedText)) {
             if (emoji().isLoaded()) {
-                spannedText = emoji().processEmojiCompatMutable(spannedText, EmojiProcessor.CONFIGURATION_BUBBLES);
+                spannedText = emoji().processEmojiCompatMutable(spannedText, SmileProcessor.CONFIGURATION_BUBBLES);
             } else {
                 final CharSequence finalSpannedText = spannedText;
-                if(emojiListener!=null){
-                    emoji().unregisterListener(emojiListener);
+                if(smilesListener !=null){
+                    emoji().unregisterListener(smilesListener);
                 }
-                emojiListener = new EmojiListener() {
+                smilesListener = new SmilesListener() {
                     @Override
                     public void onEmojiUpdated(boolean completed) {
-                        text.setText(emoji().processEmojiCompatMutable(finalSpannedText, EmojiProcessor.CONFIGURATION_BUBBLES));
+                        text.setText(emoji().processEmojiCompatMutable(finalSpannedText, SmileProcessor.CONFIGURATION_BUBBLES));
                         emoji().unregisterListener(this);
                     }
                 };
-                emoji().registerListener(emojiListener);
+                emoji().registerListener(smilesListener);
             }
         }
         text.setText(spannedText);
@@ -158,6 +158,6 @@ public class TextHolder extends MessageHolder {
     @Override
     public void unbind() {
         super.unbind();
-        emoji().unregisterListener(emojiListener);
+        emoji().unregisterListener(smilesListener);
     }
 }

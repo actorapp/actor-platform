@@ -31,10 +31,10 @@ import java.util.Locale;
 public class PagerSlidingTabStrip extends FrameLayout {
 
     public interface IconTabProvider {
-        public int getPageIconResId(int position);
+        public int getPageIconResId(int position, Context context);
     }
     public interface TabProvider {
-        public View getTab(int position);
+        public View getTab(int position, Context context);
     }
     // @formatter:off
     private static final int[] ATTRS = new int[]{
@@ -179,9 +179,9 @@ public class PagerSlidingTabStrip extends FrameLayout {
         for (int i = 0; i < tabCount; i++) {
 
             if (pager.getAdapter() instanceof IconTabProvider) {
-                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
+                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i, getContext()));
             } else if(pager.getAdapter() instanceof TabProvider){
-                addTab(i, ((TabProvider)pager.getAdapter()).getTab(i));
+                addTab(i, ((TabProvider)pager.getAdapter()).getTab(i, getContext()));
             } else {
                 addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
             }

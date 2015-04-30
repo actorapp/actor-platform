@@ -1,4 +1,4 @@
-package im.actor.messenger.app.emoji;
+package im.actor.messenger.app.keyboard.emoji.smiles;
 
 /**
  * Created by ex3ndr on 19.10.14.

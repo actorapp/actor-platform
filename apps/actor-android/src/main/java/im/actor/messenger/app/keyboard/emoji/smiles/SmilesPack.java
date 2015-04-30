@@ -1,9 +1,9 @@
-package im.actor.messenger.app.emoji.keyboard;
+package im.actor.messenger.app.keyboard.emoji.smiles;
 
 /**
  * Created by Jesus Christ. Amen.
  */
-public class EmojiPack {
+public class SmilesPack {
     public static final long[] STANDART = new long[]
             {0xD83DDE0AL,
                     0xD83DDE03L,

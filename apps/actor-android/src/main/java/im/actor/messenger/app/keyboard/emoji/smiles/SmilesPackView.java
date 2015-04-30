@@ -1,4 +1,4 @@
-package im.actor.messenger.app.emoji.keyboard;
+package im.actor.messenger.app.keyboard.emoji.smiles;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -14,17 +14,17 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
 
 /**
  * Author: Korshakov Stepan
  * Created: 04.07.13 22:50
  */
-public class EmojiPackView extends View {
+public class SmilesPackView extends View {
 
     private int rowCount;
     private int countInRow;
-    private EmojiProcessor processor;
+    private SmileProcessor processor;
     private long[] smileyIds;
     private int[] smileysSections;
     private int[] smileysX;
@@ -35,11 +35,11 @@ public class EmojiPackView extends View {
     private Rect rect = new Rect();
     private Rect sectionRect = new Rect();
     private Paint paint = new Paint();
-    private OnEmojiClickListener onEmojiClickListener;
+    private OnSmileClickListener onSmileClickListener;
     private float touchX, touchY;
 
-    public EmojiPackView(Context context, EmojiProcessor processor,
-                         long[] smileyIds, int smileysInRow, int smileySize, int smileyPadding) {
+    public SmilesPackView(Context context, SmileProcessor processor,
+                          long[] smileyIds, int smileysInRow, int smileySize, int smileyPadding) {
         super(context);
         this.rowCount = (int) Math.ceil((float) smileyIds.length / smileysInRow);
         this.processor = processor;
@@ -68,12 +68,12 @@ public class EmojiPackView extends View {
         setMeasuredDimension(smileySize * countInRow, smileySize * rowCount);
     }
 
-    public OnEmojiClickListener getOnEmojiClickListener() {
-        return onEmojiClickListener;
+    public OnSmileClickListener getOnSmileClickListener() {
+        return onSmileClickListener;
     }
 
-    public void setOnEmojiClickListener(OnEmojiClickListener onEmojiClickListener) {
-        this.onEmojiClickListener = onEmojiClickListener;
+    public void setOnSmileClickListener(OnSmileClickListener onSmileClickListener) {
+        this.onSmileClickListener = onSmileClickListener;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class EmojiPackView extends View {
                         int col = (int) ((touchX - offsetLeft) / smileySize);
                         int index = row * countInRow + col;
                         if (index >= 0 && index < smileyIds.length) {
-                            if (onEmojiClickListener != null) {
+                            if (onSmileClickListener != null) {
                                 playSoundEffect(SoundEffectConstants.CLICK);
 
                                 long smileId = smileyIds[index];
@@ -108,7 +108,7 @@ public class EmojiPackView extends View {
                                 } else {
                                     smile = "" + a;
                                 }
-                                onEmojiClickListener.onEmojiClicked(smile);
+                                onSmileClickListener.onEmojiClicked(smile);
                             }
                         }
                     }
