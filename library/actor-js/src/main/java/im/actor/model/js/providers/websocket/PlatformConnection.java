@@ -60,7 +60,7 @@ public class PlatformConnection implements Connection {
             Log.d(TAG, "onConnected:isClosed");
             return;
         }
-        if (!isOpened) {
+        if (isOpened) {
             Log.d(TAG, "onConnected:isOpened");
             return;
         }
