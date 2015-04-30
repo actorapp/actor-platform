@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.3'
+        classpath 'com.android.tools.build:gradle:1.2.0'
     }
 }
 apply plugin: 'com.android.application'
@@ -18,13 +18,13 @@ repositories {
 
 def basicVersion = '1.0'
 def customVersionCode = '10240';
-
 if (project.hasProperty('buildIndex')) {
     project.version = basicVersion + '.' + project.buildIndex
     customVersionCode = '' + project.buildIndex
 } else {
     project.version = 'debug'
 }
+println "##teamcity[buildNumber '${project.version}']"
 
 android {
 
