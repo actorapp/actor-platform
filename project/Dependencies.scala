@@ -20,7 +20,6 @@ object Dependencies {
     val akkaHttpCore    = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpSpray   = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j       = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
-    //val akkaStreamWS    = "pt"                            %% "akka-stream-websocket"         % "0.1-SNAPSHOT"
 
     val eaioUuid        = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 

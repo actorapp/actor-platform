@@ -11,7 +11,7 @@ import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotificati
 import com.relayrides.pushy.apns.{ ApnsEnvironment, PushManager, PushManagerConfiguration }
 import com.typesafe.config.ConfigFactory
 
-import im.actor.server.api.frontend.TcpFrontend
+import im.actor.server.api.frontend.{ WsFrontend, TcpFrontend }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -102,6 +102,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     services foreach (rpcApiService ! RpcApiService.AttachService(_))
 
     TcpFrontend.start(serverConfig, sessionRegion)
+    WsFrontend.start(serverConfig, sessionRegion)
   }
 
   def shutdown() = {
