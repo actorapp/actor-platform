@@ -2,8 +2,8 @@ class MainController
   constructor: (@$mdSidenav, @$mdMedia, @actorService) ->
     console.log '[AW]MainController constructor'
 
-  showCompose: ->
-    console.log '[AW]MainController showCompose'
+  # showCompose: ->
+    # console.log '[AW]MainController showCompose'
     # @$mdBottomSheet.show
     #   templateUrl: 'app/shared/compose/copmoseView.html'
     #   parent: '#content'
