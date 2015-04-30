@@ -105,9 +105,24 @@ class ActorService
 
   sendMessage: (peer, message) ->
     console.log '[AW]ActorService sendMessage'
-    console.log '[AW]ActorService sendMessage: message:', message
-    console.log '[AW]ActorService sendMessage: peer:', peer
+    # console.log '[AW]ActorService sendMessage: message:', message
+    # console.log '[AW]ActorService sendMessage: peer:', peer
     @messenger.sendMessage peer, message
+
+  getAuthPhone: () ->
+    console.log '[AW]ActorService getAuthPhone'
+    @messenger.getAuthPhone()
+
+  loadDraft: (peer) ->
+    console.log '[AW]ActorService loadDraft'
+    @messenger.loadDraft peer
+
+  saveDraft: (peer, draft) ->
+    console.log '[AW]ActorService saveDraft'
+    # console.log '[AW]ActorService saveDraft: peer:', peer
+    console.log '[AW]ActorService saveDraft: draft:', draft
+    if draft
+      @messenger.saveDraft peer, draft
 
 
 ActorService.$inject = ['$rootScope', '$sessionStorage']
