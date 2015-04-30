@@ -329,9 +329,7 @@ dependencies {
     dev1Compile 'com.google.android.gms:play-services:6.+'
     dev1altCompile 'com.google.android.gms:play-services:6.+'
     dev2Compile 'com.google.android.gms:play-services:6.+'
-    mchsCompile 'com.google.android.gms:play-services:6.+'
     llectroCompile 'com.google.android.gms:play-services:6.+'
-    modulCompile 'com.google.android.gms:play-services:6.+'
 
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
