@@ -14,6 +14,7 @@ import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
 import akka.util.{ ByteString, Timeout }
 import com.typesafe.config.Config
+import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
@@ -57,12 +58,14 @@ object WsFrontend {
     Flow[Message]
       .collect {
         case BinaryMessage.Strict(msg) ⇒
-          system.log.debug("WS Strict {}", msg)
+          system.log.debug("WS Receive {}", BitVector(msg.toByteBuffer).toHex)
           msg
       }
       .via(mtProtoFlow)
       .map {
-        case bs ⇒ BinaryMessage.Strict(bs)
+        case bs ⇒
+          system.log.debug("WS Send {}", BitVector(bs.toByteBuffer).toHex)
+          BinaryMessage.Strict(bs)
       }
       .via(reportErrorsFlow)
   }
