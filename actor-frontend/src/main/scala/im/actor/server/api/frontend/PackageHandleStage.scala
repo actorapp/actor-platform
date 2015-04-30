@@ -1,10 +1,10 @@
 package im.actor.server.api.frontend
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContextExecutor, Future }
 
-import akka.actor.ActorRef
-import akka.pattern.{ ask, AskTimeoutException }
+import akka.actor.{ ActorRef, ActorSystem }
+import akka.pattern.{ AskTimeoutException, ask }
 import akka.stream.stage._
 import akka.util.Timeout
 import org.apache.commons.codec.digest.DigestUtils
@@ -17,10 +17,11 @@ private[frontend] final class PackageHandleStage(
   apiMajorVersions: Set[Byte],
   authManager:      ActorRef,
   sessionClient:    ActorRef
-)(implicit ec: ExecutionContext)
+)(implicit system: ActorSystem)
   extends StatefulStage[TransportPackage, Future[MTProto]] {
 
-  implicit val askTimeout = Timeout(5.seconds)
+  implicit val ec: ExecutionContextExecutor = system.dispatcher
+  implicit val askTimeout: Timeout = Timeout(5.seconds)
 
   override def initial: StageState[TransportPackage, Future[MTProto]] = new StageState[TransportPackage, Future[MTProto]] {
     override def onPush(elem: TransportPackage, ctx: Context[Future[MTProto]]): SyncDirective = {
@@ -31,7 +32,8 @@ private[frontend] final class PackageHandleStage(
             val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
             val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
             val apiMinorVersion: Byte = if (apiMajorVersion == 0) 0 else h.apiMinorVersion
-            Handshake(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign)
+            val hresp = HandshakeResponse(protoVersion, apiMajorVersion, apiMinorVersion, sha256Sign)
+            hresp
           })
         case TransportPackage(index, body) ⇒
           // TODO: get rid of respOptFuture and ask pattern

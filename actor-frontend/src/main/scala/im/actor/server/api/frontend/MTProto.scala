@@ -26,8 +26,6 @@ object MTProto {
   val mapParallelism = 4 // TODO: #perf tune up and make it configurable
 
   def flow(maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
-    implicit val ec: ExecutionContext = system.dispatcher
-
     val authManager = system.actorOf(AuthorizationManager.props(db))
     val authSource = Source(ActorPublisher[MTProto](authManager))
 

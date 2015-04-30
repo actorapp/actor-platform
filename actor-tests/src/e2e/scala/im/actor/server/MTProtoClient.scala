@@ -94,7 +94,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
       TransportPackageCodec.decode(newBuffer) match {
-        case Attempt.Successful(DecodeResult(TransportPackage(_, hs: Handshake), remainder)) =>
+        case Attempt.Successful(DecodeResult(TransportPackage(_, hs: HandshakeResponse), remainder)) =>
           caller ! MTConnected
           context.become(receiving(connection, remainder, Seq.empty, Seq.empty), discardOld = true)
         case Attempt.Successful(unmatched) =>
