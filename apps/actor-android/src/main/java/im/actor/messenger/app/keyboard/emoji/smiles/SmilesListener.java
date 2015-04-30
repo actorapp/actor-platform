@@ -1,9 +1,9 @@
-package im.actor.messenger.app.emoji;
+package im.actor.messenger.app.keyboard.emoji.smiles;
 
 /**
  * Author: Korshakov Stepan
  * Created: 16.08.13 13:34
  */
-public interface EmojiListener {
+public interface SmilesListener {
     public void onEmojiUpdated(boolean completed);
 }

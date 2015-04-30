@@ -1,16 +1,14 @@
-package im.actor.messenger.app.emoji.stickers;
+package im.actor.messenger.app.keyboard.emoji.stickers;
 
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.emoji.keyboard.OnStickerClickListener;
 
 /**
  * Created by Jesus Christ. Amen.

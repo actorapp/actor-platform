@@ -1,4 +1,4 @@
-package im.actor.messenger.app.emoji;
+package im.actor.messenger.app.keyboard.emoji;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -26,6 +26,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import im.actor.images.common.ImageMetadata;
 import im.actor.images.ops.ImageLoading;
 import im.actor.images.sources.FileSource;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.util.Logger;
 import im.actor.messenger.app.util.io.IOUtils;
 
@@ -36,7 +38,7 @@ import im.actor.messenger.app.util.io.IOUtils;
  * Date: 22.10.12
  * Time: 1:45
  */
-public class EmojiProcessor {
+public class SmileProcessor {
 
     private static final String TAG = "Emoji";
 
@@ -94,8 +96,8 @@ public class EmojiProcessor {
     private static final int LAYOUT_15X_2 = 3;
     private static final int LAYOUT_2X_1 = 4;
     private static final int LAYOUT_2X_2 = 5;
-    private static EmojiProcessor instance;
-    private static EmojiProcessor processor;
+    private static SmileProcessor instance;
+    private static SmileProcessor processor;
 
     // protected Bitmap emojiImages;
     protected HashMap<Integer, Bitmap> emojiMap;
@@ -114,17 +116,17 @@ public class EmojiProcessor {
     private boolean isLoaded = false;
 
     private Handler handler = new Handler(Looper.getMainLooper());
-    private CopyOnWriteArrayList<EmojiListener> listeners = new CopyOnWriteArrayList<EmojiListener>();
+    private CopyOnWriteArrayList<SmilesListener> listeners = new CopyOnWriteArrayList<SmilesListener>();
 
     private int emojiSideSize;
 
     private int rectSize = 0;
 
-    public static final EmojiProcessor emoji(){
+    public static final SmileProcessor emoji(){
         return processor;
     }
 
-    public EmojiProcessor(Application application) {
+    public SmileProcessor(Application application) {
         long start = System.currentTimeMillis();
         this.application = application;
         processor = this;
@@ -240,13 +242,13 @@ public class EmojiProcessor {
         return isLoaded;
     }
 
-    public void registerListener(EmojiListener listener) {
+    public void registerListener(SmilesListener listener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
-    public void unregisterListener(EmojiListener listener) {
+    public void unregisterListener(SmilesListener listener) {
         listeners.remove(listener);
     }
     public void loadEmoji() {
@@ -301,14 +303,14 @@ public class EmojiProcessor {
 
                     File sourceFile = application.getFileStreamPath(fileName);
                     if (!sourceFile.exists()) {
-                        InputStream colorsIs = EmojiProcessor.this.application.getAssets().open(fileName);
+                        InputStream colorsIs = SmileProcessor.this.application.getAssets().open(fileName);
                         IOUtils.copy(colorsIs, sourceFile);
                         colorsIs.close();
                     }
 
                     File sourceAlphaFile = application.getFileStreamPath(fileNameAlpha);
                     if (!sourceAlphaFile.exists()) {
-                        InputStream colorsIs = EmojiProcessor.this.application.getAssets().open(fileNameAlpha);
+                        InputStream colorsIs = SmileProcessor.this.application.getAssets().open(fileNameAlpha);
                         IOUtils.copy(colorsIs, sourceAlphaFile);
                         colorsIs.close();
                     }
@@ -389,7 +391,7 @@ public class EmojiProcessor {
             @Override
             public void run() {
                 Logger.d(TAG, "notify");
-                for (EmojiListener listener : listeners) {
+                for (SmilesListener listener : listeners) {
                     listener.onEmojiUpdated(completed);
                 }
             }
@@ -799,7 +801,7 @@ public class EmojiProcessor {
 
     private class EmojiSpan extends ReplacementSpan {
 
-        private EmojiProcessor processor;
+        private SmileProcessor processor;
         private int offset;
         private int size;
         private int padding;
@@ -808,7 +810,7 @@ public class EmojiProcessor {
         private int sectionY;
         private Paint.FontMetricsInt originalMetrics;
 
-        public EmojiSpan(EmojiProcessor processor, int index, int size, Paint.FontMetricsInt original) {
+        public EmojiSpan(SmileProcessor processor, int index, int size, Paint.FontMetricsInt original) {
             this.processor = processor;
             this.size = size;
             this.originalMetrics = original;

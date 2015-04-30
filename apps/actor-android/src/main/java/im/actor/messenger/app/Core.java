@@ -13,7 +13,7 @@ import im.actor.android.AndroidConfigurationBuilder;
 import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
 import im.actor.messenger.BuildConfig;
-import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
 import im.actor.messenger.R;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
@@ -48,7 +48,7 @@ public class Core {
         return core;
     }
 
-    private final EmojiProcessor emojiProcessor;
+    private final SmileProcessor smileProcessor;
     private ImageLoader imageLoader;
     private AndroidMessenger messenger;
 
@@ -94,8 +94,8 @@ public class Core {
 
                 .build();
 
-        this.emojiProcessor = new EmojiProcessor(application);
-        this.emojiProcessor.loadEmoji();
+        this.smileProcessor = new SmileProcessor(application);
+        this.smileProcessor.loadEmoji();
 
         this.imageLoader = new ImageLoader(clasificator, application);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
@@ -127,8 +127,8 @@ public class Core {
         return core().messenger.myUid();
     }
 
-    public EmojiProcessor getEmojiProcessor() {
-        return emojiProcessor;
+    public SmileProcessor getSmileProcessor() {
+        return smileProcessor;
     }
 
     public static ImageLoader getImageLoader() {
