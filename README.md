@@ -31,5 +31,5 @@ Following requirements are set for sources:
 * **NodeJS package manager**: ```brew install npm``` - Used for Web/Electron apps
 * **Bower**: ```npm install bower``` - Used for Web/Electron apps
 * **Gulp**: ```npm install --global gulp``` - Build system for Web/Electorn app
-* **Java**: [Download from Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - Required for building java code
+* **JDK**: [Download from Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - Required for building java code
 * **Android SDK**: [Download release](http://developer.android.com/sdk/installing/index.html?pkg=tools) - Used for building Android and Library code
