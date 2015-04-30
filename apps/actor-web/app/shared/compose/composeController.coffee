@@ -1,6 +1,6 @@
 class ComposeController
-  draft: null
-  message: null
+  draft: ''
+  message: ''
   isEnabled: false
 
   constructor: (@$rootScope, @actorService) ->
@@ -24,11 +24,11 @@ class ComposeController
 
   sendMessage: ->
     console.log '[AW]ComposeController sendMessage'
-    console.log '[AW]ComposeController sendMessage: @message:', @message
-    console.log '[AW]ComposeController sendMessage: @draft:', @draft
+    # console.log '[AW]ComposeController sendMessage: @message:', @message
+    # console.log '[AW]ComposeController sendMessage: @draft:', @draft
     @actorService.sendMessage @actorService.currentPeer, @message
-    @actorService.saveDraft peer, ''
-    @message = @draft = null
+    @actorService.saveDraft @actorService.currentPeer, ''
+    @message = @draft = ''
 
 ComposeController.$inject = ['$rootScope', 'actorService']
 
