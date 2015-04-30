@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import im.actor.android.view.BindedViewHolder;
 import im.actor.messenger.R;
-import im.actor.messenger.app.emoji.EmojiListener;
-import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
@@ -28,7 +28,7 @@ import im.actor.model.mvvm.ValueModel;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.emoji.EmojiProcessor.emoji;
+import static im.actor.messenger.app.keyboard.emoji.SmileProcessor.emoji;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -238,14 +238,14 @@ public class DialogHolder extends BindedViewHolder {
             }
         }
 
-        if(EmojiProcessor.containsEmoji(bindedText)){
+        if(SmileProcessor.containsEmoji(bindedText)){
             if(emoji().isLoaded()){
-                bindedText = emoji().processEmojiCompatMutable(bindedText, EmojiProcessor.CONFIGURATION_BUBBLES);;
+                bindedText = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_BUBBLES);;
             } else {
-                emoji().registerListener(new EmojiListener() {
+                emoji().registerListener(new SmilesListener() {
                     @Override
                     public void onEmojiUpdated(boolean completed) {
-                        CharSequence emojiProcessed = emoji().processEmojiCompatMutable(bindedText, EmojiProcessor.CONFIGURATION_DIALOGS);
+                        CharSequence emojiProcessed = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_DIALOGS);
                         if(text.getText().equals(bindedText)){
                             text.setText(emojiProcessed);
                         }

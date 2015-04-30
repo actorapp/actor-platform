@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package im.actor.messenger.app.emoji.keyboard;
+package im.actor.messenger.app.keyboard.emoji.smiles;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,27 +26,27 @@ import java.util.StringTokenizer;
 /**
 * @author Daniele Ricci
 */
-public class EmojiRecentsController extends ArrayList<Long> {
+public class SmilesRecentsController extends ArrayList<Long> {
 
     private static final String PREFERENCE_NAME = "emojicon";
     private static final String PREF_RECENTS = "recent_emojis";
     private static final String PREF_PAGE = "recent_page";
 
     private static final Object LOCK = new Object();
-    private static EmojiRecentsController sInstance;
+    private static SmilesRecentsController sInstance;
 
     private Context mContext;
 
-    private EmojiRecentsController(Context context) {
+    private SmilesRecentsController(Context context) {
         mContext = context.getApplicationContext();
         loadRecents();
     }
 
-    public static EmojiRecentsController getInstance(Context context) {
+    public static SmilesRecentsController getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 if (sInstance == null) {
-                    sInstance = new EmojiRecentsController(context);
+                    sInstance = new SmilesRecentsController(context);
                 }
             }
         }
