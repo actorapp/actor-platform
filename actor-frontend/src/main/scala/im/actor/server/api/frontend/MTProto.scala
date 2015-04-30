@@ -38,7 +38,7 @@ object MTProto {
 
     val mtprotoFlow = Flow[ByteString]
       .transform(() ⇒ MTProto.parse(maxBufferSize))
-      .mapAsyncUnordered(mapParallelism, MTProto.handlePackage(_, authManager, sessionClient))
+      .mapAsyncUnordered(mapParallelism)(MTProto.handlePackage(_, authManager, sessionClient))
       .mapConcat(msgs ⇒ msgs.toVector)
 
     val mapRespFlow = Flow[MTTransport]
