@@ -19,6 +19,7 @@ object Build extends sbt.Build {
         scalaVersion := ScalaVersion,
         crossPaths := false,
         organizationName := Organization,
+        updateOptions := updateOptions.value.withCachedResolution(true),
         organizationHomepage := Some(url("https://actor.im"))
       )
 
