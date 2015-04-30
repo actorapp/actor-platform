@@ -123,13 +123,17 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
 
       if (uniqUserIds.nonEmpty) {
         context.become(working(userIds ++ uniqUserIds))
-        db.run(persist.social.Relation.create(userId, uniqUserIds)).map(_ ⇒ Ack).pipeTo(sender())
+        db.run(persist.social.Relation.create(userId, uniqUserIds))
+          .map(_ ⇒ Ack)
+          .pipeTo(sender())
       }
     case env @ Envelope(userId, RelationNoted(notedUserId)) ⇒
-      if (!userIds.contains(userId) && userId != notedUserId) {
-        context.become(working(userIds + userId))
+      if (!userIds.contains(notedUserId) && userId != notedUserId) {
+        context.become(working(userIds + notedUserId))
 
-        db.run(persist.social.Relation.create(userId, notedUserId)).map(_ ⇒ Ack).pipeTo(sender())
+        db.run(persist.social.Relation.create(userId, notedUserId))
+          .map(_ ⇒ Ack)
+          .pipeTo(sender())
       } else {
         sender() ! Ack
       }
