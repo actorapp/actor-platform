@@ -340,7 +340,8 @@ dependencies {
         exclude module: 'support-v13'
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
-    compile 'com.afollestad:material-dialogs:0.6.3.4'
+    compile 'com.afollestad:material-dialogs:0.7.3.1'
+    
     // Android Support
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:support-v13:21.0.3'
