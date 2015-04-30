@@ -213,5 +213,5 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.tests
     ))
     .configs(Configs.all: _*)
-    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
+    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
 }

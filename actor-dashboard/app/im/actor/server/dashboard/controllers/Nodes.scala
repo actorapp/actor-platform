@@ -1,4 +1,4 @@
-package controllers
+package im.actor.server.dashboard.controllers
 
 import play.api.mvc.Controller
 

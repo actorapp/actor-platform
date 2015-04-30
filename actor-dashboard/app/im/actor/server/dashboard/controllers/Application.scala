@@ -1,8 +1,8 @@
-package controllers
+package im.actor.server.dashboard.controllers
 
-import controllers.utils.AuthAction
-import controllers.utils.Db._
-import controllers.utils.JsonConstructors._
+import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db, JsonConstructors }
+import Db._
+import JsonConstructors._
 import im.actor.server.persist
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.functional.syntax._
