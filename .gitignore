@@ -14,3 +14,4 @@ actor-tests/snapshots
 .idea/uiDesigner.xml
 .idea/libraries
 .idea
+src/main/resources/logback.xml
