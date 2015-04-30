@@ -1,7 +1,6 @@
 class ActorService
   messenger: null
   currentPeer: null
-  # isReady: false
   isLoggedIn: false
 
   constructor: (@$rootScope, @$sessionStorage) ->
@@ -14,14 +13,12 @@ class ActorService
   initActor: ->
     console.log '[AW]ActorService initActor'
     @messenger = new actor.ActorApp
-    # @isReady = true
     @isLoggedIn = @messenger.isLoggedIn()
-    # console.log '[AW]ActorService initActor: @isReady', @isReady
     console.log '[AW]ActorService initActor: @isLoggedIn:', @isLoggedIn
     @setLoggedIn() if @isLoggedIn
-    # @uid = @messenger.getUid()
-    # console.log '[AW]ActorService initActor: @uid:', @uid
 
+  # isLoggedIn: ->
+  #   @messenger.isLoggedIn()
 
   checkAccess: (event, toState, toParams, fromState, fromParams) ->
     console.log '[AW]ActorService checkAccess'
@@ -94,6 +91,11 @@ class ActorService
     console.log '[AW]ActorService bindChat: peer:', peer
     @messenger.bindChat peer, callback
 
+  unbindChat: (peer) ->
+    console.log '[AW]ActorService unbindChat'
+    console.log '[AW]ActorService unbindChat: peer:', peer
+    @messenger.unbindChat peer, ->
+
   setCurrentPeer: (peer) ->
     console.log '[AW]ActorService setCurrentPeer'
     console.log '[AW]ActorService setCurrentPeer: peer:', peer
@@ -119,10 +121,20 @@ class ActorService
 
   saveDraft: (peer, draft) ->
     console.log '[AW]ActorService saveDraft'
-    # console.log '[AW]ActorService saveDraft: peer:', peer
     console.log '[AW]ActorService saveDraft: draft:', draft
-    if draft
+    if draft != null
       @messenger.saveDraft peer, draft
+
+  # onGroupOnline: () ->
+  #   console.log '[AW]ActorService onGroupOnline'
+  #   @$rootScope.$broadcast 'onGroupOnline'
+
+  getUid: ->
+    @messenger.getUid()
+
+  getUser: (uid) ->
+    console.log '[AW]ActorService getUser'
+    @messenger.getUser uid
 
 
 ActorService.$inject = ['$rootScope', '$sessionStorage']

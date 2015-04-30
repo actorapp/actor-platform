@@ -5,9 +5,9 @@ class MessagesController
     console.log '[AW]MessagesController constructor'
     @$rootScope.$on 'openConversation', (event, peer) =>
       console.log '[AW]MessagesController constructor: openConversation fired.'
-      @getMessages(peer)
+      @bindChat(peer)
 
-  getMessages: (peer) ->
+  bindChat: (peer) ->
     console.log '[AW]MessagesController getMessages'
     console.log '[AW]MessagesController getMessages: peer:', peer
     @actorService.bindChat peer, @renderMessages
