@@ -233,7 +233,7 @@ android {
 
     } else {
         Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        properties.load(project.file('local.properties').newDataInputStream())
 
         if (!properties.getProperty('androidStore', '').equals('')) {
             def androidStore = properties.getProperty('androidStore')
