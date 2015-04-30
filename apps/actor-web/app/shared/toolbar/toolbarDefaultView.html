@@ -1,20 +1,33 @@
 <div class="md-toolbar-tools">
     <md-button ng-click="main.openSidebar()" ng-if="main.$mdMedia('sm')" class="md-icon-button" aria-label="Menu">
-        <md-icon md-svg-icon="bower_components/material-design-icons/navigation/svg/production/ic_menu_24px.svg"></md-icon>
+        <md-icon md-svg-icon="assets/img/icons/ic_menu_24px.svg"></md-icon>
     </md-button>
 
+    <div class="user user--padded-left" layout="row">
+        <div class="user__avatar">
+          <div class="no-avatar no-avatar--green">
+            <span>S</span>
+          </div>
+        </div>
+        <div class="user__body" flex>
+          <p class="user__name">Conversation title</p>
+          <p class="user__profile-link">10 members, 1 online</p>
+        </div>
+      </div>
+
+
     <!-- <md-button class="md-icon-button" aria-label="Keyboard" ng-click="main.showCompose()">
-        <md-icon md-svg-icon="bower_components/material-design-icons/hardware/svg/production/ic_keyboard_24px.svg"></md-icon>
+        <md-icon md-svg-icon="assets/img/ic_keyboard_24px.svg"></md-icon>
     </md-button> -->
 
     <span flex></span>
 
     <md-button class="md-icon-button" aria-label="Attachments">
-        <md-icon md-svg-icon="bower_components/material-design-icons/editor/svg/production/ic_insert_drive_file_24px.svg"></md-icon>
+        <md-icon md-svg-icon="assets/img/icons/ic_insert_drive_file_24px.svg"></md-icon>
         Attachments
     </md-button>
     <!-- <md-button class="md-icon-button" aria-label="Exit" ng-click="main.actorService.setLoggedOut()">
-        <md-icon md-svg-icon="bower_components/material-design-icons/action/svg/production/ic_exit_to_app_24px.svg"></md-icon>
+        <md-icon md-svg-icon="assets/img/icons/ic_exit_to_app_24px.svg"></md-icon>
     </md-button> -->
 
 </div>
