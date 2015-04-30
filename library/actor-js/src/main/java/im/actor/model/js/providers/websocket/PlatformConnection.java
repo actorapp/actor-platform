@@ -55,10 +55,13 @@ public class PlatformConnection implements Connection {
     }
 
     private synchronized void onConnected() {
+        Log.d(TAG, "onConnected");
         if (isClosed) {
+            Log.d(TAG, "onConnected:isClosed");
             return;
         }
         if (!isOpened) {
+            Log.d(TAG, "onConnected:isOpened");
             return;
         }
         isOpened = true;
