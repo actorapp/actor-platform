@@ -31,19 +31,21 @@ task buildWeb (dependsOn: ['gulpBuild']) {
 }
 
 task copyAppBootstrap {
-    Properties properties = new Properties()
-    properties.load(project.file('local.properties').newDataInputStream())
+    doLast {
+        Properties properties = new Properties()
+        properties.load(project.file('local.properties').newDataInputStream())
 
-    delete {
-        "${buildDir}/electron"
-    }
+        delete {
+            "${buildDir}/electron"
+        }
 
-    exec {
-        commandLine 'mkdir', "${buildDir}/electron"
-    }
+        exec {
+            commandLine 'mkdir', "${buildDir}/electron"
+        }
 
-    exec {
-        commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron.app", "${buildDir}/electron/Actor.app"
+        exec {
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron.app", "${buildDir}/electron/Actor.app"
+        }
     }
 }
 
