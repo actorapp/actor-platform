@@ -25,7 +25,7 @@ object AuthorizationManager {
   def props(db: Database) = Props(classOf[AuthorizationManager], db)
 }
 
-class AuthorizationManager(db: Database) extends Actor with ActorLogging with ActorPublisher[MTTransport] {
+class AuthorizationManager(db: Database) extends Actor with ActorLogging with ActorPublisher[MTProto] {
 
   import akka.stream.actor.ActorPublisherMessage._
   import context.dispatcher
@@ -40,15 +40,8 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
       val replyTo = sender()
       MessageBoxCodec.decode(p.messageBytes).toEither match {
         case Right(res) ⇒ handleMessageBox(p.authId, p.sessionId, res.value, replyTo)
-        case Left(e)    ⇒ replyTo ! ProtoPackage(Drop(0, 0, e.message))
+        case Left(e)    ⇒ replyTo ! Drop(0, 0, e.message)
       }
-    /*case SessionPackage(p) =>
-      if (buf.isEmpty && totalDemand > 0)
-        onNext(ProtoPackage(p))
-      else {
-        buf :+= p
-        deliverBuf()
-      }*/
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒
@@ -59,11 +52,11 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
     @inline
     def sendPackage(messageId: Long, message: ProtoMessage) = {
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
-      replyTo ! ProtoPackage(MTPackage(authId, pSessionId, mbBytes))
+      replyTo ! MTPackage(authId, pSessionId, mbBytes)
     }
 
     @inline
-    def sendDrop(msg: String) = replyTo ! ProtoPackage(Drop(mb.messageId, 0, msg))
+    def sendDrop(msg: String) = replyTo ! Drop(mb.messageId, 0, msg)
 
     if (pAuthId == 0L) {
       if (pSessionId != 0L) sendDrop("sessionId must be equal to zero")
@@ -92,11 +85,11 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
       if (totalDemand <= Int.MaxValue) {
         val (use, keep) = buf.splitAt(totalDemand.toInt)
         buf = keep
-        use.foreach { p ⇒ onNext(ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(p) }
       } else {
         val (use, keep) = buf.splitAt(Int.MaxValue)
         buf = keep
-        use.foreach { p ⇒ onNext(ProtoPackage(p)) }
+        use.foreach { p ⇒ onNext(p) }
         deliverBuf()
       }
     }

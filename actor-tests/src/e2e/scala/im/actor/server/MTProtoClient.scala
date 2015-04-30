@@ -42,7 +42,7 @@ class MTProtoClient(system: ActorSystem) {
     }
   }
 
-  def send(tp: MTTransport): Unit = {
+  def send(tp: MTProto): Unit = {
     clientActor ! Send(tp)
   }
 
@@ -58,7 +58,7 @@ object MTProtoClientActor {
 
   case object MTConnected
 
-  case class Send(p: MTTransport)
+  case class Send(p: MTProto)
 
   case object GetTransportPackage
 
@@ -93,10 +93,13 @@ class MTProtoClientActor extends Actor with ActorLogging {
     case Received(bs) =>
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
-      handshakeResponse.decode(newBuffer) match {
-        case Attempt.Successful(DecodeResult(hs, remainder)) =>
+      TransportPackageCodec.decode(newBuffer) match {
+        case Attempt.Successful(DecodeResult(TransportPackage(_, hs: Handshake), remainder)) =>
           caller ! MTConnected
           context.become(receiving(connection, remainder, Seq.empty, Seq.empty), discardOld = true)
+        case Attempt.Successful(unmatched) =>
+          log.error("Unmatched {}", unmatched)
+          self ! PoisonPill
         case Attempt.Failure(_) =>
           context.become(handshaking(caller, connection, newBuffer), discardOld = true)
       }
@@ -105,7 +108,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
   }
 
   def receiving(connection: ActorRef, buffer: BitVector, tps: Seq[TransportPackage], consumers: Seq[ActorRef]): Receive = {
-    case Send(p: MTTransport) =>
+    case Send(p) =>
       send(connection, p)
     case GetTransportPackage =>
       if (tps.isEmpty || !consumers.isEmpty) {
@@ -166,16 +169,8 @@ class MTProtoClientActor extends Actor with ActorLogging {
     send(connection, handshake)
   }
 
-  private def send(connection: ActorRef, mtp: MTTransport): Unit = {
-    val bits = mtp match {
-      case h: Handshake =>
-        handshakeHeader.encode(HandshakeHeader(h.protoVersion, h.apiMajorVersion, h.apiMinorVersion, h.bytes.toByteVector.size)).require ++ h.bytes
-      case ProtoPackage(tp) =>
-        TransportPackageCodec.encode(TransportPackage(1, tp)).require
-      case SilentClose =>
-        log.error("Tried to send SilentClose, ignoring")
-        BitVector.empty
-    }
+  private def send(connection: ActorRef, mtp: MTProto): Unit = {
+    val bits = TransportPackageCodec.encode(TransportPackage(1, mtp)).require
 
     val data = ByteString(bits.toByteBuffer)
 

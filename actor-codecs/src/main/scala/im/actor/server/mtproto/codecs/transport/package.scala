@@ -11,11 +11,7 @@ package object transport {
   val intLengthBits = IntLengthBitsCodec
   val intLengthString = IntLengthStringCodec
 
-  val handshakeHeader = (C.byte :: C.byte :: C.byte :: C.int32).as[HandshakeHeader]
-  val handshakeHeaderSize = byteSize + byteSize + byteSize + 32
-  def handshakeData(bytesSize: Int) = C.bits(bytesSize.toLong * byteSize)
-
-  val handshakeResponse = (C.byte :: C.byte :: C.byte :: C.bits(256)).as[Handshake]
+  val HandshakeCodec = (C.byte :: C.byte :: C.byte :: C.bits).as[Handshake]
 
   val MTPackageCodec = (C.int64 :: C.int64 :: C.bits).as[MTPackage]
 
@@ -37,6 +33,7 @@ package object transport {
 
   def mtprotoCodec(header: Int): GenCodec[_, MTProto] =
     header match {
+      case Handshake.header     ⇒ HandshakeCodec.map(_.asInstanceOf[MTProto])
       case MTPackage.header     ⇒ MTPackageCodec.map(_.asInstanceOf[MTProto])
       case Ping.header          ⇒ PingCodec.map(_.asInstanceOf[MTProto])
       case Pong.header          ⇒ PongCodec.map(_.asInstanceOf[MTProto])
