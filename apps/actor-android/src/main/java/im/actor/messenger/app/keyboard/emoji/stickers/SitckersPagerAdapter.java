@@ -40,7 +40,7 @@ public class SitckersPagerAdapter extends PagerAdapter {
         View page = LayoutInflater.from(container.getContext()).inflate(R.layout.sticker_item_page, null);
         RecyclerView recycler = (RecyclerView) page.findViewById(R.id.recycler);
         recycler.setLayoutManager(new GridLayoutManager(container.getContext(), 4));
-        recycler.setAdapter(new StickersAdapter(container.getContext(), emojiKeyboard, stickersPack, position, (emojiKeyboard.getHeight() - Screen.dp(50)) / 2));
+        recycler.setAdapter(new StickersPageAdapter(container.getContext(), emojiKeyboard, stickersPack, position, (emojiKeyboard.getHeight() - Screen.dp(50)) / 2));
         container.addView(page);
         return page;
     }
