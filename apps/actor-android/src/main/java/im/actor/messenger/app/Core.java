@@ -113,6 +113,7 @@ public class Core {
         builder.addEndpoint(BuildConfig.API_URL);
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
+        builder.setEnableFilesLogging(true);
         builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(),"b2b7a96c3f1e131cf170029f97b2c7c2"));
 
         builder.setApiConfiguration(new ApiConfiguration(
