@@ -18,23 +18,15 @@ package im.actor.messenger.app.keyboard.emoji;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -42,17 +34,16 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.keyboard.BaseKeyboard;
-import im.actor.messenger.app.keyboard.KeyboardStatusListener;
 import im.actor.messenger.app.keyboard.emoji.smiles.OnBackspaceClickListener;
 import im.actor.messenger.app.keyboard.emoji.smiles.OnSmileClickListener;
 import im.actor.messenger.app.keyboard.emoji.smiles.RepeatListener;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmilePagerAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.OnStickerClickListener;
 import im.actor.messenger.app.keyboard.emoji.stickers.SitckersPagerAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.Stickers;
 import im.actor.messenger.app.keyboard.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.model.log.Log;
 
 import static im.actor.messenger.app.Core.core;
 
@@ -116,67 +107,65 @@ public class EmojiKeyboard extends BaseKeyboard
                 .inflate(R.layout.emoji_keyboard, null);
 
 
-        final FrameLayout emojiContainer = (FrameLayout) keyboardView.findViewById(R.id.emojiContainer);
-        emojiContainer.addView(createSmilesPager());
+        final ViewPager emojiPager = (ViewPager) keyboardView.findViewById(R.id.emojiContainer);
+        emojiPager.setAdapter(new EmojiPagerAdapter());
+        emojiPager.addView(createSmilesPager());
 
-        RecyclerView recyclerView = (RecyclerView) keyboardView.findViewById(R.id.indicator);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity, OrientationHelper.HORIZONTAL, false));
-        recyclerView.setAdapter(new RecyclerView.Adapter() {
-            public int selected = 0;
-
-            @Override
-            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                SimpleDraweeView imageView = new SimpleDraweeView(activity);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                imageView.setLayoutParams(new RecyclerView.LayoutParams(Screen.dp(50), Screen.dp(50)));
-                imageView.setBackgroundResource(R.drawable.clickable_background);
-                return new RecyclerView.ViewHolder(imageView) {
-                };
-            }
-
-            @Override
-            public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-                holder.itemView.setSelected(position == selected);
-                holder.itemView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        v.setSelected(true);
-                        int oldSelected = selected;
-                        selected = position;
-                        notifyItemChanged(oldSelected);
-                        View view = null;
-                        if (position == 0) {
-                            view = createSmilesPager();
-                        } else {
-                            view = createStickersPagerView(position - 1);
-                        }
-                        emojiContainer.removeAllViews();
-                        emojiContainer.addView(view);
-                    }
-                });
-                SimpleDraweeView packImageView = (SimpleDraweeView) holder.itemView;
-                if (position == 0) {
-                    packImageView.setImageResource(R.drawable.ic_emoji);
-                    packImageView.setPadding(0, 0, 0, 0);
-                } else {
-                    StickersPack pack = Stickers.getPacks()[position - 1];
-                    packImageView.setImageURI(Uri.parse("file://" + Stickers.getFile(pack.getId(), pack.getLogoStickerId())));
-                    packImageView.setPadding(Screen.dp(5), Screen.dp(5), Screen.dp(5), Screen.dp(5));
-                }
-            }
-
-            @Override
-            public int getItemCount() {
-                return 3;
-            }
-        });
-        //emojiContainer.addView(createSmilesPager());
+        PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) keyboardView.findViewById(R.id.indicator);
+        indicator.setViewPager(emojiPager);
 
 
         return keyboardView;
     }
 
+    class EmojiPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
+        @Override
+        public int getCount() {
+            return 1 + Stickers.getPacks().length;
+            // todo count stickers packs?
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View item = null;
+            if (position == 0) {
+                item = createSmilesPager();
+            } else {
+                item = createStickersPagerView(position - 1);
+            }
+
+            container.addView(item, 0);
+            return item;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public View getTab(int position, Context context) {
+
+            SimpleDraweeView tabView = new SimpleDraweeView(context);
+            tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            tabView.setLayoutParams(new RecyclerView.LayoutParams(Screen.dp(50), Screen.dp(50)));
+            tabView.setBackgroundResource(R.drawable.clickable_background);
+            if (position == 0) {
+                tabView.setImageResource(R.drawable.ic_emoji);
+                tabView.setPadding(0, 0, 0, 0);
+            } else {
+                StickersPack pack = Stickers.getPacks()[position - 1];
+                tabView.setImageURI(Uri.parse("file://" + Stickers.getFile(pack.getId(), pack.getLogoStickerId())));
+                tabView.setPadding(Screen.dp(5), Screen.dp(5), Screen.dp(5), Screen.dp(5));
+            }
+            return tabView;
+        }
+    }
 
 
 
@@ -205,7 +194,7 @@ public class EmojiKeyboard extends BaseKeyboard
             }
         }));
 
-        EmojiPagerAdapter mEmojisAdapter = new EmojiPagerAdapter(this);
+        SmilePagerAdapter mEmojisAdapter = new SmilePagerAdapter(this);
 
         emojiPagerIndicator.setLayoutParams(new RelativeLayout.LayoutParams(Screen.dp(58 * mEmojisAdapter.getCount()), Screen.dp(48)));
         emojiPager.setAdapter(mEmojisAdapter);
