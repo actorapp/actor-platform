@@ -75,7 +75,8 @@ object Dependencies {
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
     val slickTestkit    = "com.typesafe.slick"                    %% "slick-testkit"                 % V.slick % "test"
-
+    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
+    
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
 
     val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test,e2e"
@@ -130,7 +131,7 @@ object Dependencies {
   val utils = shared ++ Seq(akkaActor, libPhoneNumber, slick)
 
   val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
+    jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,
     akkaTestkit
   )
 }

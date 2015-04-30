@@ -1,8 +1,7 @@
-package controllers
+package im.actor.server.dashboard.controllers
 
-import controllers.utils.AuthAction
-import controllers.utils.Db._
-import controllers.utils.JsonConstructors._
+import im.actor.server.dashboard.controllers.utils.JsonConstructors._
+import im.actor.server.dashboard.controllers.utils._
 import im.actor.server.{ models, persist }
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.functional.syntax._
@@ -15,6 +14,8 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future
 
 class Users extends Controller {
+
+  def db = Db.db
 
   implicit val userPhoneWrites = new Writes[models.UserPhone] {
     def writes(phone: models.UserPhone): JsValue = Json.obj(
@@ -45,7 +46,7 @@ class Users extends Controller {
         phones ← persist.UserPhone.findByUserId(id)
         user ← optUser.map { u ⇒
           DBIO.successful(Ok(Json.toJson(u).as[JsObject] + ("phones" → Json.toJson(phones))))
-        } getOrElse DBIO.successful(NotFound("No such user found"))
+        } getOrElse DBIO.successful(NotFound(Json.toJson(Map("message" → "No such user found"))))
       } yield user
     }
   }
@@ -58,12 +59,12 @@ class Users extends Controller {
             for {
               _ ← persist.User.create(user)
               _ ← persist.UserPhone.create(phone)
-            } yield Ok(Json.toJson(Map("id" → user.id)))
+            } yield Created(Json.toJson(Map("id" → user.id)))
           ///are those possible?
           case (Some(user), _) ⇒
             for {
               _ ← persist.User.create(user)
-            } yield Ok(Json.toJson(Map("id" → user.id)))
+            } yield Created(Json.toJson(Map("id" → user.id)))
           ///are those possible?
           case (_, Some(phone)) ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "No user name provided"))))
           case _                ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "No name and phone provided"))))
