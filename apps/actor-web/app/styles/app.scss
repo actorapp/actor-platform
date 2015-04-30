@@ -103,8 +103,13 @@ md-toolbar.md-default-theme {
     text-transform: inherit;
     color: inherit !important;
     md-icon {
-      padding: 1px;
+      /* padding: 1px; */
       vertical-align: middle;
+    }
+    @media (max-width: 350px) {
+      span {
+        display: none;
+      }
     }
     span {
       padding-right: 4px;
@@ -140,8 +145,12 @@ md-list-item {
   @media (max-width: 1024px) {
     border-radius: 0;
   }
+  @media (max-height: 600px) {
+    border-radius: 0;
+  }
 }
 .no-avatar {
+  cursor: default;
   &--empty {
     background-color: $emptyColor;
   }
@@ -165,5 +174,25 @@ md-list-item {
   }
   &--green {
     background-color: $greenColor;
+  }
+  span {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: block;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 -1px 5px rgba(0,0,0,.07);
+    color: rgb(255,255,255);
+    line-height: 48px;
+  }
+}
+
+.md-subheader {
+  padding-right: 16px;
+  margin-right: 0;
+  &:after {
+    right: 0 !important;
   }
 }
