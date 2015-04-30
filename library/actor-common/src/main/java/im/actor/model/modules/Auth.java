@@ -56,6 +56,9 @@ public class Auth extends BaseModule {
     public void run() {
         if (preferences().getBool(KEY_AUTH, false)) {
             state = AuthState.LOGGED_IN;
+            modules().onLoggedIn();
+
+            // Notify Analytics
             User user = modules().getUsersModule().getUsers().getValue(myUid);
             ArrayList<Long> records = new ArrayList<Long>();
             for (ContactRecord contactRecord : user.getRecords()) {
@@ -65,9 +68,10 @@ public class Auth extends BaseModule {
             }
             modules().getAnalytics().onLoggedIn(CryptoUtils.hex(deviceHash), user.getUid(),
                     records.toArray(new Long[0]), user.getName());
-            modules().onLoggedIn();
         } else {
             state = AuthState.AUTH_START;
+
+            // Notify Analytics
             modules().getAnalytics().onLoggedOut(CryptoUtils.hex(deviceHash));
         }
     }
@@ -82,6 +86,10 @@ public class Auth extends BaseModule {
             @Override
             public void run() {
                 state = AuthState.LOGGED_IN;
+
+                callback.onResult(state);
+
+                // Notify Analytics
                 User user = modules().getUsersModule().getUsers().getValue(myUid);
                 ArrayList<Long> records = new ArrayList<Long>();
                 for (ContactRecord contactRecord : user.getRecords()) {
@@ -91,7 +99,6 @@ public class Auth extends BaseModule {
                 }
                 modules().getAnalytics().onLoggedInPerformed(CryptoUtils.hex(deviceHash), user.getUid(),
                         records.toArray(new Long[0]), user.getName());
-                callback.onResult(state);
             }
         }));
     }
