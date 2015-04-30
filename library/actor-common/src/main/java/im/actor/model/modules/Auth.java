@@ -1,5 +1,7 @@
 package im.actor.model.modules;
 
+import java.util.ArrayList;
+
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.api.rpc.RequestSendAuthCode;
@@ -10,6 +12,8 @@ import im.actor.model.api.rpc.ResponseSendAuthCode;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.crypto.CryptoUtils;
+import im.actor.model.entity.ContactRecord;
+import im.actor.model.entity.User;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -52,10 +56,44 @@ public class Auth extends BaseModule {
     public void run() {
         if (preferences().getBool(KEY_AUTH, false)) {
             state = AuthState.LOGGED_IN;
+            User user = modules().getUsersModule().getUsers().getValue(myUid);
+            ArrayList<Long> records = new ArrayList<Long>();
+            for (ContactRecord contactRecord : user.getRecords()) {
+                if (contactRecord.getRecordType() == 0) {
+                    records.add(Long.parseLong(contactRecord.getRecordData()));
+                }
+            }
+            modules().getAnalytics().onLoggedIn(CryptoUtils.hex(deviceHash), user.getUid(),
+                    records.toArray(new Long[0]), user.getName());
             modules().onLoggedIn();
         } else {
             state = AuthState.AUTH_START;
+            modules().getAnalytics().onLoggedOut(CryptoUtils.hex(deviceHash));
         }
+    }
+
+    private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
+        preferences().putBool(KEY_AUTH, true);
+        state = AuthState.LOGGED_IN;
+        myUid = response.getUser().getId();
+        preferences().putInt(KEY_AUTH_UID, myUid);
+        modules().onLoggedIn();
+        updates().onUpdateReceived(new LoggedIn(response, new Runnable() {
+            @Override
+            public void run() {
+                state = AuthState.LOGGED_IN;
+                User user = modules().getUsersModule().getUsers().getValue(myUid);
+                ArrayList<Long> records = new ArrayList<Long>();
+                for (ContactRecord contactRecord : user.getRecords()) {
+                    if (contactRecord.getRecordType() == 0) {
+                        records.add(Long.parseLong(contactRecord.getRecordData()));
+                    }
+                }
+                modules().getAnalytics().onLoggedInPerformed(CryptoUtils.hex(deviceHash), user.getUid(),
+                        records.toArray(new Long[0]), user.getName());
+                callback.onResult(state);
+            }
+        }));
     }
 
     public int myUid() {
@@ -117,18 +155,7 @@ public class Auth extends BaseModule {
 
                             @Override
                             public void onResult(ResponseAuth response) {
-                                preferences().putBool(KEY_AUTH, true);
-                                state = AuthState.LOGGED_IN;
-                                myUid = response.getUser().getId();
-                                preferences().putInt(KEY_AUTH_UID, myUid);
-                                modules().onLoggedIn();
-                                updates().onUpdateReceived(new LoggedIn(response, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        state = AuthState.LOGGED_IN;
-                                        callback.onResult(state);
-                                    }
-                                }));
+                                onLoggedIn(callback, response);
                             }
 
                             @Override
@@ -167,18 +194,7 @@ public class Auth extends BaseModule {
                         isSilent), new RpcCallback<ResponseAuth>() {
                     @Override
                     public void onResult(ResponseAuth response) {
-                        preferences().putBool(KEY_AUTH, true);
-                        state = AuthState.LOGGED_IN;
-                        myUid = response.getUser().getId();
-                        preferences().putInt(KEY_AUTH_UID, myUid);
-                        modules().onLoggedIn();
-                        updates().onUpdateReceived(new LoggedIn(response, new Runnable() {
-                            @Override
-                            public void run() {
-                                state = AuthState.LOGGED_IN;
-                                callback.onResult(state);
-                            }
-                        }));
+                        onLoggedIn(callback, response);
                         modules().getProfile().changeAvatar(avatarPath);
                     }
 

@@ -38,6 +38,8 @@ public class Configuration {
 
     private HttpDownloaderProvider httpDownloaderProvider;
 
+    private AnalyticsProvider analyticsProvider;
+
     Configuration(NetworkProvider networkProvider,
                   ConnectionEndpoint[] endpoints,
                   ThreadingProvider threadingProvider,
@@ -54,7 +56,8 @@ public class Configuration {
                   boolean enableContactsLogging,
                   boolean enableNetworkLogging,
                   boolean enableFilesLogging,
-                  HttpDownloaderProvider httpDownloaderProvider) {
+                  HttpDownloaderProvider httpDownloaderProvider,
+                  AnalyticsProvider analyticsProvider) {
         this.networkProvider = networkProvider;
         this.endpoints = endpoints;
         this.threadingProvider = threadingProvider;
@@ -72,6 +75,7 @@ public class Configuration {
         this.apiConfiguration = apiConfiguration;
         this.dispatcherProvider = dispatcherProvider;
         this.httpDownloaderProvider = httpDownloaderProvider;
+        this.analyticsProvider = analyticsProvider;
     }
 
     /**
@@ -220,9 +224,19 @@ public class Configuration {
 
     /**
      * Get HTTP support provider
+     *
      * @return HTTP support provider
      */
     public HttpDownloaderProvider getHttpDownloaderProvider() {
         return httpDownloaderProvider;
+    }
+
+    /**
+     * Get Analytics provider
+     *
+     * @return Analytics provider
+     */
+    public AnalyticsProvider getAnalyticsProvider() {
+        return analyticsProvider;
     }
 }
