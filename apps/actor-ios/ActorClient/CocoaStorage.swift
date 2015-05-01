@@ -20,11 +20,11 @@ import Foundation
         return UDPreferencesStorage();
     }
     
-    override func createKeyValue(name: String!) -> DKKeyValueStorage! {
+    override func createKeyValueWithName(name: String!) -> DKKeyValueStorage! {
         return FMDBKeyValue(databasePath: dbPath, tableName: name);
     }
     
-    override func createList(name: String!) -> DKListStorage! {
+    override func createListWithName(name: String!) -> DKListStorage! {
         return FMDBList(databasePath: dbPath, tableName: name);
     }
 }
