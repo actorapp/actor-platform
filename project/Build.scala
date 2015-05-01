@@ -25,7 +25,8 @@ object Build extends sbt.Build {
   lazy val compilerWarnings = Seq(
     "-Ywarn-dead-code",
     "-Ywarn-infer-any",
-    "-Ywarn-numeric-widen"
+    "-Ywarn-numeric-widen",
+    "-Ywarn-unused-import"
   )
 
   lazy val defaultSettings =

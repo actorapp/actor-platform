@@ -1,12 +1,11 @@
 package im.actor.server.db
 
+import java.sql.Connection
 import javax.sql.DataSource
 
-import com.typesafe.config._
-import java.sql.{ Connection, PreparedStatement }
 import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.callback.FlywayCallback
 import org.flywaydb.core.api.MigrationInfo
+import org.flywaydb.core.api.callback.FlywayCallback
 
 trait FlywayInit {
   def initFlyway(ds: DataSource) = {

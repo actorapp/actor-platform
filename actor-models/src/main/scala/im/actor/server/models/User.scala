@@ -1,9 +1,5 @@
 package im.actor.server.models
 
-import scala.collection.immutable
-import scala.language.postfixOps
-import scodec.bits.BitVector
-
 sealed trait UserState {
   def toInt: Int
 }
