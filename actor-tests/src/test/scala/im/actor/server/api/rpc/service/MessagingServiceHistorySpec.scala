@@ -56,40 +56,43 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
     val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
     def privat() = {
-      val step = 2000L
+      val step = 100L
 
-      val startDate = {
+      val (message1Date, message2Date, message3Date) = {
         implicit val clientData = clientData1
 
         val startDate = System.currentTimeMillis()
 
         whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", None)))(_ ⇒ ())
 
+        val message1Date = System.currentTimeMillis()
         Thread.sleep(step)
 
         whenReady(service.handleSendMessage(user2Peer, 2L, TextMessage("Hi Shiva 2", None)))(_ ⇒ ())
 
+        val message2Date = System.currentTimeMillis()
         Thread.sleep(step)
 
         whenReady(service.handleSendMessage(user2Peer, 3L, TextMessage("Hi Shiva 3", None)))(_ ⇒ ())
 
-        Thread.sleep(step * 2) // wait more to widen delay between 3rd and 4rd messages (we don't want 4rd message to be in ResponseLoadHistory)
+        val message3Date = System.currentTimeMillis()
+        Thread.sleep(step)
 
         whenReady(service.handleSendMessage(user2Peer, 4L, TextMessage("Hi Shiva 4", None)))(_ ⇒ ())
 
-        startDate
+        (message1Date, message2Date, message3Date)
       }
 
       {
         implicit val clientData = clientData2
 
-        whenReady(service.handleMessageReceived(user1Peer, startDate + step * 2)) { resp ⇒
+        whenReady(service.handleMessageReceived(user1Peer, message2Date)) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseVoid) ⇒
           }
         }
 
-        whenReady(service.handleMessageRead(user1Peer, startDate + step)) { resp ⇒
+        whenReady(service.handleMessageRead(user1Peer, message1Date)) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseVoid) ⇒
           }
@@ -99,7 +102,7 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
       {
         implicit val clientData = clientData1
 
-        whenReady(service.handleLoadHistory(user2Peer, startDate + step * 3 + step, 100)) { resp ⇒
+        whenReady(service.handleLoadHistory(user2Peer, message3Date, 100)) { resp ⇒
           resp should matchPattern {
             case Ok(_) ⇒
           }
