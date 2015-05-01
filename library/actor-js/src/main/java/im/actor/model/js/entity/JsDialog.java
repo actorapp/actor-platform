@@ -35,14 +35,17 @@ public class JsDialog extends JavaScriptObject implements Exportable {
             String messageText = messenger.getFormatter().formatContentDialogText(src.getSenderId(),
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
+            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null,
+                    Placeholders.getPlaceholder(src.getPeer().getPeerId()));
+
             return JsDialog.create(
-                    JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null,
-                            Placeholders.getPlaceholder(src.getPeer().getPeerId())),
+                    peerInfo,
                     // Message
                     date,
                     senderName, showSender,
                     messageText, highlightContent,
-                    Enums.convert(src.getStatus()), src.getUnreadCount());
+                    Enums.convert(src.getStatus()),
+                    src.getUnreadCount());
         }
     };
 
