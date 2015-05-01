@@ -44,7 +44,7 @@ class ProfileServiceImpl(bucketName: String)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withFileLocation(fileLocation, AvatarSizeLimit) {
         scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
-          case Some(avatar) ⇒
+          case Right(avatar) ⇒
             val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
 
             val update = UpdateUserAvatarChanged(client.userId, Some(avatar))
@@ -57,7 +57,8 @@ class ProfileServiceImpl(bucketName: String)(
             } yield {
               Ok(ResponseEditAvatar(avatar, seqstate._1, seqstate._2))
             }
-          case None ⇒
+          case Left(e) ⇒
+            actorSystem.log.error(e, "Failed to scale profile avatar")
             DBIO.successful(Error(Errors.LocationInvalid))
         }
       }

@@ -2,7 +2,7 @@ package im.actor.server.api.util
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Success, Failure }
+import scala.util.{ Failure, Success }
 
 import akka.actor.ActorSystem
 import com.amazonaws.services.s3.transfer.TransferManager
@@ -62,7 +62,13 @@ object AvatarUtils {
     fullFileId: Long,
     rnd:        ThreadLocalRandom,
     bucketName: String
-  )(implicit transferManager: TransferManager, db: Database, ec: ExecutionContext, system: ActorSystem) = {
+  )(
+    implicit
+    transferManager: TransferManager,
+    db:              Database,
+    ec:              ExecutionContext,
+    system:          ActorSystem
+  ) = {
     persist.File.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         downloadFile(bucketName, fullFileId) flatMap {
@@ -106,17 +112,17 @@ object AvatarUtils {
                 fullFile.length().toInt
               )
 
-              Some(Avatar(Some(smallImage), Some(largeImage), Some(fullImage)))
+              Avatar(Some(smallImage), Some(largeImage), Some(fullImage))
             }
 
             action.asTry map {
-              case Success(res) ⇒ res
-              case Failure(e)   ⇒ None
+              case Success(res) ⇒ Right(res)
+              case Failure(e)   ⇒ Left(e)
             }
-          case None ⇒ DBIO.successful(None)
+          case None ⇒ DBIO.successful(Left(new Exception("Failed to download file")))
         }
       case None ⇒
-        DBIO.successful(None)
+        DBIO.successful(Left(new Exception("Cannot find file model")))
     }
   }
 
