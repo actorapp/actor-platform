@@ -6,28 +6,30 @@
 #ifndef _AMUserTypingVM_H_
 #define _AMUserTypingVM_H_
 
-@class AMValueModel;
-
 #include "J2ObjC_header.h"
 
-@interface AMUserTypingVM : NSObject {
-}
+@class AMValueModel;
+
+@interface AMUserTypingVM : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid;
 
-- (jint)getUid;
-
 - (AMValueModel *)getTyping;
+
+- (jint)getUid;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMUserTypingVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMUserTypingVM_initWithInt_(AMUserTypingVM *self, jint uid);
 
-typedef AMUserTypingVM ImActorModelViewmodelUserTypingVM;
+FOUNDATION_EXPORT AMUserTypingVM *new_AMUserTypingVM_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUserTypingVM)
+
+typedef AMUserTypingVM ImActorModelViewmodelUserTypingVM;
 
 #endif // _AMUserTypingVM_H_

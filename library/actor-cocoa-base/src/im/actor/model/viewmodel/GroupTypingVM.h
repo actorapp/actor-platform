@@ -6,28 +6,30 @@
 #ifndef _AMGroupTypingVM_H_
 #define _AMGroupTypingVM_H_
 
-@class AMValueModel;
-
 #include "J2ObjC_header.h"
 
-@interface AMGroupTypingVM : NSObject {
-}
+@class AMValueModel;
+
+@interface AMGroupTypingVM : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid;
 
-- (jint)getGid;
-
 - (AMValueModel *)getActive;
+
+- (jint)getGid;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupTypingVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMGroupTypingVM_initWithInt_(AMGroupTypingVM *self, jint gid);
 
-typedef AMGroupTypingVM ImActorModelViewmodelGroupTypingVM;
+FOUNDATION_EXPORT AMGroupTypingVM *new_AMGroupTypingVM_initWithInt_(jint gid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroupTypingVM)
+
+typedef AMGroupTypingVM ImActorModelViewmodelGroupTypingVM;
 
 #endif // _AMGroupTypingVM_H_

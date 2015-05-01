@@ -6,10 +6,10 @@
 #ifndef _AMPhoneBookProvider_H_
 #define _AMPhoneBookProvider_H_
 
+#include "J2ObjC_header.h"
+
 @protocol AMPhoneBookProvider_Callback;
 @protocol JavaUtilList;
-
-#include "J2ObjC_header.h"
 
 @protocol AMPhoneBookProvider < NSObject, JavaObject >
 
@@ -19,9 +19,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMPhoneBookProvider)
 
-#define ImActorModelPhoneBookProvider AMPhoneBookProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMPhoneBookProvider)
+
+#define ImActorModelPhoneBookProvider AMPhoneBookProvider
 
 @protocol AMPhoneBookProvider_Callback < NSObject, JavaObject >
 

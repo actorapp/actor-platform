@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBParameters.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBParameters.java"
 
 #include "IOSObjectArray.h"
@@ -23,29 +24,7 @@
                     withJavaMathBigInteger:(JavaMathBigInteger *)g1
                     withJavaMathBigInteger:(JavaMathBigInteger *)g2
                                    withInt:(jint)bits {
-  if (self = [super init]) {
-    
-#line 16
-    self->beta_ = beta;
-    
-#line 17
-    self->lambda_ = lambda;
-    
-#line 18
-    self->v1_ = v1;
-    
-#line 19
-    self->v2_ = v2;
-    
-#line 20
-    self->g1_ = g1;
-    
-#line 21
-    self->g2_ = g2;
-    
-#line 22
-    self->bits_ = bits;
-  }
+  OrgBouncycastleMathEcEndoGLVTypeBParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigIntegerArray_withJavaMathBigIntegerArray_withJavaMathBigInteger_withJavaMathBigInteger_withInt_(self, beta, lambda, v1, v2, g1, g2, bits);
   return self;
 }
 
@@ -105,17 +84,29 @@
   return bits_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcEndoGLVTypeBParameters *)other {
-  [super copyAllFieldsTo:other];
-  other->beta_ = beta_;
-  other->lambda_ = lambda_;
-  other->v1_ = v1_;
-  other->v2_ = v2_;
-  other->g1_ = g1_;
-  other->g2_ = g2_;
-  other->bits_ = bits_;
+@end
+
+
+#line 13
+void OrgBouncycastleMathEcEndoGLVTypeBParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigIntegerArray_withJavaMathBigIntegerArray_withJavaMathBigInteger_withJavaMathBigInteger_withInt_(OrgBouncycastleMathEcEndoGLVTypeBParameters *self, JavaMathBigInteger *beta, JavaMathBigInteger *lambda, IOSObjectArray *v1, IOSObjectArray *v2, JavaMathBigInteger *g1, JavaMathBigInteger *g2, jint bits) {
+  (void) NSObject_init(self);
+  
+#line 16
+  self->beta_ = beta;
+  self->lambda_ = lambda;
+  self->v1_ = v1;
+  self->v2_ = v2;
+  self->g1_ = g1;
+  self->g2_ = g2;
+  self->bits_ = bits;
 }
 
-@end
+
+#line 13
+OrgBouncycastleMathEcEndoGLVTypeBParameters *new_OrgBouncycastleMathEcEndoGLVTypeBParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigIntegerArray_withJavaMathBigIntegerArray_withJavaMathBigInteger_withJavaMathBigInteger_withInt_(JavaMathBigInteger *beta, JavaMathBigInteger *lambda, IOSObjectArray *v1, IOSObjectArray *v2, JavaMathBigInteger *g1, JavaMathBigInteger *g2, jint bits) {
+  OrgBouncycastleMathEcEndoGLVTypeBParameters *self = [OrgBouncycastleMathEcEndoGLVTypeBParameters alloc];
+  OrgBouncycastleMathEcEndoGLVTypeBParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigIntegerArray_withJavaMathBigIntegerArray_withJavaMathBigInteger_withJavaMathBigInteger_withInt_(self, beta, lambda, v1, v2, g1, g2, bits);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcEndoGLVTypeBParameters)

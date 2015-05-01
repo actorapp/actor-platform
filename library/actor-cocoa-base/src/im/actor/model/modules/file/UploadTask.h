@@ -6,31 +6,15 @@
 #ifndef _ImActorModelModulesFileUploadTask_H_
 #define _ImActorModelModulesFileUploadTask_H_
 
-@class AMCRC32;
-@class AMFileReference;
-@class AMRpcException;
-@class DKActorRef;
-@class IOSByteArray;
-@class ImActorModelApiRpcResponseCommitFileUpload;
-@class ImActorModelApiRpcResponseGetFileUploadPartUrl;
-@class ImActorModelApiRpcResponseGetFileUploadUrl;
-@class ImActorModelModulesModules;
-@protocol AMFileSystemProvider;
-@protocol AMFileSystemReference;
-@protocol AMHttpDownloaderProvider;
-@protocol AMInputFile;
-@protocol AMOutputFile;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/http/FileUploadCallback.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
-#include "java/lang/Runnable.h"
 
-#define ImActorModelModulesFileUploadTask_SIM_BLOCKS_COUNT 4
+@class DKActorRef;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesFileUploadTask : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesFileUploadTask : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid
                 withNSString:(NSString *)descriptor
@@ -44,117 +28,10 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesFileUploadTask_initWithLong_withNSString_withNSString_withDKActorRef_withImActorModelModulesModules_(ImActorModelModulesFileUploadTask *self, jlong rid, NSString *descriptor, NSString *fileName, DKActorRef *manager, ImActorModelModulesModules *modules);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesFileUploadTask, SIM_BLOCKS_COUNT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesFileUploadTask *new_ImActorModelModulesFileUploadTask_initWithLong_withNSString_withNSString_withDKActorRef_withImActorModelModulesModules_(jlong rid, NSString *descriptor, NSString *fileName, DKActorRef *manager, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask)
-
-@interface ImActorModelModulesFileUploadTask_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUploadUrl *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesFileUploadTask:(ImActorModelModulesFileUploadTask *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_$1)
-
-@interface ImActorModelModulesFileUploadTask_$2 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseCommitFileUpload *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesFileUploadTask:(ImActorModelModulesFileUploadTask *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_$2)
-
-@interface ImActorModelModulesFileUploadTask_$3 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUploadPartUrl *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesFileUploadTask:(ImActorModelModulesFileUploadTask *)outer$
-                                            withByteArray:(IOSByteArray *)capture$0
-                                                  withInt:(jint)capture$1;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_$3)
-
-@interface ImActorModelModulesFileUploadTask_$3_$1 : NSObject < ImActorModelHttpFileUploadCallback > {
-}
-
-- (void)onUploaded;
-
-- (void)onUploadFailure;
-
-- (instancetype)initWithImActorModelModulesFileUploadTask_$3:(ImActorModelModulesFileUploadTask_$3 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_$3_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_$3_$1)
-
-@interface ImActorModelModulesFileUploadTask_$3_$1_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesFileUploadTask_$3_$1:(ImActorModelModulesFileUploadTask_$3_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_$3_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_$3_$1_$1)
-
-@interface ImActorModelModulesFileUploadTask_$3_$1_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesFileUploadTask_$3_$1:(ImActorModelModulesFileUploadTask_$3_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_$3_$1_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_$3_$1_$2)
 
 #endif // _ImActorModelModulesFileUploadTask_H_

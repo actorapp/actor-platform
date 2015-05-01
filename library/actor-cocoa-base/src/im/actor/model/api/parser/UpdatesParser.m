@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/parser/UpdatesParser.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/parser/UpdatesParser.java"
 
 #include "IOSClass.h"
@@ -46,6 +47,7 @@
 #include "im/actor/model/api/updates/UpdateUserOnline.h"
 #include "im/actor/model/api/updates/UpdateUserPhoneAdded.h"
 #include "im/actor/model/api/updates/UpdateUserPhoneRemoved.h"
+#include "im/actor/model/network/parser/BaseParser.h"
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
@@ -55,8 +57,6 @@
 
 - (ImActorModelNetworkParserUpdate *)readWithInt:(jint)type
                                    withByteArray:(IOSByteArray *)payload {
-  
-#line 23
   switch (type) {
     case 16:
     
@@ -207,13 +207,24 @@
 #line 60
     return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(payload);
   }
-  @throw [[JavaIoIOException alloc] init];
+  @throw new_JavaIoIOException_init();
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiParserUpdatesParser_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelApiParserUpdatesParser_init(ImActorModelApiParserUpdatesParser *self) {
+  (void) ImActorModelNetworkParserBaseParser_init(self);
+}
+
+ImActorModelApiParserUpdatesParser *new_ImActorModelApiParserUpdatesParser_init() {
+  ImActorModelApiParserUpdatesParser *self = [ImActorModelApiParserUpdatesParser alloc];
+  ImActorModelApiParserUpdatesParser_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiParserUpdatesParser)

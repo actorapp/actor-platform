@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Container.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Container.java"
 
 #include "IOSClass.h"
@@ -12,12 +13,14 @@
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/Container.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
 @interface MTContainer () {
  @public
   IOSObjectArray *messages_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
@@ -29,25 +32,20 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
 #line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 15
-  [super initWithBSDataInput:stream];
+  MTContainer_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 18
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages {
-  if (self = [super init]) {
-    self->messages_ = messages;
-  }
+  MTContainer_initWithMTProtoMessageArray_(self, messages);
   return self;
 }
 
 
 #line 22
 - (IOSObjectArray *)getMessages {
-  
-#line 23
   return messages_;
 }
 
@@ -60,8 +58,6 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
 #line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 33
   if (messages_ != nil && messages_->size_ > 0) {
     [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:messages_->size_];
     {
@@ -88,24 +84,50 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
 #line 44
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
-  
-#line 45
   jint size = (jint) [((BSDataInput *) nil_chk(bs)) readVarInt];
   messages_ = [IOSObjectArray newArrayWithLength:size type:MTProtoMessage_class_()];
   for (jint i = 0; i < size; ++i) {
-    IOSObjectArray_SetAndConsume(messages_, i, [[MTProtoMessage alloc] initWithBSDataInput:bs]);
+    (void) IOSObjectArray_Set(messages_, i, new_MTProtoMessage_initWithBSDataInput_(bs));
   }
 }
 
+
+#line 53
 - (NSString *)description {
   return JreStrcat("$I$", @"Conatiner[", ((IOSObjectArray *) nil_chk(messages_))->size_, @" items]");
 }
 
-- (void)copyAllFieldsTo:(MTContainer *)other {
-  [super copyAllFieldsTo:other];
-  other->messages_ = messages_;
+@end
+
+
+#line 14
+void MTContainer_initWithBSDataInput_(MTContainer *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 14
+MTContainer *new_MTContainer_initWithBSDataInput_(BSDataInput *stream) {
+  MTContainer *self = [MTContainer alloc];
+  MTContainer_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 18
+void MTContainer_initWithMTProtoMessageArray_(MTContainer *self, IOSObjectArray *messages) {
+  (void) MTProtoStruct_init(self);
+  
+#line 19
+  self->messages_ = messages;
+}
+
+
+#line 18
+MTContainer *new_MTContainer_initWithMTProtoMessageArray_(IOSObjectArray *messages) {
+  MTContainer *self = [MTContainer alloc];
+  MTContainer_initWithMTProtoMessageArray_(self, messages);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTContainer)

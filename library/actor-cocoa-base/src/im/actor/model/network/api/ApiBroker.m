@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/api/ApiBroker.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/api/ApiBroker.java"
 
 #include "IOSClass.h"
@@ -11,6 +12,7 @@
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/api/parser/RpcParser.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
@@ -25,6 +27,7 @@
 #include "im/actor/model/network/api/ApiBroker.h"
 #include "im/actor/model/network/mtp/AuthIdRetriever.h"
 #include "im/actor/model/network/mtp/MTProto.h"
+#include "im/actor/model/network/mtp/MTProtoCallback.h"
 #include "im/actor/model/network/mtp/entity/ProtoSerializer.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/rpc/Push.h"
@@ -43,14 +46,6 @@
 #include "java/util/Collection.h"
 #include "java/util/HashMap.h"
 #include "java/util/Random.h"
-
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self);
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkApiApiBroker *self, jlong key);
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker *self, jlong randomId, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback);
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImActorModelNetworkApiApiBroker *self, jlong mid, IOSByteArray *content);
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_forceResendWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId);
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_cancelRequestWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId);
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_processUpdateWithByteArray_(ImActorModelNetworkApiApiBroker *self, IOSByteArray *content);
 
 @interface ImActorModelNetworkApiApiBroker () {
  @public
@@ -80,6 +75,7 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
 - (void)cancelRequestWithLong:(jlong)randomId;
 
 - (void)processUpdateWithByteArray:(IOSByteArray *)content;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker, endpoints_, AMEndpoints *)
@@ -91,11 +87,34 @@ J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker, proto_, MTMTProto *)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker, networkProvider_, id<AMNetworkProvider>)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker, authIdBackOff_, AMExponentialBackoff *)
 
+static NSString *ImActorModelNetworkApiApiBroker_TAG_ = 
+#line 54
+@"ApiBroker";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, TAG_, NSString *)
+
+static AMAtomicLongCompat *ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, NEXT_RPC_ID_, AMAtomicLongCompat *)
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkApiApiBroker *self, jlong key);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker *self, jlong randomId, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImActorModelNetworkApiApiBroker *self, jlong mid, IOSByteArray *content);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_forceResendWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_cancelRequestWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_processUpdateWithByteArray_(ImActorModelNetworkApiApiBroker *self, IOSByteArray *content);
+
 @interface ImActorModelNetworkApiApiBroker_PerformRequest () {
  @public
   ImActorModelNetworkParserRequest *message_;
   id<AMRpcCallback> callback_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_PerformRequest, message_, ImActorModelNetworkParserRequest *)
@@ -105,96 +124,224 @@ J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_PerformRequest, callback_, i
  @public
   jlong randomId_;
 }
+
 @end
 
-@interface ImActorModelNetworkApiApiBroker_InitMTProto () {
+@interface ImActorModelNetworkApiApiBroker_RequestAuthId : NSObject
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_RequestAuthId)
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker_RequestAuthId *self, ImActorModelNetworkApiApiBroker *outer$);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_RequestAuthId *new_ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_RequestAuthId)
+
+@interface ImActorModelNetworkApiApiBroker_InitMTProto : NSObject {
  @public
   jlong authId_;
 }
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
+                                               withLong:(jlong)authId;
+
+- (jlong)getAuthId;
+
 @end
 
-@interface ImActorModelNetworkApiApiBroker_ProtoResponse () {
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_InitMTProto)
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker_InitMTProto *self, ImActorModelNetworkApiApiBroker *outer$, jlong authId);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_InitMTProto *new_ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker *outer$, jlong authId) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_InitMTProto)
+
+@interface ImActorModelNetworkApiApiBroker_ProtoResponse : NSObject {
  @public
   jlong responseId_;
   IOSByteArray *data_;
 }
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
+                                               withLong:(jlong)responseId
+                                          withByteArray:(IOSByteArray *)data;
+
+- (jlong)getResponseId;
+
+- (IOSByteArray *)getData;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_ProtoResponse)
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_ProtoResponse, data_, IOSByteArray *)
 
-@interface ImActorModelNetworkApiApiBroker_ProtoUpdate () {
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(ImActorModelNetworkApiApiBroker_ProtoResponse *self, ImActorModelNetworkApiApiBroker *outer$, jlong responseId, IOSByteArray *data);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_ProtoResponse *new_ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(ImActorModelNetworkApiApiBroker *outer$, jlong responseId, IOSByteArray *data) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_ProtoResponse)
+
+@interface ImActorModelNetworkApiApiBroker_ProtoUpdate : NSObject {
  @public
   IOSByteArray *data_;
 }
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
+                                          withByteArray:(IOSByteArray *)data;
+
+- (IOSByteArray *)getData;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_ProtoUpdate)
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_ProtoUpdate, data_, IOSByteArray *)
 
-@interface ImActorModelNetworkApiApiBroker_ForceResend () {
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(ImActorModelNetworkApiApiBroker_ProtoUpdate *self, ImActorModelNetworkApiApiBroker *outer$, IOSByteArray *data);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_ProtoUpdate *new_ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(ImActorModelNetworkApiApiBroker *outer$, IOSByteArray *data) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_ProtoUpdate)
+
+@interface ImActorModelNetworkApiApiBroker_ForceResend : NSObject {
  @public
   jlong id__;
 }
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
+                                               withLong:(jlong)id_;
+
+- (jlong)getId;
+
 @end
 
-@interface ImActorModelNetworkApiApiBroker_RequestHolder () {
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_ForceResend)
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker_ForceResend *self, ImActorModelNetworkApiApiBroker *outer$, jlong id_);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_ForceResend *new_ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker *outer$, jlong id_) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_ForceResend)
+
+@interface ImActorModelNetworkApiApiBroker_RequestHolder : NSObject {
  @public
   MTRpcRequest *message_;
   jlong publicId_;
   id<AMRpcCallback> callback_;
   jlong protoId_;
 }
+
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
                                                withLong:(jlong)publicId
                                        withMTRpcRequest:(MTRpcRequest *)message
                                       withAMRpcCallback:(id<AMRpcCallback>)callback;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_RequestHolder)
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_RequestHolder, message_, MTRpcRequest *)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_RequestHolder, callback_, id<AMRpcCallback>)
 
-@interface ImActorModelNetworkApiApiBroker_$1 () {
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_RequestHolder *self, ImActorModelNetworkApiApiBroker *outer$, jlong publicId, MTRpcRequest *message, id<AMRpcCallback> callback);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_RequestHolder *new_ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker *outer$, jlong publicId, MTRpcRequest *message, id<AMRpcCallback> callback) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_RequestHolder)
+
+@interface ImActorModelNetworkApiApiBroker_$1 : NSObject < DKActorCreator > {
  @public
   AMEndpoints *val$endpoints_;
   id<AMAuthKeyStorage> val$keyStorage_;
   id<AMActorApiCallback> val$callback_;
   id<AMNetworkProvider> val$networkProvider_;
 }
+
+- (ImActorModelNetworkApiApiBroker *)create;
+
+- (instancetype)initWithAMEndpoints:(AMEndpoints *)capture$0
+               withAMAuthKeyStorage:(id<AMAuthKeyStorage>)capture$1
+             withAMActorApiCallback:(id<AMActorApiCallback>)capture$2
+              withAMNetworkProvider:(id<AMNetworkProvider>)capture$3;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_$1)
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$endpoints_, AMEndpoints *)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$keyStorage_, id<AMAuthKeyStorage>)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$callback_, id<AMActorApiCallback>)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$networkProvider_, id<AMNetworkProvider>)
 
-@interface ImActorModelNetworkApiApiBroker_$2 () {
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker_$1 *self, AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_$1 *new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_$1)
+
+@interface ImActorModelNetworkApiApiBroker_$2 : NSObject < MTAuthIdRetriever_AuthIdCallback > {
  @public
   ImActorModelNetworkApiApiBroker *this$0_;
 }
+
+- (void)onSuccessWithLong:(jlong)authId;
+
+- (void)onFailure;
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_$2)
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$2, this$0_, ImActorModelNetworkApiApiBroker *)
 
-@interface ImActorModelNetworkApiApiBroker_$3 () {
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker_$2 *self, ImActorModelNetworkApiApiBroker *outer$);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_$2 *new_ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_$2)
+
+@interface ImActorModelNetworkApiApiBroker_$3 : NSObject < MTMTProtoCallback > {
  @public
   ImActorModelNetworkApiApiBroker *this$0_;
 }
+
+- (void)onRpcResponseWithLong:(jlong)mid
+                withByteArray:(IOSByteArray *)content;
+
+- (void)onUpdateWithByteArray:(IOSByteArray *)content;
+
+- (void)onAuthKeyInvalidatedWithLong:(jlong)authKey;
+
+- (void)onSessionCreated;
+
+- (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_$3)
 
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$3, this$0_, ImActorModelNetworkApiApiBroker *)
 
-BOOL ImActorModelNetworkApiApiBroker_initialized = NO;
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker_$3 *self, ImActorModelNetworkApiApiBroker *outer$);
+
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_$3 *new_ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_$3)
+
+J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkApiApiBroker)
 
 
 #line 42
 @implementation ImActorModelNetworkApiApiBroker
 
-NSString * ImActorModelNetworkApiApiBroker_TAG_ = 
-#line 54
-@"ApiBroker";
-AMAtomicLongCompat * ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
-
-
-#line 44
 + (DKActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
               withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
             withAMActorApiCallback:(id<AMActorApiCallback>)callback
@@ -208,53 +355,27 @@ AMAtomicLongCompat * ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
-  if (self = [super init]) {
-    requests_ =
-#line 61
-    [[JavaUtilHashMap alloc] init];
-    idMap_ =
-#line 62
-    [[JavaUtilHashMap alloc] init];
-    authIdBackOff_ =
-#line 67
-    [[AMExponentialBackoff alloc] init];
-    
-#line 71
-    self->endpoints_ = endpoints;
-    
-#line 72
-    self->keyStorage_ = keyStorage;
-    
-#line 73
-    self->callback_ = callback;
-    
-#line 74
-    self->networkProvider_ = networkProvider;
-  }
+  ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, endpoints, keyStorage, callback, networkProvider);
   return self;
 }
 
 
 #line 78
 - (void)preStart {
-  
-#line 79
   if ([((id<AMAuthKeyStorage>) nil_chk(keyStorage_)) getAuthKey] == 0) {
-    [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_RequestAuthId alloc] initWithImActorModelNetworkApiApiBroker:self]];
+    [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(self)];
   }
   else {
     
 #line 82
     AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J", @"Key loaded: ", [keyStorage_ getAuthKey]));
-    [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_InitMTProto alloc] initWithImActorModelNetworkApiApiBroker:self withLong:[keyStorage_ getAuthKey]]];
+    [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(self, [keyStorage_ getAuthKey])];
   }
 }
 
 
 #line 88
 - (void)onReceiveWithId:(id)message {
-  
-#line 89
   if ([message isKindOfClass:[ImActorModelNetworkApiApiBroker_RequestAuthId class]]) {
     ImActorModelNetworkApiApiBroker_requestAuthId(self);
   }
@@ -341,18 +462,6 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
   ImActorModelNetworkApiApiBroker_processUpdateWithByteArray_(self, content);
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker *)other {
-  [super copyAllFieldsTo:other];
-  other->endpoints_ = endpoints_;
-  other->keyStorage_ = keyStorage_;
-  other->callback_ = callback_;
-  other->requests_ = requests_;
-  other->idMap_ = idMap_;
-  other->proto_ = proto_;
-  other->networkProvider_ = networkProvider_;
-  other->authIdBackOff_ = authIdBackOff_;
-}
-
 + (void)initialize {
   if (self == [ImActorModelNetworkApiApiBroker class]) {
     ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_ = DKEnvironment_createAtomicLongWithLong_(
@@ -364,30 +473,53 @@ withImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
 
 @end
 
+
+#line 44
 DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
-  ImActorModelNetworkApiApiBroker_init();
-  
-#line 46
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelNetworkApiApiBroker_class_(), [[ImActorModelNetworkApiApiBroker_$1 alloc] initWithAMEndpoints:endpoints withAMAuthKeyStorage:keyStorage withAMActorApiCallback:callback withAMNetworkProvider:networkProvider]) withNSString:
+  ImActorModelNetworkApiApiBroker_initialize();
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelNetworkApiApiBroker_class_(), new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider)) withNSString:
 #line 51
   @"api/broker"];
 }
 
-void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self) {
+
+#line 69
+void ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
+  (void) DKActor_init(self);
+  self->requests_ = new_JavaUtilHashMap_init();
+  self->idMap_ = new_JavaUtilHashMap_init();
+  self->authIdBackOff_ = new_AMExponentialBackoff_init();
   
-#line 110
+#line 71
+  self->endpoints_ = endpoints;
+  self->keyStorage_ = keyStorage;
+  self->callback_ = callback;
+  self->networkProvider_ = networkProvider;
+}
+
+
+#line 69
+ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
+  ImActorModelNetworkApiApiBroker *self = [ImActorModelNetworkApiApiBroker alloc];
+  ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, endpoints, keyStorage, callback, networkProvider);
+  return self;
+}
+
+
+#line 109
+void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self) {
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, @"Creating auth key...");
   
 #line 112
-  MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(self->endpoints_, self->networkProvider_, [[ImActorModelNetworkApiApiBroker_$2 alloc] initWithImActorModelNetworkApiApiBroker:self]);
+  MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(self->endpoints_, self->networkProvider_, new_ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(self));
 }
 
+
+#line 130
 void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkApiApiBroker *self, jlong key) {
-  
-#line 131
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, @"Creating proto");
   [((id<AMAuthKeyStorage>) nil_chk(self->keyStorage_)) saveAuthKeyWithLong:key];
-  self->proto_ = [[MTMTProto alloc] initWithLong:key withLong:[((JavaUtilRandom *) [[JavaUtilRandom alloc] init]) nextLong] withAMEndpoints:self->endpoints_ withMTMTProtoCallback:[[ImActorModelNetworkApiApiBroker_$3 alloc] initWithImActorModelNetworkApiApiBroker:self] withAMNetworkProvider:self->networkProvider_];
+  self->proto_ = new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(key, [new_JavaUtilRandom_init() nextLong], self->endpoints_, new_ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(self), self->networkProvider_);
   
 #line 155
   for (ImActorModelNetworkApiApiBroker_RequestHolder * __strong holder in nil_chk([((JavaUtilHashMap *) nil_chk(self->requests_)) values])) {
@@ -396,19 +528,19 @@ void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkA
   }
 }
 
+
+#line 162
 void ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker *self, jlong randomId, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback) {
-  
-#line 163
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J$@", @"-> request#", randomId, @": ", message));
   
 #line 165
-  ImActorModelNetworkApiApiBroker_RequestHolder *holder = [[ImActorModelNetworkApiApiBroker_RequestHolder alloc] initWithImActorModelNetworkApiApiBroker:self withLong:
+  ImActorModelNetworkApiApiBroker_RequestHolder *holder = new_ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(self,
 #line 166
-  randomId withMTRpcRequest:
+  randomId, new_MTRpcRequest_initWithInt_withByteArray_(
 #line 167
-  [[MTRpcRequest alloc] initWithInt:[((ImActorModelNetworkParserRequest *) nil_chk(message)) getHeaderKey] withByteArray:[message toByteArray]] withAMRpcCallback:
+  [((ImActorModelNetworkParserRequest *) nil_chk(message)) getHeaderKey], [message toByteArray]),
 #line 168
-  callback];
+  callback);
   (void) [((JavaUtilHashMap *) nil_chk(self->requests_)) putWithId:JavaLangLong_valueOfWithLong_(holder->publicId_) withId:holder];
   
 #line 171
@@ -419,9 +551,9 @@ void ImActorModelNetworkApiApiBroker_performRequestWithLong_withImActorModelNetw
   }
 }
 
+
+#line 179
 void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImActorModelNetworkApiApiBroker *self, jlong mid, IOSByteArray *content) {
-  
-#line 180
   MTProtoStruct *protoStruct;
   @try {
     protoStruct = MTProtoSerializer_readRpcResponsePayloadWithByteArray_(content);
@@ -467,7 +599,7 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
 #line 212
     ImActorModelNetworkParserResponse *response;
     @try {
-      response = (ImActorModelNetworkParserResponse *) check_class_cast([((ImActorModelApiParserRpcParser *) [[ImActorModelApiParserRpcParser alloc] init]) readWithInt:((MTRpcOk *) nil_chk(ok))->responseType_ withByteArray:ok->payload_], [ImActorModelNetworkParserResponse class]);
+      response = (ImActorModelNetworkParserResponse *) check_class_cast([new_ImActorModelApiParserRpcParser_init() readWithInt:((MTRpcOk *) nil_chk(ok))->responseType_ withByteArray:ok->payload_], [ImActorModelNetworkParserResponse class]);
     }
     @catch (
 #line 215
@@ -495,7 +627,7 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
     AMLog_wWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J$$CIC$", @"<- error#", holder->publicId_, @": ", ((MTRpcError *) nil_chk(e))->errorTag_, ' ', e->errorCode_, ' ', e->userMessage_));
     
 #line 232
-    [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[AMRpcException alloc] initWithNSString:e->errorTag_ withInt:e->errorCode_ withNSString:e->userMessage_ withBoolean:e->canTryAgain_ withByteArray:e->relatedData_]];
+    [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:new_AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(e->errorTag_, e->errorCode_, e->userMessage_, e->canTryAgain_, e->relatedData_)];
   }
   else
 #line 233
@@ -507,7 +639,7 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
     
 #line 238
     if ([((MTRpcInternalError *) nil_chk(e)) isCanTryAgain]) {
-      [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] withLong:[e getTryAgainDelay] * 1000LL];
+      [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(self, rid) withLong:[e getTryAgainDelay] * 1000LL];
     }
     else {
       
@@ -516,7 +648,7 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
       if (holder->protoId_ != 0) {
         (void) [self->idMap_ removeWithId:JavaLangLong_valueOfWithLong_(holder->protoId_)];
       }
-      [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:[[AMRpcInternalException alloc] init]];
+      [((id<AMRpcCallback>) nil_chk(holder->callback_)) onErrorWithAMRpcException:new_AMRpcInternalException_init()];
     }
   }
   else
@@ -524,15 +656,15 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
   if ([protoStruct isKindOfClass:[MTRpcFloodWait class]]) {
     MTRpcFloodWait *f = (MTRpcFloodWait *) check_class_cast(protoStruct, [MTRpcFloodWait class]);
     AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$JCI$", @"<- flood_wait#", ((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->publicId_, ' ', [((MTRpcFloodWait *) nil_chk(f)) getDelay], @" sec"));
-    [((DKActorRef *) nil_chk([self self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ForceResend alloc] initWithImActorModelNetworkApiApiBroker:self withLong:rid] withLong:[f getDelay] * 1000LL];
+    [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(self, rid) withLong:[f getDelay] * 1000LL];
   }
   else {
   }
 }
 
+
+#line 256
 void ImActorModelNetworkApiApiBroker_forceResendWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId) {
-  
-#line 257
   ImActorModelNetworkApiApiBroker_RequestHolder *holder = [((JavaUtilHashMap *) nil_chk(self->requests_)) getWithId:JavaLangLong_valueOfWithLong_(randomId)];
   if (holder != nil) {
     if (holder->protoId_ != 0) {
@@ -544,8 +676,6 @@ void ImActorModelNetworkApiApiBroker_forceResendWithLong_(ImActorModelNetworkApi
 }
 
 void ImActorModelNetworkApiApiBroker_cancelRequestWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId) {
-  
-#line 268
   ImActorModelNetworkApiApiBroker_RequestHolder *holder = [((JavaUtilHashMap *) nil_chk(self->requests_)) getWithId:JavaLangLong_valueOfWithLong_(randomId)];
   if (holder != nil) {
     (void) [self->requests_ removeWithId:JavaLangLong_valueOfWithLong_(randomId)];
@@ -557,8 +687,6 @@ void ImActorModelNetworkApiApiBroker_cancelRequestWithLong_(ImActorModelNetworkA
 }
 
 void ImActorModelNetworkApiApiBroker_processUpdateWithByteArray_(ImActorModelNetworkApiApiBroker *self, IOSByteArray *content) {
-  
-#line 279
   MTProtoStruct *protoStruct;
   @try {
     protoStruct = MTProtoSerializer_readUpdateWithByteArray_(content);
@@ -579,7 +707,7 @@ void ImActorModelNetworkApiApiBroker_processUpdateWithByteArray_(ImActorModelNet
 #line 292
     ImActorModelNetworkParserRpcScope *updateBox;
     @try {
-      updateBox = [((ImActorModelApiParserRpcParser *) [[ImActorModelApiParserRpcParser alloc] init]) readWithInt:type withByteArray:body];
+      updateBox = [new_ImActorModelApiParserRpcParser_init() readWithInt:type withByteArray:body];
     }
     @catch (
 #line 295
@@ -606,40 +734,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker)
 #line 313
 - (instancetype)initWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
                                        withAMRpcCallback:(id<AMRpcCallback>)callback {
-  if (self = [super init]) {
-    
-#line 314
-    self->message_ = message;
-    
-#line 315
-    self->callback_ = callback;
-  }
+  ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(self, message, callback);
   return self;
 }
 
 
 #line 318
 - (ImActorModelNetworkParserRequest *)getMessage {
-  
-#line 319
   return message_;
 }
 
-
-#line 322
 - (id<AMRpcCallback>)getCallback {
-  
-#line 323
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_PerformRequest *)other {
-  [super copyAllFieldsTo:other];
-  other->message_ = message_;
-  other->callback_ = callback_;
+@end
+
+
+#line 313
+void ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_PerformRequest *self, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback) {
+  (void) NSObject_init(self);
+  
+#line 314
+  self->message_ = message;
+  self->callback_ = callback;
 }
 
-@end
+
+#line 313
+ImActorModelNetworkApiApiBroker_PerformRequest *new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback) {
+  ImActorModelNetworkApiApiBroker_PerformRequest *self = [ImActorModelNetworkApiApiBroker_PerformRequest alloc];
+  ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(self, message, callback);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_PerformRequest)
 
@@ -650,28 +777,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_PerformRequest)
 
 #line 330
 - (instancetype)initWithLong:(jlong)randomId {
-  if (self = [super init]) {
-    
-#line 331
-    self->randomId_ = randomId;
-  }
+  ImActorModelNetworkApiApiBroker_CancelRequest_initWithLong_(self, randomId);
   return self;
 }
 
 
 #line 334
 - (jlong)getRandomId {
-  
-#line 335
   return randomId_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_CancelRequest *)other {
-  [super copyAllFieldsTo:other];
-  other->randomId_ = randomId_;
+@end
+
+
+#line 330
+void ImActorModelNetworkApiApiBroker_CancelRequest_initWithLong_(ImActorModelNetworkApiApiBroker_CancelRequest *self, jlong randomId) {
+  (void) NSObject_init(self);
+  
+#line 331
+  self->randomId_ = randomId;
 }
 
-@end
+
+#line 330
+ImActorModelNetworkApiApiBroker_CancelRequest *new_ImActorModelNetworkApiApiBroker_CancelRequest_initWithLong_(jlong randomId) {
+  ImActorModelNetworkApiApiBroker_CancelRequest *self = [ImActorModelNetworkApiApiBroker_CancelRequest alloc];
+  ImActorModelNetworkApiApiBroker_CancelRequest_initWithLong_(self, randomId);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_CancelRequest)
 
@@ -680,10 +813,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_CancelRequest)
 @implementation ImActorModelNetworkApiApiBroker_RequestAuthId
 
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$ {
-  return [super init];
+  ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker_RequestAuthId *self, ImActorModelNetworkApiApiBroker *outer$) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelNetworkApiApiBroker_RequestAuthId *new_ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker *outer$) {
+  ImActorModelNetworkApiApiBroker_RequestAuthId *self = [ImActorModelNetworkApiApiBroker_RequestAuthId alloc];
+  ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestAuthId)
 
@@ -695,28 +839,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestAuthId)
 #line 346
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
                                                withLong:(jlong)authId {
-  if (self = [super init]) {
-    
-#line 347
-    self->authId_ = authId;
-  }
+  ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(self, outer$, authId);
   return self;
 }
 
 
 #line 350
 - (jlong)getAuthId {
-  
-#line 351
   return authId_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_InitMTProto *)other {
-  [super copyAllFieldsTo:other];
-  other->authId_ = authId_;
+@end
+
+
+#line 346
+void ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker_InitMTProto *self, ImActorModelNetworkApiApiBroker *outer$, jlong authId) {
+  (void) NSObject_init(self);
+  
+#line 347
+  self->authId_ = authId;
 }
 
-@end
+
+#line 346
+ImActorModelNetworkApiApiBroker_InitMTProto *new_ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker *outer$, jlong authId) {
+  ImActorModelNetworkApiApiBroker_InitMTProto *self = [ImActorModelNetworkApiApiBroker_InitMTProto alloc];
+  ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(self, outer$, authId);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_InitMTProto)
 
@@ -729,40 +879,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_InitMTProto)
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
                                                withLong:(jlong)responseId
                                           withByteArray:(IOSByteArray *)data {
-  if (self = [super init]) {
-    
-#line 360
-    self->responseId_ = responseId;
-    
-#line 361
-    self->data_ = data;
-  }
+  ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(self, outer$, responseId, data);
   return self;
 }
 
 
 #line 364
 - (jlong)getResponseId {
-  
-#line 365
   return responseId_;
 }
 
-
-#line 368
 - (IOSByteArray *)getData {
-  
-#line 369
   return data_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_ProtoResponse *)other {
-  [super copyAllFieldsTo:other];
-  other->responseId_ = responseId_;
-  other->data_ = data_;
+@end
+
+
+#line 359
+void ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(ImActorModelNetworkApiApiBroker_ProtoResponse *self, ImActorModelNetworkApiApiBroker *outer$, jlong responseId, IOSByteArray *data) {
+  (void) NSObject_init(self);
+  
+#line 360
+  self->responseId_ = responseId;
+  self->data_ = data;
 }
 
-@end
+
+#line 359
+ImActorModelNetworkApiApiBroker_ProtoResponse *new_ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(ImActorModelNetworkApiApiBroker *outer$, jlong responseId, IOSByteArray *data) {
+  ImActorModelNetworkApiApiBroker_ProtoResponse *self = [ImActorModelNetworkApiApiBroker_ProtoResponse alloc];
+  ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(self, outer$, responseId, data);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoResponse)
 
@@ -774,28 +923,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoResponse)
 #line 376
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
                                           withByteArray:(IOSByteArray *)data {
-  if (self = [super init]) {
-    
-#line 377
-    self->data_ = data;
-  }
+  ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(self, outer$, data);
   return self;
 }
 
 
 #line 380
 - (IOSByteArray *)getData {
-  
-#line 381
   return data_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_ProtoUpdate *)other {
-  [super copyAllFieldsTo:other];
-  other->data_ = data_;
+@end
+
+
+#line 376
+void ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(ImActorModelNetworkApiApiBroker_ProtoUpdate *self, ImActorModelNetworkApiApiBroker *outer$, IOSByteArray *data) {
+  (void) NSObject_init(self);
+  
+#line 377
+  self->data_ = data;
 }
 
-@end
+
+#line 376
+ImActorModelNetworkApiApiBroker_ProtoUpdate *new_ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(ImActorModelNetworkApiApiBroker *outer$, IOSByteArray *data) {
+  ImActorModelNetworkApiApiBroker_ProtoUpdate *self = [ImActorModelNetworkApiApiBroker_ProtoUpdate alloc];
+  ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(self, outer$, data);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoUpdate)
 
@@ -807,28 +962,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ProtoUpdate)
 #line 388
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$
                                                withLong:(jlong)id_ {
-  if (self = [super init]) {
-    
-#line 389
-    self->id__ = id_;
-  }
+  ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(self, outer$, id_);
   return self;
 }
 
 
 #line 392
 - (jlong)getId {
-  
-#line 393
   return id__;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_ForceResend *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
+@end
+
+
+#line 388
+void ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker_ForceResend *self, ImActorModelNetworkApiApiBroker *outer$, jlong id_) {
+  (void) NSObject_init(self);
+  
+#line 389
+  self->id__ = id_;
 }
 
-@end
+
+#line 388
+ImActorModelNetworkApiApiBroker_ForceResend *new_ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(ImActorModelNetworkApiApiBroker *outer$, jlong id_) {
+  ImActorModelNetworkApiApiBroker_ForceResend *self = [ImActorModelNetworkApiApiBroker_ForceResend alloc];
+  ImActorModelNetworkApiApiBroker_ForceResend_initWithImActorModelNetworkApiApiBroker_withLong_(self, outer$, id_);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ForceResend)
 
@@ -842,29 +1003,30 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ForceResend)
                                                withLong:(jlong)publicId
                                        withMTRpcRequest:(MTRpcRequest *)message
                                       withAMRpcCallback:(id<AMRpcCallback>)callback {
-  if (self = [super init]) {
-    
-#line 405
-    self->message_ = message;
-    
-#line 406
-    self->publicId_ = publicId;
-    
-#line 407
-    self->callback_ = callback;
-  }
+  ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(self, outer$, publicId, message, callback);
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_RequestHolder *)other {
-  [super copyAllFieldsTo:other];
-  other->message_ = message_;
-  other->publicId_ = publicId_;
-  other->callback_ = callback_;
-  other->protoId_ = protoId_;
+@end
+
+
+#line 404
+void ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_RequestHolder *self, ImActorModelNetworkApiApiBroker *outer$, jlong publicId, MTRpcRequest *message, id<AMRpcCallback> callback) {
+  (void) NSObject_init(self);
+  
+#line 405
+  self->message_ = message;
+  self->publicId_ = publicId;
+  self->callback_ = callback;
 }
 
-@end
+
+#line 404
+ImActorModelNetworkApiApiBroker_RequestHolder *new_ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker *outer$, jlong publicId, MTRpcRequest *message, id<AMRpcCallback> callback) {
+  ImActorModelNetworkApiApiBroker_RequestHolder *self = [ImActorModelNetworkApiApiBroker_RequestHolder alloc];
+  ImActorModelNetworkApiApiBroker_RequestHolder_initWithImActorModelNetworkApiApiBroker_withLong_withMTRpcRequest_withAMRpcCallback_(self, outer$, publicId, message, callback);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestHolder)
 
@@ -873,31 +1035,32 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestHolder)
 
 #line 48
 - (ImActorModelNetworkApiApiBroker *)create {
-  
-#line 49
-  return [[ImActorModelNetworkApiApiBroker alloc] initWithAMEndpoints:val$endpoints_ withAMAuthKeyStorage:val$keyStorage_ withAMActorApiCallback:val$callback_ withAMNetworkProvider:val$networkProvider_];
+  return new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(val$endpoints_, val$keyStorage_, val$callback_, val$networkProvider_);
 }
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)capture$0
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)capture$1
              withAMActorApiCallback:(id<AMActorApiCallback>)capture$2
               withAMNetworkProvider:(id<AMNetworkProvider>)capture$3 {
-  val$endpoints_ = capture$0;
-  val$keyStorage_ = capture$1;
-  val$callback_ = capture$2;
-  val$networkProvider_ = capture$3;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$endpoints_ = val$endpoints_;
-  other->val$keyStorage_ = val$keyStorage_;
-  other->val$callback_ = val$callback_;
-  other->val$networkProvider_ = val$networkProvider_;
+  ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, capture$0, capture$1, capture$2, capture$3);
+  return self;
 }
 
 @end
+
+void ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker_$1 *self, AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3) {
+  self->val$endpoints_ = capture$0;
+  self->val$keyStorage_ = capture$1;
+  self->val$callback_ = capture$2;
+  self->val$networkProvider_ = capture$3;
+  (void) NSObject_init(self);
+}
+
+ImActorModelNetworkApiApiBroker_$1 *new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3) {
+  ImActorModelNetworkApiApiBroker_$1 *self = [ImActorModelNetworkApiApiBroker_$1 alloc];
+  ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, capture$0, capture$1, capture$2, capture$3);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$1)
 
@@ -906,10 +1069,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$1)
 
 #line 114
 - (void)onSuccessWithLong:(jlong)authId {
-  
-#line 115
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_get_TAG_(), JreStrcat("$J", @"Key created: ", authId));
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_InitMTProto alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withLong:authId]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(this$0_, authId)];
 }
 
 
@@ -919,20 +1080,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$1)
   [((AMExponentialBackoff *) nil_chk(this$0_->authIdBackOff_)) onFailure];
   jlong delay = [this$0_->authIdBackOff_ exponentialWait];
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_get_TAG_(), JreStrcat("$J$", @"Key creation delay in ", delay, @" ms"));
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_RequestAuthId alloc] initWithImActorModelNetworkApiApiBroker:this$0_] withLong:delay];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(this$0_) withLong:delay];
 }
 
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker_$2 *self, ImActorModelNetworkApiApiBroker *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelNetworkApiApiBroker_$2 *new_ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker *outer$) {
+  ImActorModelNetworkApiApiBroker_$2 *self = [ImActorModelNetworkApiApiBroker_$2 alloc];
+  ImActorModelNetworkApiApiBroker_$2_initWithImActorModelNetworkApiApiBroker_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$2)
 
@@ -942,17 +1109,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$2)
 #line 135
 - (void)onRpcResponseWithLong:(jlong)mid
                 withByteArray:(IOSByteArray *)content {
-  
-#line 136
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ProtoResponse alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withLong:mid withByteArray:content]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_ProtoResponse_initWithImActorModelNetworkApiApiBroker_withLong_withByteArray_(this$0_, mid, content)];
 }
 
-
-#line 140
 - (void)onUpdateWithByteArray:(IOSByteArray *)content {
-  
-#line 141
-  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelNetworkApiApiBroker_ProtoUpdate alloc] initWithImActorModelNetworkApiApiBroker:this$0_ withByteArray:content]];
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_ProtoUpdate_initWithImActorModelNetworkApiApiBroker_withByteArray_(this$0_, content)];
 }
 
 
@@ -964,21 +1125,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$2)
 
 #line 150
 - (void)onSessionCreated {
-  
-#line 151
   [((id<AMActorApiCallback>) nil_chk(this$0_->callback_)) onNewSessionCreated];
 }
 
 - (instancetype)initWithImActorModelNetworkApiApiBroker:(ImActorModelNetworkApiApiBroker *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelNetworkApiApiBroker_$3 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker_$3 *self, ImActorModelNetworkApiApiBroker *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelNetworkApiApiBroker_$3 *new_ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(ImActorModelNetworkApiApiBroker *outer$) {
+  ImActorModelNetworkApiApiBroker_$3 *self = [ImActorModelNetworkApiApiBroker_$3 alloc];
+  ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_$3)

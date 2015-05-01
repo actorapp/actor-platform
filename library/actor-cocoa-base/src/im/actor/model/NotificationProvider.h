@@ -6,29 +6,32 @@
 #ifndef _AMNotificationProvider_H_
 #define _AMNotificationProvider_H_
 
+#include "J2ObjC_header.h"
+
+@class AMMessenger;
 @class AMPeer;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-
 @protocol AMNotificationProvider < NSObject, JavaObject >
 
-- (void)onMessageArriveInApp;
+- (void)onMessageArriveInAppWithAMMessenger:(AMMessenger *)messenger;
 
-- (void)onNotificationWithJavaUtilList:(id<JavaUtilList>)topNotifications
-                               withInt:(jint)messagesCount
-                               withInt:(jint)conversationsCount;
+- (void)onNotificationWithAMMessenger:(AMMessenger *)messenger
+                     withJavaUtilList:(id<JavaUtilList>)topNotifications
+                              withInt:(jint)messagesCount
+                              withInt:(jint)conversationsCount;
 
-- (void)onDialogsOpen;
+- (void)onDialogsOpenWithAMMessenger:(AMMessenger *)messenger;
 
-- (void)onChatOpenWithAMPeer:(AMPeer *)peer;
+- (void)onChatOpenWithAMMessenger:(AMMessenger *)messenger
+                       withAMPeer:(AMPeer *)peer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMNotificationProvider)
 
-#define ImActorModelNotificationProvider AMNotificationProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMNotificationProvider)
+
+#define ImActorModelNotificationProvider AMNotificationProvider
 
 #endif // _AMNotificationProvider_H_

@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserOutPeer.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserOutPeer.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/UserOutPeer.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -17,6 +19,7 @@
   jint uid_;
   jlong accessHash_;
 }
+
 @end
 
 
@@ -27,34 +30,24 @@
 #line 24
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash {
-  if (self = [super init]) {
-    
-#line 25
-    self->uid_ = uid;
-    
-#line 26
-    self->accessHash_ = accessHash;
-  }
+  ImActorModelApiUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUserOutPeer_init(self);
+  return self;
 }
 
+
+#line 33
 - (jint)getUid {
-  
-#line 34
   return self->uid_;
 }
 
-
-#line 37
 - (jlong)getAccessHash {
-  
-#line 38
   return self->accessHash_;
 }
 
@@ -68,12 +61,12 @@
 
 #line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 49
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+
+#line 54
 - (NSString *)description {
   NSString *res = @"struct UserOutPeer{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -81,12 +74,38 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiUserOutPeer *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->accessHash_ = accessHash_;
+@end
+
+
+#line 24
+void ImActorModelApiUserOutPeer_initWithInt_withLong_(ImActorModelApiUserOutPeer *self, jint uid, jlong accessHash) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->uid_ = uid;
+  self->accessHash_ = accessHash;
 }
 
-@end
+
+#line 24
+ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_initWithInt_withLong_(jint uid, jlong accessHash) {
+  ImActorModelApiUserOutPeer *self = [ImActorModelApiUserOutPeer alloc];
+  ImActorModelApiUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
+  return self;
+}
+
+
+#line 29
+void ImActorModelApiUserOutPeer_init(ImActorModelApiUserOutPeer *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 29
+ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_init() {
+  ImActorModelApiUserOutPeer *self = [ImActorModelApiUserOutPeer alloc];
+  ImActorModelApiUserOutPeer_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUserOutPeer)

@@ -6,63 +6,47 @@
 #ifndef _ImActorModelModulesContactsContactsSyncActor_H_
 #define _ImActorModelModulesContactsContactsSyncActor_H_
 
-@class AMRpcException;
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/utils/ModuleActor.h"
+
 @class AMUser;
 @class IOSIntArray;
 @class ImActorModelApiRpcResponseGetContacts;
 @class ImActorModelModulesModules;
-@class JavaUtilArrayList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
-#include "java/util/Comparator.h"
+@interface ImActorModelModulesContactsContactsSyncActor : ImActorModelModulesUtilsModuleActor
 
-@interface ImActorModelModulesContactsContactsSyncActor : ImActorModelModulesUtilsModuleActor {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)preStart;
-
-- (void)performSync;
+- (void)onContactsAddedWithIntArray:(IOSIntArray *)uids;
 
 - (void)onContactsLoadedWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)result;
 
-- (void)onContactsAddedWithIntArray:(IOSIntArray *)uids;
-
 - (void)onContactsRemovedWithIntArray:(IOSIntArray *)uids;
+
+- (void)onReceiveWithId:(id)message;
 
 - (void)onUserChangedWithAMUser:(AMUser *)user;
 
-- (void)onReceiveWithId:(id)message;
+- (void)performSync;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_initWithImActorModelModulesModules_(ImActorModelModulesContactsContactsSyncActor *self, ImActorModelModulesModules *messenger);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesContactsContactsSyncActor_TAG_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesContactsContactsSyncActor, TAG_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor *new_ImActorModelModulesContactsContactsSyncActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor)
 
-@interface ImActorModelModulesContactsContactsSyncActor_PerformSync : NSObject {
-}
+@interface ImActorModelModulesContactsContactsSyncActor_ContactsLoaded : NSObject
 
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_PerformSync)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_PerformSync)
-
-@interface ImActorModelModulesContactsContactsSyncActor_ContactsLoaded : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)result;
 
@@ -72,13 +56,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_PerformS
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *self, ImActorModelApiRpcResponseGetContacts *result);
+
+FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelApiRpcResponseGetContacts *result) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded)
 
-@interface ImActorModelModulesContactsContactsSyncActor_ContactsAdded : NSObject {
-}
+@interface ImActorModelModulesContactsContactsSyncActor_ContactsAdded : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithIntArray:(IOSIntArray *)uids;
 
@@ -88,13 +74,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_Contacts
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_ContactsAdded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_ContactsAdded_initWithIntArray_(ImActorModelModulesContactsContactsSyncActor_ContactsAdded *self, IOSIntArray *uids);
+
+FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor_ContactsAdded *new_ImActorModelModulesContactsContactsSyncActor_ContactsAdded_initWithIntArray_(IOSIntArray *uids) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_ContactsAdded)
 
-@interface ImActorModelModulesContactsContactsSyncActor_ContactsRemoved : NSObject {
-}
+@interface ImActorModelModulesContactsContactsSyncActor_ContactsRemoved : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithIntArray:(IOSIntArray *)uids;
 
@@ -104,13 +92,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_Contacts
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_ContactsRemoved)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_ContactsRemoved_initWithIntArray_(ImActorModelModulesContactsContactsSyncActor_ContactsRemoved *self, IOSIntArray *uids);
+
+FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor_ContactsRemoved *new_ImActorModelModulesContactsContactsSyncActor_ContactsRemoved_initWithIntArray_(IOSIntArray *uids) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_ContactsRemoved)
 
-@interface ImActorModelModulesContactsContactsSyncActor_UserChanged : NSObject {
-}
+@interface ImActorModelModulesContactsContactsSyncActor_UserChanged : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMUser:(AMUser *)user;
 
@@ -120,44 +110,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_Contacts
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_UserChanged)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_UserChanged_initWithAMUser_(ImActorModelModulesContactsContactsSyncActor_UserChanged *self, AMUser *user);
+
+FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor_UserChanged *new_ImActorModelModulesContactsContactsSyncActor_UserChanged_initWithAMUser_(AMUser *user) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_UserChanged)
-
-@interface ImActorModelModulesContactsContactsSyncActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetContacts *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesContactsContactsSyncActor:(ImActorModelModulesContactsContactsSyncActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$1)
-
-@interface ImActorModelModulesContactsContactsSyncActor_$2 : NSObject < JavaUtilComparator > {
-}
-
-- (jint)compareWithId:(AMUser *)lhs
-               withId:(AMUser *)rhs;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
 
 #endif // _ImActorModelModulesContactsContactsSyncActor_H_

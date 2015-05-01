@@ -6,49 +6,46 @@
 #ifndef _ImActorModelModulesAvatarGroupAvatarChangeActor_H_
 #define _ImActorModelModulesAvatarGroupAvatarChangeActor_H_
 
-@class AMFileReference;
-@class AMRpcException;
-@class ImActorModelApiRpcResponseEditGroupAvatar;
-@class ImActorModelApiRpcResponseSeq;
-@class ImActorModelModulesModules;
-@class JavaUtilHashMap;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
-#include "java/lang/Runnable.h"
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor : ImActorModelModulesUtilsModuleActor {
-}
+@class AMFileReference;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
-
-- (void)changeAvatarWithInt:(jint)gid
-               withNSString:(NSString *)descriptor;
-
-- (void)uploadCompletedWithLong:(jlong)rid
-            withAMFileReference:(AMFileReference *)fileReference;
 
 - (void)avatarChangedWithInt:(jint)gid
                     withLong:(jlong)rid;
 
-- (void)uploadErrorWithLong:(jlong)rid;
+- (void)changeAvatarWithInt:(jint)gid
+               withNSString:(NSString *)descriptor;
+
+- (void)onReceiveWithId:(id)message;
 
 - (void)removeAvatarWithInt:(jint)gid;
 
-- (void)onReceiveWithId:(id)message;
+- (void)uploadCompletedWithLong:(jlong)rid
+            withAMFileReference:(AMFileReference *)fileReference;
+
+- (void)uploadErrorWithLong:(jlong)rid;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarGroupAvatarChangeActor_initWithImActorModelModulesModules_(ImActorModelModulesAvatarGroupAvatarChangeActor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarGroupAvatarChangeActor *new_ImActorModelModulesAvatarGroupAvatarChangeActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor)
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged : NSObject {
-}
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid
                    withLong:(jlong)rid;
@@ -61,32 +58,36 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged *self, jint gid, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged *new_ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(jint gid, jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged)
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar : NSObject {
-}
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid
                withNSString:(NSString *)descriptor;
 
-- (jint)getGid;
-
 - (NSString *)getDescriptor;
+
+- (jint)getGid;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar_initWithInt_withNSString_(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *self, jint gid, NSString *descriptor);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *new_ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar_initWithInt_withNSString_(jint gid, NSString *descriptor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar)
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar : NSObject {
-}
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid;
 
@@ -96,81 +97,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_Chang
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar_initWithInt_(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar *self, jint gid);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar *new_ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar_initWithInt_(jint gid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar)
-
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseEditGroupAvatar *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
-                                                                withInt:(jint)capture$0
-                                                               withLong:(jlong)capture$1;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1)
-
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1:(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1)
-
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
-                                                                withInt:(jint)capture$0
-                                                               withLong:(jlong)capture$1;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
-
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2:(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)
 
 #endif // _ImActorModelModulesAvatarGroupAvatarChangeActor_H_

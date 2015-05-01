@@ -6,21 +6,20 @@
 #ifndef _AMMessage_H_
 #define _AMMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+
 @class AMAbsContent;
 @class AMMessageStateEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@protocol BSBserCreator;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserCreator.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+@interface AMMessage : BSBserObject < DKListEngineItem >
 
-@interface AMMessage : BSBserObject < DKListEngineItem > {
-}
-
-+ (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)sortDate
@@ -29,65 +28,51 @@
       withAMMessageStateEnum:(AMMessageStateEnum *)messageState
             withAMAbsContent:(AMAbsContent *)content;
 
-- (jlong)getRid;
-
-- (jlong)getSortDate;
-
-- (jlong)getDate;
-
-- (jint)getSenderId;
-
-- (AMMessageStateEnum *)getMessageState;
-
-- (AMAbsContent *)getContent;
-
-- (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState;
+- (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content;
 
 - (AMMessage *)changeDateWithLong:(jlong)date;
 
-- (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content;
+- (AMMessage *)changeStateWithAMMessageStateEnum:(AMMessageStateEnum *)messageState;
+
++ (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (AMAbsContent *)getContent;
+
+- (jlong)getDate;
+
+- (jlong)getEngineId;
+
+- (NSString *)getEngineSearch;
+
+- (jlong)getEngineSort;
+
+- (AMMessageStateEnum *)getMessageState;
+
+- (jlong)getRid;
+
+- (jint)getSenderId;
+
+- (jlong)getSortDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
-- (jlong)getEngineSort;
-
-- (NSString *)getEngineSearch;
-
 @end
 
-FOUNDATION_EXPORT BOOL AMMessage_initialized;
 J2OBJC_STATIC_INIT(AMMessage)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT id<BSBserCreator> AMMessage_CREATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMMessage, CREATOR_, id<BSBserCreator>)
-CF_EXTERN_C_END
 
-typedef AMMessage ImActorModelEntityMessage;
+FOUNDATION_EXPORT AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT void AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(AMMessage *self, jlong rid, jlong sortDate, jlong date, jint senderId, AMMessageStateEnum *messageState, AMAbsContent *content);
+
+FOUNDATION_EXPORT AMMessage *new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(jlong rid, jlong sortDate, jlong date, jint senderId, AMMessageStateEnum *messageState, AMAbsContent *content) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMessage)
 
-@interface AMMessage_$1 : NSObject < BSBserCreator > {
-}
-
-- (AMMessage *)createInstance;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMMessage_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMMessage_$1)
+typedef AMMessage ImActorModelEntityMessage;
 
 #endif // _AMMessage_H_

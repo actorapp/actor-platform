@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 
-@interface ImActorModelNetworkParserUpdate : ImActorModelNetworkParserHeaderBserObject {
-}
+@interface ImActorModelNetworkParserUpdate : ImActorModelNetworkParserHeaderBserObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -18,8 +19,7 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserUpdate)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelNetworkParserUpdate_init(ImActorModelNetworkParserUpdate *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserUpdate)
 

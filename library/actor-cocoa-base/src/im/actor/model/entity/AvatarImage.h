@@ -6,30 +6,31 @@
 #ifndef _AMAvatarImage_H_
 #define _AMAvatarImage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMFileReference;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMAvatarImage : BSBserObject
 
-@interface AMAvatarImage : BSBserObject {
-}
-
-+ (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
         withAMFileReference:(AMFileReference *)fileReference;
 
-- (jint)getWidth;
+- (jboolean)isEqual:(id)o;
 
-- (jint)getHeight;
++ (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMFileReference *)getFileReference;
 
-- (jboolean)isEqual:(id)o;
+- (jint)getHeight;
+
+- (jint)getWidth;
 
 - (NSUInteger)hash;
 
@@ -41,13 +42,14 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatarImage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMAvatarImage ImActorModelEntityAvatarImage;
+FOUNDATION_EXPORT void AMAvatarImage_initWithInt_withInt_withAMFileReference_(AMAvatarImage *self, jint width, jint height, AMFileReference *fileReference);
+
+FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithInt_withInt_withAMFileReference_(jint width, jint height, AMFileReference *fileReference) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAvatarImage)
+
+typedef AMAvatarImage ImActorModelEntityAvatarImage;
 
 #endif // _AMAvatarImage_H_

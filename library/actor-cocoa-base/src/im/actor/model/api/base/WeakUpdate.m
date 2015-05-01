@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/WeakUpdate.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/WeakUpdate.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/Utils.h"
+#include "im/actor/model/network/parser/RpcScope.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiBaseWeakUpdate () {
@@ -22,6 +24,7 @@
   jint updateHeader_;
   IOSByteArray *update_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
@@ -41,45 +44,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 - (instancetype)initWithLong:(jlong)date
                      withInt:(jint)updateHeader
                withByteArray:(IOSByteArray *)update {
-  if (self = [super init]) {
-    
-#line 32
-    self->date_ = date;
-    
-#line 33
-    self->updateHeader_ = updateHeader;
-    
-#line 34
-    self->update_ = update;
-  }
+  ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(self, date, updateHeader, update);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiBaseWeakUpdate_init(self);
+  return self;
 }
 
+
+#line 41
 - (jlong)getDate {
-  
-#line 42
   return self->date_;
 }
 
-
-#line 45
 - (jint)getUpdateHeader {
-  
-#line 46
   return self->updateHeader_;
 }
 
-
-#line 49
 - (IOSByteArray *)getUpdate {
-  
-#line 50
   return self->update_;
 }
 
@@ -94,16 +80,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->date_];
   [writer writeIntWithInt:2 withInt:self->updateHeader_];
   if (self->update_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:3 withByteArray:self->update_];
 }
 
+
+#line 71
 - (NSString *)description {
   NSString *res = @"update box WeakUpdate{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"date=", self->date_));
@@ -113,26 +99,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 82
-  return ImActorModelApiBaseWeakUpdate_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiBaseWeakUpdate *)other {
-  [super copyAllFieldsTo:other];
-  other->date_ = date_;
-  other->updateHeader_ = updateHeader_;
-  other->update_ = update_;
+#line 81
+- (jint)getHeaderKey {
+  return ImActorModelApiBaseWeakUpdate_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiBaseWeakUpdate_init();
+  ImActorModelApiBaseWeakUpdate_initialize();
   
 #line 24
-  return ((ImActorModelApiBaseWeakUpdate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseWeakUpdate alloc] init], data));
+  return ((ImActorModelApiBaseWeakUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseWeakUpdate_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(ImActorModelApiBaseWeakUpdate *self, jlong date, jint updateHeader, IOSByteArray *update) {
+  (void) ImActorModelNetworkParserRpcScope_init(self);
+  
+#line 32
+  self->date_ = date;
+  self->updateHeader_ = updateHeader;
+  self->update_ = update;
+}
+
+
+#line 31
+ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(jlong date, jint updateHeader, IOSByteArray *update) {
+  ImActorModelApiBaseWeakUpdate *self = [ImActorModelApiBaseWeakUpdate alloc];
+  ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(self, date, updateHeader, update);
+  return self;
+}
+
+void ImActorModelApiBaseWeakUpdate_init(ImActorModelApiBaseWeakUpdate *self) {
+  (void) ImActorModelNetworkParserRpcScope_init(self);
+}
+
+
+#line 37
+ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_init() {
+  ImActorModelApiBaseWeakUpdate *self = [ImActorModelApiBaseWeakUpdate alloc];
+  ImActorModelApiBaseWeakUpdate_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseWeakUpdate)

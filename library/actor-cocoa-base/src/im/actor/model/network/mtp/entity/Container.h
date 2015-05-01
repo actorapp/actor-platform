@@ -6,17 +6,18 @@
 #ifndef _MTContainer_H_
 #define _MTContainer_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSObjectArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
-
 #define MTContainer_HEADER 10
 
-@interface MTContainer : MTProtoStruct {
-}
+@interface MTContainer : MTProtoStruct
+
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
@@ -24,25 +25,32 @@
 
 - (IOSObjectArray *)getMessages;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTContainer)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTContainer, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTContainer ImActorModelNetworkMtpEntityContainer;
+FOUNDATION_EXPORT void MTContainer_initWithBSDataInput_(MTContainer *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTContainer *new_MTContainer_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTContainer_initWithMTProtoMessageArray_(MTContainer *self, IOSObjectArray *messages);
+
+FOUNDATION_EXPORT MTContainer *new_MTContainer_initWithMTProtoMessageArray_(IOSObjectArray *messages) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTContainer)
+
+typedef MTContainer ImActorModelNetworkMtpEntityContainer;
 
 #endif // _MTContainer_H_

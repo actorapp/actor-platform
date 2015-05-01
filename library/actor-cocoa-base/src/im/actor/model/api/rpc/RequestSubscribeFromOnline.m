@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeFromOnline.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeFromOnline.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -22,6 +24,7 @@
  @public
   id<JavaUtilList> users_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<JavaUtilList>)
@@ -39,32 +42,29 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
 
 #line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users {
-  if (self = [super init]) {
-    
-#line 30
-    self->users_ = users;
-  }
+  ImActorModelApiRpcRequestSubscribeFromOnline_initWithJavaUtilList_(self, users);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestSubscribeFromOnline_init(self);
+  return self;
 }
 
+
+#line 37
 - (id<JavaUtilList>)getUsers {
-  
-#line 38
   return self->users_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:[[ImActorModelApiUserOutPeer alloc] init]];
+    [_users addWithId:new_ImActorModelApiUserOutPeer_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
@@ -72,11 +72,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
 
 #line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 52
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
 }
 
+
+#line 56
 - (NSString *)description {
   NSString *res = @"rpc SubscribeFromOnline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"users=", [((id<JavaUtilList>) nil_chk(self->users_)) size]));
@@ -84,24 +84,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeFromOnline, users_, id<Jav
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 65
-  return ImActorModelApiRpcRequestSubscribeFromOnline_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSubscribeFromOnline *)other {
-  [super copyAllFieldsTo:other];
-  other->users_ = users_;
+#line 64
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestSubscribeFromOnline_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestSubscribeFromOnline *ImActorModelApiRpcRequestSubscribeFromOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSubscribeFromOnline_init();
+  ImActorModelApiRpcRequestSubscribeFromOnline_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestSubscribeFromOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSubscribeFromOnline alloc] init], data));
+  return ((ImActorModelApiRpcRequestSubscribeFromOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSubscribeFromOnline_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestSubscribeFromOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeFromOnline *self, id<JavaUtilList> users) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->users_ = users;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestSubscribeFromOnline *new_ImActorModelApiRpcRequestSubscribeFromOnline_initWithJavaUtilList_(id<JavaUtilList> users) {
+  ImActorModelApiRpcRequestSubscribeFromOnline *self = [ImActorModelApiRpcRequestSubscribeFromOnline alloc];
+  ImActorModelApiRpcRequestSubscribeFromOnline_initWithJavaUtilList_(self, users);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestSubscribeFromOnline_init(ImActorModelApiRpcRequestSubscribeFromOnline *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestSubscribeFromOnline *new_ImActorModelApiRpcRequestSubscribeFromOnline_init() {
+  ImActorModelApiRpcRequestSubscribeFromOnline *self = [ImActorModelApiRpcRequestSubscribeFromOnline alloc];
+  ImActorModelApiRpcRequestSubscribeFromOnline_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSubscribeFromOnline)

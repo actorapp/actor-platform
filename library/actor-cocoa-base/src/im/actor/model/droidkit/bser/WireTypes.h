@@ -8,21 +8,20 @@
 
 #include "J2ObjC_header.h"
 
+#define BSWireTypes_TYPE_VARINT 0
 #define BSWireTypes_TYPE_32BIT 5
 #define BSWireTypes_TYPE_64BIT 1
 #define BSWireTypes_TYPE_LENGTH_DELIMITED 2
-#define BSWireTypes_TYPE_VARINT 0
 
-@interface BSWireTypes : NSObject {
-}
+@interface BSWireTypes : NSObject
+
+#pragma mark Package-Private
 
 - (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSWireTypes)
-
-CF_EXTERN_C_BEGIN
 
 J2OBJC_STATIC_FIELD_GETTER(BSWireTypes, TYPE_VARINT, jint)
 
@@ -31,10 +30,13 @@ J2OBJC_STATIC_FIELD_GETTER(BSWireTypes, TYPE_32BIT, jint)
 J2OBJC_STATIC_FIELD_GETTER(BSWireTypes, TYPE_64BIT, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(BSWireTypes, TYPE_LENGTH_DELIMITED, jint)
-CF_EXTERN_C_END
 
-typedef BSWireTypes ImActorModelDroidkitBserWireTypes;
+FOUNDATION_EXPORT void BSWireTypes_init(BSWireTypes *self);
+
+FOUNDATION_EXPORT BSWireTypes *new_BSWireTypes_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSWireTypes)
+
+typedef BSWireTypes ImActorModelDroidkitBserWireTypes;
 
 #endif // _BSWireTypes_H_

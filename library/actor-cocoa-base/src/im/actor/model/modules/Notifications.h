@@ -6,69 +6,52 @@
 #ifndef _ImActorModelModulesNotifications_H_
 #define _ImActorModelModulesNotifications_H_
 
-@class AMContentDescription;
-@class AMPeer;
-@class DKActorRef;
-@class DKSyncKeyValue;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesNotificationsNotificationsActor;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesNotifications : ImActorModelModulesBaseModule {
-}
+@class AMContentDescription;
+@class AMPeer;
+@class DKSyncKeyValue;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesNotifications : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)run;
-
 - (DKSyncKeyValue *)getNotificationsStorage;
 
-- (void)onOwnReadWithAMPeer:(AMPeer *)peer
-                   withLong:(jlong)fromDate;
+- (void)onAppHidden;
+
+- (void)onAppVisible;
+
+- (void)onConversationCloseWithAMPeer:(AMPeer *)peer;
+
+- (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
+
+- (void)onDialogsClosed;
+
+- (void)onDialogsOpen;
 
 - (void)onInMessageWithAMPeer:(AMPeer *)peer
                       withInt:(jint)sender
                      withLong:(jlong)sortDate
      withAMContentDescription:(AMContentDescription *)contentDescription;
 
-- (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
+- (void)onOwnReadWithAMPeer:(AMPeer *)peer
+                   withLong:(jlong)fromDate;
 
-- (void)onConversationCloseWithAMPeer:(AMPeer *)peer;
-
-- (void)onDialogsOpen;
-
-- (void)onDialogsClosed;
-
-- (void)onAppVisible;
-
-- (void)onAppHidden;
+- (void)run;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotifications)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotifications_initWithImActorModelModulesModules_(ImActorModelModulesNotifications *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesNotifications *new_ImActorModelModulesNotifications_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications)
-
-@interface ImActorModelModulesNotifications_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesNotificationsNotificationsActor *)create;
-
-- (instancetype)initWithImActorModelModulesNotifications:(ImActorModelModulesNotifications *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotifications_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 
 #endif // _ImActorModelModulesNotifications_H_

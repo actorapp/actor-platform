@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestTyping_H_
 #define _ImActorModelApiRpcRequestTyping_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
 @class ImActorModelApiTypingTypeEnum;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestTyping_HEADER 27
 
-@interface ImActorModelApiRpcRequestTyping : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestTyping : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
              withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
@@ -37,18 +40,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestTyping)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTyping, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestTyping *ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTyping, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(ImActorModelApiRpcRequestTyping *self, ImActorModelApiOutPeer *peer, ImActorModelApiTypingTypeEnum *typingType);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestTyping *new_ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(ImActorModelApiOutPeer *peer, ImActorModelApiTypingTypeEnum *typingType) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestTyping_init(ImActorModelApiRpcRequestTyping *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestTyping *new_ImActorModelApiRpcRequestTyping_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestTyping)
 

@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "java/lang/ClassCastException.h"
 
-@interface OrgBouncycastleUtilMemoableResetException : JavaLangClassCastException {
-}
+@interface OrgBouncycastleUtilMemoableResetException : JavaLangClassCastException
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)msg;
 
@@ -18,8 +19,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleUtilMemoableResetException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleUtilMemoableResetException_initWithNSString_(OrgBouncycastleUtilMemoableResetException *self, NSString *msg);
+
+FOUNDATION_EXPORT OrgBouncycastleUtilMemoableResetException *new_OrgBouncycastleUtilMemoableResetException_initWithNSString_(NSString *msg) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilMemoableResetException)
 

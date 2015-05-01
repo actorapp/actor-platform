@@ -3,9 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcInternalException.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcInternalException.java"
 
+#include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
 
 
@@ -15,11 +18,24 @@
 
 #line 7
 - (instancetype)init {
-  return
-#line 8
-  [super initWithNSString:@"INTERNAL_ERROR" withInt:500 withNSString:@"Internal server error" withBoolean:YES withByteArray:nil];
+  AMRpcInternalException_init(self);
+  return self;
 }
 
 @end
+
+
+#line 7
+void AMRpcInternalException_init(AMRpcInternalException *self) {
+  (void) AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(self, @"INTERNAL_ERROR", 500, @"Internal server error", YES, nil);
+}
+
+
+#line 7
+AMRpcInternalException *new_AMRpcInternalException_init() {
+  AMRpcInternalException *self = [AMRpcInternalException alloc];
+  AMRpcInternalException_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMRpcInternalException)

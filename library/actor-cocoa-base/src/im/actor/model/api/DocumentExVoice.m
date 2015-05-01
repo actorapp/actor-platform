@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVoice.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVoice.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/DocumentEx.h"
 #include "im/actor/model/api/DocumentExVoice.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -16,6 +18,7 @@
  @public
   jint duration_;
 }
+
 @end
 
 
@@ -25,31 +28,24 @@
 
 #line 23
 - (instancetype)initWithInt:(jint)duration {
-  if (self = [super init]) {
-    
-#line 24
-    self->duration_ = duration;
-  }
+  ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiDocumentExVoice_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getHeader {
-  
-#line 32
   return 3;
 }
 
-
-#line 35
 - (jint)getDuration {
-  
-#line 36
   return self->duration_;
 }
 
@@ -62,11 +58,11 @@
 
 #line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 46
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->duration_];
 }
 
+
+#line 50
 - (NSString *)description {
   NSString *res = @"struct DocumentExVoice{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"duration=", self->duration_));
@@ -74,11 +70,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiDocumentExVoice *)other {
-  [super copyAllFieldsTo:other];
-  other->duration_ = duration_;
+@end
+
+
+#line 23
+void ImActorModelApiDocumentExVoice_initWithInt_(ImActorModelApiDocumentExVoice *self, jint duration) {
+  (void) ImActorModelApiDocumentEx_init(self);
+  
+#line 24
+  self->duration_ = duration;
 }
 
-@end
+
+#line 23
+ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_initWithInt_(jint duration) {
+  ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
+  ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
+  return self;
+}
+
+
+#line 27
+void ImActorModelApiDocumentExVoice_init(ImActorModelApiDocumentExVoice *self) {
+  (void) ImActorModelApiDocumentEx_init(self);
+}
+
+
+#line 27
+ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_init() {
+  ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
+  ImActorModelApiDocumentExVoice_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExVoice)

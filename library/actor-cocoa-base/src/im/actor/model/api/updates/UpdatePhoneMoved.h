@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiUpdatesUpdatePhoneMoved_H_
 #define _ImActorModelApiUpdatesUpdatePhoneMoved_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdatePhoneMoved_HEADER 101
 
-@interface ImActorModelApiUpdatesUpdatePhoneMoved : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdatePhoneMoved : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdatePhoneMoved *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)phoneId
                     withInt:(jint)uid;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdatePhoneMoved *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getPhoneId;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdatePhoneMoved)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdatePhoneMoved, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdatePhoneMoved *ImActorModelApiUpdatesUpdatePhoneMoved_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdatePhoneMoved, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdatePhoneMoved_initWithInt_withInt_(ImActorModelApiUpdatesUpdatePhoneMoved *self, jint phoneId, jint uid);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdatePhoneMoved *new_ImActorModelApiUpdatesUpdatePhoneMoved_initWithInt_withInt_(jint phoneId, jint uid) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdatePhoneMoved_init(ImActorModelApiUpdatesUpdatePhoneMoved *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdatePhoneMoved *new_ImActorModelApiUpdatesUpdatePhoneMoved_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdatePhoneMoved)
 

@@ -16,31 +16,27 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiPeerType) {
   ImActorModelApiPeerType_UNSUPPORTED_VALUE = 3,
 };
 
-@interface ImActorModelApiPeerTypeEnum : JavaLangEnum < NSCopying > {
-}
+@interface ImActorModelApiPeerTypeEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
 
 + (ImActorModelApiPeerTypeEnum *)parseWithInt:(jint)value;
 
+#pragma mark Package-Private
+
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiPeerTypeEnum_values();
 
 + (ImActorModelApiPeerTypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelApiPeerTypeEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelApiPeerTypeEnum)
-
-FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[];
 
@@ -55,6 +51,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, EMAIL)
 
 #define ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_UNSUPPORTED_VALUE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, UNSUPPORTED_VALUE)
+
+FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiPeerTypeEnum)
 

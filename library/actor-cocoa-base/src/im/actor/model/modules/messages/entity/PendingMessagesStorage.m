@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessagesStorage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessagesStorage.java"
 
 #include "IOSClass.h"
@@ -22,6 +23,7 @@
  @public
   JavaUtilArrayList *pendingMessages_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pendingMessages_, JavaUtilArrayList *)
@@ -37,8 +39,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pen
 
 #line 22
 - (JavaUtilArrayList *)getPendingMessages {
-  
-#line 23
   return pendingMessages_;
 }
 
@@ -60,32 +60,34 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pen
 
 #line 38
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 39
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:pendingMessages_];
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    pendingMessages_ =
-#line 20
-    [[JavaUtilArrayList alloc] init];
-  }
+  ImActorModelModulesMessagesEntityPendingMessagesStorage_init(self);
   return self;
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityPendingMessagesStorage *)other {
-  [super copyAllFieldsTo:other];
-  other->pendingMessages_ = pendingMessages_;
 }
 
 @end
 
+
+#line 16
 ImActorModelModulesMessagesEntityPendingMessagesStorage *ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityPendingMessagesStorage_init();
+  ImActorModelModulesMessagesEntityPendingMessagesStorage_initialize();
   
 #line 17
-  return ((ImActorModelModulesMessagesEntityPendingMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityPendingMessagesStorage alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityPendingMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityPendingMessagesStorage_init(), data));
+}
+
+void ImActorModelModulesMessagesEntityPendingMessagesStorage_init(ImActorModelModulesMessagesEntityPendingMessagesStorage *self) {
+  (void) BSBserObject_init(self);
+  self->pendingMessages_ = new_JavaUtilArrayList_init();
+}
+
+ImActorModelModulesMessagesEntityPendingMessagesStorage *new_ImActorModelModulesMessagesEntityPendingMessagesStorage_init() {
+  ImActorModelModulesMessagesEntityPendingMessagesStorage *self = [ImActorModelModulesMessagesEntityPendingMessagesStorage alloc];
+  ImActorModelModulesMessagesEntityPendingMessagesStorage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityPendingMessagesStorage)

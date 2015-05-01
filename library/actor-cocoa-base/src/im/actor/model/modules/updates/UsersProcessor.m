@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/UsersProcessor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/UsersProcessor.java"
 
 #include "J2ObjC_source.h"
@@ -26,12 +27,13 @@
 #include "java/util/ArrayList.h"
 #include "java/util/Collection.h"
 
-__attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(ImActorModelModulesUpdatesUsersProcessor *self, AMUser *u);
-
 @interface ImActorModelModulesUpdatesUsersProcessor ()
 
 - (void)onUserDescChangedWithAMUser:(AMUser *)u;
+
 @end
+
+__attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(ImActorModelModulesUpdatesUsersProcessor *self, AMUser *u);
 
 
 #line 22
@@ -40,16 +42,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 
 #line 25
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  return
-#line 26
-  [super initWithImActorModelModulesModules:messenger];
+  ImActorModelModulesUpdatesUsersProcessor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
 }
 
-
-#line 30
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                              withBoolean:(jboolean)forced {
-  JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
+  JavaUtilArrayList *batch = new_JavaUtilArrayList_init();
   for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
     AMLog_dWithNSString_withNSString_(@"UsersProcessor", JreStrcat("$I", @"UserUpdated: ", [((ImActorModelApiUser *) nil_chk(u)) getId]));
     
@@ -81,8 +80,6 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 #line 55
 - (void)onUserNameChangedWithInt:(jint)uid
                     withNSString:(NSString *)name {
-  
-#line 56
   AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     
@@ -104,12 +101,8 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
   }
 }
 
-
-#line 78
 - (void)onUserLocalNameChangedWithInt:(jint)uid
                          withNSString:(NSString *)name {
-  
-#line 79
   AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
     
@@ -129,12 +122,8 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
   }
 }
 
-
-#line 99
 - (void)onUserAvatarChangedWithInt:(jint)uid
          withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar {
-  
-#line 100
   AMAvatar *avatar = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(_avatar);
   AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
   if (u != nil) {
@@ -155,11 +144,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
   }
 }
 
-
-#line 121
 - (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids {
-  
-#line 122
   for (JavaLangInteger * __strong uid in nil_chk(uids)) {
     if ([((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
       return NO;
@@ -176,15 +161,29 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 
 @end
 
+
+#line 25
+void ImActorModelModulesUpdatesUsersProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesUsersProcessor *self, ImActorModelModulesModules *messenger) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, messenger);
+}
+
+
+#line 25
+ImActorModelModulesUpdatesUsersProcessor *new_ImActorModelModulesUpdatesUsersProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+  ImActorModelModulesUpdatesUsersProcessor *self = [ImActorModelModulesUpdatesUsersProcessor alloc];
+  ImActorModelModulesUpdatesUsersProcessor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
+}
+
+
+#line 131
 void ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(ImActorModelModulesUpdatesUsersProcessor *self, AMUser *u) {
-  
-#line 132
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_UserChanged_initWithAMUser_(
 #line 133
-  [[ImActorModelModulesMessagesDialogsActor_UserChanged alloc] initWithAMUser:u]];
-  [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:
+  u)];
+  [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:new_ImActorModelModulesContactsContactsSyncActor_UserChanged_initWithAMUser_(
 #line 135
-  [[ImActorModelModulesContactsContactsSyncActor_UserChanged alloc] initWithAMUser:u]];
+  u)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUsersProcessor)

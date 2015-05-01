@@ -6,42 +6,43 @@
 #ifndef _AMCryptoUtils_H_
 #define _AMCryptoUtils_H_
 
+#include "J2ObjC_header.h"
+
 @class AMCryptoKeyPair;
 @class IOSByteArray;
 @class IOSCharArray;
 @protocol AMCryptoProvider;
 
-#include "J2ObjC_header.h"
+@interface AMCryptoUtils : NSObject
 
-@interface AMCryptoUtils : NSObject {
-}
+#pragma mark Public
 
-+ (void)init__WithAMCryptoProvider:(id<AMCryptoProvider>)provider OBJC_METHOD_FAMILY_NONE;
+- (instancetype)init;
+
++ (IOSByteArray *)fromHexWithNSString:(NSString *)hex;
 
 + (AMCryptoKeyPair *)generateRSA1024KeyPair;
 
++ (NSString *)hexWithByteArray:(IOSByteArray *)bytes;
+
++ (void)init__WithAMCryptoProvider:(id<AMCryptoProvider>)provider OBJC_METHOD_FAMILY_NONE;
+
 + (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
+
++ (IOSByteArray *)randomBytesWithInt:(jint)len;
+
++ (jint)randomIntWithInt:(jint)maxValue;
 
 + (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data;
 
 + (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data;
 
-+ (jint)randomIntWithInt:(jint)maxValue;
-
-+ (IOSByteArray *)randomBytesWithInt:(jint)len;
-
-+ (NSString *)hexWithByteArray:(IOSByteArray *)bytes;
-
-+ (IOSByteArray *)fromHexWithNSString:(NSString *)hex;
-
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL AMCryptoUtils_initialized;
 J2OBJC_STATIC_INIT(AMCryptoUtils)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT IOSCharArray *AMCryptoUtils_hexArray_;
+J2OBJC_STATIC_FIELD_GETTER(AMCryptoUtils, hexArray_, IOSCharArray *)
 
 FOUNDATION_EXPORT void AMCryptoUtils_init__WithAMCryptoProvider_(id<AMCryptoProvider> provider);
 
@@ -61,16 +62,12 @@ FOUNDATION_EXPORT NSString *AMCryptoUtils_hexWithByteArray_(IOSByteArray *bytes)
 
 FOUNDATION_EXPORT IOSByteArray *AMCryptoUtils_fromHexWithNSString_(NSString *hex);
 
-FOUNDATION_EXPORT IOSCharArray *AMCryptoUtils_hexArray_;
-J2OBJC_STATIC_FIELD_GETTER(AMCryptoUtils, hexArray_, IOSCharArray *)
+FOUNDATION_EXPORT void AMCryptoUtils_init(AMCryptoUtils *self);
 
-FOUNDATION_EXPORT id<AMCryptoProvider> AMCryptoUtils_provider_;
-J2OBJC_STATIC_FIELD_GETTER(AMCryptoUtils, provider_, id<AMCryptoProvider>)
-J2OBJC_STATIC_FIELD_SETTER(AMCryptoUtils, provider_, id<AMCryptoProvider>)
-CF_EXTERN_C_END
-
-typedef AMCryptoUtils ImActorModelCryptoCryptoUtils;
+FOUNDATION_EXPORT AMCryptoUtils *new_AMCryptoUtils_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMCryptoUtils)
+
+typedef AMCryptoUtils ImActorModelCryptoCryptoUtils;
 
 #endif // _AMCryptoUtils_H_

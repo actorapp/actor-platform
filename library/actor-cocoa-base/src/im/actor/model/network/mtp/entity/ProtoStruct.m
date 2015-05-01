@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoStruct.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoStruct.java"
 
 #include "IOSClass.h"
@@ -21,22 +22,20 @@
 @implementation MTProtoStruct
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 11
-  [super initWithBSDataInput:stream];
+  MTProtoStruct_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 14
 - (instancetype)init {
-  return [super init];
+  MTProtoStruct_init(self);
+  return self;
 }
 
 
 #line 20
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 21
   jbyte header = [self getHeader];
   if (header != 0) {
     [((BSDataOutput *) nil_chk(bs)) writeByteWithByte:header];
@@ -52,5 +51,15 @@
 }
 
 @end
+
+
+#line 10
+void MTProtoStruct_initWithBSDataInput_(MTProtoStruct *self, BSDataInput *stream) {
+  (void) MTProtoObject_initWithBSDataInput_(self, stream);
+}
+
+void MTProtoStruct_init(MTProtoStruct *self) {
+  (void) MTProtoObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTProtoStruct)

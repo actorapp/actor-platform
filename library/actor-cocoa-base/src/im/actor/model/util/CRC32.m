@@ -3,13 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/CRC32.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/CRC32.java"
 
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/util/CRC32.h"
-
-__attribute__((unused)) static IOSIntArray *AMCRC32_make_crc_table();
 
 @interface AMCRC32 () {
  @public
@@ -17,15 +16,20 @@ __attribute__((unused)) static IOSIntArray *AMCRC32_make_crc_table();
 }
 
 + (IOSIntArray *)make_crc_table;
+
 @end
 
-BOOL AMCRC32_initialized = NO;
+static IOSIntArray *AMCRC32_crc_table_;
+J2OBJC_STATIC_FIELD_GETTER(AMCRC32, crc_table_, IOSIntArray *)
+J2OBJC_STATIC_FIELD_SETTER(AMCRC32, crc_table_, IOSIntArray *)
+
+__attribute__((unused)) static IOSIntArray *AMCRC32_make_crc_table();
+
+J2OBJC_INITIALIZED_DEFN(AMCRC32)
 
 
 #line 6
 @implementation AMCRC32
-
-IOSIntArray * AMCRC32_crc_table_;
 
 
 #line 20
@@ -36,24 +40,18 @@ IOSIntArray * AMCRC32_crc_table_;
 
 #line 38
 - (jlong)getValue {
-  
-#line 39
   return (jlong) crc_ & (jlong) 0xffffffffLL;
 }
 
 
 #line 45
 - (void)reset {
-  
-#line 46
   crc_ = 0;
 }
 
 
 #line 55
 - (void)updateWithInt:(jint)bval {
-  
-#line 56
   jint c = ~crc_;
   c = IOSIntArray_Get(nil_chk(AMCRC32_crc_table_), (c ^ bval) & (jint) 0xff) ^ (URShift32(c, 8));
   crc_ = ~c;
@@ -64,8 +62,6 @@ IOSIntArray * AMCRC32_crc_table_;
 - (void)updateWithByteArray:(IOSByteArray *)buf
                     withInt:(jint)off
                     withInt:(jint)len {
-  
-#line 69
   jint c = ~crc_;
   while (--len >= 0)
 #line 71
@@ -73,26 +69,13 @@ IOSIntArray * AMCRC32_crc_table_;
   crc_ = ~c;
 }
 
-
-#line 78
 - (void)updateWithByteArray:(IOSByteArray *)buf {
-  
-#line 79
   [self updateWithByteArray:buf withInt:0 withInt:((IOSByteArray *) nil_chk(buf))->size_];
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    crc_ =
-#line 10
-    0;
-  }
+  AMCRC32_init(self);
   return self;
-}
-
-- (void)copyAllFieldsTo:(AMCRC32 *)other {
-  [super copyAllFieldsTo:other];
-  other->crc_ = crc_;
 }
 
 + (void)initialize {
@@ -104,8 +87,10 @@ IOSIntArray * AMCRC32_crc_table_;
 
 @end
 
+
+#line 20
 IOSIntArray *AMCRC32_make_crc_table() {
-  AMCRC32_init();
+  AMCRC32_initialize();
   
 #line 21
   IOSIntArray *crc_table = [IOSIntArray newArrayWithLength:256];
@@ -122,6 +107,19 @@ IOSIntArray *AMCRC32_make_crc_table() {
     *IOSIntArray_GetRef(crc_table, n) = c;
   }
   return crc_table;
+}
+
+void AMCRC32_init(AMCRC32 *self) {
+  (void) NSObject_init(self);
+  self->crc_ =
+#line 10
+  0;
+}
+
+AMCRC32 *new_AMCRC32_init() {
+  AMCRC32 *self = [AMCRC32 alloc];
+  AMCRC32_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMCRC32)

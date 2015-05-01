@@ -6,14 +6,15 @@
 #ifndef _ImActorModelApiServiceExGroupCreated_H_
 #define _ImActorModelApiServiceExGroupCreated_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExGroupCreated : ImActorModelApiServiceEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiServiceExGroupCreated : ImActorModelApiServiceEx
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -29,8 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExGroupCreated)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExGroupCreated_init(ImActorModelApiServiceExGroupCreated *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExGroupCreated *new_ImActorModelApiServiceExGroupCreated_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExGroupCreated)
 

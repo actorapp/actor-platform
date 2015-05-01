@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/VideoContent.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/VideoContent.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/FastThumb.h"
 #include "im/actor/model/entity/content/FileSource.h"
 #include "im/actor/model/entity/content/VideoContent.h"
@@ -24,8 +26,14 @@
   jint w_;
   jint h_;
 }
+
 - (instancetype)init;
+
 @end
+
+__attribute__((unused)) static void AMVideoContent_init(AMVideoContent *self);
+
+__attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETURNS_RETAINED;
 
 
 #line 12
@@ -44,47 +52,28 @@
                              withInt:(jint)duration
                              withInt:(jint)w
                              withInt:(jint)h {
-  if (self =
-#line 23
-  [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
-    
-#line 24
-    self->duration_ = duration;
-    
-#line 25
-    self->w_ = w;
-    
-#line 26
-    self->h_ = h;
-  }
+  AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(self, location, mimetype, name, fastThumb, duration, w, h);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  AMVideoContent_init(self);
+  return self;
 }
 
+
+#line 33
 - (jint)getDuration {
-  
-#line 34
   return duration_;
 }
 
-
-#line 37
 - (jint)getW {
-  
-#line 38
   return w_;
 }
 
-
-#line 41
 - (jint)getH {
-  
-#line 42
   return h_;
 }
 
@@ -97,8 +86,6 @@
 
 #line 51
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 52
   [super parseWithBSBserValues:values];
   duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   w_ = [values getIntWithInt:11];
@@ -114,20 +101,46 @@
   [writer writeIntWithInt:12 withInt:h_];
 }
 
-- (void)copyAllFieldsTo:(AMVideoContent *)other {
-  [super copyAllFieldsTo:other];
-  other->duration_ = duration_;
-  other->w_ = w_;
-  other->h_ = h_;
-}
-
 @end
 
+
+#line 14
 AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
-  AMVideoContent_init();
+  AMVideoContent_initialize();
   
 #line 15
-  return ((AMVideoContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMVideoContent alloc] init], data));
+  return ((AMVideoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMVideoContent_init(), data));
+}
+
+
+#line 22
+void AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMVideoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) {
+  (void) AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, location, mimetype, name, fastThumb);
+  self->duration_ = duration;
+  self->w_ = w;
+  self->h_ = h;
+}
+
+
+#line 22
+AMVideoContent *new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) {
+  AMVideoContent *self = [AMVideoContent alloc];
+  AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(self, location, mimetype, name, fastThumb, duration, w, h);
+  return self;
+}
+
+
+#line 29
+void AMVideoContent_init(AMVideoContent *self) {
+  (void) AMDocumentContent_init(self);
+}
+
+
+#line 29
+AMVideoContent *new_AMVideoContent_init() {
+  AMVideoContent *self = [AMVideoContent alloc];
+  AMVideoContent_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMVideoContent)

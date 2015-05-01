@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMCollection.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMCollection.java"
 
 #include "IOSPrimitiveArray.h"
@@ -15,17 +16,16 @@
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "java/lang/Long.h"
+#include "java/lang/Runnable.h"
 #include "java/lang/RuntimeException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/HashMap.h"
 #include "java/util/List.h"
 
+@class AMMVVMCollection_ProxyKeyValueEngine;
+
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
-
-__attribute__((unused)) static void AMMVVMCollection_notifyChangeWithJavaUtilList_(AMMVVMCollection *self, id<JavaUtilList> items);
-__attribute__((unused)) static void AMMVVMCollection_notifyRemoveWithLongArray_(AMMVVMCollection *self, IOSLongArray *ids);
-__attribute__((unused)) static void AMMVVMCollection_notifyClear(AMMVVMCollection *self);
 
 @interface AMMVVMCollection () {
  @public
@@ -39,49 +39,120 @@ __attribute__((unused)) static void AMMVVMCollection_notifyClear(AMMVVMCollectio
 - (void)notifyRemoveWithLongArray:(IOSLongArray *)ids;
 
 - (void)notifyClear;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMMVVMCollection, values_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(AMMVVMCollection, collectionStorage_, id<DKKeyValueStorage>)
 J2OBJC_FIELD_SETTER(AMMVVMCollection, proxyKeyValueEngine_, AMMVVMCollection_ProxyKeyValueEngine *)
 
-@interface AMMVVMCollection_ProxyKeyValueEngine () {
+__attribute__((unused)) static void AMMVVMCollection_notifyChangeWithJavaUtilList_(AMMVVMCollection *self, id<JavaUtilList> items);
+
+__attribute__((unused)) static void AMMVVMCollection_notifyRemoveWithLongArray_(AMMVVMCollection *self, IOSLongArray *ids);
+
+__attribute__((unused)) static void AMMVVMCollection_notifyClear(AMMVVMCollection *self);
+
+@interface AMMVVMCollection_ProxyKeyValueEngine : NSObject < DKKeyValueEngine > {
  @public
   AMMVVMCollection *this$0_;
   JavaUtilHashMap *cache_;
 }
+
+- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
+
+- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
+
+- (void)removeItemWithLong:(jlong)id_;
+
+- (void)removeItemsWithLongArray:(IOSLongArray *)ids;
+
+- (void)clear;
+
+- (id)getValueWithLong:(jlong)id_;
+
+- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_ProxyKeyValueEngine)
 
 J2OBJC_FIELD_SETTER(AMMVVMCollection_ProxyKeyValueEngine, this$0_, AMMVVMCollection *)
 J2OBJC_FIELD_SETTER(AMMVVMCollection_ProxyKeyValueEngine, cache_, JavaUtilHashMap *)
 
-@interface AMMVVMCollection_$1 () {
+__attribute__((unused)) static void AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(AMMVVMCollection_ProxyKeyValueEngine *self, AMMVVMCollection *outer$);
+
+__attribute__((unused)) static AMMVVMCollection_ProxyKeyValueEngine *new_AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(AMMVVMCollection *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_ProxyKeyValueEngine)
+
+@interface AMMVVMCollection_$1 : NSObject < JavaLangRunnable > {
  @public
   AMMVVMCollection *this$0_;
   id<JavaUtilList> val$items_;
 }
+
+- (void)run;
+
+- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$
+                        withJavaUtilList:(id<JavaUtilList>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_$1)
 
 J2OBJC_FIELD_SETTER(AMMVVMCollection_$1, this$0_, AMMVVMCollection *)
 J2OBJC_FIELD_SETTER(AMMVVMCollection_$1, val$items_, id<JavaUtilList>)
 
-@interface AMMVVMCollection_$2 () {
+__attribute__((unused)) static void AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(AMMVVMCollection_$1 *self, AMMVVMCollection *outer$, id<JavaUtilList> capture$0);
+
+__attribute__((unused)) static AMMVVMCollection_$1 *new_AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(AMMVVMCollection *outer$, id<JavaUtilList> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$1)
+
+@interface AMMVVMCollection_$2 : NSObject < JavaLangRunnable > {
  @public
   AMMVVMCollection *this$0_;
   IOSLongArray *val$ids_;
 }
+
+- (void)run;
+
+- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$
+                           withLongArray:(IOSLongArray *)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_$2)
 
 J2OBJC_FIELD_SETTER(AMMVVMCollection_$2, this$0_, AMMVVMCollection *)
 J2OBJC_FIELD_SETTER(AMMVVMCollection_$2, val$ids_, IOSLongArray *)
 
-@interface AMMVVMCollection_$3 () {
+__attribute__((unused)) static void AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(AMMVVMCollection_$2 *self, AMMVVMCollection *outer$, IOSLongArray *capture$0);
+
+__attribute__((unused)) static AMMVVMCollection_$2 *new_AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(AMMVVMCollection *outer$, IOSLongArray *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$2)
+
+@interface AMMVVMCollection_$3 : NSObject < JavaLangRunnable > {
  @public
   AMMVVMCollection *this$0_;
 }
+
+- (void)run;
+
+- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_$3)
+
 J2OBJC_FIELD_SETTER(AMMVVMCollection_$3, this$0_, AMMVVMCollection *)
+
+__attribute__((unused)) static void AMMVVMCollection_$3_initWithAMMVVMCollection_(AMMVVMCollection_$3 *self, AMMVVMCollection *outer$);
+
+__attribute__((unused)) static AMMVVMCollection_$3 *new_AMMVVMCollection_$3_initWithAMMVVMCollection_(AMMVVMCollection *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$3)
 
 
 #line 15
@@ -90,25 +161,11 @@ J2OBJC_FIELD_SETTER(AMMVVMCollection_$3, this$0_, AMMVVMCollection *)
 
 #line 21
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)collectionStorage {
-  if (self = [super init]) {
-    values_ =
-#line 17
-    [[JavaUtilHashMap alloc] init];
-    
-#line 22
-    self->collectionStorage_ = collectionStorage;
-    
-#line 23
-    self->proxyKeyValueEngine_ = [[AMMVVMCollection_ProxyKeyValueEngine alloc] initWithAMMVVMCollection:self];
-  }
+  AMMVVMCollection_initWithDKKeyValueStorage_(self, collectionStorage);
   return self;
 }
 
-
-#line 26
 - (id<DKKeyValueEngine>)getEngine {
-  
-#line 27
   return proxyKeyValueEngine_;
 }
 
@@ -123,7 +180,7 @@ J2OBJC_FIELD_SETTER(AMMVVMCollection_$3, this$0_, AMMVVMCollection *)
     else {
       
 #line 37
-      @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$J", @"Unable to find user #", id_)];
+      @throw new_JavaLangRuntimeException_initWithNSString_(JreStrcat("$J", @"Unable to find user #", id_));
     }
   }
   return [values_ getWithId:JavaLangLong_valueOfWithLong_(id_)];
@@ -147,31 +204,35 @@ J2OBJC_FIELD_SETTER(AMMVVMCollection_$3, this$0_, AMMVVMCollection *)
   AMMVVMCollection_notifyClear(self);
 }
 
-- (void)copyAllFieldsTo:(AMMVVMCollection *)other {
-  [super copyAllFieldsTo:other];
-  other->values_ = values_;
-  other->collectionStorage_ = collectionStorage_;
-  other->proxyKeyValueEngine_ = proxyKeyValueEngine_;
-}
-
 @end
 
+
+#line 21
+void AMMVVMCollection_initWithDKKeyValueStorage_(AMMVVMCollection *self, id<DKKeyValueStorage> collectionStorage) {
+  (void) NSObject_init(self);
+  self->values_ = new_JavaUtilHashMap_init();
+  
+#line 22
+  self->collectionStorage_ = collectionStorage;
+  self->proxyKeyValueEngine_ = new_AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(self);
+}
+
+
+#line 43
 void AMMVVMCollection_notifyChangeWithJavaUtilList_(AMMVVMCollection *self, id<JavaUtilList> items) {
-  
-#line 44
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMMVVMCollection_$1 alloc] initWithAMMVVMCollection:self withJavaUtilList:items]);
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(self, items));
 }
 
+
+#line 56
 void AMMVVMCollection_notifyRemoveWithLongArray_(AMMVVMCollection *self, IOSLongArray *ids) {
-  
-#line 57
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMMVVMCollection_$2 alloc] initWithAMMVVMCollection:self withLongArray:ids]);
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(self, ids));
 }
 
+
+#line 67
 void AMMVVMCollection_notifyClear(AMMVVMCollection *self) {
-  
-#line 68
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMMVVMCollection_$3 alloc] initWithAMMVVMCollection:self]);
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMMVVMCollection_$3_initWithAMMVVMCollection_(self));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
@@ -189,7 +250,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
     
 #line 92
-    JavaUtilArrayList *res = [[JavaUtilArrayList alloc] init];
+    JavaUtilArrayList *res = new_JavaUtilArrayList_init();
     [res addWithId:item];
     AMMVVMCollection_notifyChangeWithJavaUtilList_(this$0_, res);
     
@@ -213,9 +274,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
     AMMVVMCollection_notifyChangeWithJavaUtilList_(this$0_, values);
     
 #line 108
-    JavaUtilArrayList *records = [[JavaUtilArrayList alloc] init];
+    JavaUtilArrayList *records = new_JavaUtilArrayList_init();
     for (id<DKKeyValueItem> __strong v in values) {
-      [records addWithId:[[DKKeyValueRecord alloc] initWithLong:[((id<DKKeyValueItem>) nil_chk(v)) getEngineId] withByteArray:[this$0_ serializeWithDKKeyValueItem:v]]];
+      [records addWithId:new_DKKeyValueRecord_initWithLong_withByteArray_([((id<DKKeyValueItem>) nil_chk(v)) getEngineId], [this$0_ serializeWithDKKeyValueItem:v])];
     }
     [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) addOrUpdateItemsWithJavaUtilList:records];
   }
@@ -299,22 +360,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
 }
 
 - (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$ {
-  this$0_ = outer$;
-  if (self = [super init]) {
-    cache_ =
-#line 86
-    [[JavaUtilHashMap alloc] init];
-  }
+  AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(self, outer$);
   return self;
 }
 
-- (void)copyAllFieldsTo:(AMMVVMCollection_ProxyKeyValueEngine *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->cache_ = cache_;
+@end
+
+void AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(AMMVVMCollection_ProxyKeyValueEngine *self, AMMVVMCollection *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+  self->cache_ = new_JavaUtilHashMap_init();
 }
 
-@end
+AMMVVMCollection_ProxyKeyValueEngine *new_AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(AMMVVMCollection *outer$) {
+  AMMVVMCollection_ProxyKeyValueEngine *self = [AMMVVMCollection_ProxyKeyValueEngine alloc];
+  AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_ProxyKeyValueEngine)
 
@@ -323,8 +385,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_ProxyKeyValueEngine)
 
 #line 46
 - (void)run {
-  
-#line 47
   for (id<DKKeyValueItem> __strong i in nil_chk(val$items_)) {
     if ([((JavaUtilHashMap *) nil_chk(this$0_->values_)) containsKeyWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(i)) getEngineId])]) {
       [((AMBaseValueModel *) nil_chk([this$0_->values_ getWithId:JavaLangLong_valueOfWithLong_([i getEngineId])])) updateWithId:i];
@@ -334,18 +394,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_ProxyKeyValueEngine)
 
 - (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$
                         withJavaUtilList:(id<JavaUtilList>)capture$0 {
-  this$0_ = outer$;
-  val$items_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMMVVMCollection_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$items_ = val$items_;
+  AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(AMMVVMCollection_$1 *self, AMMVVMCollection *outer$, id<JavaUtilList> capture$0) {
+  self->this$0_ = outer$;
+  self->val$items_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMMVVMCollection_$1 *new_AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(AMMVVMCollection *outer$, id<JavaUtilList> capture$0) {
+  AMMVVMCollection_$1 *self = [AMMVVMCollection_$1 alloc];
+  AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$1)
 
@@ -369,18 +434,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$1)
 
 - (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$
                            withLongArray:(IOSLongArray *)capture$0 {
-  this$0_ = outer$;
-  val$ids_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMMVVMCollection_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$ids_ = val$ids_;
+  AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(AMMVVMCollection_$2 *self, AMMVVMCollection *outer$, IOSLongArray *capture$0) {
+  self->this$0_ = outer$;
+  self->val$ids_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMMVVMCollection_$2 *new_AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(AMMVVMCollection *outer$, IOSLongArray *capture$0) {
+  AMMVVMCollection_$2 *self = [AMMVVMCollection_$2 alloc];
+  AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$2)
 
@@ -389,21 +459,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$2)
 
 #line 70
 - (void)run {
-  
-#line 71
   [((JavaUtilHashMap *) nil_chk(this$0_->values_)) clear];
 }
 
 - (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMMVVMCollection_$3 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  AMMVVMCollection_$3_initWithAMMVVMCollection_(self, outer$);
+  return self;
 }
 
 @end
+
+void AMMVVMCollection_$3_initWithAMMVVMCollection_(AMMVVMCollection_$3 *self, AMMVVMCollection *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+AMMVVMCollection_$3 *new_AMMVVMCollection_$3_initWithAMMVVMCollection_(AMMVVMCollection *outer$) {
+  AMMVVMCollection_$3 *self = [AMMVVMCollection_$3 alloc];
+  AMMVVMCollection_$3_initWithAMMVVMCollection_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$3)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/AtomicIntegerCompat.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/AtomicIntegerCompat.java"
 
 #include "J2ObjC_source.h"
@@ -16,9 +17,14 @@
 @implementation AMAtomicIntegerCompat
 
 - (instancetype)init {
-  return [super init];
+  AMAtomicIntegerCompat_init(self);
+  return self;
 }
 
 @end
+
+void AMAtomicIntegerCompat_init(AMAtomicIntegerCompat *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAtomicIntegerCompat)

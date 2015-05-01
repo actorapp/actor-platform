@@ -6,9 +6,9 @@
 #ifndef _ImActorModelHttpFileDownloadCallback_H_
 #define _ImActorModelHttpFileDownloadCallback_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol ImActorModelHttpFileDownloadCallback < NSObject, JavaObject >
 

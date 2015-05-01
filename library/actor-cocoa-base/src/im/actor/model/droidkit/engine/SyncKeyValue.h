@@ -6,32 +6,34 @@
 #ifndef _DKSyncKeyValue_H_
 #define _DKSyncKeyValue_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @protocol DKKeyValueStorage;
 
-#include "J2ObjC_header.h"
+@interface DKSyncKeyValue : NSObject
 
-@interface DKSyncKeyValue : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage;
-
-- (void)putWithLong:(jlong)key
-      withByteArray:(IOSByteArray *)data;
 
 - (void)delete__WithLong:(jlong)key;
 
 - (IOSByteArray *)getWithLong:(jlong)key;
 
+- (void)putWithLong:(jlong)key
+      withByteArray:(IOSByteArray *)data;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKSyncKeyValue)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKSyncKeyValue_initWithDKKeyValueStorage_(DKSyncKeyValue *self, id<DKKeyValueStorage> storage);
 
-typedef DKSyncKeyValue ImActorModelDroidkitEngineSyncKeyValue;
+FOUNDATION_EXPORT DKSyncKeyValue *new_DKSyncKeyValue_initWithDKKeyValueStorage_(id<DKKeyValueStorage> storage) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKSyncKeyValue)
+
+typedef DKSyncKeyValue ImActorModelDroidkitEngineSyncKeyValue;
 
 #endif // _DKSyncKeyValue_H_

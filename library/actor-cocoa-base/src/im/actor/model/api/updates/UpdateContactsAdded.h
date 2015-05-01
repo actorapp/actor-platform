@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiUpdatesUpdateContactsAdded_H_
 #define _ImActorModelApiUpdatesUpdateContactsAdded_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateContactsAdded_HEADER 40
 
-@interface ImActorModelApiUpdatesUpdateContactsAdded : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateContactsAdded : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateContactsAdded *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateContactsAdded *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (id<JavaUtilList>)getUids;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateContactsAdded)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateContactsAdded, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactsAdded *ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateContactsAdded, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(ImActorModelApiUpdatesUpdateContactsAdded *self, id<JavaUtilList> uids);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactsAdded *new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(id<JavaUtilList> uids) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactsAdded_init(ImActorModelApiUpdatesUpdateContactsAdded *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactsAdded *new_ImActorModelApiUpdatesUpdateContactsAdded_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateContactsAdded)
 

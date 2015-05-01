@@ -6,22 +6,22 @@
 #ifndef _AMActorApi_H_
 #define _AMActorApi_H_
 
+#include "J2ObjC_header.h"
+
 @class AMEndpoints;
-@class DKActorRef;
 @class ImActorModelNetworkParserRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
 @protocol AMNetworkProvider;
 @protocol AMRpcCallback;
 
-#include "J2ObjC_header.h"
-
+#define AMActorApi_MTPROTO_VERSION 1
 #define AMActorApi_API_MAJOR_VERSION 1
 #define AMActorApi_API_MINOR_VERSION 0
-#define AMActorApi_MTPROTO_VERSION 1
 
-@interface AMActorApi : NSObject {
-}
+@interface AMActorApi : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
@@ -35,17 +35,18 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMActorApi)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, MTPROTO_VERSION, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MAJOR_VERSION, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MINOR_VERSION, jint)
-CF_EXTERN_C_END
 
-typedef AMActorApi ImActorModelNetworkActorApi;
+FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider);
+
+FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMActorApi)
+
+typedef AMActorApi ImActorModelNetworkActorApi;
 
 #endif // _AMActorApi_H_

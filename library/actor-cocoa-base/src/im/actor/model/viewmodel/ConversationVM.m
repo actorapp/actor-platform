@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/ConversationVM.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/ConversationVM.java"
 
 #include "J2ObjC_source.h"
@@ -22,12 +23,13 @@
   id<AMDisplayList_Listener> listener_;
   jboolean isLoaded_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMConversationVM, displayList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(AMConversationVM, listener_, id<AMDisplayList_Listener>)
 
-@interface AMConversationVM_$1 () {
+@interface AMConversationVM_$1 : NSObject < AMDisplayList_Listener > {
  @public
   AMConversationVM *this$0_;
   AMBindedDisplayList *val$displayList_;
@@ -35,13 +37,30 @@ J2OBJC_FIELD_SETTER(AMConversationVM, listener_, id<AMDisplayList_Listener>)
   AMPeer *val$peer_;
   id<AMConversationVMCallback> val$callback_;
 }
+
+- (void)onCollectionChanged;
+
+- (instancetype)initWithAMConversationVM:(AMConversationVM *)outer$
+                 withAMBindedDisplayList:(AMBindedDisplayList *)capture$0
+          withImActorModelModulesModules:(ImActorModelModulesModules *)capture$1
+                              withAMPeer:(AMPeer *)capture$2
+            withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$3;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMConversationVM_$1)
 
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, this$0_, AMConversationVM *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$displayList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$callback_, id<AMConversationVMCallback>)
+
+__attribute__((unused)) static void AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(AMConversationVM_$1 *self, AMConversationVM *outer$, AMBindedDisplayList *capture$0, ImActorModelModulesModules *capture$1, AMPeer *capture$2, id<AMConversationVMCallback> capture$3);
+
+__attribute__((unused)) static AMConversationVM_$1 *new_AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(AMConversationVM *outer$, AMBindedDisplayList *capture$0, ImActorModelModulesModules *capture$1, AMPeer *capture$2, id<AMConversationVMCallback> capture$3) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMConversationVM_$1)
 
 
 #line 12
@@ -53,42 +72,42 @@ J2OBJC_FIELD_SETTER(AMConversationVM_$1, val$callback_, id<AMConversationVMCallb
   withAMConversationVMCallback:(id<AMConversationVMCallback>)callback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules
        withAMBindedDisplayList:(AMBindedDisplayList *)displayList {
-  if (self = [super init]) {
-    isLoaded_ =
-#line 15
-    NO;
-    
-#line 18
-    self->displayList_ = displayList;
-    
-#line 19
-    self->listener_ = [[AMConversationVM_$1 alloc] initWithAMConversationVM:self withAMBindedDisplayList:displayList withImActorModelModulesModules:modules withAMPeer:peer withAMConversationVMCallback:callback];
-    
-#line 59
-    [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListenerWithAMDisplayList_Listener:listener_];
-    
-#line 60
-    [listener_ onCollectionChanged];
-  }
+  AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(self, peer, callback, modules, displayList);
   return self;
 }
 
 
 #line 63
 - (void)release__ {
-  
-#line 64
   [((AMBindedDisplayList *) nil_chk(displayList_)) removeListenerWithAMDisplayList_Listener:listener_];
 }
 
-- (void)copyAllFieldsTo:(AMConversationVM *)other {
-  [super copyAllFieldsTo:other];
-  other->displayList_ = displayList_;
-  other->listener_ = listener_;
-  other->isLoaded_ = isLoaded_;
+@end
+
+
+#line 17
+void AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(AMConversationVM *self, AMPeer *peer, id<AMConversationVMCallback> callback, ImActorModelModulesModules *modules, AMBindedDisplayList *displayList) {
+  (void) NSObject_init(self);
+  self->isLoaded_ =
+#line 15
+  NO;
+  
+#line 18
+  self->displayList_ = displayList;
+  self->listener_ = new_AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(self, displayList, modules, peer, callback);
+  
+#line 59
+  [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListenerWithAMDisplayList_Listener:self->listener_];
+  [self->listener_ onCollectionChanged];
 }
 
-@end
+
+#line 17
+AMConversationVM *new_AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(AMPeer *peer, id<AMConversationVMCallback> callback, ImActorModelModulesModules *modules, AMBindedDisplayList *displayList) {
+  AMConversationVM *self = [AMConversationVM alloc];
+  AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(self, peer, callback, modules, displayList);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
 
@@ -97,8 +116,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
 
 #line 21
 - (void)onCollectionChanged {
-  
-#line 22
   if (this$0_->isLoaded_) {
     return;
   }
@@ -150,23 +167,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
           withImActorModelModulesModules:(ImActorModelModulesModules *)capture$1
                               withAMPeer:(AMPeer *)capture$2
             withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$3 {
-  this$0_ = outer$;
-  val$displayList_ = capture$0;
-  val$modules_ = capture$1;
-  val$peer_ = capture$2;
-  val$callback_ = capture$3;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMConversationVM_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$displayList_ = val$displayList_;
-  other->val$modules_ = val$modules_;
-  other->val$peer_ = val$peer_;
-  other->val$callback_ = val$callback_;
+  AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(self, outer$, capture$0, capture$1, capture$2, capture$3);
+  return self;
 }
 
 @end
+
+void AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(AMConversationVM_$1 *self, AMConversationVM *outer$, AMBindedDisplayList *capture$0, ImActorModelModulesModules *capture$1, AMPeer *capture$2, id<AMConversationVMCallback> capture$3) {
+  self->this$0_ = outer$;
+  self->val$displayList_ = capture$0;
+  self->val$modules_ = capture$1;
+  self->val$peer_ = capture$2;
+  self->val$callback_ = capture$3;
+  (void) NSObject_init(self);
+}
+
+AMConversationVM_$1 *new_AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(AMConversationVM *outer$, AMBindedDisplayList *capture$0, ImActorModelModulesModules *capture$1, AMPeer *capture$2, id<AMConversationVMCallback> capture$3) {
+  AMConversationVM_$1 *self = [AMConversationVM_$1 alloc];
+  AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(self, outer$, capture$0, capture$1, capture$2, capture$3);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM_$1)

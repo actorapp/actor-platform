@@ -3,50 +3,61 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/RandomUtils.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/RandomUtils.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "java/util/Random.h"
 
-@interface ImActorModelModulesUtilsRandomUtils () {
-}
-@end
+static JavaUtilRandom *ImActorModelModulesUtilsRandomUtils_RANDOM_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsRandomUtils, RANDOM_, JavaUtilRandom *)
 
-BOOL ImActorModelModulesUtilsRandomUtils_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(ImActorModelModulesUtilsRandomUtils)
 
 
 #line 8
 @implementation ImActorModelModulesUtilsRandomUtils
 
-JavaUtilRandom * ImActorModelModulesUtilsRandomUtils_RANDOM_;
 
+#line 12
 + (jlong)nextRid {
   return ImActorModelModulesUtilsRandomUtils_nextRid();
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesUtilsRandomUtils_init(self);
+  return self;
 }
 
 + (void)initialize {
   if (self == [ImActorModelModulesUtilsRandomUtils class]) {
-    ImActorModelModulesUtilsRandomUtils_RANDOM_ =
-#line 10
-    [[JavaUtilRandom alloc] init];
+    ImActorModelModulesUtilsRandomUtils_RANDOM_ = new_JavaUtilRandom_init();
     J2OBJC_SET_INITIALIZED(ImActorModelModulesUtilsRandomUtils)
   }
 }
 
 @end
 
+
+#line 12
 jlong ImActorModelModulesUtilsRandomUtils_nextRid() {
-  ImActorModelModulesUtilsRandomUtils_init();
+  ImActorModelModulesUtilsRandomUtils_initialize();
   @synchronized(ImActorModelModulesUtilsRandomUtils_class_()) {
     
 #line 13
     return [((JavaUtilRandom *) nil_chk(ImActorModelModulesUtilsRandomUtils_RANDOM_)) nextLong];
   }
+}
+
+void ImActorModelModulesUtilsRandomUtils_init(ImActorModelModulesUtilsRandomUtils *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesUtilsRandomUtils *new_ImActorModelModulesUtilsRandomUtils_init() {
+  ImActorModelModulesUtilsRandomUtils *self = [ImActorModelModulesUtilsRandomUtils alloc];
+  ImActorModelModulesUtilsRandomUtils_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsRandomUtils)

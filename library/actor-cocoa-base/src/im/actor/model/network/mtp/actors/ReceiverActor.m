@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/actors/ReceiverActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/actors/ReceiverActor.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSelection.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -36,7 +38,7 @@
 #include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
 
-__attribute__((unused)) static void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProtoMessage *message);
+#define MTReceiverActor_MAX_RECEIVED_BUFFER 1000
 
 @interface MTReceiverActor () {
  @public
@@ -46,26 +48,49 @@ __attribute__((unused)) static void MTReceiverActor_onReceiveWithMTProtoMessage_
 }
 
 - (void)onReceiveWithMTProtoMessage:(MTProtoMessage *)message;
+
 @end
 
 J2OBJC_FIELD_SETTER(MTReceiverActor, sender_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTReceiverActor, proto_, MTMTProto *)
 J2OBJC_FIELD_SETTER(MTReceiverActor, receivedMessages_, JavaUtilArrayList *)
 
-@interface MTReceiverActor_$1 () {
+static NSString *MTReceiverActor_TAG_ = 
+#line 17
+@"ProtoReceiver";
+J2OBJC_STATIC_FIELD_GETTER(MTReceiverActor, TAG_, NSString *)
+
+J2OBJC_STATIC_FIELD_GETTER(MTReceiverActor, MAX_RECEIVED_BUFFER, jint)
+
+__attribute__((unused)) static void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProtoMessage *message);
+
+@interface MTReceiverActor_$1 : NSObject < DKActorCreator > {
  @public
   MTMTProto *val$proto_;
 }
+
+- (MTReceiverActor *)create;
+
+- (instancetype)initWithMTMTProto:(MTMTProto *)capture$0;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(MTReceiverActor_$1)
+
 J2OBJC_FIELD_SETTER(MTReceiverActor_$1, val$proto_, MTMTProto *)
+
+__attribute__((unused)) static void MTReceiverActor_$1_initWithMTMTProto_(MTReceiverActor_$1 *self, MTMTProto *capture$0);
+
+__attribute__((unused)) static MTReceiverActor_$1 *new_MTReceiverActor_$1_initWithMTMTProto_(MTMTProto *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(MTReceiverActor_$1)
 
 
 #line 15
 @implementation MTReceiverActor
 
-NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
 
+#line 19
 + (DKActorRef *)receiverWithMTMTProto:(MTMTProto *)proto {
   return MTReceiverActor_receiverWithMTMTProto_(proto);
 }
@@ -73,22 +98,11 @@ NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
 
 #line 35
 - (instancetype)initWithMTMTProto:(MTMTProto *)proto {
-  if (self = [super init]) {
-    receivedMessages_ =
-#line 33
-    [[JavaUtilArrayList alloc] init];
-    
-#line 36
-    self->proto_ = proto;
-  }
+  MTReceiverActor_initWithMTMTProto_(self, proto);
   return self;
 }
 
-
-#line 40
 - (void)preStart {
-  
-#line 41
   sender_ = MTSenderActor_senderActorWithMTMTProto_(proto_);
 }
 
@@ -111,27 +125,40 @@ NSString * MTReceiverActor_TAG_ = @"ProtoReceiver";
   MTReceiverActor_onReceiveWithMTProtoMessage_(self, message);
 }
 
-- (void)copyAllFieldsTo:(MTReceiverActor *)other {
-  [super copyAllFieldsTo:other];
-  other->sender_ = sender_;
-  other->proto_ = proto_;
-  other->receivedMessages_ = receivedMessages_;
-}
-
 @end
 
+
+#line 19
 DKActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto) {
-  MTReceiverActor_init();
+  MTReceiverActor_initialize();
   
 #line 20
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:[[DKActorSelection alloc] initWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(MTReceiverActor_class_(), [[MTReceiverActor_$1 alloc] initWithMTMTProto:proto]) withNSString:JreStrcat("$$",
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_(DKProps_createWithIOSClass_withDKActorCreator_(MTReceiverActor_class_(), new_MTReceiverActor_$1_initWithMTMTProto_(proto)), JreStrcat("$$",
 #line 25
-  [((MTMTProto *) nil_chk(proto)) getActorPath], @"/receiver")]];
+  [((MTMTProto *) nil_chk(proto)) getActorPath], @"/receiver"))];
 }
 
-void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProtoMessage *message) {
+
+#line 35
+void MTReceiverActor_initWithMTMTProto_(MTReceiverActor *self, MTMTProto *proto) {
+  (void) DKActor_init(self);
+  self->receivedMessages_ = new_JavaUtilArrayList_init();
   
-#line 54
+#line 36
+  self->proto_ = proto;
+}
+
+
+#line 35
+MTReceiverActor *new_MTReceiverActor_initWithMTMTProto_(MTMTProto *proto) {
+  MTReceiverActor *self = [MTReceiverActor alloc];
+  MTReceiverActor_initWithMTMTProto_(self, proto);
+  return self;
+}
+
+
+#line 53
+void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProtoMessage *message) {
   jboolean disableConfirm = NO;
   @try {
     
@@ -162,7 +189,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
     
 #line 79
     if ([obj isKindOfClass:[MTNewSessionCreated class]]) {
-      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_NewSession alloc] init]];
+      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_NewSession_init()];
       [((id<MTMTProtoCallback>) nil_chk([((MTMTProto *) nil_chk(self->proto_)) getCallback])) onSessionCreated];
     }
     else
@@ -189,7 +216,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
       MTMTRpcResponse *responseBox = (MTMTRpcResponse *) check_class_cast(obj, [MTMTRpcResponse class]);
       
 #line 90
-      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_ForgetMessage alloc] initWithLong:[((MTMTRpcResponse *) nil_chk(responseBox)) getMessageId]]];
+      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_ForgetMessage_initWithLong_([((MTMTRpcResponse *) nil_chk(responseBox)) getMessageId])];
       [((id<MTMTProtoCallback>) nil_chk([((MTMTProto *) nil_chk(self->proto_)) getCallback])) onRpcResponseWithLong:[responseBox getMessageId] withByteArray:[responseBox getPayload]];
     }
     else
@@ -204,7 +231,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
           jlong ackMsgId = *b__++;
           
 #line 96
-          [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_ForgetMessage alloc] initWithLong:ackMsgId]];
+          [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_ForgetMessage_initWithLong_(ackMsgId)];
         }
       }
     }
@@ -220,9 +247,9 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
       MTUnsentResponse *unsent = (MTUnsentResponse *) check_class_cast(obj, [MTUnsentResponse class]);
       if (![self->receivedMessages_ containsWithId:JavaLangLong_valueOfWithLong_([((MTUnsentResponse *) nil_chk(unsent)) getResponseMessageId])]) {
         disableConfirm = YES;
-        [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:
+        [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_SendMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(),
 #line 115
-        [((MTRequestResend *) [[MTRequestResend alloc] initWithLong:[unsent getMessageId]]) toByteArray]]];
+        [new_MTRequestResend_initWithLong_([unsent getMessageId]) toByteArray])];
       }
     }
     else
@@ -231,9 +258,9 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
       MTUnsentMessage *unsent = (MTUnsentMessage *) check_class_cast(obj, [MTUnsentMessage class]);
       if (![self->receivedMessages_ containsWithId:JavaLangLong_valueOfWithLong_([((MTUnsentMessage *) nil_chk(unsent)) getMessageId])]) {
         disableConfirm = YES;
-        [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_SendMessage alloc] initWithLong:ImActorModelNetworkUtilMTUids_nextId() withByteArray:
+        [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_SendMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(),
 #line 122
-        [((MTRequestResend *) [[MTRequestResend alloc] initWithLong:[unsent getMessageId]]) toByteArray]]];
+        [new_MTRequestResend_initWithLong_([unsent getMessageId]) toByteArray])];
       }
     }
     else {
@@ -249,7 +276,7 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
   }
   @finally {
     if (!disableConfirm) {
-      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:[[MTSenderActor_ConfirmMessage alloc] initWithLong:[((MTProtoMessage *) nil_chk(message)) getMessageId]]];
+      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_ConfirmMessage_initWithLong_([((MTProtoMessage *) nil_chk(message)) getMessageId])];
     }
   }
 }
@@ -261,21 +288,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTReceiverActor)
 
 #line 22
 - (MTReceiverActor *)create {
-  
-#line 23
-  return [[MTReceiverActor alloc] initWithMTMTProto:val$proto_];
+  return new_MTReceiverActor_initWithMTMTProto_(val$proto_);
 }
 
 - (instancetype)initWithMTMTProto:(MTMTProto *)capture$0 {
-  val$proto_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(MTReceiverActor_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$proto_ = val$proto_;
+  MTReceiverActor_$1_initWithMTMTProto_(self, capture$0);
+  return self;
 }
 
 @end
+
+void MTReceiverActor_$1_initWithMTMTProto_(MTReceiverActor_$1 *self, MTMTProto *capture$0) {
+  self->val$proto_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+MTReceiverActor_$1 *new_MTReceiverActor_$1_initWithMTMTProto_(MTMTProto *capture$0) {
+  MTReceiverActor_$1 *self = [MTReceiverActor_$1 alloc];
+  MTReceiverActor_$1_initWithMTMTProto_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTReceiverActor_$1)

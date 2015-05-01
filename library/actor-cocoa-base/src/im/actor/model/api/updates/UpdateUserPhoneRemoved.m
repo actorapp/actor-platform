@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserPhoneRemoved.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserPhoneRemoved.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateUserPhoneRemoved () {
@@ -20,6 +22,7 @@
   jint uid_;
   jint phoneId_;
 }
+
 @end
 
 
@@ -36,34 +39,24 @@
 #line 30
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)phoneId {
-  if (self = [super init]) {
-    
-#line 31
-    self->uid_ = uid;
-    
-#line 32
-    self->phoneId_ = phoneId;
-  }
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved_initWithInt_withInt_(self, uid, phoneId);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getUid {
-  
-#line 40
   return self->uid_;
 }
 
-
-#line 43
 - (jint)getPhoneId {
-  
-#line 44
   return self->phoneId_;
 }
 
@@ -77,12 +70,12 @@
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->phoneId_];
 }
 
+
+#line 60
 - (NSString *)description {
   NSString *res = @"update UserPhoneRemoved{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -91,25 +84,51 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 70
-  return ImActorModelApiUpdatesUpdateUserPhoneRemoved_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserPhoneRemoved *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->phoneId_ = phoneId_;
+#line 69
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateUserPhoneRemoved_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateUserPhoneRemoved *ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserPhoneRemoved_init();
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateUserPhoneRemoved *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserPhoneRemoved alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserPhoneRemoved *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserPhoneRemoved_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateUserPhoneRemoved_initWithInt_withInt_(ImActorModelApiUpdatesUpdateUserPhoneRemoved *self, jint uid, jint phoneId) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->uid_ = uid;
+  self->phoneId_ = phoneId;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateUserPhoneRemoved *new_ImActorModelApiUpdatesUpdateUserPhoneRemoved_initWithInt_withInt_(jint uid, jint phoneId) {
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved *self = [ImActorModelApiUpdatesUpdateUserPhoneRemoved alloc];
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved_initWithInt_withInt_(self, uid, phoneId);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateUserPhoneRemoved_init(ImActorModelApiUpdatesUpdateUserPhoneRemoved *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateUserPhoneRemoved *new_ImActorModelApiUpdatesUpdateUserPhoneRemoved_init() {
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved *self = [ImActorModelApiUpdatesUpdateUserPhoneRemoved alloc];
+  ImActorModelApiUpdatesUpdateUserPhoneRemoved_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserPhoneRemoved)

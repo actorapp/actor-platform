@@ -6,27 +6,30 @@
 #ifndef _ImActorModelApiUpdatesUpdateGroupMembersUpdate_H_
 #define _ImActorModelApiUpdatesUpdateGroupMembersUpdate_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateGroupMembersUpdate_HEADER 44
 
-@interface ImActorModelApiUpdatesUpdateGroupMembersUpdate : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateGroupMembersUpdate : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateGroupMembersUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)groupId
            withJavaUtilList:(id<JavaUtilList>)members;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateGroupMembersUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getGroupId;
+
+- (jint)getHeaderKey;
 
 - (id<JavaUtilList>)getMembers;
 
@@ -36,18 +39,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupMembersUpdate)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupMembersUpdate *ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(ImActorModelApiUpdatesUpdateGroupMembersUpdate *self, jint groupId, id<JavaUtilList> members);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(jint groupId, id<JavaUtilList> members) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupMembersUpdate_init(ImActorModelApiUpdatesUpdateGroupMembersUpdate *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupMembersUpdate)
 

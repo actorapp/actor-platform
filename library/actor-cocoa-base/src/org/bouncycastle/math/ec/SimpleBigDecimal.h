@@ -6,73 +6,71 @@
 #ifndef _OrgBouncycastleMathEcSimpleBigDecimal_H_
 #define _OrgBouncycastleMathEcSimpleBigDecimal_H_
 
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
 
-#define OrgBouncycastleMathEcSimpleBigDecimal_serialVersionUID 1LL
+@class JavaMathBigInteger;
 
-@interface OrgBouncycastleMathEcSimpleBigDecimal : NSObject {
-}
+@interface OrgBouncycastleMathEcSimpleBigDecimal : NSObject
 
-+ (OrgBouncycastleMathEcSimpleBigDecimal *)getInstanceWithJavaMathBigInteger:(JavaMathBigInteger *)value
-                                                                     withInt:(jint)scale_;
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)bigInt
                                    withInt:(jint)scale_;
 
-- (OrgBouncycastleMathEcSimpleBigDecimal *)adjustScaleWithInt:(jint)newScale;
+- (OrgBouncycastleMathEcSimpleBigDecimal *)addWithJavaMathBigInteger:(JavaMathBigInteger *)b;
 
 - (OrgBouncycastleMathEcSimpleBigDecimal *)addWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
 
-- (OrgBouncycastleMathEcSimpleBigDecimal *)addWithJavaMathBigInteger:(JavaMathBigInteger *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)negate;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)subtractWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)subtractWithJavaMathBigInteger:(JavaMathBigInteger *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)multiplyWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)multiplyWithJavaMathBigInteger:(JavaMathBigInteger *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)divideWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)divideWithJavaMathBigInteger:(JavaMathBigInteger *)b;
-
-- (OrgBouncycastleMathEcSimpleBigDecimal *)shiftLeftWithInt:(jint)n;
-
-- (jint)compareToWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)val;
+- (OrgBouncycastleMathEcSimpleBigDecimal *)adjustScaleWithInt:(jint)newScale;
 
 - (jint)compareToWithJavaMathBigInteger:(JavaMathBigInteger *)val;
 
+- (jint)compareToWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)val;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)divideWithJavaMathBigInteger:(JavaMathBigInteger *)b;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)divideWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
+
+- (jboolean)isEqual:(id)o;
+
 - (JavaMathBigInteger *)floor;
 
-- (JavaMathBigInteger *)round;
++ (OrgBouncycastleMathEcSimpleBigDecimal *)getInstanceWithJavaMathBigInteger:(JavaMathBigInteger *)value
+                                                                     withInt:(jint)scale_;
+
+- (jint)getScale;
+
+- (NSUInteger)hash;
 
 - (jint)intValue;
 
 - (jlong)longValue;
 
-- (jint)getScale;
+- (OrgBouncycastleMathEcSimpleBigDecimal *)multiplyWithJavaMathBigInteger:(JavaMathBigInteger *)b;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)multiplyWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)negate;
+
+- (JavaMathBigInteger *)round;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)shiftLeftWithInt:(jint)n;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)subtractWithJavaMathBigInteger:(JavaMathBigInteger *)b;
+
+- (OrgBouncycastleMathEcSimpleBigDecimal *)subtractWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
 
 - (NSString *)description;
-
-- (jboolean)isEqual:(id)o;
-
-- (NSUInteger)hash;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcSimpleBigDecimal)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT OrgBouncycastleMathEcSimpleBigDecimal *OrgBouncycastleMathEcSimpleBigDecimal_getInstanceWithJavaMathBigInteger_withInt_(JavaMathBigInteger *value, jint scale_);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcSimpleBigDecimal, serialVersionUID, jlong)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(OrgBouncycastleMathEcSimpleBigDecimal *self, JavaMathBigInteger *bigInt, jint scale_);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcSimpleBigDecimal *new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(JavaMathBigInteger *bigInt, jint scale_) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcSimpleBigDecimal)
 

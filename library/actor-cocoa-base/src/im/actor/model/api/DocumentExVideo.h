@@ -6,28 +6,29 @@
 #ifndef _ImActorModelApiDocumentExVideo_H_
 #define _ImActorModelApiDocumentExVideo_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/DocumentEx.h"
 
-@interface ImActorModelApiDocumentExVideo : ImActorModelApiDocumentEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiDocumentExVideo : ImActorModelApiDocumentEx
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
                     withInt:(jint)duration;
 
-- (instancetype)init;
+- (jint)getDuration;
+
+- (jint)getH;
 
 - (jint)getHeader;
 
 - (jint)getW;
-
-- (jint)getH;
-
-- (jint)getDuration;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -39,8 +40,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentExVideo)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(ImActorModelApiDocumentExVideo *self, jint w, jint h, jint duration);
+
+FOUNDATION_EXPORT ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiDocumentExVideo_init(ImActorModelApiDocumentExVideo *self);
+
+FOUNDATION_EXPORT ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentExVideo)
 

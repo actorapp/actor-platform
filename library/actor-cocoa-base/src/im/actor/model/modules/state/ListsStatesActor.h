@@ -6,23 +6,24 @@
 #ifndef _ImActorModelModulesStateListsStatesActor_H_
 #define _ImActorModelModulesStateListsStatesActor_H_
 
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-@interface ImActorModelModulesStateListsStatesActor : ImActorModelModulesUtilsModuleActor {
-}
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesStateListsStatesActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)onDialogsChangedWithBoolean:(jboolean)isEmpty;
+- (void)onBookImported;
 
 - (void)onContactsChangedWithBoolean:(jboolean)isEmpty;
 
-- (void)onBookImported;
-
 - (void)onContactsLoaded;
+
+- (void)onDialogsChangedWithBoolean:(jboolean)isEmpty;
 
 - (void)onDialogsLoaded;
 
@@ -32,13 +33,15 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(ImActorModelModulesStateListsStatesActor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor *new_ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor)
 
-@interface ImActorModelModulesStateListsStatesActor_OnBookImported : NSObject {
-}
+@interface ImActorModelModulesStateListsStatesActor_OnBookImported : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -46,13 +49,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnBookImported)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_OnBookImported_init(ImActorModelModulesStateListsStatesActor_OnBookImported *self);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor_OnBookImported *new_ImActorModelModulesStateListsStatesActor_OnBookImported_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnBookImported)
 
-@interface ImActorModelModulesStateListsStatesActor_OnContactsLoaded : NSObject {
-}
+@interface ImActorModelModulesStateListsStatesActor_OnContactsLoaded : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -60,13 +65,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnBookImport
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnContactsLoaded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_OnContactsLoaded_init(ImActorModelModulesStateListsStatesActor_OnContactsLoaded *self);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor_OnContactsLoaded *new_ImActorModelModulesStateListsStatesActor_OnContactsLoaded_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnContactsLoaded)
 
-@interface ImActorModelModulesStateListsStatesActor_OnDialogsLoaded : NSObject {
-}
+@interface ImActorModelModulesStateListsStatesActor_OnDialogsLoaded : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -74,13 +81,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnContactsLo
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_OnDialogsLoaded_init(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded *self);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor_OnDialogsLoaded *new_ImActorModelModulesStateListsStatesActor_OnDialogsLoaded_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded)
 
-@interface ImActorModelModulesStateListsStatesActor_OnContactsChanged : NSObject {
-}
+@interface ImActorModelModulesStateListsStatesActor_OnContactsChanged : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithBoolean:(jboolean)isEmpty;
 
@@ -90,13 +99,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnDialogsLoa
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnContactsChanged)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(ImActorModelModulesStateListsStatesActor_OnContactsChanged *self, jboolean isEmpty);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor_OnContactsChanged *new_ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(jboolean isEmpty) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnContactsChanged)
 
-@interface ImActorModelModulesStateListsStatesActor_OnDialogsChanged : NSObject {
-}
+@interface ImActorModelModulesStateListsStatesActor_OnDialogsChanged : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithBoolean:(jboolean)isEmpty;
 
@@ -106,8 +117,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnContactsCh
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnDialogsChanged)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(ImActorModelModulesStateListsStatesActor_OnDialogsChanged *self, jboolean isEmpty);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor_OnDialogsChanged *new_ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(jboolean isEmpty) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnDialogsChanged)
 

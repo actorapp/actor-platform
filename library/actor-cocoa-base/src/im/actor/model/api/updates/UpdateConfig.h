@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiUpdatesUpdateConfig_H_
 #define _ImActorModelApiUpdatesUpdateConfig_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiConfig;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateConfig_HEADER 42
 
-@interface ImActorModelApiUpdatesUpdateConfig : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateConfig : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config;
+
++ (ImActorModelApiUpdatesUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (ImActorModelApiConfig *)getConfig;
+
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateConfig)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateConfig, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateConfig, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiUpdatesUpdateConfig *self, ImActorModelApiConfig *config);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiConfig *config) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateConfig_init(ImActorModelApiUpdatesUpdateConfig *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateConfig)
 

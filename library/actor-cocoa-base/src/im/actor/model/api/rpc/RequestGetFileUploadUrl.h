@@ -6,25 +6,28 @@
 #ifndef _ImActorModelApiRpcRequestGetFileUploadUrl_H_
 #define _ImActorModelApiRpcRequestGetFileUploadUrl_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestGetFileUploadUrl_HEADER 97
 
-@interface ImActorModelApiRpcRequestGetFileUploadUrl : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestGetFileUploadUrl : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithInt:(jint)expectedSize;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithInt:(jint)expectedSize;
+
++ (ImActorModelApiRpcRequestGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (jint)getExpectedSize;
+
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -32,18 +35,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetFileUploadUrl)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetFileUploadUrl, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUploadUrl *ImActorModelApiRpcRequestGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetFileUploadUrl, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(ImActorModelApiRpcRequestGetFileUploadUrl *self, jint expectedSize);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(jint expectedSize) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetFileUploadUrl_init(ImActorModelApiRpcRequestGetFileUploadUrl *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileUploadUrl_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetFileUploadUrl)
 

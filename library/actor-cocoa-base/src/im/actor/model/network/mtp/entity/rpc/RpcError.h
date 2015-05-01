@@ -6,12 +6,12 @@
 #ifndef _MTRpcError_H_
 #define _MTRpcError_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
-
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
 #define MTRpcError_HEADER 2
 
@@ -24,6 +24,8 @@
   IOSByteArray *relatedData_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithInt:(jint)errorCode
@@ -32,13 +34,15 @@
                 withBoolean:(jboolean)canTryAgain
               withByteArray:(IOSByteArray *)relatedData;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
@@ -48,13 +52,18 @@ J2OBJC_FIELD_SETTER(MTRpcError, errorTag_, NSString *)
 J2OBJC_FIELD_SETTER(MTRpcError, userMessage_, NSString *)
 J2OBJC_FIELD_SETTER(MTRpcError, relatedData_, IOSByteArray *)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTRpcError, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTRpcError ImActorModelNetworkMtpEntityRpcRpcError;
+FOUNDATION_EXPORT void MTRpcError_initWithBSDataInput_(MTRpcError *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTRpcError *new_MTRpcError_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(MTRpcError *self, jint errorCode, NSString *errorTag, NSString *userMessage, jboolean canTryAgain, IOSByteArray *relatedData);
+
+FOUNDATION_EXPORT MTRpcError *new_MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(jint errorCode, NSString *errorTag, NSString *userMessage, jboolean canTryAgain, IOSByteArray *relatedData) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTRpcError)
+
+typedef MTRpcError ImActorModelNetworkMtpEntityRpcRpcError;
 
 #endif // _MTRpcError_H_

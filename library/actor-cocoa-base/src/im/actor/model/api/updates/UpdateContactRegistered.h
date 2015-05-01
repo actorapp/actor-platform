@@ -6,31 +6,34 @@
 #ifndef _ImActorModelApiUpdatesUpdateContactRegistered_H_
 #define _ImActorModelApiUpdatesUpdateContactRegistered_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateContactRegistered_HEADER 5
 
-@interface ImActorModelApiUpdatesUpdateContactRegistered : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateContactRegistered : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
                    withLong:(jlong)date;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getDate;
+
+- (jint)getHeaderKey;
 
 - (jint)getUid;
 
 - (jboolean)isSilent;
-
-- (jlong)getDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,18 +41,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateContactRegistered)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateContactRegistered, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateContactRegistered, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(jint uid, jboolean isSilent, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactRegistered_init(ImActorModelApiUpdatesUpdateContactRegistered *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateContactRegistered)
 

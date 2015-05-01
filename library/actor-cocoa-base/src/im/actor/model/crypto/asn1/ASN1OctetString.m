@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1OctetString.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1OctetString.java"
 
 #include "IOSClass.h"
@@ -18,6 +19,7 @@
  @public
   IOSByteArray *data_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
@@ -33,19 +35,13 @@ J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 
 #line 19
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
-  if (self = [super init]) {
-    
-#line 20
-    self->data_ = data;
-  }
+  BCASN1OctetString_initWithByteArray_(self, data);
   return self;
 }
 
 
 #line 23
 - (IOSByteArray *)getData {
-  
-#line 24
   return data_;
 }
 
@@ -57,18 +53,32 @@ J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
   [dataOutput writeBytesWithByteArray:data_ withInt:0 withInt:data_->size_];
 }
 
-- (void)copyAllFieldsTo:(BCASN1OctetString *)other {
-  [super copyAllFieldsTo:other];
-  other->data_ = data_;
-}
-
 @end
 
+
+#line 13
 BCASN1OctetString *BCASN1OctetString_readOctetStringWithBSDataInput_(BSDataInput *dataInput) {
-  BCASN1OctetString_init();
+  BCASN1OctetString_initialize();
   
 #line 14
-  return [[BCASN1OctetString alloc] initWithByteArray:[dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]];
+  return new_BCASN1OctetString_initWithByteArray_([dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]);
+}
+
+
+#line 19
+void BCASN1OctetString_initWithByteArray_(BCASN1OctetString *self, IOSByteArray *data) {
+  (void) BCASN1Primitive_init(self);
+  
+#line 20
+  self->data_ = data;
+}
+
+
+#line 19
+BCASN1OctetString *new_BCASN1OctetString_initWithByteArray_(IOSByteArray *data) {
+  BCASN1OctetString *self = [BCASN1OctetString alloc];
+  BCASN1OctetString_initWithByteArray_(self, data);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1OctetString)

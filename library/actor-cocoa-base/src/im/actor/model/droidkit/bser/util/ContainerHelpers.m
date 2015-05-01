@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/ContainerHelpers.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/ContainerHelpers.java"
 
 #include "IOSObjectArray.h"
@@ -10,17 +11,19 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/util/ContainerHelpers.h"
 
-BOOL ImActorModelDroidkitBserUtilContainerHelpers_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitBserUtilContainerHelpers)
+
+IOSBooleanArray *ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_BOOLEANS_;
+IOSIntArray *ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_INTS_;
+IOSLongArray *ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_LONGS_;
+IOSObjectArray *ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
 
 
 #line 19
 @implementation ImActorModelDroidkitBserUtilContainerHelpers
 
-IOSBooleanArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_BOOLEANS_;
-IOSIntArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_INTS_;
-IOSLongArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_LONGS_;
-IOSObjectArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
 
+#line 26
 + (jint)binarySearchWithIntArray:(IOSIntArray *)array
                          withInt:(jint)size
                          withInt:(jint)value {
@@ -36,7 +39,8 @@ IOSObjectArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelDroidkitBserUtilContainerHelpers_init(self);
+  return self;
 }
 
 + (void)initialize {
@@ -59,8 +63,10 @@ IOSObjectArray * ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
 
 @end
 
+
+#line 26
 jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(IOSIntArray *array, jint size, jint value) {
-  ImActorModelDroidkitBserUtilContainerHelpers_init();
+  ImActorModelDroidkitBserUtilContainerHelpers_initialize();
   
 #line 27
   jint lo = 0;
@@ -89,8 +95,10 @@ jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withI
   return ~lo;
 }
 
+
+#line 45
 jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithLongArray_withInt_withLong_(IOSLongArray *array, jint size, jlong value) {
-  ImActorModelDroidkitBserUtilContainerHelpers_init();
+  ImActorModelDroidkitBserUtilContainerHelpers_initialize();
   
 #line 46
   jint lo = 0;
@@ -117,6 +125,16 @@ jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithLongArray_with
     }
   }
   return ~lo;
+}
+
+void ImActorModelDroidkitBserUtilContainerHelpers_init(ImActorModelDroidkitBserUtilContainerHelpers *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelDroidkitBserUtilContainerHelpers *new_ImActorModelDroidkitBserUtilContainerHelpers_init() {
+  ImActorModelDroidkitBserUtilContainerHelpers *self = [ImActorModelDroidkitBserUtilContainerHelpers alloc];
+  ImActorModelDroidkitBserUtilContainerHelpers_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitBserUtilContainerHelpers)

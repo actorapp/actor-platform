@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleCryptoStreamCipher_H_
 #define _OrgBouncycastleCryptoStreamCipher_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @protocol OrgBouncycastleCryptoCipherParameters;
-
-#include "J2ObjC_header.h"
 
 @protocol OrgBouncycastleCryptoStreamCipher < NSObject, JavaObject >
 

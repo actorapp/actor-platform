@@ -6,13 +6,13 @@
 #ifndef _MTMessageAck_H_
 #define _MTMessageAck_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSLongArray;
 @class IOSObjectArray;
-
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
 #define MTMessageAck_HEADER 6
 
@@ -21,19 +21,23 @@
   IOSLongArray *messagesIds_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds;
 
 - (instancetype)initWithLongArray:(IOSLongArray *)messagesIds;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
@@ -41,13 +45,22 @@ J2OBJC_EMPTY_STATIC_INIT(MTMessageAck)
 
 J2OBJC_FIELD_SETTER(MTMessageAck, messagesIds_, IOSLongArray *)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTMessageAck, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTMessageAck ImActorModelNetworkMtpEntityMessageAck;
+FOUNDATION_EXPORT void MTMessageAck_initWithBSDataInput_(MTMessageAck *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTMessageAck *new_MTMessageAck_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTMessageAck_initWithJavaLangLongArray_(MTMessageAck *self, IOSObjectArray *_messagesIds);
+
+FOUNDATION_EXPORT MTMessageAck *new_MTMessageAck_initWithJavaLangLongArray_(IOSObjectArray *_messagesIds) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTMessageAck_initWithLongArray_(MTMessageAck *self, IOSLongArray *messagesIds);
+
+FOUNDATION_EXPORT MTMessageAck *new_MTMessageAck_initWithLongArray_(IOSLongArray *messagesIds) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTMessageAck)
+
+typedef MTMessageAck ImActorModelNetworkMtpEntityMessageAck;
 
 #endif // _MTMessageAck_H_

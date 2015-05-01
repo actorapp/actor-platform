@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/DisplayLists.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/DisplayLists.java"
 
 #include "IOSClass.h"
@@ -23,35 +24,74 @@
 #include "java/lang/RuntimeException.h"
 #include "java/util/HashMap.h"
 
+#define ImActorModelModulesDisplayLists_LOAD_GAP 5
+#define ImActorModelModulesDisplayLists_LOAD_PAGE 20
+
 @interface ImActorModelModulesDisplayLists () {
  @public
   AMBindedDisplayList *dialogGlobalList_;
   AMBindedDisplayList *contactsGlobalList_;
   JavaUtilHashMap *chatsGlobalLists_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, dialogGlobalList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, contactsGlobalList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, chatsGlobalLists_, JavaUtilHashMap *)
 
-@interface ImActorModelModulesDisplayLists_$1 () {
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_GAP, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_PAGE, jint)
+
+@interface ImActorModelModulesDisplayLists_$1 : NSObject < AMBindedDisplayList_BindHook > {
  @public
   ImActorModelModulesDisplayLists *this$0_;
 }
+
+- (void)onScrolledToEnd;
+
+- (void)onItemTouchedWithId:(AMDialog *)item;
+
+- (instancetype)initWithImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists_$1)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$1, this$0_, ImActorModelModulesDisplayLists *)
 
-@interface ImActorModelModulesDisplayLists_$2 () {
+__attribute__((unused)) static void ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(ImActorModelModulesDisplayLists_$1 *self, ImActorModelModulesDisplayLists *outer$);
+
+__attribute__((unused)) static ImActorModelModulesDisplayLists_$1 *new_ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(ImActorModelModulesDisplayLists *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$1)
+
+@interface ImActorModelModulesDisplayLists_$2 : NSObject < AMBindedDisplayList_BindHook > {
  @public
   ImActorModelModulesDisplayLists *this$0_;
   AMPeer *val$peer_;
 }
+
+- (void)onScrolledToEnd;
+
+- (void)onItemTouchedWithId:(AMMessage *)item;
+
+- (instancetype)initWithImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)outer$
+                                             withAMPeer:(AMPeer *)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists_$2)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, this$0_, ImActorModelModulesDisplayLists *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
+
+__attribute__((unused)) static void ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(ImActorModelModulesDisplayLists_$2 *self, ImActorModelModulesDisplayLists *outer$, AMPeer *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesDisplayLists_$2 *new_ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(ImActorModelModulesDisplayLists *outer$, AMPeer *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
 
 
 #line 18
@@ -60,21 +100,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 28
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 29
-  [super initWithImActorModelModulesModules:modules]) {
-    chatsGlobalLists_ =
-#line 26
-    [[JavaUtilHashMap alloc] init];
-  }
+  ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
 #line 32
 - (AMBindedDisplayList *)getContactsGlobalList {
-  
-#line 33
   AMMVVMEngine_checkMainThread();
   
 #line 35
@@ -89,8 +121,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 42
 - (AMBindedDisplayList *)getDialogsGlobalList {
-  
-#line 43
   AMMVVMEngine_checkMainThread();
   
 #line 45
@@ -105,8 +135,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 52
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer {
-  
-#line 53
   AMMVVMEngine_checkMainThread();
   
 #line 55
@@ -121,26 +149,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 62
 - (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)isGlobalList {
-  
-#line 63
   AMMVVMEngine_checkMainThread();
   
 #line 65
   id<DKListEngine> dialogsEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsEngine];
   if (!([DKListEngineDisplayExt_class_() isInstance:dialogsEngine])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Dialogs ListEngine must implement ListEngineDisplayExt for using global list"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Dialogs ListEngine must implement ListEngineDisplayExt for using global list");
   }
   
 #line 70
   id<AMBindedDisplayList_BindHook> hook = nil;
   if (isGlobalList) {
-    hook = [[ImActorModelModulesDisplayLists_$1 alloc] initWithImActorModelModulesDisplayLists:self];
+    hook = new_ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(self);
   }
   
 #line 85
-  AMBindedDisplayList *displayList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
+  AMBindedDisplayList *displayList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)),
 #line 86
-  isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:hook];
+  isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
   [displayList initTopWithBoolean:NO];
   return displayList;
 }
@@ -148,20 +174,18 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 91
 - (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)isGlobalList {
-  
-#line 92
   AMMVVMEngine_checkMainThread();
   
 #line 94
   id<DKListEngine> contactsEngine = [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts];
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Contacts ListEngine must implement ListEngineDisplayExt for using global list"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Contacts ListEngine must implement ListEngineDisplayExt for using global list");
   }
   
 #line 99
-  AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
+  AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)),
 #line 100
-  isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
+  isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
   [contactList initTopWithBoolean:NO];
   return contactList;
 }
@@ -170,26 +194,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 #line 105
 - (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
                                         withBoolean:(jboolean)isGlobalList {
-  
-#line 106
   AMMVVMEngine_checkMainThread();
   
 #line 108
   id<DKListEngine> messagesEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getConversationEngineWithAMPeer:peer];
   if (!([DKListEngineDisplayExt_class_() isInstance:messagesEngine])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Conversation ListEngine must implement ListEngineDisplayExt for using global list"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Conversation ListEngine must implement ListEngineDisplayExt for using global list");
   }
   
 #line 113
   id<AMBindedDisplayList_BindHook> hook = nil;
   if (isGlobalList) {
-    hook = [[ImActorModelModulesDisplayLists_$2 alloc] initWithImActorModelModulesDisplayLists:self withAMPeer:peer];
+    hook = new_ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(self, peer);
   }
   
 #line 131
-  AMBindedDisplayList *chatList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
+  AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)),
 #line 132
-  isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:hook];
+  isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
   [chatList initTopWithBoolean:NO];
   return chatList;
 }
@@ -197,20 +219,18 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 137
 - (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer {
-  
-#line 138
   AMMVVMEngine_checkMainThread();
   
 #line 140
   id<DKListEngine> mediaEngine = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getMediaEngineWithAMPeer:peer];
   if (!([DKListEngineDisplayExt_class_() isInstance:mediaEngine])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Media ListEngine must implement ListEngineDisplayExt for using global list"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Media ListEngine must implement ListEngineDisplayExt for using global list");
   }
   
 #line 145
-  AMBindedDisplayList *mediaList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
+  AMBindedDisplayList *mediaList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)),
 #line 146
-  NO withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
+  NO, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
   [mediaList initTopWithBoolean:NO];
   return mediaList;
 }
@@ -218,32 +238,38 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists_$2, val$peer_, AMPeer *)
 
 #line 151
 - (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList {
-  
-#line 152
   AMMVVMEngine_checkMainThread();
   
 #line 154
   id<DKListEngine> contactsEngine = [((ImActorModelModulesSearchModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSearch])) getSearchList];
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Search ListEngine must implement ListEngineDisplayExt for using global list"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Search ListEngine must implement ListEngineDisplayExt for using global list");
   }
   
 #line 159
-  AMBindedDisplayList *contactList = [[AMBindedDisplayList alloc] initWithDKListEngineDisplayExt:(id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)) withBoolean:
+  AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)),
 #line 160
-  isGlobalList withInt:ImActorModelModulesDisplayLists_LOAD_PAGE withInt:ImActorModelModulesDisplayLists_LOAD_GAP withAMBindedDisplayList_BindHook:nil];
+  isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
   [contactList initEmpty];
   return contactList;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesDisplayLists *)other {
-  [super copyAllFieldsTo:other];
-  other->dialogGlobalList_ = dialogGlobalList_;
-  other->contactsGlobalList_ = contactsGlobalList_;
-  other->chatsGlobalLists_ = chatsGlobalLists_;
+@end
+
+
+#line 28
+void ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+  self->chatsGlobalLists_ = new_JavaUtilHashMap_init();
 }
 
-@end
+
+#line 28
+ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesDisplayLists *self = [ImActorModelModulesDisplayLists alloc];
+  ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists)
 
@@ -252,8 +278,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists)
 
 #line 75
 - (void)onScrolledToEnd {
-  
-#line 76
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getMessagesModule])) loadMoreDialogs];
 }
 
@@ -263,16 +287,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists)
 }
 
 - (instancetype)initWithImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesDisplayLists_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(ImActorModelModulesDisplayLists_$1 *self, ImActorModelModulesDisplayLists *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesDisplayLists_$1 *new_ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(ImActorModelModulesDisplayLists *outer$) {
+  ImActorModelModulesDisplayLists_$1 *self = [ImActorModelModulesDisplayLists_$1 alloc];
+  ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists_$1)
 
@@ -281,8 +311,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists_$1)
 
 #line 118
 - (void)onScrolledToEnd {
-  
-#line 119
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getMessagesModule])) loadMoreHistoryWithAMPeer:val$peer_];
 }
 
@@ -296,17 +324,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists_$1)
 
 - (instancetype)initWithImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)outer$
                                              withAMPeer:(AMPeer *)capture$0 {
-  this$0_ = outer$;
-  val$peer_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesDisplayLists_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$peer_ = val$peer_;
+  ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(ImActorModelModulesDisplayLists_$2 *self, ImActorModelModulesDisplayLists *outer$, AMPeer *capture$0) {
+  self->this$0_ = outer$;
+  self->val$peer_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesDisplayLists_$2 *new_ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(ImActorModelModulesDisplayLists *outer$, AMPeer *capture$0) {
+  ImActorModelModulesDisplayLists_$2 *self = [ImActorModelModulesDisplayLists_$2 alloc];
+  ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists_$2)

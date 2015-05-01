@@ -8,28 +8,28 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMAtomicLongCompat : NSObject {
-}
+@interface AMAtomicLongCompat : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (jlong)get;
 
-- (jlong)incrementAndGet;
-
 - (jlong)getAndIncrement;
 
-- (void)setWithLong:(jlong)v;
+- (jlong)incrementAndGet;
 
-- (instancetype)init;
+- (void)setWithLong:(jlong)v;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAtomicLongCompat)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef AMAtomicLongCompat ImActorModelUtilAtomicLongCompat;
+FOUNDATION_EXPORT void AMAtomicLongCompat_init(AMAtomicLongCompat *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAtomicLongCompat)
+
+typedef AMAtomicLongCompat ImActorModelUtilAtomicLongCompat;
 
 #endif // _AMAtomicLongCompat_H_

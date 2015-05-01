@@ -6,6 +6,10 @@
 #ifndef _AMDialog_H_
 #define _AMDialog_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+
 @class AMAvatar;
 @class AMContentTypeEnum;
 @class AMMessageStateEnum;
@@ -13,16 +17,11 @@
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@protocol BSBserCreator;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserCreator.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+@interface AMDialog : BSBserObject < DKListEngineItem >
 
-@interface AMDialog : BSBserObject < DKListEngineItem > {
-}
-
-+ (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date;
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortKey
@@ -37,75 +36,61 @@
                       withLong:(jlong)date
                        withInt:(jint)relatedUid;
 
-- (AMPeer *)getPeer;
+- (AMDialog *)editPeerInfoWithNSString:(NSString *)title
+                          withAMAvatar:(AMAvatar *)dialogAvatar;
 
-- (NSString *)getDialogTitle;
-
-- (jint)getUnreadCount;
-
-- (jlong)getRid;
-
-- (jlong)getSortDate;
-
-- (jint)getSenderId;
++ (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date;
 
 - (jlong)getDate;
 
+- (AMAvatar *)getDialogAvatar;
+
+- (NSString *)getDialogTitle;
+
+- (jlong)getEngineId;
+
+- (NSString *)getEngineSearch;
+
+- (jlong)getEngineSort;
+
 - (AMContentTypeEnum *)getMessageType;
 
-- (NSString *)getText;
-
-- (AMMessageStateEnum *)getStatus;
+- (AMPeer *)getPeer;
 
 - (jint)getRelatedUid;
 
-- (AMAvatar *)getDialogAvatar;
+- (jlong)getRid;
 
-- (AMDialog *)editPeerInfoWithNSString:(NSString *)title
-                          withAMAvatar:(AMAvatar *)dialogAvatar;
+- (jint)getSenderId;
+
+- (jlong)getSortDate;
+
+- (AMMessageStateEnum *)getStatus;
+
+- (NSString *)getText;
+
+- (jint)getUnreadCount;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
-- (jlong)getEngineSort;
-
-- (NSString *)getEngineSearch;
-
 @end
 
-FOUNDATION_EXPORT BOOL AMDialog_initialized;
 J2OBJC_STATIC_INIT(AMDialog)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date);
 
 FOUNDATION_EXPORT id<BSBserCreator> AMDialog_CREATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMDialog, CREATOR_, id<BSBserCreator>)
 J2OBJC_STATIC_FIELD_SETTER(AMDialog, CREATOR_, id<BSBserCreator>)
-CF_EXTERN_C_END
 
-typedef AMDialog ImActorModelEntityDialog;
+FOUNDATION_EXPORT AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date);
+
+FOUNDATION_EXPORT void AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(AMDialog *self, AMPeer *peer, jlong sortKey, NSString *dialogTitle, AMAvatar *dialogAvatar, jint unreadCount, jlong rid, AMContentTypeEnum *messageType, NSString *text, AMMessageStateEnum *status, jint senderId, jlong date, jint relatedUid);
+
+FOUNDATION_EXPORT AMDialog *new_AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(AMPeer *peer, jlong sortKey, NSString *dialogTitle, AMAvatar *dialogAvatar, jint unreadCount, jlong rid, AMContentTypeEnum *messageType, NSString *text, AMMessageStateEnum *status, jint senderId, jlong date, jint relatedUid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDialog)
 
-@interface AMDialog_$1 : NSObject < BSBserCreator > {
-}
-
-- (AMDialog *)createInstance;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDialog_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDialog_$1)
+typedef AMDialog ImActorModelEntityDialog;
 
 #endif // _AMDialog_H_

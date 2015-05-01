@@ -6,29 +6,32 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserAvatarChanged_H_
 #define _ImActorModelApiUpdatesUpdateUserAvatarChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiAvatar;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateUserAvatarChanged_HEADER 16
 
-@interface ImActorModelApiUpdatesUpdateUserAvatarChanged : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateUserAvatarChanged : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
-- (instancetype)init;
-
-- (jint)getUid;
++ (ImActorModelApiUpdatesUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (ImActorModelApiAvatar *)getAvatar;
+
+- (jint)getHeaderKey;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -36,18 +39,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserAvatarChanged)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserAvatarChanged *ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(ImActorModelApiUpdatesUpdateUserAvatarChanged *self, jint uid, ImActorModelApiAvatar *avatar);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(jint uid, ImActorModelApiAvatar *avatar) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserAvatarChanged_init(ImActorModelApiUpdatesUpdateUserAvatarChanged *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserAvatarChanged)
 

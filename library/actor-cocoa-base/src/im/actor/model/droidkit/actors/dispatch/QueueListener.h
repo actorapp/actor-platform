@@ -16,8 +16,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKQueueListener)
 
-#define ImActorModelDroidkitActorsDispatchQueueListener DKQueueListener
-
 J2OBJC_TYPE_LITERAL_HEADER(DKQueueListener)
+
+#define ImActorModelDroidkitActorsDispatchQueueListener DKQueueListener
 
 #endif // _DKQueueListener_H_

@@ -6,11 +6,11 @@
 #ifndef _AMHttpDownloaderProvider_H_
 #define _AMHttpDownloaderProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @protocol ImActorModelHttpFileDownloadCallback;
 @protocol ImActorModelHttpFileUploadCallback;
-
-#include "J2ObjC_header.h"
 
 @protocol AMHttpDownloaderProvider < NSObject, JavaObject >
 
@@ -28,8 +28,8 @@ withImActorModelHttpFileUploadCallback:(id<ImActorModelHttpFileUploadCallback>)c
 
 J2OBJC_EMPTY_STATIC_INIT(AMHttpDownloaderProvider)
 
-#define ImActorModelHttpDownloaderProvider AMHttpDownloaderProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMHttpDownloaderProvider)
+
+#define ImActorModelHttpDownloaderProvider AMHttpDownloaderProvider
 
 #endif // _AMHttpDownloaderProvider_H_

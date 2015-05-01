@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/BaseKeyValueEngine.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/BaseKeyValueEngine.java"
 
 #include "IOSPrimitiveArray.h"
@@ -24,6 +25,7 @@
   JavaUtilHashMap *cache_;
   id<DKKeyValueStorage> storage_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, cache_, JavaUtilHashMap *)
@@ -36,12 +38,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
 
 #line 20
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
-  if (self = [super init]) {
-    cache_ = [[JavaUtilHashMap alloc] init];
-    
-#line 21
-    self->storage_ = storage;
-  }
+  ImActorModelModulesUtilsBaseKeyValueEngine_initWithDKKeyValueStorage_(self, storage);
   return self;
 }
 
@@ -68,9 +65,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
     }
     
 #line 41
-    JavaUtilArrayList *records = [[JavaUtilArrayList alloc] init];
+    JavaUtilArrayList *records = new_JavaUtilArrayList_init();
     for (id<DKKeyValueItem> __strong v in values) {
-      [records addWithId:[[DKKeyValueRecord alloc] initWithLong:[((id<DKKeyValueItem>) nil_chk(v)) getEngineId] withByteArray:[self serializeWithDKKeyValueItem:v]]];
+      [records addWithId:new_DKKeyValueRecord_initWithLong_withByteArray_([((id<DKKeyValueItem>) nil_chk(v)) getEngineId], [self serializeWithDKKeyValueItem:v])];
     }
     [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemsWithJavaUtilList:records];
   }
@@ -146,12 +143,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUtilsBaseKeyValueEngine *)other {
-  [super copyAllFieldsTo:other];
-  other->cache_ = cache_;
-  other->storage_ = storage_;
-}
-
 @end
+
+
+#line 20
+void ImActorModelModulesUtilsBaseKeyValueEngine_initWithDKKeyValueStorage_(ImActorModelModulesUtilsBaseKeyValueEngine *self, id<DKKeyValueStorage> storage) {
+  (void) NSObject_init(self);
+  self->cache_ = new_JavaUtilHashMap_init();
+  
+#line 21
+  self->storage_ = storage;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsBaseKeyValueEngine)

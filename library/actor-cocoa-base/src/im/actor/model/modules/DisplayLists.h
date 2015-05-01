@@ -6,24 +6,29 @@
 #ifndef _ImActorModelModulesDisplayLists_H_
 #define _ImActorModelModulesDisplayLists_H_
 
-@class AMBindedDisplayList;
-@class AMDialog;
-@class AMMessage;
-@class AMPeer;
-@class ImActorModelModulesModules;
-@class JavaUtilHashMap;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
-#include "im/actor/model/mvvm/BindedDisplayList.h"
 
-#define ImActorModelModulesDisplayLists_LOAD_GAP 5
-#define ImActorModelModulesDisplayLists_LOAD_PAGE 20
+@class AMBindedDisplayList;
+@class AMPeer;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesDisplayLists : ImActorModelModulesBaseModule {
-}
+@interface ImActorModelModulesDisplayLists : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
+
+- (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
+                                        withBoolean:(jboolean)isGlobalList;
+
+- (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)isGlobalList;
+
+- (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)isGlobalList;
+
+- (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList;
 
 - (AMBindedDisplayList *)getContactsGlobalList;
 
@@ -31,65 +36,14 @@
 
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
 
-- (AMBindedDisplayList *)buildNewDialogsListWithBoolean:(jboolean)isGlobalList;
-
-- (AMBindedDisplayList *)buildNewContactListWithBoolean:(jboolean)isGlobalList;
-
-- (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
-                                        withBoolean:(jboolean)isGlobalList;
-
-- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
-
-- (AMBindedDisplayList *)buildNewSearchListWithBoolean:(jboolean)isGlobalList;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, ImActorModelModulesModules *modules);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_GAP, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_PAGE, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists)
-
-@interface ImActorModelModulesDisplayLists_$1 : NSObject < AMBindedDisplayList_BindHook > {
-}
-
-- (void)onScrolledToEnd;
-
-- (void)onItemTouchedWithId:(AMDialog *)item;
-
-- (instancetype)initWithImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$1)
-
-@interface ImActorModelModulesDisplayLists_$2 : NSObject < AMBindedDisplayList_BindHook > {
-}
-
-- (void)onScrolledToEnd;
-
-- (void)onItemTouchedWithId:(AMMessage *)item;
-
-- (instancetype)initWithImActorModelModulesDisplayLists:(ImActorModelModulesDisplayLists *)outer$
-                                             withAMPeer:(AMPeer *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
 
 #endif // _ImActorModelModulesDisplayLists_H_

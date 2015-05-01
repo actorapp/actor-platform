@@ -6,21 +6,16 @@
 #ifndef _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_H_
 #define _ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_H_
 
-@class AMThreadLocalCompat;
+#include "J2ObjC_header.h"
+
 @class DKEnvelope;
 @class DKMailboxesQueue;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult;
-@class JavaUtilHashMap;
-@class JavaUtilHashSet;
-@class JavaUtilTreeMap;
 
-#include "J2ObjC_header.h"
+@interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot : NSObject
 
-#define ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_MULTIPLE 10000LL
-
-@interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
 
@@ -30,52 +25,46 @@
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)fetchCollectionWithLong:(jlong)time;
 
-- (void)changedTopKeyWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection;
+#pragma mark Package-Private
 
 - (jlong)buildKeyWithLong:(jlong)time;
+
+- (void)changedTopKeyWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *self, DKMailboxesQueue *queue);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot, MULTIPLE, jlong)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *new_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(DKMailboxesQueue *queue) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot)
 
-@interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult : NSObject {
-}
+@interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult : NSObject
 
-+ (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)envelopeWithDKEnvelope:(DKEnvelope *)envelope;
+#pragma mark Public
 
 + (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)delayWithLong:(jlong)delay;
 
-- (DKEnvelope *)getEnvelope;
++ (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)envelopeWithDKEnvelope:(DKEnvelope *)envelope;
 
 - (jlong)getDelay;
+
+- (DKEnvelope *)getEnvelope;
+
+- (void)recycle;
 
 - (void)updateWithDKEnvelope:(DKEnvelope *)envelope
                     withLong:(jlong)delay;
 
-- (void)recycle;
-
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_initialized;
 J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_envelopeWithDKEnvelope_(DKEnvelope *envelope);
 
 FOUNDATION_EXPORT ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_delayWithLong_(jlong delay);
-
-FOUNDATION_EXPORT AMThreadLocalCompat *ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult_RESULT_CACHE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult, RESULT_CACHE_, AMThreadLocalCompat *)
-J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult, RESULT_CACHE_, AMThreadLocalCompat *)
-CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult)
 

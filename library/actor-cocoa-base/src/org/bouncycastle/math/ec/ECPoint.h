@@ -6,14 +6,14 @@
 #ifndef _OrgBouncycastleMathEcECPoint_H_
 #define _OrgBouncycastleMathEcECPoint_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSObjectArray;
 @class JavaMathBigInteger;
 @class JavaUtilHashMap;
 @class OrgBouncycastleMathEcECCurve;
 @class OrgBouncycastleMathEcECFieldElement;
-
-#include "J2ObjC_header.h"
 
 @interface OrgBouncycastleMathEcECPoint : NSObject {
  @public
@@ -25,7 +25,71 @@
   JavaUtilHashMap *preCompTable_;
 }
 
-+ (IOSObjectArray *)getInitialZCoordsWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve;
+#pragma mark Public
+
+- (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
+
+- (jboolean)equalsWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)other;
+
+- (jboolean)isEqual:(id)other;
+
+- (OrgBouncycastleMathEcECFieldElement *)getAffineXCoord;
+
+- (OrgBouncycastleMathEcECFieldElement *)getAffineYCoord;
+
+- (OrgBouncycastleMathEcECCurve *)getCurve;
+
+- (OrgBouncycastleMathEcECPoint *)getDetachedPoint;
+
+- (IOSByteArray *)getEncoded;
+
+- (IOSByteArray *)getEncodedWithBoolean:(jboolean)compressed;
+
+- (OrgBouncycastleMathEcECFieldElement *)getX;
+
+- (OrgBouncycastleMathEcECFieldElement *)getXCoord;
+
+- (OrgBouncycastleMathEcECFieldElement *)getY;
+
+- (OrgBouncycastleMathEcECFieldElement *)getYCoord;
+
+- (OrgBouncycastleMathEcECFieldElement *)getZCoordWithInt:(jint)index;
+
+- (IOSObjectArray *)getZCoords;
+
+- (NSUInteger)hash;
+
+- (jboolean)isCompressed;
+
+- (jboolean)isInfinity;
+
+- (jboolean)isNormalized;
+
+- (jboolean)isValid;
+
+- (OrgBouncycastleMathEcECPoint *)multiplyWithJavaMathBigInteger:(JavaMathBigInteger *)k;
+
+- (OrgBouncycastleMathEcECPoint *)negate;
+
+- (OrgBouncycastleMathEcECPoint *)normalize;
+
+- (OrgBouncycastleMathEcECPoint *)scaleXWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
+
+- (OrgBouncycastleMathEcECPoint *)scaleYWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
+
+- (OrgBouncycastleMathEcECPoint *)subtractWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
+
+- (OrgBouncycastleMathEcECPoint *)threeTimes;
+
+- (OrgBouncycastleMathEcECPoint *)timesPow2WithInt:(jint)e;
+
+- (NSString *)description;
+
+- (OrgBouncycastleMathEcECPoint *)twice;
+
+- (OrgBouncycastleMathEcECPoint *)twicePlusWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
+
+#pragma mark Protected
 
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
@@ -36,33 +100,18 @@
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
         withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs;
 
-- (jboolean)satisfiesCofactor;
+- (void)checkNormalized;
 
-- (jboolean)satisfiesCurveEquation;
-
-- (OrgBouncycastleMathEcECPoint *)getDetachedPoint;
-
-- (OrgBouncycastleMathEcECCurve *)getCurve;
+- (OrgBouncycastleMathEcECPoint *)createScaledPointWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)sx
+                                                   withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)sy;
 
 - (OrgBouncycastleMathEcECPoint *)detach;
 
+- (jboolean)getCompressionYTilde;
+
 - (jint)getCurveCoordinateSystem;
 
-- (OrgBouncycastleMathEcECFieldElement *)getX;
-
-- (OrgBouncycastleMathEcECFieldElement *)getY;
-
-- (OrgBouncycastleMathEcECFieldElement *)getAffineXCoord;
-
-- (OrgBouncycastleMathEcECFieldElement *)getAffineYCoord;
-
-- (OrgBouncycastleMathEcECFieldElement *)getXCoord;
-
-- (OrgBouncycastleMathEcECFieldElement *)getYCoord;
-
-- (OrgBouncycastleMathEcECFieldElement *)getZCoordWithInt:(jint)index;
-
-- (IOSObjectArray *)getZCoords;
++ (IOSObjectArray *)getInitialZCoordsWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve;
 
 - (OrgBouncycastleMathEcECFieldElement *)getRawXCoord;
 
@@ -70,60 +119,16 @@
 
 - (IOSObjectArray *)getRawZCoords;
 
-- (void)checkNormalized;
+- (jboolean)satisfiesCofactor;
 
-- (jboolean)isNormalized;
+- (jboolean)satisfiesCurveEquation;
 
-- (OrgBouncycastleMathEcECPoint *)normalize;
+#pragma mark Package-Private
 
 - (OrgBouncycastleMathEcECPoint *)normalizeWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)zInv;
 
-- (OrgBouncycastleMathEcECPoint *)createScaledPointWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)sx
-                                                   withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)sy;
-
-- (jboolean)isInfinity;
-
-- (jboolean)isCompressed;
-
-- (jboolean)isValid;
-
-- (OrgBouncycastleMathEcECPoint *)scaleXWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
-
-- (OrgBouncycastleMathEcECPoint *)scaleYWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
-
-- (jboolean)equalsWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)other;
-
-- (jboolean)isEqual:(id)other;
-
-- (NSUInteger)hash;
-
-- (NSString *)description;
-
-- (IOSByteArray *)getEncoded;
-
-- (IOSByteArray *)getEncodedWithBoolean:(jboolean)compressed;
-
-- (jboolean)getCompressionYTilde;
-
-- (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
-
-- (OrgBouncycastleMathEcECPoint *)negate;
-
-- (OrgBouncycastleMathEcECPoint *)subtractWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
-
-- (OrgBouncycastleMathEcECPoint *)timesPow2WithInt:(jint)e;
-
-- (OrgBouncycastleMathEcECPoint *)twice;
-
-- (OrgBouncycastleMathEcECPoint *)twicePlusWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
-
-- (OrgBouncycastleMathEcECPoint *)threeTimes;
-
-- (OrgBouncycastleMathEcECPoint *)multiplyWithJavaMathBigInteger:(JavaMathBigInteger *)k;
-
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleMathEcECPoint_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleMathEcECPoint)
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECPoint, curve_, OrgBouncycastleMathEcECCurve *)
@@ -132,19 +137,25 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECPoint, y_, OrgBouncycastleMathEcECFie
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECPoint, zs_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECPoint, preCompTable_, JavaUtilHashMap *)
 
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *curve);
-
 FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcECPoint_EMPTY_ZS_;
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECPoint, EMPTY_ZS_, IOSObjectArray *)
 J2OBJC_STATIC_FIELD_SETTER(OrgBouncycastleMathEcECPoint, EMPTY_ZS_, IOSObjectArray *)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *curve);
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y);
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(OrgBouncycastleMathEcECPoint *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint)
 
-@interface OrgBouncycastleMathEcECPoint_AbstractFp : OrgBouncycastleMathEcECPoint {
-}
+@interface OrgBouncycastleMathEcECPoint_AbstractFp : OrgBouncycastleMathEcECPoint
+
+#pragma mark Public
+
+- (OrgBouncycastleMathEcECPoint *)subtractWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
+
+#pragma mark Protected
 
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
@@ -159,19 +170,19 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint)
 
 - (jboolean)satisfiesCurveEquation;
 
-- (OrgBouncycastleMathEcECPoint *)subtractWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECPoint_AbstractFp)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_AbstractFp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y);
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(OrgBouncycastleMathEcECPoint_AbstractFp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_AbstractFp)
 
-@interface OrgBouncycastleMathEcECPoint_Fp : OrgBouncycastleMathEcECPoint_AbstractFp {
-}
+@interface OrgBouncycastleMathEcECPoint_Fp : OrgBouncycastleMathEcECPoint_AbstractFp
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
@@ -182,59 +193,73 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_AbstractFp)
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
                                          withBoolean:(jboolean)withCompression;
 
-- (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-        withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
-                                         withBoolean:(jboolean)withCompression;
-
-- (OrgBouncycastleMathEcECPoint *)detach;
+- (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
 
 - (OrgBouncycastleMathEcECFieldElement *)getZCoordWithInt:(jint)index;
 
-- (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
-
-- (OrgBouncycastleMathEcECPoint *)twice;
-
-- (OrgBouncycastleMathEcECPoint *)twicePlusWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
+- (OrgBouncycastleMathEcECPoint *)negate;
 
 - (OrgBouncycastleMathEcECPoint *)threeTimes;
 
 - (OrgBouncycastleMathEcECPoint *)timesPow2WithInt:(jint)e;
 
-- (OrgBouncycastleMathEcECFieldElement *)twoWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
+- (OrgBouncycastleMathEcECPoint *)twice;
 
-- (OrgBouncycastleMathEcECFieldElement *)threeWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
+- (OrgBouncycastleMathEcECPoint *)twicePlusWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
 
-- (OrgBouncycastleMathEcECFieldElement *)fourWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
+#pragma mark Protected
 
-- (OrgBouncycastleMathEcECFieldElement *)eightWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
+- (OrgBouncycastleMathEcECFieldElement *)calculateJacobianModifiedWWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)Z
+                                                                   withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)ZSquared;
+
+- (OrgBouncycastleMathEcECPoint *)detach;
 
 - (OrgBouncycastleMathEcECFieldElement *)doubleProductFromSquaresWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)a
                                                                  withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                                  withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)aSquared
                                                                  withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)bSquared;
 
-- (OrgBouncycastleMathEcECPoint *)negate;
+- (OrgBouncycastleMathEcECFieldElement *)eightWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
 
-- (OrgBouncycastleMathEcECFieldElement *)calculateJacobianModifiedWWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)Z
-                                                                   withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)ZSquared;
+- (OrgBouncycastleMathEcECFieldElement *)fourWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
 
 - (OrgBouncycastleMathEcECFieldElement *)getJacobianModifiedW;
 
+- (OrgBouncycastleMathEcECFieldElement *)threeWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
+
 - (OrgBouncycastleMathEcECPoint_Fp *)twiceJacobianModifiedWithBoolean:(jboolean)calculateW;
+
+- (OrgBouncycastleMathEcECFieldElement *)twoWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x;
+
+#pragma mark Package-Private
+
+- (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
+             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
+             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
+        withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
+                                         withBoolean:(jboolean)withCompression;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECPoint_Fp)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_Fp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint_Fp *new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECPoint_Fp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint_Fp *new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECPoint_Fp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint_Fp *new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_Fp)
 
-@interface OrgBouncycastleMathEcECPoint_AbstractF2m : OrgBouncycastleMathEcECPoint {
-}
+@interface OrgBouncycastleMathEcECPoint_AbstractF2m : OrgBouncycastleMathEcECPoint
+
+#pragma mark Protected
 
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
@@ -251,13 +276,15 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_Fp)
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECPoint_AbstractF2m)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_AbstractF2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y);
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(OrgBouncycastleMathEcECPoint_AbstractF2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_AbstractF2m)
 
-@interface OrgBouncycastleMathEcECPoint_F2m : OrgBouncycastleMathEcECPoint_AbstractF2m {
-}
+@interface OrgBouncycastleMathEcECPoint_F2m : OrgBouncycastleMathEcECPoint_AbstractF2m
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
@@ -268,25 +295,17 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_AbstractF2m)
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
                                          withBoolean:(jboolean)withCompression;
 
-- (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-        withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
-                                         withBoolean:(jboolean)withCompression;
+- (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
 
-- (OrgBouncycastleMathEcECPoint *)detach;
+- (OrgBouncycastleMathEcECPoint_F2m *)addSimpleWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)b;
 
 - (OrgBouncycastleMathEcECFieldElement *)getYCoord;
+
+- (OrgBouncycastleMathEcECPoint *)negate;
 
 - (OrgBouncycastleMathEcECPoint *)scaleXWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
 
 - (OrgBouncycastleMathEcECPoint *)scaleYWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
-
-- (jboolean)getCompressionYTilde;
-
-- (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
-
-- (OrgBouncycastleMathEcECPoint_F2m *)addSimpleWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)b;
 
 - (OrgBouncycastleMathEcECPoint *)subtractWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
 
@@ -298,14 +317,35 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_AbstractF2m)
 
 - (OrgBouncycastleMathEcECPoint *)twicePlusWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
 
-- (OrgBouncycastleMathEcECPoint *)negate;
+#pragma mark Protected
+
+- (OrgBouncycastleMathEcECPoint *)detach;
+
+- (jboolean)getCompressionYTilde;
+
+#pragma mark Package-Private
+
+- (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
+             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
+             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
+        withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
+                                         withBoolean:(jboolean)withCompression;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECPoint_F2m)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_F2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint_F2m *new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECPoint_F2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint_F2m *new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECPoint_F2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint_F2m *new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECPoint_F2m)
 

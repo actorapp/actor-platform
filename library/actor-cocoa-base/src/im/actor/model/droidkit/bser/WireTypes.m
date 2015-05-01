@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/WireTypes.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/WireTypes.java"
 
 #include "J2ObjC_source.h"
@@ -13,9 +14,20 @@
 @implementation BSWireTypes
 
 - (instancetype)init {
-  return [super init];
+  BSWireTypes_init(self);
+  return self;
 }
 
 @end
+
+void BSWireTypes_init(BSWireTypes *self) {
+  (void) NSObject_init(self);
+}
+
+BSWireTypes *new_BSWireTypes_init() {
+  BSWireTypes *self = [BSWireTypes alloc];
+  BSWireTypes_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSWireTypes)

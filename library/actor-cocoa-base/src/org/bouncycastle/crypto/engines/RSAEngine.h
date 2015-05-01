@@ -6,35 +6,36 @@
 #ifndef _OrgBouncycastleCryptoEnginesRSAEngine_H_
 #define _OrgBouncycastleCryptoEnginesRSAEngine_H_
 
-@class IOSByteArray;
-@class OrgBouncycastleCryptoEnginesRSACoreEngine;
-@class OrgBouncycastleCryptoParamsParametersWithRandom;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/AsymmetricBlockCipher.h"
 
-@interface OrgBouncycastleCryptoEnginesRSAEngine : NSObject < OrgBouncycastleCryptoAsymmetricBlockCipher > {
-}
+@class IOSByteArray;
+@class OrgBouncycastleCryptoParamsParametersWithRandom;
 
-- (void)init__WithBoolean:(jboolean)forEncryption
-withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParamsParametersWithRandom *)param OBJC_METHOD_FAMILY_NONE;
+@interface OrgBouncycastleCryptoEnginesRSAEngine : NSObject < OrgBouncycastleCryptoAsymmetricBlockCipher >
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (jint)getInputBlockSize;
 
 - (jint)getOutputBlockSize;
 
+- (void)init__WithBoolean:(jboolean)forEncryption
+withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParamsParametersWithRandom *)param OBJC_METHOD_FAMILY_NONE;
+
 - (IOSByteArray *)processBlockWithByteArray:(IOSByteArray *)inArg
                                     withInt:(jint)inOff
                                     withInt:(jint)inLen;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoEnginesRSAEngine)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoEnginesRSAEngine_init(OrgBouncycastleCryptoEnginesRSAEngine *self);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoEnginesRSAEngine *new_OrgBouncycastleCryptoEnginesRSAEngine_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoEnginesRSAEngine)
 

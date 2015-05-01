@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcRequestEditParameter_H_
 #define _ImActorModelApiRpcRequestEditParameter_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestEditParameter_HEADER 128
 
-@interface ImActorModelApiRpcRequestEditParameter : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestEditParameter : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getKey;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditParameter)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditParameter, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestEditParameter *ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditParameter, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(ImActorModelApiRpcRequestEditParameter *self, NSString *key, NSString *value);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(NSString *key, NSString *value) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditParameter_init(ImActorModelApiRpcRequestEditParameter *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditParameter)
 

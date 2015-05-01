@@ -8,28 +8,27 @@
 
 #include "J2ObjC_header.h"
 
-@interface OrgBouncycastleUtilIPAddress : NSObject {
-}
+@interface OrgBouncycastleUtilIPAddress : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (jboolean)isValidWithNSString:(NSString *)address;
-
-+ (jboolean)isValidWithNetMaskWithNSString:(NSString *)address;
 
 + (jboolean)isValidIPv4WithNSString:(NSString *)address;
 
 + (jboolean)isValidIPv4WithNetmaskWithNSString:(NSString *)address;
 
-+ (jboolean)isValidIPv6WithNetmaskWithNSString:(NSString *)address;
-
 + (jboolean)isValidIPv6WithNSString:(NSString *)address;
 
-- (instancetype)init;
++ (jboolean)isValidIPv6WithNetmaskWithNSString:(NSString *)address;
+
++ (jboolean)isValidWithNetMaskWithNSString:(NSString *)address;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleUtilIPAddress)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jboolean OrgBouncycastleUtilIPAddress_isValidWithNSString_(NSString *address);
 
@@ -42,7 +41,10 @@ FOUNDATION_EXPORT jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWi
 FOUNDATION_EXPORT jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(NSString *address);
 
 FOUNDATION_EXPORT jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(NSString *address);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleUtilIPAddress_init(OrgBouncycastleUtilIPAddress *self);
+
+FOUNDATION_EXPORT OrgBouncycastleUtilIPAddress *new_OrgBouncycastleUtilIPAddress_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilIPAddress)
 

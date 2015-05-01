@@ -6,14 +6,15 @@
 #ifndef _OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_H_
 #define _OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_H_
 
-@class IOSByteArray;
-@class OrgBouncycastleCryptoParamsKeyParameter;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsTweakableBlockCipherParameters : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@class IOSByteArray;
+@class OrgBouncycastleCryptoParamsKeyParameter;
+
+@interface OrgBouncycastleCryptoParamsTweakableBlockCipherParameters : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoParamsKeyParameter:(OrgBouncycastleCryptoParamsKeyParameter *)key
                                                   withByteArray:(IOSByteArray *)tweak;
@@ -26,8 +27,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_initWithOrgBouncycastleCryptoParamsKeyParameter_withByteArray_(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters *self, OrgBouncycastleCryptoParamsKeyParameter *key, IOSByteArray *tweak);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsTweakableBlockCipherParameters *new_OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_initWithOrgBouncycastleCryptoParamsKeyParameter_withByteArray_(OrgBouncycastleCryptoParamsKeyParameter *key, IOSByteArray *tweak) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters)
 

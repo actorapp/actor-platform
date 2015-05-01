@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcRequestClearChat_H_
 #define _ImActorModelApiRpcRequestClearChat_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestClearChat_HEADER 99
 
-@interface ImActorModelApiRpcRequestClearChat : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestClearChat : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestClearChat)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestClearChat, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestClearChat *ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestClearChat, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestClearChat *self, ImActorModelApiOutPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestClearChat_init(ImActorModelApiRpcRequestClearChat *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestClearChat)
 

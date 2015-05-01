@@ -6,48 +6,31 @@
 #ifndef _ImActorModelModulesPushes_H_
 #define _ImActorModelModulesPushes_H_
 
-@class DKActorRef;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesPushPushRegisterActor;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesPushes : ImActorModelModulesBaseModule {
-}
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesPushes : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)registerGooglePushWithLong:(jlong)projectId
-                      withNSString:(NSString *)token;
-
 - (void)registerApplePushWithInt:(jint)apnsKey
                     withNSString:(NSString *)token;
+
+- (void)registerGooglePushWithLong:(jlong)projectId
+                      withNSString:(NSString *)token;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushes)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPushes_initWithImActorModelModulesModules_(ImActorModelModulesPushes *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesPushes *new_ImActorModelModulesPushes_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushes)
-
-@interface ImActorModelModulesPushes_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesPushPushRegisterActor *)create;
-
-- (instancetype)initWithImActorModelModulesPushes:(ImActorModelModulesPushes *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushes_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushes_$1)
 
 #endif // _ImActorModelModulesPushes_H_

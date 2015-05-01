@@ -3,25 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Sex.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Sex.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Sex.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
 @interface AMSexEnum () {
  @public
   jint value_;
 }
+
 @end
 
-#line 6
+__attribute__((unused)) static void AMSexEnum_initWithInt_withNSString_withInt_(AMSexEnum *self, jint value, NSString *__name, jint __ordinal);
 
-BOOL AMSexEnum_initialized = NO;
+__attribute__((unused)) static AMSexEnum *new_AMSexEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(AMSexEnum)
 
 AMSexEnum *AMSexEnum_values_[3];
 
+
+#line 6
 @implementation AMSexEnum
 
 
@@ -29,30 +36,25 @@ AMSexEnum *AMSexEnum_values_[3];
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  if (self = [super initWithNSString:__name withInt:__ordinal]) {
-    self->value_ = value;
-  }
+  AMSexEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
 
 #line 15
 - (jint)getValue {
-  
-#line 16
   return value_;
 }
 
-
-#line 19
 + (AMSexEnum *)fromValueWithInt:(jint)value {
   return AMSexEnum_fromValueWithInt_(value);
 }
 
 IOSObjectArray *AMSexEnum_values() {
-  AMSexEnum_init();
+  AMSexEnum_initialize();
   return [IOSObjectArray arrayWithObjects:AMSexEnum_values_ count:3 type:AMSexEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return AMSexEnum_values();
 }
@@ -62,7 +64,7 @@ IOSObjectArray *AMSexEnum_values() {
 }
 
 AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name) {
-  AMSexEnum_init();
+  AMSexEnum_initialize();
   for (int i = 0; i < 3; i++) {
     AMSexEnum *e = AMSexEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -79,23 +81,42 @@ AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMSexEnum class]) {
-    AMSexEnum_UNKNOWN = [[AMSexEnum alloc] initWithInt:
+    AMSexEnum_UNKNOWN = new_AMSexEnum_initWithInt_withNSString_withInt_(
 #line 7
-    1 withNSString:@"UNKNOWN" withInt:0];
-    AMSexEnum_MALE = [[AMSexEnum alloc] initWithInt:
+    1, @"UNKNOWN", 0);
+    AMSexEnum_MALE = new_AMSexEnum_initWithInt_withNSString_withInt_(
 #line 7
-    2 withNSString:@"MALE" withInt:1];
-    AMSexEnum_FEMALE = [[AMSexEnum alloc] initWithInt:
+    2, @"MALE", 1);
+    AMSexEnum_FEMALE = new_AMSexEnum_initWithInt_withNSString_withInt_(
 #line 7
-    3 withNSString:@"FEMALE" withInt:2];
+    3, @"FEMALE", 2);
     J2OBJC_SET_INITIALIZED(AMSexEnum)
   }
 }
 
 @end
 
+
+#line 11
+void AMSexEnum_initWithInt_withNSString_withInt_(AMSexEnum *self, jint value, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  
+#line 12
+  self->value_ = value;
+}
+
+
+#line 11
+AMSexEnum *new_AMSexEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  AMSexEnum *self = [AMSexEnum alloc];
+  AMSexEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  return self;
+}
+
+
+#line 19
 AMSexEnum *AMSexEnum_fromValueWithInt_(jint value) {
-  AMSexEnum_init();
+  AMSexEnum_initialize();
   
 #line 20
   switch (value) {

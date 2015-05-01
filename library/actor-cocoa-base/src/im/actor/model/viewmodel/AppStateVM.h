@@ -6,43 +6,45 @@
 #ifndef _AMAppStateVM_H_
 #define _AMAppStateVM_H_
 
+#include "J2ObjC_header.h"
+
 @class AMValueModel;
 @class ImActorModelModulesModules;
 
-#include "J2ObjC_header.h"
+@interface AMAppStateVM : NSObject
 
-@interface AMAppStateVM : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)onDialogsChangedWithBoolean:(jboolean)isEmpty;
-
-- (void)onContactsChangedWithBoolean:(jboolean)isEmpty;
-
-- (void)onPhoneImported;
-
-- (void)onDialogsLoaded;
-
-- (void)onContactsLoaded;
-
-- (AMValueModel *)getIsDialogsEmpty;
-
-- (AMValueModel *)getIsContactsEmpty;
+- (AMValueModel *)getIsAppEmpty;
 
 - (AMValueModel *)getIsAppLoaded;
 
-- (AMValueModel *)getIsAppEmpty;
+- (AMValueModel *)getIsContactsEmpty;
+
+- (AMValueModel *)getIsDialogsEmpty;
+
+- (void)onContactsChangedWithBoolean:(jboolean)isEmpty;
+
+- (void)onContactsLoaded;
+
+- (void)onDialogsChangedWithBoolean:(jboolean)isEmpty;
+
+- (void)onDialogsLoaded;
+
+- (void)onPhoneImported;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAppStateVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMAppStateVM_initWithImActorModelModulesModules_(AMAppStateVM *self, ImActorModelModulesModules *modules);
 
-typedef AMAppStateVM ImActorModelViewmodelAppStateVM;
+FOUNDATION_EXPORT AMAppStateVM *new_AMAppStateVM_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAppStateVM)
+
+typedef AMAppStateVM ImActorModelViewmodelAppStateVM;
 
 #endif // _AMAppStateVM_H_

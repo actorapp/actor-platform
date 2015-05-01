@@ -6,11 +6,11 @@
 #ifndef _MTNewSessionCreated_H_
 #define _MTNewSessionCreated_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
+@class BSDataInput;
+@class BSDataOutput;
 
 #define MTNewSessionCreated_HEADER 12
 
@@ -20,34 +20,43 @@
   jlong messageId_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)sessionId
                     withLong:(jlong)messageId;
 
+- (jlong)getMessageId;
+
 - (jlong)getSessionId;
 
-- (jlong)getMessageId;
+- (NSString *)description;
+
+#pragma mark Protected
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTNewSessionCreated)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTNewSessionCreated, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTNewSessionCreated ImActorModelNetworkMtpEntityNewSessionCreated;
+FOUNDATION_EXPORT void MTNewSessionCreated_initWithBSDataInput_(MTNewSessionCreated *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTNewSessionCreated *new_MTNewSessionCreated_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTNewSessionCreated_initWithLong_withLong_(MTNewSessionCreated *self, jlong sessionId, jlong messageId);
+
+FOUNDATION_EXPORT MTNewSessionCreated *new_MTNewSessionCreated_initWithLong_withLong_(jlong sessionId, jlong messageId) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTNewSessionCreated)
+
+typedef MTNewSessionCreated ImActorModelNetworkMtpEntityNewSessionCreated;
 
 #endif // _MTNewSessionCreated_H_

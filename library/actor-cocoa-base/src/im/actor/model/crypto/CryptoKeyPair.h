@@ -6,29 +6,31 @@
 #ifndef _AMCryptoKeyPair_H_
 #define _AMCryptoKeyPair_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 
-@interface AMCryptoKeyPair : NSObject {
-}
+@class IOSByteArray;
+
+@interface AMCryptoKeyPair : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey
                     withByteArray:(IOSByteArray *)privateKey;
 
-- (IOSByteArray *)getPublicKey;
-
 - (IOSByteArray *)getPrivateKey;
+
+- (IOSByteArray *)getPublicKey;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMCryptoKeyPair)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMCryptoKeyPair_initWithByteArray_withByteArray_(AMCryptoKeyPair *self, IOSByteArray *publicKey, IOSByteArray *privateKey);
 
-typedef AMCryptoKeyPair ImActorModelCryptoCryptoKeyPair;
+FOUNDATION_EXPORT AMCryptoKeyPair *new_AMCryptoKeyPair_initWithByteArray_withByteArray_(IOSByteArray *publicKey, IOSByteArray *privateKey) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMCryptoKeyPair)
+
+typedef AMCryptoKeyPair ImActorModelCryptoCryptoKeyPair;
 
 #endif // _AMCryptoKeyPair_H_

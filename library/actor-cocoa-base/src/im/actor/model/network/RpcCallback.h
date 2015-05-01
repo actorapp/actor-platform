@@ -6,10 +6,10 @@
 #ifndef _AMRpcCallback_H_
 #define _AMRpcCallback_H_
 
+#include "J2ObjC_header.h"
+
 @class AMRpcException;
 @class ImActorModelNetworkParserResponse;
-
-#include "J2ObjC_header.h"
 
 @protocol AMRpcCallback < NSObject, JavaObject >
 
@@ -21,8 +21,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMRpcCallback)
 
-#define ImActorModelNetworkRpcCallback AMRpcCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMRpcCallback)
+
+#define ImActorModelNetworkRpcCallback AMRpcCallback
 
 #endif // _AMRpcCallback_H_

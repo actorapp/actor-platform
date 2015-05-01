@@ -6,20 +6,17 @@
 #ifndef _ImActorModelModulesTyping_H_
 #define _ImActorModelModulesTyping_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
 @class AMGroupTypingVM;
 @class AMPeer;
 @class AMUserTypingVM;
-@class DKActorRef;
 @class ImActorModelModulesModules;
-@class ImActorModelModulesTypingOwnTypingActor;
-@class JavaUtilHashMap;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/modules/BaseModule.h"
+@interface ImActorModelModulesTyping : ImActorModelModulesBaseModule
 
-@interface ImActorModelModulesTyping : ImActorModelModulesBaseModule {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
@@ -33,25 +30,10 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTyping)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTyping_initWithImActorModelModulesModules_(ImActorModelModulesTyping *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesTyping *new_ImActorModelModulesTyping_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTyping)
-
-@interface ImActorModelModulesTyping_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesTypingOwnTypingActor *)create;
-
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTyping_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTyping_$1)
 
 #endif // _ImActorModelModulesTyping_H_

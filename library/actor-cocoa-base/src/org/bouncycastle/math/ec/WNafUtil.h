@@ -6,19 +6,21 @@
 #ifndef _OrgBouncycastleMathEcWNafUtil_H_
 #define _OrgBouncycastleMathEcWNafUtil_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSIntArray;
-@class IOSObjectArray;
 @class JavaMathBigInteger;
 @class OrgBouncycastleMathEcECPoint;
 @class OrgBouncycastleMathEcWNafPreCompInfo;
 @protocol OrgBouncycastleMathEcECPointMap;
 @protocol OrgBouncycastleMathEcPreCompInfo;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleMathEcWNafUtil : NSObject
 
-@interface OrgBouncycastleMathEcWNafUtil : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (IOSIntArray *)generateCompactNafWithJavaMathBigInteger:(JavaMathBigInteger *)k;
 
@@ -35,14 +37,14 @@
 
 + (jint)getNafWeightWithJavaMathBigInteger:(JavaMathBigInteger *)k;
 
-+ (OrgBouncycastleMathEcWNafPreCompInfo *)getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
-
-+ (OrgBouncycastleMathEcWNafPreCompInfo *)getWNafPreCompInfoWithOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo;
-
 + (jint)getWindowSizeWithInt:(jint)bits;
 
 + (jint)getWindowSizeWithInt:(jint)bits
                 withIntArray:(IOSIntArray *)windowSizeCutoffs;
+
++ (OrgBouncycastleMathEcWNafPreCompInfo *)getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
+
++ (OrgBouncycastleMathEcWNafPreCompInfo *)getWNafPreCompInfoWithOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo;
 
 + (OrgBouncycastleMathEcECPoint *)mapPointWithPrecompWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                                               withInt:(jint)width
@@ -53,14 +55,12 @@
                                                                              withInt:(jint)width
                                                                          withBoolean:(jboolean)includeNegated;
 
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleMathEcWNafUtil_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleMathEcWNafUtil)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT NSString *OrgBouncycastleMathEcWNafUtil_PRECOMP_NAME_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, PRECOMP_NAME_, NSString *)
 
 FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInteger_(JavaMathBigInteger *k);
 
@@ -86,18 +86,7 @@ FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcWNafUtil_ma
 
 FOUNDATION_EXPORT OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_(OrgBouncycastleMathEcECPoint *p, jint width, jboolean includeNegated);
 
-FOUNDATION_EXPORT NSString *OrgBouncycastleMathEcWNafUtil_PRECOMP_NAME_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, PRECOMP_NAME_, NSString *)
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcWNafUtil_DEFAULT_WINDOW_SIZE_CUTOFFS_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, DEFAULT_WINDOW_SIZE_CUTOFFS_, IOSIntArray *)
-
-FOUNDATION_EXPORT IOSByteArray *OrgBouncycastleMathEcWNafUtil_EMPTY_BYTES_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, EMPTY_BYTES_, IOSByteArray *)
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcWNafUtil_EMPTY_INTS_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, EMPTY_INTS_, IOSIntArray *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcWNafUtil_init(OrgBouncycastleMathEcWNafUtil *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcWNafUtil)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Mont256.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Mont256.java"
 
 #include "IOSPrimitiveArray.h"
@@ -10,9 +11,9 @@
 #include "org/bouncycastle/math/raw/Mont256.h"
 #include "org/bouncycastle/math/raw/Nat256.h"
 
-@interface OrgBouncycastleMathRawMont256 () {
-}
-@end
+#define OrgBouncycastleMathRawMont256_M 4294967295LL
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawMont256, M, jlong)
 
 
 #line 3
@@ -59,13 +60,16 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathRawMont256_init(self);
+  return self;
 }
 
 @end
 
+
+#line 7
 jint OrgBouncycastleMathRawMont256_inverse32WithInt_(jint x) {
-  OrgBouncycastleMathRawMont256_init();
+  OrgBouncycastleMathRawMont256_initialize();
   
 #line 10
   jint z = x;
@@ -78,10 +82,10 @@ jint OrgBouncycastleMathRawMont256_inverse32WithInt_(jint x) {
   return z;
 }
 
+
+#line 19
 void OrgBouncycastleMathRawMont256_multAddWithIntArray_withIntArray_withIntArray_withIntArray_withInt_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *z, IOSIntArray *m, jint mInv32) {
-  OrgBouncycastleMathRawMont256_init();
-  
-#line 21
+  OrgBouncycastleMathRawMont256_initialize();
   jint z_8 = 0;
   jlong y_0 = IOSIntArray_Get(nil_chk(y), 0) & OrgBouncycastleMathRawMont256_M;
   
@@ -133,8 +137,10 @@ void OrgBouncycastleMathRawMont256_multAddWithIntArray_withIntArray_withIntArray
   }
 }
 
+
+#line 60
 void OrgBouncycastleMathRawMont256_multAddXFWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *z, IOSIntArray *m) {
-  OrgBouncycastleMathRawMont256_init();
+  OrgBouncycastleMathRawMont256_initialize();
   
 #line 64
   jint z_8 = 0;
@@ -178,10 +184,10 @@ void OrgBouncycastleMathRawMont256_multAddXFWithIntArray_withIntArray_withIntArr
   }
 }
 
+
+#line 96
 void OrgBouncycastleMathRawMont256_reduceWithIntArray_withIntArray_withInt_(IOSIntArray *z, IOSIntArray *m, jint mInv32) {
-  OrgBouncycastleMathRawMont256_init();
-  
-#line 98
+  OrgBouncycastleMathRawMont256_initialize();
   for (jint i = 0; i < 8; ++i) {
     
 #line 100
@@ -217,8 +223,10 @@ void OrgBouncycastleMathRawMont256_reduceWithIntArray_withIntArray_withInt_(IOSI
   }
 }
 
+
+#line 125
 void OrgBouncycastleMathRawMont256_reduceXFWithIntArray_withIntArray_(IOSIntArray *z, IOSIntArray *m) {
-  OrgBouncycastleMathRawMont256_init();
+  OrgBouncycastleMathRawMont256_initialize();
   
 #line 129
   for (jint i = 0; i < 8; ++i) {
@@ -249,6 +257,10 @@ void OrgBouncycastleMathRawMont256_reduceXFWithIntArray_withIntArray_(IOSIntArra
 #line 149
     OrgBouncycastleMathRawNat256_subWithIntArray_withIntArray_withIntArray_(z, m, z);
   }
+}
+
+void OrgBouncycastleMathRawMont256_init(OrgBouncycastleMathRawMont256 *self) {
+  (void) NSObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathRawMont256)

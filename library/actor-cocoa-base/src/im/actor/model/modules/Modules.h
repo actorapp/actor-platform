@@ -6,9 +6,13 @@
 #ifndef _ImActorModelModulesModules_H_
 #define _ImActorModelModulesModules_H_
 
+#include "J2ObjC_header.h"
+
 @class AMActorApi;
 @class AMConfiguration;
 @class AMI18nEngine;
+@class AMMessenger;
+@class ImActorModelModulesAnalytics;
 @class ImActorModelModulesAppStateModule;
 @class ImActorModelModulesAuth;
 @class ImActorModelModulesContacts;
@@ -27,89 +31,73 @@
 @class ImActorModelModulesUsers;
 @protocol DKPreferencesStorage;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/ActorApiCallback.h"
+@interface ImActorModelModulesModules : NSObject
 
-@interface ImActorModelModulesModules : NSObject {
-}
+#pragma mark Public
 
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
-
-- (void)run;
-
-- (void)onLoggedIn;
-
-- (id<DKPreferencesStorage>)getPreferences;
-
-- (AMConfiguration *)getConfiguration;
-
-- (ImActorModelModulesAuth *)getAuthModule;
-
-- (ImActorModelModulesUsers *)getUsersModule;
-
-- (ImActorModelModulesGroups *)getGroupsModule;
-
-- (ImActorModelModulesMessages *)getMessagesModule;
-
-- (ImActorModelModulesUpdates *)getUpdatesModule;
-
-- (ImActorModelModulesTyping *)getTypingModule;
-
-- (ImActorModelModulesPresence *)getPresenceModule;
+- (instancetype)initWithAMMessenger:(AMMessenger *)messenger
+                withAMConfiguration:(AMConfiguration *)configuration;
 
 - (AMActorApi *)getActorApi;
 
-- (AMI18nEngine *)getI18nEngine;
+- (ImActorModelModulesAnalytics *)getAnalytics;
+
+- (ImActorModelModulesAppStateModule *)getAppStateModule;
+
+- (ImActorModelModulesAuth *)getAuthModule;
+
+- (AMConfiguration *)getConfiguration;
 
 - (ImActorModelModulesContacts *)getContactsModule;
 
 - (ImActorModelModulesFiles *)getFilesModule;
 
+- (ImActorModelModulesGroups *)getGroupsModule;
+
+- (AMI18nEngine *)getI18nEngine;
+
+- (ImActorModelModulesMessages *)getMessagesModule;
+
+- (AMMessenger *)getMessenger;
+
 - (ImActorModelModulesNotifications *)getNotifications;
 
-- (ImActorModelModulesSettings *)getSettings;
+- (id<DKPreferencesStorage>)getPreferences;
+
+- (ImActorModelModulesPresence *)getPresenceModule;
 
 - (ImActorModelModulesProfile *)getProfile;
 
-- (ImActorModelModulesAppStateModule *)getAppStateModule;
-
 - (ImActorModelModulesPushes *)getPushes;
-
-- (ImActorModelModulesSecurity *)getSecurity;
 
 - (ImActorModelModulesSearchModule *)getSearch;
 
-- (void)onAppVisible;
+- (ImActorModelModulesSecurity *)getSecurity;
+
+- (ImActorModelModulesSettings *)getSettings;
+
+- (ImActorModelModulesTyping *)getTypingModule;
+
+- (ImActorModelModulesUpdates *)getUpdatesModule;
+
+- (ImActorModelModulesUsers *)getUsersModule;
 
 - (void)onAppHidden;
+
+- (void)onAppVisible;
+
+- (void)onLoggedIn;
+
+- (void)run;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(ImActorModelModulesModules *self, AMMessenger *messenger, AMConfiguration *configuration);
+
+FOUNDATION_EXPORT ImActorModelModulesModules *new_ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(AMMessenger *messenger, AMConfiguration *configuration) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules)
-
-@interface ImActorModelModulesModules_ActorApiCallbackImpl : NSObject < AMActorApiCallback > {
-}
-
-- (void)onAuthIdInvalidatedWithLong:(jlong)authKey;
-
-- (void)onNewSessionCreated;
-
-- (void)onUpdateReceivedWithId:(id)obj;
-
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules_ActorApiCallbackImpl)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
 
 #endif // _ImActorModelModulesModules_H_

@@ -15,23 +15,20 @@ typedef NS_ENUM(NSUInteger, AMPeerType) {
   AMPeerType_EMAIL = 2,
 };
 
-@interface AMPeerTypeEnum : JavaLangEnum < NSCopying > {
-}
+@interface AMPeerTypeEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMPeerTypeEnum_values();
 
 + (AMPeerTypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMPeerTypeEnum *AMPeerTypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMPeerTypeEnum_initialized;
 J2OBJC_STATIC_INIT(AMPeerTypeEnum)
 
 FOUNDATION_EXPORT AMPeerTypeEnum *AMPeerTypeEnum_values_[];
@@ -45,8 +42,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, GROUP)
 #define AMPeerTypeEnum_EMAIL AMPeerTypeEnum_values_[AMPeerType_EMAIL]
 J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, EMAIL)
 
-typedef AMPeerTypeEnum ImActorModelEntityPeerTypeEnum;
-
 J2OBJC_TYPE_LITERAL_HEADER(AMPeerTypeEnum)
+
+typedef AMPeerTypeEnum ImActorModelEntityPeerTypeEnum;
 
 #endif // _AMPeerType_H_

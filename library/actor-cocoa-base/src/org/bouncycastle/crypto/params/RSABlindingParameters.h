@@ -6,28 +6,30 @@
 #ifndef _OrgBouncycastleCryptoParamsRSABlindingParameters_H_
 #define _OrgBouncycastleCryptoParamsRSABlindingParameters_H_
 
-@class JavaMathBigInteger;
-@class OrgBouncycastleCryptoParamsRSAKeyParameters;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsRSABlindingParameters : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@class JavaMathBigInteger;
+@class OrgBouncycastleCryptoParamsRSAKeyParameters;
+
+@interface OrgBouncycastleCryptoParamsRSABlindingParameters : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoParamsRSAKeyParameters:(OrgBouncycastleCryptoParamsRSAKeyParameters *)publicKey
                                              withJavaMathBigInteger:(JavaMathBigInteger *)blindingFactor;
 
-- (OrgBouncycastleCryptoParamsRSAKeyParameters *)getPublicKey;
-
 - (JavaMathBigInteger *)getBlindingFactor;
+
+- (OrgBouncycastleCryptoParamsRSAKeyParameters *)getPublicKey;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsRSABlindingParameters)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsRSABlindingParameters_initWithOrgBouncycastleCryptoParamsRSAKeyParameters_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSABlindingParameters *self, OrgBouncycastleCryptoParamsRSAKeyParameters *publicKey, JavaMathBigInteger *blindingFactor);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsRSABlindingParameters *new_OrgBouncycastleCryptoParamsRSABlindingParameters_initWithOrgBouncycastleCryptoParamsRSAKeyParameters_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSAKeyParameters *publicKey, JavaMathBigInteger *blindingFactor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsRSABlindingParameters)
 

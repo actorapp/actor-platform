@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessage.java"
 
 #include "IOSClass.h"
@@ -22,6 +23,7 @@
   jlong rid_;
   jlong sortDate_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPeer *)
@@ -39,45 +41,28 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
                       withLong:(jlong)sortDate {
-  if (self = [super init]) {
-    
-#line 25
-    self->peer_ = peer;
-    
-#line 26
-    self->rid_ = rid;
-    
-#line 27
-    self->sortDate_ = sortDate;
-  }
+  ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortDate);
   return self;
 }
 
 
 #line 30
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesEntityUnreadMessage_init(self);
+  return self;
 }
 
+
+#line 34
 - (AMPeer *)getPeer {
-  
-#line 35
   return peer_;
 }
 
-
-#line 38
 - (jlong)getRid {
-  
-#line 39
   return rid_;
 }
 
-
-#line 42
 - (jlong)getSortDate {
-  
-#line 43
   return sortDate_;
 }
 
@@ -92,13 +77,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
   [writer writeLongWithInt:3 withLong:sortDate_];
 }
 
+
+#line 61
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -114,28 +99,54 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
   return YES;
 }
 
+
+#line 74
 - (NSUInteger)hash {
-  
-#line 75
   jint result = ((jint) [((AMPeer *) nil_chk(peer_)) hash]);
   result = 31 * result + (jint) (rid_ ^ (URShift64(rid_, 32)));
   return result;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityUnreadMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rid_ = rid_;
-  other->sortDate_ = sortDate_;
-}
-
 @end
 
+
+#line 16
 ImActorModelModulesMessagesEntityUnreadMessage *ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityUnreadMessage_init();
+  ImActorModelModulesMessagesEntityUnreadMessage_initialize();
   
 #line 17
-  return ((ImActorModelModulesMessagesEntityUnreadMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityUnreadMessage alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityUnreadMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityUnreadMessage_init(), data));
+}
+
+
+#line 24
+void ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesEntityUnreadMessage *self, AMPeer *peer, jlong rid, jlong sortDate) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->peer_ = peer;
+  self->rid_ = rid;
+  self->sortDate_ = sortDate;
+}
+
+
+#line 24
+ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortDate) {
+  ImActorModelModulesMessagesEntityUnreadMessage *self = [ImActorModelModulesMessagesEntityUnreadMessage alloc];
+  ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortDate);
+  return self;
+}
+
+void ImActorModelModulesMessagesEntityUnreadMessage_init(ImActorModelModulesMessagesEntityUnreadMessage *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 30
+ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_init() {
+  ImActorModelModulesMessagesEntityUnreadMessage *self = [ImActorModelModulesMessagesEntityUnreadMessage alloc];
+  ImActorModelModulesMessagesEntityUnreadMessage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityUnreadMessage)

@@ -6,26 +6,27 @@
 #ifndef _BSBserWriter_H_
 #define _BSBserWriter_H_
 
+#include "J2ObjC_header.h"
+
 @class BSBserObject;
 @class BSDataOutput;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
+@interface BSBserWriter : NSObject
 
-@interface BSBserWriter : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithBSDataOutput:(BSDataOutput *)stream;
+
+- (void)writeBoolWithInt:(jint)fieldNumber
+             withBoolean:(jboolean)value;
 
 - (void)writeBytesWithInt:(jint)fieldNumber
             withByteArray:(IOSByteArray *)value;
 
-- (void)writeStringWithInt:(jint)fieldNumber
-              withNSString:(NSString *)value;
-
-- (void)writeBoolWithInt:(jint)fieldNumber
-             withBoolean:(jboolean)value;
+- (void)writeDoubleWithInt:(jint)fieldNumber
+                withDouble:(jdouble)value;
 
 - (void)writeIntWithInt:(jint)fieldNumber
                 withInt:(jint)value;
@@ -33,41 +34,42 @@
 - (void)writeIntFixedWithInt:(jint)fieldNumber
                      withInt:(jint)value;
 
-- (void)writeDoubleWithInt:(jint)fieldNumber
-                withDouble:(jdouble)value;
-
-- (void)writeLongFixedWithInt:(jint)fieldNumber
-                     withLong:(jlong)value;
-
 - (void)writeLongWithInt:(jint)fieldNumber
                 withLong:(jlong)value;
 
-- (void)writeRepeatedLongWithInt:(jint)fieldNumber
-                withJavaUtilList:(id<JavaUtilList>)values;
-
-- (void)writeRepeatedIntWithInt:(jint)fieldNumber
-               withJavaUtilList:(id<JavaUtilList>)values;
-
-- (void)writeRepeatedBoolWithInt:(jint)fieldNumber
-                withJavaUtilList:(id<JavaUtilList>)values;
-
-- (void)writeRepeatedObjWithInt:(jint)fieldNumber
-               withJavaUtilList:(id<JavaUtilList>)values;
+- (void)writeLongFixedWithInt:(jint)fieldNumber
+                     withLong:(jlong)value;
 
 - (void)writeObjectWithInt:(jint)fieldNumber
           withBSBserObject:(BSBserObject *)value;
 
 - (void)writeRawWithByteArray:(IOSByteArray *)raw;
 
+- (void)writeRepeatedBoolWithInt:(jint)fieldNumber
+                withJavaUtilList:(id<JavaUtilList>)values;
+
+- (void)writeRepeatedIntWithInt:(jint)fieldNumber
+               withJavaUtilList:(id<JavaUtilList>)values;
+
+- (void)writeRepeatedLongWithInt:(jint)fieldNumber
+                withJavaUtilList:(id<JavaUtilList>)values;
+
+- (void)writeRepeatedObjWithInt:(jint)fieldNumber
+               withJavaUtilList:(id<JavaUtilList>)values;
+
+- (void)writeStringWithInt:(jint)fieldNumber
+              withNSString:(NSString *)value;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserWriter)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSBserWriter_initWithBSDataOutput_(BSBserWriter *self, BSDataOutput *stream);
 
-typedef BSBserWriter ImActorModelDroidkitBserBserWriter;
+FOUNDATION_EXPORT BSBserWriter *new_BSBserWriter_initWithBSDataOutput_(BSDataOutput *stream) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSBserWriter)
+
+typedef BSBserWriter ImActorModelDroidkitBserBserWriter;
 
 #endif // _BSBserWriter_H_

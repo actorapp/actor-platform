@@ -6,13 +6,14 @@
 #ifndef _DKListStorageDisplayEx_H_
 #define _DKListStorageDisplayEx_H_
 
-@class JavaLangLong;
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/engine/ListStorage.h"
 
+@class JavaLangLong;
+@protocol JavaUtilList;
+
 @protocol DKListStorageDisplayEx < DKListStorage, NSObject, JavaObject >
+
 - (id<JavaUtilList>)loadBackwardWithJavaLangLong:(JavaLangLong *)sortingKey
                                          withInt:(jint)limit;
 
@@ -31,8 +32,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListStorageDisplayEx)
 
-#define ImActorModelDroidkitEngineListStorageDisplayEx DKListStorageDisplayEx
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListStorageDisplayEx)
+
+#define ImActorModelDroidkitEngineListStorageDisplayEx DKListStorageDisplayEx
 
 #endif // _DKListStorageDisplayEx_H_

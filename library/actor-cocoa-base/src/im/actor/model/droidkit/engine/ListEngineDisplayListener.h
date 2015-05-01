@@ -6,10 +6,10 @@
 #ifndef _DKListEngineDisplayListener_H_
 #define _DKListEngineDisplayListener_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSLongArray;
 @protocol JavaUtilList;
-
-#include "J2ObjC_header.h"
 
 @protocol DKListEngineDisplayListener < NSObject, JavaObject >
 
@@ -29,8 +29,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngineDisplayListener)
 
-#define ImActorModelDroidkitEngineListEngineDisplayListener DKListEngineDisplayListener
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngineDisplayListener)
+
+#define ImActorModelDroidkitEngineListEngineDisplayListener DKListEngineDisplayListener
 
 #endif // _DKListEngineDisplayListener_H_

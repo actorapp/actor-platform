@@ -6,29 +6,32 @@
 #ifndef _ImActorModelApiRpcRequestInviteUser_H_
 #define _ImActorModelApiRpcRequestInviteUser_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiGroupOutPeer;
 @class ImActorModelApiUserOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestInviteUser_HEADER 69
 
-@interface ImActorModelApiRpcRequestInviteUser : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestInviteUser : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestInviteUser *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                      withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestInviteUser *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer;
+
+- (jint)getHeaderKey;
 
 - (jlong)getRid;
 
@@ -40,18 +43,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestInviteUser)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestInviteUser, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestInviteUser *ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestInviteUser, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestInviteUser *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestInviteUser *new_ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestInviteUser_init(ImActorModelApiRpcRequestInviteUser *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestInviteUser *new_ImActorModelApiRpcRequestInviteUser_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestInviteUser)
 

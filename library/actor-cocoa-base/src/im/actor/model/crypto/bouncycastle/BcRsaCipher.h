@@ -6,16 +6,16 @@
 #ifndef _BCBcRsaCipher_H_
 #define _BCBcRsaCipher_H_
 
-@class IOSByteArray;
-@protocol BCRandomProvider;
-@protocol OrgBouncycastleCryptoAsymmetricBlockCipher;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/RsaCipher.h"
 #include "im/actor/model/crypto/bouncycastle/BcRsaEncryptCipher.h"
 
-@interface BCBcRsaCipher : BCBcRsaEncryptCipher < AMRsaCipher > {
-}
+@class IOSByteArray;
+@protocol BCRandomProvider;
+
+@interface BCBcRsaCipher : BCBcRsaEncryptCipher < AMRsaCipher >
+
+#pragma mark Public
 
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                            withByteArray:(IOSByteArray *)publicKey
@@ -27,11 +27,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCBcRsaCipher)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BCBcRsaCipher_initWithBCRandomProvider_withByteArray_withByteArray_(BCBcRsaCipher *self, id<BCRandomProvider> random, IOSByteArray *publicKey, IOSByteArray *privateKey);
 
-typedef BCBcRsaCipher ImActorModelCryptoBouncycastleBcRsaCipher;
+FOUNDATION_EXPORT BCBcRsaCipher *new_BCBcRsaCipher_initWithBCRandomProvider_withByteArray_withByteArray_(id<BCRandomProvider> random, IOSByteArray *publicKey, IOSByteArray *privateKey) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCBcRsaCipher)
+
+typedef BCBcRsaCipher ImActorModelCryptoBouncycastleBcRsaCipher;
 
 #endif // _BCBcRsaCipher_H_

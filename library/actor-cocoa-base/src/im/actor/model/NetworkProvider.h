@@ -6,22 +6,28 @@
 #ifndef _AMNetworkProvider_H_
 #define _AMNetworkProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class AMConnectionEndpoint;
 @protocol AMConnectionCallback;
 @protocol AMCreateConnectionCallback;
 
-#include "J2ObjC_header.h"
-
 @protocol AMNetworkProvider < NSObject, JavaObject >
 
-- (void)createConnection:(jint)connectionId withMTProtoVersion:(jint)mtprotoVersion withApiMajorVersion:(jint)apiMajorVersion withApiMinorVersion:(jint)apiMinorVersion withEndpoint:(AMConnectionEndpoint *)endpoint withCallback:(id<AMConnectionCallback>)callback withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
+- (void)createConnection:(jint)connectionId
+      withMTProtoVersion:(jint)mtprotoVersion
+     withApiMajorVersion:(jint)apiMajorVersion
+     withApiMinorVersion:(jint)apiMinorVersion
+            withEndpoint:(AMConnectionEndpoint *)endpoint
+            withCallback:(id<AMConnectionCallback>)callback
+      withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMNetworkProvider)
 
-#define ImActorModelNetworkProvider AMNetworkProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMNetworkProvider)
+
+#define ImActorModelNetworkProvider AMNetworkProvider
 
 #endif // _AMNetworkProvider_H_

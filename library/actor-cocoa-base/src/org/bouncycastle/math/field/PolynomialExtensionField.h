@@ -6,12 +6,13 @@
 #ifndef _OrgBouncycastleMathFieldPolynomialExtensionField_H_
 #define _OrgBouncycastleMathFieldPolynomialExtensionField_H_
 
-@protocol OrgBouncycastleMathFieldPolynomial;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/field/ExtensionField.h"
 
+@protocol OrgBouncycastleMathFieldPolynomial;
+
 @protocol OrgBouncycastleMathFieldPolynomialExtensionField < OrgBouncycastleMathFieldExtensionField, NSObject, JavaObject >
+
 - (id<OrgBouncycastleMathFieldPolynomial>)getMinimalPolynomial;
 
 @end

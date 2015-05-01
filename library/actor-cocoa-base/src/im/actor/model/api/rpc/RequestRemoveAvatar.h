@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiRpcRequestRemoveAvatar_H_
 #define _ImActorModelApiRpcRequestRemoveAvatar_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestRemoveAvatar_HEADER 91
 
-@interface ImActorModelApiRpcRequestRemoveAvatar : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestRemoveAvatar : ImActorModelNetworkParserRequest
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiRpcRequestRemoveAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRemoveAvatar)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveAvatar, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveAvatar *ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveAvatar, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveAvatar_init(ImActorModelApiRpcRequestRemoveAvatar *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveAvatar *new_ImActorModelApiRpcRequestRemoveAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRemoveAvatar)
 

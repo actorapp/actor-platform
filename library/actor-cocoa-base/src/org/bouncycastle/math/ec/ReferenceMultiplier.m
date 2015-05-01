@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ReferenceMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ReferenceMultiplier.java"
 
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECAlgorithms.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/ReferenceMultiplier.h"
@@ -23,9 +25,20 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcReferenceMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcReferenceMultiplier_init(OrgBouncycastleMathEcReferenceMultiplier *self) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+}
+
+OrgBouncycastleMathEcReferenceMultiplier *new_OrgBouncycastleMathEcReferenceMultiplier_init() {
+  OrgBouncycastleMathEcReferenceMultiplier *self = [OrgBouncycastleMathEcReferenceMultiplier alloc];
+  OrgBouncycastleMathEcReferenceMultiplier_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcReferenceMultiplier)

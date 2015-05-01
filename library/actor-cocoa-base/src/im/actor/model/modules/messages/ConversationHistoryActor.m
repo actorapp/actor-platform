@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/ConversationHistoryActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/ConversationHistoryActor.java"
 
 #include "J2ObjC_source.h"
@@ -18,11 +19,11 @@
 #include "im/actor/model/modules/messages/ConversationHistoryActor.h"
 #include "im/actor/model/modules/updates/internal/MessagesHistoryLoaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
+#include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "java/lang/Long.h"
 
-__attribute__((unused)) static void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModelModulesMessagesConversationHistoryActor *self);
-__attribute__((unused)) static void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor *self, jint loaded, jlong maxLoadedDate);
+#define ImActorModelModulesMessagesConversationHistoryActor_LIMIT 20
 
 @interface ImActorModelModulesMessagesConversationHistoryActor () {
  @public
@@ -39,6 +40,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationHisto
 
 - (void)onLoadedMoreWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor, KEY_LOADED_DATE_, NSString *)
@@ -46,20 +48,42 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor, KEY_LOA
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor, KEY_LOADED_INIT_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor, peer_, AMPeer *)
 
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesConversationHistoryActor, LIMIT, jint)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModelModulesMessagesConversationHistoryActor *self);
+
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor *self, jint loaded, jlong maxLoadedDate);
+
 @interface ImActorModelModulesMessagesConversationHistoryActor_LoadedMore () {
  @public
   jint loaded_;
   jlong maxLoadedDate_;
 }
+
 @end
 
-@interface ImActorModelModulesMessagesConversationHistoryActor_$1 () {
+@interface ImActorModelModulesMessagesConversationHistoryActor_$1 : NSObject < AMRpcCallback > {
  @public
   ImActorModelModulesMessagesConversationHistoryActor *this$0_;
 }
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadHistory *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesMessagesConversationHistoryActor:(ImActorModelModulesMessagesConversationHistoryActor *)outer$;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationHistoryActor_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor_$1, this$0_, ImActorModelModulesMessagesConversationHistoryActor *)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(ImActorModelModulesMessagesConversationHistoryActor_$1 *self, ImActorModelModulesMessagesConversationHistoryActor *outer$);
+
+__attribute__((unused)) static ImActorModelModulesMessagesConversationHistoryActor_$1 *new_ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(ImActorModelModulesMessagesConversationHistoryActor *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor_$1)
 
 
 #line 15
@@ -69,43 +93,21 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationHistoryActor_$1, this
 #line 29
 - (instancetype)initWithAMPeer:(AMPeer *)peer
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 30
-  [super initWithImActorModelModulesModules:modules]) {
-    isLoading_ =
-#line 27
-    NO;
-    
-#line 31
-    self->peer_ = peer;
-    
-#line 32
-    self->KEY_LOADED_DATE_ = JreStrcat("$@$", @"conv_", peer, @"_history_date");
-    
-#line 33
-    self->KEY_LOADED_ = JreStrcat("$@$", @"conv_", peer, @"_history_loaded");
-    
-#line 34
-    self->KEY_LOADED_INIT_ = JreStrcat("$@$", @"conv_", peer, @"_history_inited");
-  }
+  ImActorModelModulesMessagesConversationHistoryActor_initWithAMPeer_withImActorModelModulesModules_(self, peer, modules);
   return self;
 }
 
 
 #line 38
 - (void)preStart {
-  
-#line 39
   [super preStart];
   historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
   historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_ withDefault:NO];
   if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_INIT_ withDefault:NO]) {
-    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesConversationHistoryActor_LoadMore alloc] init]];
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init()];
   }
 }
 
-
-#line 47
 - (void)onLoadMore {
   ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(self);
 }
@@ -120,8 +122,6 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 #line 88
 - (void)onReceiveWithId:(id)message {
-  
-#line 89
   if ([message isKindOfClass:[ImActorModelModulesMessagesConversationHistoryActor_LoadMore class]]) {
     ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(self);
   }
@@ -138,22 +138,34 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationHistoryActor *)other {
-  [super copyAllFieldsTo:other];
-  other->KEY_LOADED_DATE_ = KEY_LOADED_DATE_;
-  other->KEY_LOADED_ = KEY_LOADED_;
-  other->KEY_LOADED_INIT_ = KEY_LOADED_INIT_;
-  other->peer_ = peer_;
-  other->historyMaxDate_ = historyMaxDate_;
-  other->historyLoaded_ = historyLoaded_;
-  other->isLoading_ = isLoading_;
-}
-
 @end
 
-void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModelModulesMessagesConversationHistoryActor *self) {
+
+#line 29
+void ImActorModelModulesMessagesConversationHistoryActor_initWithAMPeer_withImActorModelModulesModules_(ImActorModelModulesMessagesConversationHistoryActor *self, AMPeer *peer, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, modules);
+  self->isLoading_ =
+#line 27
+  NO;
   
-#line 48
+#line 31
+  self->peer_ = peer;
+  self->KEY_LOADED_DATE_ = JreStrcat("$@$", @"conv_", peer, @"_history_date");
+  self->KEY_LOADED_ = JreStrcat("$@$", @"conv_", peer, @"_history_loaded");
+  self->KEY_LOADED_INIT_ = JreStrcat("$@$", @"conv_", peer, @"_history_inited");
+}
+
+
+#line 29
+ImActorModelModulesMessagesConversationHistoryActor *new_ImActorModelModulesMessagesConversationHistoryActor_initWithAMPeer_withImActorModelModulesModules_(AMPeer *peer, ImActorModelModulesModules *modules) {
+  ImActorModelModulesMessagesConversationHistoryActor *self = [ImActorModelModulesMessagesConversationHistoryActor alloc];
+  ImActorModelModulesMessagesConversationHistoryActor_initWithAMPeer_withImActorModelModulesModules_(self, peer, modules);
+  return self;
+}
+
+
+#line 47
+void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModelModulesMessagesConversationHistoryActor *self) {
   if (self->historyLoaded_) {
     return;
   }
@@ -163,14 +175,12 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModel
   self->isLoading_ = YES;
   
 #line 56
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadHistory alloc] initWithImActorModelApiOutPeer:[self buidOutPeerWithAMPeer:self->peer_] withLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesConversationHistoryActor_LIMIT] withAMRpcCallback:
-#line 57
-  [[ImActorModelModulesMessagesConversationHistoryActor_$1 alloc] initWithImActorModelModulesMessagesConversationHistoryActor:self]];
+  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_([self buidOutPeerWithAMPeer:self->peer_], self->historyMaxDate_, ImActorModelModulesMessagesConversationHistoryActor_LIMIT) withAMRpcCallback:new_ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(self)];
 }
 
+
+#line 72
 void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor *self, jint loaded, jlong maxLoadedDate) {
-  
-#line 73
   self->isLoading_ = NO;
   
 #line 75
@@ -197,10 +207,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 @implementation ImActorModelModulesMessagesConversationHistoryActor_LoadMore
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init(ImActorModelModulesMessagesConversationHistoryActor_LoadMore *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesMessagesConversationHistoryActor_LoadMore *new_ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init() {
+  ImActorModelModulesMessagesConversationHistoryActor_LoadMore *self = [ImActorModelModulesMessagesConversationHistoryActor_LoadMore alloc];
+  ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor_LoadMore)
 
@@ -212,24 +233,29 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 #line 107
 - (instancetype)initWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate {
-  if (self = [super init]) {
-    
-#line 108
-    self->loaded_ = loaded;
-    
-#line 109
-    self->maxLoadedDate_ = maxLoadedDate;
-  }
+  ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_(self, loaded, maxLoadedDate);
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *)other {
-  [super copyAllFieldsTo:other];
-  other->loaded_ = loaded_;
-  other->maxLoadedDate_ = maxLoadedDate_;
+@end
+
+
+#line 107
+void ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *self, jint loaded, jlong maxLoadedDate) {
+  (void) NSObject_init(self);
+  
+#line 108
+  self->loaded_ = loaded;
+  self->maxLoadedDate_ = maxLoadedDate;
 }
 
-@end
+
+#line 107
+ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *new_ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_(jint loaded, jlong maxLoadedDate) {
+  ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *self = [ImActorModelModulesMessagesConversationHistoryActor_LoadedMore alloc];
+  ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_(self, loaded, maxLoadedDate);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor_LoadedMore)
 
@@ -240,25 +266,29 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadHistory *)response {
   
 #line 61
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalMessagesHistoryLoaded alloc] initWithAMPeer:this$0_->peer_ withImActorModelApiRpcResponseLoadHistory:response]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(this$0_->peer_, response)];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  
-#line 66
   [((AMRpcException *) nil_chk(e)) printStackTrace];
 }
 
 - (instancetype)initWithImActorModelModulesMessagesConversationHistoryActor:(ImActorModelModulesMessagesConversationHistoryActor *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesConversationHistoryActor_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(ImActorModelModulesMessagesConversationHistoryActor_$1 *self, ImActorModelModulesMessagesConversationHistoryActor *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesMessagesConversationHistoryActor_$1 *new_ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(ImActorModelModulesMessagesConversationHistoryActor *outer$) {
+  ImActorModelModulesMessagesConversationHistoryActor_$1 *self = [ImActorModelModulesMessagesConversationHistoryActor_$1 alloc];
+  ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor_$1)

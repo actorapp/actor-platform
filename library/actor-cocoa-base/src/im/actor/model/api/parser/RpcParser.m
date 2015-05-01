@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/parser/RpcParser.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/parser/RpcParser.java"
 
 #include "IOSClass.h"
@@ -86,6 +87,7 @@
 #include "im/actor/model/api/rpc/ResponseSeq.h"
 #include "im/actor/model/api/rpc/ResponseSeqDate.h"
 #include "im/actor/model/api/rpc/ResponseVoid.h"
+#include "im/actor/model/network/parser/BaseParser.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 #include "java/io/IOException.h"
 
@@ -95,8 +97,6 @@
 
 - (ImActorModelNetworkParserRpcScope *)readWithInt:(jint)type
                                      withByteArray:(IOSByteArray *)payload {
-  
-#line 24
   switch (type) {
     case 1:
     
@@ -407,13 +407,24 @@
 #line 101
     return ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(payload);
   }
-  @throw [[JavaIoIOException alloc] init];
+  @throw new_JavaIoIOException_init();
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiParserRpcParser_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelApiParserRpcParser_init(ImActorModelApiParserRpcParser *self) {
+  (void) ImActorModelNetworkParserBaseParser_init(self);
+}
+
+ImActorModelApiParserRpcParser *new_ImActorModelApiParserRpcParser_init() {
+  ImActorModelApiParserRpcParser *self = [ImActorModelApiParserRpcParser alloc];
+  ImActorModelApiParserRpcParser_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiParserRpcParser)

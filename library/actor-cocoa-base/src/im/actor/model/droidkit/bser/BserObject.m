@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserObject.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserObject.java"
 
 #include "IOSClass.h"
@@ -25,25 +26,32 @@
 
 #line 9
 - (instancetype)init {
-  return [super init];
+  BSBserObject_init(self);
+  return self;
 }
 
+
+#line 13
 - (IOSByteArray *)toByteArray {
-  
-#line 14
-  BSDataOutput *outputStream = [[BSDataOutput alloc] init];
-  BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:outputStream];
+  BSDataOutput *outputStream = new_BSDataOutput_init();
+  BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(outputStream);
   @try {
     [self serializeWithBSBserWriter:writer];
   }
   @catch (
 #line 18
   JavaIoIOException *e) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unexpected IO exception"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Unexpected IO exception");
   }
   return [outputStream toByteArray];
 }
 
 @end
+
+
+#line 9
+void BSBserObject_init(BSBserObject *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserObject)

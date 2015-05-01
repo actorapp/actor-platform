@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetFileUploadPartUrl.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetFileUploadPartUrl.java"
 
 #include "IOSClass.h"
@@ -13,12 +14,14 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcResponseGetFileUploadPartUrl () {
  @public
   NSString *url_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadPartUrl, url_, NSString *)
@@ -36,23 +39,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadPartUrl, url_, NSStri
 
 #line 29
 - (instancetype)initWithNSString:(NSString *)url {
-  if (self = [super init]) {
-    
-#line 30
-    self->url_ = url;
-  }
+  ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(self, url);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcResponseGetFileUploadPartUrl_init(self);
+  return self;
 }
 
+
+#line 37
 - (NSString *)getUrl {
-  
-#line 38
   return self->url_;
 }
 
@@ -65,38 +65,66 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadPartUrl, url_, NSStri
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   if (self->url_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->url_];
 }
 
+
+#line 55
 - (NSString *)description {
   NSString *res = @"tuple GetFileUploadPartUrl{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 63
-  return ImActorModelApiRpcResponseGetFileUploadPartUrl_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcResponseGetFileUploadPartUrl *)other {
-  [super copyAllFieldsTo:other];
-  other->url_ = url_;
+#line 62
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcResponseGetFileUploadPartUrl_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcResponseGetFileUploadPartUrl *ImActorModelApiRpcResponseGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetFileUploadPartUrl_init();
+  ImActorModelApiRpcResponseGetFileUploadPartUrl_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcResponseGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseGetFileUploadPartUrl alloc] init], data));
+  return ((ImActorModelApiRpcResponseGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetFileUploadPartUrl_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(ImActorModelApiRpcResponseGetFileUploadPartUrl *self, NSString *url) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+  
+#line 30
+  self->url_ = url;
+}
+
+
+#line 29
+ImActorModelApiRpcResponseGetFileUploadPartUrl *new_ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(NSString *url) {
+  ImActorModelApiRpcResponseGetFileUploadPartUrl *self = [ImActorModelApiRpcResponseGetFileUploadPartUrl alloc];
+  ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(self, url);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcResponseGetFileUploadPartUrl_init(ImActorModelApiRpcResponseGetFileUploadPartUrl *self) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcResponseGetFileUploadPartUrl *new_ImActorModelApiRpcResponseGetFileUploadPartUrl_init() {
+  ImActorModelApiRpcResponseGetFileUploadPartUrl *self = [ImActorModelApiRpcResponseGetFileUploadPartUrl alloc];
+  ImActorModelApiRpcResponseGetFileUploadPartUrl_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetFileUploadPartUrl)

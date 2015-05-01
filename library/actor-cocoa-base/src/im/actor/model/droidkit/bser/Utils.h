@@ -6,34 +6,33 @@
 #ifndef _BSUtils_H_
 #define _BSUtils_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 
-@interface BSUtils : NSObject {
-}
+@class IOSByteArray;
 
-+ (jint)convertIntWithLong:(jlong)val;
+@interface BSUtils : NSObject
 
-+ (NSString *)convertStringWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 + (NSString *)byteArrayToStringWithByteArray:(IOSByteArray *)data;
 
 + (NSString *)byteArrayToStringCompactWithByteArray:(IOSByteArray *)data;
 
-+ (IOSByteArray *)intToBytesWithInt:(jint)v;
-
 + (jlong)bytesToIntWithByteArray:(IOSByteArray *)data;
 
-+ (IOSByteArray *)longToBytesWithLong:(jlong)v;
-
 + (jlong)bytesToLongWithByteArray:(IOSByteArray *)data;
+
++ (jint)convertIntWithLong:(jlong)val;
+
++ (NSString *)convertStringWithByteArray:(IOSByteArray *)data;
+
++ (IOSByteArray *)intToBytesWithInt:(jint)v;
+
++ (IOSByteArray *)longToBytesWithLong:(jlong)v;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSUtils)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jint BSUtils_convertIntWithLong_(jlong val);
 
@@ -50,10 +49,9 @@ FOUNDATION_EXPORT jlong BSUtils_bytesToIntWithByteArray_(IOSByteArray *data);
 FOUNDATION_EXPORT IOSByteArray *BSUtils_longToBytesWithLong_(jlong v);
 
 FOUNDATION_EXPORT jlong BSUtils_bytesToLongWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
-
-typedef BSUtils ImActorModelDroidkitBserUtils;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSUtils)
+
+typedef BSUtils ImActorModelDroidkitBserUtils;
 
 #endif // _BSUtils_H_

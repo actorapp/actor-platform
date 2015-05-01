@@ -16,23 +16,20 @@ typedef NS_ENUM(NSUInteger, AMAuthState) {
   AMAuthState_LOGGED_IN = 3,
 };
 
-@interface AMAuthStateEnum : JavaLangEnum < NSCopying > {
-}
+@interface AMAuthStateEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMAuthStateEnum_values();
 
 + (AMAuthStateEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMAuthStateEnum *AMAuthStateEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMAuthStateEnum_initialized;
 J2OBJC_STATIC_INIT(AMAuthStateEnum)
 
 FOUNDATION_EXPORT AMAuthStateEnum *AMAuthStateEnum_values_[];
@@ -49,8 +46,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, SIGN_UP)
 #define AMAuthStateEnum_LOGGED_IN AMAuthStateEnum_values_[AMAuthState_LOGGED_IN]
 J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, LOGGED_IN)
 
-typedef AMAuthStateEnum ImActorModelAuthStateEnum;
-
 J2OBJC_TYPE_LITERAL_HEADER(AMAuthStateEnum)
+
+typedef AMAuthStateEnum ImActorModelAuthStateEnum;
 
 #endif // _AMAuthState_H_

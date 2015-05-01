@@ -6,9 +6,9 @@
 #ifndef _OrgBouncycastleMathEcECPointMap_H_
 #define _OrgBouncycastleMathEcECPointMap_H_
 
-@class OrgBouncycastleMathEcECPoint;
-
 #include "J2ObjC_header.h"
+
+@class OrgBouncycastleMathEcECPoint;
 
 @protocol OrgBouncycastleMathEcECPointMap < NSObject, JavaObject >
 

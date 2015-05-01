@@ -6,71 +6,56 @@
 #ifndef _AMUserVM_H_
 #define _AMUserVM_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/mvvm/BaseValueModel.h"
+
 @class AMSexEnum;
 @class AMUser;
 @class AMValueModel;
 @class ImActorModelModulesModules;
-@class JavaUtilArrayList;
 @protocol AMModelChangedListener;
-@protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/mvvm/BaseValueModel.h"
-#include "java/lang/Runnable.h"
+@interface AMUserVM : AMBaseValueModel
 
-@interface AMUserVM : AMBaseValueModel {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMUser:(AMUser *)user
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)updateValuesWithId:(AMUser *)rawObj;
-
-- (jint)getId;
+- (AMValueModel *)getAvatar;
 
 - (jlong)getHash;
 
+- (jint)getId;
+
 - (AMValueModel *)getName;
 
-- (AMValueModel *)getAvatar;
+- (AMValueModel *)getPhones;
+
+- (AMValueModel *)getPresence;
 
 - (AMSexEnum *)getSex;
 
 - (AMValueModel *)isContact;
 
-- (AMValueModel *)getPresence;
-
-- (AMValueModel *)getPhones;
-
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
 
 - (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
+
+#pragma mark Protected
+
+- (void)updateValuesWithId:(AMUser *)rawObj;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMUserVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUserVM *self, AMUser *user, ImActorModelModulesModules *modules);
 
-typedef AMUserVM ImActorModelViewmodelUserVM;
+FOUNDATION_EXPORT AMUserVM *new_AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUser *user, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUserVM)
 
-@interface AMUserVM_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMUserVM:(AMUserVM *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMUserVM_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMUserVM_$1)
+typedef AMUserVM ImActorModelViewmodelUserVM;
 
 #endif // _AMUserVM_H_

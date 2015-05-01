@@ -6,32 +6,33 @@
 #ifndef _ImActorModelModulesMessagesEntityPlainCursor_H_
 #define _ImActorModelModulesMessagesEntityPlainCursor_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityPlainCursor : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityPlainCursor : BSBserObject {
-}
-
-+ (ImActorModelModulesMessagesEntityPlainCursor *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortDate
                       withLong:(jlong)pendingSortDate;
 
-- (AMPeer *)getPeer;
-
-- (jlong)getSortDate;
-
-- (jlong)getPendingSortDate;
+- (ImActorModelModulesMessagesEntityPlainCursor *)changePendingSortDateWithLong:(jlong)pendingDate;
 
 - (ImActorModelModulesMessagesEntityPlainCursor *)changeSortDateWithLong:(jlong)date;
 
-- (ImActorModelModulesMessagesEntityPlainCursor *)changePendingSortDateWithLong:(jlong)pendingDate;
++ (ImActorModelModulesMessagesEntityPlainCursor *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (AMPeer *)getPeer;
+
+- (jlong)getPendingSortDate;
+
+- (jlong)getSortDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -41,10 +42,11 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityPlainCursor)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPlainCursor *ImActorModelModulesMessagesEntityPlainCursor_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesEntityPlainCursor *self, AMPeer *peer, jlong sortDate, jlong pendingSortDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPlainCursor *new_ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong sortDate, jlong pendingSortDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityPlainCursor)
 
