@@ -1,6 +1,5 @@
 package im.actor.server.models
 
-import scodec.bits._
 import org.joda.time.DateTime
 
 @SerialVersionUID(1L)

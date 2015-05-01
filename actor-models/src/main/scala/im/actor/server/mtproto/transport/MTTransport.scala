@@ -1,7 +1,5 @@
 package im.actor.server.mtproto.transport
 
-import scodec.bits.BitVector
-
 sealed trait MTTransport
 
 @SerialVersionUID(1L)
