@@ -8,7 +8,7 @@ import akka.stream.actor._
 
 import im.actor.server.mtproto.protocol.{ ProtoMessage, UpdateBox }
 import im.actor.server.presences.PresenceManagerRegion
-import im.actor.server.push.{ SeqUpdatesManagerRegion, UpdatesPusher, UpdatesPusherMessage, WeakUpdatesManagerRegion }
+import im.actor.server.push._
 import im.actor.server.session.SessionMessage._
 
 private[session] object UpdatesHandler {
@@ -28,8 +28,9 @@ private[session] class UpdatesHandler(authId: Long)(
 ) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
+  import UpdatesConsumerMessage._
 
-  val updatesPusher = context.actorOf(UpdatesPusher.props(authId, self))
+  val updatesConsumer = context.actorOf(UpdatesConsumer.props(authId, self), "updatesConsumer")
 
   def receive = subscriber.orElse(publisher).orElse {
     case unmatched ⇒
@@ -42,9 +43,9 @@ private[session] class UpdatesHandler(authId: Long)(
     case OnNext(cmd: SubscribeCommand) ⇒
       cmd match {
         case SubscribeToOnline(userIds) ⇒
-          updatesPusher ! UpdatesPusherMessage.SubscribeToUserPresences(userIds)
+          updatesConsumer ! SubscribeToUserPresences(userIds)
         case SubscribeFromOnline(userIds) ⇒
-          updatesPusher ! UpdatesPusherMessage.UnsubscribeFromUserPresences(userIds)
+          updatesConsumer ! UnsubscribeFromUserPresences(userIds)
         case SubscribeToGroupOnline(groupIds)   ⇒
         // FIXME: implement
         case SubscribeFromGroupOnline(groupIds) ⇒
