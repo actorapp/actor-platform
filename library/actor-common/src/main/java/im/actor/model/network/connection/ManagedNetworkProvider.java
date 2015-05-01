@@ -1,32 +1,31 @@
-package im.actor.model.js.providers.websocket;
+package im.actor.model.network.connection;
+
+import java.util.ArrayList;
 
 import im.actor.model.NetworkProvider;
-import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.CreateConnectionCallback;
 
-import java.util.ArrayList;
-
 /**
  * Created by ex3ndr on 29.04.15.
  */
-public class PlatformNetworkProvider implements NetworkProvider {
+public class ManagedNetworkProvider implements NetworkProvider {
 
     private final AsyncConnectionFactory factory;
     // Persisting pending connections to avoiding GC
-    private final ArrayList<PlatformConnection> pendingConnections = new ArrayList<PlatformConnection>();
+    private final ArrayList<ManagedConnection> pendingConnections = new ArrayList<ManagedConnection>();
 
-    public PlatformNetworkProvider(AsyncConnectionFactory factory) {
+    public ManagedNetworkProvider(AsyncConnectionFactory factory) {
         this.factory = factory;
     }
 
     @Override
     public void createConnection(int connectionId, int mtprotoVersion, int apiMajorVersion, int apiMinorVersion, ConnectionEndpoint endpoint, ConnectionCallback callback, final CreateConnectionCallback createCallback) {
-        final PlatformConnection platformConnection = new PlatformConnection(connectionId, mtprotoVersion,
-                apiMajorVersion, apiMinorVersion, endpoint, callback, new PlatformConnectionCreateCallback() {
+        final ManagedConnection managedConnection = new ManagedConnection(connectionId, mtprotoVersion,
+                apiMajorVersion, apiMinorVersion, endpoint, callback, new ManagedConnectionCreateCallback() {
             @Override
-            public void onConnectionCreated(PlatformConnection connection) {
+            public void onConnectionCreated(ManagedConnection connection) {
                 createCallback.onConnectionCreated(connection);
                 synchronized (pendingConnections) {
                     pendingConnections.remove(connection);
@@ -34,7 +33,7 @@ public class PlatformNetworkProvider implements NetworkProvider {
             }
 
             @Override
-            public void onConnectionCreateError(PlatformConnection connection) {
+            public void onConnectionCreateError(ManagedConnection connection) {
                 createCallback.onConnectionCreateError();
                 synchronized (pendingConnections) {
                     pendingConnections.remove(connection);
@@ -42,7 +41,7 @@ public class PlatformNetworkProvider implements NetworkProvider {
             }
         }, factory);
         synchronized (pendingConnections) {
-            pendingConnections.add(platformConnection);
+            pendingConnections.add(managedConnection);
         }
     }
 }

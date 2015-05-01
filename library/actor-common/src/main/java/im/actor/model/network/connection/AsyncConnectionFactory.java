@@ -1,4 +1,4 @@
-package im.actor.model.js.providers.websocket;
+package im.actor.model.network.connection;
 
 import im.actor.model.network.ConnectionEndpoint;
 
