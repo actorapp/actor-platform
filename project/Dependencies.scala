@@ -7,7 +7,7 @@ object Dependencies {
     val akka = "2.3.10"
     val akkaExperimental = "1.0-RC2"
     val scalaz = "7.1.1"
-    val slick = "3.0.0-RC3"
+    val slick = "3.0.0"
     val scalatest = "2.2.4"
   }
 
