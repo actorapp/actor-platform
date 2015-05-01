@@ -1,4 +1,4 @@
-package im.actor.model.js.providers.websocket;
+package im.actor.model.network.connection;
 
 /**
  * Created by ex3ndr on 29.04.15.
