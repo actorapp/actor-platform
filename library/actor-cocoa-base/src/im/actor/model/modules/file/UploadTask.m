@@ -379,7 +379,7 @@ void ImActorModelModulesFileUploadTask_initWithLong_withNSString_withNSString_wi
   NO;
   self->blockSize_ =
 #line 51
-  8 * 1024;
+  32 * 1024;
   self->nextBlock_ =
 #line 53
   0;
