@@ -16,51 +16,51 @@
 #include "im/actor/model/network/connection/ManagedNetworkProvider.h"
 #include "java/util/ArrayList.h"
 
-@interface ImActorModelNetworkConnectionManagedNetworkProvider () {
+@interface AMManagedNetworkProvider () {
  @public
-  id<ImActorModelNetworkConnectionAsyncConnectionFactory> factory_;
+  id<AMAsyncConnectionFactory> factory_;
   JavaUtilArrayList *pendingConnections_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedNetworkProvider, factory_, id<ImActorModelNetworkConnectionAsyncConnectionFactory>)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedNetworkProvider, pendingConnections_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMManagedNetworkProvider, factory_, id<AMAsyncConnectionFactory>)
+J2OBJC_FIELD_SETTER(AMManagedNetworkProvider, pendingConnections_, JavaUtilArrayList *)
 
-@interface ImActorModelNetworkConnectionManagedNetworkProvider_$1 : NSObject < ImActorModelNetworkConnectionManagedConnectionCreateCallback > {
+@interface AMManagedNetworkProvider_$1 : NSObject < AMManagedConnectionCreateCallback > {
  @public
-  ImActorModelNetworkConnectionManagedNetworkProvider *this$0_;
+  AMManagedNetworkProvider *this$0_;
   id<AMCreateConnectionCallback> val$createCallback_;
 }
 
-- (void)onConnectionCreatedWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)connection;
+- (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection;
 
-- (void)onConnectionCreateErrorWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)connection;
+- (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection;
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedNetworkProvider:(ImActorModelNetworkConnectionManagedNetworkProvider *)outer$
-                                             withAMCreateConnectionCallback:(id<AMCreateConnectionCallback>)capture$0;
+- (instancetype)initWithAMManagedNetworkProvider:(AMManagedNetworkProvider *)outer$
+                  withAMCreateConnectionCallback:(id<AMCreateConnectionCallback>)capture$0;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionManagedNetworkProvider_$1)
+J2OBJC_EMPTY_STATIC_INIT(AMManagedNetworkProvider_$1)
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedNetworkProvider_$1, this$0_, ImActorModelNetworkConnectionManagedNetworkProvider *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedNetworkProvider_$1, val$createCallback_, id<AMCreateConnectionCallback>)
+J2OBJC_FIELD_SETTER(AMManagedNetworkProvider_$1, this$0_, AMManagedNetworkProvider *)
+J2OBJC_FIELD_SETTER(AMManagedNetworkProvider_$1, val$createCallback_, id<AMCreateConnectionCallback>)
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(ImActorModelNetworkConnectionManagedNetworkProvider_$1 *self, ImActorModelNetworkConnectionManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0);
+__attribute__((unused)) static void AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(AMManagedNetworkProvider_$1 *self, AMManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0);
 
-__attribute__((unused)) static ImActorModelNetworkConnectionManagedNetworkProvider_$1 *new_ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(ImActorModelNetworkConnectionManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMManagedNetworkProvider_$1 *new_AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(AMManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedNetworkProvider_$1)
+J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider_$1)
 
 
 #line 13
-@implementation ImActorModelNetworkConnectionManagedNetworkProvider
+@implementation AMManagedNetworkProvider
 
 
 #line 19
-- (instancetype)initWithImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkConnectionAsyncConnectionFactory>)factory {
-  ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNetworkConnectionAsyncConnectionFactory_(self, factory);
+- (instancetype)initWithAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)factory {
+  AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(self, factory);
   return self;
 }
 
@@ -71,9 +71,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedNetworkProvider_$
             withEndpoint:(AMConnectionEndpoint *)endpoint
             withCallback:(id<AMConnectionCallback>)callback
       withCreateCallback:(id<AMCreateConnectionCallback>)createCallback {
-  ImActorModelNetworkConnectionManagedConnection *managedConnection = new_ImActorModelNetworkConnectionManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withImActorModelNetworkConnectionManagedConnectionCreateCallback_withImActorModelNetworkConnectionAsyncConnectionFactory_(connectionId, mtprotoVersion,
+  AMManagedConnection *managedConnection = new_AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(connectionId, mtprotoVersion,
 #line 26
-  apiMajorVersion, apiMinorVersion, endpoint, callback, new_ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(self, createCallback),
+  apiMajorVersion, apiMinorVersion, endpoint, callback, new_AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(self, createCallback),
 #line 42
   factory_);
   @synchronized(pendingConnections_) {
@@ -85,7 +85,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedNetworkProvider_$
 
 
 #line 19
-void ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNetworkConnectionAsyncConnectionFactory_(ImActorModelNetworkConnectionManagedNetworkProvider *self, id<ImActorModelNetworkConnectionAsyncConnectionFactory> factory) {
+void AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory) {
   (void) NSObject_init(self);
   self->pendingConnections_ = new_JavaUtilArrayList_init();
   
@@ -95,19 +95,19 @@ void ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNet
 
 
 #line 19
-ImActorModelNetworkConnectionManagedNetworkProvider *new_ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNetworkConnectionAsyncConnectionFactory_(id<ImActorModelNetworkConnectionAsyncConnectionFactory> factory) {
-  ImActorModelNetworkConnectionManagedNetworkProvider *self = [ImActorModelNetworkConnectionManagedNetworkProvider alloc];
-  ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNetworkConnectionAsyncConnectionFactory_(self, factory);
+AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(id<AMAsyncConnectionFactory> factory) {
+  AMManagedNetworkProvider *self = [AMManagedNetworkProvider alloc];
+  AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(self, factory);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedNetworkProvider)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedNetworkProvider)
 
-@implementation ImActorModelNetworkConnectionManagedNetworkProvider_$1
+@implementation AMManagedNetworkProvider_$1
 
 
 #line 28
-- (void)onConnectionCreatedWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)connection {
+- (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection {
   [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreated:connection];
   @synchronized(this$0_->pendingConnections_) {
     [((JavaUtilArrayList *) nil_chk(this$0_->pendingConnections_)) removeWithId:connection];
@@ -116,31 +116,31 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedNetworkProv
 
 
 #line 36
-- (void)onConnectionCreateErrorWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)connection {
+- (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection {
   [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreateError];
   @synchronized(this$0_->pendingConnections_) {
     [((JavaUtilArrayList *) nil_chk(this$0_->pendingConnections_)) removeWithId:connection];
   }
 }
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedNetworkProvider:(ImActorModelNetworkConnectionManagedNetworkProvider *)outer$
-                                             withAMCreateConnectionCallback:(id<AMCreateConnectionCallback>)capture$0 {
-  ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(self, outer$, capture$0);
+- (instancetype)initWithAMManagedNetworkProvider:(AMManagedNetworkProvider *)outer$
+                  withAMCreateConnectionCallback:(id<AMCreateConnectionCallback>)capture$0 {
+  AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(self, outer$, capture$0);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(ImActorModelNetworkConnectionManagedNetworkProvider_$1 *self, ImActorModelNetworkConnectionManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0) {
+void AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(AMManagedNetworkProvider_$1 *self, AMManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0) {
   self->this$0_ = outer$;
   self->val$createCallback_ = capture$0;
   (void) NSObject_init(self);
 }
 
-ImActorModelNetworkConnectionManagedNetworkProvider_$1 *new_ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(ImActorModelNetworkConnectionManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0) {
-  ImActorModelNetworkConnectionManagedNetworkProvider_$1 *self = [ImActorModelNetworkConnectionManagedNetworkProvider_$1 alloc];
-  ImActorModelNetworkConnectionManagedNetworkProvider_$1_initWithImActorModelNetworkConnectionManagedNetworkProvider_withAMCreateConnectionCallback_(self, outer$, capture$0);
+AMManagedNetworkProvider_$1 *new_AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(AMManagedNetworkProvider *outer$, id<AMCreateConnectionCallback> capture$0) {
+  AMManagedNetworkProvider_$1 *self = [AMManagedNetworkProvider_$1 alloc];
+  AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(self, outer$, capture$0);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedNetworkProvider_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedNetworkProvider_$1)

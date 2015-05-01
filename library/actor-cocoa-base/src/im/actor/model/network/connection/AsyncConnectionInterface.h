@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/AsyncConnectionInterface.java
 //
 
-#ifndef _ImActorModelNetworkConnectionAsyncConnectionInterface_H_
-#define _ImActorModelNetworkConnectionAsyncConnectionInterface_H_
+#ifndef _AMAsyncConnectionInterface_H_
+#define _AMAsyncConnectionInterface_H_
 
 #include "J2ObjC_header.h"
 
 @class IOSByteArray;
 
-@protocol ImActorModelNetworkConnectionAsyncConnectionInterface < NSObject, JavaObject >
+@protocol AMAsyncConnectionInterface < NSObject, JavaObject >
 
 - (void)onConnected;
 
@@ -20,8 +20,10 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionAsyncConnectionInterface)
+J2OBJC_EMPTY_STATIC_INIT(AMAsyncConnectionInterface)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionAsyncConnectionInterface)
+J2OBJC_TYPE_LITERAL_HEADER(AMAsyncConnectionInterface)
 
-#endif // _ImActorModelNetworkConnectionAsyncConnectionInterface_H_
+#define ImActorModelNetworkConnectionAsyncConnectionInterface AMAsyncConnectionInterface
+
+#endif // _AMAsyncConnectionInterface_H_

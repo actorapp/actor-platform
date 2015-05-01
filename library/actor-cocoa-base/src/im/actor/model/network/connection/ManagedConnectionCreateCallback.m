@@ -10,4 +10,4 @@
 #include "im/actor/model/network/connection/ManagedConnection.h"
 #include "im/actor/model/network/connection/ManagedConnectionCreateCallback.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedConnectionCreateCallback)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMManagedConnectionCreateCallback)

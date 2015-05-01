@@ -3,25 +3,27 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/AsyncConnectionFactory.java
 //
 
-#ifndef _ImActorModelNetworkConnectionAsyncConnectionFactory_H_
-#define _ImActorModelNetworkConnectionAsyncConnectionFactory_H_
+#ifndef _AMAsyncConnectionFactory_H_
+#define _AMAsyncConnectionFactory_H_
 
 #include "J2ObjC_header.h"
 
+@class AMAsyncConnection;
 @class AMConnectionEndpoint;
-@class ImActorModelNetworkConnectionAsyncConnection;
-@protocol ImActorModelNetworkConnectionAsyncConnectionInterface;
+@protocol AMAsyncConnectionInterface;
 
-@protocol ImActorModelNetworkConnectionAsyncConnectionFactory < NSObject, JavaObject >
+@protocol AMAsyncConnectionFactory < NSObject, JavaObject >
 
-- (ImActorModelNetworkConnectionAsyncConnection *)createConnectionWithInt:(jint)connectionId
-                                                 withAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
-                withImActorModelNetworkConnectionAsyncConnectionInterface:(id<ImActorModelNetworkConnectionAsyncConnectionInterface>)connectionInterface;
+- (AMAsyncConnection *)createConnectionWithInt:(jint)connectionId
+                      withAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
+                withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connectionInterface;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionAsyncConnectionFactory)
+J2OBJC_EMPTY_STATIC_INIT(AMAsyncConnectionFactory)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionAsyncConnectionFactory)
+J2OBJC_TYPE_LITERAL_HEADER(AMAsyncConnectionFactory)
 
-#endif // _ImActorModelNetworkConnectionAsyncConnectionFactory_H_
+#define ImActorModelNetworkConnectionAsyncConnectionFactory AMAsyncConnectionFactory
+
+#endif // _AMAsyncConnectionFactory_H_

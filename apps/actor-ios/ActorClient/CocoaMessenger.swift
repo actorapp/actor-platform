@@ -20,7 +20,7 @@ get{
         // Providers
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
-        builder.setNetworkProvider(SwiftCocoaNetworkProvider())
+        builder.setNetworkProvider(AMManagedNetworkProvider(AMAsyncConnectionFactory: TcpConnectionFactory()))
         builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(HttpProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
         builder.setStorageProvider(CocoaStorage(dbPath: dbPath))

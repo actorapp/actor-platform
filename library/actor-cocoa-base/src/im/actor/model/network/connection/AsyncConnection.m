@@ -15,26 +15,26 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@interface ImActorModelNetworkConnectionAsyncConnection () {
+@interface AMAsyncConnection () {
  @public
-  id<ImActorModelNetworkConnectionAsyncConnectionInterface> connection_;
+  id<AMAsyncConnectionInterface> connection_;
   AMConnectionEndpoint *endpoint_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionAsyncConnection, connection_, id<ImActorModelNetworkConnectionAsyncConnectionInterface>)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionAsyncConnection, endpoint_, AMConnectionEndpoint *)
+J2OBJC_FIELD_SETTER(AMAsyncConnection, connection_, id<AMAsyncConnectionInterface>)
+J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 
 
 #line 8
-@implementation ImActorModelNetworkConnectionAsyncConnection
+@implementation AMAsyncConnection
 
 
 #line 12
 - (instancetype)initWithAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
-withImActorModelNetworkConnectionAsyncConnectionInterface:(id<ImActorModelNetworkConnectionAsyncConnectionInterface>)connection {
-  ImActorModelNetworkConnectionAsyncConnection_initWithAMConnectionEndpoint_withImActorModelNetworkConnectionAsyncConnectionInterface_(self, endpoint, connection);
+              withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connection {
+  AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(self, endpoint, connection);
   return self;
 }
 
@@ -45,22 +45,22 @@ withImActorModelNetworkConnectionAsyncConnectionInterface:(id<ImActorModelNetwor
 }
 
 - (void)onConnected {
-  [((id<ImActorModelNetworkConnectionAsyncConnectionInterface>) nil_chk(connection_)) onConnected];
+  [((id<AMAsyncConnectionInterface>) nil_chk(connection_)) onConnected];
 }
 
 - (void)onReceivedWithByteArray:(IOSByteArray *)data {
-  [((id<ImActorModelNetworkConnectionAsyncConnectionInterface>) nil_chk(connection_)) onReceivedWithByteArray:data];
+  [((id<AMAsyncConnectionInterface>) nil_chk(connection_)) onReceivedWithByteArray:data];
 }
 
 - (void)onClosed {
-  [((id<ImActorModelNetworkConnectionAsyncConnectionInterface>) nil_chk(connection_)) onClosed];
+  [((id<AMAsyncConnectionInterface>) nil_chk(connection_)) onClosed];
 }
 
 @end
 
 
 #line 12
-void ImActorModelNetworkConnectionAsyncConnection_initWithAMConnectionEndpoint_withImActorModelNetworkConnectionAsyncConnectionInterface_(ImActorModelNetworkConnectionAsyncConnection *self, AMConnectionEndpoint *endpoint, id<ImActorModelNetworkConnectionAsyncConnectionInterface> connection) {
+void AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection) {
   (void) NSObject_init(self);
   
 #line 13
@@ -68,4 +68,4 @@ void ImActorModelNetworkConnectionAsyncConnection_initWithAMConnectionEndpoint_w
   self->endpoint_ = endpoint;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionAsyncConnection)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAsyncConnection)
