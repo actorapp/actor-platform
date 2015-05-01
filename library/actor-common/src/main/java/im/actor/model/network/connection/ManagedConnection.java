@@ -1,4 +1,4 @@
-package im.actor.model.js.providers.websocket;
+package im.actor.model.network.connection;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,11 +18,11 @@ import im.actor.model.util.CRC32;
 /**
  * Created by ex3ndr on 29.04.15.
  */
-public class PlatformConnection implements Connection {
+public class ManagedConnection implements Connection {
 
     private static final int CONNECTION_TIMEOUT = 5 * 1000;
     private static final int HANDSHAKE_TIMEOUT = 5 * 1000;
-    private static final int RESPONSE_TIMEOUT = 1 * 1000;
+    private static final int RESPONSE_TIMEOUT = 5 * 1000;
     private static final int PING_TIMEOUT = 5 * 60 * 1000;
 
     private static final int HEADER_PROTO = 0;
@@ -41,7 +41,7 @@ public class PlatformConnection implements Connection {
     private final String TAG;
     private final AsyncConnection rawConnection;
     private final ConnectionCallback callback;
-    private final PlatformConnectionCreateCallback factoryCallback;
+    private final ManagedConnectionCreateCallback factoryCallback;
     private final int connectionId;
     private final int mtprotoVersion;
     private final int apiMajorVersion;
@@ -55,18 +55,20 @@ public class PlatformConnection implements Connection {
     private boolean isHandshakePerformed = false;
     private byte[] handshakeRandomData;
 
+    private TimerCompat connectionTimeout;
+    private TimerCompat handshakeTimeout;
     private TimerCompat pingTask;
     private final HashMap<Long, TimerCompat> schedulledPings = new HashMap<Long, TimerCompat>();
     private final HashMap<Integer, TimerCompat> packageTimers = new HashMap<Integer, TimerCompat>();
 
-    public PlatformConnection(int connectionId,
-                              int mtprotoVersion,
-                              int apiMajorVersion,
-                              int apiMinorVersion,
-                              ConnectionEndpoint endpoint,
-                              ConnectionCallback callback,
-                              PlatformConnectionCreateCallback factoryCallback,
-                              AsyncConnectionFactory connectionFactory) {
+    public ManagedConnection(int connectionId,
+                             int mtprotoVersion,
+                             int apiMajorVersion,
+                             int apiMinorVersion,
+                             ConnectionEndpoint endpoint,
+                             ConnectionCallback callback,
+                             ManagedConnectionCreateCallback factoryCallback,
+                             AsyncConnectionFactory connectionFactory) {
         this.TAG = "Connection#" + connectionId;
         this.connectionId = connectionId;
         this.mtprotoVersion = mtprotoVersion;
@@ -76,10 +78,13 @@ public class PlatformConnection implements Connection {
         this.factoryCallback = factoryCallback;
         this.rawConnection = connectionFactory.createConnection(endpoint, connectionInterface);
         Log.d(TAG, "Starting connection");
-        this.rawConnection.doConnect();
 
+        handshakeTimeout = new TimerCompat(new TimeoutRunnable());
         pingTask = new TimerCompat(new PingRunnable());
-        pingTask.schedule(PING_TIMEOUT);
+        connectionTimeout = new TimerCompat(new TimeoutRunnable());
+        connectionTimeout.schedule(CONNECTION_TIMEOUT);
+
+        this.rawConnection.doConnect();
     }
 
     // Handshake
@@ -98,6 +103,7 @@ public class PlatformConnection implements Connection {
         handshakeRequest.writeInt(handshakeRandomData.length);
         handshakeRequest.writeBytes(handshakeRandomData, 0, handshakeRandomData.length);
 
+        handshakeTimeout.schedule(HANDSHAKE_TIMEOUT);
         rawPost(HEADER_HANDSHAKE_REQUEST, handshakeRequest.toByteArray());
     }
 
@@ -133,6 +139,8 @@ public class PlatformConnection implements Connection {
         Log.d(TAG, "Handshake successful");
         isHandshakePerformed = true;
         factoryCallback.onConnectionCreated(this);
+        handshakeTimeout.cancel();
+        pingTask.schedule(PING_TIMEOUT);
     }
 
     // Proto package
@@ -200,11 +208,11 @@ public class PlatformConnection implements Connection {
     private void refreshTimeouts() {
         // Settings all timeouts to now+RESPONSE_TIMEOUT
         // Simple, but need some logic improvements to support detecting of frame lost.
-        
-        for(TimerCompat ping : schedulledPings.values()){
+
+        for (TimerCompat ping : schedulledPings.values()) {
             ping.schedule(RESPONSE_TIMEOUT);
         }
-        for(TimerCompat ackTimeout: packageTimers.values()){
+        for (TimerCompat ackTimeout : packageTimers.values()) {
             ackTimeout.schedule(RESPONSE_TIMEOUT);
         }
 
@@ -260,6 +268,8 @@ public class PlatformConnection implements Connection {
             return;
         }
         isOpened = true;
+
+        connectionTimeout.cancel();
 
         sendHandshakeRequest();
     }
@@ -386,6 +396,21 @@ public class PlatformConnection implements Connection {
 
         rawConnection.doClose();
 
+        synchronized (packageTimers) {
+            for (Integer id : packageTimers.keySet()) {
+                packageTimers.get(id).cancel();
+            }
+            for (Long ping : schedulledPings.keySet()) {
+                schedulledPings.get(ping).cancel();
+            }
+            schedulledPings.clear();
+            packageTimers.clear();
+        }
+
+        pingTask.cancel();
+        connectionTimeout.cancel();
+        handshakeTimeout.cancel();
+
         if (!isOpened || !isHandshakePerformed) {
             factoryCallback.onConnectionCreateError(this);
         } else {
@@ -399,17 +424,17 @@ public class PlatformConnection implements Connection {
 
         @Override
         public void onConnected() {
-            PlatformConnection.this.onRawConnected();
+            ManagedConnection.this.onRawConnected();
         }
 
         @Override
         public void onReceived(byte[] data) {
-            PlatformConnection.this.onRawReceived(data);
+            ManagedConnection.this.onRawReceived(data);
         }
 
         @Override
         public void onClosed() {
-            PlatformConnection.this.onRawClosed();
+            ManagedConnection.this.onRawClosed();
         }
     }
 
