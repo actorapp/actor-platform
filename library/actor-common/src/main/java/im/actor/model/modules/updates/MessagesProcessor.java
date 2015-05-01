@@ -4,41 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
-import im.actor.model.api.EncryptedDocumentV1;
-import im.actor.model.api.EncryptedDocumentV1ExPhoto;
-import im.actor.model.api.EncryptedDocumentV1VExideo;
-import im.actor.model.api.EncryptedMessageV1;
-import im.actor.model.api.EncryptedPackage;
-import im.actor.model.api.EncryptedTextContentV1;
 import im.actor.model.api.HistoryMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
-import im.actor.model.crypto.AesCipher;
-import im.actor.model.crypto.RsaCipher;
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.entity.ContentDescription;
-import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.AbsContent;
-import im.actor.model.entity.content.DocumentContent;
-import im.actor.model.entity.content.FastThumb;
-import im.actor.model.entity.content.FileRemoteSource;
-import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
-import im.actor.model.entity.content.TextContent;
-import im.actor.model.entity.content.VideoContent;
-import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.ConversationHistoryActor;
+import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.OwnReadActor;
-import im.actor.model.modules.messages.PlainReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.messages.entity.EntityConverter;
@@ -68,8 +51,6 @@ public class MessagesProcessor extends BaseModule {
             maxLoadedDate = Math.min(dialog.getSortDate(), maxLoadedDate);
 
             Peer peer = convert(dialog.getPeer());
-
-            Log.d("MessagesProcessor", "HistoryDialog: " + peer);
 
             AbsContent msgContent = convert(dialog.getMessage());
 
@@ -136,72 +117,6 @@ public class MessagesProcessor extends BaseModule {
         onMessage(peer, senderUid, date, rid, msgContent);
     }
 
-    public void onEncryptedMessage(im.actor.model.api.Peer _peer, int senderUid, long date,
-                                   long keyHash, byte[] aesEncryptedKey, byte[] message) {
-        Peer peer = convert(_peer);
-
-        RsaCipher cipher = crypto().createRSAOAEPSHA1Cipher(modules().getAuthModule().getPublicKey(),
-                modules().getAuthModule().getPrivateKey());
-        byte[] aesKey = cipher.decrypt(aesEncryptedKey);
-        if (aesKey == null) {
-            // unable to decrypt message
-            return;
-        }
-
-        byte[] key = substring(aesKey, aesKey.length - 16 - 32, 32);
-        byte[] iv = substring(aesKey, aesKey.length - 16, 16);
-
-        AesCipher aesCipher = crypto().createAESCBCPKS7Cipher(key, iv);
-
-        try {
-            byte[] decryptedRawMessage = aesCipher.decrypt(message);
-
-            int len = readInt(decryptedRawMessage, 0);
-            byte[] res = substring(decryptedRawMessage, 4, len);
-
-            EncryptedPackage encryptedPackage = Bser.parse(new EncryptedPackage(), res);
-            if (encryptedPackage.getV2Message() != null) {
-                // Process V2
-            } else {
-                if (encryptedPackage.getV1MessageType() != 1) {
-                    return;
-                }
-
-                EncryptedMessageV1 messageV1 = Bser.parse(new EncryptedMessageV1(), encryptedPackage.getV1Message());
-                if (messageV1.getContent() instanceof EncryptedTextContentV1) {
-                    EncryptedTextContentV1 text = (EncryptedTextContentV1) messageV1.getContent();
-                    onMessage(peer, senderUid, date, messageV1.getRid(), new TextContent(text.getText()));
-                } else if (messageV1.getContent() instanceof EncryptedDocumentV1) {
-                    EncryptedDocumentV1 document = (EncryptedDocumentV1) messageV1.getContent();
-                    AbsContent content;
-                    String name = document.getName();
-                    String mimeType = document.getMimeType();
-                    FastThumb fastThumb = EntityConverter.convert(document.getFastThumb());
-                    FileRemoteSource fileRemoteSource = new FileRemoteSource(new FileReference(
-                            document.getFileLocation().getFileId(),
-                            document.getFileLocation().getAccessHash(),
-                            document.getFileLocation().getFileSize(),
-                            document.getName()));
-
-                    if (document.getExtension() instanceof EncryptedDocumentV1ExPhoto) {
-                        EncryptedDocumentV1ExPhoto photo = (EncryptedDocumentV1ExPhoto) document.getExtension();
-                        content = new PhotoContent(fileRemoteSource, mimeType, name, fastThumb,
-                                photo.getWidth(), photo.getHeight());
-                    } else if (document.getExtension() instanceof EncryptedDocumentV1VExideo) {
-                        EncryptedDocumentV1VExideo video = (EncryptedDocumentV1VExideo) document.getExtension();
-                        content = new VideoContent(fileRemoteSource, mimeType, name, fastThumb,
-                                video.getDuration(), video.getWidth(), video.getHeight());
-                    } else {
-                        content = new DocumentContent(fileRemoteSource, mimeType, name, fastThumb);
-                    }
-                    onMessage(peer, senderUid, date, messageV1.getRid(), content);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void onMessage(Peer peer, int senderUid, long date, long rid, AbsContent msgContent) {
         boolean isOut = myUid() == senderUid;
 
@@ -213,19 +128,19 @@ public class MessagesProcessor extends BaseModule {
         if (!isOut) {
 
             // Send to OwnReadActor for adding to unread index
-            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, false));
+            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date));
 
             // Notify notification actor
             modules().getNotifications().onInMessage(peer, senderUid, date,
                     ContentDescription.fromContent(message.getContent()));
 
             // mark message as received
-            plainReceiveActor().send(new PlainReceiverActor.MarkReceived(peer, date));
+            plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));
 
         } else {
 
             // Send information to OwnReadActor about out message
-            ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
+            ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
         }
     }
 
@@ -314,7 +229,7 @@ public class MessagesProcessor extends BaseModule {
         sendActor().send(new SenderActor.MessageSent(peer, rid));
 
         // Send information to OwnReadActor about out message
-        ownReadActor().send(new OwnReadActor.NewOutMessage(peer, rid, date, false));
+        ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
     }
 
     public void onChatClear(im.actor.model.api.Peer _peer) {
@@ -344,7 +259,7 @@ public class MessagesProcessor extends BaseModule {
                 MessageState.UNKNOWN, new ServiceUserRegistered());
 
         ownReadActor().send(new OwnReadActor
-                .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date, false));
+                .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date));
         conversationActor(Peer.user(uid)).send(message);
     }
 }

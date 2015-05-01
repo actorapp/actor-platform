@@ -10,7 +10,6 @@
 @class BSBserWriter;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiSexEnum;
-@class ImActorModelApiUserStateEnum;
 @protocol JavaUtilList;
 
 #include "J2ObjC_header.h"
@@ -28,8 +27,7 @@
                    withLong:(jlong)phone
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails
-withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState;
+           withJavaUtilList:(id<JavaUtilList>)emails;
 
 - (instancetype)init;
 
@@ -52,8 +50,6 @@ withImActorModelApiUserStateEnum:(ImActorModelApiUserStateEnum *)userState;
 - (id<JavaUtilList>)getPhones;
 
 - (id<JavaUtilList>)getEmails;
-
-- (ImActorModelApiUserStateEnum *)getUserState;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

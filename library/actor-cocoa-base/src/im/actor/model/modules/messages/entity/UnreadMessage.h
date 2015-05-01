@@ -21,8 +21,7 @@
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-                      withLong:(jlong)sortDate
-                   withBoolean:(jboolean)isEncrypted;
+                      withLong:(jlong)sortDate;
 
 - (instancetype)init;
 
@@ -31,8 +30,6 @@
 - (jlong)getRid;
 
 - (jlong)getSortDate;
-
-- (jboolean)isEncrypted;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

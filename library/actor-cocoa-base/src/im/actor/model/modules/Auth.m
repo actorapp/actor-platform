@@ -10,8 +10,6 @@
 #include "im/actor/model/ApiConfiguration.h"
 #include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
-#include "im/actor/model/MainThreadProvider.h"
-#include "im/actor/model/ThreadingProvider.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/RequestSendAuthCode.h"
 #include "im/actor/model/api/rpc/RequestSignIn.h"
@@ -20,10 +18,8 @@
 #include "im/actor/model/api/rpc/ResponseSendAuthCode.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
-#include "im/actor/model/crypto/CryptoKeyPair.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
@@ -35,9 +31,6 @@
 @interface ImActorModelModulesAuth () {
  @public
   AMAuthStateEnum *state_;
-  id<AMMainThreadProvider> mainThreadProvider_;
-  IOSByteArray *publicKey_;
-  IOSByteArray *privateKey_;
   IOSByteArray *deviceHash_;
   AMApiConfiguration *apiConfiguration_;
   jint myUid__;
@@ -45,9 +38,6 @@
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAuth, state_, AMAuthStateEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesAuth, mainThreadProvider_, id<AMMainThreadProvider>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesAuth, publicKey_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesAuth, privateKey_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesAuth, deviceHash_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesAuth, apiConfiguration_, AMApiConfiguration *)
 
@@ -167,192 +157,126 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$3_$1_$2, this$0_, ImActorModelModul
 J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$3_$1_$2, val$e_, AMRpcException *)
 
 
-#line 23
+#line 20
 @implementation ImActorModelModulesAuth
 
 NSString * ImActorModelModulesAuth_KEY_DEVICE_HASH_ = @"device_hash";
 NSString * ImActorModelModulesAuth_KEY_AUTH_ = 
-#line 27
+#line 24
 @"auth_yes";
 NSString * ImActorModelModulesAuth_KEY_AUTH_UID_ = 
-#line 28
+#line 25
 @"auth_uid";
 NSString * ImActorModelModulesAuth_KEY_PHONE_ = 
-#line 29
+#line 26
 @"auth_phone";
 NSString * ImActorModelModulesAuth_KEY_SMS_HASH_ = 
-#line 30
+#line 27
 @"auth_sms_hash";
 NSString * ImActorModelModulesAuth_KEY_SMS_CODE_ = 
-#line 31
+#line 28
 @"auth_sms_code";
-NSString * ImActorModelModulesAuth_KEY_PUBLIC_KEY_ = 
-#line 33
-@"auth_key_public";
-NSString * ImActorModelModulesAuth_KEY_PRIVATE_KEY_ = 
-#line 34
-@"auth_key_private";
 
 
-#line 47
+#line 37
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 48
-  [super initWithImActorModelModulesModules:modules]) {
+  if (self = [super initWithImActorModelModulesModules:modules]) {
     
-#line 50
-    jlong start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getThreadingProvider])) getActorTime];
-    
-#line 51
-    self->mainThreadProvider_ = [((AMConfiguration *) nil_chk([modules getConfiguration])) getMainThreadProvider];
-    
-#line 52
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.1 in ", ([((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime] - start), @" ms"));
-    
-#line 53
-    start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime];
-    
-#line 55
+#line 40
     self->myUid__ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getInt:ImActorModelModulesAuth_KEY_AUTH_UID_ withDefault:0];
     
-#line 56
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.2 in ", ([((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime] - start), @" ms"));
-    
-#line 57
-    start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime];
-    
-#line 60
+#line 43
     deviceHash_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesAuth_KEY_DEVICE_HASH_];
     
-#line 61
+#line 44
     if (deviceHash_ == nil) {
-      deviceHash_ = AMCryptoUtils_SHA256WithByteArray_([((NSString *) nil_chk([((AMApiConfiguration *) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getApiConfiguration])) getDeviceString])) getBytes]);
+      deviceHash_ = AMCryptoUtils_SHA256WithByteArray_([((NSString *) nil_chk([((AMApiConfiguration *) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getApiConfiguration])) getDeviceString])) getBytes]);
       [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesAuth_KEY_DEVICE_HASH_ withValue:deviceHash_];
     }
     
-#line 67
-    publicKey_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesAuth_KEY_PUBLIC_KEY_];
-    
-#line 68
-    privateKey_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:ImActorModelModulesAuth_KEY_PRIVATE_KEY_];
-    
-#line 70
-    if (publicKey_ == nil || privateKey_ == nil) {
-      AMCryptoKeyPair *keyPair = AMCryptoUtils_generateRSA1024KeyPair();
-      publicKey_ = [((AMCryptoKeyPair *) nil_chk(keyPair)) getPublicKey];
-      privateKey_ = [keyPair getPrivateKey];
-      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesAuth_KEY_PUBLIC_KEY_ withValue:publicKey_];
-      [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesAuth_KEY_PRIVATE_KEY_ withValue:privateKey_];
-    }
-    
-#line 78
-    apiConfiguration_ = [((AMConfiguration *) nil_chk([modules getConfiguration])) getApiConfiguration];
-    
-#line 80
-    AMLog_dWithNSString_withNSString_(@"CORE_INIT", JreStrcat("$J$", @"Loading stage5.3.3 in ", ([((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime] - start), @" ms"));
-    
-#line 81
-    start = [((id<AMThreadingProvider>) nil_chk([((AMConfiguration *) nil_chk([modules getConfiguration])) getThreadingProvider])) getActorTime];
+#line 49
+    apiConfiguration_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getApiConfiguration];
   }
   return self;
 }
 
 
-#line 84
+#line 52
 - (void)run {
   
-#line 85
+#line 53
   if ([((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:ImActorModelModulesAuth_KEY_AUTH_ withDefault:NO]) {
     state_ = AMAuthStateEnum_get_LOGGED_IN();
     [((ImActorModelModulesModules *) nil_chk([self modules])) onLoggedIn];
   }
   else {
     
-#line 89
+#line 57
     state_ = AMAuthStateEnum_get_AUTH_START();
   }
 }
 
 
-#line 93
-- (IOSByteArray *)getPublicKey {
-  
-#line 94
-  return publicKey_;
-}
-
-
-#line 97
-- (IOSByteArray *)getPrivateKey {
-  
-#line 98
-  return privateKey_;
-}
-
-
-#line 101
+#line 61
 - (jint)myUid {
   
-#line 102
+#line 62
   return myUid__;
 }
 
 
-#line 105
+#line 65
 - (AMAuthStateEnum *)getAuthState {
   
-#line 106
+#line 66
   return state_;
 }
 
 
-#line 109
+#line 69
 - (id<AMCommand>)requestSmsWithLong:(jlong)phone {
   
-#line 110
+#line 70
   return [[ImActorModelModulesAuth_$1 alloc] initWithImActorModelModulesAuth:self withLong:phone];
 }
 
 
-#line 144
+#line 104
 - (id<AMCommand>)sendCodeWithInt:(jint)code {
   
-#line 145
+#line 105
   return [[ImActorModelModulesAuth_$2 alloc] initWithImActorModelModulesAuth:self withInt:code];
 }
 
 
-#line 197
+#line 156
 - (id<AMCommand>)signUpWithNSString:(NSString *)firstName
                        withNSString:(NSString *)avatarPath
                         withBoolean:(jboolean)isSilent {
   
-#line 198
+#line 157
   return [[ImActorModelModulesAuth_$3 alloc] initWithImActorModelModulesAuth:self withNSString:firstName withBoolean:isSilent withNSString:avatarPath];
 }
 
 
-#line 244
+#line 202
 - (void)resetAuth {
   
-#line 245
+#line 203
   state_ = AMAuthStateEnum_get_AUTH_START();
 }
 
 
-#line 248
+#line 206
 - (jlong)getPhone {
   
-#line 249
+#line 207
   return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:ImActorModelModulesAuth_KEY_PHONE_ withDefault:0];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesAuth *)other {
   [super copyAllFieldsTo:other];
   other->state_ = state_;
-  other->mainThreadProvider_ = mainThreadProvider_;
-  other->publicKey_ = publicKey_;
-  other->privateKey_ = privateKey_;
   other->deviceHash_ = deviceHash_;
   other->apiConfiguration_ = apiConfiguration_;
   other->myUid__ = myUid__;
@@ -365,14 +289,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth)
 @implementation ImActorModelModulesAuth_$1
 
 
-#line 112
+#line 72
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 113
+#line 73
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSendAuthCode alloc] initWithLong:val$phone_ withInt:[((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppId] withNSString:
-#line 114
+#line 74
   [this$0_->apiConfiguration_ getAppKey]] withAMRpcCallback:
-#line 115
+#line 75
   [[ImActorModelModulesAuth_$1_$1 alloc] initWithImActorModelModulesAuth_$1:self withAMCommandCallback:callback]];
 }
 
@@ -396,23 +320,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1)
 @implementation ImActorModelModulesAuth_$1_$1
 
 
-#line 117
+#line 77
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSendAuthCode *)response {
   
-#line 118
+#line 78
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLong:ImActorModelModulesAuth_get_KEY_PHONE_() withValue:this$0_->val$phone_];
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putString:ImActorModelModulesAuth_get_KEY_SMS_HASH_() withValue:[((ImActorModelApiRpcResponseSendAuthCode *) nil_chk(response)) getSmsHash]];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION();
   
-#line 122
+#line 82
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesAuth_$1_$1_$1 alloc] initWithImActorModelModulesAuth_$1_$1:self]];
 }
 
 
-#line 131
+#line 91
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 132
+#line 92
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesAuth_$1_$1_$2 alloc] initWithImActorModelModulesAuth_$1_$1:self withAMRpcException:e]];
 }
 
@@ -436,10 +360,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1)
 @implementation ImActorModelModulesAuth_$1_$1_$1
 
 
-#line 124
+#line 84
 - (void)run {
   
-#line 125
+#line 85
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:this$0_->this$0_->this$0_->state_];
 }
 
@@ -460,10 +384,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1_$1)
 @implementation ImActorModelModulesAuth_$1_$1_$2
 
 
-#line 134
+#line 94
 - (void)run {
   
-#line 135
+#line 95
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
 
@@ -487,22 +411,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$1_$1_$2)
 @implementation ImActorModelModulesAuth_$2
 
 
-#line 147
+#line 107
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 148
+#line 108
   [this$0_ requestWithImActorModelNetworkParserRequest:
-#line 149
+#line 109
   [[ImActorModelApiRpcRequestSignIn alloc] initWithLong:
-#line 150
+#line 110
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getLong:ImActorModelModulesAuth_get_KEY_PHONE_() withDefault:0] withNSString:
-#line 151
-  [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I", val$code_) withByteArray:this$0_->publicKey_ withByteArray:this$0_->deviceHash_ withNSString:
-#line 155
+#line 111
+  [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I", val$code_) withByteArray:this$0_->deviceHash_ withNSString:
+#line 114
   [((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppTitle] withInt:
-#line 156
+#line 115
   [this$0_->apiConfiguration_ getAppId] withNSString:[this$0_->apiConfiguration_ getAppKey]] withAMRpcCallback:
-#line 157
+#line 116
   [[ImActorModelModulesAuth_$2_$1 alloc] initWithImActorModelModulesAuth_$2:self withAMCommandCallback:callback]];
 }
 
@@ -526,10 +450,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
 @implementation ImActorModelModulesAuth_$2_$1
 
 
-#line 160
+#line 119
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response {
   
-#line 161
+#line 120
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putBool:ImActorModelModulesAuth_get_KEY_AUTH_() withValue:YES];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_LOGGED_IN();
   this$0_->this$0_->myUid__ = [((ImActorModelApiUser *) nil_chk([((ImActorModelApiRpcResponseAuth *) nil_chk(response)) getUser])) getId];
@@ -539,15 +463,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
 }
 
 
-#line 176
+#line 135
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 177
+#line 136
   if ([@"PHONE_CODE_EXPIRED" isEqual:[((AMRpcException *) nil_chk(e)) getTag]]) {
     [this$0_->this$0_ resetAuth];
   }
   else
-#line 179
+#line 138
   if ([@"PHONE_NUMBER_UNOCCUPIED" isEqual:[e getTag]]) {
     [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putInt:ImActorModelModulesAuth_get_KEY_SMS_CODE_() withValue:this$0_->val$code_];
     this$0_->this$0_->state_ = AMAuthStateEnum_get_SIGN_UP();
@@ -577,10 +501,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1)
 @implementation ImActorModelModulesAuth_$2_$1_$1
 
 
-#line 168
+#line 127
 - (void)run {
   
-#line 169
+#line 128
   this$0_->this$0_->this$0_->state_ = AMAuthStateEnum_get_LOGGED_IN();
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:this$0_->this$0_->this$0_->state_];
 }
@@ -602,10 +526,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1_$1)
 @implementation ImActorModelModulesAuth_$2_$1_$2
 
 
-#line 187
+#line 146
 - (void)run {
   
-#line 188
+#line 147
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
 
@@ -629,20 +553,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2_$1_$2)
 @implementation ImActorModelModulesAuth_$3
 
 
-#line 200
+#line 159
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   
-#line 201
+#line 160
   [this$0_ requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSignUp alloc] initWithLong:[((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getLong:ImActorModelModulesAuth_get_KEY_PHONE_() withDefault:0] withNSString:
-#line 202
+#line 161
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getString:ImActorModelModulesAuth_get_KEY_SMS_HASH_()] withNSString:JreStrcat("I",
-#line 203
-  [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getInt:ImActorModelModulesAuth_get_KEY_SMS_CODE_() withDefault:0]) withNSString:val$firstName_ withByteArray:this$0_->publicKey_ withByteArray:this$0_->deviceHash_ withNSString:
-#line 207
+#line 162
+  [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getInt:ImActorModelModulesAuth_get_KEY_SMS_CODE_() withDefault:0]) withNSString:val$firstName_ withByteArray:this$0_->deviceHash_ withNSString:
+#line 165
   [((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppTitle] withInt:
-#line 208
+#line 166
   [this$0_->apiConfiguration_ getAppId] withNSString:[this$0_->apiConfiguration_ getAppKey] withBoolean:val$isSilent_] withAMRpcCallback:
-#line 209
+#line 167
   [[ImActorModelModulesAuth_$3_$1 alloc] initWithImActorModelModulesAuth_$3:self withAMCommandCallback:callback]];
 }
 
@@ -672,10 +596,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3)
 @implementation ImActorModelModulesAuth_$3_$1
 
 
-#line 211
+#line 169
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response {
   
-#line 212
+#line 170
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putBool:ImActorModelModulesAuth_get_KEY_AUTH_() withValue:YES];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_LOGGED_IN();
   this$0_->this$0_->myUid__ = [((ImActorModelApiUser *) nil_chk([((ImActorModelApiRpcResponseAuth *) nil_chk(response)) getUser])) getId];
@@ -683,15 +607,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3)
   [((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) onLoggedIn];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalLoggedIn alloc] initWithImActorModelApiRpcResponseAuth:response withJavaLangRunnable:[[ImActorModelModulesAuth_$3_$1_$1 alloc] initWithImActorModelModulesAuth_$3_$1:self]]];
   
-#line 224
+#line 182
   [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) getProfile])) changeAvatarWithNSString:this$0_->val$avatarPath_];
 }
 
 
-#line 228
+#line 186
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 229
+#line 187
   if ([@"PHONE_CODE_EXPIRED" isEqual:[((AMRpcException *) nil_chk(e)) getTag]]) {
     [this$0_->this$0_ resetAuth];
   }
@@ -718,10 +642,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3_$1)
 @implementation ImActorModelModulesAuth_$3_$1_$1
 
 
-#line 219
+#line 177
 - (void)run {
   
-#line 220
+#line 178
   this$0_->this$0_->this$0_->state_ = AMAuthStateEnum_get_LOGGED_IN();
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:this$0_->this$0_->this$0_->state_];
 }
@@ -743,10 +667,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$3_$1_$1)
 @implementation ImActorModelModulesAuth_$3_$1_$2
 
 
-#line 234
+#line 192
 - (void)run {
   
-#line 235
+#line 193
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
 

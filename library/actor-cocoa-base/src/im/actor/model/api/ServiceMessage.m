@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
-    self->ext_ = ImActorModelApiServiceEx_fromBytesWithInt_withByteArray_([values getIntWithInt:2], [values getBytesWithInt:3]);
+    self->ext_ = ImActorModelApiServiceEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
   }
 }
 
@@ -90,8 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
   if (self->ext_ != nil) {
-    [writer writeIntWithInt:2 withInt:[self->ext_ getHeader]];
-    [writer writeBytesWithInt:3 withByteArray:[self->ext_ toByteArray]];
+    [writer writeBytesWithInt:3 withByteArray:[self->ext_ buildContainer]];
   }
 }
 

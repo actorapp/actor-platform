@@ -20,6 +20,8 @@ class AAPlaceholderView: UIView {
     private var subtitleLabel: UILabel!
     private var actionButton: UIButton!
     private var topOffset: CGFloat!
+    private var subtitle2Label: UILabel!
+    private var action2Button: UIButton!
     
     // MARK: -
     // MARK: Public vars
@@ -57,12 +59,22 @@ class AAPlaceholderView: UIView {
         subtitleLabel.font = UIFont.systemFontOfSize(16.0)
         subtitleLabel.textAlignment = NSTextAlignment.Center
         subtitleLabel.numberOfLines = 0
-        
         contentView.addSubview(subtitleLabel)
         
         actionButton = UIButton.buttonWithType(UIButtonType.System) as! UIButton
         actionButton.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 21.0)
         contentView.addSubview(actionButton)
+        
+        subtitle2Label = UILabel()
+        subtitle2Label.textColor = Resources.HintText
+        subtitle2Label.font = UIFont.systemFontOfSize(16.0)
+        subtitle2Label.textAlignment = NSTextAlignment.Center
+        subtitle2Label.numberOfLines = 0
+        contentView.addSubview(subtitle2Label)
+        
+        action2Button = UIButton.buttonWithType(UIButtonType.System) as! UIButton
+        action2Button.titleLabel!.font = UIFont(name: "HelveticaNeue-Medium", size: 21.0)
+        contentView.addSubview(action2Button)
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -73,10 +85,10 @@ class AAPlaceholderView: UIView {
     // MARK: Setters
     
     func setImage(image: UIImage?, title: String?, subtitle: String?) {
-        setImage(image, title: title, subtitle: subtitle, actionTitle: nil, actionTarget: nil, actionSelector: nil)
+        setImage(image, title: title, subtitle: subtitle, actionTitle: nil,  subtitle2: nil, actionTarget: nil, actionSelector: nil, action2title: nil, action2Selector: nil)
     }
     
-    func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, actionTarget: AnyObject?, actionSelector: Selector?) {
+    func setImage(image: UIImage?, title: String?, subtitle: String?, actionTitle: String?, subtitle2: String?, actionTarget: AnyObject?, actionSelector: Selector?, action2title: String?, action2Selector: Selector?) {
         
         if image != nil {
             imageView.image = image!
@@ -115,6 +127,30 @@ class AAPlaceholderView: UIView {
             actionButton.hidden = false
         } else {
             actionButton.hidden = true
+        }
+        
+        if (subtitle2 != nil) {
+            var paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineHeightMultiple = 1.11
+            paragraphStyle.alignment = NSTextAlignment.Center
+            
+            var attrString = NSMutableAttributedString(string: subtitle2!)
+            attrString.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, attrString.length))
+            
+            subtitle2Label.attributedText = attrString
+            
+            subtitle2Label.hidden = false
+        } else {
+            subtitle2Label.hidden = true
+        }
+        
+        if action2title != nil && actionTarget != nil && actionSelector != nil {
+            action2Button.removeTarget(nil, action: nil, forControlEvents: UIControlEvents.AllEvents)
+            action2Button.addTarget(actionTarget!, action: action2Selector!, forControlEvents: UIControlEvents.TouchUpInside)
+            action2Button.setTitle(action2title, forState: UIControlState.Normal)
+            action2Button.hidden = false
+        } else {
+            action2Button.hidden = true
         }
         
         setNeedsLayout()
@@ -164,6 +200,26 @@ class AAPlaceholderView: UIView {
             
             let actionButtonTitleLabelSize = actionButton.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
             actionButton.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: actionButtonTitleLabelSize.height)
+            contentHeight += actionButtonTitleLabelSize.height
+        }
+        
+        if subtitle2Label.hidden == false {
+            if contentHeight > 0 {
+                contentHeight += 14
+            }
+            
+            let subtitleLabelSize = subtitle2Label.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
+            subtitle2Label.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: subtitleLabelSize.height)
+            contentHeight += subtitleLabelSize.height
+        }
+        
+        if action2Button.hidden == false {
+            if contentHeight > 0 {
+                contentHeight += 14
+            }
+            
+            let actionButtonTitleLabelSize = action2Button.titleLabel!.sizeThatFits(CGSize(width: maxContentWidth, height: CGFloat.max))
+            action2Button.frame = CGRect(x: 20, y: contentHeight, width: maxContentWidth, height: actionButtonTitleLabelSize.height)
             contentHeight += actionButtonTitleLabelSize.height
         }
         
