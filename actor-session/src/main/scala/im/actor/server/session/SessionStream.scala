@@ -12,10 +12,9 @@ import im.actor.server.presences.PresenceManagerRegion
 import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
 import im.actor.server.session.SessionMessage.SubscribeCommand
 
-private[session] object SessionStream {
+sealed trait SessionStreamMessage
 
-  sealed trait SessionStreamMessage
-
+object SessionStreamMessage {
   @SerialVersionUID(1L)
   case class HandleMessageBox(messageBox: MessageBox, clientData: ClientData) extends SessionStreamMessage
 
@@ -24,6 +23,9 @@ private[session] object SessionStream {
 
   @SerialVersionUID(1L)
   case class HandleSubscribe(command: SubscribeCommand) extends SessionStreamMessage
+}
+
+private[session] object SessionStream {
 
   def graph(
     authId:            Long,
@@ -34,6 +36,7 @@ private[session] object SessionStream {
   )(implicit context: ActorContext) = {
     FlowGraph.partial() { implicit builder ⇒
       import FlowGraph.Implicits._
+      import SessionStreamMessage._
 
       val discr = builder.add(new SessionMessageDiscriminator)
 

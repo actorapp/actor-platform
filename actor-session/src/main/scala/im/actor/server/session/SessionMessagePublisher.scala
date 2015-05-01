@@ -14,11 +14,11 @@ private[session] object SessionMessagePublisher {
   def props() = Props[SessionMessagePublisher]
 }
 
-private[session] class SessionMessagePublisher extends ActorPublisher[SessionStream.SessionStreamMessage] with ActorLogging {
+private[session] class SessionMessagePublisher extends ActorPublisher[SessionStreamMessage] with ActorLogging {
 
   import ActorPublisherMessage._
 
-  import SessionStream._
+  import SessionStreamMessage._
 
   // TODO: MaxQueueSize
   private[this] var messageQueue = immutable.Queue.empty[SessionStreamMessage]

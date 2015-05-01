@@ -55,7 +55,7 @@ private[session] class UpdatesHandler(authId: Long)(
   override val requestStrategy = WatermarkRequestStrategy(10) // TODO: configurable
 
   // Publisher-related
-  private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
+  private[this] var messageQueue = immutable.Queue.empty[ProtoMessage]
 
   def publisher: Receive = {
     case ub: UpdateBox ⇒ enqueueProtoMessage(ub)
@@ -64,19 +64,19 @@ private[session] class UpdatesHandler(authId: Long)(
   }
 
   private def enqueueProtoMessage(message: ProtoMessage): Unit = {
-    if (protoMessageQueue.isEmpty && totalDemand > 0) {
+    if (messageQueue.isEmpty && totalDemand > 0) {
       onNext(message)
     } else {
-      protoMessageQueue = protoMessageQueue.enqueue(message)
+      messageQueue = messageQueue.enqueue(message)
       deliverBuf()
     }
   }
 
   @tailrec final def deliverBuf(): Unit = {
     if (isActive && totalDemand > 0)
-      protoMessageQueue.dequeueOption match {
+      messageQueue.dequeueOption match {
         case Some((el, q)) ⇒
-          protoMessageQueue = q
+          messageQueue = q
           onNext(el)
           deliverBuf()
         case None ⇒
