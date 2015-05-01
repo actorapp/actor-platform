@@ -1,8 +1,8 @@
 package im.actor.server.api.rpc
 
-import scodec._, codecs._
+import scodec._
 import scodec.bits.BitVector
-import shapeless._
+import scodec.codecs._
 
 import im.actor.api.rpc.RpcInternalError
 import im.actor.server.mtproto.codecs._

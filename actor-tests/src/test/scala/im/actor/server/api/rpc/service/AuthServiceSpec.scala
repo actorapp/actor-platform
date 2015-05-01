@@ -2,15 +2,14 @@ package im.actor.server.api.rpc.service
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-
-import scalaz._, std.either._
+import scalaz._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseSendAuthCode }
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.presences.PresenceManager
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.Session
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager

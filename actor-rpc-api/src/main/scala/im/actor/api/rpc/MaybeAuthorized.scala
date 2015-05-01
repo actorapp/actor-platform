@@ -1,6 +1,6 @@
 package im.actor.api.rpc
 
-import scalaz._, syntax.monad._
+import scalaz._
 
 sealed trait MaybeAuthorized[+A] {
   private def flatten[B](xs: MaybeAuthorized[MaybeAuthorized[B]]): MaybeAuthorized[B] =
