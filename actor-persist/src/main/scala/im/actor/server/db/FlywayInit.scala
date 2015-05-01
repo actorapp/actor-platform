@@ -18,24 +18,24 @@ trait FlywayInit {
 }
 
 class BeforeCleanCallback extends FlywayCallback {
-  def afterBaseline(connection: Connection) {}
-  def afterClean(connection: Connection) {}
-  def afterEachMigrate(connection: Connection) {}
-  def afterInfo(connection: Connection) {}
-  def afterEachMigrate(connection: Connection, migrationInfo: MigrationInfo) {}
-  def afterMigrate(connection: Connection) {}
-  def afterRepair(connection: Connection) {}
-  def afterValidate(connection: Connection) {}
-  def beforeBaseline(connection: Connection) {}
-  def beforeClean(connection: Connection) {}
-  def beforeEachMigrate(connection: Connection, migrationInfo: MigrationInfo) {}
-  def beforeInfo(connection: Connection) {}
-  def beforeInit(connection: Connection) {}
-  def beforeMigrate(connection: Connection) {}
-  def beforeRepair(connection: Connection) {}
-  def beforeValidate(connection: Connection) {}
+  def afterBaseline(connection: Connection): Unit = {}
+  def afterClean(connection: Connection): Unit = {}
+  def afterEachMigrate(connection: Connection): Unit = {}
+  def afterInfo(connection: Connection): Unit = {}
+  def afterEachMigrate(connection: Connection, migrationInfo: MigrationInfo): Unit = {}
+  def afterMigrate(connection: Connection): Unit = {}
+  def afterRepair(connection: Connection): Unit = {}
+  def afterValidate(connection: Connection): Unit = {}
+  def beforeBaseline(connection: Connection): Unit = {}
+  def beforeClean(connection: Connection): Unit = {}
+  def beforeEachMigrate(connection: Connection, migrationInfo: MigrationInfo): Unit = {}
+  def beforeInfo(connection: Connection): Unit = {}
+  def beforeInit(connection: Connection): Unit = {}
+  def beforeMigrate(connection: Connection): Unit = {}
+  def beforeRepair(connection: Connection): Unit = {}
+  def beforeValidate(connection: Connection): Unit = {}
 
-  def afterInit(connection: Connection) {
+  def afterInit(connection: Connection): Unit = {
     if (connection.getMetaData().getDriverName().startsWith("PostgreSQL")) {
       val stmt = connection.prepareStatement("""DROP EXTENSION IF EXISTS "uuid-ossp";""")
 
