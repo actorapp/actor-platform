@@ -127,10 +127,10 @@ class Session(rpcApiService: ActorRef)(implicit
         sendProtoMessage(authId, sessionId)(client, NewSession(sessionId, mb.messageId))
 
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
-        val rpcRequestHandler = context.actorOf(RpcRequestHandler.props(rpcApiService), "rpcRequestHandler")
+        val rpcHandler = context.actorOf(RpcHandler.props(rpcApiService), "rpcHandler")
         val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
 
-        val graph = SessionStream.graph(authId, sessionId, rpcApiService, rpcRequestHandler, updatesHandler)
+        val graph = SessionStream.graph(authId, sessionId, rpcApiService, rpcHandler, updatesHandler)
 
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
           import FlowGraph.Implicits._

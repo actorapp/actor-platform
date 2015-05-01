@@ -11,11 +11,11 @@ import scodec.bits._
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.mtproto.protocol.{ MessageAck, ProtoMessage, RpcResponseBox }
 
-private[session] object RpcRequestHandler {
-  def props(rpcApiService: ActorRef) = Props(classOf[RpcRequestHandler], rpcApiService)
+private[session] object RpcHandler {
+  def props(rpcApiService: ActorRef) = Props(classOf[RpcHandler], rpcApiService)
 }
 
-private[session] class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
+private[session] class RpcHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
