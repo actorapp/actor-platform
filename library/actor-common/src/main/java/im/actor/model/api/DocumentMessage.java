@@ -105,7 +105,7 @@ public class DocumentMessage extends Message {
         this.mimeType = values.getString(5);
         this.thumb = values.optObj(6, new FastThumb());
         if (values.optBytes(8) != null) {
-            this.ext = DocumentEx.fromBytes(values.getInt(7), values.getBytes(8));
+            this.ext = DocumentEx.fromBytes(values.getBytes(8));
         }
     }
 
@@ -135,8 +135,7 @@ public class DocumentMessage extends Message {
             writer.writeObject(6, this.thumb);
         }
         if (this.ext != null) {
-            writer.writeInt(7, this.ext.getHeader());
-            writer.writeBytes(8, this.ext.toByteArray());
+            writer.writeBytes(8, this.ext.buildContainer());
         }
     }
 

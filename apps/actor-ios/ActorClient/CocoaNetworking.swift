@@ -13,10 +13,21 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
     let syncObject = NSObject()
     var pendingConnection: Array<AnyObject> = []
     
-    func createConnection(connectionId: jint, withMTProtoVersion mtprotoVersion: jint, withApiMajorVersion apiMajorVersion: jint, withApiMinorVersion apiMinorVersion: jint, withEndpoint endpoint: AMConnectionEndpoint!, withCallback callback: AMConnectionCallback!, withCreateCallback createCallback: AMCreateConnectionCallback!) {
+    func createConnection(connectionId: jint,
+        withMTProtoVersion mtprotoVersion: jint,
+        withApiMajorVersion apiMajorVersion: jint,
+        withApiMinorVersion apiMinorVersion: jint,
+        withEndpoint endpoint: AMConnectionEndpoint!,
+        withCallback callback: AMConnectionCallback!,
+        withCreateCallback createCallback: AMCreateConnectionCallback!) {
         
-        var connection = CocoaTcpConnection(connectionId: connectionId, connectionEndpoint: endpoint, connectionCallback: callback, createCallback: createCallback)
-        
+        var connection = SwiftCocoaConnection(connectionId: connectionId, withEndpoint: endpoint, withCallback: callback, connectionCreated: { (connection) -> () in
+                createCallback.onConnectionCreated(connection)
+            }, connectionFailure: { (connection) -> () in
+                createCallback.onConnectionCreateError()
+            })
+        connection.start()
+            
         objc_sync_enter(syncObject)
         pendingConnection.append(connection)
         objc_sync_exit(syncObject)
@@ -24,8 +35,19 @@ class SwiftCocoaNetworkProvider : NSObject, AMNetworkProvider {
 }
 
 class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
+
+    let TAG_HANDSHAKE = 1
+    let TAG_PACKAGE_HEADER = 2
+    let TAG_PACKAGE_MT = 3
+    let TAG_PACKAGE_SERVICE = 4
+    let TAG_PACKAGE_PING = 5
+    let TAG_PACKAGE_PONG = 6
+    let TAG_PACKAGE_DROP = 7
+    let TAG_PACKAGE_REDIRECT = 8
+    let TAG_PACKAGE_ACK = 9
     
-    let connectionTimeout = 5.0
+    let HANDSHAKE_TIMEOUT = 5.0
+    let CONNECTION_TIMEOUT = 5.0
     
     var isSocketOpen = false
     var isSocketClosed = false
@@ -40,6 +62,7 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
     let callback: AMConnectionCallback;
     
     init(connectionId: jint, withEndpoint endpoint: AMConnectionEndpoint, withCallback callback: AMConnectionCallback, connectionCreated: (connection: SwiftCocoaConnection)->(), connectionFailure: (connection: SwiftCocoaConnection)->()) {
+        
         self.connectionId = Int(connectionId)
         self.endpoint = endpoint;
         self.connectionCreated = connectionCreated
@@ -47,49 +70,190 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
         self.callback = callback
     }
     
+    // Initialize connection
     func start() {
-        NSLog("🎍#\(connectionId) Connecting...")
+        NSLog("🎍#\(connectionId) Connecting to \(endpoint.getHost()):\(endpoint.getPort())...")
         gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0))
-        gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: connectionTimeout, error: nil)
+        gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: CONNECTION_TIMEOUT, error: nil)
     }
     
+    // After connection successful
     func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        
         NSLog("🎍#\(connectionId) Connected...")
         
         if (UInt(self.endpoint.getType().ordinal()) == AMConnectionEndpoint_Type.TCP_TLS.rawValue) {
             NSLog("🎍#\(self.connectionId) Starring TLS Session...")
-                
-                // TODO: Check TLS
-            sock.startTLS([//(id)kCFStreamSSLAllowsExpiredCertificates:@NO,
-                //(id)kCFStreamSSLAllowsExpiredRoots:@NO,
-                //(id)kCFStreamSSLAllowsAnyRoot:@YES,
-                //(id)kCFStreamSSLValidatesCertificateChain:@YES,
-                kCFStreamSSLPeerName:"actor.im"
-                //(id)kCFStreamSSLLevel:(id)kCFStreamSocketSecurityLevelNegotiatedSSL,
-                ])
+            sock.startTLS(nil)
         } else {
-            if (self.isSocketOpen) {
-                return
-            }
-            self.isSocketOpen = true
-            
-            self.requestReadHeader()
-            self.connectionCreated(connection: self)
+            performHandshake()
         }
     }
-    
+    // After TLS successful
     func socketDidSecure(sock: GCDAsyncSocket!) {
-        NSLog("🎍#\(connectionId) TLS connection established...")
+        performHandshake()
+    }
+    
+    // Performing handshake
+    func performHandshake() {
         if (isSocketOpen) {
             return
         }
         isSocketOpen = true
         
-        self.requestReadHeader()
-        self.connectionCreated(connection: self)
+        NSLog("🎍#\(connectionId) Sending Handshake request...")
+        var dataToWrite = NSMutableData(capacity: Int(32 + 4 + 3))!
+        dataToWrite.appendByte(1)
+        dataToWrite.appendByte(1)
+        dataToWrite.appendByte(0)
+        dataToWrite.appendUInt32(32)
+        for i in 1...32 {
+            dataToWrite.appendByte(UInt8(arc4random_uniform(255)))
+        }
+        gcdSocket?.writeData(dataToWrite, withTimeout: -1, tag: 0)
+
+        NSLog("🎍#\(connectionId) Request Handshake response...")
+        gcdSocket?.readDataToLength(35, withTimeout: HANDSHAKE_TIMEOUT, tag: TAG_HANDSHAKE)
+    }
+    
+    // Handshake response
+    func handshakeReponse(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        var mtprotoVersion = data.readUInt8()
+        var apiMajorVersion = data.readUInt8(1)
+        var apiMinorVersion = data.readUInt8(2)
+        var sha256 = data.readNSData(3, len: 32)
+        // TODO: Check sha256
+        
+        NSLog("🎍#\(connectionId) Handshake response received \(mtprotoVersion),\(apiMajorVersion),\(apiMinorVersion)")
+        
+        connectionCreated(connection: self)
+        
+        requestReadHeader()
+    }
+    
+    // Reading package
+    func requestReadHeader() {
+        NSLog("🎍#\(connectionId) Request reading header...")
+        gcdSocket?.readDataToLength(9, withTimeout: -1, tag: TAG_PACKAGE_HEADER)
+    }
+    
+    func headerRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        var packageIndex = data.readUInt32(0)
+        var header = data.readUInt8(4)
+        var size = data.readUInt32(5)
+        var readTag = TAG_PACKAGE_SERVICE;
+        
+        NSLog("🎍#\(connectionId) Request reading package #\(header)...")
+        if (header == 0) {
+            readTag = TAG_PACKAGE_MT
+        } else if (header == 1) {
+            readTag = TAG_PACKAGE_PING
+        } else if (header == 2) {
+            readTag = TAG_PACKAGE_PONG
+        } else if (header == 6) {
+            readTag = TAG_PACKAGE_ACK
+        } else if (header == 4) {
+            readTag = TAG_PACKAGE_REDIRECT
+        } else if (header == 3) {
+            readTag = TAG_PACKAGE_DROP
+        }
+        gcdSocket?.readDataToLength(UInt(size + 4), withTimeout: -1, tag: readTag)
+    }
+    
+    // Packages received
+    // MTProto package
+    func mtRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        var realData = data.readNSData(0, len: data.length - 4)
+        var crc32 = data.readNSData(realData.length, len: 4)
+        
+        NSLog("🎍#\(connectionId) Body received \(realData.length - 4)")
+        
+        callback.onMessage(realData.toJavaBytes(), withOffset: jint(0), withLen: jint(realData.length))
+    }
+    
+    // Ping package
+    func pingRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        
+    }
+    
+    // Pong package
+    func pongRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        
+    }
+    
+    // Drop package
+    func dropRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        
+        crashConnection()
+    }
+    
+    // Redirect package
+    func redirectRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+
+    }
+    
+    // Ack package
+    func ackRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        
     }
 
+    // Unknown Service package
+    func serviceRead(sock: GCDAsyncSocket!, didReadData data: NSData!) {
+        // Just ignore this
+    }
+    
+    // Socket data receive
+    func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+        if (tag == TAG_HANDSHAKE) {
+            handshakeReponse(sock, didReadData: data)
+        } else if (tag == TAG_PACKAGE_HEADER) {
+            headerRead(sock, didReadData: data)
+        } else if (tag == TAG_PACKAGE_MT) {
+            mtRead(sock, didReadData: data)
+            requestReadHeader()
+        } else if (tag == TAG_PACKAGE_PING) {
+            pingRead(sock, didReadData: data)
+            requestReadHeader()
+        } else if (tag == TAG_PACKAGE_PONG) {
+            pongRead(sock, didReadData: data)
+            requestReadHeader()
+        } else if (tag == TAG_PACKAGE_DROP) {
+            dropRead(sock, didReadData: data)
+            requestReadHeader()
+        } else if (tag == TAG_PACKAGE_REDIRECT) {
+            redirectRead(sock, didReadData: data)
+            requestReadHeader()
+        } else if (tag == TAG_PACKAGE_ACK) {
+            ackRead(sock, didReadData: data)
+            requestReadHeader()
+        } else if (tag == TAG_PACKAGE_SERVICE) {
+            serviceRead(sock, didReadData: data)
+            requestReadHeader()
+        } else {
+            fatalError("🎍#\(connectionId) Unknown tag #\(tag)")
+        }
+    }
+    
+    // Socket data send
+    func post(data: IOSByteArray!, withOffset offset: jint, withLen len: jint) {
+        if (isSocketClosed) {
+            NSLog("🎍#\(connectionId) isSocketClosed...")
+            return
+        }
+        
+        // Prepare Transport package
+        var realData = data.toNSData().subdataWithRange(NSMakeRange(Int(offset), Int(len)))
+        var dataToWrite = NSMutableData(capacity: Int(data.length() + 13))!
+        dataToWrite.appendUInt32(UInt32(self.outPackageIndex++))
+        dataToWrite.appendByte(0)
+        dataToWrite.appendUInt32(UInt32(len))
+        dataToWrite.appendData(realData)
+        dataToWrite.appendData(CRC32.crc32(realData))
+        
+        // TODO: Propper timeout??
+        NSLog("🎍#\(self.connectionId) Data posted to socket...")
+        self.gcdSocket?.writeData(dataToWrite, withTimeout: -1, tag: 0)
+    }
+    
     func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
         if (isSocketOpen) {
             isSocketClosed = true
@@ -105,85 +269,6 @@ class SwiftCocoaConnection: NSObject, AMConnection, GCDAsyncSocketDelegate {
             NSLog("🎍#\(connectionId) Connection failured")
             connectionFailure(connection: self)
         }
-    }
-    
-    func requestReadHeader() {
-        NSLog("🎍#\(connectionId) Request reading header...")
-        gcdSocket?.readDataToLength(4, withTimeout: -1, tag: 0)
-        // gcdSocket?.readDataWithTimeout(-1, tag: 0)
-    }
-    
-    func requestReadBody(bodySize: UInt) {
-        NSLog("🎍#\(connectionId) Request reading body \(bodySize)...")
-        gcdSocket?.readDataToLength(bodySize, withTimeout: -1, tag: 1)
-    }
-    
-    func socket(sock: GCDAsyncSocket!, didReadPartialDataOfLength partialLength: UInt, tag: Int) {
-        NSLog("🎍#\(connectionId) didReadPartialDataOfLength \(partialLength)...")
-    }
-    
-    func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
-        if (tag == 0) {
-            // Header
-            if (data.length != 4) {
-                fatalError("🎍#\(connectionId) Unknown header size");
-            }
-            var len = data.readUInt32();
-            
-            if (len == 0) {
-                crashConnection()
-                return
-            } else if (len > 1024 * 1024 * 1024) {
-                crashConnection()
-                return
-            }
-            
-            NSLog("🎍#\(connectionId) Received header \(len)...")
-            requestReadBody(UInt(len));
-        } else if (tag == 1) {
-            // Body
-            NSLog("🎍#\(connectionId) Received body \(data.length)...")
-            
-            var packageIndex = data.readUInt32();
-            var package = data.subdataWithRange(NSMakeRange(4, Int(data.length - 8)))
-            var crc32 = data.readUInt32(data.length - 4)
-            
-            // TODO: Add packageIndex and crc32 checks
-            
-            NSLog("🎍#\(connectionId) Loaded body #\(packageIndex)...")
-            
-            callback.onMessage(package.toJavaBytes(), withOffset: jint(0), withLen: jint(package.length))
-            
-            requestReadHeader()
-        } else {
-            fatalError("🎍#\(connectionId) Unknown tag");
-        }
-    }
-    
-    func socket(sock: GCDAsyncSocket!, didWriteDataWithTag tag: Int) {
-        NSLog("🎍#\(connectionId) didWriteDataWithTag...")
-    }
-    
-    func socket(sock: GCDAsyncSocket!, didWritePartialDataOfLength partialLength: UInt, tag: Int) {
-        NSLog("🎍#\(connectionId) didWritePartialDataOfLength \(partialLength)...")
-    }
-    
-    func post(data: IOSByteArray!, withOffset offset: jint, withLen len: jint) {
-        if (isSocketClosed) {
-            NSLog("🎍#\(connectionId) isSocketClosed...")
-            return
-        }
-        
-        // Prepare Transport package
-        var dataToWrite = NSMutableData(capacity: Int(data.length() + 12))!
-        dataToWrite.appendUInt32(UInt32(8 + data.length()))
-        dataToWrite.appendUInt32(UInt32(self.outPackageIndex++))
-        dataToWrite.appendData(data.toNSData().subdataWithRange(NSMakeRange(Int(offset), Int(len))))
-        dataToWrite.appendData(CRC32.crc32(dataToWrite as NSData))
-        
-        // TODO: Propper timeout??
-        NSLog("🎍#\(self.connectionId) Data posted to socket...")
-        self.gcdSocket?.writeData(dataToWrite, withTimeout: -1, tag: 0)
     }
     
     func crashConnection() {

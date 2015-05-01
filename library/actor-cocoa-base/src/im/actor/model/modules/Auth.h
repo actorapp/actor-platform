@@ -14,7 +14,6 @@
 @class ImActorModelApiRpcResponseSendAuthCode;
 @class ImActorModelModulesModules;
 @protocol AMCommandCallback;
-@protocol AMMainThreadProvider;
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -28,10 +27,6 @@
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)run;
-
-- (IOSByteArray *)getPublicKey;
-
-- (IOSByteArray *)getPrivateKey;
 
 - (jint)myUid;
 
@@ -72,12 +67,6 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_HASH_, NSString *)
 
 FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_SMS_CODE_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_CODE_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_PUBLIC_KEY_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_PUBLIC_KEY_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_PRIVATE_KEY_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_PRIVATE_KEY_, NSString *)
 CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth)

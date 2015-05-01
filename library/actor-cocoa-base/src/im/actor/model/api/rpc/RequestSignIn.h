@@ -23,7 +23,6 @@
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)smsHash
                 withNSString:(NSString *)smsCode
-               withByteArray:(IOSByteArray *)publicKey
                withByteArray:(IOSByteArray *)deviceHash
                 withNSString:(NSString *)deviceTitle
                      withInt:(jint)appId
@@ -36,8 +35,6 @@
 - (NSString *)getSmsHash;
 
 - (NSString *)getSmsCode;
-
-- (IOSByteArray *)getPublicKey;
 
 - (IOSByteArray *)getDeviceHash;
 

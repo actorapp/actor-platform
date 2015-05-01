@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public abstract class TextMessageEx extends BserObject {
-    public static TextMessageEx fromBytes(int key, byte[] content) throws IOException {
+    public static TextMessageEx fromBytes(byte[] src) throws IOException {
+        BserValues values = new BserValues(BserParser.deserialize(new DataInput(src, 0, src.length)));
+        int key = values.getInt(1);
+        byte[] content = values.getBytes(2);
         switch(key) { 
             default: return new TextMessageExUnsupported(key, content);
         }

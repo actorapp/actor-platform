@@ -32,8 +32,8 @@ import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.MessageDeleteActor;
 import im.actor.model.modules.messages.OwnReadActor;
-import im.actor.model.modules.messages.PlainReaderActor;
-import im.actor.model.modules.messages.PlainReceiverActor;
+import im.actor.model.modules.messages.CursorReaderActor;
+import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -90,16 +90,16 @@ public class Messages extends BaseModule {
                 return new OwnReadActor(modules());
             }
         }), "actor/read/own");
-        this.plainReadActor = system().actorOf(Props.create(PlainReaderActor.class, new ActorCreator<PlainReaderActor>() {
+        this.plainReadActor = system().actorOf(Props.create(CursorReaderActor.class, new ActorCreator<CursorReaderActor>() {
             @Override
-            public PlainReaderActor create() {
-                return new PlainReaderActor(modules());
+            public CursorReaderActor create() {
+                return new CursorReaderActor(modules());
             }
         }), "actor/plain/read");
-        this.plainReceiverActor = system().actorOf(Props.create(PlainReceiverActor.class, new ActorCreator<PlainReceiverActor>() {
+        this.plainReceiverActor = system().actorOf(Props.create(CursorReceiverActor.class, new ActorCreator<CursorReceiverActor>() {
             @Override
-            public PlainReceiverActor create() {
-                return new PlainReceiverActor(modules());
+            public CursorReceiverActor create() {
+                return new CursorReceiverActor(modules());
             }
         }), "actor/plain/receive");
         this.sendMessageActor = system().actorOf(Props.create(SenderActor.class, new ActorCreator<SenderActor>() {
@@ -251,8 +251,8 @@ public class Messages extends BaseModule {
                 fileSystemReference.getSize(), fileSystemReference.getDescriptor(), fastThumb));
     }
 
-    public void onInMessageShown(Peer peer, long rid, long sortDate, boolean isEncrypted) {
-        ownReadActor.send(new OwnReadActor.MessageRead(peer, rid, sortDate, isEncrypted));
+    public void onInMessageShown(Peer peer, long sortDate) {
+        ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {

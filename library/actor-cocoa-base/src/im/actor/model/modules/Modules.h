@@ -79,6 +79,10 @@
 
 - (ImActorModelModulesSearchModule *)getSearch;
 
+- (void)onAppVisible;
+
+- (void)onAppHidden;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules)

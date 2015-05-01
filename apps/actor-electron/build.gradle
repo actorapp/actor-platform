@@ -31,26 +31,26 @@ task buildWeb (dependsOn: ['gulpBuild']) {
 }
 
 task copyAppBootstrap {
-    Properties properties = new Properties()
-    properties.load(project.file('local.properties').newDataInputStream())
+    doLast {
+        Properties properties = new Properties()
+        properties.load(project.file('local.properties').newDataInputStream())
 
-    delete {
-        "${buildDir}/electron"
-    }
+        delete {
+            "${buildDir}/electron"
+        }
 
-    exec {
-        commandLine 'mkdir', "${buildDir}/electron"
-    }
+        exec {
+            commandLine 'mkdir', "${buildDir}/electron"
+        }
 
-    exec {
-        commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron.app", "${buildDir}/electron/Actor.app"
+        exec {
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron.app", "${buildDir}/electron/Actor.app"
+        }
     }
 }
 
-task buildAsar (dependsOn: ['buildWeb']) {
-    exec {
-        commandLine 'asar', 'pack', "${buildDir}/web", "${buildDir}/electron/app.asar"
-    }
+task buildAsar (type: Exec, dependsOn: ['buildWeb']) {
+    commandLine 'asar', 'pack', "${buildDir}/web", "${buildDir}/electron/app.asar"
 }
 
 task buildOSXApp (dependsOn: ['buildAsar']) {

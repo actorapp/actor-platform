@@ -112,6 +112,10 @@
 
 "Placeholder_Empty_Action" = "TELL A FRIEND";
 
+"Placeholder_Empty_Message2" = "or manually add contact";
+
+"Placeholder_Empty_Action2" = "ADD CONTACT";
+
 "Placeholder_Loading_Title" = "Sync in progress";
 
 "Placeholder_Loading_Message" = "Please, wait couple minutes while we enable your app.";
@@ -121,6 +125,8 @@
 "Placeholder_Contacts_Message" = "None of your contacts use Actor. Use button bellow to invite them.";
 
 "Placeholder_Contacts_Action" = "TELL A FRIEND";
+
+"Placeholder_Contacts_Message2" = "or manually add contact with plus button at upper right corner";
 
 "Placeholder_Dialogs_Title" = "Start messaging";
 

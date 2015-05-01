@@ -16,12 +16,12 @@
 @class ImActorModelApiRpcResponseSeq;
 @class ImActorModelModulesMessagesConversationActor;
 @class ImActorModelModulesMessagesConversationHistoryActor;
+@class ImActorModelModulesMessagesCursorReaderActor;
+@class ImActorModelModulesMessagesCursorReceiverActor;
 @class ImActorModelModulesMessagesDialogsActor;
 @class ImActorModelModulesMessagesDialogsHistoryActor;
 @class ImActorModelModulesMessagesMessageDeleteActor;
 @class ImActorModelModulesMessagesOwnReadActor;
-@class ImActorModelModulesMessagesPlainReaderActor;
-@class ImActorModelModulesMessagesPlainReceiverActor;
 @class ImActorModelModulesMessagesSenderActor;
 @class ImActorModelModulesModules;
 @class JavaUtilHashMap;
@@ -103,9 +103,7 @@
      withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
 
 - (void)onInMessageShownWithAMPeer:(AMPeer *)peer
-                          withLong:(jlong)rid
-                          withLong:(jlong)sortDate
-                       withBoolean:(jboolean)isEncrypted;
+                          withLong:(jlong)sortDate;
 
 - (void)saveReadStateWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)lastReadDate;
@@ -197,7 +195,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$3)
 @interface ImActorModelModulesMessages_$4 : NSObject < DKActorCreator > {
 }
 
-- (ImActorModelModulesMessagesPlainReaderActor *)create;
+- (ImActorModelModulesMessagesCursorReaderActor *)create;
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
 
@@ -213,7 +211,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$4)
 @interface ImActorModelModulesMessages_$5 : NSObject < DKActorCreator > {
 }
 
-- (ImActorModelModulesMessagesPlainReceiverActor *)create;
+- (ImActorModelModulesMessagesCursorReceiverActor *)create;
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$;
 

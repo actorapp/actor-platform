@@ -27,20 +27,20 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 16
+#line 19
 @implementation ImActorModelApiMessage
 
 
-#line 17
+#line 20
 + (ImActorModelApiMessage *)fromBytesWithByteArray:(IOSByteArray *)src {
   return ImActorModelApiMessage_fromBytesWithByteArray_(src);
 }
 
 
-#line 30
+#line 33
 - (IOSByteArray *)buildContainer {
   
-#line 31
+#line 34
   BSDataOutput *res = [[BSDataOutput alloc] init];
   BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
   [writer writeIntWithInt:1 withInt:[self getHeader]];
@@ -57,26 +57,26 @@
 ImActorModelApiMessage *ImActorModelApiMessage_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiMessage_init();
   
-#line 18
+#line 21
   BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     
-#line 22
+#line 25
     return ((ImActorModelApiTextMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiTextMessage alloc] init], content));
     case 2:
     
-#line 23
+#line 26
     return ((ImActorModelApiServiceMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceMessage alloc] init], content));
     case 3:
     
-#line 24
+#line 27
     return ((ImActorModelApiDocumentMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentMessage alloc] init], content));
     default:
     
-#line 25
+#line 28
     return [[ImActorModelApiMessageUnsupported alloc] initWithInt:key withByteArray:content];
   }
 }

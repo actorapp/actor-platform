@@ -13,10 +13,6 @@ import im.actor.model.api.updates.UpdateChatDelete;
 import im.actor.model.api.updates.UpdateContactRegistered;
 import im.actor.model.api.updates.UpdateContactsAdded;
 import im.actor.model.api.updates.UpdateContactsRemoved;
-import im.actor.model.api.updates.UpdateEncryptedMessage;
-import im.actor.model.api.updates.UpdateEncryptedRead;
-import im.actor.model.api.updates.UpdateEncryptedReadByMe;
-import im.actor.model.api.updates.UpdateEncryptedReceived;
 import im.actor.model.api.updates.UpdateGroupAvatarChanged;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupMembersUpdate;
@@ -31,6 +27,7 @@ import im.actor.model.api.updates.UpdateMessageRead;
 import im.actor.model.api.updates.UpdateMessageReadByMe;
 import im.actor.model.api.updates.UpdateMessageReceived;
 import im.actor.model.api.updates.UpdateMessageSent;
+import im.actor.model.api.updates.UpdateParameterChanged;
 import im.actor.model.api.updates.UpdateTyping;
 import im.actor.model.api.updates.UpdateUserAvatarChanged;
 import im.actor.model.api.updates.UpdateUserLastSeen;
@@ -38,7 +35,6 @@ import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.api.updates.UpdateUserNameChanged;
 import im.actor.model.api.updates.UpdateUserOffline;
 import im.actor.model.api.updates.UpdateUserOnline;
-import im.actor.model.api.updates.UpdateUserStateChanged;
 import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
@@ -61,6 +57,7 @@ public class UpdateProcessor extends BaseModule {
 
     private static final String TAG = "Updates";
 
+    private SettingsProcessor settingsProcessor;
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
     private GroupsProcessor groupsProcessor;
@@ -70,6 +67,7 @@ public class UpdateProcessor extends BaseModule {
 
     public UpdateProcessor(Modules modules) {
         super(modules);
+        this.settingsProcessor = new SettingsProcessor(modules);
         this.usersProcessor = new UsersProcessor(modules);
         this.messagesProcessor = new MessagesProcessor(modules);
         this.groupsProcessor = new GroupsProcessor(modules);
@@ -142,8 +140,6 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateUserAvatarChanged) {
             UpdateUserAvatarChanged avatarChanged = (UpdateUserAvatarChanged) update;
             usersProcessor.onUserAvatarChanged(avatarChanged.getUid(), avatarChanged.getAvatar());
-        } else if (update instanceof UpdateUserStateChanged) {
-            // TODO: Remove
         } else if (update instanceof UpdateMessage) {
             UpdateMessage message = (UpdateMessage) update;
             messagesProcessor.onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
@@ -164,21 +160,6 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateMessageSent) {
             UpdateMessageSent messageSent = (UpdateMessageSent) update;
             messagesProcessor.onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
-        } else if (update instanceof UpdateEncryptedMessage) {
-            UpdateEncryptedMessage encryptedMessage = (UpdateEncryptedMessage) update;
-            messagesProcessor.onEncryptedMessage(encryptedMessage.getPeer(), encryptedMessage.getSenderUid(),
-                    encryptedMessage.getDate(), encryptedMessage.getKeyHash(), encryptedMessage.getAesEncryptedKey(),
-                    encryptedMessage.getMessage());
-            typingProcessor.onMessage(encryptedMessage.getPeer(), encryptedMessage.getSenderUid());
-        } else if (update instanceof UpdateEncryptedRead) {
-            UpdateEncryptedRead encryptedRead = (UpdateEncryptedRead) update;
-            messagesProcessor.onMessageEncryptedRead(encryptedRead.getPeer(), encryptedRead.getRid(), encryptedRead.getReadDate());
-        } else if (update instanceof UpdateEncryptedReadByMe) {
-            UpdateEncryptedReadByMe encryptedRead = (UpdateEncryptedReadByMe) update;
-            messagesProcessor.onMessageEncryptedReadByMe(encryptedRead.getPeer(), encryptedRead.getRid());
-        } else if (update instanceof UpdateEncryptedReceived) {
-            UpdateEncryptedReceived received = (UpdateEncryptedReceived) update;
-            messagesProcessor.onMessageEncryptedReceived(received.getPeer(), received.getRid(), received.getReceivedDate());
         } else if (update instanceof UpdateChatClear) {
             UpdateChatClear chatClear = (UpdateChatClear) update;
             messagesProcessor.onChatClear(chatClear.getPeer());
@@ -251,6 +232,10 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateGroupMembersUpdate) {
             groupsProcessor.onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
                     ((UpdateGroupMembersUpdate) update).getMembers());
+        } else if (update instanceof UpdateParameterChanged) {
+            settingsProcessor.onSettingsChanged(
+                    ((UpdateParameterChanged) update).getKey(),
+                    ((UpdateParameterChanged) update).getValue());
         }
     }
 
@@ -258,20 +243,9 @@ public class UpdateProcessor extends BaseModule {
     public boolean isCausesInvalidation(Update update) {
         HashSet<Integer> users = new HashSet<Integer>();
         HashSet<Integer> groups = new HashSet<Integer>();
-        HashSet<Integer> contacts = new HashSet<Integer>();
 
-        // TODO: Improve list
         if (update instanceof UpdateMessage) {
             UpdateMessage updateMessage = (UpdateMessage) update;
-            users.add(updateMessage.getSenderUid());
-            if (updateMessage.getPeer().getType() == PeerType.GROUP) {
-                groups.add(updateMessage.getPeer().getId());
-            }
-            if (updateMessage.getPeer().getType() == PeerType.PRIVATE) {
-                users.add(updateMessage.getPeer().getId());
-            }
-        } else if (update instanceof UpdateEncryptedMessage) {
-            UpdateEncryptedMessage updateMessage = (UpdateEncryptedMessage) update;
             users.add(updateMessage.getSenderUid());
             if (updateMessage.getPeer().getType() == PeerType.GROUP) {
                 groups.add(updateMessage.getPeer().getId());

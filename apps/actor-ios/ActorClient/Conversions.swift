@@ -13,6 +13,18 @@ extension NSData {
         return IOSByteArray(bytes: UnsafePointer<jbyte>(self.bytes), count: UInt(self.length))
     }
     
+    func readUInt8() -> UInt8 {
+        var raw: UInt8 = 0;
+        self.getBytes(&raw, length: 1)
+        return raw
+    }
+    
+    func readUInt8(offset: Int) -> UInt8 {
+        var raw: UInt8 = 0;
+        self.getBytes(&raw, range: NSMakeRange(offset, 1))
+        return raw
+    }
+
     func readUInt32() -> UInt32 {
         var raw: UInt32 = 0;
         self.getBytes(&raw, length: 4)
@@ -24,6 +36,10 @@ extension NSData {
         self.getBytes(&raw, range: NSMakeRange(offset, 4))
         return raw.bigEndian
     }
+    
+    func readNSData(offset: Int, len: Int) -> NSData {
+        return self.subdataWithRange(NSMakeRange(Int(offset), Int(len)))
+    }
 }
 
 extension NSMutableData {
@@ -31,6 +47,11 @@ extension NSMutableData {
       var raw = value.bigEndian
         self.appendBytes(&raw, length: 4)
     }
+    func appendByte(value: UInt8) {
+        var raw = value
+        self.appendBytes(&raw, length: 1)
+    }
+    
 }
 
 extension jlong {

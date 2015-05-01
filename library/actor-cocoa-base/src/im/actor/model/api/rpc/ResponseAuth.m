@@ -19,7 +19,6 @@
 
 @interface ImActorModelApiRpcResponseAuth () {
  @public
-  jlong publicKeyHash_;
   ImActorModelApiUser *user_;
   ImActorModelApiConfig *config_;
 }
@@ -39,70 +38,56 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 }
 
 
-#line 31
-- (instancetype)initWithLong:(jlong)publicKeyHash
-     withImActorModelApiUser:(ImActorModelApiUser *)user
-   withImActorModelApiConfig:(ImActorModelApiConfig *)config {
+#line 30
+- (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)user
+                  withImActorModelApiConfig:(ImActorModelApiConfig *)config {
   if (self = [super init]) {
     
-#line 32
-    self->publicKeyHash_ = publicKeyHash;
-    
-#line 33
+#line 31
     self->user_ = user;
     
-#line 34
+#line 32
     self->config_ = config;
   }
   return self;
 }
 
 
-#line 37
+#line 35
 - (instancetype)init {
   return [super init];
 }
 
-- (jlong)getPublicKeyHash {
-  
-#line 42
-  return self->publicKeyHash_;
-}
-
-
-#line 45
 - (ImActorModelApiUser *)getUser {
   
-#line 46
+#line 40
   return self->user_;
 }
 
 
-#line 49
+#line 43
 - (ImActorModelApiConfig *)getConfig {
   
-#line 50
+#line 44
   return self->config_;
 }
 
 
-#line 54
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->publicKeyHash_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
-  self->user_ = [values getObjWithInt:2 withBSBserObject:[[ImActorModelApiUser alloc] init]];
+  self->user_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:2 withBSBserObject:[[ImActorModelApiUser alloc] init]];
   self->config_ = [values getObjWithInt:3 withBSBserObject:[[ImActorModelApiConfig alloc] init]];
 }
 
 
-#line 61
+#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   
-#line 62
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->publicKeyHash_];
+#line 55
   if (self->user_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
-  [writer writeObjectWithInt:2 withBSBserObject:self->user_];
+  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:self->user_];
   if (self->config_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -119,13 +104,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 
 - (jint)getHeaderKey {
   
-#line 84
+#line 76
   return ImActorModelApiRpcResponseAuth_HEADER;
 }
 
 - (void)copyAllFieldsTo:(ImActorModelApiRpcResponseAuth *)other {
   [super copyAllFieldsTo:other];
-  other->publicKeyHash_ = publicKeyHash_;
   other->user_ = user_;
   other->config_ = config_;
 }

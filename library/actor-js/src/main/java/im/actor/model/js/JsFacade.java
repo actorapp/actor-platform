@@ -1,17 +1,26 @@
 package im.actor.model.js;
 
-import im.actor.model.js.angular.AngularValueCallback;
-import im.actor.model.js.utils.IdentityUtils;
-import im.actor.model.*;
-import im.actor.model.js.angular.AngularListCallback;
-import im.actor.model.js.entity.*;
-import im.actor.model.mvvm.MVVMEngine;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import im.actor.model.ApiConfiguration;
+import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.js.angular.AngularListCallback;
+import im.actor.model.js.angular.AngularValueCallback;
+import im.actor.model.js.entity.Enums;
+import im.actor.model.js.entity.JsAuthErrorClosure;
+import im.actor.model.js.entity.JsAuthSuccessClosure;
+import im.actor.model.js.entity.JsClosure;
+import im.actor.model.js.entity.JsDialog;
+import im.actor.model.js.entity.JsGroup;
+import im.actor.model.js.entity.JsMessage;
+import im.actor.model.js.entity.JsPeer;
+import im.actor.model.js.entity.JsUser;
+import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
+import im.actor.model.mvvm.MVVMEngine;
 
 /**
  * Created by ex3ndr on 21.02.15.
@@ -37,7 +46,7 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
 
-        configuration.addEndpoint("wss://mtproto-api.actor.im:9082");
+        configuration.addEndpoint("wss://mtproto-api.actor.im:10443/");
 
         messenger = new JsMessenger(configuration.build());
 
@@ -155,6 +164,20 @@ public class JsFacade implements Exportable {
         messenger.getUser(uid).unsubscribe(callback);
     }
 
+    // Groups
+
+    public JsGroup getGroup(int gid) {
+        return messenger.getGroup(gid).get();
+    }
+
+    public void bindGroup(int gid, AngularValueCallback callback) {
+        messenger.getGroup(gid).subscribe(callback);
+    }
+
+    public void unbindGroup(int gid, AngularValueCallback callback) {
+        messenger.getGroup(gid).unsubscribe(callback);
+    }
+
     // Actions
 
     public void sendMessage(JsPeer peer, String text) {
@@ -189,6 +212,44 @@ public class JsFacade implements Exportable {
     public void onConversationClosed(JsPeer peer) {
         Log.d("JsFacade", "On chat closed: " + peer.getPeerType() + " : " + peer.getPeerId());
         messenger.onConversationClosed(peer.convert());
+    }
+
+    public void onDialogsOpen() {
+        Log.d("JsFacade", "On dialogs open");
+        messenger.onDialogsOpen();
+    }
+
+    public void onDialogsClosed() {
+        Log.d("JsFacade", "On dialogs closed");
+        messenger.onDialogsClosed();
+    }
+
+    public void deleteChat(JsPeer peer, final JsClosure success, final JsClosure error) {
+        messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+            @Override
+            public void onResult(Boolean res) {
+                success.callback();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                error.callback();
+            }
+        });
+    }
+
+    public void clearChat(JsPeer peer, final JsClosure success, final JsClosure error) {
+        messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
+            @Override
+            public void onResult(Boolean res) {
+                success.callback();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                error.callback();
+            }
+        });
     }
 
     public void onTyping(JsPeer peer) {

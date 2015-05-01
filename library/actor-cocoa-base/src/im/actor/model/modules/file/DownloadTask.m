@@ -9,9 +9,10 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/FileSystemProvider.h"
+#include "im/actor/model/HttpDownloaderProvider.h"
 #include "im/actor/model/api/FileLocation.h"
-#include "im/actor/model/api/rpc/RequestGetFile.h"
-#include "im/actor/model/api/rpc/ResponseGetFile.h"
+#include "im/actor/model/api/rpc/RequestGetFileUrl.h"
+#include "im/actor/model/api/rpc/ResponseGetFileUrl.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileSystemReference.h"
@@ -23,6 +24,7 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/network/RpcException.h"
 
+__attribute__((unused)) static void ImActorModelModulesFileDownloadTask_requestUrl(ImActorModelModulesFileDownloadTask *self);
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_startDownload(ImActorModelModulesFileDownloadTask *self);
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_completeDownload(ImActorModelModulesFileDownloadTask *self);
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_checkQueue(ImActorModelModulesFileDownloadTask *self);
@@ -38,15 +40,19 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_reportCo
   AMFileReference *fileReference_;
   DKActorRef *manager_;
   id<AMFileSystemProvider> fileSystemProvider_;
+  id<AMHttpDownloaderProvider> downloaderProvider_;
   id<AMFileSystemReference> destReference_;
   id<AMOutputFile> outputFile_;
   jboolean isCompleted_;
+  NSString *fileUrl_;
   jint blockSize_;
   jint blocksCount_;
   jint nextBlock_;
   jint currentDownloads_;
   jint downloaded_;
 }
+
+- (void)requestUrl;
 
 - (void)startDownload;
 
@@ -68,10 +74,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, TAG_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileReference_, AMFileReference *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileSystemProvider_, id<AMFileSystemProvider>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, downloaderProvider_, id<AMHttpDownloaderProvider>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, destReference_, id<AMFileSystemReference>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, outputFile_, id<AMOutputFile>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileUrl_, NSString *)
 
 @interface ImActorModelModulesFileDownloadTask_$1 () {
+ @public
+  ImActorModelModulesFileDownloadTask *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorModelModulesFileDownloadTask *)
+
+@interface ImActorModelModulesFileDownloadTask_$2 () {
  @public
   ImActorModelModulesFileDownloadTask *this$0_;
   jint val$blockIndex_;
@@ -79,58 +95,76 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, outputFile_, id<AMOutpu
 }
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorModelModulesFileDownloadTask *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$2, this$0_, ImActorModelModulesFileDownloadTask *)
+
+@interface ImActorModelModulesFileDownloadTask_$2_$1 () {
+ @public
+  ImActorModelModulesFileDownloadTask_$2 *this$0_;
+  IOSByteArray *val$data_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$2_$1, this$0_, ImActorModelModulesFileDownloadTask_$2 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$2_$1, val$data_, IOSByteArray *)
+
+@interface ImActorModelModulesFileDownloadTask_$2_$2 () {
+ @public
+  ImActorModelModulesFileDownloadTask_$2 *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$2_$2, this$0_, ImActorModelModulesFileDownloadTask_$2 *)
 
 
-#line 19
+#line 22
 @implementation ImActorModelModulesFileDownloadTask
 
 
-#line 41
+#line 46
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference
                          withDKActorRef:(DKActorRef *)manager
          withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   if (self =
-#line 42
+#line 47
   [super initWithImActorModelModulesModules:messenger]) {
     blockSize_ =
-#line 35
+#line 40
     8 * 1024;
     nextBlock_ =
-#line 37
+#line 42
     0;
     currentDownloads_ =
-#line 38
+#line 43
     0;
     downloaded_ =
-#line 39
+#line 44
     0;
     
-#line 43
+#line 48
     self->TAG_ = JreStrcat("$JC", @"DownloadTask{", [((AMFileReference *) nil_chk(fileReference)) getFileId], '}');
     
-#line 44
+#line 49
     self->LOG_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) isEnableFilesLogging];
     
-#line 45
+#line 50
     self->fileReference_ = fileReference;
     
-#line 46
+#line 51
     self->manager_ = manager;
   }
   return self;
 }
 
 
-#line 50
+#line 55
 - (void)preStart {
   
-#line 52
+#line 57
   if (LOG_) {
     AMLog_dWithNSString_withNSString_(TAG_, @"Creating file...");
   }
   
-#line 56
+#line 61
   fileSystemProvider_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
   if (fileSystemProvider_ == nil) {
     ImActorModelModulesFileDownloadTask_reportError(self);
@@ -140,7 +174,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorMode
     return;
   }
   
-#line 65
+#line 70
+  downloaderProvider_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getHttpDownloaderProvider];
+  if (downloaderProvider_ == nil) {
+    ImActorModelModulesFileDownloadTask_reportError(self);
+    if (LOG_) {
+      AMLog_dWithNSString_withNSString_(TAG_, @"No HTTP Support available");
+    }
+    return;
+  }
+  
+#line 79
   destReference_ = [((id<AMFileSystemProvider>) nil_chk(fileSystemProvider_)) createTempFile];
   if (destReference_ == nil) {
     ImActorModelModulesFileDownloadTask_reportError(self);
@@ -150,7 +194,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorMode
     return;
   }
   
-#line 74
+#line 88
   outputFile_ = [((id<AMFileSystemReference>) nil_chk(destReference_)) openWriteWithSize:[((AMFileReference *) nil_chk(fileReference_)) getFileSize]];
   if (outputFile_ == nil) {
     ImActorModelModulesFileDownloadTask_reportError(self);
@@ -160,49 +204,55 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorMode
     return;
   }
   
-#line 83
-  ImActorModelModulesFileDownloadTask_startDownload(self);
+#line 97
+  ImActorModelModulesFileDownloadTask_requestUrl(self);
 }
 
 
-#line 86
+#line 100
+- (void)requestUrl {
+  ImActorModelModulesFileDownloadTask_requestUrl(self);
+}
+
+
+#line 125
 - (void)startDownload {
   ImActorModelModulesFileDownloadTask_startDownload(self);
 }
 
 
-#line 98
+#line 137
 - (void)completeDownload {
   ImActorModelModulesFileDownloadTask_completeDownload(self);
 }
 
 
-#line 123
+#line 162
 - (void)checkQueue {
   ImActorModelModulesFileDownloadTask_checkQueue(self);
 }
 
 
-#line 152
+#line 191
 - (void)downloadPartWithInt:(jint)blockIndex
                     withInt:(jint)fileOffset {
   ImActorModelModulesFileDownloadTask_downloadPartWithInt_withInt_(self, blockIndex, fileOffset);
 }
 
 
-#line 181
+#line 228
 - (void)reportError {
   ImActorModelModulesFileDownloadTask_reportError(self);
 }
 
 
-#line 189
+#line 236
 - (void)reportProgressWithFloat:(jfloat)progress {
   ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(self, progress);
 }
 
 
-#line 196
+#line 243
 - (void)reportCompleteWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
   ImActorModelModulesFileDownloadTask_reportCompleteWithAMFileSystemReference_(self, reference);
 }
@@ -214,9 +264,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorMode
   other->fileReference_ = fileReference_;
   other->manager_ = manager_;
   other->fileSystemProvider_ = fileSystemProvider_;
+  other->downloaderProvider_ = downloaderProvider_;
   other->destReference_ = destReference_;
   other->outputFile_ = outputFile_;
   other->isCompleted_ = isCompleted_;
+  other->fileUrl_ = fileUrl_;
   other->blockSize_ = blockSize_;
   other->blocksCount_ = blocksCount_;
   other->nextBlock_ = nextBlock_;
@@ -226,15 +278,26 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask_$1, this$0_, ImActorMode
 
 @end
 
+void ImActorModelModulesFileDownloadTask_requestUrl(ImActorModelModulesFileDownloadTask *self) {
+  
+#line 101
+  if (self->LOG_) {
+    AMLog_dWithNSString_withNSString_(self->TAG_, @"Loading url...");
+  }
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetFileUrl alloc] initWithImActorModelApiFileLocation:[[ImActorModelApiFileLocation alloc] initWithLong:[((AMFileReference *) nil_chk(self->fileReference_)) getFileId] withLong:
+#line 105
+  [self->fileReference_ getAccessHash]]] withAMRpcCallback:[[ImActorModelModulesFileDownloadTask_$1 alloc] initWithImActorModelModulesFileDownloadTask:self]];
+}
+
 void ImActorModelModulesFileDownloadTask_startDownload(ImActorModelModulesFileDownloadTask *self) {
   
-#line 87
+#line 126
   self->blocksCount_ = [((AMFileReference *) nil_chk(self->fileReference_)) getFileSize] / self->blockSize_;
   if ([self->fileReference_ getFileSize] % self->blockSize_ != 0) {
     self->blocksCount_++;
   }
   
-#line 92
+#line 131
   if (self->LOG_) {
     AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$I$", @"Starting downloading ", self->blocksCount_, @" blocks"));
   }
@@ -243,12 +306,12 @@ void ImActorModelModulesFileDownloadTask_startDownload(ImActorModelModulesFileDo
 
 void ImActorModelModulesFileDownloadTask_completeDownload(ImActorModelModulesFileDownloadTask *self) {
   
-#line 99
+#line 138
   if (self->isCompleted_) {
     return;
   }
   
-#line 103
+#line 142
   if (self->LOG_) {
     AMLog_dWithNSString_withNSString_(self->TAG_, @"Closing file...");
   }
@@ -257,14 +320,14 @@ void ImActorModelModulesFileDownloadTask_completeDownload(ImActorModelModulesFil
     return;
   }
   
-#line 111
+#line 150
   id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk(self->fileSystemProvider_)) commitTempFile:self->destReference_ withReference:self->fileReference_];
   if (reference == nil) {
     ImActorModelModulesFileDownloadTask_reportError(self);
     return;
   }
   
-#line 117
+#line 156
   if (self->LOG_) {
     AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$$C", @"Complete download {", [((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor], '}'));
   }
@@ -273,12 +336,12 @@ void ImActorModelModulesFileDownloadTask_completeDownload(ImActorModelModulesFil
 
 void ImActorModelModulesFileDownloadTask_checkQueue(ImActorModelModulesFileDownloadTask *self) {
   
-#line 124
+#line 163
   if (self->isCompleted_) {
     return;
   }
   
-#line 128
+#line 167
   if (self->LOG_) {
     AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$ICI", @"checkQueue ", self->currentDownloads_, '/', self->nextBlock_));
   }
@@ -286,26 +349,26 @@ void ImActorModelModulesFileDownloadTask_checkQueue(ImActorModelModulesFileDownl
     ImActorModelModulesFileDownloadTask_completeDownload(self);
   }
   else
-#line 133
+#line 172
   if (self->currentDownloads_ < ImActorModelModulesFileDownloadTask_SIM_BLOCKS_COUNT && self->nextBlock_ < self->blocksCount_) {
     self->currentDownloads_++;
     jint blockIndex = self->nextBlock_++;
     jint offset = blockIndex * self->blockSize_;
     
-#line 138
+#line 177
     if (self->LOG_) {
       AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$I$", @"Starting part #", blockIndex, @" download"));
     }
     
-#line 142
+#line 181
     ImActorModelModulesFileDownloadTask_downloadPartWithInt_withInt_(self, blockIndex, offset);
     
-#line 144
+#line 183
     ImActorModelModulesFileDownloadTask_checkQueue(self);
   }
   else {
     
-#line 146
+#line 185
     if (self->LOG_) {
       AMLog_dWithNSString_withNSString_(self->TAG_, @"Task queue is full");
     }
@@ -314,15 +377,13 @@ void ImActorModelModulesFileDownloadTask_checkQueue(ImActorModelModulesFileDownl
 
 void ImActorModelModulesFileDownloadTask_downloadPartWithInt_withInt_(ImActorModelModulesFileDownloadTask *self, jint blockIndex, jint fileOffset) {
   
-#line 153
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetFile alloc] initWithImActorModelApiFileLocation:[[ImActorModelApiFileLocation alloc] initWithLong:[((AMFileReference *) nil_chk(self->fileReference_)) getFileId] withLong:
-#line 154
-  [self->fileReference_ getAccessHash]] withInt:fileOffset withInt:self->blockSize_] withAMRpcCallback:[[ImActorModelModulesFileDownloadTask_$1 alloc] initWithImActorModelModulesFileDownloadTask:self withInt:blockIndex withInt:fileOffset]];
+#line 192
+  [((id<AMHttpDownloaderProvider>) nil_chk(self->downloaderProvider_)) downloadPartWithNSString:self->fileUrl_ withInt:fileOffset withInt:self->blockSize_ withInt:[((AMFileReference *) nil_chk(self->fileReference_)) getFileSize] withImActorModelHttpFileDownloadCallback:[[ImActorModelModulesFileDownloadTask_$2 alloc] initWithImActorModelModulesFileDownloadTask:self withInt:blockIndex withInt:fileOffset]];
 }
 
 void ImActorModelModulesFileDownloadTask_reportError(ImActorModelModulesFileDownloadTask *self) {
   
-#line 182
+#line 229
   if (self->isCompleted_) {
     return;
   }
@@ -332,7 +393,7 @@ void ImActorModelModulesFileDownloadTask_reportError(ImActorModelModulesFileDown
 
 void ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(ImActorModelModulesFileDownloadTask *self, jfloat progress) {
   
-#line 190
+#line 237
   if (self->isCompleted_) {
     return;
   }
@@ -341,7 +402,7 @@ void ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(ImActorModelMo
 
 void ImActorModelModulesFileDownloadTask_reportCompleteWithAMFileSystemReference_(ImActorModelModulesFileDownloadTask *self, id<AMFileSystemReference> reference) {
   
-#line 197
+#line 244
   if (self->isCompleted_) {
     return;
   }
@@ -354,34 +415,56 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
 @implementation ImActorModelModulesFileDownloadTask_$1
 
 
-#line 156
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFile *)response {
+#line 107
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUrl *)response {
   
-#line 157
-  this$0_->downloaded_++;
+#line 108
+  this$0_->fileUrl_ = [((ImActorModelApiRpcResponseGetFileUrl *) nil_chk(response)) getUrl];
   if (this$0_->LOG_) {
-    AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$I$", @"Download part #", val$blockIndex_, @" completed"));
+    AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$$", @"Loaded file url: ", this$0_->fileUrl_));
   }
-  if (![((id<AMOutputFile>) nil_chk(this$0_->outputFile_)) writeWithOffset:val$fileOffset_ withData:[((ImActorModelApiRpcResponseGetFile *) nil_chk(response)) getPayload] withDataOffset:0 withDataLen:((IOSByteArray *) nil_chk(
-#line 162
-  [response getPayload]))->size_]) {
-    ImActorModelModulesFileDownloadTask_reportError(this$0_);
-    return;
-  }
-  this$0_->currentDownloads_--;
-  ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(this$0_, this$0_->downloaded_ / (jfloat) this$0_->blocksCount_);
-  ImActorModelModulesFileDownloadTask_checkQueue(this$0_);
+  ImActorModelModulesFileDownloadTask_startDownload(this$0_);
 }
 
 
-#line 172
+#line 116
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  
-#line 173
   if (this$0_->LOG_) {
-    AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$I$", @"Download part #", val$blockIndex_, @" failure"));
+    AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Unable to load file url");
   }
   ImActorModelModulesFileDownloadTask_reportError(this$0_);
+}
+
+- (instancetype)initWithImActorModelModulesFileDownloadTask:(ImActorModelModulesFileDownloadTask *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadTask_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_$1)
+
+@implementation ImActorModelModulesFileDownloadTask_$2
+
+
+#line 194
+- (void)onDownloadedWithByteArray:(IOSByteArray *)data {
+  
+#line 195
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesFileDownloadTask_$2_$1 alloc] initWithImActorModelModulesFileDownloadTask_$2:self withByteArray:data]];
+}
+
+
+#line 214
+- (void)onDownloadFailure {
+  
+#line 215
+  [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:[[ImActorModelModulesFileDownloadTask_$2_$2 alloc] initWithImActorModelModulesFileDownloadTask_$2:self]];
 }
 
 - (instancetype)initWithImActorModelModulesFileDownloadTask:(ImActorModelModulesFileDownloadTask *)outer$
@@ -393,7 +476,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
   return [super init];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadTask_$1 *)other {
+- (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadTask_$2 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
   other->val$blockIndex_ = val$blockIndex_;
@@ -402,4 +485,68 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_$2)
+
+@implementation ImActorModelModulesFileDownloadTask_$2_$1
+
+
+#line 197
+- (void)run {
+  
+#line 198
+  this$0_->this$0_->downloaded_++;
+  if (this$0_->this$0_->LOG_) {
+    AMLog_dWithNSString_withNSString_(this$0_->this$0_->TAG_, JreStrcat("$I$", @"Download part #", this$0_->val$blockIndex_, @" completed"));
+  }
+  if (![((id<AMOutputFile>) nil_chk(this$0_->this$0_->outputFile_)) writeWithOffset:this$0_->val$fileOffset_ withData:val$data_ withDataOffset:0 withDataLen:((IOSByteArray *) nil_chk(val$data_))->size_]) {
+    ImActorModelModulesFileDownloadTask_reportError(this$0_->this$0_);
+    return;
+  }
+  this$0_->this$0_->currentDownloads_--;
+  ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(this$0_->this$0_, this$0_->this$0_->downloaded_ / (jfloat) this$0_->this$0_->blocksCount_);
+  ImActorModelModulesFileDownloadTask_checkQueue(this$0_->this$0_);
+}
+
+- (instancetype)initWithImActorModelModulesFileDownloadTask_$2:(ImActorModelModulesFileDownloadTask_$2 *)outer$
+                                                 withByteArray:(IOSByteArray *)capture$0 {
+  this$0_ = outer$;
+  val$data_ = capture$0;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadTask_$2_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+  other->val$data_ = val$data_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_$2_$1)
+
+@implementation ImActorModelModulesFileDownloadTask_$2_$2
+
+
+#line 217
+- (void)run {
+  
+#line 218
+  if (this$0_->this$0_->LOG_) {
+    AMLog_dWithNSString_withNSString_(this$0_->this$0_->TAG_, JreStrcat("$I$", @"Download part #", this$0_->val$blockIndex_, @" failure"));
+  }
+  ImActorModelModulesFileDownloadTask_reportError(this$0_->this$0_);
+}
+
+- (instancetype)initWithImActorModelModulesFileDownloadTask_$2:(ImActorModelModulesFileDownloadTask_$2 *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileDownloadTask_$2_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_$2_$2)

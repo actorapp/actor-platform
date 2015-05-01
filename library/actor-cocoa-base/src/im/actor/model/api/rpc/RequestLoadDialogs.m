@@ -17,7 +17,7 @@
 
 @interface ImActorModelApiRpcRequestLoadDialogs () {
  @public
-  jlong startDate_;
+  jlong minDate_;
   jint limit_;
 }
 @end
@@ -34,12 +34,12 @@
 
 
 #line 30
-- (instancetype)initWithLong:(jlong)startDate
+- (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit {
   if (self = [super init]) {
     
 #line 31
-    self->startDate_ = startDate;
+    self->minDate_ = minDate;
     
 #line 32
     self->limit_ = limit;
@@ -53,10 +53,10 @@
   return [super init];
 }
 
-- (jlong)getStartDate {
+- (jlong)getMinDate {
   
 #line 40
-  return self->startDate_;
+  return self->minDate_;
 }
 
 
@@ -70,7 +70,7 @@
 
 #line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->startDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
+  self->minDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->limit_ = [values getIntWithInt:2];
 }
 
@@ -79,13 +79,13 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   
 #line 55
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->startDate_];
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->minDate_];
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
 
 - (NSString *)description {
   NSString *res = @"rpc LoadDialogs{";
-  res = JreStrcat("$$", res, JreStrcat("$J", @"startDate=", self->startDate_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @"minDate=", self->minDate_));
   res = JreStrcat("$$", res, JreStrcat("$I", @", limit=", self->limit_));
   res = JreStrcat("$C", res, '}');
   return res;
@@ -99,7 +99,7 @@
 
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestLoadDialogs *)other {
   [super copyAllFieldsTo:other];
-  other->startDate_ = startDate_;
+  other->minDate_ = minDate_;
   other->limit_ = limit_;
 }
 

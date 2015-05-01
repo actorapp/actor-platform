@@ -12,6 +12,7 @@
 #include "im/actor/model/CryptoProvider.h"
 #include "im/actor/model/DispatcherProvider.h"
 #include "im/actor/model/FileSystemProvider.h"
+#include "im/actor/model/HttpDownloaderProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogProvider.h"
 #include "im/actor/model/MainThreadProvider.h"
@@ -39,6 +40,7 @@
   id<AMNotificationProvider> notificationProvider_;
   AMApiConfiguration *apiConfiguration_;
   id<AMDispatcherProvider> dispatcherProvider_;
+  id<AMHttpDownloaderProvider> httpDownloaderProvider_;
 }
 @end
 
@@ -55,13 +57,14 @@ J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvide
 J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, apiConfiguration_, AMApiConfiguration *)
 J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, httpDownloaderProvider_, id<AMHttpDownloaderProvider>)
 
 
 #line 8
 @implementation AMConfiguration
 
 
-#line 39
+#line 41
 - (instancetype)initWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
             withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
                   withAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider
@@ -77,7 +80,8 @@ J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvide
                    withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
                               withBoolean:(jboolean)enableContactsLogging
                               withBoolean:(jboolean)enableNetworkLogging
-                              withBoolean:(jboolean)enableFilesLogging {
+                              withBoolean:(jboolean)enableFilesLogging
+             withAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider {
   if (self = [super init]) {
     enableContactsLogging_ =
 #line 27
@@ -89,183 +93,194 @@ J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvide
 #line 29
     NO;
     
-#line 55
+#line 58
     self->networkProvider_ = networkProvider;
     
-#line 56
+#line 59
     self->endpoints_ = endpoints;
     
-#line 57
+#line 60
     self->threadingProvider_ = threadingProvider;
     
-#line 58
+#line 61
     self->mainThreadProvider_ = mainThreadProvider;
     
-#line 59
+#line 62
     self->storageProvider_ = storageProvider;
     
-#line 60
+#line 63
     self->log_ = log;
     
-#line 61
+#line 64
     self->localeProvider_ = localeProvider;
     
-#line 62
+#line 65
     self->phoneBookProvider_ = phoneBookProvider;
     
-#line 63
+#line 66
     self->cryptoProvider_ = cryptoProvider;
     
-#line 64
+#line 67
     self->fileSystemProvider_ = fileSystemProvider;
     
-#line 65
+#line 68
     self->enableContactsLogging_ = enableContactsLogging;
     
-#line 66
+#line 69
     self->enableNetworkLogging_ = enableNetworkLogging;
     
-#line 67
+#line 70
     self->enableFilesLogging_ = enableFilesLogging;
     
-#line 68
+#line 71
     self->notificationProvider_ = notificationProvider;
     
-#line 69
+#line 72
     self->apiConfiguration_ = apiConfiguration;
     
-#line 70
+#line 73
     self->dispatcherProvider_ = dispatcherProvider;
+    
+#line 74
+    self->httpDownloaderProvider_ = httpDownloaderProvider;
   }
   return self;
 }
 
 
-#line 78
+#line 82
 - (AMApiConfiguration *)getApiConfiguration {
   
-#line 79
+#line 83
   return apiConfiguration_;
 }
 
 
-#line 87
+#line 91
 - (id<AMNotificationProvider>)getNotificationProvider {
   
-#line 88
+#line 92
   return notificationProvider_;
 }
 
 
-#line 96
+#line 100
 - (jboolean)isEnableContactsLogging {
   
-#line 97
+#line 101
   return enableContactsLogging_;
 }
 
 
-#line 105
+#line 109
 - (jboolean)isEnableNetworkLogging {
   
-#line 106
+#line 110
   return enableNetworkLogging_;
 }
 
 
-#line 114
+#line 118
 - (jboolean)isEnableFilesLogging {
   
-#line 115
+#line 119
   return enableFilesLogging_;
 }
 
 
-#line 123
+#line 127
 - (id<AMCryptoProvider>)getCryptoProvider {
   
-#line 124
+#line 128
   return cryptoProvider_;
 }
 
 
-#line 132
+#line 136
 - (id<AMPhoneBookProvider>)getPhoneBookProvider {
   
-#line 133
+#line 137
   return phoneBookProvider_;
 }
 
 
-#line 141
+#line 145
 - (id<AMNetworkProvider>)getNetworkProvider {
   
-#line 142
+#line 146
   return networkProvider_;
 }
 
 
-#line 150
+#line 154
 - (IOSObjectArray *)getEndpoints {
   
-#line 151
+#line 155
   return endpoints_;
 }
 
 
-#line 159
+#line 163
 - (id<AMThreadingProvider>)getThreadingProvider {
   
-#line 160
+#line 164
   return threadingProvider_;
 }
 
 
-#line 168
+#line 172
 - (id<AMMainThreadProvider>)getMainThreadProvider {
   
-#line 169
+#line 173
   return mainThreadProvider_;
 }
 
 
-#line 177
+#line 181
 - (id<AMStorageProvider>)getStorageProvider {
   
-#line 178
+#line 182
   return storageProvider_;
 }
 
 
-#line 186
+#line 190
 - (id<AMLogProvider>)getLog {
   
-#line 187
+#line 191
   return log_;
 }
 
 
-#line 195
+#line 199
 - (id<AMLocaleProvider>)getLocaleProvider {
   
-#line 196
+#line 200
   return localeProvider_;
 }
 
 
-#line 204
+#line 208
 - (id<AMFileSystemProvider>)getFileSystemProvider {
   
-#line 205
+#line 209
   return fileSystemProvider_;
 }
 
 
-#line 213
+#line 217
 - (id<AMDispatcherProvider>)getDispatcherProvider {
   
-#line 214
+#line 218
   return dispatcherProvider_;
+}
+
+
+#line 225
+- (id<AMHttpDownloaderProvider>)getHttpDownloaderProvider {
+  
+#line 226
+  return httpDownloaderProvider_;
 }
 
 - (void)copyAllFieldsTo:(AMConfiguration *)other {
@@ -286,6 +301,7 @@ J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvide
   other->notificationProvider_ = notificationProvider_;
   other->apiConfiguration_ = apiConfiguration_;
   other->dispatcherProvider_ = dispatcherProvider_;
+  other->httpDownloaderProvider_ = httpDownloaderProvider_;
 }
 
 @end

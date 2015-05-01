@@ -19,7 +19,7 @@
 @interface ImActorModelApiRpcRequestLoadHistory () {
  @public
   ImActorModelApiOutPeer *peer_;
-  jlong startDate_;
+  jlong minDate_;
   jint limit_;
 }
 @end
@@ -39,7 +39,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 
 #line 31
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)startDate
+                                      withLong:(jlong)minDate
                                        withInt:(jint)limit {
   if (self = [super init]) {
     
@@ -47,7 +47,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
     self->peer_ = peer;
     
 #line 33
-    self->startDate_ = startDate;
+    self->minDate_ = minDate;
     
 #line 34
     self->limit_ = limit;
@@ -69,10 +69,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 
 
 #line 45
-- (jlong)getStartDate {
+- (jlong)getMinDate {
   
 #line 46
-  return self->startDate_;
+  return self->minDate_;
 }
 
 
@@ -87,7 +87,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 #line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
-  self->startDate_ = [values getLongWithInt:3];
+  self->minDate_ = [values getLongWithInt:3];
   self->limit_ = [values getIntWithInt:4];
 }
 
@@ -100,14 +100,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
     @throw [[JavaIoIOException alloc] init];
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
-  [writer writeLongWithInt:3 withLong:self->startDate_];
+  [writer writeLongWithInt:3 withLong:self->minDate_];
   [writer writeIntWithInt:4 withInt:self->limit_];
 }
 
 - (NSString *)description {
   NSString *res = @"rpc LoadHistory{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
-  res = JreStrcat("$$", res, JreStrcat("$J", @", startDate=", self->startDate_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", minDate=", self->minDate_));
   res = JreStrcat("$$", res, JreStrcat("$I", @", limit=", self->limit_));
   res = JreStrcat("$C", res, '}');
   return res;
@@ -122,7 +122,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 - (void)copyAllFieldsTo:(ImActorModelApiRpcRequestLoadHistory *)other {
   [super copyAllFieldsTo:other];
   other->peer_ = peer_;
-  other->startDate_ = startDate_;
+  other->minDate_ = minDate_;
   other->limit_ = limit_;
 }
 
