@@ -11,11 +11,11 @@ import scodec.bits._
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.mtproto.protocol.{ MessageAck, ProtoMessage, RpcResponseBox }
 
-object RpcRequestHandler {
-  private[session] def props(rpcApiService: ActorRef) = Props(classOf[RpcRequestHandler], rpcApiService)
+private[session] object RpcRequestHandler {
+  def props(rpcApiService: ActorRef) = Props(classOf[RpcRequestHandler], rpcApiService)
 }
 
-class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
+private[session] class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -45,11 +45,6 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
 
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
-    case RpcApiService.RpcResponse(messageId, responseBytes) ⇒
-      requestQueue -= messageId
-
-      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
-      enqueueProtoMessage(RpcResponseBox(messageId, responseBytes))
   }
 
   override val requestStrategy = new MaxInFlightRequestStrategy(max = MaxRequestQueueSize) {
@@ -60,6 +55,11 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
   private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
 
   def publisher: Receive = {
+    case RpcApiService.RpcResponse(messageId, responseBytes) ⇒
+      requestQueue -= messageId
+
+      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
+      enqueueProtoMessage(RpcResponseBox(messageId, responseBytes))
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒
