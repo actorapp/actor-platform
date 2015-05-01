@@ -313,7 +313,7 @@ void ImActorModelModulesFileDownloadTask_initWithAMFileReference_withDKActorRef_
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
   self->blockSize_ =
 #line 40
-  8 * 1024;
+  32 * 1024;
   self->nextBlock_ =
 #line 42
   0;
