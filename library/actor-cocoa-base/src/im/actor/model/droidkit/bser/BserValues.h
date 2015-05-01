@@ -6,88 +6,90 @@
 #ifndef _BSBserValues_H_
 #define _BSBserValues_H_
 
+#include "J2ObjC_header.h"
+
 @class BSBserObject;
 @class IOSByteArray;
 @class ImActorModelDroidkitBserUtilSparseArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
+@interface BSBserValues : NSObject
 
-@interface BSBserValues : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)fields;
-
-- (jlong)optLongWithInt:(jint)id_;
-
-- (jlong)getLongWithInt:(jint)id_;
-
-- (jlong)getLongWithInt:(jint)id_
-               withLong:(jlong)defValue;
-
-- (jint)optIntWithInt:(jint)id_;
-
-- (jint)getIntWithInt:(jint)id_;
-
-- (jint)getIntWithInt:(jint)id_
-              withInt:(jint)defValue;
-
-- (jdouble)optDoubleWithInt:(jint)id_;
-
-- (jdouble)getDoubleWithInt:(jint)id_;
-
-- (jdouble)getDoubleWithInt:(jint)id_
-                 withDouble:(jdouble)defValue;
-
-- (jboolean)optBoolWithInt:(jint)id_;
 
 - (jboolean)getBoolWithInt:(jint)id_;
 
 - (jboolean)getBoolWithInt:(jint)id_
                withBoolean:(jboolean)defValue;
 
-- (IOSByteArray *)optBytesWithInt:(jint)id_;
-
 - (IOSByteArray *)getBytesWithInt:(jint)id_;
 
 - (IOSByteArray *)getBytesWithInt:(jint)id_
                     withByteArray:(IOSByteArray *)defValue;
 
-- (NSString *)optStringWithInt:(jint)id_;
+- (jdouble)getDoubleWithInt:(jint)id_;
+
+- (jdouble)getDoubleWithInt:(jint)id_
+                 withDouble:(jdouble)defValue;
+
+- (jint)getIntWithInt:(jint)id_;
+
+- (jint)getIntWithInt:(jint)id_
+              withInt:(jint)defValue;
+
+- (jlong)getLongWithInt:(jint)id_;
+
+- (jlong)getLongWithInt:(jint)id_
+               withLong:(jlong)defValue;
+
+- (id)getObjWithInt:(jint)id_
+   withBSBserObject:(BSBserObject *)obj;
+
+- (id<JavaUtilList>)getRepeatedBytesWithInt:(jint)id_;
+
+- (jint)getRepeatedCountWithInt:(jint)id_;
+
+- (id<JavaUtilList>)getRepeatedIntWithInt:(jint)id_;
+
+- (id<JavaUtilList>)getRepeatedLongWithInt:(jint)id_;
+
+- (id<JavaUtilList>)getRepeatedObjWithInt:(jint)id_
+                         withJavaUtilList:(id<JavaUtilList>)objs;
+
+- (id<JavaUtilList>)getRepeatedStringWithInt:(jint)id_;
 
 - (NSString *)getStringWithInt:(jint)id_;
 
 - (NSString *)getStringWithInt:(jint)id_
                   withNSString:(NSString *)defValue;
 
+- (jboolean)optBoolWithInt:(jint)id_;
+
+- (IOSByteArray *)optBytesWithInt:(jint)id_;
+
+- (jdouble)optDoubleWithInt:(jint)id_;
+
+- (jint)optIntWithInt:(jint)id_;
+
+- (jlong)optLongWithInt:(jint)id_;
+
 - (id)optObjWithInt:(jint)id_
    withBSBserObject:(BSBserObject *)obj;
 
-- (id)getObjWithInt:(jint)id_
-   withBSBserObject:(BSBserObject *)obj;
-
-- (jint)getRepeatedCountWithInt:(jint)id_;
-
-- (id<JavaUtilList>)getRepeatedLongWithInt:(jint)id_;
-
-- (id<JavaUtilList>)getRepeatedIntWithInt:(jint)id_;
-
-- (id<JavaUtilList>)getRepeatedBytesWithInt:(jint)id_;
-
-- (id<JavaUtilList>)getRepeatedStringWithInt:(jint)id_;
-
-- (id<JavaUtilList>)getRepeatedObjWithInt:(jint)id_
-                         withJavaUtilList:(id<JavaUtilList>)objs;
+- (NSString *)optStringWithInt:(jint)id_;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserValues)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserValues *self, ImActorModelDroidkitBserUtilSparseArray *fields);
 
-typedef BSBserValues ImActorModelDroidkitBserBserValues;
+FOUNDATION_EXPORT BSBserValues *new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(ImActorModelDroidkitBserUtilSparseArray *fields) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSBserValues)
+
+typedef BSBserValues ImActorModelDroidkitBserBserValues;
 
 #endif // _BSBserValues_H_

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Drop.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Drop.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/Drop.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
 
@@ -19,37 +21,25 @@
 
 #line 16
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 17
-  [super initWithBSDataInput:stream];
+  MTDrop_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 20
 - (instancetype)initWithLong:(jlong)messageId
                 withNSString:(NSString *)message {
-  if (self = [super init]) {
-    self->messageId_ = messageId;
-    
-#line 22
-    self->message_ = message;
-  }
+  MTDrop_initWithLong_withNSString_(self, messageId, message);
   return self;
 }
 
 
 #line 25
 - (jlong)getMessageId {
-  
-#line 26
   return messageId_;
 }
 
-
-#line 29
 - (NSString *)getMessage {
-  
-#line 30
   return message_;
 }
 
@@ -62,8 +52,6 @@
 
 #line 39
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 40
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoStringWithNSString:message_];
 }
@@ -75,18 +63,44 @@
   message_ = [bs readProtoString];
 }
 
+
+#line 51
 - (NSString *)description {
-  
-#line 52
   return JreStrcat("$$C", @"Drop[", message_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTDrop *)other {
-  [super copyAllFieldsTo:other];
-  other->messageId_ = messageId_;
-  other->message_ = message_;
+@end
+
+
+#line 16
+void MTDrop_initWithBSDataInput_(MTDrop *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 16
+MTDrop *new_MTDrop_initWithBSDataInput_(BSDataInput *stream) {
+  MTDrop *self = [MTDrop alloc];
+  MTDrop_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 20
+void MTDrop_initWithLong_withNSString_(MTDrop *self, jlong messageId, NSString *message) {
+  (void) MTProtoStruct_init(self);
+  
+#line 21
+  self->messageId_ = messageId;
+  self->message_ = message;
+}
+
+
+#line 20
+MTDrop *new_MTDrop_initWithLong_withNSString_(jlong messageId, NSString *message) {
+  MTDrop *self = [MTDrop alloc];
+  MTDrop_initWithLong_withNSString_(self, messageId, message);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTDrop)

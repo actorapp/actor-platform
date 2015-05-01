@@ -6,16 +6,18 @@
 #ifndef _OrgBouncycastleMathEcScaleXPointMap_H_
 #define _OrgBouncycastleMathEcScaleXPointMap_H_
 
-@class OrgBouncycastleMathEcECFieldElement;
-@class OrgBouncycastleMathEcECPoint;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/ECPointMap.h"
+
+@class OrgBouncycastleMathEcECFieldElement;
+@class OrgBouncycastleMathEcECPoint;
 
 @interface OrgBouncycastleMathEcScaleXPointMap : NSObject < OrgBouncycastleMathEcECPointMap > {
  @public
   OrgBouncycastleMathEcECFieldElement *scale__;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_;
 
@@ -27,8 +29,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcScaleXPointMap)
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcScaleXPointMap, scale__, OrgBouncycastleMathEcECFieldElement *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcScaleXPointMap *self, OrgBouncycastleMathEcECFieldElement *scale_);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcScaleXPointMap *new_OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement *scale_) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcScaleXPointMap)
 

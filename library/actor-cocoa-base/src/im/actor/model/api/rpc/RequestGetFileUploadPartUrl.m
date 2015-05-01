@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetFileUploadPartUrl.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetFileUploadPartUrl.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/Utils.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestGetFileUploadPartUrl () {
@@ -22,6 +24,7 @@
   jint partSize_;
   IOSByteArray *uploadKey_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, IOSByteArray *)
@@ -41,45 +44,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
 - (instancetype)initWithInt:(jint)partNumber
                     withInt:(jint)partSize
               withByteArray:(IOSByteArray *)uploadKey {
-  if (self = [super init]) {
-    
-#line 32
-    self->partNumber_ = partNumber;
-    
-#line 33
-    self->partSize_ = partSize;
-    
-#line 34
-    self->uploadKey_ = uploadKey;
-  }
+  ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestGetFileUploadPartUrl_init(self);
+  return self;
 }
 
+
+#line 41
 - (jint)getPartNumber {
-  
-#line 42
   return self->partNumber_;
 }
 
-
-#line 45
 - (jint)getPartSize {
-  
-#line 46
   return self->partSize_;
 }
 
-
-#line 49
 - (IOSByteArray *)getUploadKey {
-  
-#line 50
   return self->uploadKey_;
 }
 
@@ -94,16 +80,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->partNumber_];
   [writer writeIntWithInt:2 withInt:self->partSize_];
   if (self->uploadKey_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:3 withByteArray:self->uploadKey_];
 }
 
+
+#line 71
 - (NSString *)description {
   NSString *res = @"rpc GetFileUploadPartUrl{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"uploadKey=", BSUtils_byteArrayToStringCompactWithByteArray_(self->uploadKey_)));
@@ -111,26 +97,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 80
-  return ImActorModelApiRpcRequestGetFileUploadPartUrl_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestGetFileUploadPartUrl *)other {
-  [super copyAllFieldsTo:other];
-  other->partNumber_ = partNumber_;
-  other->partSize_ = partSize_;
-  other->uploadKey_ = uploadKey_;
+#line 79
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestGetFileUploadPartUrl_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestGetFileUploadPartUrl *ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetFileUploadPartUrl_init();
+  ImActorModelApiRpcRequestGetFileUploadPartUrl_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestGetFileUploadPartUrl alloc] init], data));
+  return ((ImActorModelApiRpcRequestGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(ImActorModelApiRpcRequestGetFileUploadPartUrl *self, jint partNumber, jint partSize, IOSByteArray *uploadKey) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 32
+  self->partNumber_ = partNumber;
+  self->partSize_ = partSize;
+  self->uploadKey_ = uploadKey;
+}
+
+
+#line 31
+ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(jint partNumber, jint partSize, IOSByteArray *uploadKey) {
+  ImActorModelApiRpcRequestGetFileUploadPartUrl *self = [ImActorModelApiRpcRequestGetFileUploadPartUrl alloc];
+  ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
+  return self;
+}
+
+void ImActorModelApiRpcRequestGetFileUploadPartUrl_init(ImActorModelApiRpcRequestGetFileUploadPartUrl *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 37
+ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init() {
+  ImActorModelApiRpcRequestGetFileUploadPartUrl *self = [ImActorModelApiRpcRequestGetFileUploadPartUrl alloc];
+  ImActorModelApiRpcRequestGetFileUploadPartUrl_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetFileUploadPartUrl)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupTypingVM.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupTypingVM.java"
 
 #include "IOSPrimitiveArray.h"
@@ -15,6 +16,7 @@
   jint gid_;
   AMValueModel *active_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMGroupTypingVM, active_, AMValueModel *)
@@ -26,39 +28,40 @@ J2OBJC_FIELD_SETTER(AMGroupTypingVM, active_, AMValueModel *)
 
 #line 18
 - (instancetype)initWithInt:(jint)gid {
-  if (self = [super init]) {
-    
-#line 19
-    self->gid_ = gid;
-    
-#line 20
-    self->active_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"groups.", gid, @".typing") withId:[IOSIntArray newArrayWithLength:0]];
-  }
+  AMGroupTypingVM_initWithInt_(self, gid);
   return self;
 }
 
 
 #line 28
 - (jint)getGid {
-  
-#line 29
   return gid_;
 }
 
 
 #line 37
 - (AMValueModel *)getActive {
-  
-#line 38
   return active_;
 }
 
-- (void)copyAllFieldsTo:(AMGroupTypingVM *)other {
-  [super copyAllFieldsTo:other];
-  other->gid_ = gid_;
-  other->active_ = active_;
+@end
+
+
+#line 18
+void AMGroupTypingVM_initWithInt_(AMGroupTypingVM *self, jint gid) {
+  (void) NSObject_init(self);
+  
+#line 19
+  self->gid_ = gid;
+  self->active_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"groups.", gid, @".typing"), [IOSIntArray newArrayWithLength:0]);
 }
 
-@end
+
+#line 18
+AMGroupTypingVM *new_AMGroupTypingVM_initWithInt_(jint gid) {
+  AMGroupTypingVM *self = [AMGroupTypingVM alloc];
+  AMGroupTypingVM_initWithInt_(self, gid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupTypingVM)

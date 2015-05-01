@@ -6,25 +6,26 @@
 #ifndef _DKEnvelope_H_
 #define _DKEnvelope_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActorRef;
 @class DKActorScope;
 @class DKMailbox;
 
-#include "J2ObjC_header.h"
+@interface DKEnvelope : NSObject
 
-@interface DKEnvelope : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithId:(id)message
           withDKActorScope:(DKActorScope *)scope
              withDKMailbox:(DKMailbox *)mailbox
             withDKActorRef:(DKActorRef *)sender;
 
-- (DKActorScope *)getScope;
+- (DKMailbox *)getMailbox;
 
 - (id)getMessage;
 
-- (DKMailbox *)getMailbox;
+- (DKActorScope *)getScope;
 
 - (DKActorRef *)getSender;
 
@@ -36,11 +37,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKEnvelope)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(DKEnvelope *self, id message, DKActorScope *scope, DKMailbox *mailbox, DKActorRef *sender);
 
-typedef DKEnvelope ImActorModelDroidkitActorsMailboxEnvelope;
+FOUNDATION_EXPORT DKEnvelope *new_DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(id message, DKActorScope *scope, DKMailbox *mailbox, DKActorRef *sender) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKEnvelope)
+
+typedef DKEnvelope ImActorModelDroidkitActorsMailboxEnvelope;
 
 #endif // _DKEnvelope_H_

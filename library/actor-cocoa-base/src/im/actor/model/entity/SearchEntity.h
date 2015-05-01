@@ -6,76 +6,61 @@
 #ifndef _AMSearchEntity_H_
 #define _AMSearchEntity_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+
 @class AMAvatar;
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@protocol BSBserCreator;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserCreator.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+@interface AMSearchEntity : BSBserObject < DKListEngineItem >
 
-@interface AMSearchEntity : BSBserObject < DKListEngineItem > {
-}
-
-+ (AMSearchEntity *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)order
                   withAMAvatar:(AMAvatar *)avatar
                   withNSString:(NSString *)title;
 
-- (AMPeer *)getPeer;
++ (AMSearchEntity *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatar *)getAvatar;
 
-- (NSString *)getTitle;
+- (jlong)getEngineId;
+
+- (NSString *)getEngineSearch;
+
+- (jlong)getEngineSort;
 
 - (jlong)getOrder;
+
+- (AMPeer *)getPeer;
+
+- (NSString *)getTitle;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
-- (jlong)getEngineSort;
-
-- (NSString *)getEngineSearch;
-
 @end
 
-FOUNDATION_EXPORT BOOL AMSearchEntity_initialized;
 J2OBJC_STATIC_INIT(AMSearchEntity)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT AMSearchEntity *AMSearchEntity_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT id<BSBserCreator> AMSearchEntity_CREATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMSearchEntity, CREATOR_, id<BSBserCreator>)
-CF_EXTERN_C_END
 
-typedef AMSearchEntity ImActorModelEntitySearchEntity;
+FOUNDATION_EXPORT AMSearchEntity *AMSearchEntity_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT void AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMSearchEntity *self, AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title);
+
+FOUNDATION_EXPORT AMSearchEntity *new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMSearchEntity)
 
-@interface AMSearchEntity_$1 : NSObject < BSBserCreator > {
-}
-
-- (AMSearchEntity *)createInstance;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMSearchEntity_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMSearchEntity_$1)
+typedef AMSearchEntity ImActorModelEntitySearchEntity;
 
 #endif // _AMSearchEntity_H_

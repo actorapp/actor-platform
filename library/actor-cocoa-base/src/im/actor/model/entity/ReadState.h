@@ -6,44 +6,46 @@
 #ifndef _AMReadState_H_
 #define _AMReadState_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/engine/KeyValueItem.h"
+
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/KeyValueItem.h"
+@interface AMReadState : BSBserObject < DKKeyValueItem >
 
-@interface AMReadState : BSBserObject < DKKeyValueItem > {
-}
-
-+ (AMReadState *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)lastReadSortingDate;
 
-- (AMPeer *)getPeer;
++ (AMReadState *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getEngineId;
 
 - (jlong)getLastReadSortingDate;
+
+- (AMPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMReadState)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMReadState *AMReadState_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMReadState ImActorModelEntityReadState;
+FOUNDATION_EXPORT void AMReadState_initWithAMPeer_withLong_(AMReadState *self, AMPeer *peer, jlong lastReadSortingDate);
+
+FOUNDATION_EXPORT AMReadState *new_AMReadState_initWithAMPeer_withLong_(AMPeer *peer, jlong lastReadSortingDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMReadState)
+
+typedef AMReadState ImActorModelEntityReadState;
 
 #endif // _AMReadState_H_

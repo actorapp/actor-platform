@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/PreferenceApiStorage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/PreferenceApiStorage.java"
 
 #include "J2ObjC_source.h"
@@ -13,6 +14,7 @@
  @public
   id<DKPreferencesStorage> preferencesStorage_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesStorage_, id<DKPreferencesStorage>)
@@ -24,19 +26,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesSto
 
 #line 13
 - (instancetype)initWithDKPreferencesStorage:(id<DKPreferencesStorage>)preferencesStorage {
-  if (self = [super init]) {
-    
-#line 14
-    self->preferencesStorage_ = preferencesStorage;
-  }
+  ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(self, preferencesStorage);
   return self;
 }
 
-
-#line 18
 - (jlong)getAuthKey {
-  
-#line 19
   return [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) getLong:@"auth_id" withDefault:0];
 }
 
@@ -46,11 +40,23 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesSto
   [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) putLong:@"auth_id" withValue:key];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUtilsPreferenceApiStorage *)other {
-  [super copyAllFieldsTo:other];
-  other->preferencesStorage_ = preferencesStorage_;
+@end
+
+
+#line 13
+void ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(ImActorModelModulesUtilsPreferenceApiStorage *self, id<DKPreferencesStorage> preferencesStorage) {
+  (void) NSObject_init(self);
+  
+#line 14
+  self->preferencesStorage_ = preferencesStorage;
 }
 
-@end
+
+#line 13
+ImActorModelModulesUtilsPreferenceApiStorage *new_ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(id<DKPreferencesStorage> preferencesStorage) {
+  ImActorModelModulesUtilsPreferenceApiStorage *self = [ImActorModelModulesUtilsPreferenceApiStorage alloc];
+  ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(self, preferencesStorage);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsPreferenceApiStorage)

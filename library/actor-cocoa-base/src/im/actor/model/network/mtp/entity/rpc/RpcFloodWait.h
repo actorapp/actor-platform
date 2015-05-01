@@ -6,16 +6,17 @@
 #ifndef _MTRpcFloodWait_H_
 #define _MTRpcFloodWait_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
+@class BSDataInput;
+@class BSDataOutput;
+
 #define MTRpcFloodWait_HEADER 3
 
-@interface MTRpcFloodWait : MTProtoStruct {
-}
+@interface MTRpcFloodWait : MTProtoStruct
+
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
@@ -23,23 +24,30 @@
 
 - (jint)getDelay;
 
+#pragma mark Protected
+
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
+
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTRpcFloodWait)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTRpcFloodWait, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTRpcFloodWait ImActorModelNetworkMtpEntityRpcRpcFloodWait;
+FOUNDATION_EXPORT void MTRpcFloodWait_initWithBSDataInput_(MTRpcFloodWait *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTRpcFloodWait *new_MTRpcFloodWait_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTRpcFloodWait_initWithInt_(MTRpcFloodWait *self, jint delay);
+
+FOUNDATION_EXPORT MTRpcFloodWait *new_MTRpcFloodWait_initWithInt_(jint delay) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTRpcFloodWait)
+
+typedef MTRpcFloodWait ImActorModelNetworkMtpEntityRpcRpcFloodWait;
 
 #endif // _MTRpcFloodWait_H_

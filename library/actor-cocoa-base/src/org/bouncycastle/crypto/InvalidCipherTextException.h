@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleCryptoInvalidCipherTextException_H_
 #define _OrgBouncycastleCryptoInvalidCipherTextException_H_
 
-@class JavaLangThrowable;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CryptoException.h"
 
-@interface OrgBouncycastleCryptoInvalidCipherTextException : OrgBouncycastleCryptoCryptoException {
-}
+@class JavaLangThrowable;
+
+@interface OrgBouncycastleCryptoInvalidCipherTextException : OrgBouncycastleCryptoCryptoException
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -25,8 +26,17 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoInvalidCipherTextException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoInvalidCipherTextException_init(OrgBouncycastleCryptoInvalidCipherTextException *self);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoInvalidCipherTextException *new_OrgBouncycastleCryptoInvalidCipherTextException_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(OrgBouncycastleCryptoInvalidCipherTextException *self, NSString *message);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoInvalidCipherTextException *new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(NSString *message) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_withJavaLangThrowable_(OrgBouncycastleCryptoInvalidCipherTextException *self, NSString *message, JavaLangThrowable *cause);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoInvalidCipherTextException *new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_withJavaLangThrowable_(NSString *message, JavaLangThrowable *cause) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoInvalidCipherTextException)
 

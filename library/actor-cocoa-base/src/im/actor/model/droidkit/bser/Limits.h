@@ -11,22 +11,18 @@
 #define BSLimits_MAX_BLOCK_SIZE 1048576
 #define BSLimits_MAX_PROTO_REPEATED 1024
 
-@interface BSLimits : NSObject {
-}
+@interface BSLimits : NSObject
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSLimits)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(BSLimits, MAX_BLOCK_SIZE, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(BSLimits, MAX_PROTO_REPEATED, jint)
-CF_EXTERN_C_END
-
-typedef BSLimits ImActorModelDroidkitBserLimits;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSLimits)
+
+typedef BSLimits ImActorModelDroidkitBserLimits;
 
 #endif // _BSLimits_H_

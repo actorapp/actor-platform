@@ -6,34 +6,37 @@
 #ifndef _ImActorModelApiBaseSeqUpdate_H_
 #define _ImActorModelApiBaseSeqUpdate_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/RpcScope.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/RpcScope.h"
-
 #define ImActorModelApiBaseSeqUpdate_HEADER 13
 
-@interface ImActorModelApiBaseSeqUpdate : ImActorModelNetworkParserRpcScope {
-}
+@interface ImActorModelApiBaseSeqUpdate : ImActorModelNetworkParserRpcScope
 
-+ (ImActorModelApiBaseSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
                     withInt:(jint)updateHeader
               withByteArray:(IOSByteArray *)update;
 
-- (instancetype)init;
++ (ImActorModelApiBaseSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getSeq;
 
 - (IOSByteArray *)getState;
 
-- (jint)getUpdateHeader;
-
 - (IOSByteArray *)getUpdate;
+
+- (jint)getUpdateHeader;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -41,18 +44,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiBaseSeqUpdate)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseSeqUpdate, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiBaseSeqUpdate *ImActorModelApiBaseSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseSeqUpdate, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(ImActorModelApiBaseSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update);
+
+FOUNDATION_EXPORT ImActorModelApiBaseSeqUpdate *new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiBaseSeqUpdate_init(ImActorModelApiBaseSeqUpdate *self);
+
+FOUNDATION_EXPORT ImActorModelApiBaseSeqUpdate *new_ImActorModelApiBaseSeqUpdate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiBaseSeqUpdate)
 

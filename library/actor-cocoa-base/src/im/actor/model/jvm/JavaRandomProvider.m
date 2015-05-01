@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaRandomProvider.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaRandomProvider.java"
 
 #include "IOSPrimitiveArray.h"
@@ -15,6 +16,7 @@
  @public
   JavaSecuritySecureRandom *random_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
@@ -26,8 +28,6 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 
 #line 15
 - (IOSByteArray *)randomBytesWithInt:(jint)length {
-  
-#line 16
   IOSByteArray *res = [IOSByteArray newArrayWithLength:length];
   @synchronized(random_) {
     [((JavaSecuritySecureRandom *) nil_chk(random_)) nextBytesWithByteArray:res];
@@ -46,8 +46,6 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 
 #line 31
 - (void)nextBytesWithByteArray:(IOSByteArray *)data {
-  
-#line 32
   @synchronized(random_) {
     [((JavaSecuritySecureRandom *) nil_chk(random_)) nextBytesWithByteArray:data];
   }
@@ -56,32 +54,32 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 
 #line 38
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits {
-  return [[JavaMathBigInteger alloc] initWithInt:numBits withJavaUtilRandom:random_];
+  return new_JavaMathBigInteger_initWithInt_withJavaUtilRandom_(numBits, random_);
 }
 
 
 #line 43
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits
                                           withInt:(jint)certanity {
-  
-#line 44
-  return [[JavaMathBigInteger alloc] initWithInt:numBits withInt:certanity withJavaUtilRandom:random_];
+  return new_JavaMathBigInteger_initWithInt_withInt_withJavaUtilRandom_(numBits, certanity, random_);
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    random_ =
-#line 12
-    [[JavaSecuritySecureRandom alloc] init];
-  }
+  AMJavaRandomProvider_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(AMJavaRandomProvider *)other {
-  [super copyAllFieldsTo:other];
-  other->random_ = random_;
+@end
+
+void AMJavaRandomProvider_init(AMJavaRandomProvider *self) {
+  (void) NSObject_init(self);
+  self->random_ = new_JavaSecuritySecureRandom_init();
 }
 
-@end
+AMJavaRandomProvider *new_AMJavaRandomProvider_init() {
+  AMJavaRandomProvider *self = [AMJavaRandomProvider alloc];
+  AMJavaRandomProvider_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaRandomProvider)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetFileUploadUrl.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetFileUploadUrl.java"
 
 #include "IOSClass.h"
@@ -13,14 +14,18 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestGetFileUploadUrl () {
  @public
   jint expectedSize_;
 }
+
 @end
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestGetFileUploadUrl
 
 
@@ -32,23 +37,20 @@
 
 #line 29
 - (instancetype)initWithInt:(jint)expectedSize {
-  if (self = [super init]) {
-    
-#line 30
-    self->expectedSize_ = expectedSize;
-  }
+  ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(self, expectedSize);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestGetFileUploadUrl_init(self);
+  return self;
 }
 
+
+#line 37
 - (jint)getExpectedSize {
-  
-#line 38
   return self->expectedSize_;
 }
 
@@ -61,11 +63,11 @@
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->expectedSize_];
 }
 
+
+#line 52
 - (NSString *)description {
   NSString *res = @"rpc GetFileUploadUrl{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"expectedSize=", self->expectedSize_));
@@ -73,24 +75,52 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 61
-  return ImActorModelApiRpcRequestGetFileUploadUrl_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestGetFileUploadUrl *)other {
-  [super copyAllFieldsTo:other];
-  other->expectedSize_ = expectedSize_;
+#line 60
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestGetFileUploadUrl_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestGetFileUploadUrl *ImActorModelApiRpcRequestGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetFileUploadUrl_init();
+  ImActorModelApiRpcRequestGetFileUploadUrl_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestGetFileUploadUrl *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestGetFileUploadUrl alloc] init], data));
+  return ((ImActorModelApiRpcRequestGetFileUploadUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUploadUrl_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(ImActorModelApiRpcRequestGetFileUploadUrl *self, jint expectedSize) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->expectedSize_ = expectedSize;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(jint expectedSize) {
+  ImActorModelApiRpcRequestGetFileUploadUrl *self = [ImActorModelApiRpcRequestGetFileUploadUrl alloc];
+  ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(self, expectedSize);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestGetFileUploadUrl_init(ImActorModelApiRpcRequestGetFileUploadUrl *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileUploadUrl_init() {
+  ImActorModelApiRpcRequestGetFileUploadUrl *self = [ImActorModelApiRpcRequestGetFileUploadUrl alloc];
+  ImActorModelApiRpcRequestGetFileUploadUrl_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetFileUploadUrl)

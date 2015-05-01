@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.java"
 
 #include "J2ObjC_source.h"
@@ -17,6 +18,7 @@
  @public
   id<DKQueueListener> listener_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
@@ -28,55 +30,41 @@ J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 
 #line 33
 - (void)notifyQueueChanged {
-  
-#line 34
   id<DKQueueListener> lListener = listener_;
   if (lListener != nil) {
     [lListener onQueueChanged];
   }
 }
 
-
-#line 40
 - (DKDispatchResult *)resultWithId:(id)obj {
-  
-#line 41
   return DKDispatchResult_resultWithId_(obj);
 }
 
-
-#line 44
 - (DKDispatchResult *)delayWithLong:(jlong)delay {
-  
-#line 45
   return DKDispatchResult_delayWithLong_(delay);
 }
 
 
 #line 53
 - (id<DKQueueListener>)getListener {
-  
-#line 54
   return listener_;
 }
 
 
 #line 62
 - (void)setListenerWithDKQueueListener:(id<DKQueueListener>)listener {
-  
-#line 63
   self->listener_ = listener;
 }
 
 - (instancetype)init {
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(DKAbstractDispatchQueue *)other {
-  [super copyAllFieldsTo:other];
-  other->listener_ = listener_;
+  DKAbstractDispatchQueue_init(self);
+  return self;
 }
 
 @end
+
+void DKAbstractDispatchQueue_init(DKAbstractDispatchQueue *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatchQueue)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserTypingVM.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserTypingVM.java"
 
 #include "J2ObjC_source.h"
@@ -15,6 +16,7 @@
   jint uid_;
   AMValueModel *userTyping_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMUserTypingVM, userTyping_, AMValueModel *)
@@ -26,39 +28,36 @@ J2OBJC_FIELD_SETTER(AMUserTypingVM, userTyping_, AMValueModel *)
 
 #line 12
 - (instancetype)initWithInt:(jint)uid {
-  if (self = [super init]) {
-    
-#line 13
-    self->uid_ = uid;
-    
-#line 14
-    self->userTyping_ = [[AMValueModel alloc] initWithNSString:JreStrcat("$I$", @"user.", uid, @".typing") withId:JavaLangBoolean_valueOfWithBoolean_(NO)];
-  }
+  AMUserTypingVM_initWithInt_(self, uid);
   return self;
 }
 
-
-#line 17
 - (jint)getUid {
-  
-#line 18
   return uid_;
 }
 
-
-#line 21
 - (AMValueModel *)getTyping {
-  
-#line 22
   return userTyping_;
 }
 
-- (void)copyAllFieldsTo:(AMUserTypingVM *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->userTyping_ = userTyping_;
+@end
+
+
+#line 12
+void AMUserTypingVM_initWithInt_(AMUserTypingVM *self, jint uid) {
+  (void) NSObject_init(self);
+  
+#line 13
+  self->uid_ = uid;
+  self->userTyping_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", uid, @".typing"), JavaLangBoolean_valueOfWithBoolean_(NO));
 }
 
-@end
+
+#line 12
+AMUserTypingVM *new_AMUserTypingVM_initWithInt_(jint uid) {
+  AMUserTypingVM *self = [AMUserTypingVM alloc];
+  AMUserTypingVM_initWithInt_(self, uid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserTypingVM)

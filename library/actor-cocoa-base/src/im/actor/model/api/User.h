@@ -6,17 +6,20 @@
 #ifndef _ImActorModelApiUser_H_
 #define _ImActorModelApiUser_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiSexEnum;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiUser : BSBserObject
 
-@interface ImActorModelApiUser : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
@@ -29,27 +32,25 @@
            withJavaUtilList:(id<JavaUtilList>)phones
            withJavaUtilList:(id<JavaUtilList>)emails;
 
-- (instancetype)init;
-
-- (jint)getId;
-
 - (jlong)getAccessHash;
-
-- (NSString *)getName;
-
-- (NSString *)getLocalName;
-
-- (ImActorModelApiSexEnum *)getSex;
-
-- (id<JavaUtilList>)getKeyHashes;
-
-- (jlong)getPhone;
 
 - (ImActorModelApiAvatar *)getAvatar;
 
+- (id<JavaUtilList>)getEmails;
+
+- (jint)getId;
+
+- (id<JavaUtilList>)getKeyHashes;
+
+- (NSString *)getLocalName;
+
+- (NSString *)getName;
+
+- (jlong)getPhone;
+
 - (id<JavaUtilList>)getPhones;
 
-- (id<JavaUtilList>)getEmails;
+- (ImActorModelApiSexEnum *)getSex;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -61,8 +62,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUser)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(ImActorModelApiUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails);
+
+FOUNDATION_EXPORT ImActorModelApiUser *new_ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUser_init(ImActorModelApiUser *self);
+
+FOUNDATION_EXPORT ImActorModelApiUser *new_ImActorModelApiUser_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUser)
 

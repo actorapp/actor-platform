@@ -6,39 +6,39 @@
 #ifndef _AMFileSource_H_
 #define _AMFileSource_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMFileSource : BSBserObject
 
-@interface AMFileSource : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (AMFileSource *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (jint)getSize;
-
 - (NSString *)getFileName;
+
+- (jint)getSize;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileSource)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMFileSource ImActorModelEntityContentFileSource;
+FOUNDATION_EXPORT void AMFileSource_init(AMFileSource *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileSource)
+
+typedef AMFileSource ImActorModelEntityContentFileSource;
 
 #endif // _AMFileSource_H_

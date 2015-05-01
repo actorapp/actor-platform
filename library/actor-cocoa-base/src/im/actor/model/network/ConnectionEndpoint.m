@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ConnectionEndpoint.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ConnectionEndpoint.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
 @interface AMConnectionEndpoint () {
@@ -16,10 +18,15 @@
   jint port_;
   AMConnectionEndpoint_TypeEnum *type_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMConnectionEndpoint, host_, NSString *)
 J2OBJC_FIELD_SETTER(AMConnectionEndpoint, type_, AMConnectionEndpoint_TypeEnum *)
+
+__attribute__((unused)) static void AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(AMConnectionEndpoint_TypeEnum *self, NSString *__name, jint __ordinal);
+
+__attribute__((unused)) static AMConnectionEndpoint_TypeEnum *new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
 
 #line 6
@@ -30,72 +37,66 @@ J2OBJC_FIELD_SETTER(AMConnectionEndpoint, type_, AMConnectionEndpoint_TypeEnum *
 - (instancetype)initWithNSString:(NSString *)host
                          withInt:(jint)port
 withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
-  if (self = [super init]) {
-    
-#line 12
-    self->host_ = host;
-    
-#line 13
-    self->port_ = port;
-    
-#line 14
-    self->type_ = type;
-  }
+  AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(self, host, port, type);
   return self;
 }
 
 
 #line 17
 - (AMConnectionEndpoint_TypeEnum *)getType {
-  
-#line 18
   return type_;
 }
 
-
-#line 21
 - (NSString *)getHost {
-  
-#line 22
   return host_;
 }
 
-
-#line 25
 - (jint)getPort {
-  
-#line 26
   return port_;
-}
-
-- (void)copyAllFieldsTo:(AMConnectionEndpoint *)other {
-  [super copyAllFieldsTo:other];
-  other->host_ = host_;
-  other->port_ = port_;
-  other->type_ = type_;
 }
 
 @end
 
+
+#line 11
+void AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
+  (void) NSObject_init(self);
+  
+#line 12
+  self->host_ = host;
+  self->port_ = port;
+  self->type_ = type;
+}
+
+
+#line 11
+AMConnectionEndpoint *new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
+  AMConnectionEndpoint *self = [AMConnectionEndpoint alloc];
+  AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(self, host, port, type);
+  return self;
+}
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConnectionEndpoint)
 
-#line 29
-
-BOOL AMConnectionEndpoint_TypeEnum_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(AMConnectionEndpoint_TypeEnum)
 
 AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_values_[4];
 
+
+#line 29
 @implementation AMConnectionEndpoint_TypeEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
-  return [super initWithNSString:__name withInt:__ordinal];
+  AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
 }
 
 IOSObjectArray *AMConnectionEndpoint_TypeEnum_values() {
-  AMConnectionEndpoint_TypeEnum_init();
+  AMConnectionEndpoint_TypeEnum_initialize();
   return [IOSObjectArray arrayWithObjects:AMConnectionEndpoint_TypeEnum_values_ count:4 type:AMConnectionEndpoint_TypeEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return AMConnectionEndpoint_TypeEnum_values();
 }
@@ -105,7 +106,7 @@ IOSObjectArray *AMConnectionEndpoint_TypeEnum_values() {
 }
 
 AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_valueOfWithNSString_(NSString *name) {
-  AMConnectionEndpoint_TypeEnum_init();
+  AMConnectionEndpoint_TypeEnum_initialize();
   for (int i = 0; i < 4; i++) {
     AMConnectionEndpoint_TypeEnum *e = AMConnectionEndpoint_TypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -122,14 +123,24 @@ AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_valueOfWithNSString
 
 + (void)initialize {
   if (self == [AMConnectionEndpoint_TypeEnum class]) {
-    AMConnectionEndpoint_TypeEnum_TCP = [[AMConnectionEndpoint_TypeEnum alloc] initWithNSString:@"TCP" withInt:0];
-    AMConnectionEndpoint_TypeEnum_TCP_TLS = [[AMConnectionEndpoint_TypeEnum alloc] initWithNSString:@"TCP_TLS" withInt:1];
-    AMConnectionEndpoint_TypeEnum_WS = [[AMConnectionEndpoint_TypeEnum alloc] initWithNSString:@"WS" withInt:2];
-    AMConnectionEndpoint_TypeEnum_WS_TLS = [[AMConnectionEndpoint_TypeEnum alloc] initWithNSString:@"WS_TLS" withInt:3];
+    AMConnectionEndpoint_TypeEnum_TCP = new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(@"TCP", 0);
+    AMConnectionEndpoint_TypeEnum_TCP_TLS = new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(@"TCP_TLS", 1);
+    AMConnectionEndpoint_TypeEnum_WS = new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(@"WS", 2);
+    AMConnectionEndpoint_TypeEnum_WS_TLS = new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(@"WS_TLS", 3);
     J2OBJC_SET_INITIALIZED(AMConnectionEndpoint_TypeEnum)
   }
 }
 
 @end
+
+void AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(AMConnectionEndpoint_TypeEnum *self, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+}
+
+AMConnectionEndpoint_TypeEnum *new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) {
+  AMConnectionEndpoint_TypeEnum *self = [AMConnectionEndpoint_TypeEnum alloc];
+  AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConnectionEndpoint_TypeEnum)

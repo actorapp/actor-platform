@@ -6,95 +6,36 @@
 #ifndef _AMUploadFileVM_H_
 #define _AMUploadFileVM_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/mvvm/AsyncVM.h"
+
 @class ImActorModelModulesModules;
 @protocol AMUploadFileVMCallback;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/mvvm/AsyncVM.h"
-#include "im/actor/model/viewmodel/UploadFileCallback.h"
+@interface AMUploadFileVM : AMAsyncVM
 
-@interface AMUploadFileVM : AMAsyncVM {
-}
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid
   withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)vmCallback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)onObjectReceivedWithId:(id)obj;
-
 - (void)detach;
+
+#pragma mark Protected
+
+- (void)onObjectReceivedWithId:(id)obj;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMUploadFileVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withImActorModelModulesModules_(AMUploadFileVM *self, jlong rid, id<AMUploadFileVMCallback> vmCallback, ImActorModelModulesModules *modules);
 
-typedef AMUploadFileVM ImActorModelViewmodelUploadFileVM;
+FOUNDATION_EXPORT AMUploadFileVM *new_AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withImActorModelModulesModules_(jlong rid, id<AMUploadFileVMCallback> vmCallback, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM)
 
-@interface AMUploadFileVM_NotUploading : NSObject {
-}
-
-- (instancetype)initWithAMUploadFileVM:(AMUploadFileVM *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMUploadFileVM_NotUploading)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_NotUploading)
-
-@interface AMUploadFileVM_Uploading : NSObject {
-}
-
-- (jfloat)getProgress;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMUploadFileVM_Uploading)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_Uploading)
-
-@interface AMUploadFileVM_Uploaded : NSObject {
-}
-
-- (instancetype)initWithAMUploadFileVM:(AMUploadFileVM *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMUploadFileVM_Uploaded)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_Uploaded)
-
-@interface AMUploadFileVM_$1 : NSObject < AMUploadFileCallback > {
-}
-
-- (void)onNotUploading;
-
-- (void)onUploadingWithFloat:(jfloat)progress;
-
-- (void)onUploaded;
-
-- (instancetype)initWithAMUploadFileVM:(AMUploadFileVM *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMUploadFileVM_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_$1)
+typedef AMUploadFileVM ImActorModelViewmodelUploadFileVM;
 
 #endif // _AMUploadFileVM_H_

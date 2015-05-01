@@ -6,17 +6,18 @@
 #ifndef _MTMTRpcResponse_H_
 #define _MTMTRpcResponse_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
-
 #define MTMTRpcResponse_HEADER 4
 
-@interface MTMTRpcResponse : MTProtoStruct {
-}
+@interface MTMTRpcResponse : MTProtoStruct
+
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
@@ -24,25 +25,28 @@
 
 - (IOSByteArray *)getPayload;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTMTRpcResponse)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTMTRpcResponse, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTMTRpcResponse ImActorModelNetworkMtpEntityMTRpcResponse;
+FOUNDATION_EXPORT void MTMTRpcResponse_initWithBSDataInput_(MTMTRpcResponse *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTMTRpcResponse *new_MTMTRpcResponse_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTMTRpcResponse)
+
+typedef MTMTRpcResponse ImActorModelNetworkMtpEntityMTRpcResponse;
 
 #endif // _MTMTRpcResponse_H_

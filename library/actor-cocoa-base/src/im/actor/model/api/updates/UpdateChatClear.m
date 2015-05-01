@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateChatClear.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateChatClear.java"
 
 #include "IOSClass.h"
@@ -14,12 +15,14 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateChatClear () {
  @public
   ImActorModelApiPeer *peer_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelApiPeer *)
@@ -37,43 +40,40 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 
 #line 29
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer {
-  if (self = [super init]) {
-    
-#line 30
-    self->peer_ = peer;
-  }
+  ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(self, peer);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateChatClear_init(self);
+  return self;
 }
 
+
+#line 37
 - (ImActorModelApiPeer *)getPeer {
-  
-#line 38
   return self->peer_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
 }
 
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   if (self->peer_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
 }
 
+
+#line 55
 - (NSString *)description {
   NSString *res = @"update ChatClear{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -81,24 +81,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 64
-  return ImActorModelApiUpdatesUpdateChatClear_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateChatClear *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
+#line 63
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateChatClear_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateChatClear_init();
+  ImActorModelApiUpdatesUpdateChatClear_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateChatClear *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateChatClear alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateChatClear *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateChatClear_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiUpdatesUpdateChatClear *self, ImActorModelApiPeer *peer) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 30
+  self->peer_ = peer;
+}
+
+
+#line 29
+ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiPeer *peer) {
+  ImActorModelApiUpdatesUpdateChatClear *self = [ImActorModelApiUpdatesUpdateChatClear alloc];
+  ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(self, peer);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateChatClear_init(ImActorModelApiUpdatesUpdateChatClear *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_init() {
+  ImActorModelApiUpdatesUpdateChatClear *self = [ImActorModelApiUpdatesUpdateChatClear alloc];
+  ImActorModelApiUpdatesUpdateChatClear_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateChatClear)

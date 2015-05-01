@@ -3,20 +3,23 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECConstants.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECConstants.java"
 
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/ec/ECConstants.h"
 
-BOOL OrgBouncycastleMathEcECConstants_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleMathEcECConstants)
 
-JavaMathBigInteger * OrgBouncycastleMathEcECConstants_ZERO_;
-JavaMathBigInteger * OrgBouncycastleMathEcECConstants_ONE_;
-JavaMathBigInteger * OrgBouncycastleMathEcECConstants_TWO_;
-JavaMathBigInteger * OrgBouncycastleMathEcECConstants_THREE_;
-JavaMathBigInteger * OrgBouncycastleMathEcECConstants_FOUR_;
+JavaMathBigInteger *OrgBouncycastleMathEcECConstants_ZERO_;
+JavaMathBigInteger *OrgBouncycastleMathEcECConstants_ONE_;
+JavaMathBigInteger *OrgBouncycastleMathEcECConstants_TWO_;
+JavaMathBigInteger *OrgBouncycastleMathEcECConstants_THREE_;
+JavaMathBigInteger *OrgBouncycastleMathEcECConstants_FOUR_;
 
+
+#line 5
 @implementation OrgBouncycastleMathEcECConstants
 
 + (void)initialize {

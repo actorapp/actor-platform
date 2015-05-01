@@ -6,6 +6,8 @@
 #ifndef _DKEnvironment_H_
 #define _DKEnvironment_H_
 
+#include "J2ObjC_header.h"
+
 @class AMAtomicIntegerCompat;
 @class AMAtomicLongCompat;
 @class AMThreadLocalCompat;
@@ -16,16 +18,15 @@
 @protocol AMThreadingProvider;
 @protocol JavaLangRunnable;
 
-#include "J2ObjC_header.h"
+@interface DKEnvironment : NSObject
 
-@interface DKEnvironment : NSObject {
-}
+#pragma mark Public
 
-+ (void)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
+- (instancetype)init;
 
-+ (void)setDispatcherProviderWithAMDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider;
++ (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_;
 
-+ (void)dispatchCallbackWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
++ (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_;
 
 + (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
@@ -36,25 +37,23 @@
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                   withDKActorSystem:(DKActorSystem *)actorSystem;
 
-+ (jlong)getActorTime;
++ (AMThreadLocalCompat *)createThreadLocal;
 
-+ (jlong)getCurrentTime;
++ (void)dispatchCallbackWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
+
++ (jlong)getActorTime;
 
 + (jlong)getCurrentSyncedTime;
 
-+ (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_;
++ (jlong)getCurrentTime;
 
-+ (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_;
++ (void)setDispatcherProviderWithAMDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider;
 
-+ (AMThreadLocalCompat *)createThreadLocal;
-
-- (instancetype)init;
++ (void)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKEnvironment)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT void DKEnvironment_setThreadingProviderWithAMThreadingProvider_(id<AMThreadingProvider> threadingProvider);
 
@@ -78,17 +77,12 @@ FOUNDATION_EXPORT AMAtomicLongCompat *DKEnvironment_createAtomicLongWithLong_(jl
 
 FOUNDATION_EXPORT AMThreadLocalCompat *DKEnvironment_createThreadLocal();
 
-FOUNDATION_EXPORT id<AMThreadingProvider> DKEnvironment_threadingProvider_;
-J2OBJC_STATIC_FIELD_GETTER(DKEnvironment, threadingProvider_, id<AMThreadingProvider>)
-J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, threadingProvider_, id<AMThreadingProvider>)
+FOUNDATION_EXPORT void DKEnvironment_init(DKEnvironment *self);
 
-FOUNDATION_EXPORT id<AMDispatcherProvider> DKEnvironment_dispatcherProvider_;
-J2OBJC_STATIC_FIELD_GETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherProvider>)
-J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherProvider>)
-CF_EXTERN_C_END
-
-typedef DKEnvironment ImActorModelDroidkitActorsEnvironment;
+FOUNDATION_EXPORT DKEnvironment *new_DKEnvironment_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKEnvironment)
+
+typedef DKEnvironment ImActorModelDroidkitActorsEnvironment;
 
 #endif // _DKEnvironment_H_

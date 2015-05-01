@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/DisplayWindow.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/DisplayWindow.java"
 
 #include "J2ObjC_source.h"
@@ -19,6 +20,7 @@
   jboolean isForwardCompleted__;
   JavaLangLong *currentForwardHead_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMDisplayWindow, currentBackwardHead_, JavaLangLong *)
@@ -61,21 +63,13 @@ J2OBJC_FIELD_SETTER(AMDisplayWindow, currentForwardHead_, JavaLangLong *)
 
 #line 31
 - (jboolean)isForwardCompleted {
-  
-#line 32
   return isForwardCompleted__;
 }
 
-
-#line 35
 - (jboolean)isBackwardLoaded {
-  
-#line 36
   return isBackwardLoaded__;
 }
 
-
-#line 39
 - (jboolean)startForwardLoading {
   @synchronized(self) {
     
@@ -282,37 +276,33 @@ J2OBJC_FIELD_SETTER(AMDisplayWindow, currentForwardHead_, JavaLangLong *)
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    isForwardLoading_ =
-#line 8
-    NO;
-    isBackwardLoading_ =
-#line 9
-    NO;
-    isInited__ =
-#line 11
-    NO;
-    isBackwardLoaded__ =
-#line 13
-    NO;
-    isForwardCompleted__ =
-#line 16
-    NO;
-  }
+  AMDisplayWindow_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(AMDisplayWindow *)other {
-  [super copyAllFieldsTo:other];
-  other->isForwardLoading_ = isForwardLoading_;
-  other->isBackwardLoading_ = isBackwardLoading_;
-  other->isInited__ = isInited__;
-  other->isBackwardLoaded__ = isBackwardLoaded__;
-  other->currentBackwardHead_ = currentBackwardHead_;
-  other->isForwardCompleted__ = isForwardCompleted__;
-  other->currentForwardHead_ = currentForwardHead_;
+@end
+
+void AMDisplayWindow_init(AMDisplayWindow *self) {
+  (void) NSObject_init(self);
+  self->isForwardLoading_ =
+#line 8
+  NO;
+  self->isBackwardLoading_ = NO;
+  self->isInited__ =
+#line 11
+  NO;
+  self->isBackwardLoaded__ =
+#line 13
+  NO;
+  self->isForwardCompleted__ =
+#line 16
+  NO;
 }
 
-@end
+AMDisplayWindow *new_AMDisplayWindow_init() {
+  AMDisplayWindow *self = [AMDisplayWindow alloc];
+  AMDisplayWindow_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayWindow)

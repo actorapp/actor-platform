@@ -6,43 +6,45 @@
 #ifndef _ImActorModelModulesFileEntityDownloaded_H_
 #define _ImActorModelModulesFileEntityDownloaded_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@interface ImActorModelModulesFileEntityDownloaded : BSBserObject < DKKeyValueItem > {
-}
+@class BSBserValues;
+@class BSBserWriter;
+@class IOSByteArray;
 
-+ (ImActorModelModulesFileEntityDownloaded *)fromBytesWithByteArray:(IOSByteArray *)data;
+@interface ImActorModelModulesFileEntityDownloaded : BSBserObject < DKKeyValueItem >
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)fileId
                      withInt:(jint)fileSize
                 withNSString:(NSString *)descriptor;
 
++ (ImActorModelModulesFileEntityDownloaded *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (NSString *)getDescriptor;
+
+- (jlong)getEngineId;
+
 - (jlong)getFileId;
 
 - (jint)getFileSize;
-
-- (NSString *)getDescriptor;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileEntityDownloaded)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesFileEntityDownloaded *ImActorModelModulesFileEntityDownloaded_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(ImActorModelModulesFileEntityDownloaded *self, jlong fileId, jint fileSize, NSString *descriptor);
+
+FOUNDATION_EXPORT ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(jlong fileId, jint fileSize, NSString *descriptor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileEntityDownloaded)
 

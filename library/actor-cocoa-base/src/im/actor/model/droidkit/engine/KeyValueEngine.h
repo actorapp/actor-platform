@@ -6,11 +6,11 @@
 #ifndef _DKKeyValueEngine_H_
 #define _DKKeyValueEngine_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSLongArray;
 @protocol DKKeyValueItem;
 @protocol JavaUtilList;
-
-#include "J2ObjC_header.h"
 
 @protocol DKKeyValueEngine < NSObject, JavaObject >
 
@@ -30,8 +30,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKKeyValueEngine)
 
-#define ImActorModelDroidkitEngineKeyValueEngine DKKeyValueEngine
-
 J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueEngine)
+
+#define ImActorModelDroidkitEngineKeyValueEngine DKKeyValueEngine
 
 #endif // _DKKeyValueEngine_H_

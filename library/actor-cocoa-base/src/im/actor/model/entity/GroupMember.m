@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupMember.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupMember.java"
 
 #include "IOSClass.h"
@@ -22,6 +23,7 @@
   jlong inviteDate_;
   jboolean isAdministrator__;
 }
+
 @end
 
 
@@ -38,56 +40,30 @@
                     withInt:(jint)inviterUid
                    withLong:(jlong)inviteDate
                 withBoolean:(jboolean)isAdministrator {
-  if (self = [super init]) {
-    
-#line 29
-    self->uid_ = uid;
-    
-#line 30
-    self->inviterUid_ = inviterUid;
-    
-#line 31
-    self->inviteDate_ = inviteDate;
-    
-#line 32
-    self->isAdministrator__ = isAdministrator;
-  }
+  AMGroupMember_initWithInt_withInt_withLong_withBoolean_(self, uid, inviterUid, inviteDate, isAdministrator);
+  return self;
+}
+
+- (instancetype)init {
+  AMGroupMember_init(self);
   return self;
 }
 
 
-#line 35
-- (instancetype)init {
-  return [super init];
-}
-
+#line 39
 - (jint)getUid {
-  
-#line 40
   return uid_;
 }
 
-
-#line 43
 - (jint)getInviterUid {
-  
-#line 44
   return inviterUid_;
 }
 
-
-#line 47
 - (jlong)getInviteDate {
-  
-#line 48
   return inviteDate_;
 }
 
-
-#line 51
 - (jboolean)isAdministrator {
-  
-#line 52
   return isAdministrator__;
 }
 
@@ -103,14 +79,14 @@
 
 #line 64
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 65
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
   [writer writeIntWithInt:2 withInt:inviterUid_];
   [writer writeLongWithInt:3 withLong:inviteDate_];
   [writer writeBoolWithInt:4 withBoolean:isAdministrator__];
 }
 
+
+#line 72
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -125,27 +101,53 @@
   return YES;
 }
 
-- (NSUInteger)hash {
-  
-#line 85
-  return uid_;
-}
 
-- (void)copyAllFieldsTo:(AMGroupMember *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->inviterUid_ = inviterUid_;
-  other->inviteDate_ = inviteDate_;
-  other->isAdministrator__ = isAdministrator__;
+#line 84
+- (NSUInteger)hash {
+  return uid_;
 }
 
 @end
 
+
+#line 15
 AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMGroupMember_init();
+  AMGroupMember_initialize();
   
 #line 16
-  return ((AMGroupMember *) BSBser_parseWithBSBserObject_withByteArray_([[AMGroupMember alloc] init], data));
+  return ((AMGroupMember *) BSBser_parseWithBSBserObject_withByteArray_(new_AMGroupMember_init(), data));
+}
+
+
+#line 27
+void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self, jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
+  (void) BSBserObject_init(self);
+  self->uid_ = uid;
+  self->inviterUid_ = inviterUid;
+  self->inviteDate_ = inviteDate;
+  self->isAdministrator__ = isAdministrator;
+}
+
+
+#line 27
+AMGroupMember *new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_(jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
+  AMGroupMember *self = [AMGroupMember alloc];
+  AMGroupMember_initWithInt_withInt_withLong_withBoolean_(self, uid, inviterUid, inviteDate, isAdministrator);
+  return self;
+}
+
+
+#line 35
+void AMGroupMember_init(AMGroupMember *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 35
+AMGroupMember *new_AMGroupMember_init() {
+  AMGroupMember *self = [AMGroupMember alloc];
+  AMGroupMember_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupMember)

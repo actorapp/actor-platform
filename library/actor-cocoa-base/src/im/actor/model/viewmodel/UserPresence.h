@@ -6,33 +6,39 @@
 #ifndef _AMUserPresence_H_
 #define _AMUserPresence_H_
 
-@class AMUserPresence_StateEnum;
-
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-@interface AMUserPresence : NSObject {
-}
+@class AMUserPresence_StateEnum;
+
+@interface AMUserPresence : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state;
 
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
                                         withLong:(jlong)lastSeen;
 
-- (AMUserPresence_StateEnum *)getState;
-
 - (jlong)getLastSeen;
+
+- (AMUserPresence_StateEnum *)getState;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMUserPresence)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence *self, AMUserPresence_StateEnum *state);
 
-typedef AMUserPresence ImActorModelViewmodelUserPresence;
+FOUNDATION_EXPORT AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum *state) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence *self, AMUserPresence_StateEnum *state, jlong lastSeen);
+
+FOUNDATION_EXPORT AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum *state, jlong lastSeen) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUserPresence)
+
+typedef AMUserPresence ImActorModelViewmodelUserPresence;
 
 typedef NS_ENUM(NSUInteger, AMUserPresence_State) {
   AMUserPresence_State_UNKNOWN = 0,
@@ -40,23 +46,20 @@ typedef NS_ENUM(NSUInteger, AMUserPresence_State) {
   AMUserPresence_State_OFFLINE = 2,
 };
 
-@interface AMUserPresence_StateEnum : JavaLangEnum < NSCopying > {
-}
+@interface AMUserPresence_StateEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMUserPresence_StateEnum_values();
 
 + (AMUserPresence_StateEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMUserPresence_StateEnum *AMUserPresence_StateEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMUserPresence_StateEnum_initialized;
 J2OBJC_STATIC_INIT(AMUserPresence_StateEnum)
 
 FOUNDATION_EXPORT AMUserPresence_StateEnum *AMUserPresence_StateEnum_values_[];

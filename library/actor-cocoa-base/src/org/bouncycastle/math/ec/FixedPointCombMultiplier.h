@@ -6,28 +6,32 @@
 #ifndef _OrgBouncycastleMathEcFixedPointCombMultiplier_H_
 #define _OrgBouncycastleMathEcFixedPointCombMultiplier_H_
 
-@class JavaMathBigInteger;
-@class OrgBouncycastleMathEcECPoint;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 
-@interface OrgBouncycastleMathEcFixedPointCombMultiplier : OrgBouncycastleMathEcAbstractECMultiplier {
-}
+@class JavaMathBigInteger;
+@class OrgBouncycastleMathEcECPoint;
 
-- (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
-                                                            withJavaMathBigInteger:(JavaMathBigInteger *)k;
+@interface OrgBouncycastleMathEcFixedPointCombMultiplier : OrgBouncycastleMathEcAbstractECMultiplier
+
+#pragma mark Public
+
+- (instancetype)init;
+
+#pragma mark Protected
 
 - (jint)getWidthForCombSizeWithInt:(jint)combSize;
 
-- (instancetype)init;
+- (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
+                                                            withJavaMathBigInteger:(JavaMathBigInteger *)k;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcFixedPointCombMultiplier)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcFixedPointCombMultiplier_init(OrgBouncycastleMathEcFixedPointCombMultiplier *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcFixedPointCombMultiplier *new_OrgBouncycastleMathEcFixedPointCombMultiplier_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcFixedPointCombMultiplier)
 

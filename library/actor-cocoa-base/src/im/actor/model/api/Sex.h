@@ -16,31 +16,27 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiSex) {
   ImActorModelApiSex_UNSUPPORTED_VALUE = 3,
 };
 
-@interface ImActorModelApiSexEnum : JavaLangEnum < NSCopying > {
-}
+@interface ImActorModelApiSexEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
 
 + (ImActorModelApiSexEnum *)parseWithInt:(jint)value;
 
+#pragma mark Package-Private
+
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiSexEnum_values();
 
 + (ImActorModelApiSexEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelApiSexEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelApiSexEnum)
-
-FOUNDATION_EXPORT ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[];
 
@@ -55,6 +51,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiSexEnum, FEMALE)
 
 #define ImActorModelApiSexEnum_UNSUPPORTED_VALUE ImActorModelApiSexEnum_values_[ImActorModelApiSex_UNSUPPORTED_VALUE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiSexEnum, UNSUPPORTED_VALUE)
+
+FOUNDATION_EXPORT ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiSexEnum)
 

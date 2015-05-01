@@ -6,22 +6,27 @@
 #ifndef _ImActorModelModulesUpdatesSettingsProcessor_H_
 #define _ImActorModelModulesUpdatesSettingsProcessor_H_
 
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdatesSettingsProcessor : ImActorModelModulesBaseModule {
-}
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesUpdatesSettingsProcessor : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+
+- (void)onSettingsChangedWithNSString:(NSString *)key
+                         withNSString:(NSString *)value;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSettingsProcessor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesSettingsProcessor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesSettingsProcessor *new_ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSettingsProcessor)
 

@@ -8,8 +8,9 @@
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMessagesDeadLetter : NSObject {
-}
+@interface ImActorModelDroidkitActorsMessagesDeadLetter : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithId:(id)message;
 
@@ -21,8 +22,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMessagesDeadLetter)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(ImActorModelDroidkitActorsMessagesDeadLetter *self, id message);
+
+FOUNDATION_EXPORT ImActorModelDroidkitActorsMessagesDeadLetter *new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(id message) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMessagesDeadLetter)
 

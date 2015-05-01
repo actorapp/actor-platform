@@ -6,14 +6,15 @@
 #ifndef _DKActorContext_H_
 #define _DKActorContext_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActorRef;
 @class DKActorScope;
 @class DKActorSystem;
 
-#include "J2ObjC_header.h"
+@interface DKActorContext : NSObject
 
-@interface DKActorContext : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithDKActorScope:(DKActorScope *)scope;
 
@@ -29,11 +30,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorContext)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKActorContext_initWithDKActorScope_(DKActorContext *self, DKActorScope *scope);
 
-typedef DKActorContext ImActorModelDroidkitActorsActorContext;
+FOUNDATION_EXPORT DKActorContext *new_DKActorContext_initWithDKActorScope_(DKActorScope *scope) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorContext)
+
+typedef DKActorContext ImActorModelDroidkitActorsActorContext;
 
 #endif // _DKActorContext_H_

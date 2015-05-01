@@ -8,8 +8,9 @@
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelModulesUpdatesInternalInternalUpdate : NSObject {
-}
+@interface ImActorModelModulesUpdatesInternalInternalUpdate : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -17,8 +18,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalInternalUpdate)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalInternalUpdate_init(ImActorModelModulesUpdatesInternalInternalUpdate *self);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalInternalUpdate *new_ImActorModelModulesUpdatesInternalInternalUpdate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalInternalUpdate)
 

@@ -6,25 +6,26 @@
 #ifndef _ImActorModelApiPhone_H_
 #define _ImActorModelApiPhone_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiPhone : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiPhone : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                    withLong:(jlong)phone
                withNSString:(NSString *)phoneTitle;
 
-- (instancetype)init;
+- (jlong)getAccessHash;
 
 - (jint)getId;
-
-- (jlong)getAccessHash;
 
 - (jlong)getPhone;
 
@@ -40,8 +41,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiPhone)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiPhone_initWithInt_withLong_withLong_withNSString_(ImActorModelApiPhone *self, jint id_, jlong accessHash, jlong phone, NSString *phoneTitle);
+
+FOUNDATION_EXPORT ImActorModelApiPhone *new_ImActorModelApiPhone_initWithInt_withLong_withLong_withNSString_(jint id_, jlong accessHash, jlong phone, NSString *phoneTitle) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiPhone_init(ImActorModelApiPhone *self);
+
+FOUNDATION_EXPORT ImActorModelApiPhone *new_ImActorModelApiPhone_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiPhone)
 

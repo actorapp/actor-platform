@@ -6,42 +6,49 @@
 #ifndef _AMServiceContent_H_
 #define _AMServiceContent_H_
 
-@class AMAbsContent_ContentTypeEnum;
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/AbsContent.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+@interface AMServiceContent : AMAbsContent
 
-@interface AMServiceContent : AMAbsContent {
-}
-
-+ (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)compatText;
 
-- (instancetype)init;
-
 - (NSString *)getCompatText;
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
++ (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data;
+
+#pragma mark Protected
+
+- (instancetype)init;
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceContent)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceContent ImActorModelEntityContentServiceContent;
+FOUNDATION_EXPORT void AMServiceContent_initWithNSString_(AMServiceContent *self, NSString *compatText);
+
+FOUNDATION_EXPORT AMServiceContent *new_AMServiceContent_initWithNSString_(NSString *compatText) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMServiceContent_init(AMServiceContent *self);
+
+FOUNDATION_EXPORT AMServiceContent *new_AMServiceContent_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceContent)
+
+typedef AMServiceContent ImActorModelEntityContentServiceContent;
 
 #endif // _AMServiceContent_H_

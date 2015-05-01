@@ -3,16 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaAtomicInteger.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaAtomicInteger.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/jvm/threads/JavaAtomicInteger.h"
+#include "im/actor/model/util/AtomicIntegerCompat.h"
 #include "java/util/concurrent/atomic/AtomicInteger.h"
 
 @interface ImActorModelJvmThreadsJavaAtomicInteger () {
  @public
   JavaUtilConcurrentAtomicAtomicInteger *atomicInteger_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, JavaUtilConcurrentAtomicAtomicInteger *)
@@ -24,19 +27,11 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, Jav
 
 #line 14
 - (instancetype)initWithInt:(jint)value {
-  if (self = [super init]) {
-    
-#line 15
-    atomicInteger_ = [[JavaUtilConcurrentAtomicAtomicInteger alloc] initWithInt:value];
-  }
+  ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(self, value);
   return self;
 }
 
-
-#line 19
 - (jint)get {
-  
-#line 20
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) get];
 }
 
@@ -49,8 +44,6 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, Jav
 
 #line 29
 - (jint)getAndIncrement {
-  
-#line 30
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) getAndIncrement];
 }
 
@@ -62,16 +55,26 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, Jav
 }
 
 - (void)setWithInt:(jint)v {
-  
-#line 40
   [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) setWithInt:v];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelJvmThreadsJavaAtomicInteger *)other {
-  [super copyAllFieldsTo:other];
-  other->atomicInteger_ = atomicInteger_;
+@end
+
+
+#line 14
+void ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(ImActorModelJvmThreadsJavaAtomicInteger *self, jint value) {
+  (void) AMAtomicIntegerCompat_init(self);
+  
+#line 15
+  self->atomicInteger_ = new_JavaUtilConcurrentAtomicAtomicInteger_initWithInt_(value);
 }
 
-@end
+
+#line 14
+ImActorModelJvmThreadsJavaAtomicInteger *new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(jint value) {
+  ImActorModelJvmThreadsJavaAtomicInteger *self = [ImActorModelJvmThreadsJavaAtomicInteger alloc];
+  ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(self, value);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaAtomicInteger)

@@ -6,17 +6,13 @@
 #ifndef _AMExponentialBackoff_H_
 #define _AMExponentialBackoff_H_
 
-@class AMAtomicIntegerCompat;
-@class JavaUtilRandom;
-
 #include "J2ObjC_header.h"
 
-#define AMExponentialBackoff_MAX_DELAY 15000
-#define AMExponentialBackoff_MAX_FAILURE_COUNT 50
-#define AMExponentialBackoff_MIN_DELAY 100
+@interface AMExponentialBackoff : NSObject
 
-@interface AMExponentialBackoff : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (jlong)exponentialWait;
 
@@ -26,23 +22,16 @@
 
 - (void)reset;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMExponentialBackoff)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void AMExponentialBackoff_init(AMExponentialBackoff *self);
 
-J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MIN_DELAY, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_DELAY, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_FAILURE_COUNT, jint)
-CF_EXTERN_C_END
-
-typedef AMExponentialBackoff ImActorModelUtilExponentialBackoff;
+FOUNDATION_EXPORT AMExponentialBackoff *new_AMExponentialBackoff_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMExponentialBackoff)
+
+typedef AMExponentialBackoff ImActorModelUtilExponentialBackoff;
 
 #endif // _AMExponentialBackoff_H_

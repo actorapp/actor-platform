@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/AsymmetricCipherKeyPair.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/AsymmetricCipherKeyPair.java"
 
 #include "J2ObjC_source.h"
@@ -15,6 +16,7 @@
   OrgBouncycastleCryptoParamsAsymmetricKeyParameter *publicParam_;
   OrgBouncycastleCryptoParamsAsymmetricKeyParameter *privateParam_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoAsymmetricCipherKeyPair, publicParam_, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)
@@ -28,14 +30,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoAsymmetricCipherKeyPair, privateParam_,
 #line 19
 - (instancetype)initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)publicParam
                     withOrgBouncycastleCryptoParamsAsymmetricKeyParameter:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)privateParam {
-  if (self = [super init]) {
-    
-#line 23
-    self->publicParam_ = publicParam;
-    
-#line 24
-    self->privateParam_ = privateParam;
-  }
+  OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(self, publicParam, privateParam);
   return self;
 }
 
@@ -43,17 +38,12 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoAsymmetricCipherKeyPair, privateParam_,
 #line 34
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)publicParam
                     withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)privateParam {
-  if (self = [super init]) {
-    
-#line 38
-    self->publicParam_ = (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *) check_class_cast(publicParam, [OrgBouncycastleCryptoParamsAsymmetricKeyParameter class]);
-    
-#line 39
-    self->privateParam_ = (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *) check_class_cast(privateParam, [OrgBouncycastleCryptoParamsAsymmetricKeyParameter class]);
-  }
+  OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoCipherParameters_withOrgBouncycastleCryptoCipherParameters_(self, publicParam, privateParam);
   return self;
 }
 
+
+#line 47
 - (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)getPublic {
   
 #line 49
@@ -68,12 +58,42 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoAsymmetricCipherKeyPair, privateParam_,
   return privateParam_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoAsymmetricCipherKeyPair *)other {
-  [super copyAllFieldsTo:other];
-  other->publicParam_ = publicParam_;
-  other->privateParam_ = privateParam_;
+@end
+
+
+#line 19
+void OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(OrgBouncycastleCryptoAsymmetricCipherKeyPair *self, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *publicParam, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *privateParam) {
+  (void) NSObject_init(self);
+  
+#line 23
+  self->publicParam_ = publicParam;
+  self->privateParam_ = privateParam;
 }
 
-@end
+
+#line 19
+OrgBouncycastleCryptoAsymmetricCipherKeyPair *new_OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *publicParam, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *privateParam) {
+  OrgBouncycastleCryptoAsymmetricCipherKeyPair *self = [OrgBouncycastleCryptoAsymmetricCipherKeyPair alloc];
+  OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(self, publicParam, privateParam);
+  return self;
+}
+
+
+#line 34
+void OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoCipherParameters_withOrgBouncycastleCryptoCipherParameters_(OrgBouncycastleCryptoAsymmetricCipherKeyPair *self, id<OrgBouncycastleCryptoCipherParameters> publicParam, id<OrgBouncycastleCryptoCipherParameters> privateParam) {
+  (void) NSObject_init(self);
+  
+#line 38
+  self->publicParam_ = (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *) check_class_cast(publicParam, [OrgBouncycastleCryptoParamsAsymmetricKeyParameter class]);
+  self->privateParam_ = (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *) check_class_cast(privateParam, [OrgBouncycastleCryptoParamsAsymmetricKeyParameter class]);
+}
+
+
+#line 34
+OrgBouncycastleCryptoAsymmetricCipherKeyPair *new_OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoCipherParameters_withOrgBouncycastleCryptoCipherParameters_(id<OrgBouncycastleCryptoCipherParameters> publicParam, id<OrgBouncycastleCryptoCipherParameters> privateParam) {
+  OrgBouncycastleCryptoAsymmetricCipherKeyPair *self = [OrgBouncycastleCryptoAsymmetricCipherKeyPair alloc];
+  OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoCipherParameters_withOrgBouncycastleCryptoCipherParameters_(self, publicParam, privateParam);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoAsymmetricCipherKeyPair)

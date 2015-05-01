@@ -6,96 +6,74 @@
 #ifndef _AMI18nEngine_H_
 #define _AMI18nEngine_H_
 
+#include "J2ObjC_header.h"
+
 @class AMContentTypeEnum;
-@class AMMessage;
 @class AMServiceContent;
 @class AMSexEnum;
-@class AMUser;
 @class AMUserPresence;
 @class IOSObjectArray;
 @class ImActorModelModulesModules;
-@class JavaUtilHashMap;
 @protocol AMLocaleProvider;
 
-#include "J2ObjC_header.h"
-#include "java/util/Comparator.h"
+@interface AMI18nEngine : NSObject
 
-@interface AMI18nEngine : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider
           withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
-
-- (NSString *)formatShortDateWithLong:(jlong)date;
-
-- (NSString *)formatTyping;
-
-- (NSString *)formatTypingWithNSString:(NSString *)name;
-
-- (NSString *)formatTypingWithInt:(jint)count;
-
-- (NSString *)formatFileSizeWithInt:(jint)bytes;
-
-- (NSString *)formatTimeWithLong:(jlong)date;
-
-- (NSString *)formatDateWithLong:(jlong)date;
-
-- (NSString *)formatPresenceWithAMUserPresence:(AMUserPresence *)value
-                                 withAMSexEnum:(AMSexEnum *)sex;
-
-- (NSString *)formatDurationWithInt:(jint)duration;
-
-- (NSString *)formatGroupMembersWithInt:(jint)count;
-
-- (NSString *)formatGroupOnlineWithInt:(jint)count;
 
 - (NSString *)formatContentDialogTextWithInt:(jint)senderId
                        withAMContentTypeEnum:(AMContentTypeEnum *)contentType
                                 withNSString:(NSString *)text
                                      withInt:(jint)relatedUid;
 
-- (jboolean)isLargeDialogMessageWithAMContentTypeEnum:(AMContentTypeEnum *)contentType;
+- (NSString *)formatDateWithLong:(jlong)date;
+
+- (NSString *)formatDurationWithInt:(jint)duration;
+
+- (NSString *)formatFastNameWithNSString:(NSString *)name;
+
+- (NSString *)formatFileSizeWithInt:(jint)bytes;
 
 - (NSString *)formatFullServiceMessageWithInt:(jint)senderId
                          withAMServiceContent:(AMServiceContent *)content;
 
-- (NSString *)formatPerformerNameWithInt:(jint)uid;
+- (NSString *)formatGroupMembersWithInt:(jint)count;
 
-- (NSString *)getSubjectNameWithInt:(jint)uid;
+- (NSString *)formatGroupOnlineWithInt:(jint)count;
 
 - (NSString *)formatMessagesWithAMMessageArray:(IOSObjectArray *)messages;
 
-- (NSString *)formatFastNameWithNSString:(NSString *)name;
+- (NSString *)formatPerformerNameWithInt:(jint)uid;
+
+- (NSString *)formatPresenceWithAMUserPresence:(AMUserPresence *)value
+                                 withAMSexEnum:(AMSexEnum *)sex;
+
+- (NSString *)formatShortDateWithLong:(jlong)date;
+
+- (NSString *)formatTimeWithLong:(jlong)date;
+
+- (NSString *)formatTyping;
+
+- (NSString *)formatTypingWithInt:(jint)count;
+
+- (NSString *)formatTypingWithNSString:(NSString *)name;
+
+- (NSString *)getSubjectNameWithInt:(jint)uid;
+
+- (jboolean)isLargeDialogMessageWithAMContentTypeEnum:(AMContentTypeEnum *)contentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMI18nEngine)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_(AMI18nEngine *self, id<AMLocaleProvider> provider, ImActorModelModulesModules *modules);
 
-typedef AMI18nEngine ImActorModelI18nI18nEngine;
+FOUNDATION_EXPORT AMI18nEngine *new_AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_(id<AMLocaleProvider> provider, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine)
 
-@interface AMI18nEngine_$1 : NSObject < JavaUtilComparator > {
-}
-
-- (jint)compareWithLong:(jlong)lhs
-               withLong:(jlong)rhs;
-
-- (jint)compareWithId:(AMMessage *)lhs
-               withId:(AMMessage *)rhs;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMI18nEngine_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
+typedef AMI18nEngine ImActorModelI18nI18nEngine;
 
 #endif // _AMI18nEngine_H_

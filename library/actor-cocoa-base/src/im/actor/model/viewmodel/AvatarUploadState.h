@@ -8,8 +8,9 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMAvatarUploadState : NSObject {
-}
+@interface AMAvatarUploadState : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)descriptor
                      withBoolean:(jboolean)isUploading;
@@ -22,11 +23,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatarUploadState)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMAvatarUploadState_initWithNSString_withBoolean_(AMAvatarUploadState *self, NSString *descriptor, jboolean isUploading);
 
-typedef AMAvatarUploadState ImActorModelViewmodelAvatarUploadState;
+FOUNDATION_EXPORT AMAvatarUploadState *new_AMAvatarUploadState_initWithNSString_withBoolean_(NSString *descriptor, jboolean isUploading) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAvatarUploadState)
+
+typedef AMAvatarUploadState ImActorModelViewmodelAvatarUploadState;
 
 #endif // _AMAvatarUploadState_H_

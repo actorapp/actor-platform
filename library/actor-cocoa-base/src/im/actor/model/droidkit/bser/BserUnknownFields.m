@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownFields.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownFields.java"
 
 #include "IOSPrimitiveArray.h"
@@ -16,6 +17,7 @@
  @public
   JavaUtilArrayList *fields_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
@@ -29,9 +31,7 @@ J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
      withByteArray:(IOSByteArray *)field {
-  
-#line 13
-  [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:[[BSBserUnknownField alloc] initWithInt:id_ withInt:type withByteArray:field]];
+  [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:new_BSBserUnknownField_initWithInt_withInt_withByteArray_(id_, type, field)];
 }
 
 
@@ -39,25 +39,25 @@ J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
           withLong:(jlong)value {
-  
-#line 17
-  [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:[[BSBserUnknownField alloc] initWithInt:id_ withInt:type withByteArray:BSUtils_longToBytesWithLong_(value)]];
+  [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:new_BSBserUnknownField_initWithInt_withInt_withByteArray_(id_, type, BSUtils_longToBytesWithLong_(value))];
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    fields_ =
-#line 10
-    [[JavaUtilArrayList alloc] init];
-  }
+  BSBserUnknownFields_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(BSBserUnknownFields *)other {
-  [super copyAllFieldsTo:other];
-  other->fields_ = fields_;
+@end
+
+void BSBserUnknownFields_init(BSBserUnknownFields *self) {
+  (void) NSObject_init(self);
+  self->fields_ = new_JavaUtilArrayList_init();
 }
 
-@end
+BSBserUnknownFields *new_BSBserUnknownFields_init() {
+  BSBserUnknownFields *self = [BSBserUnknownFields alloc];
+  BSBserUnknownFields_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserUnknownFields)

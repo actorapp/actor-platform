@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownField.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownField.java"
 
 #include "IOSPrimitiveArray.h"
@@ -15,6 +16,7 @@
   jint type_;
   IOSByteArray *binary_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(BSBserUnknownField, binary_, IOSByteArray *)
@@ -28,51 +30,43 @@ J2OBJC_FIELD_SETTER(BSBserUnknownField, binary_, IOSByteArray *)
 - (instancetype)initWithInt:(jint)id_
                     withInt:(jint)type
               withByteArray:(IOSByteArray *)binary {
-  if (self = [super init]) {
-    
-#line 12
-    self->id__ = id_;
-    
-#line 13
-    self->type_ = type;
-    
-#line 14
-    self->binary_ = binary;
-  }
+  BSBserUnknownField_initWithInt_withInt_withByteArray_(self, id_, type, binary);
   return self;
 }
 
 
 #line 17
 - (jint)getId {
-  
-#line 18
   return id__;
 }
 
-
-#line 21
 - (jint)getType {
-  
-#line 22
   return type_;
 }
 
-
-#line 25
 - (IOSByteArray *)getBinary {
-  
-#line 26
   return binary_;
 }
 
-- (void)copyAllFieldsTo:(BSBserUnknownField *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
-  other->type_ = type_;
-  other->binary_ = binary_;
+@end
+
+
+#line 11
+void BSBserUnknownField_initWithInt_withInt_withByteArray_(BSBserUnknownField *self, jint id_, jint type, IOSByteArray *binary) {
+  (void) NSObject_init(self);
+  
+#line 12
+  self->id__ = id_;
+  self->type_ = type;
+  self->binary_ = binary;
 }
 
-@end
+
+#line 11
+BSBserUnknownField *new_BSBserUnknownField_initWithInt_withInt_withByteArray_(jint id_, jint type, IOSByteArray *binary) {
+  BSBserUnknownField *self = [BSBserUnknownField alloc];
+  BSBserUnknownField_initWithInt_withInt_withByteArray_(self, id_, type, binary);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserUnknownField)

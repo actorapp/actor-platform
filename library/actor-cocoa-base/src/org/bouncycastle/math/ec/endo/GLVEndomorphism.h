@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleMathEcEndoGLVEndomorphism_H_
 #define _OrgBouncycastleMathEcEndoGLVEndomorphism_H_
 
-@class IOSObjectArray;
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/endo/ECEndomorphism.h"
 
+@class IOSObjectArray;
+@class JavaMathBigInteger;
+
 @protocol OrgBouncycastleMathEcEndoGLVEndomorphism < OrgBouncycastleMathEcEndoECEndomorphism, NSObject, JavaObject >
+
 - (IOSObjectArray *)decomposeScalarWithJavaMathBigInteger:(JavaMathBigInteger *)k;
 
 @end

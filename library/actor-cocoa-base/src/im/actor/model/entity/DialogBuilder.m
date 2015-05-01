@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/DialogBuilder.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/DialogBuilder.java"
 
 #include "J2ObjC_source.h"
@@ -28,6 +29,7 @@
   jlong time_;
   jint relatedUid_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMDialogBuilder, peer_, AMPeer *)
@@ -44,191 +46,131 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 
 #line 17
 - (instancetype)init {
-  if (self = [super init]) {
-    relatedUid_ =
-#line 15
-    0;
-  }
+  AMDialogBuilder_init(self);
   return self;
 }
 
 
 #line 21
 - (instancetype)initWithAMDialog:(AMDialog *)dialog {
-  if (self = [super init]) {
-    relatedUid_ =
-#line 15
-    0;
-    
-#line 22
-    peer_ = [((AMDialog *) nil_chk(dialog)) getPeer];
-    
-#line 23
-    sortKey_ = [dialog getSortDate];
-    
-#line 24
-    dialogTitle_ = [dialog getDialogTitle];
-    dialogAvatar_ = [dialog getDialogAvatar];
-    
-#line 26
-    unreadCount_ = [dialog getUnreadCount];
-    
-#line 27
-    rid_ = [dialog getRid];
-    
-#line 28
-    messageType_ = [dialog getMessageType];
-    
-#line 29
-    text_ = [dialog getText];
-    
-#line 30
-    status_ = [dialog getStatus];
-    
-#line 31
-    senderId_ = [dialog getSenderId];
-    
-#line 32
-    time_ = [dialog getDate];
-    
-#line 33
-    relatedUid_ = [dialog getRelatedUid];
-  }
+  AMDialogBuilder_initWithAMDialog_(self, dialog);
   return self;
 }
 
 
 #line 36
 - (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer {
-  
-#line 37
   self->peer_ = peer;
   return self;
 }
 
-
-#line 41
 - (AMDialogBuilder *)setSortKeyWithLong:(jlong)sortKey {
-  
-#line 42
   self->sortKey_ = sortKey;
   return self;
 }
 
-
-#line 46
 - (AMDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle {
-  
-#line 47
   self->dialogTitle_ = dialogTitle;
   return self;
 }
 
-
-#line 51
 - (AMDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount {
-  
-#line 52
   self->unreadCount_ = unreadCount;
   return self;
 }
 
-
-#line 56
 - (AMDialogBuilder *)setRidWithLong:(jlong)rid {
-  
-#line 57
   self->rid_ = rid;
   return self;
 }
 
-
-#line 61
 - (AMDialogBuilder *)setMessageTypeWithAMContentTypeEnum:(AMContentTypeEnum *)messageType {
-  
-#line 62
   self->messageType_ = messageType;
   return self;
 }
 
-
-#line 66
 - (AMDialogBuilder *)setTextWithNSString:(NSString *)text {
-  
-#line 67
   self->text_ = text;
   return self;
 }
 
-
-#line 71
 - (AMDialogBuilder *)setStatusWithAMMessageStateEnum:(AMMessageStateEnum *)status {
-  
-#line 72
   self->status_ = status;
   return self;
 }
 
-
-#line 76
 - (AMDialogBuilder *)setSenderIdWithInt:(jint)senderId {
-  
-#line 77
   self->senderId_ = senderId;
   return self;
 }
 
-
-#line 81
 - (AMDialogBuilder *)setTimeWithLong:(jlong)time {
-  
-#line 82
   self->time_ = time;
   return self;
 }
 
-
-#line 86
 - (AMDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid {
-  
-#line 87
   self->relatedUid_ = relatedUid;
   return self;
 }
 
-
-#line 91
 - (AMDialogBuilder *)setDialogAvatarWithAMAvatar:(AMAvatar *)avatar {
-  
-#line 92
   self->dialogAvatar_ = avatar;
   return self;
 }
 
-
-#line 96
 - (AMDialog *)createDialog {
-  
-#line 97
-  return [[AMDialog alloc] initWithAMPeer:peer_ withLong:sortKey_ withNSString:dialogTitle_ withAMAvatar:dialogAvatar_ withInt:unreadCount_ withLong:rid_ withAMContentTypeEnum:messageType_ withNSString:text_ withAMMessageStateEnum:status_ withInt:senderId_ withLong:time_ withInt:relatedUid_];
-}
-
-- (void)copyAllFieldsTo:(AMDialogBuilder *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->sortKey_ = sortKey_;
-  other->dialogTitle_ = dialogTitle_;
-  other->dialogAvatar_ = dialogAvatar_;
-  other->unreadCount_ = unreadCount_;
-  other->rid_ = rid_;
-  other->messageType_ = messageType_;
-  other->text_ = text_;
-  other->status_ = status_;
-  other->senderId_ = senderId_;
-  other->time_ = time_;
-  other->relatedUid_ = relatedUid_;
+  return new_AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(peer_, sortKey_, dialogTitle_, dialogAvatar_, unreadCount_, rid_, messageType_, text_, status_, senderId_, time_, relatedUid_);
 }
 
 @end
+
+
+#line 17
+void AMDialogBuilder_init(AMDialogBuilder *self) {
+  (void) NSObject_init(self);
+  self->relatedUid_ =
+#line 15
+  0;
+}
+
+
+#line 17
+AMDialogBuilder *new_AMDialogBuilder_init() {
+  AMDialogBuilder *self = [AMDialogBuilder alloc];
+  AMDialogBuilder_init(self);
+  return self;
+}
+
+
+#line 21
+void AMDialogBuilder_initWithAMDialog_(AMDialogBuilder *self, AMDialog *dialog) {
+  (void) NSObject_init(self);
+  self->relatedUid_ =
+#line 15
+  0;
+  
+#line 22
+  self->peer_ = [((AMDialog *) nil_chk(dialog)) getPeer];
+  self->sortKey_ = [dialog getSortDate];
+  self->dialogTitle_ = [dialog getDialogTitle];
+  self->dialogAvatar_ = [dialog getDialogAvatar];
+  self->unreadCount_ = [dialog getUnreadCount];
+  self->rid_ = [dialog getRid];
+  self->messageType_ = [dialog getMessageType];
+  self->text_ = [dialog getText];
+  self->status_ = [dialog getStatus];
+  self->senderId_ = [dialog getSenderId];
+  self->time_ = [dialog getDate];
+  self->relatedUid_ = [dialog getRelatedUid];
+}
+
+
+#line 21
+AMDialogBuilder *new_AMDialogBuilder_initWithAMDialog_(AMDialog *dialog) {
+  AMDialogBuilder *self = [AMDialogBuilder alloc];
+  AMDialogBuilder_initWithAMDialog_(self, dialog);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialogBuilder)

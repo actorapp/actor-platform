@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/AbstractECMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/AbstractECMultiplier.java"
 
 #include "J2ObjC_source.h"
@@ -39,9 +40,14 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcAbstractECMultiplier_init(OrgBouncycastleMathEcAbstractECMultiplier *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcAbstractECMultiplier)

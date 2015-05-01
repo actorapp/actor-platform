@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDeleteChat.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDeleteChat.java"
 
 #include "IOSClass.h"
@@ -14,12 +15,14 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestDeleteChat () {
  @public
   ImActorModelApiOutPeer *peer_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiOutPeer *)
@@ -37,43 +40,40 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
 
 #line 29
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer {
-  if (self = [super init]) {
-    
-#line 30
-    self->peer_ = peer;
-  }
+  ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(self, peer);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestDeleteChat_init(self);
+  return self;
 }
 
+
+#line 37
 - (ImActorModelApiOutPeer *)getPeer {
-  
-#line 38
   return self->peer_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
 }
 
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   if (self->peer_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
 }
 
+
+#line 55
 - (NSString *)description {
   NSString *res = @"rpc DeleteChat{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -81,24 +81,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 64
-  return ImActorModelApiRpcRequestDeleteChat_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestDeleteChat *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
+#line 63
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestDeleteChat_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestDeleteChat *ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestDeleteChat_init();
+  ImActorModelApiRpcRequestDeleteChat_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestDeleteChat *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteChat alloc] init], data));
+  return ((ImActorModelApiRpcRequestDeleteChat *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestDeleteChat_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestDeleteChat *self, ImActorModelApiOutPeer *peer) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->peer_ = peer;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) {
+  ImActorModelApiRpcRequestDeleteChat *self = [ImActorModelApiRpcRequestDeleteChat alloc];
+  ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(self, peer);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestDeleteChat_init(ImActorModelApiRpcRequestDeleteChat *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_init() {
+  ImActorModelApiRpcRequestDeleteChat *self = [ImActorModelApiRpcRequestDeleteChat alloc];
+  ImActorModelApiRpcRequestDeleteChat_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDeleteChat)

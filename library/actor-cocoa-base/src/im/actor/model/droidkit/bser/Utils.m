@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Utils.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Utils.java"
 
 #include "IOSClass.h"
@@ -14,8 +15,14 @@
 #include "java/lang/Integer.h"
 
 @interface BSUtils ()
+
 - (instancetype)init;
+
 @end
+
+__attribute__((unused)) static void BSUtils_init(BSUtils *self);
+
+__attribute__((unused)) static BSUtils *new_BSUtils_init() NS_RETURNS_RETAINED;
 
 
 #line 11
@@ -70,28 +77,33 @@
 
 #line 100
 - (instancetype)init {
-  return [super init];
+  BSUtils_init(self);
+  return self;
 }
 
 @end
 
+
+#line 13
 jint BSUtils_convertIntWithLong_(jlong val) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 14
   if (val < JavaLangInteger_MIN_VALUE) {
-    @throw [[JavaIoIOException alloc] initWithNSString:@"Too small value"];
+    @throw new_JavaIoIOException_initWithNSString_(@"Too small value");
   }
   else
 #line 16
   if (val > JavaLangInteger_MAX_VALUE) {
-    @throw [[JavaIoIOException alloc] initWithNSString:@"Too big value"];
+    @throw new_JavaIoIOException_initWithNSString_(@"Too big value");
   }
   return (jint) val;
 }
 
+
+#line 22
 NSString *BSUtils_convertStringWithByteArray_(IOSByteArray *data) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 23
   if (data == nil) {
@@ -104,8 +116,10 @@ NSString *BSUtils_convertStringWithByteArray_(IOSByteArray *data) {
   }
 }
 
+
+#line 30
 NSString *BSUtils_byteArrayToStringWithByteArray_(IOSByteArray *data) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 31
   if (data == nil) {
@@ -118,8 +132,10 @@ NSString *BSUtils_byteArrayToStringWithByteArray_(IOSByteArray *data) {
   }
 }
 
+
+#line 38
 NSString *BSUtils_byteArrayToStringCompactWithByteArray_(IOSByteArray *data) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 39
   if (data == nil) {
@@ -132,8 +148,10 @@ NSString *BSUtils_byteArrayToStringCompactWithByteArray_(IOSByteArray *data) {
   }
 }
 
+
+#line 46
 IOSByteArray *BSUtils_intToBytesWithInt_(jint v) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 47
   IOSByteArray *data = [IOSByteArray newArrayWithLength:4];
@@ -145,8 +163,10 @@ IOSByteArray *BSUtils_intToBytesWithInt_(jint v) {
   return data;
 }
 
+
+#line 56
 jlong BSUtils_bytesToIntWithByteArray_(IOSByteArray *data) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 57
   jint offset = 0;
@@ -157,8 +177,10 @@ jlong BSUtils_bytesToIntWithByteArray_(IOSByteArray *data) {
   return (a1) + (LShift32(a2, 8)) + (LShift32(a3, 16)) + (LShift32(a4, 24));
 }
 
+
+#line 65
 IOSByteArray *BSUtils_longToBytesWithLong_(jlong v) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 66
   IOSByteArray *data = [IOSByteArray newArrayWithLength:8];
@@ -174,8 +196,10 @@ IOSByteArray *BSUtils_longToBytesWithLong_(jlong v) {
   return data;
 }
 
+
+#line 79
 jlong BSUtils_bytesToLongWithByteArray_(IOSByteArray *data) {
-  BSUtils_init();
+  BSUtils_initialize();
   
 #line 80
   jint offset = 0;
@@ -200,6 +224,20 @@ jlong BSUtils_bytesToLongWithByteArray_(IOSByteArray *data) {
   
 #line 97
   return res2 + (LShift64(res1, 32));
+}
+
+
+#line 100
+void BSUtils_init(BSUtils *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 100
+BSUtils *new_BSUtils_init() {
+  BSUtils *self = [BSUtils alloc];
+  BSUtils_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSUtils)

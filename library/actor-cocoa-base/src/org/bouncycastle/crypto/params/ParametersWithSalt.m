@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithSalt.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithSalt.java"
 
 #include "IOSPrimitiveArray.h"
@@ -16,6 +17,7 @@
   IOSByteArray *salt_;
   id<OrgBouncycastleCryptoCipherParameters> parameters_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSalt, salt_, IOSByteArray *)
@@ -29,42 +31,18 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSalt, parameters_, 
 #line 14
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)salt {
-  return
-#line 18
-  [self initOrgBouncycastleCryptoParamsParametersWithSaltWithOrgBouncycastleCryptoCipherParameters:parameters withByteArray:salt withInt:0 withInt:((IOSByteArray *) nil_chk(salt))->size_];
-}
-
-- (instancetype)initOrgBouncycastleCryptoParamsParametersWithSaltWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
-                                                                                             withByteArray:(IOSByteArray *)salt
-                                                                                                   withInt:(jint)saltOff
-                                                                                                   withInt:(jint)saltLen {
-  if (self = [super init]) {
-    
-#line 27
-    self->salt_ = [IOSByteArray newArrayWithLength:saltLen];
-    
-#line 28
-    self->parameters_ = parameters;
-    
-#line 30
-    JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(salt, saltOff, self->salt_, 0, saltLen);
-  }
+  OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(self, parameters, salt);
   return self;
 }
 
+
+#line 21
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)salt
                                                       withInt:(jint)saltOff
                                                       withInt:(jint)saltLen {
-  return [self initOrgBouncycastleCryptoParamsParametersWithSaltWithOrgBouncycastleCryptoCipherParameters:
-#line 22
-parameters withByteArray:
-#line 23
-salt withInt:
-#line 24
-saltOff withInt:
-#line 25
-saltLen];
+  OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(self, parameters, salt, saltOff, saltLen);
+  return self;
 }
 
 
@@ -83,12 +61,43 @@ saltLen];
   return parameters_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsParametersWithSalt *)other {
-  [super copyAllFieldsTo:other];
-  other->salt_ = salt_;
-  other->parameters_ = parameters_;
+@end
+
+
+#line 14
+void OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(OrgBouncycastleCryptoParamsParametersWithSalt *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt) {
+  (void) OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(self,
+#line 18
+  parameters, salt, 0, ((IOSByteArray *) nil_chk(salt))->size_);
 }
 
-@end
+
+#line 14
+OrgBouncycastleCryptoParamsParametersWithSalt *new_OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt) {
+  OrgBouncycastleCryptoParamsParametersWithSalt *self = [OrgBouncycastleCryptoParamsParametersWithSalt alloc];
+  OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(self, parameters, salt);
+  return self;
+}
+
+
+#line 21
+void OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(OrgBouncycastleCryptoParamsParametersWithSalt *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt, jint saltOff, jint saltLen) {
+  (void) NSObject_init(self);
+  
+#line 27
+  self->salt_ = [IOSByteArray newArrayWithLength:saltLen];
+  self->parameters_ = parameters;
+  
+#line 30
+  JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(salt, saltOff, self->salt_, 0, saltLen);
+}
+
+
+#line 21
+OrgBouncycastleCryptoParamsParametersWithSalt *new_OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt, jint saltOff, jint saltLen) {
+  OrgBouncycastleCryptoParamsParametersWithSalt *self = [OrgBouncycastleCryptoParamsParametersWithSalt alloc];
+  OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(self, parameters, salt, saltOff, saltLen);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsParametersWithSalt)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdatePhoneTitleChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdatePhoneTitleChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdatePhoneTitleChanged () {
@@ -20,6 +22,7 @@
   jint phoneId_;
   NSString *title_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSStr
 #line 30
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 31
-    self->phoneId_ = phoneId;
-    
-#line 32
-    self->title_ = title;
-  }
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged_initWithInt_withNSString_(self, phoneId, title);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getPhoneId {
-  
-#line 40
   return self->phoneId_;
 }
 
-
-#line 43
 - (NSString *)getTitle {
-  
-#line 44
   return self->title_;
 }
 
@@ -79,15 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSStr
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:2 withInt:self->phoneId_];
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"update PhoneTitleChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"phoneId=", self->phoneId_));
@@ -96,25 +89,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, title_, NSStr
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 73
-  return ImActorModelApiUpdatesUpdatePhoneTitleChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdatePhoneTitleChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->phoneId_ = phoneId_;
-  other->title_ = title_;
+#line 72
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdatePhoneTitleChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdatePhoneTitleChanged *ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdatePhoneTitleChanged_init();
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdatePhoneTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdatePhoneTitleChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdatePhoneTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdatePhoneTitleChanged_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdatePhoneTitleChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdatePhoneTitleChanged *self, jint phoneId, NSString *title) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->phoneId_ = phoneId;
+  self->title_ = title;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdatePhoneTitleChanged *new_ImActorModelApiUpdatesUpdatePhoneTitleChanged_initWithInt_withNSString_(jint phoneId, NSString *title) {
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged *self = [ImActorModelApiUpdatesUpdatePhoneTitleChanged alloc];
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged_initWithInt_withNSString_(self, phoneId, title);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdatePhoneTitleChanged_init(ImActorModelApiUpdatesUpdatePhoneTitleChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdatePhoneTitleChanged *new_ImActorModelApiUpdatesUpdatePhoneTitleChanged_init() {
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged *self = [ImActorModelApiUpdatesUpdatePhoneTitleChanged alloc];
+  ImActorModelApiUpdatesUpdatePhoneTitleChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdatePhoneTitleChanged)

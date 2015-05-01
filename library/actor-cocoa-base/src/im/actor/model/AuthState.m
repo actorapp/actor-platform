@@ -3,30 +3,38 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/AuthState.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/AuthState.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/AuthState.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-#line 6
+__attribute__((unused)) static void AMAuthStateEnum_initWithNSString_withInt_(AMAuthStateEnum *self, NSString *__name, jint __ordinal);
 
-BOOL AMAuthStateEnum_initialized = NO;
+__attribute__((unused)) static AMAuthStateEnum *new_AMAuthStateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(AMAuthStateEnum)
 
 AMAuthStateEnum *AMAuthStateEnum_values_[4];
 
+
+#line 6
 @implementation AMAuthStateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
-  return [super initWithNSString:__name withInt:__ordinal];
+  AMAuthStateEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
 }
 
 IOSObjectArray *AMAuthStateEnum_values() {
-  AMAuthStateEnum_init();
+  AMAuthStateEnum_initialize();
   return [IOSObjectArray arrayWithObjects:AMAuthStateEnum_values_ count:4 type:AMAuthStateEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return AMAuthStateEnum_values();
 }
@@ -36,7 +44,7 @@ IOSObjectArray *AMAuthStateEnum_values() {
 }
 
 AMAuthStateEnum *AMAuthStateEnum_valueOfWithNSString_(NSString *name) {
-  AMAuthStateEnum_init();
+  AMAuthStateEnum_initialize();
   for (int i = 0; i < 4; i++) {
     AMAuthStateEnum *e = AMAuthStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -53,14 +61,24 @@ AMAuthStateEnum *AMAuthStateEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMAuthStateEnum class]) {
-    AMAuthStateEnum_AUTH_START = [[AMAuthStateEnum alloc] initWithNSString:@"AUTH_START" withInt:0];
-    AMAuthStateEnum_CODE_VALIDATION = [[AMAuthStateEnum alloc] initWithNSString:@"CODE_VALIDATION" withInt:1];
-    AMAuthStateEnum_SIGN_UP = [[AMAuthStateEnum alloc] initWithNSString:@"SIGN_UP" withInt:2];
-    AMAuthStateEnum_LOGGED_IN = [[AMAuthStateEnum alloc] initWithNSString:@"LOGGED_IN" withInt:3];
+    AMAuthStateEnum_AUTH_START = new_AMAuthStateEnum_initWithNSString_withInt_(@"AUTH_START", 0);
+    AMAuthStateEnum_CODE_VALIDATION = new_AMAuthStateEnum_initWithNSString_withInt_(@"CODE_VALIDATION", 1);
+    AMAuthStateEnum_SIGN_UP = new_AMAuthStateEnum_initWithNSString_withInt_(@"SIGN_UP", 2);
+    AMAuthStateEnum_LOGGED_IN = new_AMAuthStateEnum_initWithNSString_withInt_(@"LOGGED_IN", 3);
     J2OBJC_SET_INITIALIZED(AMAuthStateEnum)
   }
 }
 
 @end
+
+void AMAuthStateEnum_initWithNSString_withInt_(AMAuthStateEnum *self, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+}
+
+AMAuthStateEnum *new_AMAuthStateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) {
+  AMAuthStateEnum *self = [AMAuthStateEnum alloc];
+  AMAuthStateEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAuthStateEnum)

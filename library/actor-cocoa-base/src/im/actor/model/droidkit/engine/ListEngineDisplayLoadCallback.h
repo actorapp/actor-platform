@@ -6,9 +6,9 @@
 #ifndef _DKListEngineDisplayLoadCallback_H_
 #define _DKListEngineDisplayLoadCallback_H_
 
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
+
+@protocol JavaUtilList;
 
 @protocol DKListEngineDisplayLoadCallback < NSObject, JavaObject >
 
@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngineDisplayLoadCallback)
 
-#define ImActorModelDroidkitEngineListEngineDisplayLoadCallback DKListEngineDisplayLoadCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngineDisplayLoadCallback)
+
+#define ImActorModelDroidkitEngineListEngineDisplayLoadCallback DKListEngineDisplayLoadCallback
 
 #endif // _DKListEngineDisplayLoadCallback_H_

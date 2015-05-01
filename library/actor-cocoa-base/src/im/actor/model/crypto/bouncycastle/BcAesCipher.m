@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcAesCipher.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/bouncycastle/BcAesCipher.java"
 
 #include "IOSPrimitiveArray.h"
@@ -27,6 +28,7 @@
   OrgBouncycastleCryptoBufferedBlockCipher *encryptionCipher_;
   OrgBouncycastleCryptoBufferedBlockCipher *decryptionCipher_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(BCBcAesCipher, key_, IOSByteArray *)
@@ -43,33 +45,15 @@ J2OBJC_FIELD_SETTER(BCBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBuffe
 #line 27
 - (instancetype)initWithByteArray:(IOSByteArray *)key
                     withByteArray:(IOSByteArray *)iv {
-  if (self = [super init]) {
-    
-#line 28
-    self->key_ = key;
-    
-#line 29
-    self->iv_ = iv;
-    
-#line 30
-    self->params_ = [[OrgBouncycastleCryptoParamsParametersWithIV alloc] initWithOrgBouncycastleCryptoCipherParameters:[[OrgBouncycastleCryptoParamsKeyParameter alloc] initWithByteArray:key] withByteArray:iv];
-  }
+  BCBcAesCipher_initWithByteArray_withByteArray_(self, key, iv);
   return self;
 }
 
-
-#line 33
 - (IOSByteArray *)getKey {
-  
-#line 34
   return key_;
 }
 
-
-#line 37
 - (IOSByteArray *)getIv {
-  
-#line 38
   return iv_;
 }
 
@@ -80,9 +64,9 @@ J2OBJC_FIELD_SETTER(BCBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBuffe
     
 #line 43
     if (encryptionCipher_ == nil) {
-      encryptionCipher_ = [[OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoModesCBCBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoEnginesAESFastEngine alloc] init]] withOrgBouncycastleCryptoPaddingsBlockCipherPadding:
-#line 45
-      [[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
+      encryptionCipher_ = new_OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(new_OrgBouncycastleCryptoModesCBCBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(new_OrgBouncycastleCryptoEnginesAESFastEngine_init()), new_OrgBouncycastleCryptoPaddingsPKCS7Padding_init());
+      
+#line 46
       [encryptionCipher_ init__WithBoolean:YES withOrgBouncycastleCryptoCipherParameters:params_];
     }
     
@@ -114,9 +98,9 @@ J2OBJC_FIELD_SETTER(BCBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBuffe
     
 #line 66
     if (decryptionCipher_ == nil) {
-      decryptionCipher_ = [[OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoModesCBCBlockCipher alloc] initWithOrgBouncycastleCryptoBlockCipher:[[OrgBouncycastleCryptoEnginesAESFastEngine alloc] init]] withOrgBouncycastleCryptoPaddingsBlockCipherPadding:
-#line 68
-      [[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
+      decryptionCipher_ = new_OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(new_OrgBouncycastleCryptoModesCBCBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(new_OrgBouncycastleCryptoEnginesAESFastEngine_init()), new_OrgBouncycastleCryptoPaddingsPKCS7Padding_init());
+      
+#line 69
       [decryptionCipher_ init__WithBoolean:NO withOrgBouncycastleCryptoCipherParameters:params_];
     }
     
@@ -141,15 +125,25 @@ J2OBJC_FIELD_SETTER(BCBcAesCipher, decryptionCipher_, OrgBouncycastleCryptoBuffe
   }
 }
 
-- (void)copyAllFieldsTo:(BCBcAesCipher *)other {
-  [super copyAllFieldsTo:other];
-  other->key_ = key_;
-  other->iv_ = iv_;
-  other->params_ = params_;
-  other->encryptionCipher_ = encryptionCipher_;
-  other->decryptionCipher_ = decryptionCipher_;
+@end
+
+
+#line 27
+void BCBcAesCipher_initWithByteArray_withByteArray_(BCBcAesCipher *self, IOSByteArray *key, IOSByteArray *iv) {
+  (void) NSObject_init(self);
+  
+#line 28
+  self->key_ = key;
+  self->iv_ = iv;
+  self->params_ = new_OrgBouncycastleCryptoParamsParametersWithIV_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(new_OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(key), iv);
 }
 
-@end
+
+#line 27
+BCBcAesCipher *new_BCBcAesCipher_initWithByteArray_withByteArray_(IOSByteArray *key, IOSByteArray *iv) {
+  BCBcAesCipher *self = [BCBcAesCipher alloc];
+  BCBcAesCipher_initWithByteArray_withByteArray_(self, key, iv);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCBcAesCipher)

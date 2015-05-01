@@ -3,14 +3,17 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/AppStateModule.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/AppStateModule.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/modules/AppStateModule.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/state/ListsStatesActor.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
@@ -20,18 +23,32 @@
   AMAppStateVM *appStateVM_;
   DKActorRef *listStatesActor_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule, appStateVM_, AMAppStateVM *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule, listStatesActor_, DKActorRef *)
 
-@interface ImActorModelModulesAppStateModule_$1 () {
+@interface ImActorModelModulesAppStateModule_$1 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesAppStateModule *this$0_;
 }
+
+- (ImActorModelModulesStateListsStatesActor *)create;
+
+- (instancetype)initWithImActorModelModulesAppStateModule:(ImActorModelModulesAppStateModule *)outer$;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAppStateModule_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule_$1, this$0_, ImActorModelModulesAppStateModule *)
+
+__attribute__((unused)) static void ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(ImActorModelModulesAppStateModule_$1 *self, ImActorModelModulesAppStateModule *outer$);
+
+__attribute__((unused)) static ImActorModelModulesAppStateModule_$1 *new_ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(ImActorModelModulesAppStateModule *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule_$1)
 
 
 #line 14
@@ -40,22 +57,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule_$1, this$0_, ImActorModelM
 
 #line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 19
-  [super initWithImActorModelModulesModules:modules]) {
-    
-#line 20
-    self->appStateVM_ = [[AMAppStateVM alloc] initWithImActorModelModulesModules:modules];
-  }
+  ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
-
-#line 23
 - (void)run {
-  
-#line 24
-  listStatesActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesStateListsStatesActor_class_(), [[ImActorModelModulesAppStateModule_$1 alloc] initWithImActorModelModulesAppStateModule:self]) withNSString:
+  listStatesActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesStateListsStatesActor_class_(), new_ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(self)) withNSString:
 #line 29
   @"actor/app/state"];
 }
@@ -63,58 +70,45 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAppStateModule_$1, this$0_, ImActorModelM
 
 #line 32
 - (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty {
-  
-#line 33
-  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnDialogsChanged alloc] initWithBoolean:isEmpty]];
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(isEmpty)];
 }
 
-
-#line 36
 - (void)onContactsUpdateWithBoolean:(jboolean)isEmpty {
-  
-#line 37
-  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnContactsChanged alloc] initWithBoolean:isEmpty]];
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(isEmpty)];
 }
 
-
-#line 40
 - (void)onBookImported {
-  
-#line 41
-  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnBookImported alloc] init]];
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnBookImported_init()];
 }
 
-
-#line 44
 - (void)onContactsLoaded {
-  
-#line 45
-  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnContactsLoaded alloc] init]];
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnContactsLoaded_init()];
 }
 
-
-#line 48
 - (void)onDialogsLoaded {
-  
-#line 49
-  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:[[ImActorModelModulesStateListsStatesActor_OnDialogsLoaded alloc] init]];
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnDialogsLoaded_init()];
 }
 
-
-#line 52
 - (AMAppStateVM *)getAppStateVM {
-  
-#line 53
   return appStateVM_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesAppStateModule *)other {
-  [super copyAllFieldsTo:other];
-  other->appStateVM_ = appStateVM_;
-  other->listStatesActor_ = listStatesActor_;
+@end
+
+
+#line 18
+void ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesAppStateModule *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+  self->appStateVM_ = new_AMAppStateVM_initWithImActorModelModulesModules_(modules);
 }
 
-@end
+
+#line 18
+ImActorModelModulesAppStateModule *new_ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesAppStateModule *self = [ImActorModelModulesAppStateModule alloc];
+  ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAppStateModule)
 
@@ -123,21 +117,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAppStateModule)
 
 #line 26
 - (ImActorModelModulesStateListsStatesActor *)create {
-  
-#line 27
-  return [[ImActorModelModulesStateListsStatesActor alloc] initWithImActorModelModulesModules:[this$0_ modules]];
+  return new_ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_([this$0_ modules]);
 }
 
 - (instancetype)initWithImActorModelModulesAppStateModule:(ImActorModelModulesAppStateModule *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesAppStateModule_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(ImActorModelModulesAppStateModule_$1 *self, ImActorModelModulesAppStateModule *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAppStateModule_$1 *new_ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(ImActorModelModulesAppStateModule *outer$) {
+  ImActorModelModulesAppStateModule_$1 *self = [ImActorModelModulesAppStateModule_$1 alloc];
+  ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAppStateModule_$1)

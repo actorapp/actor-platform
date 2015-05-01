@@ -6,15 +6,19 @@
 #ifndef _AMConnectionCallback_H_
 #define _AMConnectionCallback_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol AMConnectionCallback < NSObject, JavaObject >
 
-- (void)onConnectionRedirect:(NSString *)host withPort:(jint)port withTimeout:(jint)timeout;
+- (void)onConnectionRedirect:(NSString *)host
+                    withPort:(jint)port
+                 withTimeout:(jint)timeout;
 
-- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
+- (void)onMessage:(IOSByteArray *)data
+       withOffset:(jint)offset
+          withLen:(jint)len;
 
 - (void)onConnectionDie;
 
@@ -22,8 +26,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMConnectionCallback)
 
-#define ImActorModelNetworkConnectionCallback AMConnectionCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMConnectionCallback)
+
+#define ImActorModelNetworkConnectionCallback AMConnectionCallback
 
 #endif // _AMConnectionCallback_H_

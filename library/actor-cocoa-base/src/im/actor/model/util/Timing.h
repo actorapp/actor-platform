@@ -8,24 +8,26 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMTiming : NSObject {
-}
+@interface AMTiming : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)tag;
 
-- (void)sectionWithNSString:(NSString *)sectionName;
-
 - (void)end;
+
+- (void)sectionWithNSString:(NSString *)sectionName;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMTiming)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMTiming_initWithNSString_(AMTiming *self, NSString *tag);
 
-typedef AMTiming ImActorModelUtilTiming;
+FOUNDATION_EXPORT AMTiming *new_AMTiming_initWithNSString_(NSString *tag) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMTiming)
+
+typedef AMTiming ImActorModelUtilTiming;
 
 #endif // _AMTiming_H_

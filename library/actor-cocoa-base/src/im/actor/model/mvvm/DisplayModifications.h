@@ -6,37 +6,38 @@
 #ifndef _AMDisplayModifications_H_
 #define _AMDisplayModifications_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSLongArray;
+@protocol AMDisplayList_Modification;
 @protocol DKListEngineItem;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/mvvm/DisplayList.h"
+@interface AMDisplayModifications : NSObject
 
-@interface AMDisplayModifications : NSObject {
-}
-
-+ (id<AMDisplayList_Modification>)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item;
-
-+ (id<AMDisplayList_Modification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
+#pragma mark Public
 
 + (id<AMDisplayList_Modification>)addOnlyWithJavaUtilList:(id<JavaUtilList>)items;
 
-+ (id<AMDisplayList_Modification>)replaceWithJavaUtilList:(id<JavaUtilList>)items;
++ (id<AMDisplayList_Modification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
+
++ (id<AMDisplayList_Modification>)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item;
+
++ (id<AMDisplayList_Modification>)clear;
 
 + (id<AMDisplayList_Modification>)removeWithLong:(jlong)dstId;
 
 + (id<AMDisplayList_Modification>)removeWithLongArray:(IOSLongArray *)dstIds;
 
-+ (id<AMDisplayList_Modification>)clear;
++ (id<AMDisplayList_Modification>)replaceWithJavaUtilList:(id<JavaUtilList>)items;
+
+#pragma mark Package-Private
 
 - (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item);
 
@@ -51,122 +52,13 @@ FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_removeWi
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_removeWithLongArray_(IOSLongArray *dstIds);
 
 FOUNDATION_EXPORT id<AMDisplayList_Modification> AMDisplayModifications_clear();
-CF_EXTERN_C_END
 
-typedef AMDisplayModifications ImActorModelMvvmDisplayModifications;
+FOUNDATION_EXPORT void AMDisplayModifications_init(AMDisplayModifications *self);
+
+FOUNDATION_EXPORT AMDisplayModifications *new_AMDisplayModifications_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications)
 
-@interface AMDisplayModifications_$1 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$1)
-
-@interface AMDisplayModifications_$2 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$2)
-
-@interface AMDisplayModifications_$3 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$3)
-
-@interface AMDisplayModifications_$4 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$4)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$4)
-
-@interface AMDisplayModifications_$5 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithLong:(jlong)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$5)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$5)
-
-@interface AMDisplayModifications_$6 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithLongArray:(IOSLongArray *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$6)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$6)
-
-@interface AMDisplayModifications_$7 : NSObject < AMDisplayList_Modification > {
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$7)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$7)
+typedef AMDisplayModifications ImActorModelMvvmDisplayModifications;
 
 #endif // _AMDisplayModifications_H_

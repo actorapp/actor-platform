@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterGooglePush.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterGooglePush.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestRegisterGooglePush () {
@@ -20,6 +22,7 @@
   jlong projectId_;
   NSString *token_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 #line 30
 - (instancetype)initWithLong:(jlong)projectId
                 withNSString:(NSString *)token {
-  if (self = [super init]) {
-    
-#line 31
-    self->projectId_ = projectId;
-    
-#line 32
-    self->token_ = token;
-  }
+  ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(self, projectId, token);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestRegisterGooglePush_init(self);
+  return self;
 }
 
+
+#line 39
 - (jlong)getProjectId {
-  
-#line 40
   return self->projectId_;
 }
 
-
-#line 43
 - (NSString *)getToken {
-  
-#line 44
   return self->token_;
 }
 
@@ -79,40 +72,66 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->projectId_];
   if (self->token_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"rpc RegisterGooglePush{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 71
-  return ImActorModelApiRpcRequestRegisterGooglePush_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestRegisterGooglePush *)other {
-  [super copyAllFieldsTo:other];
-  other->projectId_ = projectId_;
-  other->token_ = token_;
+#line 70
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestRegisterGooglePush_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestRegisterGooglePush *ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestRegisterGooglePush_init();
+  ImActorModelApiRpcRequestRegisterGooglePush_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestRegisterGooglePush *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestRegisterGooglePush alloc] init], data));
+  return ((ImActorModelApiRpcRequestRegisterGooglePush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRegisterGooglePush_init(), data));
+}
+
+void ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(ImActorModelApiRpcRequestRegisterGooglePush *self, jlong projectId, NSString *token) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->projectId_ = projectId;
+  self->token_ = token;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(jlong projectId, NSString *token) {
+  ImActorModelApiRpcRequestRegisterGooglePush *self = [ImActorModelApiRpcRequestRegisterGooglePush alloc];
+  ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(self, projectId, token);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestRegisterGooglePush_init(ImActorModelApiRpcRequestRegisterGooglePush *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegisterGooglePush_init() {
+  ImActorModelApiRpcRequestRegisterGooglePush *self = [ImActorModelApiRpcRequestRegisterGooglePush alloc];
+  ImActorModelApiRpcRequestRegisterGooglePush_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRegisterGooglePush)

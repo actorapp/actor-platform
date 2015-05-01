@@ -6,9 +6,9 @@
 #ifndef _AMAesCipher_H_
 #define _AMAesCipher_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol AMAesCipher < NSObject, JavaObject >
 
@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAesCipher)
 
-#define ImActorModelCryptoAesCipher AMAesCipher
-
 J2OBJC_TYPE_LITERAL_HEADER(AMAesCipher)
+
+#define ImActorModelCryptoAesCipher AMAesCipher
 
 #endif // _AMAesCipher_H_

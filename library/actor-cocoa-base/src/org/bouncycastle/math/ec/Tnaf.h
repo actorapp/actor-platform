@@ -6,6 +6,8 @@
 #ifndef _OrgBouncycastleMathEcTnaf_H_
 #define _OrgBouncycastleMathEcTnaf_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSObjectArray;
 @class JavaMathBigInteger;
@@ -14,24 +16,12 @@
 @class OrgBouncycastleMathEcSimpleBigDecimal;
 @class OrgBouncycastleMathEcZTauElement;
 
-#include "J2ObjC_header.h"
-
-#define OrgBouncycastleMathEcTnaf_POW_2_WIDTH 16
 #define OrgBouncycastleMathEcTnaf_WIDTH 4
+#define OrgBouncycastleMathEcTnaf_POW_2_WIDTH 16
 
-@interface OrgBouncycastleMathEcTnaf : NSObject {
-}
+@interface OrgBouncycastleMathEcTnaf : NSObject
 
-+ (JavaMathBigInteger *)normWithByte:(jbyte)mu
-withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
-
-+ (OrgBouncycastleMathEcSimpleBigDecimal *)normWithByte:(jbyte)mu
-              withOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)u
-              withOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)v;
-
-+ (OrgBouncycastleMathEcZTauElement *)roundWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)lambda0
-                                           withOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)lambda1
-                                                                            withByte:(jbyte)mu;
+#pragma mark Public
 
 + (OrgBouncycastleMathEcSimpleBigDecimal *)approximateDivisionByNWithJavaMathBigInteger:(JavaMathBigInteger *)k
                                                                  withJavaMathBigInteger:(JavaMathBigInteger *)s
@@ -40,23 +30,35 @@ withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
                                                                                 withInt:(jint)m
                                                                                 withInt:(jint)c;
 
-+ (IOSByteArray *)tauAdicNafWithByte:(jbyte)mu
-withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
-
-+ (OrgBouncycastleMathEcECPoint_F2m *)tauWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p;
-
-+ (jbyte)getMuWithOrgBouncycastleMathEcECCurve_F2m:(OrgBouncycastleMathEcECCurve_F2m *)curve;
-
 + (IOSObjectArray *)getLucasWithByte:(jbyte)mu
                              withInt:(jint)k
                          withBoolean:(jboolean)doV;
 
-+ (JavaMathBigInteger *)getTwWithByte:(jbyte)mu
-                              withInt:(jint)w;
++ (jbyte)getMuWithOrgBouncycastleMathEcECCurve_F2m:(OrgBouncycastleMathEcECCurve_F2m *)curve;
+
++ (IOSObjectArray *)getPreCompWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
+                                                          withByte:(jbyte)a;
 
 + (IOSObjectArray *)getSiWithOrgBouncycastleMathEcECCurve_F2m:(OrgBouncycastleMathEcECCurve_F2m *)curve;
 
-+ (jint)getShiftsForCofactorWithJavaMathBigInteger:(JavaMathBigInteger *)h;
++ (JavaMathBigInteger *)getTwWithByte:(jbyte)mu
+                              withInt:(jint)w;
+
++ (OrgBouncycastleMathEcECPoint_F2m *)multiplyFromTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
+                                                                             withByteArray:(IOSByteArray *)u;
+
++ (OrgBouncycastleMathEcECPoint_F2m *)multiplyRTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
+                                                                 withJavaMathBigInteger:(JavaMathBigInteger *)k;
+
++ (OrgBouncycastleMathEcECPoint_F2m *)multiplyTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
+                                                  withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
+
++ (OrgBouncycastleMathEcSimpleBigDecimal *)normWithByte:(jbyte)mu
+              withOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)u
+              withOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)v;
+
++ (JavaMathBigInteger *)normWithByte:(jbyte)mu
+withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
 
 + (OrgBouncycastleMathEcZTauElement *)partModReductionWithJavaMathBigInteger:(JavaMathBigInteger *)k
                                                                      withInt:(jint)m
@@ -65,14 +67,14 @@ withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
                                                                     withByte:(jbyte)mu
                                                                     withByte:(jbyte)c;
 
-+ (OrgBouncycastleMathEcECPoint_F2m *)multiplyRTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
-                                                                 withJavaMathBigInteger:(JavaMathBigInteger *)k;
++ (OrgBouncycastleMathEcZTauElement *)roundWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)lambda0
+                                           withOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)lambda1
+                                                                            withByte:(jbyte)mu;
 
-+ (OrgBouncycastleMathEcECPoint_F2m *)multiplyTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
-                                                  withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
++ (OrgBouncycastleMathEcECPoint_F2m *)tauWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p;
 
-+ (OrgBouncycastleMathEcECPoint_F2m *)multiplyFromTnafWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
-                                                                             withByteArray:(IOSByteArray *)u;
++ (IOSByteArray *)tauAdicNafWithByte:(jbyte)mu
+withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
 
 + (IOSByteArray *)tauAdicWNafWithByte:(jbyte)mu
  withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda
@@ -81,17 +83,33 @@ withOrgBouncycastleMathEcZTauElement:(OrgBouncycastleMathEcZTauElement *)lambda;
                withJavaMathBigInteger:(JavaMathBigInteger *)tw
 withOrgBouncycastleMathEcZTauElementArray:(IOSObjectArray *)alpha;
 
-+ (IOSObjectArray *)getPreCompWithOrgBouncycastleMathEcECPoint_F2m:(OrgBouncycastleMathEcECPoint_F2m *)p
-                                                          withByte:(jbyte)a;
+#pragma mark Protected
+
++ (jint)getShiftsForCofactorWithJavaMathBigInteger:(JavaMathBigInteger *)h;
+
+#pragma mark Package-Private
 
 - (instancetype)init;
 
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleMathEcTnaf_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleMathEcTnaf)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, WIDTH, jbyte)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, POW_2_WIDTH, jbyte)
+
+FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha0_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha0_, IOSObjectArray *)
+
+FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha0Tnaf_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha0Tnaf_, IOSObjectArray *)
+
+FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha1_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha1_, IOSObjectArray *)
+
+FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha1Tnaf_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha1Tnaf_, IOSObjectArray *)
 
 FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathEcTnaf_normWithByte_withOrgBouncycastleMathEcZTauElement_(jbyte mu, OrgBouncycastleMathEcZTauElement *lambda);
 
@@ -127,31 +145,9 @@ FOUNDATION_EXPORT IOSByteArray *OrgBouncycastleMathEcTnaf_tauAdicWNafWithByte_wi
 
 FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_getPreCompWithOrgBouncycastleMathEcECPoint_F2m_withByte_(OrgBouncycastleMathEcECPoint_F2m *p, jbyte a);
 
-FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathEcTnaf_MINUS_ONE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, MINUS_ONE_, JavaMathBigInteger *)
+FOUNDATION_EXPORT void OrgBouncycastleMathEcTnaf_init(OrgBouncycastleMathEcTnaf *self);
 
-FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathEcTnaf_MINUS_TWO_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, MINUS_TWO_, JavaMathBigInteger *)
-
-FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathEcTnaf_MINUS_THREE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, MINUS_THREE_, JavaMathBigInteger *)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, WIDTH, jbyte)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, POW_2_WIDTH, jbyte)
-
-FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha0_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha0_, IOSObjectArray *)
-
-FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha0Tnaf_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha0Tnaf_, IOSObjectArray *)
-
-FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha1_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha1_, IOSObjectArray *)
-
-FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleMathEcTnaf_alpha1Tnaf_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcTnaf, alpha1Tnaf_, IOSObjectArray *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleMathEcTnaf *new_OrgBouncycastleMathEcTnaf_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcTnaf)
 

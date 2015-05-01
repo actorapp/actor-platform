@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/KeyParameter.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/KeyParameter.java"
 
 #include "IOSPrimitiveArray.h"
@@ -14,6 +15,7 @@
  @public
   IOSByteArray *key_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsKeyParameter, key_, IOSByteArray *)
@@ -25,35 +27,17 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsKeyParameter, key_, IOSByteArray 
 
 #line 10
 - (instancetype)initWithByteArray:(IOSByteArray *)key {
-  return
-#line 13
-  [self initOrgBouncycastleCryptoParamsKeyParameterWithByteArray:key withInt:0 withInt:((IOSByteArray *) nil_chk(key))->size_];
-}
-
-- (instancetype)initOrgBouncycastleCryptoParamsKeyParameterWithByteArray:(IOSByteArray *)key
-                                                                 withInt:(jint)keyOff
-                                                                 withInt:(jint)keyLen {
-  if (self = [super init]) {
-    
-#line 21
-    self->key_ = [IOSByteArray newArrayWithLength:keyLen];
-    
-#line 23
-    JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(key, keyOff, self->key_, 0, keyLen);
-  }
+  OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(self, key);
   return self;
 }
 
+
+#line 16
 - (instancetype)initWithByteArray:(IOSByteArray *)key
                           withInt:(jint)keyOff
                           withInt:(jint)keyLen {
-  return [self initOrgBouncycastleCryptoParamsKeyParameterWithByteArray:
-#line 17
-key withInt:
-#line 18
-keyOff withInt:
-#line 19
-keyLen];
+  OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(self, key, keyOff, keyLen);
+  return self;
 }
 
 
@@ -64,11 +48,40 @@ keyLen];
   return key_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsKeyParameter *)other {
-  [super copyAllFieldsTo:other];
-  other->key_ = key_;
+@end
+
+
+#line 10
+void OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(OrgBouncycastleCryptoParamsKeyParameter *self, IOSByteArray *key) {
+  (void) OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(self,
+#line 13
+  key, 0, ((IOSByteArray *) nil_chk(key))->size_);
 }
 
-@end
+
+#line 10
+OrgBouncycastleCryptoParamsKeyParameter *new_OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(IOSByteArray *key) {
+  OrgBouncycastleCryptoParamsKeyParameter *self = [OrgBouncycastleCryptoParamsKeyParameter alloc];
+  OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(self, key);
+  return self;
+}
+
+void OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(OrgBouncycastleCryptoParamsKeyParameter *self, IOSByteArray *key, jint keyOff, jint keyLen) {
+  (void) NSObject_init(self);
+  
+#line 21
+  self->key_ = [IOSByteArray newArrayWithLength:keyLen];
+  
+#line 23
+  JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(key, keyOff, self->key_, 0, keyLen);
+}
+
+
+#line 16
+OrgBouncycastleCryptoParamsKeyParameter *new_OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(IOSByteArray *key, jint keyOff, jint keyLen) {
+  OrgBouncycastleCryptoParamsKeyParameter *self = [OrgBouncycastleCryptoParamsKeyParameter alloc];
+  OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(self, key, keyOff, keyLen);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsKeyParameter)

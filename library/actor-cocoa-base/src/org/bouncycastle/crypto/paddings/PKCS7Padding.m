@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PKCS7Padding.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PKCS7Padding.java"
 
 #include "IOSClass.h"
@@ -59,7 +60,7 @@
   if (count > inArg->size_ || count == 0) {
     
 #line 62
-    @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:@"pad block corrupted"];
+    @throw new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(@"pad block corrupted");
   }
   
 #line 65
@@ -69,7 +70,7 @@
     if (IOSByteArray_Get(inArg, inArg->size_ - i) != count) {
       
 #line 69
-      @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:@"pad block corrupted"];
+      @throw new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(@"pad block corrupted");
     }
   }
   
@@ -78,9 +79,20 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleCryptoPaddingsPKCS7Padding_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleCryptoPaddingsPKCS7Padding_init(OrgBouncycastleCryptoPaddingsPKCS7Padding *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleCryptoPaddingsPKCS7Padding *new_OrgBouncycastleCryptoPaddingsPKCS7Padding_init() {
+  OrgBouncycastleCryptoPaddingsPKCS7Padding *self = [OrgBouncycastleCryptoPaddingsPKCS7Padding alloc];
+  OrgBouncycastleCryptoPaddingsPKCS7Padding_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoPaddingsPKCS7Padding)

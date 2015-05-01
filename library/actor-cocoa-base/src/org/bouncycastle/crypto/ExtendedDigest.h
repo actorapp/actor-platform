@@ -10,6 +10,7 @@
 #include "org/bouncycastle/crypto/Digest.h"
 
 @protocol OrgBouncycastleCryptoExtendedDigest < OrgBouncycastleCryptoDigest, NSObject, JavaObject >
+
 - (jint)getByteLength;
 
 @end

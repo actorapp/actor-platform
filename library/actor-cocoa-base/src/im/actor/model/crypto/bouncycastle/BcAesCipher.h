@@ -6,36 +6,36 @@
 #ifndef _BCBcAesCipher_H_
 #define _BCBcAesCipher_H_
 
-@class IOSByteArray;
-@class OrgBouncycastleCryptoBufferedBlockCipher;
-@protocol OrgBouncycastleCryptoCipherParameters;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/AesCipher.h"
 
-@interface BCBcAesCipher : NSObject < AMAesCipher > {
-}
+@class IOSByteArray;
+
+@interface BCBcAesCipher : NSObject < AMAesCipher >
+
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)key
                     withByteArray:(IOSByteArray *)iv;
 
-- (IOSByteArray *)getKey;
-
-- (IOSByteArray *)getIv;
+- (IOSByteArray *)decryptWithByteArray:(IOSByteArray *)source;
 
 - (IOSByteArray *)encryptWithByteArray:(IOSByteArray *)source;
 
-- (IOSByteArray *)decryptWithByteArray:(IOSByteArray *)source;
+- (IOSByteArray *)getIv;
+
+- (IOSByteArray *)getKey;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BCBcAesCipher)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BCBcAesCipher_initWithByteArray_withByteArray_(BCBcAesCipher *self, IOSByteArray *key, IOSByteArray *iv);
 
-typedef BCBcAesCipher ImActorModelCryptoBouncycastleBcAesCipher;
+FOUNDATION_EXPORT BCBcAesCipher *new_BCBcAesCipher_initWithByteArray_withByteArray_(IOSByteArray *key, IOSByteArray *iv) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCBcAesCipher)
+
+typedef BCBcAesCipher ImActorModelCryptoBouncycastleBcAesCipher;
 
 #endif // _BCBcAesCipher_H_

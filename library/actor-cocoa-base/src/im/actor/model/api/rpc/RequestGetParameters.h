@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiRpcRequestGetParameters_H_
 #define _ImActorModelApiRpcRequestGetParameters_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestGetParameters_HEADER 134
 
-@interface ImActorModelApiRpcRequestGetParameters : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestGetParameters : ImActorModelNetworkParserRequest
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiRpcRequestGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetParameters)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetParameters, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestGetParameters *ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetParameters, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetParameters_init(ImActorModelApiRpcRequestGetParameters *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetParameters *new_ImActorModelApiRpcRequestGetParameters_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetParameters)
 

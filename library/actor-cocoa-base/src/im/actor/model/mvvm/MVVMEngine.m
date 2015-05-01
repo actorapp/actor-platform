@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMEngine.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMEngine.java"
 
 #include "J2ObjC_source.h"
@@ -11,15 +12,13 @@
 #include "java/lang/Runnable.h"
 #include "java/lang/RuntimeException.h"
 
-@interface AMMVVMEngine () {
-}
-@end
+static id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
+J2OBJC_STATIC_FIELD_GETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
+J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
 
 
 #line 8
 @implementation AMMVVMEngine
-
-id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
 
 
 #line 11
@@ -42,42 +41,61 @@ id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
 }
 
 - (instancetype)init {
-  return [super init];
+  AMMVVMEngine_init(self);
+  return self;
 }
 
 @end
 
+
+#line 11
 void AMMVVMEngine_init__WithAMMainThreadProvider_(id<AMMainThreadProvider> mainThreadProvider) {
-  AMMVVMEngine_init();
+  AMMVVMEngine_initialize();
   
 #line 12
   AMMVVMEngine_mainThreadProvider_ = mainThreadProvider;
 }
 
+
+#line 15
 id<AMMainThreadProvider> AMMVVMEngine_getMainThreadProvider() {
-  AMMVVMEngine_init();
+  AMMVVMEngine_initialize();
   
 #line 16
   return AMMVVMEngine_mainThreadProvider_;
 }
 
+
+#line 19
 void AMMVVMEngine_checkMainThread() {
-  AMMVVMEngine_init();
+  AMMVVMEngine_initialize();
   
 #line 20
   if ([((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) isSingleThread]) {
     return;
   }
   if (![AMMVVMEngine_mainThreadProvider_ isMainThread]) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unable to perform operation not from Main Thread"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Unable to perform operation not from Main Thread");
   }
 }
 
+
+#line 28
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
-  AMMVVMEngine_init();
+  AMMVVMEngine_initialize();
   
 #line 29
   [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) postToMainThread:runnable];
+}
+
+void AMMVVMEngine_init(AMMVVMEngine *self) {
+  (void) NSObject_init(self);
+}
+
+AMMVVMEngine *new_AMMVVMEngine_init() {
+  AMMVVMEngine *self = [AMMVVMEngine alloc];
+  AMMVVMEngine_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMEngine)

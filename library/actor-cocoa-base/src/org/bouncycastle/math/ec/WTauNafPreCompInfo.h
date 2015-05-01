@@ -6,21 +6,23 @@
 #ifndef _OrgBouncycastleMathEcWTauNafPreCompInfo_H_
 #define _OrgBouncycastleMathEcWTauNafPreCompInfo_H_
 
-@class IOSObjectArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/PreCompInfo.h"
+
+@class IOSObjectArray;
 
 @interface OrgBouncycastleMathEcWTauNafPreCompInfo : NSObject < OrgBouncycastleMathEcPreCompInfo > {
  @public
   IOSObjectArray *preComp_;
 }
 
+#pragma mark Public
+
+- (instancetype)init;
+
 - (IOSObjectArray *)getPreComp;
 
 - (void)setPreCompWithOrgBouncycastleMathEcECPoint_F2mArray:(IOSObjectArray *)preComp;
-
-- (instancetype)init;
 
 @end
 
@@ -28,8 +30,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcWTauNafPreCompInfo)
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcWTauNafPreCompInfo, preComp_, IOSObjectArray *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcWTauNafPreCompInfo_init(OrgBouncycastleMathEcWTauNafPreCompInfo *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcWTauNafPreCompInfo *new_OrgBouncycastleMathEcWTauNafPreCompInfo_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcWTauNafPreCompInfo)
 

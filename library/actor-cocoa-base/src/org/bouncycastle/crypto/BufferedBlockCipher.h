@@ -6,11 +6,11 @@
 #ifndef _OrgBouncycastleCryptoBufferedBlockCipher_H_
 #define _OrgBouncycastleCryptoBufferedBlockCipher_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @protocol OrgBouncycastleCryptoBlockCipher;
 @protocol OrgBouncycastleCryptoCipherParameters;
-
-#include "J2ObjC_header.h"
 
 @interface OrgBouncycastleCryptoBufferedBlockCipher : NSObject {
  @public
@@ -22,20 +22,23 @@
   jboolean pgpCFB_;
 }
 
-- (instancetype)init;
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher;
 
-- (id<OrgBouncycastleCryptoBlockCipher>)getUnderlyingCipher;
-
-- (void)init__WithBoolean:(jboolean)forEncryption
-withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)params OBJC_METHOD_FAMILY_NONE;
+- (jint)doFinalWithByteArray:(IOSByteArray *)outArg
+                     withInt:(jint)outOff;
 
 - (jint)getBlockSize;
 
+- (jint)getOutputSizeWithInt:(jint)length;
+
+- (id<OrgBouncycastleCryptoBlockCipher>)getUnderlyingCipher;
+
 - (jint)getUpdateOutputSizeWithInt:(jint)len;
 
-- (jint)getOutputSizeWithInt:(jint)length;
+- (void)init__WithBoolean:(jboolean)forEncryption
+withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)params OBJC_METHOD_FAMILY_NONE;
 
 - (jint)processByteWithByte:(jbyte)inArg
               withByteArray:(IOSByteArray *)outArg
@@ -47,10 +50,11 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
                     withByteArray:(IOSByteArray *)outArg
                           withInt:(jint)outOff;
 
-- (jint)doFinalWithByteArray:(IOSByteArray *)outArg
-                     withInt:(jint)outOff;
-
 - (void)reset;
+
+#pragma mark Protected
+
+- (instancetype)init;
 
 @end
 
@@ -59,8 +63,13 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoBufferedBlockCipher)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoBufferedBlockCipher, buf_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoBufferedBlockCipher, cipher_, id<OrgBouncycastleCryptoBlockCipher>)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoBufferedBlockCipher_init(OrgBouncycastleCryptoBufferedBlockCipher *self);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoBufferedBlockCipher *new_OrgBouncycastleCryptoBufferedBlockCipher_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(OrgBouncycastleCryptoBufferedBlockCipher *self, id<OrgBouncycastleCryptoBlockCipher> cipher);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoBufferedBlockCipher *new_OrgBouncycastleCryptoBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(id<OrgBouncycastleCryptoBlockCipher> cipher) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoBufferedBlockCipher)
 

@@ -6,23 +6,26 @@
 #ifndef _ImActorModelApiRpcRequestEditName_H_
 #define _ImActorModelApiRpcRequestEditName_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestEditName_HEADER 53
 
-@interface ImActorModelApiRpcRequestEditName : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestEditName : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestEditName *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)name;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestEditName *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getName;
 
@@ -32,18 +35,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditName)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditName, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestEditName *ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditName, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditName_initWithNSString_(ImActorModelApiRpcRequestEditName *self, NSString *name);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_initWithNSString_(NSString *name) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditName_init(ImActorModelApiRpcRequestEditName *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditName)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Arrays.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Arrays.java"
 
 #include "IOSClass.h"
@@ -15,25 +16,30 @@
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/util/Arrays.h"
 
-__attribute__((unused)) static jint OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(jint from, jint to);
-
 @interface OrgBouncycastleUtilArrays ()
+
 - (instancetype)init;
 
 + (jint)getLengthWithInt:(jint)from
                  withInt:(jint)to;
+
 @end
+
+__attribute__((unused)) static void OrgBouncycastleUtilArrays_init(OrgBouncycastleUtilArrays *self);
+
+__attribute__((unused)) static OrgBouncycastleUtilArrays *new_OrgBouncycastleUtilArrays_init() NS_RETURNS_RETAINED;
+
+__attribute__((unused)) static jint OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(jint from, jint to);
 
 
 #line 8
 @implementation OrgBouncycastleUtilArrays
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleUtilArrays_init(self);
+  return self;
 }
 
-
-#line 15
 + (jboolean)areEqualWithBooleanArray:(IOSBooleanArray *)a
                     withBooleanArray:(IOSBooleanArray *)b {
   return OrgBouncycastleUtilArrays_areEqualWithBooleanArray_withBooleanArray_(a, b);
@@ -405,8 +411,24 @@ __attribute__((unused)) static jint OrgBouncycastleUtilArrays_getLengthWithInt_w
 
 @end
 
+
+#line 10
+void OrgBouncycastleUtilArrays_init(OrgBouncycastleUtilArrays *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 10
+OrgBouncycastleUtilArrays *new_OrgBouncycastleUtilArrays_init() {
+  OrgBouncycastleUtilArrays *self = [OrgBouncycastleUtilArrays alloc];
+  OrgBouncycastleUtilArrays_init(self);
+  return self;
+}
+
+
+#line 15
 jboolean OrgBouncycastleUtilArrays_areEqualWithBooleanArray_withBooleanArray_(IOSBooleanArray *a, IOSBooleanArray *b) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 19
   if (a == b) {
@@ -444,8 +466,10 @@ jboolean OrgBouncycastleUtilArrays_areEqualWithBooleanArray_withBooleanArray_(IO
   return YES;
 }
 
+
+#line 45
 jboolean OrgBouncycastleUtilArrays_areEqualWithCharArray_withCharArray_(IOSCharArray *a, IOSCharArray *b) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 49
   if (a == b) {
@@ -483,8 +507,10 @@ jboolean OrgBouncycastleUtilArrays_areEqualWithCharArray_withCharArray_(IOSCharA
   return YES;
 }
 
+
+#line 75
 jboolean OrgBouncycastleUtilArrays_areEqualWithByteArray_withByteArray_(IOSByteArray *a, IOSByteArray *b) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 79
   if (a == b) {
@@ -522,8 +548,10 @@ jboolean OrgBouncycastleUtilArrays_areEqualWithByteArray_withByteArray_(IOSByteA
   return YES;
 }
 
+
+#line 113
 jboolean OrgBouncycastleUtilArrays_constantTimeAreEqualWithByteArray_withByteArray_(IOSByteArray *a, IOSByteArray *b) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 117
   if (a == b) {
@@ -560,8 +588,10 @@ jboolean OrgBouncycastleUtilArrays_constantTimeAreEqualWithByteArray_withByteArr
   return nonEqual == 0;
 }
 
+
+#line 142
 jboolean OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(IOSIntArray *a, IOSIntArray *b) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 146
   if (a == b) {
@@ -599,8 +629,10 @@ jboolean OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(IOSIntArra
   return YES;
 }
 
+
+#line 172
 jboolean OrgBouncycastleUtilArrays_areEqualWithLongArray_withLongArray_(IOSLongArray *a, IOSLongArray *b) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 176
   if (a == b) {
@@ -638,10 +670,10 @@ jboolean OrgBouncycastleUtilArrays_areEqualWithLongArray_withLongArray_(IOSLongA
   return YES;
 }
 
+
+#line 202
 jboolean OrgBouncycastleUtilArrays_areEqualWithNSObjectArray_withNSObjectArray_(IOSObjectArray *a, IOSObjectArray *b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 204
+  OrgBouncycastleUtilArrays_initialize();
   if (a == b) {
     
 #line 206
@@ -679,10 +711,10 @@ jboolean OrgBouncycastleUtilArrays_areEqualWithNSObjectArray_withNSObjectArray_(
   return YES;
 }
 
+
+#line 234
 jboolean OrgBouncycastleUtilArrays_containsWithShortArray_withShort_(IOSShortArray *a, jshort n) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 236
+  OrgBouncycastleUtilArrays_initialize();
   for (jint i = 0; i < ((IOSShortArray *) nil_chk(a))->size_; ++i) {
     
 #line 238
@@ -695,10 +727,10 @@ jboolean OrgBouncycastleUtilArrays_containsWithShortArray_withShort_(IOSShortArr
   return NO;
 }
 
+
+#line 246
 jboolean OrgBouncycastleUtilArrays_containsWithIntArray_withInt_(IOSIntArray *a, jint n) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 248
+  OrgBouncycastleUtilArrays_initialize();
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(a))->size_; ++i) {
     
 #line 250
@@ -711,8 +743,10 @@ jboolean OrgBouncycastleUtilArrays_containsWithIntArray_withInt_(IOSIntArray *a,
   return NO;
 }
 
+
+#line 258
 void OrgBouncycastleUtilArrays_fillWithByteArray_withByte_(IOSByteArray *array, jbyte value) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 262
   for (jint i = 0; i < ((IOSByteArray *) nil_chk(array))->size_; i++) {
@@ -722,8 +756,10 @@ void OrgBouncycastleUtilArrays_fillWithByteArray_withByte_(IOSByteArray *array, 
   }
 }
 
+
+#line 268
 void OrgBouncycastleUtilArrays_fillWithCharArray_withChar_(IOSCharArray *array, jchar value) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 272
   for (jint i = 0; i < ((IOSCharArray *) nil_chk(array))->size_; i++) {
@@ -733,8 +769,10 @@ void OrgBouncycastleUtilArrays_fillWithCharArray_withChar_(IOSCharArray *array, 
   }
 }
 
+
+#line 278
 void OrgBouncycastleUtilArrays_fillWithLongArray_withLong_(IOSLongArray *array, jlong value) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 282
   for (jint i = 0; i < ((IOSLongArray *) nil_chk(array))->size_; i++) {
@@ -744,8 +782,10 @@ void OrgBouncycastleUtilArrays_fillWithLongArray_withLong_(IOSLongArray *array, 
   }
 }
 
+
+#line 288
 void OrgBouncycastleUtilArrays_fillWithShortArray_withShort_(IOSShortArray *array, jshort value) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 292
   for (jint i = 0; i < ((IOSShortArray *) nil_chk(array))->size_; i++) {
@@ -755,8 +795,10 @@ void OrgBouncycastleUtilArrays_fillWithShortArray_withShort_(IOSShortArray *arra
   }
 }
 
+
+#line 298
 void OrgBouncycastleUtilArrays_fillWithIntArray_withInt_(IOSIntArray *array, jint value) {
-  OrgBouncycastleUtilArrays_init();
+  OrgBouncycastleUtilArrays_initialize();
   
 #line 302
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(array))->size_; i++) {
@@ -766,10 +808,10 @@ void OrgBouncycastleUtilArrays_fillWithIntArray_withInt_(IOSIntArray *array, jin
   }
 }
 
+
+#line 308
 jint OrgBouncycastleUtilArrays_hashCodeWithByteArray_(IOSByteArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 310
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 312
@@ -792,10 +834,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithByteArray_(IOSByteArray *data) {
   return hc;
 }
 
+
+#line 327
 jint OrgBouncycastleUtilArrays_hashCodeWithByteArray_withInt_withInt_(IOSByteArray *data, jint off, jint len) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 329
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 331
@@ -818,10 +860,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithByteArray_withInt_withInt_(IOSByteArr
   return hc;
 }
 
+
+#line 346
 jint OrgBouncycastleUtilArrays_hashCodeWithCharArray_(IOSCharArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 348
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 350
@@ -844,10 +886,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithCharArray_(IOSCharArray *data) {
   return hc;
 }
 
+
+#line 365
 jint OrgBouncycastleUtilArrays_hashCodeWithIntArray2_(IOSObjectArray *ints) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 367
+  OrgBouncycastleUtilArrays_initialize();
   jint hc = 0;
   
 #line 369
@@ -861,10 +903,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithIntArray2_(IOSObjectArray *ints) {
   return hc;
 }
 
+
+#line 377
 jint OrgBouncycastleUtilArrays_hashCodeWithIntArray_(IOSIntArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 379
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 381
@@ -887,10 +929,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithIntArray_(IOSIntArray *data) {
   return hc;
 }
 
+
+#line 396
 jint OrgBouncycastleUtilArrays_hashCodeWithIntArray_withInt_withInt_(IOSIntArray *data, jint off, jint len) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 398
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 400
@@ -913,10 +955,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithIntArray_withInt_withInt_(IOSIntArray
   return hc;
 }
 
+
+#line 415
 jint OrgBouncycastleUtilArrays_hashCodeWithShortArray3_(IOSObjectArray *shorts) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 417
+  OrgBouncycastleUtilArrays_initialize();
   jint hc = 0;
   
 #line 419
@@ -930,10 +972,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithShortArray3_(IOSObjectArray *shorts) 
   return hc;
 }
 
+
+#line 427
 jint OrgBouncycastleUtilArrays_hashCodeWithShortArray2_(IOSObjectArray *shorts) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 429
+  OrgBouncycastleUtilArrays_initialize();
   jint hc = 0;
   
 #line 431
@@ -947,10 +989,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithShortArray2_(IOSObjectArray *shorts) 
   return hc;
 }
 
+
+#line 439
 jint OrgBouncycastleUtilArrays_hashCodeWithShortArray_(IOSShortArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 441
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 443
@@ -973,10 +1015,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithShortArray_(IOSShortArray *data) {
   return hc;
 }
 
+
+#line 458
 jint OrgBouncycastleUtilArrays_hashCodeWithNSObjectArray_(IOSObjectArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 460
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 462
@@ -999,10 +1041,10 @@ jint OrgBouncycastleUtilArrays_hashCodeWithNSObjectArray_(IOSObjectArray *data) 
   return hc;
 }
 
+
+#line 477
 IOSByteArray *OrgBouncycastleUtilArrays_cloneWithByteArray_(IOSByteArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 479
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 481
@@ -1017,10 +1059,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_cloneWithByteArray_(IOSByteArray *data) 
   return copy_;
 }
 
+
+#line 490
 IOSByteArray *OrgBouncycastleUtilArrays_cloneWithByteArray_withByteArray_(IOSByteArray *data, IOSByteArray *existing) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 492
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 494
@@ -1035,10 +1077,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_cloneWithByteArray_withByteArray_(IOSByt
   return existing;
 }
 
+
+#line 504
 IOSObjectArray *OrgBouncycastleUtilArrays_cloneWithByteArray2_(IOSObjectArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 506
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 508
@@ -1052,17 +1094,17 @@ IOSObjectArray *OrgBouncycastleUtilArrays_cloneWithByteArray2_(IOSObjectArray *d
   for (jint i = 0; i != copy_->size_; i++) {
     
 #line 515
-    IOSObjectArray_Set(copy_, i, OrgBouncycastleUtilArrays_cloneWithByteArray_(IOSObjectArray_Get(data, i)));
+    (void) IOSObjectArray_Set(copy_, i, OrgBouncycastleUtilArrays_cloneWithByteArray_(IOSObjectArray_Get(data, i)));
   }
   
 #line 518
   return copy_;
 }
 
+
+#line 521
 IOSObjectArray *OrgBouncycastleUtilArrays_cloneWithByteArray3_(IOSObjectArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 523
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 525
@@ -1076,17 +1118,17 @@ IOSObjectArray *OrgBouncycastleUtilArrays_cloneWithByteArray3_(IOSObjectArray *d
   for (jint i = 0; i != copy_->size_; i++) {
     
 #line 532
-    IOSObjectArray_Set(copy_, i, OrgBouncycastleUtilArrays_cloneWithByteArray2_(IOSObjectArray_Get(data, i)));
+    (void) IOSObjectArray_Set(copy_, i, OrgBouncycastleUtilArrays_cloneWithByteArray2_(IOSObjectArray_Get(data, i)));
   }
   
 #line 535
   return copy_;
 }
 
+
+#line 538
 IOSIntArray *OrgBouncycastleUtilArrays_cloneWithIntArray_(IOSIntArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 540
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 542
@@ -1101,10 +1143,10 @@ IOSIntArray *OrgBouncycastleUtilArrays_cloneWithIntArray_(IOSIntArray *data) {
   return copy_;
 }
 
+
+#line 551
 IOSLongArray *OrgBouncycastleUtilArrays_cloneWithLongArray_(IOSLongArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 553
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 555
@@ -1119,10 +1161,10 @@ IOSLongArray *OrgBouncycastleUtilArrays_cloneWithLongArray_(IOSLongArray *data) 
   return copy_;
 }
 
+
+#line 564
 IOSLongArray *OrgBouncycastleUtilArrays_cloneWithLongArray_withLongArray_(IOSLongArray *data, IOSLongArray *existing) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 566
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 568
@@ -1137,10 +1179,10 @@ IOSLongArray *OrgBouncycastleUtilArrays_cloneWithLongArray_withLongArray_(IOSLon
   return existing;
 }
 
+
+#line 578
 IOSShortArray *OrgBouncycastleUtilArrays_cloneWithShortArray_(IOSShortArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 580
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 582
@@ -1155,10 +1197,10 @@ IOSShortArray *OrgBouncycastleUtilArrays_cloneWithShortArray_(IOSShortArray *dat
   return copy_;
 }
 
+
+#line 591
 IOSObjectArray *OrgBouncycastleUtilArrays_cloneWithJavaMathBigIntegerArray_(IOSObjectArray *data) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 593
+  OrgBouncycastleUtilArrays_initialize();
   if (data == nil) {
     
 #line 595
@@ -1173,10 +1215,10 @@ IOSObjectArray *OrgBouncycastleUtilArrays_cloneWithJavaMathBigIntegerArray_(IOSO
   return copy_;
 }
 
+
+#line 604
 IOSByteArray *OrgBouncycastleUtilArrays_copyOfWithByteArray_withInt_(IOSByteArray *data, jint newLength) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 606
+  OrgBouncycastleUtilArrays_initialize();
   IOSByteArray *tmp = [IOSByteArray newArrayWithLength:newLength];
   
 #line 608
@@ -1195,10 +1237,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_copyOfWithByteArray_withInt_(IOSByteArra
   return tmp;
 }
 
+
+#line 620
 IOSCharArray *OrgBouncycastleUtilArrays_copyOfWithCharArray_withInt_(IOSCharArray *data, jint newLength) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 622
+  OrgBouncycastleUtilArrays_initialize();
   IOSCharArray *tmp = [IOSCharArray newArrayWithLength:newLength];
   
 #line 624
@@ -1217,10 +1259,10 @@ IOSCharArray *OrgBouncycastleUtilArrays_copyOfWithCharArray_withInt_(IOSCharArra
   return tmp;
 }
 
+
+#line 636
 IOSIntArray *OrgBouncycastleUtilArrays_copyOfWithIntArray_withInt_(IOSIntArray *data, jint newLength) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 638
+  OrgBouncycastleUtilArrays_initialize();
   IOSIntArray *tmp = [IOSIntArray newArrayWithLength:newLength];
   
 #line 640
@@ -1239,10 +1281,10 @@ IOSIntArray *OrgBouncycastleUtilArrays_copyOfWithIntArray_withInt_(IOSIntArray *
   return tmp;
 }
 
+
+#line 652
 IOSLongArray *OrgBouncycastleUtilArrays_copyOfWithLongArray_withInt_(IOSLongArray *data, jint newLength) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 654
+  OrgBouncycastleUtilArrays_initialize();
   IOSLongArray *tmp = [IOSLongArray newArrayWithLength:newLength];
   
 #line 656
@@ -1261,10 +1303,10 @@ IOSLongArray *OrgBouncycastleUtilArrays_copyOfWithLongArray_withInt_(IOSLongArra
   return tmp;
 }
 
+
+#line 668
 IOSObjectArray *OrgBouncycastleUtilArrays_copyOfWithJavaMathBigIntegerArray_withInt_(IOSObjectArray *data, jint newLength) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 670
+  OrgBouncycastleUtilArrays_initialize();
   IOSObjectArray *tmp = [IOSObjectArray newArrayWithLength:newLength type:JavaMathBigInteger_class_()];
   
 #line 672
@@ -1283,10 +1325,10 @@ IOSObjectArray *OrgBouncycastleUtilArrays_copyOfWithJavaMathBigIntegerArray_with
   return tmp;
 }
 
+
+#line 695
 IOSByteArray *OrgBouncycastleUtilArrays_copyOfRangeWithByteArray_withInt_withInt_(IOSByteArray *data, jint from, jint to) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 697
+  OrgBouncycastleUtilArrays_initialize();
   jint newLength = OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(from, to);
   
 #line 699
@@ -1308,10 +1350,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_copyOfRangeWithByteArray_withInt_withInt
   return tmp;
 }
 
+
+#line 713
 IOSIntArray *OrgBouncycastleUtilArrays_copyOfRangeWithIntArray_withInt_withInt_(IOSIntArray *data, jint from, jint to) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 715
+  OrgBouncycastleUtilArrays_initialize();
   jint newLength = OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(from, to);
   
 #line 717
@@ -1333,10 +1375,10 @@ IOSIntArray *OrgBouncycastleUtilArrays_copyOfRangeWithIntArray_withInt_withInt_(
   return tmp;
 }
 
+
+#line 731
 IOSLongArray *OrgBouncycastleUtilArrays_copyOfRangeWithLongArray_withInt_withInt_(IOSLongArray *data, jint from, jint to) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 733
+  OrgBouncycastleUtilArrays_initialize();
   jint newLength = OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(from, to);
   
 #line 735
@@ -1358,10 +1400,10 @@ IOSLongArray *OrgBouncycastleUtilArrays_copyOfRangeWithLongArray_withInt_withInt
   return tmp;
 }
 
+
+#line 749
 IOSObjectArray *OrgBouncycastleUtilArrays_copyOfRangeWithJavaMathBigIntegerArray_withInt_withInt_(IOSObjectArray *data, jint from, jint to) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 751
+  OrgBouncycastleUtilArrays_initialize();
   jint newLength = OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(from, to);
   
 #line 753
@@ -1383,25 +1425,25 @@ IOSObjectArray *OrgBouncycastleUtilArrays_copyOfRangeWithJavaMathBigIntegerArray
   return tmp;
 }
 
+
+#line 767
 jint OrgBouncycastleUtilArrays_getLengthWithInt_withInt_(jint from, jint to) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 769
+  OrgBouncycastleUtilArrays_initialize();
   jint newLength = to - from;
   if (newLength < 0) {
     
 #line 772
-    JavaLangStringBuffer *sb = [[JavaLangStringBuffer alloc] initWithInt:from];
+    JavaLangStringBuffer *sb = new_JavaLangStringBuffer_initWithInt_(from);
     (void) [((JavaLangStringBuffer *) nil_chk([sb appendWithNSString:@" > "])) appendWithInt:to];
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:[sb description]];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_([sb description]);
   }
   return newLength;
 }
 
+
+#line 779
 IOSByteArray *OrgBouncycastleUtilArrays_appendWithByteArray_withByte_(IOSByteArray *a, jbyte b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 781
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 783
@@ -1416,10 +1458,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_appendWithByteArray_withByte_(IOSByteArr
   return result;
 }
 
+
+#line 793
 IOSShortArray *OrgBouncycastleUtilArrays_appendWithShortArray_withShort_(IOSShortArray *a, jshort b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 795
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 797
@@ -1434,10 +1476,10 @@ IOSShortArray *OrgBouncycastleUtilArrays_appendWithShortArray_withShort_(IOSShor
   return result;
 }
 
+
+#line 807
 IOSIntArray *OrgBouncycastleUtilArrays_appendWithIntArray_withInt_(IOSIntArray *a, jint b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 809
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 811
@@ -1452,10 +1494,10 @@ IOSIntArray *OrgBouncycastleUtilArrays_appendWithIntArray_withInt_(IOSIntArray *
   return result;
 }
 
+
+#line 821
 IOSByteArray *OrgBouncycastleUtilArrays_concatenateWithByteArray_withByteArray_(IOSByteArray *a, IOSByteArray *b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 823
+  OrgBouncycastleUtilArrays_initialize();
   if (a != nil && b != nil) {
     
 #line 825
@@ -1480,10 +1522,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_concatenateWithByteArray_withByteArray_(
   }
 }
 
+
+#line 842
 IOSByteArray *OrgBouncycastleUtilArrays_concatenateWithByteArray_withByteArray_withByteArray_(IOSByteArray *a, IOSByteArray *b, IOSByteArray *c) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 844
+  OrgBouncycastleUtilArrays_initialize();
   if (a != nil && b != nil && c != nil) {
     
 #line 846
@@ -1509,10 +1551,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_concatenateWithByteArray_withByteArray_w
   }
 }
 
+
+#line 864
 IOSByteArray *OrgBouncycastleUtilArrays_concatenateWithByteArray_withByteArray_withByteArray_withByteArray_(IOSByteArray *a, IOSByteArray *b, IOSByteArray *c, IOSByteArray *d) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 866
+  OrgBouncycastleUtilArrays_initialize();
   if (a != nil && b != nil && c != nil && d != nil) {
     
 #line 868
@@ -1549,10 +1591,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_concatenateWithByteArray_withByteArray_w
   }
 }
 
+
+#line 895
 IOSIntArray *OrgBouncycastleUtilArrays_concatenateWithIntArray_withIntArray_(IOSIntArray *a, IOSIntArray *b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 897
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 899
@@ -1571,10 +1613,10 @@ IOSIntArray *OrgBouncycastleUtilArrays_concatenateWithIntArray_withIntArray_(IOS
   return c;
 }
 
+
+#line 912
 IOSByteArray *OrgBouncycastleUtilArrays_prependWithByteArray_withByte_(IOSByteArray *a, jbyte b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 914
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 916
@@ -1589,10 +1631,10 @@ IOSByteArray *OrgBouncycastleUtilArrays_prependWithByteArray_withByte_(IOSByteAr
   return result;
 }
 
+
+#line 926
 IOSShortArray *OrgBouncycastleUtilArrays_prependWithShortArray_withShort_(IOSShortArray *a, jshort b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 928
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 930
@@ -1607,10 +1649,10 @@ IOSShortArray *OrgBouncycastleUtilArrays_prependWithShortArray_withShort_(IOSSho
   return result;
 }
 
+
+#line 940
 IOSIntArray *OrgBouncycastleUtilArrays_prependWithIntArray_withInt_(IOSIntArray *a, jint b) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 942
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 944
@@ -1625,10 +1667,10 @@ IOSIntArray *OrgBouncycastleUtilArrays_prependWithIntArray_withInt_(IOSIntArray 
   return result;
 }
 
+
+#line 954
 IOSByteArray *OrgBouncycastleUtilArrays_reverseWithByteArray_(IOSByteArray *a) {
-  OrgBouncycastleUtilArrays_init();
-  
-#line 956
+  OrgBouncycastleUtilArrays_initialize();
   if (a == nil) {
     
 #line 958

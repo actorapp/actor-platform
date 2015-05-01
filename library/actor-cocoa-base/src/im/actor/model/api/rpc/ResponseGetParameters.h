@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcResponseGetParameters_H_
 #define _ImActorModelApiRpcResponseGetParameters_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseGetParameters_HEADER 135
 
-@interface ImActorModelApiRpcResponseGetParameters : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseGetParameters : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)parameters;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (id<JavaUtilList>)getParameters;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetParameters)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetParameters, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseGetParameters *ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetParameters, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(ImActorModelApiRpcResponseGetParameters *self, id<JavaUtilList> parameters);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(id<JavaUtilList> parameters) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetParameters_init(ImActorModelApiRpcResponseGetParameters *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetParameters)
 

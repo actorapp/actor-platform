@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/IPAddress.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/IPAddress.java"
 
 #include "J2ObjC_source.h"
@@ -10,13 +11,14 @@
 #include "java/lang/NumberFormatException.h"
 #include "org/bouncycastle/util/IPAddress.h"
 
-__attribute__((unused)) static jboolean OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(NSString *component, jint size);
-
 @interface OrgBouncycastleUtilIPAddress ()
 
 + (jboolean)isMaskValueWithNSString:(NSString *)component
                             withInt:(jint)size;
+
 @end
+
+__attribute__((unused)) static jboolean OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(NSString *component, jint size);
 
 
 #line 3
@@ -66,27 +68,34 @@ __attribute__((unused)) static jboolean OrgBouncycastleUtilIPAddress_isMaskValue
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleUtilIPAddress_init(self);
+  return self;
 }
 
 @end
 
+
+#line 12
 jboolean OrgBouncycastleUtilIPAddress_isValidWithNSString_(NSString *address) {
-  OrgBouncycastleUtilIPAddress_init();
+  OrgBouncycastleUtilIPAddress_initialize();
   
 #line 15
   return OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(address) || OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(address);
 }
 
+
+#line 25
 jboolean OrgBouncycastleUtilIPAddress_isValidWithNetMaskWithNSString_(NSString *address) {
-  OrgBouncycastleUtilIPAddress_init();
+  OrgBouncycastleUtilIPAddress_initialize();
   
 #line 28
   return OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWithNSString_(address) || OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(address);
 }
 
+
+#line 38
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(NSString *address) {
-  OrgBouncycastleUtilIPAddress_init();
+  OrgBouncycastleUtilIPAddress_initialize();
   
 #line 41
   if (((jint) [((NSString *) nil_chk(address)) length]) == 0) {
@@ -138,8 +147,10 @@ jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(NSString *address
   return octets == 4;
 }
 
+
+#line 79
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWithNSString_(NSString *address) {
-  OrgBouncycastleUtilIPAddress_init();
+  OrgBouncycastleUtilIPAddress_initialize();
   
 #line 82
   jint index = [((NSString *) nil_chk(address)) indexOfString:@"/"];
@@ -151,8 +162,10 @@ jboolean OrgBouncycastleUtilIPAddress_isValidIPv4WithNetmaskWithNSString_(NSStri
   (OrgBouncycastleUtilIPAddress_isValidIPv4WithNSString_(mask) || OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(mask, 32));
 }
 
+
+#line 89
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(NSString *address) {
-  OrgBouncycastleUtilIPAddress_init();
+  OrgBouncycastleUtilIPAddress_initialize();
   
 #line 92
   jint index = [((NSString *) nil_chk(address)) indexOfString:@"/"];
@@ -164,10 +177,10 @@ jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNetmaskWithNSString_(NSStri
   (OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(mask) || OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(mask, 128)));
 }
 
+
+#line 99
 jboolean OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(NSString *component, jint size) {
-  OrgBouncycastleUtilIPAddress_init();
-  
-#line 101
+  OrgBouncycastleUtilIPAddress_initialize();
   @try {
     
 #line 103
@@ -183,8 +196,10 @@ jboolean OrgBouncycastleUtilIPAddress_isMaskValueWithNSString_withInt_(NSString 
   }
 }
 
+
+#line 120
 jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(NSString *address) {
-  OrgBouncycastleUtilIPAddress_init();
+  OrgBouncycastleUtilIPAddress_initialize();
   
 #line 123
   if (((jint) [((NSString *) nil_chk(address)) length]) == 0) {
@@ -268,6 +283,16 @@ jboolean OrgBouncycastleUtilIPAddress_isValidIPv6WithNSString_(NSString *address
   
 #line 184
   return octets == 8 || doubleColonFound;
+}
+
+void OrgBouncycastleUtilIPAddress_init(OrgBouncycastleUtilIPAddress *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleUtilIPAddress *new_OrgBouncycastleUtilIPAddress_init() {
+  OrgBouncycastleUtilIPAddress *self = [OrgBouncycastleUtilIPAddress alloc];
+  OrgBouncycastleUtilIPAddress_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleUtilIPAddress)

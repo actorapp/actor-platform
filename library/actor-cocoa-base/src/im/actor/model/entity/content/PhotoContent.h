@@ -6,6 +6,9 @@
 #ifndef _AMPhotoContent_H_
 #define _AMPhotoContent_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/DocumentContent.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class AMFastThumb;
 @class AMFileSource;
@@ -13,13 +16,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/DocumentContent.h"
+@interface AMPhotoContent : AMDocumentContent
 
-@interface AMPhotoContent : AMDocumentContent {
-}
-
-+ (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
@@ -28,29 +27,38 @@
                              withInt:(jint)w
                              withInt:(jint)h;
 
-- (instancetype)init;
+- (jint)getH;
 
 - (jint)getW;
 
-- (jint)getH;
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
-
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
++ (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data;
+
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+#pragma mark Protected
+
+- (instancetype)init;
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMPhotoContent)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMPhotoContent ImActorModelEntityContentPhotoContent;
+FOUNDATION_EXPORT void AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMPhotoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h);
+
+FOUNDATION_EXPORT AMPhotoContent *new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMPhotoContent_init(AMPhotoContent *self);
+
+FOUNDATION_EXPORT AMPhotoContent *new_AMPhotoContent_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPhotoContent)
+
+typedef AMPhotoContent ImActorModelEntityContentPhotoContent;
 
 #endif // _AMPhotoContent_H_

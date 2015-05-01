@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiRpcResponseGetFileUploadUrl_H_
 #define _ImActorModelApiRpcResponseGetFileUploadUrl_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseGetFileUploadUrl_HEADER 121
 
-@interface ImActorModelApiRpcResponseGetFileUploadUrl : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseGetFileUploadUrl : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)url
                    withByteArray:(IOSByteArray *)uploadKey;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (NSString *)getUrl;
+- (jint)getHeaderKey;
 
 - (IOSByteArray *)getUploadKey;
+
+- (NSString *)getUrl;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetFileUploadUrl)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetFileUploadUrl, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseGetFileUploadUrl *ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetFileUploadUrl, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(ImActorModelApiRpcResponseGetFileUploadUrl *self, NSString *url, IOSByteArray *uploadKey);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetFileUploadUrl *new_ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(NSString *url, IOSByteArray *uploadKey) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetFileUploadUrl_init(ImActorModelApiRpcResponseGetFileUploadUrl *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetFileUploadUrl *new_ImActorModelApiRpcResponseGetFileUploadUrl_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetFileUploadUrl)
 

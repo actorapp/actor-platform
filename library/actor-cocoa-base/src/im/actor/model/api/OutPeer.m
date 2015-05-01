@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/OutPeer.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/OutPeer.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/PeerType.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -19,6 +21,7 @@
   jint id__;
   jlong accessHash_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *)
@@ -32,45 +35,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
                                             withInt:(jint)id_
                                            withLong:(jlong)accessHash {
-  if (self = [super init]) {
-    
-#line 26
-    self->type_ = type;
-    
-#line 27
-    self->id__ = id_;
-    
-#line 28
-    self->accessHash_ = accessHash;
-  }
+  ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(self, type, id_, accessHash);
   return self;
 }
 
 
 #line 31
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiOutPeer_init(self);
+  return self;
 }
 
+
+#line 35
 - (ImActorModelApiPeerTypeEnum *)getType {
-  
-#line 36
   return self->type_;
 }
 
-
-#line 39
 - (jint)getId {
-  
-#line 40
   return self->id__;
 }
 
-
-#line 43
 - (jlong)getAccessHash {
-  
-#line 44
   return self->accessHash_;
 }
 
@@ -85,16 +71,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 
 #line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 56
   if (self->type_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelApiPeerTypeEnum *) nil_chk(self->type_)) getValue]];
   [writer writeIntWithInt:2 withInt:self->id__];
   [writer writeLongWithInt:3 withLong:self->accessHash_];
 }
 
+
+#line 65
 - (NSString *)description {
   NSString *res = @"struct OutPeer{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"type=", self->type_));
@@ -103,13 +89,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiOutPeer *)other {
-  [super copyAllFieldsTo:other];
-  other->type_ = type_;
-  other->id__ = id__;
-  other->accessHash_ = accessHash_;
+@end
+
+
+#line 25
+void ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiOutPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash) {
+  (void) BSBserObject_init(self);
+  
+#line 26
+  self->type_ = type;
+  self->id__ = id_;
+  self->accessHash_ = accessHash;
 }
 
-@end
+
+#line 25
+ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash) {
+  ImActorModelApiOutPeer *self = [ImActorModelApiOutPeer alloc];
+  ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(self, type, id_, accessHash);
+  return self;
+}
+
+void ImActorModelApiOutPeer_init(ImActorModelApiOutPeer *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 31
+ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_init() {
+  ImActorModelApiOutPeer *self = [ImActorModelApiOutPeer alloc];
+  ImActorModelApiOutPeer_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiOutPeer)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/MailboxesQueue.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/MailboxesQueue.java"
 
 #include "J2ObjC_source.h"
@@ -18,6 +19,7 @@
  @public
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *envelopeRoot_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)
@@ -29,43 +31,25 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
 
 #line 16
 - (instancetype)init {
-  if (self = [super init]) {
-    
-#line 17
-    envelopeRoot_ = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot alloc] initWithDKMailboxesQueue:self];
-  }
+  DKMailboxesQueue_init(self);
   return self;
 }
 
 
 #line 20
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)getEnvelopeRoot {
-  
-#line 21
   return envelopeRoot_;
 }
 
-
-#line 24
 - (void)unlockMailboxWithDKMailbox:(DKMailbox *)mailbox {
-  
-#line 25
   [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:[((DKMailbox *) nil_chk(mailbox)) getEnvelopes]];
 }
 
-
-#line 28
 - (void)disconnectMailboxWithDKMailbox:(DKMailbox *)mailbox {
-  
-#line 29
   [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) detachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:[((DKMailbox *) nil_chk(mailbox)) getEnvelopes]];
 }
 
-
-#line 32
 - (void)notifyQueueChanged {
-  
-#line 33
   [super notifyQueueChanged];
 }
 
@@ -92,11 +76,23 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
   }
 }
 
-- (void)copyAllFieldsTo:(DKMailboxesQueue *)other {
-  [super copyAllFieldsTo:other];
-  other->envelopeRoot_ = envelopeRoot_;
+@end
+
+
+#line 16
+void DKMailboxesQueue_init(DKMailboxesQueue *self) {
+  (void) DKAbstractDispatchQueue_init(self);
+  
+#line 17
+  self->envelopeRoot_ = new_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(self);
 }
 
-@end
+
+#line 16
+DKMailboxesQueue *new_DKMailboxesQueue_init() {
+  DKMailboxesQueue *self = [DKMailboxesQueue alloc];
+  DKMailboxesQueue_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailboxesQueue)

@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/NotificationsActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/NotificationsActor.java"
 
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/Messenger.h"
 #include "im/actor/model/NotificationProvider.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/engine/SyncKeyValue.h"
@@ -27,8 +29,7 @@
 #include "java/util/HashSet.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotifications(ImActorModelModulesNotificationsNotificationsActor *self);
-__attribute__((unused)) static void ImActorModelModulesNotificationsNotificationsActor_saveStorage(ImActorModelModulesNotificationsNotificationsActor *self);
+#define ImActorModelModulesNotificationsNotificationsActor_MAX_NOTIFICATION_COUNT 10
 
 @interface ImActorModelModulesNotificationsNotificationsActor () {
  @public
@@ -42,11 +43,23 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
 - (id<JavaUtilList>)getNotifications;
 
 - (void)saveStorage;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, storage_, DKSyncKeyValue *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, pendingStorage_, ImActorModelModulesNotificationsEntityPendingStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, visiblePeer_, AMPeer *)
+
+static NSString *ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAGE_ = 
+#line 22
+@"notifications_pending";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesNotificationsNotificationsActor, PREFERENCES_STORAGE_, NSString *)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesNotificationsNotificationsActor, MAX_NOTIFICATION_COUNT, jint)
+
+__attribute__((unused)) static id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotifications(ImActorModelModulesNotificationsNotificationsActor *self);
+
+__attribute__((unused)) static void ImActorModelModulesNotificationsNotificationsActor_saveStorage(ImActorModelModulesNotificationsNotificationsActor *self);
 
 @interface ImActorModelModulesNotificationsNotificationsActor_NewMessage () {
  @public
@@ -55,6 +68,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, visibleP
   jlong sortDate_;
   AMContentDescription *contentDescription_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_NewMessage, peer_, AMPeer *)
@@ -65,6 +79,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_NewMessag
   AMPeer *peer_;
   jlong fromDate_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_MessagesRead, peer_, AMPeer *)
@@ -73,6 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_MessagesR
  @public
   AMPeer *peer_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible, peer_, AMPeer *)
@@ -81,6 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
  @public
   AMPeer *peer_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden, peer_, AMPeer *)
@@ -89,33 +106,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
 #line 20
 @implementation ImActorModelModulesNotificationsNotificationsActor
 
-NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAGE_ = @"notifications_pending";
-
 
 #line 32
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self =
-#line 33
-  [super initWithImActorModelModulesModules:messenger]) {
-    isAppVisible_ =
-#line 29
-    NO;
-    isDialogsVisible_ =
-#line 30
-    NO;
-    
-#line 34
-    self->storage_ = [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getNotifications])) getNotificationsStorage];
-  }
+  ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
 
 #line 38
 - (void)preStart {
-  
-#line 39
-  pendingStorage_ = [[ImActorModelModulesNotificationsEntityPendingStorage alloc] init];
+  pendingStorage_ = new_ImActorModelModulesNotificationsEntityPendingStorage_init();
   IOSByteArray *storage = [((DKSyncKeyValue *) nil_chk(self->storage_)) getWithLong:0];
   if (storage != nil) {
     @try {
@@ -146,7 +147,7 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
   
 #line 59
   if (isEnabled) {
-    [((id<JavaUtilList>) nil_chk(allPending)) addWithId:[[ImActorModelModulesNotificationsEntityPendingNotification alloc] initWithAMPeer:peer withInt:sender withLong:date withAMContentDescription:description_]];
+    [((id<JavaUtilList>) nil_chk(allPending)) addWithId:new_ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(peer, sender, date, description_)];
     ImActorModelModulesNotificationsNotificationsActor_saveStorage(self);
   }
   
@@ -154,13 +155,13 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
   if ([((AMConfiguration *) nil_chk([self config])) getNotificationProvider] != nil) {
     if (visiblePeer_ != nil && [visiblePeer_ isEqual:peer]) {
       if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled]) {
-        [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInApp];
+        [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInAppWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
       }
       return;
     }
     if (isDialogsVisible_) {
       if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled]) {
-        [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInApp];
+        [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInAppWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
       }
       return;
     }
@@ -173,7 +174,7 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
 #line 82
     id<JavaUtilList> destNotifications;
     if ([((id<JavaUtilList>) nil_chk(allPending)) size] <= ImActorModelModulesNotificationsNotificationsActor_MAX_NOTIFICATION_COUNT) {
-      destNotifications = [[JavaUtilArrayList alloc] init];
+      destNotifications = new_JavaUtilArrayList_init();
       for (jint i = 0; i < [allPending size]; i++) {
         [destNotifications addWithId:[allPending getWithInt:[allPending size] - 1 - i]];
       }
@@ -181,28 +182,28 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
     else {
       
 #line 89
-      destNotifications = [[JavaUtilArrayList alloc] init];
+      destNotifications = new_JavaUtilArrayList_init();
       for (jint i = 0; i < ImActorModelModulesNotificationsNotificationsActor_MAX_NOTIFICATION_COUNT; i++) {
         [destNotifications addWithId:[allPending getWithInt:[allPending size] - 1 - i]];
       }
     }
     
 #line 95
-    id<JavaUtilList> res = [[JavaUtilArrayList alloc] init];
+    id<JavaUtilList> res = new_JavaUtilArrayList_init();
     for (ImActorModelModulesNotificationsEntityPendingNotification * __strong p in nil_chk(destNotifications)) {
-      [res addWithId:[[AMNotification alloc] initWithAMPeer:[((ImActorModelModulesNotificationsEntityPendingNotification *) nil_chk(p)) getPeer] withInt:[p getSender] withAMContentDescription:[p getContent]]];
+      [res addWithId:new_AMNotification_initWithAMPeer_withInt_withAMContentDescription_([((ImActorModelModulesNotificationsEntityPendingNotification *) nil_chk(p)) getPeer], [p getSender], [p getContent])];
     }
     
 #line 100
     jint messagesCount = [allPending size];
-    JavaUtilHashSet *peers = [[JavaUtilHashSet alloc] init];
+    JavaUtilHashSet *peers = new_JavaUtilHashSet_init();
     for (ImActorModelModulesNotificationsEntityPendingNotification * __strong p in allPending) {
       [peers addWithId:[((ImActorModelModulesNotificationsEntityPendingNotification *) nil_chk(p)) getPeer]];
     }
     jint chatsCount = [peers size];
     
 #line 107
-    [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onNotificationWithJavaUtilList:res withInt:messagesCount withInt:chatsCount];
+    [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onNotificationWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger] withJavaUtilList:res withInt:messagesCount withInt:chatsCount];
   }
 }
 
@@ -210,8 +211,6 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
 #line 111
 - (void)onMessagesReadWithAMPeer:(AMPeer *)peer
                         withLong:(jlong)fromDate {
-  
-#line 112
   jboolean isChanged = NO;
   {
     IOSObjectArray *a__ =
@@ -237,61 +236,37 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
 
 #line 125
 - (void)onConversationVisibleWithAMPeer:(AMPeer *)peer {
-  
-#line 126
   self->visiblePeer_ = peer;
   if ([((AMConfiguration *) nil_chk([self config])) getNotificationProvider] != nil) {
-    [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onChatOpenWithAMPeer:peer];
+    [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onChatOpenWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger] withAMPeer:peer];
   }
 }
 
-
-#line 132
 - (void)onConversationHiddenWithAMPeer:(AMPeer *)peer {
-  
-#line 133
   if (visiblePeer_ != nil && [visiblePeer_ isEqual:peer]) {
     self->visiblePeer_ = nil;
   }
 }
 
-
-#line 138
 - (void)onAppVisible {
-  
-#line 139
   isAppVisible_ = YES;
 }
 
-
-#line 142
 - (void)onAppHidden {
-  
-#line 143
   isAppVisible_ = NO;
 }
 
-
-#line 146
 - (void)onDialogsVisible {
-  
-#line 147
   isDialogsVisible_ = YES;
   if ([((AMConfiguration *) nil_chk([self config])) getNotificationProvider] != nil) {
-    [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onDialogsOpen];
+    [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onDialogsOpenWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
   }
 }
 
-
-#line 153
 - (void)onDialogsHidden {
-  
-#line 154
   isDialogsVisible_ = NO;
 }
 
-
-#line 157
 - (void)saveStorage {
   ImActorModelModulesNotificationsNotificationsActor_saveStorage(self);
 }
@@ -299,8 +274,6 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
 
 #line 164
 - (void)onReceiveWithId:(id)message {
-  
-#line 165
   if ([message isKindOfClass:[ImActorModelModulesNotificationsNotificationsActor_NewMessage class]]) {
     ImActorModelModulesNotificationsNotificationsActor_NewMessage *newMessage = (ImActorModelModulesNotificationsNotificationsActor_NewMessage *) check_class_cast(message, [ImActorModelModulesNotificationsNotificationsActor_NewMessage class]);
     [self onNewMessageWithAMPeer:[((ImActorModelModulesNotificationsNotificationsActor_NewMessage *) nil_chk(newMessage)) getPeer] withInt:[newMessage getSender] withLong:
@@ -350,26 +323,38 @@ NSString * ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAG
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesNotificationsNotificationsActor *)other {
-  [super copyAllFieldsTo:other];
-  other->storage_ = storage_;
-  other->pendingStorage_ = pendingStorage_;
-  other->visiblePeer_ = visiblePeer_;
-  other->isAppVisible_ = isAppVisible_;
-  other->isDialogsVisible_ = isDialogsVisible_;
-}
-
 @end
 
-id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotifications(ImActorModelModulesNotificationsNotificationsActor *self) {
+
+#line 32
+void ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_(ImActorModelModulesNotificationsNotificationsActor *self, ImActorModelModulesModules *messenger) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
+  self->isAppVisible_ =
+#line 29
+  NO;
+  self->isDialogsVisible_ = NO;
   
-#line 51
+#line 34
+  self->storage_ = [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getNotifications])) getNotificationsStorage];
+}
+
+
+#line 32
+ImActorModelModulesNotificationsNotificationsActor *new_ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+  ImActorModelModulesNotificationsNotificationsActor *self = [ImActorModelModulesNotificationsNotificationsActor alloc];
+  ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
+}
+
+
+#line 50
+id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotifications(ImActorModelModulesNotificationsNotificationsActor *self) {
   return [((ImActorModelModulesNotificationsEntityPendingStorage *) nil_chk(self->pendingStorage_)) getNotifications];
 }
 
+
+#line 157
 void ImActorModelModulesNotificationsNotificationsActor_saveStorage(ImActorModelModulesNotificationsNotificationsActor *self) {
-  
-#line 158
   [((DKSyncKeyValue *) nil_chk(self->storage_)) putWithLong:0 withByteArray:[((ImActorModelModulesNotificationsEntityPendingStorage *) nil_chk(self->pendingStorage_)) toByteArray]];
 }
 
@@ -385,64 +370,49 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
                        withInt:(jint)sender
                       withLong:(jlong)sortDate
       withAMContentDescription:(AMContentDescription *)contentDescription {
-  if (self = [super init]) {
-    
-#line 196
-    self->peer_ = peer;
-    
-#line 197
-    self->sender_ = sender;
-    
-#line 198
-    self->sortDate_ = sortDate;
-    
-#line 199
-    self->contentDescription_ = contentDescription;
-  }
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(self, peer, sender, sortDate, contentDescription);
   return self;
 }
 
 
 #line 202
 - (AMPeer *)getPeer {
-  
-#line 203
   return peer_;
 }
 
-
-#line 206
 - (jint)getSender {
-  
-#line 207
   return sender_;
 }
 
-
-#line 210
 - (jlong)getSortDate {
-  
-#line 211
   return sortDate_;
 }
 
-
-#line 214
 - (AMContentDescription *)getContentDescription {
-  
-#line 215
   return contentDescription_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesNotificationsNotificationsActor_NewMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->sender_ = sender_;
-  other->sortDate_ = sortDate_;
-  other->contentDescription_ = contentDescription_;
+@end
+
+
+#line 195
+void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription) {
+  (void) NSObject_init(self);
+  
+#line 196
+  self->peer_ = peer;
+  self->sender_ = sender;
+  self->sortDate_ = sortDate;
+  self->contentDescription_ = contentDescription;
 }
 
-@end
+
+#line 195
+ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription) {
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage *self = [ImActorModelModulesNotificationsNotificationsActor_NewMessage alloc];
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(self, peer, sender, sortDate, contentDescription);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
@@ -454,40 +424,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 #line 223
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)fromDate {
-  if (self = [super init]) {
-    
-#line 224
-    self->peer_ = peer;
-    
-#line 225
-    self->fromDate_ = fromDate;
-  }
+  ImActorModelModulesNotificationsNotificationsActor_MessagesRead_initWithAMPeer_withLong_(self, peer, fromDate);
   return self;
 }
 
 
 #line 228
 - (AMPeer *)getPeer {
-  
-#line 229
   return peer_;
 }
 
-
-#line 232
 - (jlong)getFromDate {
-  
-#line 233
   return fromDate_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesNotificationsNotificationsActor_MessagesRead *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->fromDate_ = fromDate_;
+@end
+
+
+#line 223
+void ImActorModelModulesNotificationsNotificationsActor_MessagesRead_initWithAMPeer_withLong_(ImActorModelModulesNotificationsNotificationsActor_MessagesRead *self, AMPeer *peer, jlong fromDate) {
+  (void) NSObject_init(self);
+  
+#line 224
+  self->peer_ = peer;
+  self->fromDate_ = fromDate;
 }
 
-@end
+
+#line 223
+ImActorModelModulesNotificationsNotificationsActor_MessagesRead *new_ImActorModelModulesNotificationsNotificationsActor_MessagesRead_initWithAMPeer_withLong_(AMPeer *peer, jlong fromDate) {
+  ImActorModelModulesNotificationsNotificationsActor_MessagesRead *self = [ImActorModelModulesNotificationsNotificationsActor_MessagesRead alloc];
+  ImActorModelModulesNotificationsNotificationsActor_MessagesRead_initWithAMPeer_withLong_(self, peer, fromDate);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_MessagesRead)
 
@@ -498,28 +467,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 
 #line 240
 - (instancetype)initWithAMPeer:(AMPeer *)peer {
-  if (self = [super init]) {
-    
-#line 241
-    self->peer_ = peer;
-  }
+  ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(self, peer);
   return self;
 }
 
 
 #line 244
 - (AMPeer *)getPeer {
-  
-#line 245
   return peer_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
+@end
+
+
+#line 240
+void ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible *self, AMPeer *peer) {
+  (void) NSObject_init(self);
+  
+#line 241
+  self->peer_ = peer;
 }
 
-@end
+
+#line 240
+ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible *new_ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(AMPeer *peer) {
+  ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible *self = [ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible alloc];
+  ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(self, peer);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible)
 
@@ -530,28 +505,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 
 #line 252
 - (instancetype)initWithAMPeer:(AMPeer *)peer {
-  if (self = [super init]) {
-    
-#line 253
-    self->peer_ = peer;
-  }
+  ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden_initWithAMPeer_(self, peer);
   return self;
 }
 
 
 #line 256
 - (AMPeer *)getPeer {
-  
-#line 257
   return peer_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
+@end
+
+
+#line 252
+void ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden_initWithAMPeer_(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden *self, AMPeer *peer) {
+  (void) NSObject_init(self);
+  
+#line 253
+  self->peer_ = peer;
 }
 
-@end
+
+#line 252
+ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden_initWithAMPeer_(AMPeer *peer) {
+  ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden *self = [ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden alloc];
+  ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden_initWithAMPeer_(self, peer);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden)
 
@@ -560,10 +541,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 @implementation ImActorModelModulesNotificationsNotificationsActor_OnAppVisible
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesNotificationsNotificationsActor_OnAppVisible_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesNotificationsNotificationsActor_OnAppVisible_init(ImActorModelModulesNotificationsNotificationsActor_OnAppVisible *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesNotificationsNotificationsActor_OnAppVisible *new_ImActorModelModulesNotificationsNotificationsActor_OnAppVisible_init() {
+  ImActorModelModulesNotificationsNotificationsActor_OnAppVisible *self = [ImActorModelModulesNotificationsNotificationsActor_OnAppVisible alloc];
+  ImActorModelModulesNotificationsNotificationsActor_OnAppVisible_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_OnAppVisible)
 
@@ -572,10 +564,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 @implementation ImActorModelModulesNotificationsNotificationsActor_OnAppHidden
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init(ImActorModelModulesNotificationsNotificationsActor_OnAppHidden *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesNotificationsNotificationsActor_OnAppHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init() {
+  ImActorModelModulesNotificationsNotificationsActor_OnAppHidden *self = [ImActorModelModulesNotificationsNotificationsActor_OnAppHidden alloc];
+  ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_OnAppHidden)
 
@@ -584,10 +587,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 @implementation ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible_init(ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible *new_ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible_init() {
+  ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible *self = [ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible alloc];
+  ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible)
 
@@ -596,9 +610,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 @implementation ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init() {
+  ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *self = [ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden alloc];
+  ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden)

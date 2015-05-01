@@ -16,23 +16,20 @@ typedef NS_ENUM(NSUInteger, AMGroupState) {
   AMGroupState_DELETED = 3,
 };
 
-@interface AMGroupStateEnum : JavaLangEnum < NSCopying > {
-}
+@interface AMGroupStateEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMGroupStateEnum_values();
 
 + (AMGroupStateEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMGroupStateEnum *AMGroupStateEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMGroupStateEnum_initialized;
 J2OBJC_STATIC_INIT(AMGroupStateEnum)
 
 FOUNDATION_EXPORT AMGroupStateEnum *AMGroupStateEnum_values_[];
@@ -49,8 +46,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMGroupStateEnum, DELETED_PENDING)
 #define AMGroupStateEnum_DELETED AMGroupStateEnum_values_[AMGroupState_DELETED]
 J2OBJC_ENUM_CONSTANT_GETTER(AMGroupStateEnum, DELETED)
 
-typedef AMGroupStateEnum ImActorModelEntityGroupStateEnum;
-
 J2OBJC_TYPE_LITERAL_HEADER(AMGroupStateEnum)
+
+typedef AMGroupStateEnum ImActorModelEntityGroupStateEnum;
 
 #endif // _AMGroupState_H_

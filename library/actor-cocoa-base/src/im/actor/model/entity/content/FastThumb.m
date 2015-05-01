@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FastThumb.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FastThumb.java"
 
 #include "IOSClass.h"
@@ -21,10 +22,16 @@
   jint h_;
   IOSByteArray *image_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
+
+__attribute__((unused)) static void AMFastThumb_init(AMFastThumb *self);
+
+__attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RETAINED;
 
 
 #line 13
@@ -39,45 +46,28 @@ J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)image {
-  if (self = [super init]) {
-    
-#line 24
-    self->w_ = w;
-    
-#line 25
-    self->h_ = h;
-    
-#line 26
-    self->image_ = image;
-  }
+  AMFastThumb_initWithInt_withInt_withByteArray_(self, w, h, image);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  AMFastThumb_init(self);
+  return self;
 }
 
+
+#line 33
 - (jint)getW {
-  
-#line 34
   return w_;
 }
 
-
-#line 37
 - (jint)getH {
-  
-#line 38
   return h_;
 }
 
-
-#line 41
 - (IOSByteArray *)getImage {
-  
-#line 42
   return image_;
 }
 
@@ -92,27 +82,51 @@ J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
 
 #line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 54
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:w_];
   [writer writeIntWithInt:2 withInt:h_];
   [writer writeBytesWithInt:3 withByteArray:image_];
 }
 
-- (void)copyAllFieldsTo:(AMFastThumb *)other {
-  [super copyAllFieldsTo:other];
-  other->w_ = w_;
-  other->h_ = h_;
-  other->image_ = image_;
-}
-
 @end
 
+
+#line 15
 AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMFastThumb_init();
+  AMFastThumb_initialize();
   
 #line 16
-  return ((AMFastThumb *) BSBser_parseWithBSBserObject_withByteArray_([[AMFastThumb alloc] init], data));
+  return ((AMFastThumb *) BSBser_parseWithBSBserObject_withByteArray_(new_AMFastThumb_init(), data));
+}
+
+
+#line 23
+void AMFastThumb_initWithInt_withInt_withByteArray_(AMFastThumb *self, jint w, jint h, IOSByteArray *image) {
+  (void) BSBserObject_init(self);
+  
+#line 24
+  self->w_ = w;
+  self->h_ = h;
+  self->image_ = image;
+}
+
+
+#line 23
+AMFastThumb *new_AMFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *image) {
+  AMFastThumb *self = [AMFastThumb alloc];
+  AMFastThumb_initWithInt_withInt_withByteArray_(self, w, h, image);
+  return self;
+}
+
+void AMFastThumb_init(AMFastThumb *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 29
+AMFastThumb *new_AMFastThumb_init() {
+  AMFastThumb *self = [AMFastThumb alloc];
+  AMFastThumb_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFastThumb)

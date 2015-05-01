@@ -6,14 +6,14 @@
 #ifndef _AMThreadingProvider_H_
 #define _AMThreadingProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class AMAtomicIntegerCompat;
 @class AMAtomicLongCompat;
 @class AMThreadLocalCompat;
 @class DKActorDispatcher;
 @class DKActorSystem;
 @class DKThreadPriorityEnum;
-
-#include "J2ObjC_header.h"
 
 @protocol AMThreadingProvider < NSObject, JavaObject >
 
@@ -44,8 +44,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMThreadingProvider)
 
-#define ImActorModelThreadingProvider AMThreadingProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMThreadingProvider)
+
+#define ImActorModelThreadingProvider AMThreadingProvider
 
 #endif // _AMThreadingProvider_H_

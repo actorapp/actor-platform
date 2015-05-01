@@ -6,9 +6,9 @@
 #ifndef _OrgBouncycastleCryptoDigestsEncodableDigest_H_
 #define _OrgBouncycastleCryptoDigestsEncodableDigest_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol OrgBouncycastleCryptoDigestsEncodableDigest < NSObject, JavaObject >
 

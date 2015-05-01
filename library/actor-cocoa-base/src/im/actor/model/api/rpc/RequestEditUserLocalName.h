@@ -6,31 +6,34 @@
 #ifndef _ImActorModelApiRpcRequestEditUserLocalName_H_
 #define _ImActorModelApiRpcRequestEditUserLocalName_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestEditUserLocalName_HEADER 96
 
-@interface ImActorModelApiRpcRequestEditUserLocalName : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestEditUserLocalName : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name;
 
-- (instancetype)init;
-
-- (jint)getUid;
++ (ImActorModelApiRpcRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
+- (jint)getHeaderKey;
+
 - (NSString *)getName;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,18 +41,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditUserLocalName)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditUserLocalName, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestEditUserLocalName *ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditUserLocalName, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(ImActorModelApiRpcRequestEditUserLocalName *self, jint uid, jlong accessHash, NSString *name);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(jint uid, jlong accessHash, NSString *name) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditUserLocalName_init(ImActorModelApiRpcRequestEditUserLocalName *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditUserLocalName)
 

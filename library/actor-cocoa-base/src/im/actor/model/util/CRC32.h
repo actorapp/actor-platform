@@ -6,42 +6,38 @@
 #ifndef _AMCRC32_H_
 #define _AMCRC32_H_
 
-@class IOSByteArray;
-@class IOSIntArray;
-
 #include "J2ObjC_header.h"
 
-@interface AMCRC32 : NSObject {
-}
+@class IOSByteArray;
+
+@interface AMCRC32 : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (jlong)getValue;
 
 - (void)reset;
 
-- (void)updateWithInt:(jint)bval;
+- (void)updateWithByteArray:(IOSByteArray *)buf;
 
 - (void)updateWithByteArray:(IOSByteArray *)buf
                     withInt:(jint)off
                     withInt:(jint)len;
 
-- (void)updateWithByteArray:(IOSByteArray *)buf;
-
-- (instancetype)init;
+- (void)updateWithInt:(jint)bval;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMCRC32_initialized;
 J2OBJC_STATIC_INIT(AMCRC32)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void AMCRC32_init(AMCRC32 *self);
 
-FOUNDATION_EXPORT IOSIntArray *AMCRC32_crc_table_;
-J2OBJC_STATIC_FIELD_GETTER(AMCRC32, crc_table_, IOSIntArray *)
-J2OBJC_STATIC_FIELD_SETTER(AMCRC32, crc_table_, IOSIntArray *)
-CF_EXTERN_C_END
-
-typedef AMCRC32 ImActorModelUtilCRC32;
+FOUNDATION_EXPORT AMCRC32 *new_AMCRC32_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMCRC32)
+
+typedef AMCRC32 ImActorModelUtilCRC32;
 
 #endif // _AMCRC32_H_

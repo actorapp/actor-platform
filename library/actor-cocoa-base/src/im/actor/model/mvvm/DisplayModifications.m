@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/DisplayModifications.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/DisplayModifications.java"
 
 #include "IOSPrimitiveArray.h"
@@ -16,51 +17,145 @@
 #include "java/util/Iterator.h"
 #include "java/util/List.h"
 
-@interface AMDisplayModifications_$1 () {
+@interface AMDisplayModifications_$1 : NSObject < AMDisplayList_Modification > {
  @public
   id<DKListEngineItem> val$item_;
 }
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$1)
 
 J2OBJC_FIELD_SETTER(AMDisplayModifications_$1, val$item_, id)
 
-@interface AMDisplayModifications_$2 () {
+__attribute__((unused)) static void AMDisplayModifications_$1_initWithDKListEngineItem_(AMDisplayModifications_$1 *self, id<DKListEngineItem> capture$0);
+
+__attribute__((unused)) static AMDisplayModifications_$1 *new_AMDisplayModifications_$1_initWithDKListEngineItem_(id<DKListEngineItem> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$1)
+
+@interface AMDisplayModifications_$2 : NSObject < AMDisplayList_Modification > {
  @public
   id<JavaUtilList> val$items_;
 }
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$2)
 
 J2OBJC_FIELD_SETTER(AMDisplayModifications_$2, val$items_, id<JavaUtilList>)
 
-@interface AMDisplayModifications_$3 () {
+__attribute__((unused)) static void AMDisplayModifications_$2_initWithJavaUtilList_(AMDisplayModifications_$2 *self, id<JavaUtilList> capture$0);
+
+__attribute__((unused)) static AMDisplayModifications_$2 *new_AMDisplayModifications_$2_initWithJavaUtilList_(id<JavaUtilList> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$2)
+
+@interface AMDisplayModifications_$3 : NSObject < AMDisplayList_Modification > {
  @public
   id<JavaUtilList> val$items_;
 }
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$3)
 
 J2OBJC_FIELD_SETTER(AMDisplayModifications_$3, val$items_, id<JavaUtilList>)
 
-@interface AMDisplayModifications_$4 () {
+__attribute__((unused)) static void AMDisplayModifications_$3_initWithJavaUtilList_(AMDisplayModifications_$3 *self, id<JavaUtilList> capture$0);
+
+__attribute__((unused)) static AMDisplayModifications_$3 *new_AMDisplayModifications_$3_initWithJavaUtilList_(id<JavaUtilList> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$3)
+
+@interface AMDisplayModifications_$4 : NSObject < AMDisplayList_Modification > {
  @public
   id<JavaUtilList> val$items_;
 }
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$4)
 
 J2OBJC_FIELD_SETTER(AMDisplayModifications_$4, val$items_, id<JavaUtilList>)
 
-@interface AMDisplayModifications_$5 () {
+__attribute__((unused)) static void AMDisplayModifications_$4_initWithJavaUtilList_(AMDisplayModifications_$4 *self, id<JavaUtilList> capture$0);
+
+__attribute__((unused)) static AMDisplayModifications_$4 *new_AMDisplayModifications_$4_initWithJavaUtilList_(id<JavaUtilList> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$4)
+
+@interface AMDisplayModifications_$5 : NSObject < AMDisplayList_Modification > {
  @public
   jlong val$dstId_;
 }
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)initWithLong:(jlong)capture$0;
+
 @end
 
-@interface AMDisplayModifications_$6 () {
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$5)
+
+__attribute__((unused)) static void AMDisplayModifications_$5_initWithLong_(AMDisplayModifications_$5 *self, jlong capture$0);
+
+__attribute__((unused)) static AMDisplayModifications_$5 *new_AMDisplayModifications_$5_initWithLong_(jlong capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$5)
+
+@interface AMDisplayModifications_$6 : NSObject < AMDisplayList_Modification > {
  @public
   IOSLongArray *val$dstIds_;
 }
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)initWithLongArray:(IOSLongArray *)capture$0;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$6)
+
 J2OBJC_FIELD_SETTER(AMDisplayModifications_$6, val$dstIds_, IOSLongArray *)
+
+__attribute__((unused)) static void AMDisplayModifications_$6_initWithLongArray_(AMDisplayModifications_$6 *self, IOSLongArray *capture$0);
+
+__attribute__((unused)) static AMDisplayModifications_$6 *new_AMDisplayModifications_$6_initWithLongArray_(IOSLongArray *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$6)
+
+@interface AMDisplayModifications_$7 : NSObject < AMDisplayList_Modification >
+
+- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$7)
+
+__attribute__((unused)) static void AMDisplayModifications_$7_init(AMDisplayModifications_$7 *self);
+
+__attribute__((unused)) static AMDisplayModifications_$7 *new_AMDisplayModifications_$7_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$7)
 
 
 #line 13
@@ -107,58 +202,83 @@ J2OBJC_FIELD_SETTER(AMDisplayModifications_$6, val$dstIds_, IOSLongArray *)
 }
 
 - (instancetype)init {
-  return [super init];
+  AMDisplayModifications_init(self);
+  return self;
 }
 
 @end
 
+
+#line 15
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item) {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 16
-  return [[AMDisplayModifications_$1 alloc] initWithDKListEngineItem:item];
+  return new_AMDisplayModifications_$1_initWithDKListEngineItem_(item);
 }
 
+
+#line 34
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items) {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 35
-  return [[AMDisplayModifications_$2 alloc] initWithJavaUtilList:items];
+  return new_AMDisplayModifications_$2_initWithJavaUtilList_(items);
 }
 
+
+#line 55
 id<AMDisplayList_Modification> AMDisplayModifications_addOnlyWithJavaUtilList_(id<JavaUtilList> items) {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 56
-  return [[AMDisplayModifications_$3 alloc] initWithJavaUtilList:items];
+  return new_AMDisplayModifications_$3_initWithJavaUtilList_(items);
 }
 
+
+#line 76
 id<AMDisplayList_Modification> AMDisplayModifications_replaceWithJavaUtilList_(id<JavaUtilList> items) {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 77
-  return [[AMDisplayModifications_$4 alloc] initWithJavaUtilList:items];
+  return new_AMDisplayModifications_$4_initWithJavaUtilList_(items);
 }
 
+
+#line 86
 id<AMDisplayList_Modification> AMDisplayModifications_removeWithLong_(jlong dstId) {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 87
-  return [[AMDisplayModifications_$5 alloc] initWithLong:dstId];
+  return new_AMDisplayModifications_$5_initWithLong_(dstId);
 }
 
+
+#line 101
 id<AMDisplayList_Modification> AMDisplayModifications_removeWithLongArray_(IOSLongArray *dstIds) {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 102
-  return [[AMDisplayModifications_$6 alloc] initWithLongArray:dstIds];
+  return new_AMDisplayModifications_$6_initWithLongArray_(dstIds);
 }
 
+
+#line 120
 id<AMDisplayList_Modification> AMDisplayModifications_clear() {
-  AMDisplayModifications_init();
+  AMDisplayModifications_initialize();
   
 #line 121
-  return [[AMDisplayModifications_$7 alloc] init];
+  return new_AMDisplayModifications_$7_init();
+}
+
+void AMDisplayModifications_init(AMDisplayModifications *self) {
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications *new_AMDisplayModifications_init() {
+  AMDisplayModifications *self = [AMDisplayModifications alloc];
+  AMDisplayModifications_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
@@ -168,8 +288,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
 
 #line 18
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  
-#line 19
   jlong dstId = [((id<DKListEngineItem>) nil_chk(val$item_)) getEngineId];
   
 #line 21
@@ -186,16 +304,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
 }
 
 - (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0 {
-  val$item_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMDisplayModifications_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$item_ = val$item_;
+  AMDisplayModifications_$1_initWithDKListEngineItem_(self, capture$0);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$1_initWithDKListEngineItem_(AMDisplayModifications_$1 *self, id<DKListEngineItem> capture$0) {
+  self->val$item_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$1 *new_AMDisplayModifications_$1_initWithDKListEngineItem_(id<DKListEngineItem> capture$0) {
+  AMDisplayModifications_$1 *self = [AMDisplayModifications_$1 alloc];
+  AMDisplayModifications_$1_initWithDKListEngineItem_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
 
@@ -204,9 +328,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
 
 #line 37
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  
-#line 38
-  JavaUtilHashSet *keys = [[JavaUtilHashSet alloc] init];
+  JavaUtilHashSet *keys = new_JavaUtilHashSet_init();
   for (id<DKListEngineItem> __strong i in nil_chk(val$items_)) {
     [keys addWithId:JavaLangLong_valueOfWithLong_([((id<DKListEngineItem>) nil_chk(i)) getEngineId])];
   }
@@ -223,16 +345,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
-  val$items_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMDisplayModifications_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$items_ = val$items_;
+  AMDisplayModifications_$2_initWithJavaUtilList_(self, capture$0);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$2_initWithJavaUtilList_(AMDisplayModifications_$2 *self, id<JavaUtilList> capture$0) {
+  self->val$items_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$2 *new_AMDisplayModifications_$2_initWithJavaUtilList_(id<JavaUtilList> capture$0) {
+  AMDisplayModifications_$2 *self = [AMDisplayModifications_$2 alloc];
+  AMDisplayModifications_$2_initWithJavaUtilList_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$2)
 
@@ -243,7 +371,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$2)
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
   
 #line 60
-  JavaUtilArrayList *toAdd = [[JavaUtilArrayList alloc] init];
+  JavaUtilArrayList *toAdd = new_JavaUtilArrayList_init();
   
 #line 62
   for (id<DKListEngineItem> __strong t in nil_chk(val$items_)) {
@@ -265,16 +393,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$2)
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
-  val$items_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMDisplayModifications_$3 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$items_ = val$items_;
+  AMDisplayModifications_$3_initWithJavaUtilList_(self, capture$0);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$3_initWithJavaUtilList_(AMDisplayModifications_$3 *self, id<JavaUtilList> capture$0) {
+  self->val$items_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$3 *new_AMDisplayModifications_$3_initWithJavaUtilList_(id<JavaUtilList> capture$0) {
+  AMDisplayModifications_$3 *self = [AMDisplayModifications_$3 alloc];
+  AMDisplayModifications_$3_initWithJavaUtilList_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$3)
 
@@ -283,23 +417,27 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$3)
 
 #line 79
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  
-#line 80
   [((id<JavaUtilList>) nil_chk(sourceList)) clear];
   [sourceList addAllWithJavaUtilCollection:val$items_];
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
-  val$items_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMDisplayModifications_$4 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$items_ = val$items_;
+  AMDisplayModifications_$4_initWithJavaUtilList_(self, capture$0);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$4_initWithJavaUtilList_(AMDisplayModifications_$4 *self, id<JavaUtilList> capture$0) {
+  self->val$items_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$4 *new_AMDisplayModifications_$4_initWithJavaUtilList_(id<JavaUtilList> capture$0) {
+  AMDisplayModifications_$4 *self = [AMDisplayModifications_$4 alloc];
+  AMDisplayModifications_$4_initWithJavaUtilList_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$4)
 
@@ -308,8 +446,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$4)
 
 #line 89
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  
-#line 90
   id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
     id<DKListEngineItem> src = [iterator next];
@@ -320,16 +456,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$4)
 }
 
 - (instancetype)initWithLong:(jlong)capture$0 {
-  val$dstId_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMDisplayModifications_$5 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$dstId_ = val$dstId_;
+  AMDisplayModifications_$5_initWithLong_(self, capture$0);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$5_initWithLong_(AMDisplayModifications_$5 *self, jlong capture$0) {
+  self->val$dstId_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$5 *new_AMDisplayModifications_$5_initWithLong_(jlong capture$0) {
+  AMDisplayModifications_$5 *self = [AMDisplayModifications_$5 alloc];
+  AMDisplayModifications_$5_initWithLong_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$5)
 
@@ -338,8 +480,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$5)
 
 #line 104
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  
-#line 105
   id<JavaUtilIterator> it = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
   while ([((id<JavaUtilIterator>) nil_chk(it)) hasNext]) {
     id<DKListEngineItem> value = [it next];
@@ -362,16 +502,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$5)
 }
 
 - (instancetype)initWithLongArray:(IOSLongArray *)capture$0 {
-  val$dstIds_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMDisplayModifications_$6 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$dstIds_ = val$dstIds_;
+  AMDisplayModifications_$6_initWithLongArray_(self, capture$0);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$6_initWithLongArray_(AMDisplayModifications_$6 *self, IOSLongArray *capture$0) {
+  self->val$dstIds_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$6 *new_AMDisplayModifications_$6_initWithLongArray_(IOSLongArray *capture$0) {
+  AMDisplayModifications_$6 *self = [AMDisplayModifications_$6 alloc];
+  AMDisplayModifications_$6_initWithLongArray_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$6)
 
@@ -380,15 +526,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$6)
 
 #line 123
 - (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  
-#line 124
   [((id<JavaUtilList>) nil_chk(sourceList)) clear];
 }
 
 - (instancetype)init {
-  return [super init];
+  AMDisplayModifications_$7_init(self);
+  return self;
 }
 
 @end
+
+void AMDisplayModifications_$7_init(AMDisplayModifications_$7 *self) {
+  (void) NSObject_init(self);
+}
+
+AMDisplayModifications_$7 *new_AMDisplayModifications_$7_init() {
+  AMDisplayModifications_$7 *self = [AMDisplayModifications_$7 alloc];
+  AMDisplayModifications_$7_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$7)

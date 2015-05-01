@@ -6,16 +6,15 @@
 #ifndef _ImActorModelModulesTypingOwnTypingActor_H_
 #define _ImActorModelModulesTypingOwnTypingActor_H_
 
-@class AMPeer;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-#define ImActorModelModulesTypingOwnTypingActor_TYPING_DELAY 3000LL
+@class AMPeer;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesTypingOwnTypingActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesTypingOwnTypingActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
@@ -25,15 +24,15 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingOwnTypingActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesTypingOwnTypingActor_initWithImActorModelModulesModules_(ImActorModelModulesTypingOwnTypingActor *self, ImActorModelModulesModules *messenger);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesTypingOwnTypingActor, TYPING_DELAY, jlong)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesTypingOwnTypingActor *new_ImActorModelModulesTypingOwnTypingActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingOwnTypingActor)
 
-@interface ImActorModelModulesTypingOwnTypingActor_Typing : NSObject {
-}
+@interface ImActorModelModulesTypingOwnTypingActor_Typing : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer;
 
@@ -43,8 +42,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingOwnTypingActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingOwnTypingActor_Typing)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTypingOwnTypingActor_Typing_initWithAMPeer_(ImActorModelModulesTypingOwnTypingActor_Typing *self, AMPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelModulesTypingOwnTypingActor_Typing *new_ImActorModelModulesTypingOwnTypingActor_Typing_initWithAMPeer_(AMPeer *peer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingOwnTypingActor_Typing)
 

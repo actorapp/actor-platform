@@ -6,40 +6,44 @@
 #ifndef _AMServiceGroupUserKicked_H_
 #define _AMServiceGroupUserKicked_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/ServiceContent.h"
+@interface AMServiceGroupUserKicked : AMServiceContent
 
-@interface AMServiceGroupUserKicked : AMServiceContent {
-}
-
-+ (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)kickedUid;
 
-- (jint)getKickedUid;
++ (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+- (jint)getKickedUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserKicked)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceGroupUserKicked ImActorModelEntityContentServiceGroupUserKicked;
+FOUNDATION_EXPORT void AMServiceGroupUserKicked_initWithInt_(AMServiceGroupUserKicked *self, jint kickedUid);
+
+FOUNDATION_EXPORT AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_initWithInt_(jint kickedUid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserKicked)
+
+typedef AMServiceGroupUserKicked ImActorModelEntityContentServiceGroupUserKicked;
 
 #endif // _AMServiceGroupUserKicked_H_

@@ -6,16 +6,15 @@
 #ifndef _ImActorModelJvmThreadsJavaDispatcherActor_H_
 #define _ImActorModelJvmThreadsJavaDispatcherActor_H_
 
-@class DKActorSystem;
-@class DKEnvelope;
-@class DKThreadPriorityEnum;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/dispatch/Dispatch.h"
 #include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
 
-@interface ImActorModelJvmThreadsJavaDispatcherActor : DKActorDispatcher {
-}
+@class DKActorSystem;
+@class DKThreadPriorityEnum;
+
+@interface ImActorModelJvmThreadsJavaDispatcherActor : DKActorDispatcher
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)name
                withDKActorSystem:(DKActorSystem *)actorSystem
@@ -26,25 +25,10 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmThreadsJavaDispatcherActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(ImActorModelJvmThreadsJavaDispatcherActor *self, NSString *name, DKActorSystem *actorSystem, jint threadsCount, DKThreadPriorityEnum *priority);
+
+FOUNDATION_EXPORT ImActorModelJvmThreadsJavaDispatcherActor *new_ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(NSString *name, DKActorSystem *actorSystem, jint threadsCount, DKThreadPriorityEnum *priority) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaDispatcherActor)
-
-@interface ImActorModelJvmThreadsJavaDispatcherActor_$1 : NSObject < DKDispatch > {
-}
-
-- (void)dispatchMessageWithId:(DKEnvelope *)message;
-
-- (instancetype)initWithImActorModelJvmThreadsJavaDispatcherActor:(ImActorModelJvmThreadsJavaDispatcherActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmThreadsJavaDispatcherActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaDispatcherActor_$1)
 
 #endif // _ImActorModelJvmThreadsJavaDispatcherActor_H_

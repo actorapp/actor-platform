@@ -6,34 +6,36 @@
 #ifndef _AMConnectionEndpoint_H_
 #define _AMConnectionEndpoint_H_
 
-@class AMConnectionEndpoint_TypeEnum;
-
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-@interface AMConnectionEndpoint : NSObject {
-}
+@class AMConnectionEndpoint_TypeEnum;
+
+@interface AMConnectionEndpoint : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)host
                          withInt:(jint)port
 withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type;
 
-- (AMConnectionEndpoint_TypeEnum *)getType;
-
 - (NSString *)getHost;
 
 - (jint)getPort;
+
+- (AMConnectionEndpoint_TypeEnum *)getType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMConnectionEndpoint)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type);
 
-typedef AMConnectionEndpoint ImActorModelNetworkConnectionEndpoint;
+FOUNDATION_EXPORT AMConnectionEndpoint *new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConnectionEndpoint)
+
+typedef AMConnectionEndpoint ImActorModelNetworkConnectionEndpoint;
 
 typedef NS_ENUM(NSUInteger, AMConnectionEndpoint_Type) {
   AMConnectionEndpoint_Type_TCP = 0,
@@ -42,23 +44,20 @@ typedef NS_ENUM(NSUInteger, AMConnectionEndpoint_Type) {
   AMConnectionEndpoint_Type_WS_TLS = 3,
 };
 
-@interface AMConnectionEndpoint_TypeEnum : JavaLangEnum < NSCopying > {
-}
+@interface AMConnectionEndpoint_TypeEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMConnectionEndpoint_TypeEnum_values();
 
 + (AMConnectionEndpoint_TypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMConnectionEndpoint_TypeEnum_initialized;
 J2OBJC_STATIC_INIT(AMConnectionEndpoint_TypeEnum)
 
 FOUNDATION_EXPORT AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_values_[];

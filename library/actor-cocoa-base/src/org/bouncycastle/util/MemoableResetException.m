@@ -3,9 +3,11 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/MemoableResetException.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/MemoableResetException.java"
 
 #include "J2ObjC_source.h"
+#include "java/lang/ClassCastException.h"
 #include "org/bouncycastle/util/MemoableResetException.h"
 
 
@@ -15,11 +17,26 @@
 
 #line 18
 - (instancetype)initWithNSString:(NSString *)msg {
-  return
-#line 20
-  [super initWithNSString:msg];
+  OrgBouncycastleUtilMemoableResetException_initWithNSString_(self, msg);
+  return self;
 }
 
 @end
+
+
+#line 18
+void OrgBouncycastleUtilMemoableResetException_initWithNSString_(OrgBouncycastleUtilMemoableResetException *self, NSString *msg) {
+  (void) JavaLangClassCastException_initWithNSString_(self,
+#line 20
+  msg);
+}
+
+
+#line 18
+OrgBouncycastleUtilMemoableResetException *new_OrgBouncycastleUtilMemoableResetException_initWithNSString_(NSString *msg) {
+  OrgBouncycastleUtilMemoableResetException *self = [OrgBouncycastleUtilMemoableResetException alloc];
+  OrgBouncycastleUtilMemoableResetException_initWithNSString_(self, msg);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleUtilMemoableResetException)

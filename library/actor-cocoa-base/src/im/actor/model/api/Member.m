@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Member.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Member.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Member.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -18,8 +20,11 @@
   jint inviterUid_;
   jlong date_;
 }
+
 @end
 
+
+#line 19
 @implementation ImActorModelApiMember
 
 
@@ -27,45 +32,28 @@
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 26
-    self->uid_ = uid;
-    
-#line 27
-    self->inviterUid_ = inviterUid;
-    
-#line 28
-    self->date_ = date;
-  }
+  ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
   return self;
 }
 
 
 #line 31
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiMember_init(self);
+  return self;
 }
 
+
+#line 35
 - (jint)getUid {
-  
-#line 36
   return self->uid_;
 }
 
-
-#line 39
 - (jint)getInviterUid {
-  
-#line 40
   return self->inviterUid_;
 }
 
-
-#line 43
 - (jlong)getDate {
-  
-#line 44
   return self->date_;
 }
 
@@ -80,13 +68,13 @@
 
 #line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 56
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->inviterUid_];
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+
+#line 62
 - (NSString *)description {
   NSString *res = @"struct Member{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -96,13 +84,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiMember *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->inviterUid_ = inviterUid_;
-  other->date_ = date_;
+@end
+
+
+#line 25
+void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date) {
+  (void) BSBserObject_init(self);
+  
+#line 26
+  self->uid_ = uid;
+  self->inviterUid_ = inviterUid;
+  self->date_ = date;
 }
 
-@end
+
+#line 25
+ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
+  ImActorModelApiMember *self = [ImActorModelApiMember alloc];
+  ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+  return self;
+}
+
+void ImActorModelApiMember_init(ImActorModelApiMember *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 31
+ImActorModelApiMember *new_ImActorModelApiMember_init() {
+  ImActorModelApiMember *self = [ImActorModelApiMember alloc];
+  ImActorModelApiMember_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiMember)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContentDescription.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContentDescription.java"
 
 #include "IOSClass.h"
@@ -37,11 +38,17 @@
   jboolean isSilent__;
   jboolean isEncrypted_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMContentDescription, contentType_, AMContentTypeEnum *)
 J2OBJC_FIELD_SETTER(AMContentDescription, text_, NSString *)
+
+__attribute__((unused)) static void AMContentDescription_init(AMContentDescription *self);
+
+__attribute__((unused)) static AMContentDescription *new_AMContentDescription_init() NS_RETURNS_RETAINED;
 
 
 #line 25
@@ -57,91 +64,51 @@ J2OBJC_FIELD_SETTER(AMContentDescription, text_, NSString *)
 
 
 #line 74
-- (instancetype)initAMContentDescriptionWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
-                                                 withNSString:(NSString *)text
-                                                      withInt:(jint)relatedUser
-                                                  withBoolean:(jboolean)isSilent {
-  if (self = [super init]) {
-    
-#line 76
-    self->contentType_ = contentType;
-    
-#line 77
-    self->text_ = text;
-    
-#line 78
-    self->relatedUser_ = relatedUser;
-    
-#line 79
-    self->isSilent__ = isSilent;
-    
-#line 80
-    self->isEncrypted_ = NO;
-  }
-  return self;
-}
-
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
                              withNSString:(NSString *)text
                                   withInt:(jint)relatedUser
                               withBoolean:(jboolean)isSilent {
-  return [self initAMContentDescriptionWithAMContentTypeEnum:
-#line 74
-contentType withNSString:text withInt:relatedUser withBoolean:
-#line 75
-isSilent];
+  AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, text, relatedUser, isSilent);
+  return self;
 }
 
 
 #line 83
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
                              withNSString:(NSString *)text {
-  return
-#line 84
-  [self initAMContentDescriptionWithAMContentTypeEnum:contentType withNSString:text withInt:0 withBoolean:NO];
+  AMContentDescription_initWithAMContentTypeEnum_withNSString_(self, contentType, text);
+  return self;
 }
 
 
 #line 87
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType {
-  return
-#line 88
-  [self initAMContentDescriptionWithAMContentTypeEnum:contentType withNSString:@"" withInt:0 withBoolean:NO];
+  AMContentDescription_initWithAMContentTypeEnum_(self, contentType);
+  return self;
 }
 
 
 #line 91
 - (instancetype)init {
-  return [super init];
+  AMContentDescription_init(self);
+  return self;
 }
 
+
+#line 95
 - (AMContentTypeEnum *)getContentType {
-  
-#line 96
   return contentType_;
 }
 
-
-#line 99
 - (NSString *)getText {
-  
-#line 100
   return text_;
 }
 
-
-#line 103
 - (jint)getRelatedUser {
-  
-#line 104
   return relatedUser_;
 }
 
-
-#line 107
 - (jboolean)isSilent {
-  
-#line 108
   return isSilent__;
 }
 
@@ -158,8 +125,6 @@ isSilent];
 
 #line 121
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 122
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((AMContentTypeEnum *) nil_chk(contentType_)) getValue]];
   [writer writeStringWithInt:2 withNSString:text_];
   [writer writeIntWithInt:3 withInt:relatedUser_];
@@ -167,103 +132,159 @@ isSilent];
   [writer writeBoolWithInt:5 withBoolean:isEncrypted_];
 }
 
-- (void)copyAllFieldsTo:(AMContentDescription *)other {
-  [super copyAllFieldsTo:other];
-  other->contentType_ = contentType_;
-  other->text_ = text_;
-  other->relatedUser_ = relatedUser_;
-  other->isSilent__ = isSilent__;
-  other->isEncrypted_ = isEncrypted_;
-}
-
 @end
 
+
+#line 27
 AMContentDescription *AMContentDescription_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMContentDescription_init();
+  AMContentDescription_initialize();
   
 #line 28
-  return ((AMContentDescription *) BSBser_parseWithBSBserObject_withByteArray_([[AMContentDescription alloc] init], data));
+  return ((AMContentDescription *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContentDescription_init(), data));
 }
 
+
+#line 31
 AMContentDescription *AMContentDescription_fromContentWithAMAbsContent_(AMAbsContent *msg) {
-  AMContentDescription_init();
+  AMContentDescription_initialize();
   
 #line 32
   if ([msg isKindOfClass:[AMTextContent class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_TEXT() withNSString:
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum_get_TEXT(),
 #line 34
-    [((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(msg, [AMTextContent class])))) getText]];
+    [((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(msg, [AMTextContent class])))) getText]);
   }
   else
 #line 35
   if ([msg isKindOfClass:[AMPhotoContent class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_DOCUMENT_PHOTO()];
+    return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_DOCUMENT_PHOTO());
   }
   else
 #line 37
   if ([msg isKindOfClass:[AMVideoContent class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_DOCUMENT_VIDEO()];
+    return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_DOCUMENT_VIDEO());
   }
   else
 #line 39
   if ([msg isKindOfClass:[AMDocumentContent class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_DOCUMENT()];
+    return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_DOCUMENT());
   }
   else
 #line 41
   if ([msg isKindOfClass:[AMServiceUserRegistered class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_REGISTERED()];
+    return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_REGISTERED());
   }
   else
 #line 43
   if ([msg isKindOfClass:[AMServiceGroupAvatarChanged class]]) {
     if ([((AMServiceGroupAvatarChanged *) nil_chk(((AMServiceGroupAvatarChanged *) check_class_cast(msg, [AMServiceGroupAvatarChanged class])))) getNewAvatar] == nil) {
-      return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_AVATAR_REMOVED()];
+      return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_AVATAR_REMOVED());
     }
     else {
       
 #line 47
-      return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_AVATAR()];
+      return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_AVATAR());
     }
   }
   else
 #line 49
   if ([msg isKindOfClass:[AMServiceGroupTitleChanged class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_TITLE() withNSString:
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum_get_SERVICE_TITLE(),
 #line 51
-    [((AMServiceGroupTitleChanged *) nil_chk(((AMServiceGroupTitleChanged *) check_class_cast(msg, [AMServiceGroupTitleChanged class])))) getNewTitle]];
+    [((AMServiceGroupTitleChanged *) nil_chk(((AMServiceGroupTitleChanged *) check_class_cast(msg, [AMServiceGroupTitleChanged class])))) getNewTitle]);
   }
   else
 #line 52
   if ([msg isKindOfClass:[AMServiceGroupCreated class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_CREATED()];
+    return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_CREATED());
   }
   else
 #line 54
   if ([msg isKindOfClass:[AMServiceGroupUserAdded class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_ADD() withNSString:@"" withInt:
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_ADD(), @"",
 #line 56
-    [((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(msg, [AMServiceGroupUserAdded class])))) getAddedUid] withBoolean:NO];
+    [((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(msg, [AMServiceGroupUserAdded class])))) getAddedUid], NO);
   }
   else
 #line 57
   if ([msg isKindOfClass:[AMServiceGroupUserKicked class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_KICK() withNSString:@"" withInt:
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_KICK(), @"",
 #line 59
-    [((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(msg, [AMServiceGroupUserKicked class])))) getKickedUid] withBoolean:NO];
+    [((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(msg, [AMServiceGroupUserKicked class])))) getKickedUid], NO);
   }
   else
 #line 60
   if ([msg isKindOfClass:[AMServiceGroupUserLeave class]]) {
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_SERVICE_LEAVE() withNSString:@"" withInt:
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_LEAVE(), @"",
 #line 62
-    0 withBoolean:YES];
+    0, YES);
   }
   else {
     
 #line 64
-    return [[AMContentDescription alloc] initWithAMContentTypeEnum:AMContentTypeEnum_get_UNKNOWN_CONTENT()];
+    return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_UNKNOWN_CONTENT());
   }
+}
+
+
+#line 74
+void AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentDescription *self, AMContentTypeEnum *contentType, NSString *text, jint relatedUser, jboolean isSilent) {
+  (void) BSBserObject_init(self);
+  self->contentType_ = contentType;
+  self->text_ = text;
+  self->relatedUser_ = relatedUser;
+  self->isSilent__ = isSilent;
+  self->isEncrypted_ = NO;
+}
+
+
+#line 74
+AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum *contentType, NSString *text, jint relatedUser, jboolean isSilent) {
+  AMContentDescription *self = [AMContentDescription alloc];
+  AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, text, relatedUser, isSilent);
+  return self;
+}
+
+
+#line 83
+void AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentDescription *self, AMContentTypeEnum *contentType, NSString *text) {
+  (void) AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, text, 0, NO);
+}
+
+
+#line 83
+AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum *contentType, NSString *text) {
+  AMContentDescription *self = [AMContentDescription alloc];
+  AMContentDescription_initWithAMContentTypeEnum_withNSString_(self, contentType, text);
+  return self;
+}
+
+
+#line 87
+void AMContentDescription_initWithAMContentTypeEnum_(AMContentDescription *self, AMContentTypeEnum *contentType) {
+  (void) AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, @"", 0, NO);
+}
+
+
+#line 87
+AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum *contentType) {
+  AMContentDescription *self = [AMContentDescription alloc];
+  AMContentDescription_initWithAMContentTypeEnum_(self, contentType);
+  return self;
+}
+
+
+#line 91
+void AMContentDescription_init(AMContentDescription *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 91
+AMContentDescription *new_AMContentDescription_init() {
+  AMContentDescription *self = [AMContentDescription alloc];
+  AMContentDescription_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContentDescription)
