@@ -25,5 +25,5 @@ object FilePart {
     parts += models.FilePart(fileId, number, size, s3UploadKey)
 
   def findByFileId(fileId: Long): FixedSqlStreamingAction[Seq[models.FilePart], models.FilePart, Read] =
-    parts.filter(_.fileId === fileId).result
+    parts.filter(_.fileId === fileId).sortBy(_.number).result
 }
