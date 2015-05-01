@@ -11,6 +11,7 @@
 @protocol AMCryptoProvider;
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
+@protocol AMHttpDownloaderProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -40,7 +41,8 @@
                    withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
                               withBoolean:(jboolean)enableContactsLogging
                               withBoolean:(jboolean)enableNetworkLogging
-                              withBoolean:(jboolean)enableFilesLogging;
+                              withBoolean:(jboolean)enableFilesLogging
+             withAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider;
 
 - (AMApiConfiguration *)getApiConfiguration;
 
@@ -73,6 +75,8 @@
 - (id<AMFileSystemProvider>)getFileSystemProvider;
 
 - (id<AMDispatcherProvider>)getDispatcherProvider;
+
+- (id<AMHttpDownloaderProvider>)getHttpDownloaderProvider;
 
 @end
 

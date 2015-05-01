@@ -77,7 +77,7 @@ public class Messenger {
         ActorSystem.system().addDispatcher("db", 1);
 
         timing.section("Modules:Create");
-        this.modules = new Modules(configuration);
+        this.modules = new Modules(this, configuration);
 
         timing.section("Modules:Run");
         this.modules.run();
@@ -263,20 +263,14 @@ public class Messenger {
      * MUST be called on app became visible
      */
     public void onAppVisible() {
-        if (modules.getPresenceModule() != null) {
-            modules.getPresenceModule().onAppVisible();
-            modules.getNotifications().onAppVisible();
-        }
+       modules.onAppVisible();
     }
 
     /**
      * MUST be called on app became hidden
      */
     public void onAppHidden() {
-        if (modules.getPresenceModule() != null) {
-            modules.getPresenceModule().onAppHidden();
-            modules.getNotifications().onAppHidden();
-        }
+        modules.onAppHidden();
     }
 
     /**
@@ -455,7 +449,7 @@ public class Messenger {
         modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileSystemReference);
     }
 
-    public ListEngine<Message> getMedia(Peer peer){
+    public ListEngine<Message> getMedia(Peer peer) {
         return modules.getMessagesModule().getMediaEngine(peer);
     }
 

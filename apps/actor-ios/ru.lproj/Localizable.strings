@@ -112,6 +112,10 @@
 
 "Placeholder_Empty_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
 
+"Placeholder_Empty_Message2" = "или добавьте контакт вручную";
+
+"Placeholder_Empty_Action2" = "ДОБАВИТЬ КОНТАКТ";
+
 "Placeholder_Loading_Title" = "Синхронизируемся";
 
 "Placeholder_Loading_Message" = "Пожалуйста, подождите пока мы инициализируем приложение.";
@@ -121,6 +125,8 @@
 "Placeholder_Contacts_Message" = "Никто из ваших контактов не использует Актор. Используйте кнопку ниже что бы пригласить их.";
 
 "Placeholder_Contacts_Action" = "РАССКАЗАТЬ ДРУЗЬЯМ";
+
+"Placeholder_Contacts_Message2" = "или добавьте контакт вручную через кнопку плюс справа вверху экрана";
 
 "Placeholder_Dialogs_Title" = "Начать общение";
 

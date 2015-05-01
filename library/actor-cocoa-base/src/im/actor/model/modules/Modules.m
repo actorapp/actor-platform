@@ -42,6 +42,7 @@
   AMActorApi *actorApi_;
   ImActorModelModulesAuth *auth_;
   ImActorModelModulesAppStateModule *appStateModule_;
+  jboolean isAppVisible_;
   id<DKPreferencesStorage> preferences_;
   ImActorModelModulesUsers *users_;
   ImActorModelModulesGroups *groups_;
@@ -90,7 +91,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, security_, ImActorModelModulesSe
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, ImActorModelModulesModules *)
 
 
-#line 16
+#line 15
 @implementation ImActorModelModulesModules
 
 
@@ -215,168 +216,199 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, Im
   [timing end];
   
 #line 122
-  [presence_ onAppVisible];
-  [notifications_ onAppVisible];
+  if (isAppVisible_) {
+    [presence_ onAppVisible];
+    [notifications_ onAppVisible];
+  }
+  else {
+    
+#line 128
+    [notifications_ onAppHidden];
+  }
 }
 
 
-#line 126
+#line 132
 - (id<DKPreferencesStorage>)getPreferences {
   
-#line 127
+#line 133
   return preferences_;
 }
 
 
-#line 130
+#line 136
 - (AMConfiguration *)getConfiguration {
   
-#line 131
+#line 137
   return configuration_;
 }
 
 
-#line 134
+#line 140
 - (ImActorModelModulesAuth *)getAuthModule {
   
-#line 135
+#line 141
   return auth_;
 }
 
 
-#line 138
+#line 144
 - (ImActorModelModulesUsers *)getUsersModule {
   
-#line 139
+#line 145
   return users_;
 }
 
 
-#line 142
+#line 148
 - (ImActorModelModulesGroups *)getGroupsModule {
   
-#line 143
+#line 149
   return groups_;
 }
 
 
-#line 146
+#line 152
 - (ImActorModelModulesMessages *)getMessagesModule {
   
-#line 147
+#line 153
   return messages_;
 }
 
 
-#line 150
+#line 156
 - (ImActorModelModulesUpdates *)getUpdatesModule {
   
-#line 151
+#line 157
   return updates_;
 }
 
 
-#line 154
+#line 160
 - (ImActorModelModulesTyping *)getTypingModule {
   
-#line 155
+#line 161
   return typing_;
 }
 
 
-#line 158
+#line 164
 - (ImActorModelModulesPresence *)getPresenceModule {
   
-#line 159
+#line 165
   return presence_;
 }
 
 
-#line 162
+#line 168
 - (AMActorApi *)getActorApi {
   
-#line 163
+#line 169
   return actorApi_;
 }
 
 
-#line 166
+#line 172
 - (AMI18nEngine *)getI18nEngine {
   
-#line 167
+#line 173
   return i18nEngine_;
 }
 
 
-#line 170
+#line 176
 - (ImActorModelModulesContacts *)getContactsModule {
   
-#line 171
+#line 177
   return contacts_;
 }
 
 
-#line 174
+#line 180
 - (ImActorModelModulesFiles *)getFilesModule {
   
-#line 175
+#line 181
   return filesModule_;
 }
 
 
-#line 178
+#line 184
 - (ImActorModelModulesNotifications *)getNotifications {
   
-#line 179
+#line 185
   return notifications_;
 }
 
 
-#line 182
+#line 188
 - (ImActorModelModulesSettings *)getSettings {
   
-#line 183
+#line 189
   return settings_;
 }
 
 
-#line 186
+#line 192
 - (ImActorModelModulesProfile *)getProfile {
   
-#line 187
+#line 193
   return profile_;
 }
 
 
-#line 190
+#line 196
 - (ImActorModelModulesAppStateModule *)getAppStateModule {
   
-#line 191
+#line 197
   return appStateModule_;
 }
 
 
-#line 194
+#line 200
 - (ImActorModelModulesPushes *)getPushes {
   
-#line 195
+#line 201
   return pushes_;
 }
 
 
-#line 198
+#line 204
 - (ImActorModelModulesSecurity *)getSecurity {
   
-#line 199
+#line 205
   return security_;
 }
 
 
-#line 202
+#line 208
 - (ImActorModelModulesSearchModule *)getSearch {
   
-#line 203
+#line 209
   return search_;
+}
+
+
+#line 212
+- (void)onAppVisible {
+  
+#line 213
+  isAppVisible_ = YES;
+  if ([self getPresenceModule] != nil) {
+    [((ImActorModelModulesPresence *) nil_chk([self getPresenceModule])) onAppVisible];
+    [((ImActorModelModulesNotifications *) nil_chk([self getNotifications])) onAppVisible];
+  }
+}
+
+
+#line 220
+- (void)onAppHidden {
+  
+#line 221
+  isAppVisible_ = NO;
+  if ([self getPresenceModule] != nil) {
+    [((ImActorModelModulesPresence *) nil_chk([self getPresenceModule])) onAppHidden];
+    [((ImActorModelModulesNotifications *) nil_chk([self getNotifications])) onAppHidden];
+  }
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesModules *)other {
@@ -386,6 +418,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, Im
   other->actorApi_ = actorApi_;
   other->auth_ = auth_;
   other->appStateModule_ = appStateModule_;
+  other->isAppVisible_ = isAppVisible_;
   other->preferences_ = preferences_;
   other->users_ = users_;
   other->groups_ = groups_;
@@ -408,19 +441,19 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, Im
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 
 
-#line 206
+#line 228
 @implementation ImActorModelModulesModules_ActorApiCallbackImpl
 
 
-#line 209
+#line 231
 - (void)onAuthIdInvalidatedWithLong:(jlong)authKey {
 }
 
 
-#line 214
+#line 236
 - (void)onNewSessionCreated {
   
-#line 215
+#line 237
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onNewSessionCreated];
   }
@@ -430,7 +463,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 }
 
 
-#line 224
+#line 246
 - (void)onUpdateReceivedWithId:(id)obj {
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onUpdateReceivedWithId:obj];

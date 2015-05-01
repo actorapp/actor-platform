@@ -116,4 +116,23 @@ public class ActorRef {
     public void sendOnce(Object message, long delay, ActorRef sender) {
         dispatcher.sendMessageOnce(endpoint, message, ActorTime.currentTime() + delay, sender);
     }
+
+    /**
+     * Cancelling scheduled message
+     *
+     * @param message message
+     */
+    public void cancelMessage(Object message) {
+        cancelMessage(message, null);
+    }
+
+    /**
+     * Cancelling scheduled message
+     *
+     * @param message message
+     * @param sender  sender
+     */
+    public void cancelMessage(Object message, ActorRef sender) {
+        dispatcher.cancelSend(endpoint, message, sender);
+    }
 }

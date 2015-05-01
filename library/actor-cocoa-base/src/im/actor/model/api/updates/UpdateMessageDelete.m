@@ -28,62 +28,62 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDelete, peer_, ImActorMod
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDelete, rids_, id<JavaUtilList>)
 
 
-#line 20
+#line 15
 @implementation ImActorModelApiUpdatesUpdateMessageDelete
 
 
-#line 23
+#line 20
 + (ImActorModelApiUpdatesUpdateMessageDelete *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateMessageDelete_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 27
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                            withJavaUtilList:(id<JavaUtilList>)rids {
   if (self = [super init]) {
     
-#line 31
+#line 28
     self->peer_ = peer;
     
-#line 32
+#line 29
     self->rids_ = rids;
   }
   return self;
 }
 
 
-#line 35
+#line 32
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiPeer *)getPeer {
   
-#line 40
+#line 37
   return self->peer_;
 }
 
 
-#line 43
+#line 40
 - (id<JavaUtilList>)getRids {
   
-#line 44
+#line 41
   return self->rids_;
 }
 
 
-#line 48
+#line 45
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
   self->rids_ = [values getRepeatedLongWithInt:2];
 }
 
 
-#line 54
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   
-#line 55
+#line 52
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -101,7 +101,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDelete, rids_, id<JavaUti
 
 - (jint)getHeaderKey {
   
-#line 73
+#line 70
   return ImActorModelApiUpdatesUpdateMessageDelete_HEADER;
 }
 
@@ -116,7 +116,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDelete, rids_, id<JavaUti
 ImActorModelApiUpdatesUpdateMessageDelete *ImActorModelApiUpdatesUpdateMessageDelete_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessageDelete_init();
   
-#line 24
+#line 21
   return ((ImActorModelApiUpdatesUpdateMessageDelete *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateMessageDelete alloc] init], data));
 }
 

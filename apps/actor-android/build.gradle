@@ -129,7 +129,8 @@ android {
         }
 
         dev1alt {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1 alt)\""
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1 plain)\""
+            applicationIdSuffix ".dev1plain"
             signingConfig signingConfigs.release
 
             buildConfigField STRING, API_URL, URL_DEV1_PLAIN
@@ -180,7 +181,7 @@ android {
                 } else if (file.name == "actor-android-dev1.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev1alt.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Alt" + defaultConfig.versionName + ".apk")
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Plain-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev2.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-mchs.apk") {
@@ -330,6 +331,7 @@ dependencies {
     }
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
+
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.facebook.fresco:fresco:0.1.0+'
@@ -340,7 +342,7 @@ dependencies {
         exclude module: 'support-v13'
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
-    compile 'com.afollestad:material-dialogs:0.6.3.4'
+    compile 'com.afollestad:material-dialogs:0.7.3.1'
     // Android Support
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:support-v13:21.0.3'
@@ -363,6 +365,6 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt', 'assembleDev2', 'assembleModul']) {
+task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleLlectro', 'assembleDev1alt']) {
 
 }

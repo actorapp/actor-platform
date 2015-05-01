@@ -122,8 +122,7 @@ public class DisplayLists extends BaseModule {
                 @Override
                 public void onItemTouched(Message item) {
                     if (item.getSenderId() != myUid()) {
-                        // TODO: Implement encryption flag
-                        modules().getMessagesModule().onInMessageShown(peer, item.getRid(), item.getSortDate(), false);
+                        modules().getMessagesModule().onInMessageShown(peer, item.getSortDate());
                     }
                 }
             };
