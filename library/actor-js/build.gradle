@@ -68,7 +68,7 @@ task buildWebApp(dependsOn: ['gulpBuild']) {
 
 tasks.compileJava.dependsOn(copyGenResources)
 tasks.compileJava.dependsOn(copyGenSources)
-// tasks.compileJava.dependsOn(buildWebApp)
+tasks.compileJava.dependsOn(buildWebApp)
 
 tasks.clean.dependsOn(cleanGenSources)
 tasks.clean.dependsOn(cleanGenResources)
