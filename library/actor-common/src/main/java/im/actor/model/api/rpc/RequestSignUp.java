@@ -28,19 +28,17 @@ public class RequestSignUp extends Request<ResponseAuth> {
     private String smsHash;
     private String smsCode;
     private String name;
-    private byte[] publicKey;
     private byte[] deviceHash;
     private String deviceTitle;
     private int appId;
     private String appKey;
     private boolean isSilent;
 
-    public RequestSignUp(long phoneNumber, String smsHash, String smsCode, String name, byte[] publicKey, byte[] deviceHash, String deviceTitle, int appId, String appKey, boolean isSilent) {
+    public RequestSignUp(long phoneNumber, String smsHash, String smsCode, String name, byte[] deviceHash, String deviceTitle, int appId, String appKey, boolean isSilent) {
         this.phoneNumber = phoneNumber;
         this.smsHash = smsHash;
         this.smsCode = smsCode;
         this.name = name;
-        this.publicKey = publicKey;
         this.deviceHash = deviceHash;
         this.deviceTitle = deviceTitle;
         this.appId = appId;
@@ -66,10 +64,6 @@ public class RequestSignUp extends Request<ResponseAuth> {
 
     public String getName() {
         return this.name;
-    }
-
-    public byte[] getPublicKey() {
-        return this.publicKey;
     }
 
     public byte[] getDeviceHash() {
@@ -98,7 +92,6 @@ public class RequestSignUp extends Request<ResponseAuth> {
         this.smsHash = values.getString(2);
         this.smsCode = values.getString(3);
         this.name = values.getString(4);
-        this.publicKey = values.getBytes(6);
         this.deviceHash = values.getBytes(7);
         this.deviceTitle = values.getString(8);
         this.appId = values.getInt(9);
@@ -121,10 +114,6 @@ public class RequestSignUp extends Request<ResponseAuth> {
             throw new IOException();
         }
         writer.writeString(4, this.name);
-        if (this.publicKey == null) {
-            throw new IOException();
-        }
-        writer.writeBytes(6, this.publicKey);
         if (this.deviceHash == null) {
             throw new IOException();
         }
@@ -145,7 +134,6 @@ public class RequestSignUp extends Request<ResponseAuth> {
     public String toString() {
         String res = "rpc SignUp{";
         res += "name=" + this.name;
-        res += ", publicKey=" + byteArrayToStringCompact(this.publicKey);
         res += ", deviceHash=" + byteArrayToString(this.deviceHash);
         res += ", deviceTitle=" + this.deviceTitle;
         res += "}";

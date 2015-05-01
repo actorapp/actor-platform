@@ -13,6 +13,7 @@
 #include "im/actor/model/CryptoProvider.h"
 #include "im/actor/model/DispatcherProvider.h"
 #include "im/actor/model/FileSystemProvider.h"
+#include "im/actor/model/HttpDownloaderProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogProvider.h"
 #include "im/actor/model/MainThreadProvider.h"
@@ -44,6 +45,7 @@
   id<AMNotificationProvider> notificationProvider_;
   id<AMDispatcherProvider> dispatcherProvider_;
   AMApiConfiguration *apiConfiguration_;
+  id<AMHttpDownloaderProvider> httpDownloaderProvider_;
 }
 @end
 
@@ -60,114 +62,124 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystem
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotificationProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, dispatcherProvider_, id<AMDispatcherProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguration *)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, httpDownloaderProvider_, id<AMHttpDownloaderProvider>)
 
 
 #line 10
 @implementation AMConfigurationBuilder
 
+
+#line 43
+- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider {
+  
+#line 44
+  self->httpDownloaderProvider_ = httpDownloaderProvider;
+  return self;
+}
+
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration {
   
-#line 48
+#line 55
   self->apiConfiguration_ = apiConfiguration;
   return self;
 }
 
 - (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider {
   
-#line 59
+#line 66
   self->notificationProvider_ = notificationProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider {
   
-#line 70
+#line 77
   self->fileSystemProvider_ = fileSystemProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging {
   
-#line 81
+#line 88
   self->enableContactsLogging_ = enableContactsLogging;
   return self;
 }
 
 - (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging {
   
-#line 92
+#line 99
   self->enableNetworkLogging_ = enableNetworkLogging;
   return self;
 }
 
 
-#line 102
+#line 109
 - (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging {
   
-#line 103
+#line 110
   self->enableFilesLogging_ = enableFilesLogging;
   return self;
 }
 
 - (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider {
   
-#line 114
+#line 121
   self->cryptoProvider_ = cryptoProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider {
   
-#line 125
+#line 132
   self->phoneBookProvider_ = phoneBookProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setLogProvider:(id<AMLogProvider>)log {
   
-#line 136
+#line 143
   self->log_ = log;
   return self;
 }
 
 - (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider {
   
-#line 147
+#line 154
   self->networkProvider_ = networkProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setThreadingProvider:(id<AMThreadingProvider>)threadingProvider {
   
-#line 158
+#line 165
   self->threadingProvider_ = threadingProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setStorageProvider:(id<AMStorageProvider>)storageProvider {
   
-#line 169
+#line 176
   self->enginesFactory_ = storageProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider {
   
-#line 180
+#line 187
   self->localeProvider_ = localeProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)setDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider {
   
-#line 191
+#line 198
   self->dispatcherProvider_ = dispatcherProvider;
   return self;
 }
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url {
   
-#line 210
+#line 217
   NSString *scheme = [((NSString *) nil_chk([url substring:0 endIndex:[((NSString *) nil_chk(url)) indexOfString:@":"]])) lowercaseString];
   NSString *host = [url substring:[url indexOfString:@"://"] + ((jint) [@"://" length])];
   if ([((NSString *) nil_chk(host)) hasSuffix:@"/"]) {
@@ -180,7 +192,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
     port = JavaLangInteger_parseIntWithNSString_(IOSObjectArray_Get(parts, 1));
   }
   
-#line 222
+#line 229
   if ([((NSString *) nil_chk(scheme)) isEqual:@"ssl"] || [scheme isEqual:@"tls"]) {
     if (port <= 0) {
       port = 443;
@@ -188,7 +200,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_TCP_TLS()]];
   }
   else
-#line 227
+#line 234
   if ([scheme isEqual:@"tcp"]) {
     if (port <= 0) {
       port = 80;
@@ -196,7 +208,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_TCP()]];
   }
   else
-#line 232
+#line 239
   if ([scheme isEqual:@"ws"]) {
     if (port <= 0) {
       port = 80;
@@ -204,7 +216,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
     [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:[[AMConnectionEndpoint alloc] initWithNSString:host withInt:port withAMConnectionEndpoint_TypeEnum:AMConnectionEndpoint_TypeEnum_get_WS()]];
   }
   else
-#line 237
+#line 244
   if ([scheme isEqual:@"wss"]) {
     if (port <= 0) {
       port = 443;
@@ -213,7 +225,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   }
   else {
     
-#line 243
+#line 250
     @throw [[JavaLangRuntimeException alloc] initWithNSString:JreStrcat("$$", @"Unknown scheme type: ", scheme)];
   }
   return self;
@@ -221,16 +233,16 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
 
 - (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
   
-#line 255
+#line 262
   self->mainThreadProvider_ = mainThreadProvider;
   return self;
 }
 
 
-#line 264
+#line 271
 - (AMConfiguration *)build {
   
-#line 265
+#line 272
   if (networkProvider_ == nil) {
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Networking is not set"];
   }
@@ -262,14 +274,14 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
     @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Dispatcher Provider not set"];
   }
   return [[AMConfiguration alloc] initWithAMNetworkProvider:networkProvider_ withAMConnectionEndpointArray:[endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]] withAMThreadingProvider:
-#line 296
+#line 303
   threadingProvider_ withAMMainThreadProvider:mainThreadProvider_ withAMStorageProvider:enginesFactory_ withAMLogProvider:log_ withAMLocaleProvider:localeProvider_ withAMPhoneBookProvider:
-#line 297
+#line 304
   phoneBookProvider_ withAMCryptoProvider:cryptoProvider_ withAMFileSystemProvider:fileSystemProvider_ withAMNotificationProvider:notificationProvider_ withAMDispatcherProvider:
-#line 298
+#line 305
   dispatcherProvider_ withAMApiConfiguration:apiConfiguration_ withBoolean:enableContactsLogging_ withBoolean:enableNetworkLogging_ withBoolean:
-#line 299
-  enableFilesLogging_];
+#line 306
+  enableFilesLogging_ withAMHttpDownloaderProvider:httpDownloaderProvider_];
 }
 
 - (instancetype)init {
@@ -308,6 +320,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguratio
   other->notificationProvider_ = notificationProvider_;
   other->dispatcherProvider_ = dispatcherProvider_;
   other->apiConfiguration_ = apiConfiguration_;
+  other->httpDownloaderProvider_ = httpDownloaderProvider_;
 }
 
 @end

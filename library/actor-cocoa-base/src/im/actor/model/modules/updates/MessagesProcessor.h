@@ -35,13 +35,6 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
                                 withLong:(jlong)rid
               withImActorModelApiMessage:(ImActorModelApiMessage *)content;
 
-- (void)onEncryptedMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                          withInt:(jint)senderUid
-                                         withLong:(jlong)date
-                                         withLong:(jlong)keyHash
-                                    withByteArray:(IOSByteArray *)aesEncryptedKey
-                                    withByteArray:(IOSByteArray *)message;
-
 + (jint)readIntWithByteArray:(IOSByteArray *)bytes
                      withInt:(jint)offset;
 

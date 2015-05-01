@@ -9,14 +9,14 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/FileSystemProvider.h"
+#include "im/actor/model/HttpDownloaderProvider.h"
 #include "im/actor/model/api/FileLocation.h"
-#include "im/actor/model/api/UploadConfig.h"
-#include "im/actor/model/api/rpc/RequestCompleteUpload.h"
-#include "im/actor/model/api/rpc/RequestStartUpload.h"
-#include "im/actor/model/api/rpc/RequestUploadPart.h"
-#include "im/actor/model/api/rpc/ResponseCompleteUpload.h"
-#include "im/actor/model/api/rpc/ResponseStartUpload.h"
-#include "im/actor/model/api/rpc/ResponseVoid.h"
+#include "im/actor/model/api/rpc/RequestCommitFileUpload.h"
+#include "im/actor/model/api/rpc/RequestGetFileUploadPartUrl.h"
+#include "im/actor/model/api/rpc/RequestGetFileUploadUrl.h"
+#include "im/actor/model/api/rpc/ResponseCommitFileUpload.h"
+#include "im/actor/model/api/rpc/ResponseGetFileUploadPartUrl.h"
+#include "im/actor/model/api/rpc/ResponseGetFileUploadUrl.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileSystemReference.h"
@@ -45,6 +45,8 @@ __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportComp
   jlong rid_;
   NSString *fileName_;
   NSString *descriptor_;
+  id<AMFileSystemProvider> fileSystemProvider_;
+  id<AMHttpDownloaderProvider> downloaderProvider_;
   id<AMFileSystemReference> srcReference_;
   id<AMInputFile> inputFile_;
   id<AMFileSystemReference> destReference_;
@@ -56,7 +58,7 @@ __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportComp
   jint nextBlock_;
   jint uploaded_;
   jint uploadCount_;
-  ImActorModelApiUploadConfig *uploadConfig_;
+  IOSByteArray *uploadConfig_;
   AMCRC32 *crc32_;
 }
 
@@ -79,12 +81,14 @@ __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportComp
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, TAG_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, fileName_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, descriptor_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, fileSystemProvider_, id<AMFileSystemProvider>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, downloaderProvider_, id<AMHttpDownloaderProvider>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, srcReference_, id<AMFileSystemReference>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, inputFile_, id<AMInputFile>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, destReference_, id<AMFileSystemReference>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, outputFile_, id<AMOutputFile>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, manager_, DKActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, uploadConfig_, ImActorModelApiUploadConfig *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, uploadConfig_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, crc32_, AMCRC32 *)
 
 @interface ImActorModelModulesFileUploadTask_$1 () {
@@ -106,63 +110,109 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask_$2, this$0_, ImActorModelM
 @interface ImActorModelModulesFileUploadTask_$3 () {
  @public
   ImActorModelModulesFileUploadTask *this$0_;
+  IOSByteArray *val$data_;
   jint val$blockIndex_;
 }
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask_$3, this$0_, ImActorModelModulesFileUploadTask *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask_$3, val$data_, IOSByteArray *)
+
+@interface ImActorModelModulesFileUploadTask_$3_$1 () {
+ @public
+  ImActorModelModulesFileUploadTask_$3 *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask_$3_$1, this$0_, ImActorModelModulesFileUploadTask_$3 *)
+
+@interface ImActorModelModulesFileUploadTask_$3_$1_$1 () {
+ @public
+  ImActorModelModulesFileUploadTask_$3_$1 *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask_$3_$1_$1, this$0_, ImActorModelModulesFileUploadTask_$3_$1 *)
+
+@interface ImActorModelModulesFileUploadTask_$3_$1_$2 () {
+ @public
+  ImActorModelModulesFileUploadTask_$3_$1 *this$0_;
+}
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask_$3_$1_$2, this$0_, ImActorModelModulesFileUploadTask_$3_$1 *)
 
 
-#line 26
+#line 28
 @implementation ImActorModelModulesFileUploadTask
 
 
-#line 55
+#line 60
 - (instancetype)initWithLong:(jlong)rid
                 withNSString:(NSString *)descriptor
                 withNSString:(NSString *)fileName
               withDKActorRef:(DKActorRef *)manager
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   if (self =
-#line 56
+#line 61
   [super initWithImActorModelModulesModules:modules]) {
     isCompleted_ =
-#line 44
+#line 49
     NO;
     blockSize_ =
-#line 46
+#line 51
     8 * 1024;
     nextBlock_ =
-#line 48
+#line 53
     0;
     
-#line 57
+#line 62
     self->LOG_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) isEnableFilesLogging];
     
-#line 58
+#line 63
     self->rid_ = rid;
     
-#line 59
+#line 64
     self->fileName_ = fileName;
     
-#line 60
+#line 65
     self->descriptor_ = descriptor;
     
-#line 61
+#line 66
     self->manager_ = manager;
     
-#line 62
+#line 67
     self->TAG_ = JreStrcat("$JC", @"UploadTask{", rid, '}');
   }
   return self;
 }
 
 
-#line 66
+#line 71
 - (void)preStart {
   
-#line 67
-  srcReference_ = [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getFileSystemProvider])) fileFromDescriptor:descriptor_];
+#line 72
+  fileSystemProvider_ = [((AMConfiguration *) nil_chk([self config])) getFileSystemProvider];
+  if (fileSystemProvider_ == nil) {
+    if (LOG_) {
+      AMLog_dWithNSString_withNSString_(TAG_, @"File system is not available");
+    }
+    ImActorModelModulesFileUploadTask_reportError(self);
+    return;
+  }
+  
+#line 81
+  downloaderProvider_ = [((AMConfiguration *) nil_chk([self config])) getHttpDownloaderProvider];
+  if (downloaderProvider_ == nil) {
+    if (LOG_) {
+      AMLog_dWithNSString_withNSString_(TAG_, @"HTTP support is not available");
+    }
+    ImActorModelModulesFileUploadTask_reportError(self);
+    return;
+  }
+  
+#line 90
+  srcReference_ = [((id<AMFileSystemProvider>) nil_chk(fileSystemProvider_)) fileFromDescriptor:descriptor_];
   if (srcReference_ == nil) {
     if (LOG_) {
       AMLog_dWithNSString_withNSString_(TAG_, @"Error during file reference creating");
@@ -171,8 +221,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     return;
   }
   
-#line 76
-  destReference_ = [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getFileSystemProvider])) createTempFile];
+#line 99
+  destReference_ = [fileSystemProvider_ createTempFile];
   if (destReference_ == nil) {
     if (LOG_) {
       AMLog_dWithNSString_withNSString_(TAG_, @"Error during file dest reference creating");
@@ -181,7 +231,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     return;
   }
   
-#line 85
+#line 108
   inputFile_ = [((id<AMFileSystemReference>) nil_chk(srcReference_)) openRead];
   if (inputFile_ == nil) {
     if (LOG_) {
@@ -191,7 +241,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     return;
   }
   
-#line 94
+#line 117
   outputFile_ = [((id<AMFileSystemReference>) nil_chk(destReference_)) openWriteWithSize:[srcReference_ getSize]];
   if (outputFile_ == nil) {
     [((id<AMInputFile>) nil_chk(inputFile_)) close];
@@ -202,27 +252,27 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     return;
   }
   
-#line 104
+#line 127
   crc32_ = [[AMCRC32 alloc] init];
   
-#line 106
+#line 129
   ImActorModelModulesFileUploadTask_startUpload(self);
 }
 
 
-#line 109
+#line 132
 - (void)startUpload {
   ImActorModelModulesFileUploadTask_startUpload(self);
 }
 
 
-#line 139
+#line 164
 - (void)checkQueue {
   ImActorModelModulesFileUploadTask_checkQueue(self);
 }
 
 
-#line 223
+#line 248
 - (void)uploadPartWithInt:(jint)blockIndex
                   withInt:(jint)offset
             withByteArray:(IOSByteArray *)data {
@@ -230,19 +280,19 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 }
 
 
-#line 245
+#line 291
 - (void)reportError {
   ImActorModelModulesFileUploadTask_reportError(self);
 }
 
 
-#line 253
+#line 299
 - (void)reportProgressWithFloat:(jfloat)progress {
   ImActorModelModulesFileUploadTask_reportProgressWithFloat_(self, progress);
 }
 
 
-#line 260
+#line 306
 - (void)reportCompleteWithAMFileReference:(AMFileReference *)location
                 withAMFileSystemReference:(id<AMFileSystemReference>)reference {
   ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withAMFileSystemReference_(self, location, reference);
@@ -255,6 +305,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   other->rid_ = rid_;
   other->fileName_ = fileName_;
   other->descriptor_ = descriptor_;
+  other->fileSystemProvider_ = fileSystemProvider_;
+  other->downloaderProvider_ = downloaderProvider_;
   other->srcReference_ = srcReference_;
   other->inputFile_ = inputFile_;
   other->destReference_ = destReference_;
@@ -274,28 +326,32 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 void ImActorModelModulesFileUploadTask_startUpload(ImActorModelModulesFileUploadTask *self) {
   
-#line 110
+#line 133
   self->blocksCount_ = [((id<AMFileSystemReference>) nil_chk(self->srcReference_)) getSize] / self->blockSize_;
   if ([self->srcReference_ getSize] % self->blockSize_ != 0) {
     self->blocksCount_++;
   }
   
-#line 115
+#line 138
   if (self->LOG_) {
     AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$I$", @"Starting uploading ", self->blocksCount_, @" blocks"));
     AMLog_dWithNSString_withNSString_(self->TAG_, @"Requesting upload config...");
   }
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestStartUpload alloc] init] withAMRpcCallback:[[ImActorModelModulesFileUploadTask_$1 alloc] initWithImActorModelModulesFileUploadTask:self]];
+  
+#line 143
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetFileUploadUrl alloc] initWithInt:[self->srcReference_ getSize]] withAMRpcCallback:
+#line 144
+  [[ImActorModelModulesFileUploadTask_$1 alloc] initWithImActorModelModulesFileUploadTask:self]];
 }
 
 void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadTask *self) {
   
-#line 140
+#line 165
   if (self->isCompleted_) {
     return;
   }
   
-#line 144
+#line 169
   if (self->nextBlock_ == self->blocksCount_ && self->uploadCount_ == 0) {
     if (self->LOG_) {
       AMLog_dWithNSString_withNSString_(self->TAG_, @"Completing...");
@@ -304,24 +360,24 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
     if (self->LOG_) {
       AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$J", @"Src #", crc));
       
-#line 152
+#line 177
       AMLog_dWithNSString_withNSString_(self->TAG_, @"Closing files...");
     }
     [((id<AMInputFile>) nil_chk(self->inputFile_)) close];
     [((id<AMOutputFile>) nil_chk(self->outputFile_)) close];
     
-#line 157
-    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestCompleteUpload alloc] initWithImActorModelApiUploadConfig:self->uploadConfig_ withInt:self->blocksCount_ withLong:crc] withAMRpcCallback:[[ImActorModelModulesFileUploadTask_$2 alloc] initWithImActorModelModulesFileUploadTask:self]];
+#line 182
+    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestCommitFileUpload alloc] initWithByteArray:self->uploadConfig_] withAMRpcCallback:[[ImActorModelModulesFileUploadTask_$2 alloc] initWithImActorModelModulesFileUploadTask:self]];
     
-#line 179
+#line 204
     return;
   }
   
-#line 182
+#line 207
   if (self->nextBlock_ < self->blocksCount_ && self->uploadCount_ < ImActorModelModulesFileUploadTask_SIM_BLOCKS_COUNT) {
     jint blockIndex = self->nextBlock_++;
     
-#line 185
+#line 210
     jint size = self->blockSize_;
     jint fileOffset = blockIndex * self->blockSize_;
     if ((blockIndex + 1) * self->blockSize_ > [((id<AMFileSystemReference>) nil_chk(self->srcReference_)) getSize]) {
@@ -329,7 +385,7 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
     }
     IOSByteArray *data = [IOSByteArray newArrayWithLength:size];
     
-#line 192
+#line 217
     if (![((id<AMInputFile>) nil_chk(self->inputFile_)) readAtOffset:fileOffset toArray:data withArrayOffset:0 withArrayLen:size]) {
       if (self->LOG_) {
         AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$I$", @"read #", blockIndex, @" error"));
@@ -345,22 +401,22 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
       return;
     }
     
-#line 207
+#line 232
     [((AMCRC32 *) nil_chk(self->crc32_)) updateWithByteArray:data withInt:0 withInt:size];
     
-#line 209
+#line 234
     if (self->LOG_) {
       AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$I", @"Starting block upload #", blockIndex));
     }
     
-#line 213
+#line 238
     self->uploadCount_++;
     ImActorModelModulesFileUploadTask_uploadPartWithInt_withInt_withByteArray_(self, blockIndex, fileOffset, data);
     ImActorModelModulesFileUploadTask_checkQueue(self);
   }
   else {
     
-#line 217
+#line 242
     if (self->LOG_) {
       AMLog_dWithNSString_withNSString_(self->TAG_, @"Nothing to do");
     }
@@ -369,13 +425,15 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
 
 void ImActorModelModulesFileUploadTask_uploadPartWithInt_withInt_withByteArray_(ImActorModelModulesFileUploadTask *self, jint blockIndex, jint offset, IOSByteArray *data) {
   
-#line 224
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestUploadPart alloc] initWithImActorModelApiUploadConfig:self->uploadConfig_ withInt:offset withByteArray:data] withAMRpcCallback:[[ImActorModelModulesFileUploadTask_$3 alloc] initWithImActorModelModulesFileUploadTask:self withInt:blockIndex]];
+#line 249
+  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestGetFileUploadPartUrl alloc] initWithInt:blockIndex withInt:self->blockSize_ withByteArray:self->uploadConfig_] withAMRpcCallback:
+#line 250
+  [[ImActorModelModulesFileUploadTask_$3 alloc] initWithImActorModelModulesFileUploadTask:self withByteArray:data withInt:blockIndex]];
 }
 
 void ImActorModelModulesFileUploadTask_reportError(ImActorModelModulesFileUploadTask *self) {
   
-#line 246
+#line 292
   if (self->isCompleted_) {
     return;
   }
@@ -385,7 +443,7 @@ void ImActorModelModulesFileUploadTask_reportError(ImActorModelModulesFileUpload
 
 void ImActorModelModulesFileUploadTask_reportProgressWithFloat_(ImActorModelModulesFileUploadTask *self, jfloat progress) {
   
-#line 254
+#line 300
   if (self->isCompleted_) {
     return;
   }
@@ -394,7 +452,7 @@ void ImActorModelModulesFileUploadTask_reportProgressWithFloat_(ImActorModelModu
 
 void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withAMFileSystemReference_(ImActorModelModulesFileUploadTask *self, AMFileReference *location, id<AMFileSystemReference> reference) {
   
-#line 261
+#line 307
   if (self->isCompleted_) {
     return;
   }
@@ -407,19 +465,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask)
 @implementation ImActorModelModulesFileUploadTask_$1
 
 
-#line 121
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseStartUpload *)response {
+#line 146
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUploadUrl *)response {
   
-#line 122
+#line 147
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Upload config loaded");
   }
-  this$0_->uploadConfig_ = [((ImActorModelApiRpcResponseStartUpload *) nil_chk(response)) getConfig];
+  this$0_->uploadConfig_ = [((ImActorModelApiRpcResponseGetFileUploadUrl *) nil_chk(response)) getUploadKey];
   ImActorModelModulesFileUploadTask_checkQueue(this$0_);
 }
 
 
-#line 130
+#line 155
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Upload config load error");
@@ -444,29 +502,29 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$1)
 @implementation ImActorModelModulesFileUploadTask_$2
 
 
-#line 159
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseCompleteUpload *)response {
+#line 184
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseCommitFileUpload *)response {
   
-#line 160
+#line 185
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Upload completed...");
   }
   
-#line 164
-  AMFileReference *location = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_([((ImActorModelApiRpcResponseCompleteUpload *) nil_chk(response)) getLocation], this$0_->fileName_, [((id<AMFileSystemReference>) nil_chk(this$0_->srcReference_)) getSize]);
+#line 189
+  AMFileReference *location = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_([((ImActorModelApiRpcResponseCommitFileUpload *) nil_chk(response)) getUploadedFileLocation], this$0_->fileName_, [((id<AMFileSystemReference>) nil_chk(this$0_->srcReference_)) getSize]);
   
-#line 166
+#line 191
   id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([this$0_ config])) getFileSystemProvider])) commitTempFile:this$0_->destReference_ withReference:location];
   
-#line 168
+#line 193
   ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withAMFileSystemReference_(this$0_, location, reference);
 }
 
 
-#line 172
+#line 197
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 173
+#line 198
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Upload complete error");
   }
@@ -490,44 +548,127 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$2)
 @implementation ImActorModelModulesFileUploadTask_$3
 
 
-#line 226
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+#line 252
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUploadPartUrl *)response {
   
-#line 227
-  if (this$0_->LOG_) {
-    AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$I$", @"Block #", val$blockIndex_, @" uploaded"));
-  }
-  this$0_->uploadCount_--;
-  this$0_->uploaded_++;
-  
-#line 233
-  ImActorModelModulesFileUploadTask_reportProgressWithFloat_(this$0_, this$0_->uploaded_ / (jfloat) this$0_->blocksCount_);
-  
-#line 235
-  ImActorModelModulesFileUploadTask_checkQueue(this$0_);
+#line 253
+  [((id<AMHttpDownloaderProvider>) nil_chk(this$0_->downloaderProvider_)) uploadPartWithNSString:[((ImActorModelApiRpcResponseGetFileUploadPartUrl *) nil_chk(response)) getUrl] withByteArray:val$data_ withImActorModelHttpFileUploadCallback:[[ImActorModelModulesFileUploadTask_$3_$1 alloc] initWithImActorModelModulesFileUploadTask_$3:self]];
 }
 
 
-#line 239
+#line 285
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   
-#line 240
+#line 286
   ImActorModelModulesFileUploadTask_reportError(this$0_);
 }
 
 - (instancetype)initWithImActorModelModulesFileUploadTask:(ImActorModelModulesFileUploadTask *)outer$
-                                                  withInt:(jint)capture$0 {
+                                            withByteArray:(IOSByteArray *)capture$0
+                                                  withInt:(jint)capture$1 {
   this$0_ = outer$;
-  val$blockIndex_ = capture$0;
+  val$data_ = capture$0;
+  val$blockIndex_ = capture$1;
   return [super init];
 }
 
 - (void)copyAllFieldsTo:(ImActorModelModulesFileUploadTask_$3 *)other {
   [super copyAllFieldsTo:other];
   other->this$0_ = this$0_;
+  other->val$data_ = val$data_;
   other->val$blockIndex_ = val$blockIndex_;
 }
 
 @end
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$3)
+
+@implementation ImActorModelModulesFileUploadTask_$3_$1
+
+
+#line 255
+- (void)onUploaded {
+  
+#line 256
+  [((DKActorRef *) nil_chk([this$0_->this$0_ self__])) sendWithId:[[ImActorModelModulesFileUploadTask_$3_$1_$1 alloc] initWithImActorModelModulesFileUploadTask_$3_$1:self]];
+}
+
+
+#line 273
+- (void)onUploadFailure {
+  
+#line 274
+  [((DKActorRef *) nil_chk([this$0_->this$0_ self__])) sendWithId:[[ImActorModelModulesFileUploadTask_$3_$1_$2 alloc] initWithImActorModelModulesFileUploadTask_$3_$1:self]];
+}
+
+- (instancetype)initWithImActorModelModulesFileUploadTask_$3:(ImActorModelModulesFileUploadTask_$3 *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileUploadTask_$3_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$3_$1)
+
+@implementation ImActorModelModulesFileUploadTask_$3_$1_$1
+
+
+#line 258
+- (void)run {
+  
+#line 259
+  if (this$0_->this$0_->this$0_->LOG_) {
+    AMLog_dWithNSString_withNSString_(this$0_->this$0_->this$0_->TAG_, JreStrcat("$I$", @"Block #", this$0_->this$0_->val$blockIndex_, @" uploaded"));
+  }
+  this$0_->this$0_->this$0_->uploadCount_--;
+  this$0_->this$0_->this$0_->uploaded_++;
+  
+#line 265
+  ImActorModelModulesFileUploadTask_reportProgressWithFloat_(this$0_->this$0_->this$0_, this$0_->this$0_->this$0_->uploaded_ / (jfloat) this$0_->this$0_->this$0_->blocksCount_);
+  
+#line 267
+  ImActorModelModulesFileUploadTask_checkQueue(this$0_->this$0_->this$0_);
+}
+
+- (instancetype)initWithImActorModelModulesFileUploadTask_$3_$1:(ImActorModelModulesFileUploadTask_$3_$1 *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileUploadTask_$3_$1_$1 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$3_$1_$1)
+
+@implementation ImActorModelModulesFileUploadTask_$3_$1_$2
+
+
+#line 276
+- (void)run {
+  
+#line 277
+  ImActorModelModulesFileUploadTask_reportError(this$0_->this$0_->this$0_);
+}
+
+- (instancetype)initWithImActorModelModulesFileUploadTask_$3_$1:(ImActorModelModulesFileUploadTask_$3_$1 *)outer$ {
+  this$0_ = outer$;
+  return [super init];
+}
+
+- (void)copyAllFieldsTo:(ImActorModelModulesFileUploadTask_$3_$1_$2 *)other {
+  [super copyAllFieldsTo:other];
+  other->this$0_ = this$0_;
+}
+
+@end
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$3_$1_$2)

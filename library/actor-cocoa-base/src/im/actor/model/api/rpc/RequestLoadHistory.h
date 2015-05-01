@@ -22,14 +22,14 @@
 + (ImActorModelApiRpcRequestLoadHistory *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)startDate
+                                      withLong:(jlong)minDate
                                        withInt:(jint)limit;
 
 - (instancetype)init;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
-- (jlong)getStartDate;
+- (jlong)getMinDate;
 
 - (jint)getLimit;
 

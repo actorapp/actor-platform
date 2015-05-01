@@ -28,62 +28,62 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, peer_, ImActorModelA
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilList>)
 
 
-#line 20
+#line 15
 @implementation ImActorModelApiRpcRequestDeleteMessage
 
 
-#line 23
+#line 18
 + (ImActorModelApiRpcRequestDeleteMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 25
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                               withJavaUtilList:(id<JavaUtilList>)rids {
   if (self = [super init]) {
     
-#line 31
+#line 26
     self->peer_ = peer;
     
-#line 32
+#line 27
     self->rids_ = rids;
   }
   return self;
 }
 
 
-#line 35
+#line 30
 - (instancetype)init {
   return [super init];
 }
 
 - (ImActorModelApiOutPeer *)getPeer {
   
-#line 40
+#line 35
   return self->peer_;
 }
 
 
-#line 43
+#line 38
 - (id<JavaUtilList>)getRids {
   
-#line 44
+#line 39
   return self->rids_;
 }
 
 
-#line 48
+#line 43
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
   self->rids_ = [values getRepeatedLongWithInt:3];
 }
 
 
-#line 54
+#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   
-#line 55
+#line 50
   if (self->peer_ == nil) {
     @throw [[JavaIoIOException alloc] init];
   }
@@ -101,7 +101,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
 
 - (jint)getHeaderKey {
   
-#line 73
+#line 68
   return ImActorModelApiRpcRequestDeleteMessage_HEADER;
 }
 
@@ -116,7 +116,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
 ImActorModelApiRpcRequestDeleteMessage *ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDeleteMessage_init();
   
-#line 24
+#line 19
   return ((ImActorModelApiRpcRequestDeleteMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestDeleteMessage alloc] init], data));
 }
 

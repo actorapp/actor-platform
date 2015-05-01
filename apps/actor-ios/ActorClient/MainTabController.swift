@@ -50,7 +50,10 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
             title: NSLocalizedString("Placeholder_Empty_Title", comment: "Placeholder Title"),
             subtitle: NSLocalizedString("Placeholder_Empty_Message", comment: "Placeholder Message"),
             actionTitle: NSLocalizedString("Placeholder_Empty_Action", comment: "Placeholder Action"),
-            actionTarget: self, actionSelector: Selector("showSmsInvitation"))
+            subtitle2: NSLocalizedString("Placeholder_Empty_Message2", comment: "Placeholder Message2"),
+            actionTarget: self, actionSelector: Selector("showSmsInvitation"),
+            action2title: NSLocalizedString("Placeholder_Empty_Action2", comment: "Placeholder Action2"),
+            action2Selector: Selector("doAddContact"))
         appEmptyContainer.addSubview(appIsEmptyPlaceholder)
         
         appIsSyncingPlaceholder.hidden = true
@@ -122,18 +125,37 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
         appEmptyContainer.hidden = true
     }
     
-    func showSmsInvitation() {
+    func showSmsInvitation(phone: String?) {
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
+            if (phone != nil) {
+                 messageComposeController.recipients = [phone!]
+            }
             messageComposeController.body = NSLocalizedString("InviteText", comment: "Invite Text")
             messageComposeController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
             presentViewController(messageComposeController, animated: true, completion: { () -> Void in
-                MainAppTheme.navigation.applyStatusBar()
+                MainAppTheme.navigation.applyStatusBarFast()
             })
         } else {
             UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
         }
+    }
+    
+    func showSmsInvitation() {
+        showSmsInvitation(nil)
+    }
+    
+    func doAddContact() {
+        var alertView = UIAlertView(
+            title: NSLocalizedString("ContactsAddHeader", comment: "Alert Title"),
+            message: NSLocalizedString("ContactsAddHint", comment: "Alert Hint"),
+            delegate: self,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Alert Cancel"),
+            otherButtonTitles: NSLocalizedString("AlertNext", comment: "Alert Next"))
+        
+        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.show()
     }
     
     // MARK: -
@@ -148,11 +170,11 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     }
     
     override func shouldAutorotate() -> Bool {
-        return true
+        return false
     }
     
     override func supportedInterfaceOrientations() -> Int {
-        return Int(UIInterfaceOrientationMask.All.rawValue)
+        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
     }
     
 }
@@ -163,4 +185,40 @@ extension MainTabController: MFMessageComposeViewControllerDelegate {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
+}
+
+extension MainTabController: UIAlertViewDelegate {
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        // TODO: Localize
+        if buttonIndex == 1 {
+            let textField = alertView.textFieldAtIndex(0)!
+            if count(textField.text) > 0 {
+                self.execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> Void in
+                    var user: AMUserVM?
+                    user = val as? AMUserVM
+                    if user == nil {
+                        if let users = val as? IOSObjectArray {
+                            if Int(users.length()) > 0 {
+                                if let tempUser = users.objectAtIndex(0) as? AMUserVM {
+                                    user = tempUser
+                                }
+                            }
+                        }
+                    }
+                    if user != nil {
+                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                                // DO Nothing
+                            }, failureBlock: { (val) -> () in
+                                self.showSmsInvitation(textField.text)
+                        })
+                    } else {
+                        self.showSmsInvitation(textField.text)
+                    }
+                }, failureBlock: { (val) -> Void in
+                    self.showSmsInvitation(textField.text)
+                })
+            }
+        }
+    }
 }
