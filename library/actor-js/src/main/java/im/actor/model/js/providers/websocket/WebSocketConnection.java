@@ -16,6 +16,7 @@ import im.actor.model.network.connection.AsyncConnectionInterface;
 public class WebSocketConnection extends AsyncConnection {
 
     private JavaScriptObject jsWebSocket;
+    private boolean isClosed;
 
     public WebSocketConnection(ConnectionEndpoint endpoint, AsyncConnectionInterface connection) {
         super(endpoint, connection);
@@ -23,6 +24,8 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doConnect() {
+        isClosed = true;
+
         String url;
         if (getEndpoint().getType() == ConnectionEndpoint.Type.WS) {
             url = "ws://" + getEndpoint().getHost() + ":" + getEndpoint().getPort() + "/";
@@ -37,6 +40,9 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doSend(byte[] data) {
+        if (isClosed) {
+            return;
+        }
         Uint8Array push = TypedArrays.createUint8Array(data.length);
         for (int i = 0; i < data.length; i++) {
             push.set(i, data[i]);
@@ -46,10 +52,14 @@ public class WebSocketConnection extends AsyncConnection {
 
     @Override
     public void doClose() {
+        isClosed = true;
         close();
     }
 
     private void onRawMessage(ArrayBuffer message) {
+        if (isClosed) {
+            return;
+        }
         Uint8Array array = TypedArrays.createUint8Array(message);
         byte[] res = new byte[array.length()];
         for (int i = 0; i < res.length; i++) {
@@ -60,11 +70,13 @@ public class WebSocketConnection extends AsyncConnection {
 
     private void onRawConnected() {
         Log.d("WS", "Connected");
+        isClosed = false;
         onConnected();
     }
 
     private void onRawClosed() {
         Log.d("WS", "Closed");
+        isClosed = true;
         onClosed();
     }
 

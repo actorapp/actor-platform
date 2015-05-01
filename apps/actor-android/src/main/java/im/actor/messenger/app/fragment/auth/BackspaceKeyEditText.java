@@ -1,7 +1,6 @@
 package im.actor.messenger.app.fragment.auth;
 
 import android.content.Context;
-import android.support.v7.internal.widget.TintEditText;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -9,7 +8,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputConnectionWrapper;
 import android.widget.EditText;
 
-public class BackspaceKeyEditText extends TintEditText {
+public class BackspaceKeyEditText extends EditText {
 
     private BackspacePressListener listener;
 

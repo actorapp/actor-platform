@@ -20,7 +20,7 @@ import im.actor.model.util.CRC32;
  */
 public class ManagedConnection implements Connection {
 
-    private static final int CONNECTION_TIMEOUT = 5 * 1000;
+    public static final int CONNECTION_TIMEOUT = 5 * 1000;
     private static final int HANDSHAKE_TIMEOUT = 5 * 1000;
     private static final int RESPONSE_TIMEOUT = 5 * 1000;
     private static final int PING_TIMEOUT = 5 * 60 * 1000;
@@ -76,7 +76,7 @@ public class ManagedConnection implements Connection {
         this.apiMinorVersion = apiMinorVersion;
         this.callback = callback;
         this.factoryCallback = factoryCallback;
-        this.rawConnection = connectionFactory.createConnection(endpoint, connectionInterface);
+        this.rawConnection = connectionFactory.createConnection(connectionId, endpoint, connectionInterface);
         Log.d(TAG, "Starting connection");
 
         handshakeTimeout = new TimerCompat(new TimeoutRunnable());
@@ -335,9 +335,12 @@ public class ManagedConnection implements Connection {
             e.printStackTrace();
             close();
         }
+
+        Log.w(TAG, "onRawReceived:end");
     }
 
     private synchronized void onRawClosed() {
+        Log.w(TAG, "Received closed event");
         close();
     }
 
@@ -348,6 +351,7 @@ public class ManagedConnection implements Connection {
     }
 
     private synchronized void rawPost(int header, byte[] data, int offset, int len) {
+        Log.w(TAG, "rawPost");
         int packageId = sentPackages++;
         DataOutput dataOutput = new DataOutput();
         dataOutput.writeInt(packageId);
@@ -371,6 +375,7 @@ public class ManagedConnection implements Connection {
 
     @Override
     public synchronized void post(byte[] data, int offset, int len) {
+        Log.w(TAG, "post");
         if (isClosed) {
             return;
         }
@@ -389,6 +394,7 @@ public class ManagedConnection implements Connection {
 
     @Override
     public synchronized void close() {
+        Log.w(TAG, "close");
         if (isClosed) {
             return;
         }
