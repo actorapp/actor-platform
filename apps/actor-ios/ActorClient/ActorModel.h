@@ -9,11 +9,12 @@
 #ifndef ActorClient_ActorModel_h
 #define ActorClient_ActorModel_h
 
-#import "J2ObjC_source.h"
+#include "J2ObjC_header.h"
 
 // Java Objects
 
 #import "java/lang/Exception.h"
+#import "java/lang/Runnable.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Long.h"
 #import "java/lang/Integer.h"
@@ -22,8 +23,6 @@
 #import "java/util/HashSet.h"
 #import "java/util/Map.h"
 #import "java/util/HashMap.h"
-//#import "IOSClass.h"
-//#import "IOSPrimitiveArray.h"
 
 // Messenger
 
