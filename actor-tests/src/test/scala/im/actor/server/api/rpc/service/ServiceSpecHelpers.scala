@@ -76,7 +76,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
       appId = 42,
       appKey = "appKey",
       isSilent = false
-    )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+    )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds).toOption.get
 
     rsp.user
   }
