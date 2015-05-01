@@ -12,4 +12,4 @@
 #include "im/actor/model/network/connection/AsyncConnectionFactory.h"
 #include "im/actor/model/network/connection/AsyncConnectionInterface.h"
 
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionAsyncConnectionFactory)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMAsyncConnectionFactory)

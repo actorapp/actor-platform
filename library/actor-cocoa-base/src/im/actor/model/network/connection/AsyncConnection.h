@@ -3,21 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/AsyncConnection.java
 //
 
-#ifndef _ImActorModelNetworkConnectionAsyncConnection_H_
-#define _ImActorModelNetworkConnectionAsyncConnection_H_
+#ifndef _AMAsyncConnection_H_
+#define _AMAsyncConnection_H_
 
 #include "J2ObjC_header.h"
 
 @class AMConnectionEndpoint;
 @class IOSByteArray;
-@protocol ImActorModelNetworkConnectionAsyncConnectionInterface;
+@protocol AMAsyncConnectionInterface;
 
-@interface ImActorModelNetworkConnectionAsyncConnection : NSObject
+@interface AMAsyncConnection : NSObject
 
 #pragma mark Public
 
 - (instancetype)initWithAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
-withImActorModelNetworkConnectionAsyncConnectionInterface:(id<ImActorModelNetworkConnectionAsyncConnectionInterface>)connection;
+              withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connection;
 
 - (void)doClose;
 
@@ -37,10 +37,12 @@ withImActorModelNetworkConnectionAsyncConnectionInterface:(id<ImActorModelNetwor
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionAsyncConnection)
+J2OBJC_EMPTY_STATIC_INIT(AMAsyncConnection)
 
-FOUNDATION_EXPORT void ImActorModelNetworkConnectionAsyncConnection_initWithAMConnectionEndpoint_withImActorModelNetworkConnectionAsyncConnectionInterface_(ImActorModelNetworkConnectionAsyncConnection *self, AMConnectionEndpoint *endpoint, id<ImActorModelNetworkConnectionAsyncConnectionInterface> connection);
+FOUNDATION_EXPORT void AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionAsyncConnection)
+J2OBJC_TYPE_LITERAL_HEADER(AMAsyncConnection)
 
-#endif // _ImActorModelNetworkConnectionAsyncConnection_H_
+typedef AMAsyncConnection ImActorModelNetworkConnectionAsyncConnection;
+
+#endif // _AMAsyncConnection_H_

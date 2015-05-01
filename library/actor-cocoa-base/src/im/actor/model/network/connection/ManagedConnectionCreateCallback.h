@@ -3,23 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/ManagedConnectionCreateCallback.java
 //
 
-#ifndef _ImActorModelNetworkConnectionManagedConnectionCreateCallback_H_
-#define _ImActorModelNetworkConnectionManagedConnectionCreateCallback_H_
+#ifndef _AMManagedConnectionCreateCallback_H_
+#define _AMManagedConnectionCreateCallback_H_
 
 #include "J2ObjC_header.h"
 
-@class ImActorModelNetworkConnectionManagedConnection;
+@class AMManagedConnection;
 
-@protocol ImActorModelNetworkConnectionManagedConnectionCreateCallback < NSObject, JavaObject >
+@protocol AMManagedConnectionCreateCallback < NSObject, JavaObject >
 
-- (void)onConnectionCreatedWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)connection;
+- (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection;
 
-- (void)onConnectionCreateErrorWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)connection;
+- (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionManagedConnectionCreateCallback)
+J2OBJC_EMPTY_STATIC_INIT(AMManagedConnectionCreateCallback)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedConnectionCreateCallback)
+J2OBJC_TYPE_LITERAL_HEADER(AMManagedConnectionCreateCallback)
 
-#endif // _ImActorModelNetworkConnectionManagedConnectionCreateCallback_H_
+#define ImActorModelNetworkConnectionManagedConnectionCreateCallback AMManagedConnectionCreateCallback
+
+#endif // _AMManagedConnectionCreateCallback_H_

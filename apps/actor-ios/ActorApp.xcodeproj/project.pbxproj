@@ -57,7 +57,6 @@
 		067144501AB089B000364820 /* AABubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671444F1AB089B000364820 /* AABubbleCell.swift */; };
 		067144521AB0947000364820 /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067144511AB0947000364820 /* AABubbleTextCell.swift */; };
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
-		0671592E1ABC830E00D95719 /* CocoaNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592D1ABC830E00D95719 /* CocoaNetworking.swift */; };
 		0672D2011AE64CAB0001CD32 /* LlectroTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */; };
 		0672D2031AE676D60001CD32 /* AATableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2021AE676D60001CD32 /* AATableViewHeader.swift */; };
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
@@ -705,6 +704,7 @@
 		06C97C981AF40D0800E16F19 /* Pack.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C97A2B1AF40D0800E16F19 /* Pack.m */; };
 		06C97C991AF40D0800E16F19 /* Shorts.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C97A2D1AF40D0800E16F19 /* Shorts.m */; };
 		06C97C9A1AF40D0800E16F19 /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C97A2F1AF40D0800E16F19 /* Strings.m */; };
+		06C97C9D1AF4225000E16F19 /* TcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C97C9C1AF4225000E16F19 /* TcpConnection.swift */; };
 		06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */; };
 		06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */; };
 		06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */; };
@@ -810,7 +810,6 @@
 		0671444F1AB089B000364820 /* AABubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleCell.swift; sourceTree = "<group>"; };
 		067144511AB0947000364820 /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
-		0671592D1ABC830E00D95719 /* CocoaNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaNetworking.swift; sourceTree = "<group>"; };
 		0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LlectroTheme.swift; sourceTree = "<group>"; };
 		0672D2021AE676D60001CD32 /* AATableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewHeader.swift; sourceTree = "<group>"; };
 		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -2082,6 +2081,7 @@
 		06C97A2D1AF40D0800E16F19 /* Shorts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shorts.m; sourceTree = "<group>"; };
 		06C97A2E1AF40D0800E16F19 /* Strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		06C97A2F1AF40D0800E16F19 /* Strings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Strings.m; sourceTree = "<group>"; };
+		06C97C9C1AF4225000E16F19 /* TcpConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TcpConnection.swift; sourceTree = "<group>"; };
 		06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev1.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev1.xcconfig"; sourceTree = "<group>"; };
 		06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev2.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev2.xcconfig"; sourceTree = "<group>"; };
@@ -2371,9 +2371,9 @@
 				06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */,
 				06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */,
 				06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */,
-				0671592D1ABC830E00D95719 /* CocoaNetworking.swift */,
 				06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */,
 				06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */,
+				06C97C9C1AF4225000E16F19 /* TcpConnection.swift */,
 			);
 			name = Providers;
 			sourceTree = "<group>";
@@ -4884,6 +4884,7 @@
 				06C97B6F1AF40D0800E16F19 /* JavaAtomicLong.m in Sources */,
 				06C97BBD1AF40D0800E16F19 /* LoggedIn.m in Sources */,
 				06C97B601AF40D0800E16F19 /* SearchEntity.m in Sources */,
+				06C97C9D1AF4225000E16F19 /* TcpConnection.swift in Sources */,
 				062774391AC073D700A4A8B3 /* ContactsSource.swift in Sources */,
 				06C97ACA1AF40D0800E16F19 /* UpdateUserAvatarChanged.m in Sources */,
 				06C97A441AF40D0800E16F19 /* Email.m in Sources */,
@@ -4908,7 +4909,6 @@
 				06C97B2B1AF40D0800E16F19 /* KeyValueEngine.m in Sources */,
 				06C97C1F1AF40D0800E16F19 /* ThreadLocalCompat.m in Sources */,
 				06C97B611AF40D0800E16F19 /* Sex.m in Sources */,
-				0671592E1ABC830E00D95719 /* CocoaNetworking.swift in Sources */,
 				06C97BD61AF40D0800E16F19 /* ValueChangedListener.m in Sources */,
 				06C97C011AF40D0800E16F19 /* RpcRequest.m in Sources */,
 				06C97C621AF40D0800E16F19 /* ECCurve.m in Sources */,

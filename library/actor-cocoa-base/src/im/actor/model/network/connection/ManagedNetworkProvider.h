@@ -3,22 +3,22 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/ManagedNetworkProvider.java
 //
 
-#ifndef _ImActorModelNetworkConnectionManagedNetworkProvider_H_
-#define _ImActorModelNetworkConnectionManagedNetworkProvider_H_
+#ifndef _AMManagedNetworkProvider_H_
+#define _AMManagedNetworkProvider_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/NetworkProvider.h"
 
 @class AMConnectionEndpoint;
+@protocol AMAsyncConnectionFactory;
 @protocol AMConnectionCallback;
 @protocol AMCreateConnectionCallback;
-@protocol ImActorModelNetworkConnectionAsyncConnectionFactory;
 
-@interface ImActorModelNetworkConnectionManagedNetworkProvider : NSObject < AMNetworkProvider >
+@interface AMManagedNetworkProvider : NSObject < AMNetworkProvider >
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkConnectionAsyncConnectionFactory>)factory;
+- (instancetype)initWithAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)factory;
 
 - (void)createConnection:(jint)connectionId
       withMTProtoVersion:(jint)mtprotoVersion
@@ -30,12 +30,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionManagedNetworkProvider)
+J2OBJC_EMPTY_STATIC_INIT(AMManagedNetworkProvider)
 
-FOUNDATION_EXPORT void ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNetworkConnectionAsyncConnectionFactory_(ImActorModelNetworkConnectionManagedNetworkProvider *self, id<ImActorModelNetworkConnectionAsyncConnectionFactory> factory);
+FOUNDATION_EXPORT void AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory);
 
-FOUNDATION_EXPORT ImActorModelNetworkConnectionManagedNetworkProvider *new_ImActorModelNetworkConnectionManagedNetworkProvider_initWithImActorModelNetworkConnectionAsyncConnectionFactory_(id<ImActorModelNetworkConnectionAsyncConnectionFactory> factory) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(id<AMAsyncConnectionFactory> factory) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedNetworkProvider)
+J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider)
 
-#endif // _ImActorModelNetworkConnectionManagedNetworkProvider_H_
+typedef AMManagedNetworkProvider ImActorModelNetworkConnectionManagedNetworkProvider;
+
+#endif // _AMManagedNetworkProvider_H_

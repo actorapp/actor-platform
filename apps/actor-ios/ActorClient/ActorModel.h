@@ -50,6 +50,12 @@
 #import "im/actor/model/network/CreateConnectionCallback.h"
 #import "im/actor/model/network/ConnectionEndpoint.h"
 #import "im/actor/model/network/ConnectionCallback.h"
+#import "im/actor/model/network/connection/AsyncConnection.h"
+#import "im/actor/model/network/connection/AsyncConnectionFactory.h"
+#import "im/actor/model/network/connection/AsyncConnectionInterface.h"
+#import "im/actor/model/network/connection/ManagedConnection.h"
+#import "im/actor/model/network/connection/ManagedConnectionCreateCallback.h"
+#import "im/actor/model/network/connection/ManagedNetworkProvider.h"
 #import "im/actor/model/http/FileDownloadCallback.h"
 #import "im/actor/model/http/FileUploadCallback.h"
 
