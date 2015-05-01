@@ -6,19 +6,20 @@
 #ifndef _ImActorModelModulesMessagesEntityOutUnreadMessage_H_
 #define _ImActorModelModulesMessagesEntityOutUnreadMessage_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelModulesMessagesEntityOutUnreadMessage : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelModulesMessagesEntityOutUnreadMessage : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)date;
-
-- (instancetype)init;
 
 - (jlong)getDate;
 
@@ -32,8 +33,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityOutUnreadMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(ImActorModelModulesMessagesEntityOutUnreadMessage *self, jlong rid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(jlong rid, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityOutUnreadMessage_init(ImActorModelModulesMessagesEntityOutUnreadMessage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessagesEntityOutUnreadMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityOutUnreadMessage)
 

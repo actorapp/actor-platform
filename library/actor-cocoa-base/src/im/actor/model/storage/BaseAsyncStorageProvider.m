@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/storage/BaseAsyncStorageProvider.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/storage/BaseAsyncStorageProvider.java"
 
 #include "J2ObjC_source.h"
@@ -28,50 +29,47 @@
 
 #line 20
 - (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage {
-  
-#line 21
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
-  return [[DKAsyncListEngine alloc] initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)) withBSBserCreator:AMContact_get_CREATOR_()];
+  return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMContact_get_CREATOR_());
 }
 
 
 #line 28
 - (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
-  return [[DKAsyncListEngine alloc] initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)) withBSBserCreator:AMDialog_get_CREATOR_()];
+  return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMDialog_get_CREATOR_());
 }
 
 
 #line 36
 - (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
                                withDKListStorage:(id<DKListStorage>)storage {
-  
-#line 37
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
-  return [[DKAsyncListEngine alloc] initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)) withBSBserCreator:AMMessage_get_CREATOR_()];
+  return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMMessage_get_CREATOR_());
 }
 
-
-#line 44
 - (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage {
-  
-#line 45
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Storage MUST implement ListStorageDisplayEx"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
-  return [[DKAsyncListEngine alloc] initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)) withBSBserCreator:AMSearchEntity_get_CREATOR_()];
+  return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMSearchEntity_get_CREATOR_());
 }
 
 - (instancetype)init {
-  return [super init];
+  AMBaseAsyncStorageProvider_init(self);
+  return self;
 }
 
 @end
+
+void AMBaseAsyncStorageProvider_init(AMBaseAsyncStorageProvider *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBaseAsyncStorageProvider)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/BaseConfigurationBuilder.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/BaseConfigurationBuilder.java"
 
 #include "J2ObjC_source.h"
@@ -18,17 +19,28 @@
 
 #line 10
 - (instancetype)init {
-  if (self = [super init]) {
-    
-#line 11
-    (void) [self setCryptoProvider:[[AMJavaCryptoProvider alloc] init]];
-    
-#line 12
-    (void) [self setThreadingProvider:[[AMJavaThreadingProvider alloc] init]];
-  }
+  AMBaseConfigurationBuilder_init(self);
   return self;
 }
 
 @end
+
+
+#line 10
+void AMBaseConfigurationBuilder_init(AMBaseConfigurationBuilder *self) {
+  (void) AMConfigurationBuilder_init(self);
+  
+#line 11
+  (void) [self setCryptoProvider:new_AMJavaCryptoProvider_init()];
+  (void) [self setThreadingProvider:new_AMJavaThreadingProvider_init()];
+}
+
+
+#line 10
+AMBaseConfigurationBuilder *new_AMBaseConfigurationBuilder_init() {
+  AMBaseConfigurationBuilder *self = [AMBaseConfigurationBuilder alloc];
+  AMBaseConfigurationBuilder_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBaseConfigurationBuilder)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserAdded.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserAdded.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateGroupUserAdded () {
@@ -23,6 +25,7 @@
   jint inviterUid_;
   jlong date_;
 }
+
 @end
 
 
@@ -42,67 +45,36 @@
                     withInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 34
-    self->groupId_ = groupId;
-    
-#line 35
-    self->rid_ = rid;
-    
-#line 36
-    self->uid_ = uid;
-    
-#line 37
-    self->inviterUid_ = inviterUid;
-    
-#line 38
-    self->date_ = date;
-  }
+  ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, inviterUid, date);
   return self;
 }
 
 
 #line 41
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateGroupUserAdded_init(self);
+  return self;
 }
 
+
+#line 45
 - (jint)getGroupId {
-  
-#line 46
   return self->groupId_;
 }
 
-
-#line 49
 - (jlong)getRid {
-  
-#line 50
   return self->rid_;
 }
 
-
-#line 53
 - (jint)getUid {
-  
-#line 54
   return self->uid_;
 }
 
-
-#line 57
 - (jint)getInviterUid {
-  
-#line 58
   return self->inviterUid_;
 }
 
-
-#line 61
 - (jlong)getDate {
-  
-#line 62
   return self->date_;
 }
 
@@ -119,8 +91,6 @@
 
 #line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 76
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
@@ -128,6 +98,8 @@
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
+
+#line 84
 - (NSString *)description {
   NSString *res = @"update GroupUserAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -139,28 +111,56 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 97
-  return ImActorModelApiUpdatesUpdateGroupUserAdded_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupUserAdded *)other {
-  [super copyAllFieldsTo:other];
-  other->groupId_ = groupId_;
-  other->rid_ = rid_;
-  other->uid_ = uid_;
-  other->inviterUid_ = inviterUid_;
-  other->date_ = date_;
+#line 96
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateGroupUserAdded_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateGroupUserAdded *ImActorModelApiUpdatesUpdateGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupUserAdded_init();
+  ImActorModelApiUpdatesUpdateGroupUserAdded_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupUserAdded alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserAdded_init(), data));
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserAdded *self, jint groupId, jlong rid, jint uid, jint inviterUid, jlong date) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 34
+  self->groupId_ = groupId;
+  self->rid_ = rid;
+  self->uid_ = uid;
+  self->inviterUid_ = inviterUid;
+  self->date_ = date;
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateGroupUserAdded *new_ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint inviterUid, jlong date) {
+  ImActorModelApiUpdatesUpdateGroupUserAdded *self = [ImActorModelApiUpdatesUpdateGroupUserAdded alloc];
+  ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, inviterUid, date);
+  return self;
+}
+
+
+#line 41
+void ImActorModelApiUpdatesUpdateGroupUserAdded_init(ImActorModelApiUpdatesUpdateGroupUserAdded *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 41
+ImActorModelApiUpdatesUpdateGroupUserAdded *new_ImActorModelApiUpdatesUpdateGroupUserAdded_init() {
+  ImActorModelApiUpdatesUpdateGroupUserAdded *self = [ImActorModelApiUpdatesUpdateGroupUserAdded alloc];
+  ImActorModelApiUpdatesUpdateGroupUserAdded_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupUserAdded)

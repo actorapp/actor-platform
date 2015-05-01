@@ -9,19 +9,19 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelNetworkParserHeaderBserObject : BSBserObject {
-}
+@interface ImActorModelNetworkParserHeaderBserObject : BSBserObject
 
-- (jint)getHeaderKey;
+#pragma mark Public
 
 - (instancetype)init;
+
+- (jint)getHeaderKey;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserHeaderBserObject)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelNetworkParserHeaderBserObject_init(ImActorModelNetworkParserHeaderBserObject *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserHeaderBserObject)
 

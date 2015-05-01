@@ -6,16 +6,26 @@
 #ifndef _OrgBouncycastleUtilStrings_H_
 #define _OrgBouncycastleUtilStrings_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSCharArray;
 @class IOSObjectArray;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleUtilStrings : NSObject
 
-@interface OrgBouncycastleUtilStrings : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
+
++ (IOSCharArray *)asCharArrayWithByteArray:(IOSByteArray *)bytes;
+
++ (NSString *)fromByteArrayWithByteArray:(IOSByteArray *)bytes;
 
 + (NSString *)fromUTF8ByteArrayWithByteArray:(IOSByteArray *)bytes;
+
++ (IOSObjectArray *)splitWithNSString:(NSString *)input
+                             withChar:(jchar)delimiter;
 
 + (IOSByteArray *)toByteArrayWithCharArray:(IOSCharArray *)chars;
 
@@ -25,20 +35,9 @@
                   withByteArray:(IOSByteArray *)buf
                         withInt:(jint)off;
 
-+ (NSString *)fromByteArrayWithByteArray:(IOSByteArray *)bytes;
-
-+ (IOSCharArray *)asCharArrayWithByteArray:(IOSByteArray *)bytes;
-
-+ (IOSObjectArray *)splitWithNSString:(NSString *)input
-                             withChar:(jchar)delimiter;
-
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleUtilStrings)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT NSString *OrgBouncycastleUtilStrings_fromUTF8ByteArrayWithByteArray_(IOSByteArray *bytes);
 
@@ -53,7 +52,10 @@ FOUNDATION_EXPORT NSString *OrgBouncycastleUtilStrings_fromByteArrayWithByteArra
 FOUNDATION_EXPORT IOSCharArray *OrgBouncycastleUtilStrings_asCharArrayWithByteArray_(IOSByteArray *bytes);
 
 FOUNDATION_EXPORT IOSObjectArray *OrgBouncycastleUtilStrings_splitWithNSString_withChar_(NSString *input, jchar delimiter);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleUtilStrings_init(OrgBouncycastleUtilStrings *self);
+
+FOUNDATION_EXPORT OrgBouncycastleUtilStrings *new_OrgBouncycastleUtilStrings_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilStrings)
 

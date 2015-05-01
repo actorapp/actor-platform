@@ -6,9 +6,9 @@
 #ifndef _OrgBouncycastleCryptoDigest_H_
 #define _OrgBouncycastleCryptoDigest_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol OrgBouncycastleCryptoDigest < NSObject, JavaObject >
 

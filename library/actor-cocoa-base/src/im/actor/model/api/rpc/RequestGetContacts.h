@@ -6,25 +6,28 @@
 #ifndef _ImActorModelApiRpcRequestGetContacts_H_
 #define _ImActorModelApiRpcRequestGetContacts_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestGetContacts_HEADER 87
 
-@interface ImActorModelApiRpcRequestGetContacts : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestGetContacts : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithNSString:(NSString *)contactsHash;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithNSString:(NSString *)contactsHash;
+
++ (ImActorModelApiRpcRequestGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (NSString *)getContactsHash;
+
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -32,18 +35,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetContacts)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetContacts, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestGetContacts *ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetContacts, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetContacts_initWithNSString_(ImActorModelApiRpcRequestGetContacts *self, NSString *contactsHash);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_initWithNSString_(NSString *contactsHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetContacts_init(ImActorModelApiRpcRequestGetContacts *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetContacts)
 

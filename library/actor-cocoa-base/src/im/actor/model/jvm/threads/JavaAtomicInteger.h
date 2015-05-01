@@ -6,24 +6,23 @@
 #ifndef _ImActorModelJvmThreadsJavaAtomicInteger_H_
 #define _ImActorModelJvmThreadsJavaAtomicInteger_H_
 
-@class JavaUtilConcurrentAtomicAtomicInteger;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/util/AtomicIntegerCompat.h"
 
-@interface ImActorModelJvmThreadsJavaAtomicInteger : AMAtomicIntegerCompat {
-}
+@interface ImActorModelJvmThreadsJavaAtomicInteger : AMAtomicIntegerCompat
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)value;
 
-- (jint)get;
+- (void)compareAndSetWithInt:(jint)exp
+                     withInt:(jint)v;
 
-- (jint)incrementAndGet;
+- (jint)get;
 
 - (jint)getAndIncrement;
 
-- (void)compareAndSetWithInt:(jint)exp
-                     withInt:(jint)v;
+- (jint)incrementAndGet;
 
 - (void)setWithInt:(jint)v;
 
@@ -31,8 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmThreadsJavaAtomicInteger)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(ImActorModelJvmThreadsJavaAtomicInteger *self, jint value);
+
+FOUNDATION_EXPORT ImActorModelJvmThreadsJavaAtomicInteger *new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(jint value) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaAtomicInteger)
 

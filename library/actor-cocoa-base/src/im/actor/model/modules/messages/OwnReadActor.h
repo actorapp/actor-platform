@@ -6,25 +6,21 @@
 #ifndef _ImActorModelModulesMessagesOwnReadActor_H_
 #define _ImActorModelModulesMessagesOwnReadActor_H_
 
-@class AMPeer;
-@class DKSyncKeyValue;
-@class ImActorModelModulesMessagesEntityUnreadMessagesStorage;
-@class ImActorModelModulesModules;
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-@interface ImActorModelModulesMessagesOwnReadActor : ImActorModelModulesUtilsModuleActor {
-}
+@class AMPeer;
+@class ImActorModelModulesModules;
+@protocol JavaUtilList;
+
+@interface ImActorModelModulesMessagesOwnReadActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)preStart;
-
-- (void)onNewInMessageWithAMPeer:(AMPeer *)peer
-                        withLong:(jlong)rid
-                        withLong:(jlong)sortingDate;
+- (void)onMessageDeleteWithAMPeer:(AMPeer *)peer
+                 withJavaUtilList:(id<JavaUtilList>)rids;
 
 - (void)onMessageReadWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)sortingDate;
@@ -32,17 +28,21 @@
 - (void)onMessageReadByMeWithAMPeer:(AMPeer *)peer
                            withLong:(jlong)sortingDate;
 
-- (void)onMessageDeleteWithAMPeer:(AMPeer *)peer
-                 withJavaUtilList:(id<JavaUtilList>)rids;
+- (void)onNewInMessageWithAMPeer:(AMPeer *)peer
+                        withLong:(jlong)rid
+                        withLong:(jlong)sortingDate;
 
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesOwnReadActor *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor *new_ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor)
 
@@ -51,6 +51,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor)
   AMPeer *peer_;
   jlong rid_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid;
@@ -65,8 +67,9 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted, peer_, AMPeer *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
 
@@ -75,6 +78,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadBy
   AMPeer *peer_;
   jlong sortDate_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortDate;
@@ -89,8 +94,9 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe, peer_, AMPeer *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *self, AMPeer *peer, jlong sortDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(AMPeer *peer, jlong sortDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe)
 
@@ -99,6 +105,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadBy
   AMPeer *peer_;
   jlong sortingDate_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortingDate;
@@ -113,8 +121,9 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageRead, peer_, AMPeer *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageRead *self, AMPeer *peer, jlong sortingDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageRead *new_ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(AMPeer *peer, jlong sortingDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 
@@ -124,6 +133,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
   jlong rid_;
   jlong sortingDate_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
@@ -141,8 +152,9 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_NewMessage)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_NewMessage, peer_, AMPeer *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesOwnReadActor_NewMessage *self, AMPeer *peer, jlong rid, jlong sortingDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortingDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_NewMessage)
 
@@ -151,6 +163,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_NewMessage)
   AMPeer *peer_;
   id<JavaUtilList> rids_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
               withJavaUtilList:(id<JavaUtilList>)rids;
@@ -166,8 +180,9 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageDeleted)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageDeleted, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageDeleted, rids_, id<JavaUtilList>)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(ImActorModelModulesMessagesOwnReadActor_MessageDeleted *self, AMPeer *peer, id<JavaUtilList> rids);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageDeleted *new_ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(AMPeer *peer, id<JavaUtilList> rids) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageDeleted)
 

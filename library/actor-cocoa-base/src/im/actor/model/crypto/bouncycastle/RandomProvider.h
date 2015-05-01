@@ -6,10 +6,10 @@
 #ifndef _BCRandomProvider_H_
 #define _BCRandomProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class JavaMathBigInteger;
-
-#include "J2ObjC_header.h"
 
 @protocol BCRandomProvider < NSObject, JavaObject >
 
@@ -28,8 +28,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCRandomProvider)
 
-#define ImActorModelCryptoBouncycastleRandomProvider BCRandomProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(BCRandomProvider)
+
+#define ImActorModelCryptoBouncycastleRandomProvider BCRandomProvider
 
 #endif // _BCRandomProvider_H_

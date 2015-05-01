@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaThreadingProvider.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaThreadingProvider.java"
 
 #include "J2ObjC_source.h"
@@ -25,14 +26,11 @@
 @implementation AMJavaThreadingProvider
 
 - (instancetype)init {
-  return [super init];
+  AMJavaThreadingProvider_init(self);
+  return self;
 }
 
-
-#line 25
 - (jlong)getActorTime {
-  
-#line 26
   return JavaLangSystem_nanoTime() / 1000000;
 }
 
@@ -45,8 +43,6 @@
 
 #line 35
 - (jlong)getSyncedCurrentTime {
-  
-#line 36
   return [self getCurrentTime];
 }
 
@@ -59,23 +55,19 @@
 
 #line 45
 - (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value {
-  
-#line 46
-  return [[ImActorModelJvmThreadsJavaAtomicInteger alloc] initWithInt:value];
+  return new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(value);
 }
 
 
 #line 50
 - (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value {
-  return [[ImActorModelJvmThreadsJavaAtomicLong alloc] initWithLong:value];
+  return new_ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(value);
 }
 
 
 #line 55
 - (AMThreadLocalCompat *)createThreadLocal {
-  
-#line 56
-  return [[ImActorModelJvmThreadsJavaThreadLocal alloc] init];
+  return new_ImActorModelJvmThreadsJavaThreadLocal_init();
 }
 
 
@@ -84,7 +76,7 @@
                                             withInt:(jint)threadsCount
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                   withDKActorSystem:(DKActorSystem *)actorSystem {
-  return [[ImActorModelJvmThreadsJavaDispatcherActor alloc] initWithNSString:name withDKActorSystem:actorSystem withInt:threadsCount withDKThreadPriorityEnum:priority];
+  return new_ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(name, actorSystem, threadsCount, priority);
 }
 
 
@@ -92,11 +84,23 @@
 - (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                          withDKActorSystem:(DKActorSystem *)actorSystem {
-  
-#line 66
   return [self createDispatcherWithNSString:name withInt:[self getCoresCount] withDKThreadPriorityEnum:priority withDKActorSystem:actorSystem];
 }
 
 @end
+
+
+#line 20
+void AMJavaThreadingProvider_init(AMJavaThreadingProvider *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 20
+AMJavaThreadingProvider *new_AMJavaThreadingProvider_init() {
+  AMJavaThreadingProvider *self = [AMJavaThreadingProvider alloc];
+  AMJavaThreadingProvider_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaThreadingProvider)

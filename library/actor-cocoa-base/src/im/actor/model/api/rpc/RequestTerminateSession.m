@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTerminateSession.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTerminateSession.java"
 
 #include "IOSClass.h"
@@ -13,14 +14,18 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestTerminateSession () {
  @public
   jint id__;
 }
+
 @end
 
+
+#line 20
 @implementation ImActorModelApiRpcRequestTerminateSession
 
 
@@ -32,23 +37,20 @@
 
 #line 29
 - (instancetype)initWithInt:(jint)id_ {
-  if (self = [super init]) {
-    
-#line 30
-    self->id__ = id_;
-  }
+  ImActorModelApiRpcRequestTerminateSession_initWithInt_(self, id_);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestTerminateSession_init(self);
+  return self;
 }
 
+
+#line 37
 - (jint)getId {
-  
-#line 38
   return self->id__;
 }
 
@@ -61,11 +63,11 @@
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
 }
 
+
+#line 52
 - (NSString *)description {
   NSString *res = @"rpc TerminateSession{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
@@ -73,24 +75,52 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 61
-  return ImActorModelApiRpcRequestTerminateSession_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestTerminateSession *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
+#line 60
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestTerminateSession_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestTerminateSession_init();
+  ImActorModelApiRpcRequestTerminateSession_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestTerminateSession *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestTerminateSession alloc] init], data));
+  return ((ImActorModelApiRpcRequestTerminateSession *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestTerminateSession_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestTerminateSession_initWithInt_(ImActorModelApiRpcRequestTerminateSession *self, jint id_) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->id__ = id_;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestTerminateSession *new_ImActorModelApiRpcRequestTerminateSession_initWithInt_(jint id_) {
+  ImActorModelApiRpcRequestTerminateSession *self = [ImActorModelApiRpcRequestTerminateSession alloc];
+  ImActorModelApiRpcRequestTerminateSession_initWithInt_(self, id_);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestTerminateSession_init(ImActorModelApiRpcRequestTerminateSession *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestTerminateSession *new_ImActorModelApiRpcRequestTerminateSession_init() {
+  ImActorModelApiRpcRequestTerminateSession *self = [ImActorModelApiRpcRequestTerminateSession alloc];
+  ImActorModelApiRpcRequestTerminateSession_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestTerminateSession)

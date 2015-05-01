@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/Delete.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/Delete.java"
 
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Peer.h"
@@ -20,6 +22,7 @@
   AMPeer *peer_;
   id<JavaUtilList> rids_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDelete, peer_, AMPeer *)
@@ -33,34 +36,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDelete, rids_, id<JavaUtilL
 #line 19
 - (instancetype)initWithAMPeer:(AMPeer *)peer
               withJavaUtilList:(id<JavaUtilList>)rids {
-  if (self = [super init]) {
-    
-#line 20
-    self->peer_ = peer;
-    
-#line 21
-    self->rids_ = rids;
-  }
+  ImActorModelModulesMessagesEntityDelete_initWithAMPeer_withJavaUtilList_(self, peer, rids);
   return self;
 }
 
 
 #line 24
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesEntityDelete_init(self);
+  return self;
 }
 
+
+#line 28
 - (AMPeer *)getPeer {
-  
-#line 29
   return peer_;
 }
 
-
-#line 32
 - (id<JavaUtilList>)getRids {
-  
-#line 33
   return rids_;
 }
 
@@ -74,18 +67,42 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDelete, rids_, id<JavaUtilL
 
 #line 43
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 44
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:peer_];
   [writer writeRepeatedLongWithInt:2 withJavaUtilList:rids_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityDelete *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rids_ = rids_;
+@end
+
+
+#line 19
+void ImActorModelModulesMessagesEntityDelete_initWithAMPeer_withJavaUtilList_(ImActorModelModulesMessagesEntityDelete *self, AMPeer *peer, id<JavaUtilList> rids) {
+  (void) BSBserObject_init(self);
+  
+#line 20
+  self->peer_ = peer;
+  self->rids_ = rids;
 }
 
-@end
+
+#line 19
+ImActorModelModulesMessagesEntityDelete *new_ImActorModelModulesMessagesEntityDelete_initWithAMPeer_withJavaUtilList_(AMPeer *peer, id<JavaUtilList> rids) {
+  ImActorModelModulesMessagesEntityDelete *self = [ImActorModelModulesMessagesEntityDelete alloc];
+  ImActorModelModulesMessagesEntityDelete_initWithAMPeer_withJavaUtilList_(self, peer, rids);
+  return self;
+}
+
+
+#line 24
+void ImActorModelModulesMessagesEntityDelete_init(ImActorModelModulesMessagesEntityDelete *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 24
+ImActorModelModulesMessagesEntityDelete *new_ImActorModelModulesMessagesEntityDelete_init() {
+  ImActorModelModulesMessagesEntityDelete *self = [ImActorModelModulesMessagesEntityDelete alloc];
+  ImActorModelModulesMessagesEntityDelete_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityDelete)

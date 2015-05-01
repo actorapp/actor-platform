@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/BaseMessenger.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/BaseMessenger.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/BaseMessenger.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/Messenger.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/DisplayLists.h"
 #include "im/actor/model/modules/Modules.h"
@@ -19,6 +21,7 @@
  @public
   ImActorModelModulesDisplayLists *displayLists_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLists *)
@@ -30,24 +33,16 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 
 #line 20
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
-  if (self =
-#line 21
-  [super initWithAMConfiguration:configuration]) {
-    
-#line 22
-    displayLists_ = [[ImActorModelModulesDisplayLists alloc] initWithImActorModelModulesModules:modules_];
-  }
+  AMBaseMessenger_initWithAMConfiguration_(self, configuration);
   return self;
 }
 
-
-#line 25
 - (AMConversationVM *)buildConversationVMWithAMPeer:(AMPeer *)peer
                             withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback {
   
 #line 27
-  return [[AMConversationVM alloc] initWithAMPeer:peer withAMConversationVMCallback:callback withImActorModelModulesModules:modules_ withAMBindedDisplayList:displayList];
+  return new_AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(peer, callback, modules_, displayList);
 }
 
 
@@ -57,56 +52,44 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 }
 
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer {
-  
-#line 37
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getMessagesGlobalListWithAMPeer:peer];
 }
 
-
-#line 40
 - (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer {
-  
-#line 41
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewChatListWithAMPeer:peer withBoolean:NO];
 }
 
-
-#line 44
 - (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer {
-  
-#line 45
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildMediaListWithAMPeer:peer];
 }
 
-
-#line 48
 - (AMBindedDisplayList *)getContactsGlobalList {
-  
-#line 49
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getContactsGlobalList];
 }
 
-
-#line 52
 - (AMBindedDisplayList *)buildContactDisplayList {
-  
-#line 53
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewContactListWithBoolean:NO];
 }
 
-
-#line 56
 - (AMBindedDisplayList *)buildSearchList {
-  
-#line 57
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewSearchListWithBoolean:NO];
 }
 
-- (void)copyAllFieldsTo:(AMBaseMessenger *)other {
-  [super copyAllFieldsTo:other];
-  other->displayLists_ = displayLists_;
+@end
+
+
+#line 20
+void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration) {
+  (void) AMMessenger_initWithAMConfiguration_(self, configuration);
+  self->displayLists_ = new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self->modules_);
 }
 
-@end
+
+#line 20
+AMBaseMessenger *new_AMBaseMessenger_initWithAMConfiguration_(AMConfiguration *configuration) {
+  AMBaseMessenger *self = [AMBaseMessenger alloc];
+  AMBaseMessenger_initWithAMConfiguration_(self, configuration);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBaseMessenger)

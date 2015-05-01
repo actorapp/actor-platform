@@ -6,30 +6,31 @@
 #ifndef _AMAvatar_H_
 #define _AMAvatar_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMAvatarImage;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMAvatar : BSBserObject
 
-@interface AMAvatar : BSBserObject {
-}
-
-+ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
                     withAMAvatarImage:(AMAvatarImage *)largeImage
                     withAMAvatarImage:(AMAvatarImage *)fullImage;
 
-- (AMAvatarImage *)getSmallImage;
+- (jboolean)isEqual:(id)o;
 
-- (AMAvatarImage *)getLargeImage;
++ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatarImage *)getFullImage;
 
-- (jboolean)isEqual:(id)o;
+- (AMAvatarImage *)getLargeImage;
+
+- (AMAvatarImage *)getSmallImage;
 
 - (NSUInteger)hash;
 
@@ -41,13 +42,14 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatar)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMAvatar ImActorModelEntityAvatar;
+FOUNDATION_EXPORT void AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatar *self, AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage);
+
+FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAvatar)
+
+typedef AMAvatar ImActorModelEntityAvatar;
 
 #endif // _AMAvatar_H_

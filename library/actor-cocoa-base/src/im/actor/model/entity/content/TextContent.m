@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/TextContent.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/TextContent.java"
 
 #include "IOSClass.h"
@@ -20,10 +21,16 @@
  @public
   NSString *text_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
+
+__attribute__((unused)) static void AMTextContent_init(AMTextContent *self);
+
+__attribute__((unused)) static AMTextContent *new_AMTextContent_init() NS_RETURNS_RETAINED;
 
 
 #line 12
@@ -36,23 +43,20 @@ J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
 
 #line 20
 - (instancetype)initWithNSString:(NSString *)text {
-  if (self = [super init]) {
-    
-#line 21
-    self->text_ = text;
-  }
+  AMTextContent_initWithNSString_(self, text);
   return self;
 }
 
 
 #line 24
 - (instancetype)init {
-  return [super init];
+  AMTextContent_init(self);
+  return self;
 }
 
+
+#line 28
 - (NSString *)getText {
-  
-#line 29
   return text_;
 }
 
@@ -65,8 +69,6 @@ J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
 
 #line 38
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 39
   [super parseWithBSBserValues:values];
   text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
@@ -78,18 +80,46 @@ J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
 }
 
-- (void)copyAllFieldsTo:(AMTextContent *)other {
-  [super copyAllFieldsTo:other];
-  other->text_ = text_;
-}
-
 @end
 
+
+#line 14
 AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
-  AMTextContent_init();
+  AMTextContent_initialize();
   
 #line 15
-  return ((AMTextContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMTextContent alloc] init], data));
+  return ((AMTextContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMTextContent_init(), data));
+}
+
+
+#line 20
+void AMTextContent_initWithNSString_(AMTextContent *self, NSString *text) {
+  (void) AMAbsContent_init(self);
+  
+#line 21
+  self->text_ = text;
+}
+
+
+#line 20
+AMTextContent *new_AMTextContent_initWithNSString_(NSString *text) {
+  AMTextContent *self = [AMTextContent alloc];
+  AMTextContent_initWithNSString_(self, text);
+  return self;
+}
+
+
+#line 24
+void AMTextContent_init(AMTextContent *self) {
+  (void) AMAbsContent_init(self);
+}
+
+
+#line 24
+AMTextContent *new_AMTextContent_init() {
+  AMTextContent *self = [AMTextContent alloc];
+  AMTextContent_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTextContent)

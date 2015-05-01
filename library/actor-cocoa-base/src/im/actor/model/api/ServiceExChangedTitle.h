@@ -6,18 +6,19 @@
 #ifndef _ImActorModelApiServiceExChangedTitle_H_
 #define _ImActorModelApiServiceExChangedTitle_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExChangedTitle : ImActorModelApiServiceEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
 
-- (instancetype)initWithNSString:(NSString *)title;
+@interface ImActorModelApiServiceExChangedTitle : ImActorModelApiServiceEx
+
+#pragma mark Public
 
 - (instancetype)init;
+
+- (instancetype)initWithNSString:(NSString *)title;
 
 - (jint)getHeader;
 
@@ -33,8 +34,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExChangedTitle)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExChangedTitle_initWithNSString_(ImActorModelApiServiceExChangedTitle *self, NSString *title);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_initWithNSString_(NSString *title) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiServiceExChangedTitle_init(ImActorModelApiServiceExChangedTitle *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExChangedTitle)
 

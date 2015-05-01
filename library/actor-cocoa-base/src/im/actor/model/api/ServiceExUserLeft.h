@@ -6,14 +6,15 @@
 #ifndef _ImActorModelApiServiceExUserLeft_H_
 #define _ImActorModelApiServiceExUserLeft_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExUserLeft : ImActorModelApiServiceEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiServiceExUserLeft : ImActorModelApiServiceEx
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -29,8 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExUserLeft)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExUserLeft_init(ImActorModelApiServiceExUserLeft *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExUserLeft *new_ImActorModelApiServiceExUserLeft_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExUserLeft)
 

@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleCryptoAsymmetricCipherKeyPair_H_
 #define _OrgBouncycastleCryptoAsymmetricCipherKeyPair_H_
 
+#include "J2ObjC_header.h"
+
 @class OrgBouncycastleCryptoParamsAsymmetricKeyParameter;
 @protocol OrgBouncycastleCryptoCipherParameters;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleCryptoAsymmetricCipherKeyPair : NSObject
 
-@interface OrgBouncycastleCryptoAsymmetricCipherKeyPair : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)publicParam
                     withOrgBouncycastleCryptoParamsAsymmetricKeyParameter:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)privateParam;
@@ -20,16 +21,21 @@
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)publicParam
                     withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)privateParam;
 
-- (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)getPublic;
-
 - (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)getPrivate;
+
+- (OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)getPublic;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoAsymmetricCipherKeyPair)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(OrgBouncycastleCryptoAsymmetricCipherKeyPair *self, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *publicParam, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *privateParam);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoAsymmetricCipherKeyPair *new_OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *publicParam, OrgBouncycastleCryptoParamsAsymmetricKeyParameter *privateParam) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoCipherParameters_withOrgBouncycastleCryptoCipherParameters_(OrgBouncycastleCryptoAsymmetricCipherKeyPair *self, id<OrgBouncycastleCryptoCipherParameters> publicParam, id<OrgBouncycastleCryptoCipherParameters> privateParam);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoAsymmetricCipherKeyPair *new_OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoCipherParameters_withOrgBouncycastleCryptoCipherParameters_(id<OrgBouncycastleCryptoCipherParameters> publicParam, id<OrgBouncycastleCryptoCipherParameters> privateParam) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoAsymmetricCipherKeyPair)
 

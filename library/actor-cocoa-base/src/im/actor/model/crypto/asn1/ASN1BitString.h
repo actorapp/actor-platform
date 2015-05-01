@@ -6,24 +6,25 @@
 #ifndef _BCASN1BitString_H_
 #define _BCASN1BitString_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/crypto/asn1/ASN1Primitive.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/crypto/asn1/ASN1Primitive.h"
+@interface BCASN1BitString : BCASN1Primitive
 
-@interface BCASN1BitString : BCASN1Primitive {
-}
-
-+ (BCASN1BitString *)readBitStringWithBSDataInput:(BSDataInput *)dataInput;
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)paddingBit
               withByteArray:(IOSByteArray *)content;
 
+- (IOSByteArray *)getContent;
+
 - (jint)getPaddingBit;
 
-- (IOSByteArray *)getContent;
++ (BCASN1BitString *)readBitStringWithBSDataInput:(BSDataInput *)dataInput;
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput;
 
@@ -31,13 +32,14 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCASN1BitString)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT BCASN1BitString *BCASN1BitString_readBitStringWithBSDataInput_(BSDataInput *dataInput);
-CF_EXTERN_C_END
 
-typedef BCASN1BitString ImActorModelCryptoAsn1ASN1BitString;
+FOUNDATION_EXPORT void BCASN1BitString_initWithInt_withByteArray_(BCASN1BitString *self, jint paddingBit, IOSByteArray *content);
+
+FOUNDATION_EXPORT BCASN1BitString *new_BCASN1BitString_initWithInt_withByteArray_(jint paddingBit, IOSByteArray *content) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCASN1BitString)
+
+typedef BCASN1BitString ImActorModelCryptoAsn1ASN1BitString;
 
 #endif // _BCASN1BitString_H_

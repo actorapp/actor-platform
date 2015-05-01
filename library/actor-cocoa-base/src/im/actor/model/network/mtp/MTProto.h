@@ -6,16 +6,16 @@
 #ifndef _MTMTProto_H_
 #define _MTMTProto_H_
 
+#include "J2ObjC_header.h"
+
 @class AMEndpoints;
-@class DKActorRef;
 @class MTProtoStruct;
 @protocol AMNetworkProvider;
 @protocol MTMTProtoCallback;
 
-#include "J2ObjC_header.h"
+@interface MTMTProto : NSObject
 
-@interface MTMTProto : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
@@ -23,31 +23,32 @@
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
        withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
-- (id<AMNetworkProvider>)getNetworkProvider;
+- (void)cancelRpcWithLong:(jlong)mtId;
+
+- (NSString *)getActorPath;
+
+- (jlong)getAuthId;
 
 - (id<MTMTProtoCallback>)getCallback;
 
 - (AMEndpoints *)getEndpoints;
 
-- (jlong)getAuthId;
+- (id<AMNetworkProvider>)getNetworkProvider;
 
 - (jlong)getSessionId;
 
-- (NSString *)getActorPath;
-
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct;
-
-- (void)cancelRpcWithLong:(jlong)mtId;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTMTProto)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider);
 
-typedef MTMTProto ImActorModelNetworkMtpMTProto;
+FOUNDATION_EXPORT MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTMTProto)
+
+typedef MTMTProto ImActorModelNetworkMtpMTProto;
 
 #endif // _MTMTProto_H_

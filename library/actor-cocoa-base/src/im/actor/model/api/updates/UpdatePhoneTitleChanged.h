@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiUpdatesUpdatePhoneTitleChanged_H_
 #define _ImActorModelApiUpdatesUpdatePhoneTitleChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdatePhoneTitleChanged_HEADER 89
 
-@interface ImActorModelApiUpdatesUpdatePhoneTitleChanged : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdatePhoneTitleChanged : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdatePhoneTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdatePhoneTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getPhoneId;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdatePhoneTitleChanged)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdatePhoneTitleChanged *ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdatePhoneTitleChanged, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdatePhoneTitleChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdatePhoneTitleChanged *self, jint phoneId, NSString *title);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdatePhoneTitleChanged *new_ImActorModelApiUpdatesUpdatePhoneTitleChanged_initWithInt_withNSString_(jint phoneId, NSString *title) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdatePhoneTitleChanged_init(ImActorModelApiUpdatesUpdatePhoneTitleChanged *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdatePhoneTitleChanged *new_ImActorModelApiUpdatesUpdatePhoneTitleChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdatePhoneTitleChanged)
 

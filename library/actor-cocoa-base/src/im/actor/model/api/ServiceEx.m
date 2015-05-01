@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceEx.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceEx.java"
 
 #include "IOSClass.h"
@@ -43,62 +44,67 @@
 
 #line 37
 - (IOSByteArray *)buildContainer {
-  
-#line 38
-  BSDataOutput *res = [[BSDataOutput alloc] init];
-  BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
+  BSDataOutput *res = new_BSDataOutput_init();
+  BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(res);
   [writer writeIntWithInt:1 withInt:[self getHeader]];
   [writer writeBytesWithInt:2 withByteArray:[self toByteArray]];
   return [res toByteArray];
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceEx_init(self);
+  return self;
 }
 
 @end
 
+
+#line 20
 ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithByteArray_(IOSByteArray *src) {
-  ImActorModelApiServiceEx_init();
+  ImActorModelApiServiceEx_initialize();
   
 #line 21
-  BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
+  BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     
 #line 25
-    return ((ImActorModelApiServiceExUserAdded *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExUserAdded alloc] init], content));
+    return ((ImActorModelApiServiceExUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExUserAdded_init(), content));
     case 2:
     
 #line 26
-    return ((ImActorModelApiServiceExUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExUserKicked alloc] init], content));
+    return ((ImActorModelApiServiceExUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExUserKicked_init(), content));
     case 3:
     
 #line 27
-    return ((ImActorModelApiServiceExUserLeft *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExUserLeft alloc] init], content));
+    return ((ImActorModelApiServiceExUserLeft *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExUserLeft_init(), content));
     case 4:
     
 #line 28
-    return ((ImActorModelApiServiceExGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExGroupCreated alloc] init], content));
+    return ((ImActorModelApiServiceExGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExGroupCreated_init(), content));
     case 5:
     
 #line 29
-    return ((ImActorModelApiServiceExChangedTitle *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExChangedTitle alloc] init], content));
+    return ((ImActorModelApiServiceExChangedTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExChangedTitle_init(), content));
     case 6:
     
 #line 30
-    return ((ImActorModelApiServiceExChangedAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExChangedAvatar alloc] init], content));
+    return ((ImActorModelApiServiceExChangedAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExChangedAvatar_init(), content));
     case 7:
     
 #line 31
-    return ((ImActorModelApiServiceExEmailContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceExEmailContactRegistered alloc] init], content));
+    return ((ImActorModelApiServiceExEmailContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExEmailContactRegistered_init(), content));
     default:
     
 #line 32
-    return [[ImActorModelApiServiceExUnsupported alloc] initWithInt:key withByteArray:content];
+    return new_ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(key, content);
   }
+}
+
+void ImActorModelApiServiceEx_init(ImActorModelApiServiceEx *self) {
+  (void) BSBserObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceEx)

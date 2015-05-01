@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiRpcRequestGetAuthSessions_H_
 #define _ImActorModelApiRpcRequestGetAuthSessions_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestGetAuthSessions_HEADER 80
 
-@interface ImActorModelApiRpcRequestGetAuthSessions : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestGetAuthSessions : ImActorModelNetworkParserRequest
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiRpcRequestGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetAuthSessions)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetAuthSessions, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestGetAuthSessions *ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetAuthSessions, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetAuthSessions_init(ImActorModelApiRpcRequestGetAuthSessions *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetAuthSessions *new_ImActorModelApiRpcRequestGetAuthSessions_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetAuthSessions)
 

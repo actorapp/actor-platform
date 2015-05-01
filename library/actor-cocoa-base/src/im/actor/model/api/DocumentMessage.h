@@ -6,6 +6,9 @@
 #ifndef _ImActorModelApiDocumentMessage_H_
 #define _ImActorModelApiDocumentMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/api/Message.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
@@ -14,11 +17,11 @@
 @class ImActorModelApiFastThumb;
 @class JavaLangInteger;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/api/Message.h"
+@interface ImActorModelApiDocumentMessage : ImActorModelApiMessage
 
-@interface ImActorModelApiDocumentMessage : ImActorModelApiMessage {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
@@ -31,29 +34,27 @@ withImActorModelApiEncryptionTypeEnum:(ImActorModelApiEncryptionTypeEnum *)encry
 withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
 withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
-- (instancetype)init;
-
-- (jint)getHeader;
-
-- (jlong)getFileId;
-
 - (jlong)getAccessHash;
-
-- (jint)getFileSize;
-
-- (ImActorModelApiEncryptionTypeEnum *)getEncryptionType;
 
 - (IOSByteArray *)getEncryptionKey;
 
-- (JavaLangInteger *)getPlainFileSize;
+- (ImActorModelApiEncryptionTypeEnum *)getEncryptionType;
 
-- (NSString *)getName;
+- (ImActorModelApiDocumentEx *)getExt;
+
+- (jlong)getFileId;
+
+- (jint)getFileSize;
+
+- (jint)getHeader;
 
 - (NSString *)getMimeType;
 
-- (ImActorModelApiFastThumb *)getThumb;
+- (NSString *)getName;
 
-- (ImActorModelApiDocumentEx *)getExt;
+- (JavaLangInteger *)getPlainFileSize;
+
+- (ImActorModelApiFastThumb *)getThumb;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -65,8 +66,13 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(ImActorModelApiDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, ImActorModelApiEncryptionTypeEnum *encryptionType, IOSByteArray *encryptionKey, JavaLangInteger *plainFileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext);
+
+FOUNDATION_EXPORT ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, ImActorModelApiEncryptionTypeEnum *encryptionType, IOSByteArray *encryptionKey, JavaLangInteger *plainFileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_init(ImActorModelApiDocumentMessage *self);
+
+FOUNDATION_EXPORT ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentMessage)
 

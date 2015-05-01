@@ -6,27 +6,29 @@
 #ifndef _OrgBouncycastleCryptoParamsParametersWithSBox_H_
 #define _OrgBouncycastleCryptoParamsParametersWithSBox_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsParametersWithSBox : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@class IOSByteArray;
+
+@interface OrgBouncycastleCryptoParamsParametersWithSBox : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)sBox;
 
-- (IOSByteArray *)getSBox;
-
 - (id<OrgBouncycastleCryptoCipherParameters>)getParameters;
+
+- (IOSByteArray *)getSBox;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsParametersWithSBox)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(OrgBouncycastleCryptoParamsParametersWithSBox *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *sBox);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsParametersWithSBox *new_OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *sBox) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsParametersWithSBox)
 

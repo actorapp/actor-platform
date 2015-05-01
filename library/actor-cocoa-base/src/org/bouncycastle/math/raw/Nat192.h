@@ -6,15 +6,16 @@
 #ifndef _OrgBouncycastleMathRawNat192_H_
 #define _OrgBouncycastleMathRawNat192_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSIntArray;
 @class JavaMathBigInteger;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleMathRawNat192 : NSObject
 
-#define OrgBouncycastleMathRawNat192_M 4294967295LL
+#pragma mark Public
 
-@interface OrgBouncycastleMathRawNat192 : NSObject {
-}
+- (instancetype)init;
 
 + (jint)addWithIntArray:(IOSIntArray *)x
            withIntArray:(IOSIntArray *)y
@@ -25,13 +26,13 @@
                  withIntArray:(IOSIntArray *)z;
 
 + (jint)addToWithIntArray:(IOSIntArray *)x
-             withIntArray:(IOSIntArray *)z;
-
-+ (jint)addToWithIntArray:(IOSIntArray *)x
                   withInt:(jint)xOff
              withIntArray:(IOSIntArray *)z
                   withInt:(jint)zOff
                   withInt:(jint)cIn;
+
++ (jint)addToWithIntArray:(IOSIntArray *)x
+             withIntArray:(IOSIntArray *)z;
 
 + (jint)addToEachOtherWithIntArray:(IOSIntArray *)u
                            withInt:(jint)uOff
@@ -61,20 +62,16 @@
                    withInt:(jint)bit;
 
 + (jboolean)gteWithIntArray:(IOSIntArray *)x
-               withIntArray:(IOSIntArray *)y;
-
-+ (jboolean)gteWithIntArray:(IOSIntArray *)x
                     withInt:(jint)xOff
                withIntArray:(IOSIntArray *)y
                     withInt:(jint)yOff;
 
++ (jboolean)gteWithIntArray:(IOSIntArray *)x
+               withIntArray:(IOSIntArray *)y;
+
 + (jboolean)isOneWithIntArray:(IOSIntArray *)x;
 
 + (jboolean)isZeroWithIntArray:(IOSIntArray *)x;
-
-+ (void)mulWithIntArray:(IOSIntArray *)x
-           withIntArray:(IOSIntArray *)y
-           withIntArray:(IOSIntArray *)zz;
 
 + (void)mulWithIntArray:(IOSIntArray *)x
                 withInt:(jint)xOff
@@ -83,16 +80,9 @@
            withIntArray:(IOSIntArray *)zz
                 withInt:(jint)zzOff;
 
-+ (jint)mulAddToWithIntArray:(IOSIntArray *)x
-                withIntArray:(IOSIntArray *)y
-                withIntArray:(IOSIntArray *)zz;
-
-+ (jint)mulAddToWithIntArray:(IOSIntArray *)x
-                     withInt:(jint)xOff
-                withIntArray:(IOSIntArray *)y
-                     withInt:(jint)yOff
-                withIntArray:(IOSIntArray *)zz
-                     withInt:(jint)zzOff;
++ (void)mulWithIntArray:(IOSIntArray *)x
+           withIntArray:(IOSIntArray *)y
+           withIntArray:(IOSIntArray *)zz;
 
 + (jlong)mul33AddWithInt:(jint)w
             withIntArray:(IOSIntArray *)x
@@ -101,12 +91,6 @@
                  withInt:(jint)yOff
             withIntArray:(IOSIntArray *)z
                  withInt:(jint)zOff;
-
-+ (jint)mulWordAddExtWithInt:(jint)x
-                withIntArray:(IOSIntArray *)yy
-                     withInt:(jint)yyOff
-                withIntArray:(IOSIntArray *)zz
-                     withInt:(jint)zzOff;
 
 + (jint)mul33DWordAddWithInt:(jint)x
                     withLong:(jlong)y
@@ -118,27 +102,40 @@
                withIntArray:(IOSIntArray *)z
                     withInt:(jint)zOff;
 
-+ (jint)mulWordDwordAddWithInt:(jint)x
-                      withLong:(jlong)y
-                  withIntArray:(IOSIntArray *)z
-                       withInt:(jint)zOff;
++ (jint)mulAddToWithIntArray:(IOSIntArray *)x
+                     withInt:(jint)xOff
+                withIntArray:(IOSIntArray *)y
+                     withInt:(jint)yOff
+                withIntArray:(IOSIntArray *)zz
+                     withInt:(jint)zzOff;
+
++ (jint)mulAddToWithIntArray:(IOSIntArray *)x
+                withIntArray:(IOSIntArray *)y
+                withIntArray:(IOSIntArray *)zz;
 
 + (jint)mulWordWithInt:(jint)x
           withIntArray:(IOSIntArray *)y
           withIntArray:(IOSIntArray *)z
                withInt:(jint)zOff;
 
-+ (void)squareWithIntArray:(IOSIntArray *)x
-              withIntArray:(IOSIntArray *)zz;
++ (jint)mulWordAddExtWithInt:(jint)x
+                withIntArray:(IOSIntArray *)yy
+                     withInt:(jint)yyOff
+                withIntArray:(IOSIntArray *)zz
+                     withInt:(jint)zzOff;
+
++ (jint)mulWordDwordAddWithInt:(jint)x
+                      withLong:(jlong)y
+                  withIntArray:(IOSIntArray *)z
+                       withInt:(jint)zOff;
 
 + (void)squareWithIntArray:(IOSIntArray *)x
                    withInt:(jint)xOff
               withIntArray:(IOSIntArray *)zz
                    withInt:(jint)zzOff;
 
-+ (jint)subWithIntArray:(IOSIntArray *)x
-           withIntArray:(IOSIntArray *)y
-           withIntArray:(IOSIntArray *)z;
++ (void)squareWithIntArray:(IOSIntArray *)x
+              withIntArray:(IOSIntArray *)zz;
 
 + (jint)subWithIntArray:(IOSIntArray *)x
                 withInt:(jint)xOff
@@ -147,29 +144,29 @@
            withIntArray:(IOSIntArray *)z
                 withInt:(jint)zOff;
 
++ (jint)subWithIntArray:(IOSIntArray *)x
+           withIntArray:(IOSIntArray *)y
+           withIntArray:(IOSIntArray *)z;
+
 + (jint)subBothFromWithIntArray:(IOSIntArray *)x
                    withIntArray:(IOSIntArray *)y
                    withIntArray:(IOSIntArray *)z;
-
-+ (jint)subFromWithIntArray:(IOSIntArray *)x
-               withIntArray:(IOSIntArray *)z;
 
 + (jint)subFromWithIntArray:(IOSIntArray *)x
                     withInt:(jint)xOff
                withIntArray:(IOSIntArray *)z
                     withInt:(jint)zOff;
 
++ (jint)subFromWithIntArray:(IOSIntArray *)x
+               withIntArray:(IOSIntArray *)z;
+
 + (JavaMathBigInteger *)toBigIntegerWithIntArray:(IOSIntArray *)x;
 
 + (void)zeroWithIntArray:(IOSIntArray *)z;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathRawNat192)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jint OrgBouncycastleMathRawNat192_addWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *z);
 
@@ -241,8 +238,7 @@ FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathRawNat192_toBigIntegerW
 
 FOUNDATION_EXPORT void OrgBouncycastleMathRawNat192_zeroWithIntArray_(IOSIntArray *z);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat192, M, jlong)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathRawNat192_init(OrgBouncycastleMathRawNat192 *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathRawNat192)
 

@@ -6,18 +6,19 @@
 #ifndef _ImActorModelApiConfig_H_
 #define _ImActorModelApiConfig_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiConfig : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
 
-- (instancetype)initWithInt:(jint)maxGroupSize;
+@interface ImActorModelApiConfig : BSBserObject
+
+#pragma mark Public
 
 - (instancetype)init;
+
+- (instancetype)initWithInt:(jint)maxGroupSize;
 
 - (jint)getMaxGroupSize;
 
@@ -31,8 +32,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiConfig)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiConfig_initWithInt_(ImActorModelApiConfig *self, jint maxGroupSize);
+
+FOUNDATION_EXPORT ImActorModelApiConfig *new_ImActorModelApiConfig_initWithInt_(jint maxGroupSize) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiConfig_init(ImActorModelApiConfig *self);
+
+FOUNDATION_EXPORT ImActorModelApiConfig *new_ImActorModelApiConfig_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiConfig)
 

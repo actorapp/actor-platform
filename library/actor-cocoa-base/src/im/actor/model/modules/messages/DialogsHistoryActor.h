@@ -6,50 +6,34 @@
 #ifndef _ImActorModelModulesMessagesDialogsHistoryActor_H_
 #define _ImActorModelModulesMessagesDialogsHistoryActor_H_
 
-@class AMRpcException;
-@class ImActorModelApiRpcResponseLoadDialogs;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-#define ImActorModelModulesMessagesDialogsHistoryActor_LIMIT 20
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesMessagesDialogsHistoryActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesMessagesDialogsHistoryActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsHistoryActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsHistoryActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesDialogsHistoryActor *self, ImActorModelModulesModules *messenger);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_TAG_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, TAG_, NSString *)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, LIMIT, jint)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_DATE_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_INIT_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsHistoryActor *new_ImActorModelModulesMessagesDialogsHistoryActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor)
 
-@interface ImActorModelModulesMessagesDialogsHistoryActor_LoadMore : NSObject {
-}
+@interface ImActorModelModulesMessagesDialogsHistoryActor_LoadMore : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -57,13 +41,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsHistoryActor_LoadMore *new_ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore)
 
-@interface ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore : NSObject {
-}
+@interface ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate;
@@ -72,27 +58,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor_LoadMo
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore_initWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *self, jint loaded, jlong maxLoadedDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *new_ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore_initWithInt_withLong_(jint loaded, jlong maxLoadedDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore)
-
-@interface ImActorModelModulesMessagesDialogsHistoryActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadDialogs *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesMessagesDialogsHistoryActor:(ImActorModelModulesMessagesDialogsHistoryActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsHistoryActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor_$1)
 
 #endif // _ImActorModelModulesMessagesDialogsHistoryActor_H_

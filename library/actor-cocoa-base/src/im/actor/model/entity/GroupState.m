@@ -3,30 +3,38 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupState.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupState.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/GroupState.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-#line 6
+__attribute__((unused)) static void AMGroupStateEnum_initWithNSString_withInt_(AMGroupStateEnum *self, NSString *__name, jint __ordinal);
 
-BOOL AMGroupStateEnum_initialized = NO;
+__attribute__((unused)) static AMGroupStateEnum *new_AMGroupStateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(AMGroupStateEnum)
 
 AMGroupStateEnum *AMGroupStateEnum_values_[4];
 
+
+#line 6
 @implementation AMGroupStateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
-  return [super initWithNSString:__name withInt:__ordinal];
+  AMGroupStateEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
 }
 
 IOSObjectArray *AMGroupStateEnum_values() {
-  AMGroupStateEnum_init();
+  AMGroupStateEnum_initialize();
   return [IOSObjectArray arrayWithObjects:AMGroupStateEnum_values_ count:4 type:AMGroupStateEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return AMGroupStateEnum_values();
 }
@@ -36,7 +44,7 @@ IOSObjectArray *AMGroupStateEnum_values() {
 }
 
 AMGroupStateEnum *AMGroupStateEnum_valueOfWithNSString_(NSString *name) {
-  AMGroupStateEnum_init();
+  AMGroupStateEnum_initialize();
   for (int i = 0; i < 4; i++) {
     AMGroupStateEnum *e = AMGroupStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -53,14 +61,24 @@ AMGroupStateEnum *AMGroupStateEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMGroupStateEnum class]) {
-    AMGroupStateEnum_JOINED = [[AMGroupStateEnum alloc] initWithNSString:@"JOINED" withInt:0];
-    AMGroupStateEnum_KICKED = [[AMGroupStateEnum alloc] initWithNSString:@"KICKED" withInt:1];
-    AMGroupStateEnum_DELETED_PENDING = [[AMGroupStateEnum alloc] initWithNSString:@"DELETED_PENDING" withInt:2];
-    AMGroupStateEnum_DELETED = [[AMGroupStateEnum alloc] initWithNSString:@"DELETED" withInt:3];
+    AMGroupStateEnum_JOINED = new_AMGroupStateEnum_initWithNSString_withInt_(@"JOINED", 0);
+    AMGroupStateEnum_KICKED = new_AMGroupStateEnum_initWithNSString_withInt_(@"KICKED", 1);
+    AMGroupStateEnum_DELETED_PENDING = new_AMGroupStateEnum_initWithNSString_withInt_(@"DELETED_PENDING", 2);
+    AMGroupStateEnum_DELETED = new_AMGroupStateEnum_initWithNSString_withInt_(@"DELETED", 3);
     J2OBJC_SET_INITIALIZED(AMGroupStateEnum)
   }
 }
 
 @end
+
+void AMGroupStateEnum_initWithNSString_withInt_(AMGroupStateEnum *self, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+}
+
+AMGroupStateEnum *new_AMGroupStateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) {
+  AMGroupStateEnum *self = [AMGroupStateEnum alloc];
+  AMGroupStateEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupStateEnum)

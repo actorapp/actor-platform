@@ -6,27 +6,28 @@
 #ifndef _ImActorModelApiOutPeer_H_
 #define _ImActorModelApiOutPeer_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiPeerTypeEnum;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiOutPeer : BSBserObject
 
-@interface ImActorModelApiOutPeer : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
                                             withInt:(jint)id_
                                            withLong:(jlong)accessHash;
 
-- (instancetype)init;
-
-- (ImActorModelApiPeerTypeEnum *)getType;
+- (jlong)getAccessHash;
 
 - (jint)getId;
 
-- (jlong)getAccessHash;
+- (ImActorModelApiPeerTypeEnum *)getType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,8 +39,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiOutPeer)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiOutPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash);
+
+FOUNDATION_EXPORT ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiOutPeer_init(ImActorModelApiOutPeer *self);
+
+FOUNDATION_EXPORT ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiOutPeer)
 

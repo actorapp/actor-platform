@@ -6,33 +6,36 @@
 #ifndef _ImActorModelApiUpdatesUpdateTyping_H_
 #define _ImActorModelApiUpdatesUpdateTyping_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiPeer;
 @class ImActorModelApiTypingTypeEnum;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateTyping_HEADER 6
 
-@interface ImActorModelApiUpdatesUpdateTyping : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateTyping : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)uid
           withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiPeer *)getPeer;
 
-- (jint)getUid;
-
 - (ImActorModelApiTypingTypeEnum *)getTypingType;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -40,18 +43,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateTyping)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateTyping, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateTyping *ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateTyping, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateTyping_initWithImActorModelApiPeer_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelApiUpdatesUpdateTyping *self, ImActorModelApiPeer *peer, jint uid, ImActorModelApiTypingTypeEnum *typingType);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateTyping *new_ImActorModelApiUpdatesUpdateTyping_initWithImActorModelApiPeer_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelApiPeer *peer, jint uid, ImActorModelApiTypingTypeEnum *typingType) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateTyping_init(ImActorModelApiUpdatesUpdateTyping *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateTyping *new_ImActorModelApiUpdatesUpdateTyping_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateTyping)
 

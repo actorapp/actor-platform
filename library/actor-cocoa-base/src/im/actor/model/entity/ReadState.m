@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ReadState.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ReadState.java"
 
 #include "IOSClass.h"
@@ -21,10 +22,16 @@
   AMPeer *peer_;
   jlong lastReadSortingDate_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMReadState, peer_, AMPeer *)
+
+__attribute__((unused)) static void AMReadState_init(AMReadState *self);
+
+__attribute__((unused)) static AMReadState *new_AMReadState_init() NS_RETURNS_RETAINED;
 
 
 #line 14
@@ -38,34 +45,24 @@ J2OBJC_FIELD_SETTER(AMReadState, peer_, AMPeer *)
 #line 23
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)lastReadSortingDate {
-  if (self = [super init]) {
-    
-#line 24
-    self->peer_ = peer;
-    
-#line 25
-    self->lastReadSortingDate_ = lastReadSortingDate;
-  }
+  AMReadState_initWithAMPeer_withLong_(self, peer, lastReadSortingDate);
   return self;
 }
 
 
 #line 28
 - (instancetype)init {
-  return [super init];
+  AMReadState_init(self);
+  return self;
 }
 
+
+#line 32
 - (AMPeer *)getPeer {
-  
-#line 33
   return peer_;
 }
 
-
-#line 36
 - (jlong)getLastReadSortingDate {
-  
-#line 37
   return lastReadSortingDate_;
 }
 
@@ -79,8 +76,6 @@ J2OBJC_FIELD_SETTER(AMReadState, peer_, AMPeer *)
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:lastReadSortingDate_];
 }
@@ -91,19 +86,45 @@ J2OBJC_FIELD_SETTER(AMReadState, peer_, AMPeer *)
   return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
 }
 
-- (void)copyAllFieldsTo:(AMReadState *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->lastReadSortingDate_ = lastReadSortingDate_;
-}
-
 @end
 
+
+#line 16
 AMReadState *AMReadState_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMReadState_init();
+  AMReadState_initialize();
   
 #line 17
-  return ((AMReadState *) BSBser_parseWithBSBserObject_withByteArray_([[AMReadState alloc] init], data));
+  return ((AMReadState *) BSBser_parseWithBSBserObject_withByteArray_(new_AMReadState_init(), data));
+}
+
+void AMReadState_initWithAMPeer_withLong_(AMReadState *self, AMPeer *peer, jlong lastReadSortingDate) {
+  (void) BSBserObject_init(self);
+  
+#line 24
+  self->peer_ = peer;
+  self->lastReadSortingDate_ = lastReadSortingDate;
+}
+
+
+#line 23
+AMReadState *new_AMReadState_initWithAMPeer_withLong_(AMPeer *peer, jlong lastReadSortingDate) {
+  AMReadState *self = [AMReadState alloc];
+  AMReadState_initWithAMPeer_withLong_(self, peer, lastReadSortingDate);
+  return self;
+}
+
+
+#line 28
+void AMReadState_init(AMReadState *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 28
+AMReadState *new_AMReadState_init() {
+  AMReadState *self = [AMReadState alloc];
+  AMReadState_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMReadState)

@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AvatarImage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AvatarImage.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/AvatarImage.h"
 #include "im/actor/model/api/FileLocation.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -20,6 +22,7 @@
   jint height_;
   jint fileSize_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFileLocation *)
@@ -34,63 +37,39 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
                                             withInt:(jint)width
                                             withInt:(jint)height
                                             withInt:(jint)fileSize {
-  if (self = [super init]) {
-    
-#line 27
-    self->fileLocation_ = fileLocation;
-    
-#line 28
-    self->width_ = width;
-    
-#line 29
-    self->height_ = height;
-    
-#line 30
-    self->fileSize_ = fileSize;
-  }
+  ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(self, fileLocation, width, height, fileSize);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiAvatarImage_init(self);
+  return self;
 }
 
+
+#line 37
 - (ImActorModelApiFileLocation *)getFileLocation {
-  
-#line 38
   return self->fileLocation_;
 }
 
-
-#line 41
 - (jint)getWidth {
-  
-#line 42
   return self->width_;
 }
 
-
-#line 45
 - (jint)getHeight {
-  
-#line 46
   return self->height_;
 }
 
-
-#line 49
 - (jint)getFileSize {
-  
-#line 50
   return self->fileSize_;
 }
 
 
 #line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
+  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiFileLocation_init()];
   self->width_ = [values getIntWithInt:2];
   self->height_ = [values getIntWithInt:3];
   self->fileSize_ = [values getIntWithInt:4];
@@ -99,10 +78,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 
 #line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 63
   if (self->fileLocation_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->fileLocation_];
   [writer writeIntWithInt:2 withInt:self->width_];
@@ -110,6 +87,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   [writer writeIntWithInt:4 withInt:self->fileSize_];
 }
 
+
+#line 73
 - (NSString *)description {
   NSString *res = @"struct AvatarImage{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"fileLocation=", self->fileLocation_));
@@ -120,14 +99,40 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiAvatarImage *)other {
-  [super copyAllFieldsTo:other];
-  other->fileLocation_ = fileLocation_;
-  other->width_ = width_;
-  other->height_ = height_;
-  other->fileSize_ = fileSize_;
+@end
+
+
+#line 26
+void ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiAvatarImage *self, ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize) {
+  (void) BSBserObject_init(self);
+  
+#line 27
+  self->fileLocation_ = fileLocation;
+  self->width_ = width;
+  self->height_ = height;
+  self->fileSize_ = fileSize;
 }
 
-@end
+
+#line 26
+ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize) {
+  ImActorModelApiAvatarImage *self = [ImActorModelApiAvatarImage alloc];
+  ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(self, fileLocation, width, height, fileSize);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiAvatarImage_init(ImActorModelApiAvatarImage *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 33
+ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_init() {
+  ImActorModelApiAvatarImage *self = [ImActorModelApiAvatarImage alloc];
+  ImActorModelApiAvatarImage_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAvatarImage)

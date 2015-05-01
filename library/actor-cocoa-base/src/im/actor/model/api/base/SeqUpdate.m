@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/SeqUpdate.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/SeqUpdate.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/Utils.h"
+#include "im/actor/model/network/parser/RpcScope.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiBaseSeqUpdate () {
@@ -23,6 +25,7 @@
   jint updateHeader_;
   IOSByteArray *update_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, state_, IOSByteArray *)
@@ -44,56 +47,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
               withByteArray:(IOSByteArray *)state
                     withInt:(jint)updateHeader
               withByteArray:(IOSByteArray *)update {
-  if (self = [super init]) {
-    
-#line 33
-    self->seq_ = seq;
-    
-#line 34
-    self->state_ = state;
-    
-#line 35
-    self->updateHeader_ = updateHeader;
-    
-#line 36
-    self->update_ = update;
-  }
+  ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(self, seq, state, updateHeader, update);
   return self;
 }
 
 
 #line 39
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiBaseSeqUpdate_init(self);
+  return self;
 }
 
+
+#line 43
 - (jint)getSeq {
-  
-#line 44
   return self->seq_;
 }
 
-
-#line 47
 - (IOSByteArray *)getState {
-  
-#line 48
   return self->state_;
 }
 
-
-#line 51
 - (jint)getUpdateHeader {
-  
-#line 52
   return self->updateHeader_;
 }
 
-
-#line 55
 - (IOSByteArray *)getUpdate {
-  
-#line 56
   return self->update_;
 }
 
@@ -109,20 +88,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
 
 #line 68
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 69
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:2 withByteArray:self->state_];
   [writer writeIntWithInt:3 withInt:self->updateHeader_];
   if (self->update_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:4 withByteArray:self->update_];
 }
 
+
+#line 82
 - (NSString *)description {
   NSString *res = @"update box SeqUpdate{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
@@ -133,27 +112,55 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseSeqUpdate, update_, IOSByteArray *)
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 94
-  return ImActorModelApiBaseSeqUpdate_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiBaseSeqUpdate *)other {
-  [super copyAllFieldsTo:other];
-  other->seq_ = seq_;
-  other->state_ = state_;
-  other->updateHeader_ = updateHeader_;
-  other->update_ = update_;
+#line 93
+- (jint)getHeaderKey {
+  return ImActorModelApiBaseSeqUpdate_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiBaseSeqUpdate *ImActorModelApiBaseSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiBaseSeqUpdate_init();
+  ImActorModelApiBaseSeqUpdate_initialize();
   
 #line 24
-  return ((ImActorModelApiBaseSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseSeqUpdate alloc] init], data));
+  return ((ImActorModelApiBaseSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseSeqUpdate_init(), data));
+}
+
+
+#line 32
+void ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(ImActorModelApiBaseSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update) {
+  (void) ImActorModelNetworkParserRpcScope_init(self);
+  
+#line 33
+  self->seq_ = seq;
+  self->state_ = state;
+  self->updateHeader_ = updateHeader;
+  self->update_ = update;
+}
+
+
+#line 32
+ImActorModelApiBaseSeqUpdate *new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update) {
+  ImActorModelApiBaseSeqUpdate *self = [ImActorModelApiBaseSeqUpdate alloc];
+  ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(self, seq, state, updateHeader, update);
+  return self;
+}
+
+
+#line 39
+void ImActorModelApiBaseSeqUpdate_init(ImActorModelApiBaseSeqUpdate *self) {
+  (void) ImActorModelNetworkParserRpcScope_init(self);
+}
+
+
+#line 39
+ImActorModelApiBaseSeqUpdate *new_ImActorModelApiBaseSeqUpdate_init() {
+  ImActorModelApiBaseSeqUpdate *self = [ImActorModelApiBaseSeqUpdate alloc];
+  ImActorModelApiBaseSeqUpdate_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseSeqUpdate)

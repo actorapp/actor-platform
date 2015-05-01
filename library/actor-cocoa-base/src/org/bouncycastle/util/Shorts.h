@@ -6,25 +6,27 @@
 #ifndef _OrgBouncycastleUtilShorts_H_
 #define _OrgBouncycastleUtilShorts_H_
 
-@class JavaLangShort;
-
 #include "J2ObjC_header.h"
 
-@interface OrgBouncycastleUtilShorts : NSObject {
-}
+@class JavaLangShort;
 
-+ (JavaLangShort *)valueOfWithShort:(jshort)value;
+@interface OrgBouncycastleUtilShorts : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
+
++ (JavaLangShort *)valueOfWithShort:(jshort)value;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleUtilShorts)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT JavaLangShort *OrgBouncycastleUtilShorts_valueOfWithShort_(jshort value);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleUtilShorts_init(OrgBouncycastleUtilShorts *self);
+
+FOUNDATION_EXPORT OrgBouncycastleUtilShorts *new_OrgBouncycastleUtilShorts_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilShorts)
 

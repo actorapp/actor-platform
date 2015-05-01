@@ -18,8 +18,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAuthKeyStorage)
 
-#define ImActorModelNetworkAuthKeyStorage AMAuthKeyStorage
-
 J2OBJC_TYPE_LITERAL_HEADER(AMAuthKeyStorage)
+
+#define ImActorModelNetworkAuthKeyStorage AMAuthKeyStorage
 
 #endif // _AMAuthKeyStorage_H_

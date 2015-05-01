@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserLastSeen_H_
 #define _ImActorModelApiUpdatesUpdateUserLastSeen_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateUserLastSeen_HEADER 9
 
-@interface ImActorModelApiUpdatesUpdateUserLastSeen : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateUserLastSeen : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date;
 
-- (instancetype)init;
-
-- (jint)getUid;
++ (ImActorModelApiUpdatesUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
+
+- (jint)getHeaderKey;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserLastSeen)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserLastSeen, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLastSeen *ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserLastSeen, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(ImActorModelApiUpdatesUpdateUserLastSeen *self, jint uid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserLastSeen_init(ImActorModelApiUpdatesUpdateUserLastSeen *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserLastSeen)
 

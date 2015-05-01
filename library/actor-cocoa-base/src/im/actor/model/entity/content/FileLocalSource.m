@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileLocalSource.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileLocalSource.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/content/FileLocalSource.h"
+#include "im/actor/model/entity/content/FileSource.h"
 #include "java/io/IOException.h"
 
 @interface AMFileLocalSource () {
@@ -18,11 +20,17 @@
   NSString *fileDescriptor_;
   jint size_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMFileLocalSource, fileName_, NSString *)
 J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
+
+__attribute__((unused)) static void AMFileLocalSource_init(AMFileLocalSource *self);
+
+__attribute__((unused)) static AMFileLocalSource *new_AMFileLocalSource_init() NS_RETURNS_RETAINED;
 
 
 #line 11
@@ -37,31 +45,18 @@ J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
 - (instancetype)initWithNSString:(NSString *)fileName
                          withInt:(jint)size
                     withNSString:(NSString *)fileDescriptor {
-  if (self = [super init]) {
-    
-#line 24
-    self->fileName_ = fileName;
-    
-#line 25
-    self->size_ = size;
-    
-#line 26
-    self->fileDescriptor_ = fileDescriptor;
-  }
+  AMFileLocalSource_initWithNSString_withInt_withNSString_(self, fileName, size, fileDescriptor);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  AMFileLocalSource_init(self);
+  return self;
 }
 
-
-#line 34
 - (NSString *)getFileName {
-  
-#line 35
   return fileName_;
 }
 
@@ -72,8 +67,6 @@ J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
 }
 
 - (NSString *)getFileDescriptor {
-  
-#line 44
   return fileDescriptor_;
 }
 
@@ -89,30 +82,54 @@ J2OBJC_FIELD_SETTER(AMFileLocalSource, fileDescriptor_, NSString *)
 
 #line 56
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 57
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:fileName_];
   [writer writeIntWithInt:3 withInt:size_];
   [writer writeStringWithInt:4 withNSString:fileDescriptor_];
 }
 
-- (void)copyAllFieldsTo:(AMFileLocalSource *)other {
-  [super copyAllFieldsTo:other];
-  other->fileName_ = fileName_;
-  other->fileDescriptor_ = fileDescriptor_;
-  other->size_ = size_;
-}
-
 @end
 
+
+#line 13
 AMFileLocalSource *AMFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
-  AMFileLocalSource_init();
+  AMFileLocalSource_initialize();
   
 #line 14
-  AMFileLocalSource *fileLocalSource = [[AMFileLocalSource alloc] init];
+  AMFileLocalSource *fileLocalSource = new_AMFileLocalSource_init();
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
+}
+
+
+#line 23
+void AMFileLocalSource_initWithNSString_withInt_withNSString_(AMFileLocalSource *self, NSString *fileName, jint size, NSString *fileDescriptor) {
+  (void) AMFileSource_init(self);
+  
+#line 24
+  self->fileName_ = fileName;
+  self->size_ = size;
+  self->fileDescriptor_ = fileDescriptor;
+}
+
+
+#line 23
+AMFileLocalSource *new_AMFileLocalSource_initWithNSString_withInt_withNSString_(NSString *fileName, jint size, NSString *fileDescriptor) {
+  AMFileLocalSource *self = [AMFileLocalSource alloc];
+  AMFileLocalSource_initWithNSString_withInt_withNSString_(self, fileName, size, fileDescriptor);
+  return self;
+}
+
+void AMFileLocalSource_init(AMFileLocalSource *self) {
+  (void) AMFileSource_init(self);
+}
+
+
+#line 29
+AMFileLocalSource *new_AMFileLocalSource_init() {
+  AMFileLocalSource *self = [AMFileLocalSource alloc];
+  AMFileLocalSource_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileLocalSource)

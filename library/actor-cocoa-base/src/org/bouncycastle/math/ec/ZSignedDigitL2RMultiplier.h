@@ -6,26 +6,30 @@
 #ifndef _OrgBouncycastleMathEcZSignedDigitL2RMultiplier_H_
 #define _OrgBouncycastleMathEcZSignedDigitL2RMultiplier_H_
 
-@class JavaMathBigInteger;
-@class OrgBouncycastleMathEcECPoint;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 
-@interface OrgBouncycastleMathEcZSignedDigitL2RMultiplier : OrgBouncycastleMathEcAbstractECMultiplier {
-}
+@class JavaMathBigInteger;
+@class OrgBouncycastleMathEcECPoint;
+
+@interface OrgBouncycastleMathEcZSignedDigitL2RMultiplier : OrgBouncycastleMathEcAbstractECMultiplier
+
+#pragma mark Public
+
+- (instancetype)init;
+
+#pragma mark Protected
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcZSignedDigitL2RMultiplier)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcZSignedDigitL2RMultiplier_init(OrgBouncycastleMathEcZSignedDigitL2RMultiplier *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcZSignedDigitL2RMultiplier *new_OrgBouncycastleMathEcZSignedDigitL2RMultiplier_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcZSignedDigitL2RMultiplier)
 

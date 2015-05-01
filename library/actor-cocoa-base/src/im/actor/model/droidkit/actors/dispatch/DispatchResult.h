@@ -6,16 +6,25 @@
 #ifndef _DKDispatchResult_H_
 #define _DKDispatchResult_H_
 
-@class AMThreadLocalCompat;
-
 #include "J2ObjC_header.h"
 
-@interface DKDispatchResult : NSObject {
-}
+@interface DKDispatchResult : NSObject
+
+#pragma mark Public
+
++ (DKDispatchResult *)delayWithLong:(jlong)delay;
+
+- (jlong)getDelay;
+
+- (id)getRes;
+
+- (jboolean)isResult;
+
+- (void)recycle;
 
 + (DKDispatchResult *)resultWithId:(id)res;
 
-+ (DKDispatchResult *)delayWithLong:(jlong)delay;
+#pragma mark Package-Private
 
 - (instancetype)initWithBoolean:(jboolean)isResult
                          withId:(id)res
@@ -25,32 +34,20 @@
                    withId:(id)res
                  withLong:(jlong)delay;
 
-- (jboolean)isResult;
-
-- (id)getRes;
-
-- (jlong)getDelay;
-
-- (void)recycle;
-
 @end
 
-FOUNDATION_EXPORT BOOL DKDispatchResult_initialized;
 J2OBJC_STATIC_INIT(DKDispatchResult)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT DKDispatchResult *DKDispatchResult_resultWithId_(id res);
 
 FOUNDATION_EXPORT DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay);
 
-FOUNDATION_EXPORT AMThreadLocalCompat *DKDispatchResult_FREE_RESULTS_;
-J2OBJC_STATIC_FIELD_GETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat *)
-J2OBJC_STATIC_FIELD_SETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKDispatchResult_initWithBoolean_withId_withLong_(DKDispatchResult *self, jboolean isResult, id res, jlong delay);
 
-typedef DKDispatchResult ImActorModelDroidkitActorsDispatchDispatchResult;
+FOUNDATION_EXPORT DKDispatchResult *new_DKDispatchResult_initWithBoolean_withId_withLong_(jboolean isResult, id res, jlong delay) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKDispatchResult)
+
+typedef DKDispatchResult ImActorModelDroidkitActorsDispatchDispatchResult;
 
 #endif // _DKDispatchResult_H_

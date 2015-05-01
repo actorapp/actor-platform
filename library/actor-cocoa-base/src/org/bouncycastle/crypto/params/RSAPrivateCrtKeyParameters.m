@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.java"
 
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
 #include "org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.h"
 
 @interface OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters () {
@@ -18,6 +20,7 @@
   JavaMathBigInteger *dQ_;
   JavaMathBigInteger *qInv_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, e_, JavaMathBigInteger *)
@@ -41,28 +44,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, qInv_
                     withJavaMathBigInteger:(JavaMathBigInteger *)dP
                     withJavaMathBigInteger:(JavaMathBigInteger *)dQ
                     withJavaMathBigInteger:(JavaMathBigInteger *)qInv {
-  if (self =
-#line 28
-  [super initWithBoolean:YES withJavaMathBigInteger:modulus withJavaMathBigInteger:privateExponent]) {
-    
-#line 30
-    self->e_ = publicExponent;
-    
-#line 31
-    self->p_ = p;
-    
-#line 32
-    self->q_ = q;
-    
-#line 33
-    self->dP_ = dP;
-    
-#line 34
-    self->dQ_ = dQ;
-    
-#line 35
-    self->qInv_ = qInv;
-  }
+  OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, publicExponent, privateExponent, p, q, dP, dQ, qInv);
   return self;
 }
 
@@ -114,16 +96,30 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, qInv_
   return qInv_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *)other {
-  [super copyAllFieldsTo:other];
-  other->e_ = e_;
-  other->p_ = p_;
-  other->q_ = q_;
-  other->dP_ = dP_;
-  other->dQ_ = dQ_;
-  other->qInv_ = qInv_;
+@end
+
+
+#line 18
+void OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *self, JavaMathBigInteger *modulus, JavaMathBigInteger *publicExponent, JavaMathBigInteger *privateExponent, JavaMathBigInteger *p, JavaMathBigInteger *q, JavaMathBigInteger *dP, JavaMathBigInteger *dQ, JavaMathBigInteger *qInv) {
+  (void) OrgBouncycastleCryptoParamsRSAKeyParameters_initWithBoolean_withJavaMathBigInteger_withJavaMathBigInteger_(self,
+#line 28
+  YES, modulus, privateExponent);
+  
+#line 30
+  self->e_ = publicExponent;
+  self->p_ = p;
+  self->q_ = q;
+  self->dP_ = dP;
+  self->dQ_ = dQ;
+  self->qInv_ = qInv;
 }
 
-@end
+
+#line 18
+OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *new_OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *publicExponent, JavaMathBigInteger *privateExponent, JavaMathBigInteger *p, JavaMathBigInteger *q, JavaMathBigInteger *dP, JavaMathBigInteger *dQ, JavaMathBigInteger *qInv) {
+  OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *self = [OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters alloc];
+  OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, publicExponent, privateExponent, p, q, dP, dQ, qInv);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters)

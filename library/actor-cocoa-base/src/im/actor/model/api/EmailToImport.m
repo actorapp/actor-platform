@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EmailToImport.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EmailToImport.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/EmailToImport.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -17,6 +19,7 @@
   NSString *email_;
   NSString *name_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, email_, NSString *)
@@ -30,34 +33,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 #line 24
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)name {
-  if (self = [super init]) {
-    
-#line 25
-    self->email_ = email;
-    
-#line 26
-    self->name_ = name;
-  }
+  ImActorModelApiEmailToImport_initWithNSString_withNSString_(self, email, name);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiEmailToImport_init(self);
+  return self;
 }
 
+
+#line 33
 - (NSString *)getEmail {
-  
-#line 34
   return self->email_;
 }
 
-
-#line 37
 - (NSString *)getName {
-  
-#line 38
   return self->name_;
 }
 
@@ -71,10 +64,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 
 #line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 49
   if (self->email_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
   if (self->name_ != nil) {
@@ -82,6 +73,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
   }
 }
 
+
+#line 59
 - (NSString *)description {
   NSString *res = @"struct EmailToImport{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"email=", self->email_));
@@ -90,12 +83,38 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiEmailToImport *)other {
-  [super copyAllFieldsTo:other];
-  other->email_ = email_;
-  other->name_ = name_;
+@end
+
+
+#line 24
+void ImActorModelApiEmailToImport_initWithNSString_withNSString_(ImActorModelApiEmailToImport *self, NSString *email, NSString *name) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->email_ = email;
+  self->name_ = name;
 }
 
-@end
+
+#line 24
+ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) {
+  ImActorModelApiEmailToImport *self = [ImActorModelApiEmailToImport alloc];
+  ImActorModelApiEmailToImport_initWithNSString_withNSString_(self, email, name);
+  return self;
+}
+
+
+#line 29
+void ImActorModelApiEmailToImport_init(ImActorModelApiEmailToImport *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 29
+ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_init() {
+  ImActorModelApiEmailToImport *self = [ImActorModelApiEmailToImport alloc];
+  ImActorModelApiEmailToImport_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiEmailToImport)

@@ -17,8 +17,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMConversationVMCallback)
 
-#define ImActorModelViewmodelConversationVMCallback AMConversationVMCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMConversationVMCallback)
+
+#define ImActorModelViewmodelConversationVMCallback AMConversationVMCallback
 
 #endif // _AMConversationVMCallback_H_

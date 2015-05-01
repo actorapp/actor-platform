@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/ActorDispatcher.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/ActorDispatcher.java"
 
 #include "IOSObjectArray.h"
@@ -38,6 +39,7 @@
   NSString *name_;
   DKAbstractDispatcher *dispatcher_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKActorDispatcher, LOCK_, id)
@@ -55,43 +57,21 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
 #line 32
 - (instancetype)initWithNSString:(NSString *)name
                withDKActorSystem:(DKActorSystem *)actorSystem {
-  if (self = [super init]) {
-    LOCK_ =
-#line 24
-    [[NSObject alloc] init];
-    endpoints_ =
-#line 25
-    [[JavaUtilHashMap alloc] init];
-    scopes_ =
-#line 26
-    [[JavaUtilHashMap alloc] init];
-    
-#line 33
-    self->name_ = name;
-    
-#line 34
-    self->actorSystem_ = actorSystem;
-  }
+  DKActorDispatcher_initWithNSString_withDKActorSystem_(self, name, actorSystem);
   return self;
 }
 
 
 #line 42
 - (void)initDispatcherWithDKAbstractDispatcher:(DKAbstractDispatcher *)dispatcher {
-  
-#line 43
   if (self->dispatcher_ != nil) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Double dispatcher init"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Double dispatcher init");
   }
   self->dispatcher_ = dispatcher;
 }
 
-
-#line 49
 - (DKActorRef *)referenceActorWithNSString:(NSString *)path
                                withDKProps:(DKProps *)props {
-  
-#line 50
   @synchronized(LOCK_) {
     if ([((JavaUtilHashMap *) nil_chk(scopes_)) containsKeyWithId:path]) {
       return [((DKActorScope *) nil_chk([scopes_ getWithId:path])) getActorRef];
@@ -103,12 +83,12 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
 #line 57
     DKActorEndpoint *endpoint = [((JavaUtilHashMap *) nil_chk(endpoints_)) getWithId:path];
     if (endpoint == nil) {
-      endpoint = [[DKActorEndpoint alloc] initWithNSString:path];
+      endpoint = new_DKActorEndpoint_initWithNSString_(path);
       (void) [endpoints_ putWithId:path withId:endpoint];
     }
     
 #line 63
-    DKActorScope *scope = [[DKActorScope alloc] initWithDKActorSystem:actorSystem_ withDKMailbox:mailbox withDKActorDispatcher:self withNSString:path withDKProps:props withDKActorEndpoint:endpoint];
+    DKActorScope *scope = new_DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(actorSystem_, mailbox, self, path, props, endpoint);
     [((DKActorEndpoint *) nil_chk(endpoint)) connectWithDKMailbox:mailbox withDKActorScope:scope];
     (void) [scopes_ putWithId:[scope getPath] withId:scope];
     
@@ -121,8 +101,6 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
 
 #line 73
 - (void)killGracefullyWithDKActorScope:(DKActorScope *)scope {
-  
-#line 74
   [((DKActor *) nil_chk([((DKActorScope *) nil_chk(scope)) getActor])) postStop];
   [scope onActorDie];
   {
@@ -134,7 +112,7 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
       
 #line 78
       if ([((DKEnvelope *) nil_chk(e)) getSender] != nil) {
-        [((DKActorRef *) nil_chk([e getSender])) sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:[e getMessage]]];
+        [((DKActorRef *) nil_chk([e getSender])) sendWithId:new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_([e getMessage])];
       }
     }
   }
@@ -154,20 +132,18 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
                                 withId:(id)message
                               withLong:(jlong)time
                         withDKActorRef:(DKActorRef *)sender {
-  
-#line 91
   if ([((DKActorEndpoint *) nil_chk(endpoint)) isDisconnected]) {
     if (sender != nil) {
       if ([((DKActorSystem *) nil_chk(actorSystem_)) getTraceInterface] != nil) {
         [((id<DKTraceInterface>) nil_chk([actorSystem_ getTraceInterface])) onDeadLetterWithDKActorRef:sender withId:message];
       }
-      [sender sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
+      [sender sendWithId:new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(message)];
     }
   }
   else {
     
 #line 99
-    [((DKMailbox *) nil_chk([endpoint getMailbox])) scheduleWithDKEnvelope:[[DKEnvelope alloc] initWithId:message withDKActorScope:[endpoint getScope] withDKMailbox:[endpoint getMailbox] withDKActorRef:sender] withLong:time];
+    [((DKMailbox *) nil_chk([endpoint getMailbox])) scheduleWithDKEnvelope:new_DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(message, [endpoint getScope], [endpoint getMailbox], sender) withLong:time];
   }
 }
 
@@ -177,20 +153,18 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
                                     withId:(id)message
                                   withLong:(jlong)time
                             withDKActorRef:(DKActorRef *)sender {
-  
-#line 104
   if ([((DKActorEndpoint *) nil_chk(endpoint)) isDisconnected]) {
     if (sender != nil) {
       if ([((DKActorSystem *) nil_chk(actorSystem_)) getTraceInterface] != nil) {
         [((id<DKTraceInterface>) nil_chk([actorSystem_ getTraceInterface])) onDeadLetterWithDKActorRef:sender withId:message];
       }
-      [sender sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
+      [sender sendWithId:new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(message)];
     }
   }
   else {
     
 #line 112
-    [((DKMailbox *) nil_chk([endpoint getMailbox])) scheduleOnceWithDKEnvelope:[[DKEnvelope alloc] initWithId:message withDKActorScope:[endpoint getScope] withDKMailbox:[endpoint getMailbox] withDKActorRef:sender] withLong:time];
+    [((DKMailbox *) nil_chk([endpoint getMailbox])) scheduleOnceWithDKEnvelope:new_DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(message, [endpoint getScope], [endpoint getMailbox], sender) withLong:time];
   }
 }
 
@@ -199,18 +173,14 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
 - (void)cancelSendWithDKActorEndpoint:(DKActorEndpoint *)endpoint
                                withId:(id)message
                        withDKActorRef:(DKActorRef *)sender {
-  
-#line 117
   if (![((DKActorEndpoint *) nil_chk(endpoint)) isDisconnected]) {
-    [((DKMailbox *) nil_chk([endpoint getMailbox])) unscheduleWithDKEnvelope:[[DKEnvelope alloc] initWithId:message withDKActorScope:[endpoint getScope] withDKMailbox:[endpoint getMailbox] withDKActorRef:sender]];
+    [((DKMailbox *) nil_chk([endpoint getMailbox])) unscheduleWithDKEnvelope:new_DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(message, [endpoint getScope], [endpoint getMailbox], sender)];
   }
 }
 
 
 #line 123
 - (NSString *)getName {
-  
-#line 124
   return name_;
 }
 
@@ -239,7 +209,7 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
     }
     @try {
       DKActor *actor = [((DKProps *) nil_chk([scope getProps])) create];
-      [((DKActor *) nil_chk(actor)) initActorWithNSString:[scope getPath] withDKActorContext:[[DKActorContext alloc] initWithDKActorScope:scope] withDKMailbox:[scope getMailbox]];
+      [((DKActor *) nil_chk(actor)) initActorWithNSString:[scope getPath] withDKActorContext:new_DKActorContext_initWithDKActorScope_(scope) withDKMailbox:[scope getMailbox]];
       [actor preStart];
       [scope onActorCreatedWithDKActor:actor];
     }
@@ -248,7 +218,7 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
     JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
       if ([envelope getSender] != nil) {
-        [((DKActorRef *) nil_chk([envelope getSender])) sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:@"Unable to create actor"]];
+        [((DKActorRef *) nil_chk([envelope getSender])) sendWithId:new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(@"Unable to create actor")];
       }
       return;
     }
@@ -278,7 +248,7 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
           
 #line 173
           if ([((DKEnvelope *) nil_chk(e)) getSender] != nil) {
-            [((DKActorRef *) nil_chk([e getSender])) sendWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:[e getMessage]]];
+            [((DKActorRef *) nil_chk([e getSender])) sendWithId:new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_([e getMessage])];
           }
         }
       }
@@ -328,16 +298,19 @@ J2OBJC_FIELD_SETTER(DKActorDispatcher, dispatcher_, DKAbstractDispatcher *)
   }
 }
 
-- (void)copyAllFieldsTo:(DKActorDispatcher *)other {
-  [super copyAllFieldsTo:other];
-  other->LOCK_ = LOCK_;
-  other->endpoints_ = endpoints_;
-  other->scopes_ = scopes_;
-  other->actorSystem_ = actorSystem_;
-  other->name_ = name_;
-  other->dispatcher_ = dispatcher_;
-}
-
 @end
+
+
+#line 32
+void DKActorDispatcher_initWithNSString_withDKActorSystem_(DKActorDispatcher *self, NSString *name, DKActorSystem *actorSystem) {
+  (void) NSObject_init(self);
+  self->LOCK_ = new_NSObject_init();
+  self->endpoints_ = new_JavaUtilHashMap_init();
+  self->scopes_ = new_JavaUtilHashMap_init();
+  
+#line 33
+  self->name_ = name;
+  self->actorSystem_ = actorSystem;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorDispatcher)

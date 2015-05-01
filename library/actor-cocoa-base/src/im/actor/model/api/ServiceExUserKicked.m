@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserKicked.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserKicked.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExUserKicked.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -16,6 +18,7 @@
  @public
   jint kickedUid_;
 }
+
 @end
 
 
@@ -25,31 +28,24 @@
 
 #line 23
 - (instancetype)initWithInt:(jint)kickedUid {
-  if (self = [super init]) {
-    
-#line 24
-    self->kickedUid_ = kickedUid;
-  }
+  ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceExUserKicked_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getHeader {
-  
-#line 32
   return 2;
 }
 
-
-#line 35
 - (jint)getKickedUid {
-  
-#line 36
   return self->kickedUid_;
 }
 
@@ -62,11 +58,11 @@
 
 #line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 46
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->kickedUid_];
 }
 
+
+#line 50
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserKicked{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"kickedUid=", self->kickedUid_));
@@ -74,11 +70,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiServiceExUserKicked *)other {
-  [super copyAllFieldsTo:other];
-  other->kickedUid_ = kickedUid_;
+@end
+
+
+#line 23
+void ImActorModelApiServiceExUserKicked_initWithInt_(ImActorModelApiServiceExUserKicked *self, jint kickedUid) {
+  (void) ImActorModelApiServiceEx_init(self);
+  
+#line 24
+  self->kickedUid_ = kickedUid;
 }
 
-@end
+
+#line 23
+ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initWithInt_(jint kickedUid) {
+  ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
+  ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
+  return self;
+}
+
+
+#line 27
+void ImActorModelApiServiceExUserKicked_init(ImActorModelApiServiceExUserKicked *self) {
+  (void) ImActorModelApiServiceEx_init(self);
+}
+
+
+#line 27
+ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_init() {
+  ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
+  ImActorModelApiServiceExUserKicked_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserKicked)

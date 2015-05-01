@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/NewSessionCreated.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/NewSessionCreated.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/NewSessionCreated.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
 
@@ -19,37 +21,25 @@
 
 #line 16
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 17
-  [super initWithBSDataInput:stream];
+  MTNewSessionCreated_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 20
 - (instancetype)initWithLong:(jlong)sessionId
                     withLong:(jlong)messageId {
-  if (self = [super init]) {
-    self->sessionId_ = sessionId;
-    
-#line 22
-    self->messageId_ = messageId;
-  }
+  MTNewSessionCreated_initWithLong_withLong_(self, sessionId, messageId);
   return self;
 }
 
 
 #line 25
 - (jlong)getSessionId {
-  
-#line 26
   return sessionId_;
 }
 
-
-#line 29
 - (jlong)getMessageId {
-  
-#line 30
   return messageId_;
 }
 
@@ -62,8 +52,6 @@
 
 #line 39
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 40
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:sessionId_];
   [bs writeLongWithLong:messageId_];
 }
@@ -75,18 +63,44 @@
   messageId_ = [bs readLong];
 }
 
+
+#line 51
 - (NSString *)description {
-  
-#line 52
   return JreStrcat("$JC", @"NewSession {", sessionId_, '}');
 }
 
-- (void)copyAllFieldsTo:(MTNewSessionCreated *)other {
-  [super copyAllFieldsTo:other];
-  other->sessionId_ = sessionId_;
-  other->messageId_ = messageId_;
+@end
+
+
+#line 16
+void MTNewSessionCreated_initWithBSDataInput_(MTNewSessionCreated *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 16
+MTNewSessionCreated *new_MTNewSessionCreated_initWithBSDataInput_(BSDataInput *stream) {
+  MTNewSessionCreated *self = [MTNewSessionCreated alloc];
+  MTNewSessionCreated_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 20
+void MTNewSessionCreated_initWithLong_withLong_(MTNewSessionCreated *self, jlong sessionId, jlong messageId) {
+  (void) MTProtoStruct_init(self);
+  
+#line 21
+  self->sessionId_ = sessionId;
+  self->messageId_ = messageId;
+}
+
+
+#line 20
+MTNewSessionCreated *new_MTNewSessionCreated_initWithLong_withLong_(jlong sessionId, jlong messageId) {
+  MTNewSessionCreated *self = [MTNewSessionCreated alloc];
+  MTNewSessionCreated_initWithLong_withLong_(self, sessionId, messageId);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTNewSessionCreated)

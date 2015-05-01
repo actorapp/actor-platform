@@ -6,71 +6,54 @@
 #ifndef _ImActorModelModulesMessagesCursorReaderActor_H_
 #define _ImActorModelModulesMessagesCursorReaderActor_H_
 
-@class AMPeer;
-@class AMRpcException;
-@class ImActorModelApiRpcResponseVoid;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/messages/CursorActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-@interface ImActorModelModulesMessagesCursorReaderActor : ImActorModelModulesMessagesCursorActor {
-}
+@class AMPeer;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesMessagesCursorReaderActor : ImActorModelModulesMessagesCursorActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
+- (void)onReceiveWithId:(id)message;
+
+#pragma mark Protected
+
 - (void)performWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date;
-
-- (void)onReceiveWithId:(id)message;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesCursorReaderActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesCursorReaderActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesCursorReaderActor *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesCursorReaderActor *new_ImActorModelModulesMessagesCursorReaderActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReaderActor)
 
-@interface ImActorModelModulesMessagesCursorReaderActor_MarkRead : NSObject {
-}
+@interface ImActorModelModulesMessagesCursorReaderActor_MarkRead : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)date;
 
-- (AMPeer *)getPeer;
-
 - (jlong)getDate;
+
+- (AMPeer *)getPeer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesCursorReaderActor_MarkRead)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(ImActorModelModulesMessagesCursorReaderActor_MarkRead *self, AMPeer *peer, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesCursorReaderActor_MarkRead *new_ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(AMPeer *peer, jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReaderActor_MarkRead)
-
-@interface ImActorModelModulesMessagesCursorReaderActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesMessagesCursorReaderActor:(ImActorModelModulesMessagesCursorReaderActor *)outer$
-                                                          withAMPeer:(AMPeer *)capture$0
-                                                            withLong:(jlong)capture$1;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesCursorReaderActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReaderActor_$1)
 
 #endif // _ImActorModelModulesMessagesCursorReaderActor_H_

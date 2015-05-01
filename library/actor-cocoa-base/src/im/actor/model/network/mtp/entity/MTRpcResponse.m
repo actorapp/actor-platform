@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcResponse.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcResponse.java"
 
 #include "IOSClass.h"
@@ -11,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/MTRpcResponse.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
 @interface MTMTRpcResponse () {
@@ -18,6 +20,7 @@
   jlong messageId_;
   IOSByteArray *payload_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
@@ -29,24 +32,17 @@ J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
 
 #line 15
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 16
-  [super initWithBSDataInput:stream];
+  MTMTRpcResponse_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 19
 - (jlong)getMessageId {
-  
-#line 20
   return messageId_;
 }
 
-
-#line 23
 - (IOSByteArray *)getPayload {
-  
-#line 24
   return payload_;
 }
 
@@ -59,8 +55,6 @@ J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
 
 #line 33
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 34
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
@@ -72,18 +66,26 @@ J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
   payload_ = [bs readProtoBytes];
 }
 
+
+#line 45
 - (NSString *)description {
-  
-#line 46
   return JreStrcat("$JC", @"ResponseBox [", messageId_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTMTRpcResponse *)other {
-  [super copyAllFieldsTo:other];
-  other->messageId_ = messageId_;
-  other->payload_ = payload_;
+@end
+
+
+#line 15
+void MTMTRpcResponse_initWithBSDataInput_(MTMTRpcResponse *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 15
+MTMTRpcResponse *new_MTMTRpcResponse_initWithBSDataInput_(BSDataInput *stream) {
+  MTMTRpcResponse *self = [MTMTRpcResponse alloc];
+  MTMTRpcResponse_initWithBSDataInput_(self, stream);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMTRpcResponse)

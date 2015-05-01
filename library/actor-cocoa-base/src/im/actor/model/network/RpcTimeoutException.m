@@ -3,9 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcTimeoutException.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcTimeoutException.java"
 
+#include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcTimeoutException.h"
 
 
@@ -15,11 +18,24 @@
 
 #line 7
 - (instancetype)init {
-  return
-#line 8
-  [super initWithNSString:@"TIMEOUT" withInt:500 withNSString:@"Request timeout" withBoolean:YES withByteArray:nil];
+  AMRpcTimeoutException_init(self);
+  return self;
 }
 
 @end
+
+
+#line 7
+void AMRpcTimeoutException_init(AMRpcTimeoutException *self) {
+  (void) AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(self, @"TIMEOUT", 500, @"Request timeout", YES, nil);
+}
+
+
+#line 7
+AMRpcTimeoutException *new_AMRpcTimeoutException_init() {
+  AMRpcTimeoutException *self = [AMRpcTimeoutException alloc];
+  AMRpcTimeoutException_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMRpcTimeoutException)

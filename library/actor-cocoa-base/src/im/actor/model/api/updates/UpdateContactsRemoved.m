@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactsRemoved.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactsRemoved.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 #include "java/util/List.h"
 
@@ -20,6 +22,7 @@
  @public
   id<JavaUtilList> uids_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaUtilList>)
@@ -37,23 +40,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
 
 #line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids {
-  if (self = [super init]) {
-    
-#line 30
-    self->uids_ = uids;
-  }
+  ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(self, uids);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateContactsRemoved_init(self);
+  return self;
 }
 
+
+#line 37
 - (id<JavaUtilList>)getUids {
-  
-#line 38
   return self->uids_;
 }
 
@@ -66,11 +66,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedIntWithInt:1 withJavaUtilList:self->uids_];
 }
 
+
+#line 52
 - (NSString *)description {
   NSString *res = @"update ContactsRemoved{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uids=", [((id<JavaUtilList>) nil_chk(self->uids_)) size]));
@@ -78,24 +78,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 61
-  return ImActorModelApiUpdatesUpdateContactsRemoved_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateContactsRemoved *)other {
-  [super copyAllFieldsTo:other];
-  other->uids_ = uids_;
+#line 60
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateContactsRemoved_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateContactsRemoved *ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateContactsRemoved_init();
+  ImActorModelApiUpdatesUpdateContactsRemoved_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateContactsRemoved *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactsRemoved alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateContactsRemoved *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactsRemoved_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(ImActorModelApiUpdatesUpdateContactsRemoved *self, id<JavaUtilList> uids) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 30
+  self->uids_ = uids;
+}
+
+
+#line 29
+ImActorModelApiUpdatesUpdateContactsRemoved *new_ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(id<JavaUtilList> uids) {
+  ImActorModelApiUpdatesUpdateContactsRemoved *self = [ImActorModelApiUpdatesUpdateContactsRemoved alloc];
+  ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(self, uids);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateContactsRemoved_init(ImActorModelApiUpdatesUpdateContactsRemoved *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateContactsRemoved *new_ImActorModelApiUpdatesUpdateContactsRemoved_init() {
+  ImActorModelApiUpdatesUpdateContactsRemoved *self = [ImActorModelApiUpdatesUpdateContactsRemoved alloc];
+  ImActorModelApiUpdatesUpdateContactsRemoved_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactsRemoved)

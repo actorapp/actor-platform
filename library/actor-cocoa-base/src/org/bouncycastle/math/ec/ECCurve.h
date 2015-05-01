@@ -6,53 +6,20 @@
 #ifndef _OrgBouncycastleMathEcECCurve_H_
 #define _OrgBouncycastleMathEcECCurve_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSIntArray;
 @class IOSObjectArray;
 @class JavaMathBigInteger;
-@class OrgBouncycastleMathEcECCurve;
+@class OrgBouncycastleMathEcECCurve_Config;
 @class OrgBouncycastleMathEcECFieldElement;
 @class OrgBouncycastleMathEcECPoint;
-@class OrgBouncycastleMathEcECPoint_F2m;
 @class OrgBouncycastleMathEcECPoint_Fp;
 @protocol OrgBouncycastleMathEcECMultiplier;
 @protocol OrgBouncycastleMathEcEndoECEndomorphism;
 @protocol OrgBouncycastleMathEcPreCompInfo;
 @protocol OrgBouncycastleMathFieldFiniteField;
-
-#include "J2ObjC_header.h"
-
-@interface OrgBouncycastleMathEcECCurve_Config : NSObject {
- @public
-  jint coord_;
-  id<OrgBouncycastleMathEcEndoECEndomorphism> endomorphism_;
-  id<OrgBouncycastleMathEcECMultiplier> multiplier_;
-}
-
-- (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)outer$
-                                             withInt:(jint)coord
-         withOrgBouncycastleMathEcEndoECEndomorphism:(id<OrgBouncycastleMathEcEndoECEndomorphism>)endomorphism
-               withOrgBouncycastleMathEcECMultiplier:(id<OrgBouncycastleMathEcECMultiplier>)multiplier;
-
-- (OrgBouncycastleMathEcECCurve_Config *)setCoordinateSystemWithInt:(jint)coord;
-
-- (OrgBouncycastleMathEcECCurve_Config *)setEndomorphismWithOrgBouncycastleMathEcEndoECEndomorphism:(id<OrgBouncycastleMathEcEndoECEndomorphism>)endomorphism;
-
-- (OrgBouncycastleMathEcECCurve_Config *)setMultiplierWithOrgBouncycastleMathEcECMultiplier:(id<OrgBouncycastleMathEcECMultiplier>)multiplier;
-
-- (OrgBouncycastleMathEcECCurve *)create;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECCurve_Config)
-
-J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Config, endomorphism_, id<OrgBouncycastleMathEcEndoECEndomorphism>)
-J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Config, multiplier_, id<OrgBouncycastleMathEcECMultiplier>)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Config)
 
 #define OrgBouncycastleMathEcECCurve_COORD_AFFINE 0
 #define OrgBouncycastleMathEcECCurve_COORD_HOMOGENEOUS 1
@@ -73,22 +40,9 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Config)
   id<OrgBouncycastleMathEcECMultiplier> multiplier_;
 }
 
-+ (IOSIntArray *)getAllCoordinateSystems;
-
-- (instancetype)initWithOrgBouncycastleMathFieldFiniteField:(id<OrgBouncycastleMathFieldFiniteField>)field;
-
-- (jint)getFieldSize;
-
-- (OrgBouncycastleMathEcECFieldElement *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x;
+#pragma mark Public
 
 - (OrgBouncycastleMathEcECCurve_Config *)configure;
-
-- (OrgBouncycastleMathEcECPoint *)validatePointWithJavaMathBigInteger:(JavaMathBigInteger *)x
-                                               withJavaMathBigInteger:(JavaMathBigInteger *)y;
-
-- (OrgBouncycastleMathEcECPoint *)validatePointWithJavaMathBigInteger:(JavaMathBigInteger *)x
-                                               withJavaMathBigInteger:(JavaMathBigInteger *)y
-                                                          withBoolean:(jboolean)withCompression;
 
 - (OrgBouncycastleMathEcECPoint *)createPointWithJavaMathBigInteger:(JavaMathBigInteger *)x
                                              withJavaMathBigInteger:(JavaMathBigInteger *)y;
@@ -97,7 +51,69 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Config)
                                              withJavaMathBigInteger:(JavaMathBigInteger *)y
                                                         withBoolean:(jboolean)withCompression;
 
+- (OrgBouncycastleMathEcECPoint *)decodePointWithByteArray:(IOSByteArray *)encoded;
+
+- (jboolean)equalsWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)other;
+
+- (jboolean)isEqual:(id)obj;
+
+- (OrgBouncycastleMathEcECFieldElement *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x;
+
+- (OrgBouncycastleMathEcECFieldElement *)getA;
+
++ (IOSIntArray *)getAllCoordinateSystems;
+
+- (OrgBouncycastleMathEcECFieldElement *)getB;
+
+- (JavaMathBigInteger *)getCofactor;
+
+- (jint)getCoordinateSystem;
+
+- (id<OrgBouncycastleMathEcEndoECEndomorphism>)getEndomorphism;
+
+- (id<OrgBouncycastleMathFieldFiniteField>)getField;
+
+- (jint)getFieldSize;
+
+- (OrgBouncycastleMathEcECPoint *)getInfinity;
+
+- (id<OrgBouncycastleMathEcECMultiplier>)getMultiplier;
+
+- (JavaMathBigInteger *)getOrder;
+
+- (id<OrgBouncycastleMathEcPreCompInfo>)getPreCompInfoWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point
+                                                                          withNSString:(NSString *)name;
+
+- (NSUInteger)hash;
+
+- (OrgBouncycastleMathEcECPoint *)importPointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
+
+- (void)normalizeAllWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)points;
+
+- (void)setPreCompInfoWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point
+                                          withNSString:(NSString *)name
+                  withOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo;
+
+- (jboolean)supportsCoordinateSystemWithInt:(jint)coord;
+
+- (OrgBouncycastleMathEcECPoint *)validatePointWithJavaMathBigInteger:(JavaMathBigInteger *)x
+                                               withJavaMathBigInteger:(JavaMathBigInteger *)y;
+
+- (OrgBouncycastleMathEcECPoint *)validatePointWithJavaMathBigInteger:(JavaMathBigInteger *)x
+                                               withJavaMathBigInteger:(JavaMathBigInteger *)y
+                                                          withBoolean:(jboolean)withCompression;
+
+#pragma mark Protected
+
+- (instancetype)initWithOrgBouncycastleMathFieldFiniteField:(id<OrgBouncycastleMathFieldFiniteField>)field;
+
+- (void)checkPointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point;
+
+- (void)checkPointsWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)points;
+
 - (OrgBouncycastleMathEcECCurve *)cloneCurve;
+
+- (id<OrgBouncycastleMathEcECMultiplier>)createDefaultMultiplier;
 
 - (OrgBouncycastleMathEcECPoint *)createRawPointWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                 withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
@@ -108,53 +124,8 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Config)
                                            withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
                                                                             withBoolean:(jboolean)withCompression;
 
-- (id<OrgBouncycastleMathEcECMultiplier>)createDefaultMultiplier;
-
-- (jboolean)supportsCoordinateSystemWithInt:(jint)coord;
-
-- (id<OrgBouncycastleMathEcPreCompInfo>)getPreCompInfoWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point
-                                                                          withNSString:(NSString *)name;
-
-- (void)setPreCompInfoWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point
-                                          withNSString:(NSString *)name
-                  withOrgBouncycastleMathEcPreCompInfo:(id<OrgBouncycastleMathEcPreCompInfo>)preCompInfo;
-
-- (OrgBouncycastleMathEcECPoint *)importPointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
-
-- (void)normalizeAllWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)points;
-
-- (OrgBouncycastleMathEcECPoint *)getInfinity;
-
-- (id<OrgBouncycastleMathFieldFiniteField>)getField;
-
-- (OrgBouncycastleMathEcECFieldElement *)getA;
-
-- (OrgBouncycastleMathEcECFieldElement *)getB;
-
-- (JavaMathBigInteger *)getOrder;
-
-- (JavaMathBigInteger *)getCofactor;
-
-- (jint)getCoordinateSystem;
-
 - (OrgBouncycastleMathEcECPoint *)decompressPointWithInt:(jint)yTilde
                                   withJavaMathBigInteger:(JavaMathBigInteger *)X1;
-
-- (id<OrgBouncycastleMathEcEndoECEndomorphism>)getEndomorphism;
-
-- (id<OrgBouncycastleMathEcECMultiplier>)getMultiplier;
-
-- (OrgBouncycastleMathEcECPoint *)decodePointWithByteArray:(IOSByteArray *)encoded;
-
-- (void)checkPointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point;
-
-- (void)checkPointsWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)points;
-
-- (jboolean)equalsWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)other;
-
-- (jboolean)isEqual:(id)obj;
-
-- (NSUInteger)hash;
 
 @end
 
@@ -167,10 +138,6 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve, order_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve, cofactor_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve, endomorphism_, id<OrgBouncycastleMathEcEndoECEndomorphism>)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve, multiplier_, id<OrgBouncycastleMathEcECMultiplier>)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcECCurve_getAllCoordinateSystems();
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECCurve, COORD_AFFINE, jint)
 
@@ -187,12 +154,53 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECCurve, COORD_LAMBDA_AFFINE, ji
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECCurve, COORD_LAMBDA_PROJECTIVE, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECCurve, COORD_SKEWED, jint)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcECCurve_getAllCoordinateSystems();
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_initWithOrgBouncycastleMathFieldFiniteField_(OrgBouncycastleMathEcECCurve *self, id<OrgBouncycastleMathFieldFiniteField> field);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve)
 
-@interface OrgBouncycastleMathEcECCurve_AbstractFp : OrgBouncycastleMathEcECCurve {
+@interface OrgBouncycastleMathEcECCurve_Config : NSObject {
+ @public
+  jint coord_;
+  id<OrgBouncycastleMathEcEndoECEndomorphism> endomorphism_;
+  id<OrgBouncycastleMathEcECMultiplier> multiplier_;
 }
+
+#pragma mark Public
+
+- (OrgBouncycastleMathEcECCurve *)create;
+
+- (OrgBouncycastleMathEcECCurve_Config *)setCoordinateSystemWithInt:(jint)coord;
+
+- (OrgBouncycastleMathEcECCurve_Config *)setEndomorphismWithOrgBouncycastleMathEcEndoECEndomorphism:(id<OrgBouncycastleMathEcEndoECEndomorphism>)endomorphism;
+
+- (OrgBouncycastleMathEcECCurve_Config *)setMultiplierWithOrgBouncycastleMathEcECMultiplier:(id<OrgBouncycastleMathEcECMultiplier>)multiplier;
+
+#pragma mark Package-Private
+
+- (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)outer$
+                                             withInt:(jint)coord
+         withOrgBouncycastleMathEcEndoECEndomorphism:(id<OrgBouncycastleMathEcEndoECEndomorphism>)endomorphism
+               withOrgBouncycastleMathEcECMultiplier:(id<OrgBouncycastleMathEcECMultiplier>)multiplier;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECCurve_Config)
+
+J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Config, endomorphism_, id<OrgBouncycastleMathEcEndoECEndomorphism>)
+J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Config, multiplier_, id<OrgBouncycastleMathEcECMultiplier>)
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_Config_initWithOrgBouncycastleMathEcECCurve_withInt_withOrgBouncycastleMathEcEndoECEndomorphism_withOrgBouncycastleMathEcECMultiplier_(OrgBouncycastleMathEcECCurve_Config *self, OrgBouncycastleMathEcECCurve *outer$, jint coord, id<OrgBouncycastleMathEcEndoECEndomorphism> endomorphism, id<OrgBouncycastleMathEcECMultiplier> multiplier);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_Config *new_OrgBouncycastleMathEcECCurve_Config_initWithOrgBouncycastleMathEcECCurve_withInt_withOrgBouncycastleMathEcEndoECEndomorphism_withOrgBouncycastleMathEcECMultiplier_(OrgBouncycastleMathEcECCurve *outer$, jint coord, id<OrgBouncycastleMathEcEndoECEndomorphism> endomorphism, id<OrgBouncycastleMathEcECMultiplier> multiplier) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Config)
+
+@interface OrgBouncycastleMathEcECCurve_AbstractFp : OrgBouncycastleMathEcECCurve
+
+#pragma mark Protected
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q;
 
@@ -203,18 +211,17 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve)
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECCurve_AbstractFp)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_AbstractFp_initWithJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_AbstractFp *self, JavaMathBigInteger *q);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_AbstractFp)
-
-#define OrgBouncycastleMathEcECCurve_Fp_FP_DEFAULT_COORDS 4
 
 @interface OrgBouncycastleMathEcECCurve_Fp : OrgBouncycastleMathEcECCurve_AbstractFp {
  @public
   JavaMathBigInteger *q_, *r_;
   OrgBouncycastleMathEcECPoint_Fp *infinity_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
                     withJavaMathBigInteger:(JavaMathBigInteger *)a
@@ -225,6 +232,20 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_AbstractFp)
                     withJavaMathBigInteger:(JavaMathBigInteger *)b
                     withJavaMathBigInteger:(JavaMathBigInteger *)order
                     withJavaMathBigInteger:(JavaMathBigInteger *)cofactor;
+
+- (OrgBouncycastleMathEcECFieldElement *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x;
+
+- (jint)getFieldSize;
+
+- (OrgBouncycastleMathEcECPoint *)getInfinity;
+
+- (JavaMathBigInteger *)getQ;
+
+- (OrgBouncycastleMathEcECPoint *)importPointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
+
+- (jboolean)supportsCoordinateSystemWithInt:(jint)coord;
+
+#pragma mark Protected
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
                     withJavaMathBigInteger:(JavaMathBigInteger *)r
@@ -240,14 +261,6 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_AbstractFp)
 
 - (OrgBouncycastleMathEcECCurve *)cloneCurve;
 
-- (jboolean)supportsCoordinateSystemWithInt:(jint)coord;
-
-- (JavaMathBigInteger *)getQ;
-
-- (jint)getFieldSize;
-
-- (OrgBouncycastleMathEcECFieldElement *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x;
-
 - (OrgBouncycastleMathEcECPoint *)createRawPointWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                 withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
                                                                             withBoolean:(jboolean)withCompression;
@@ -257,10 +270,6 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_AbstractFp)
                                            withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
                                                                             withBoolean:(jboolean)withCompression;
 
-- (OrgBouncycastleMathEcECPoint *)importPointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
-
-- (OrgBouncycastleMathEcECPoint *)getInfinity;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECCurve_Fp)
@@ -269,15 +278,27 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Fp, q_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Fp, r_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECCurve_Fp, infinity_, OrgBouncycastleMathEcECPoint_Fp *)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_Fp *self, JavaMathBigInteger *q, JavaMathBigInteger *a, JavaMathBigInteger *b);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECCurve_Fp, FP_DEFAULT_COORDS, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_Fp *new_OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *q, JavaMathBigInteger *a, JavaMathBigInteger *b) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_Fp *self, JavaMathBigInteger *q, JavaMathBigInteger *a, JavaMathBigInteger *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_Fp *new_OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *q, JavaMathBigInteger *a, JavaMathBigInteger *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECCurve_Fp *self, JavaMathBigInteger *q, JavaMathBigInteger *r, OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_Fp *new_OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(JavaMathBigInteger *q, JavaMathBigInteger *r, OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_Fp *self, JavaMathBigInteger *q, JavaMathBigInteger *r, OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_Fp *new_OrgBouncycastleMathEcECCurve_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *q, JavaMathBigInteger *r, OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Fp)
 
-@interface OrgBouncycastleMathEcECCurve_AbstractF2m : OrgBouncycastleMathEcECCurve {
-}
+@interface OrgBouncycastleMathEcECCurve_AbstractF2m : OrgBouncycastleMathEcECCurve
+
+#pragma mark Protected
 
 - (instancetype)initWithInt:(jint)m
                     withInt:(jint)k1
@@ -288,15 +309,13 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_Fp)
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECCurve_AbstractF2m)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_AbstractF2m_initWithInt_withInt_withInt_withInt_(OrgBouncycastleMathEcECCurve_AbstractF2m *self, jint m, jint k1, jint k2, jint k3);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_AbstractF2m)
 
-#define OrgBouncycastleMathEcECCurve_F2m_F2M_DEFAULT_COORDS 6
+@interface OrgBouncycastleMathEcECCurve_F2m : OrgBouncycastleMathEcECCurve_AbstractF2m
 
-@interface OrgBouncycastleMathEcECCurve_F2m : OrgBouncycastleMathEcECCurve_AbstractF2m {
-}
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)m
                     withInt:(jint)k
@@ -325,6 +344,36 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_AbstractF2m)
      withJavaMathBigInteger:(JavaMathBigInteger *)b
      withJavaMathBigInteger:(JavaMathBigInteger *)order
      withJavaMathBigInteger:(JavaMathBigInteger *)cofactor;
+
+- (OrgBouncycastleMathEcECPoint *)createPointWithJavaMathBigInteger:(JavaMathBigInteger *)x
+                                             withJavaMathBigInteger:(JavaMathBigInteger *)y
+                                                        withBoolean:(jboolean)withCompression;
+
+- (OrgBouncycastleMathEcECFieldElement *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x;
+
+- (jint)getFieldSize;
+
+- (JavaMathBigInteger *)getH;
+
+- (OrgBouncycastleMathEcECPoint *)getInfinity;
+
+- (jint)getK1;
+
+- (jint)getK2;
+
+- (jint)getK3;
+
+- (jint)getM;
+
+- (JavaMathBigInteger *)getN;
+
+- (jboolean)isKoblitz;
+
+- (jboolean)isTrinomial;
+
+- (jboolean)supportsCoordinateSystemWithInt:(jint)coord;
+
+#pragma mark Protected
 
 - (instancetype)initWithInt:(jint)m
                     withInt:(jint)k1
@@ -337,17 +386,7 @@ withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
 
 - (OrgBouncycastleMathEcECCurve *)cloneCurve;
 
-- (jboolean)supportsCoordinateSystemWithInt:(jint)coord;
-
 - (id<OrgBouncycastleMathEcECMultiplier>)createDefaultMultiplier;
-
-- (jint)getFieldSize;
-
-- (OrgBouncycastleMathEcECFieldElement *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x;
-
-- (OrgBouncycastleMathEcECPoint *)createPointWithJavaMathBigInteger:(JavaMathBigInteger *)x
-                                             withJavaMathBigInteger:(JavaMathBigInteger *)y
-                                                        withBoolean:(jboolean)withCompression;
 
 - (OrgBouncycastleMathEcECPoint *)createRawPointWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                 withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
@@ -358,39 +397,38 @@ withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                            withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
                                                                             withBoolean:(jboolean)withCompression;
 
-- (OrgBouncycastleMathEcECPoint *)getInfinity;
+- (OrgBouncycastleMathEcECPoint *)decompressPointWithInt:(jint)yTilde
+                                  withJavaMathBigInteger:(JavaMathBigInteger *)X1;
 
-- (jboolean)isKoblitz;
+#pragma mark Package-Private
 
 - (jbyte)getMu;
 
 - (IOSObjectArray *)getSi;
 
-- (OrgBouncycastleMathEcECPoint *)decompressPointWithInt:(jint)yTilde
-                                  withJavaMathBigInteger:(JavaMathBigInteger *)X1;
-
-- (jint)getM;
-
-- (jboolean)isTrinomial;
-
-- (jint)getK1;
-
-- (jint)getK2;
-
-- (jint)getK3;
-
-- (JavaMathBigInteger *)getN;
-
-- (JavaMathBigInteger *)getH;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECCurve_F2m)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_F2m *self, jint m, jint k, JavaMathBigInteger *a, JavaMathBigInteger *b);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECCurve_F2m, F2M_DEFAULT_COORDS, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_F2m *new_OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_(jint m, jint k, JavaMathBigInteger *a, JavaMathBigInteger *b) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_F2m *self, jint m, jint k, JavaMathBigInteger *a, JavaMathBigInteger *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_F2m *new_OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(jint m, jint k, JavaMathBigInteger *a, JavaMathBigInteger *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_F2m *self, jint m, jint k1, jint k2, jint k3, JavaMathBigInteger *a, JavaMathBigInteger *b);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_F2m *new_OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_(jint m, jint k1, jint k2, jint k3, JavaMathBigInteger *a, JavaMathBigInteger *b) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_F2m *self, jint m, jint k1, jint k2, jint k3, JavaMathBigInteger *a, JavaMathBigInteger *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_F2m *new_OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withInt_withInt_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(jint m, jint k1, jint k2, jint k3, JavaMathBigInteger *a, JavaMathBigInteger *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withInt_withInt_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECCurve_F2m *self, jint m, jint k1, jint k2, jint k3, OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECCurve_F2m *new_OrgBouncycastleMathEcECCurve_F2m_initWithInt_withInt_withInt_withInt_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withJavaMathBigInteger_withJavaMathBigInteger_(jint m, jint k1, jint k2, jint k3, OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b, JavaMathBigInteger *order, JavaMathBigInteger *cofactor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECCurve_F2m)
 

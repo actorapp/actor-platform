@@ -6,31 +6,27 @@
 #ifndef _ImActorModelModulesMessagesCursorActor_H_
 #define _ImActorModelModulesMessagesCursorActor_H_
 
-@class AMPeer;
-@class DKSyncKeyValue;
-@class ImActorModelModulesMessagesEntityPlainCursorsStorage;
-@class ImActorModelModulesModules;
-@class JavaUtilHashSet;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-@interface ImActorModelModulesMessagesCursorActor : ImActorModelModulesUtilsModuleActor {
-}
+@class AMPeer;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesMessagesCursorActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)cursorId
 withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
+- (void)onReceiveWithId:(id)message;
+
 - (void)preStart;
+
+#pragma mark Protected
 
 - (void)moveCursorWithAMPeer:(AMPeer *)peer
                     withLong:(jlong)date;
-
-- (void)onMovedWithAMPeer:(AMPeer *)peer
-                 withLong:(jlong)date;
-
-- (void)performWithAMPeer:(AMPeer *)peer
-                 withLong:(jlong)date;
 
 - (void)onCompletedWithAMPeer:(AMPeer *)peer
                      withLong:(jlong)date;
@@ -38,31 +34,18 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 - (void)onErrorWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date;
 
-- (void)onReceiveWithId:(id)message;
+- (void)onMovedWithAMPeer:(AMPeer *)peer
+                 withLong:(jlong)date;
+
+- (void)performWithAMPeer:(AMPeer *)peer
+                 withLong:(jlong)date;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesCursorActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesCursorActor_initWithLong_withImActorModelModulesModules_(ImActorModelModulesMessagesCursorActor *self, jlong cursorId, ImActorModelModulesModules *messenger);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorActor)
-
-@interface ImActorModelModulesMessagesCursorActor_OnCompleted : NSObject {
-}
-
-- (AMPeer *)getPeer;
-
-- (jlong)getDate;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesCursorActor_OnCompleted)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorActor_OnCompleted)
 
 #endif // _ImActorModelModulesMessagesCursorActor_H_

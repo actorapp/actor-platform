@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/TweakableBlockCipherParameters.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/TweakableBlockCipherParameters.java"
 
 #include "IOSPrimitiveArray.h"
@@ -16,6 +17,7 @@
   IOSByteArray *tweak_;
   OrgBouncycastleCryptoParamsKeyParameter *key_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters, tweak_, IOSByteArray *)
@@ -29,20 +31,15 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters, k
 #line 15
 - (instancetype)initWithOrgBouncycastleCryptoParamsKeyParameter:(OrgBouncycastleCryptoParamsKeyParameter *)key
                                                   withByteArray:(IOSByteArray *)tweak {
-  if (self = [super init]) {
-    
-#line 17
-    self->key_ = key;
-    
-#line 18
-    self->tweak_ = OrgBouncycastleUtilArrays_cloneWithByteArray_(tweak);
-  }
+  OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_initWithOrgBouncycastleCryptoParamsKeyParameter_withByteArray_(self, key, tweak);
   return self;
 }
 
 
 #line 26
 - (OrgBouncycastleCryptoParamsKeyParameter *)getKey {
+  
+#line 28
   return key_;
 }
 
@@ -54,12 +51,22 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters, k
   return tweak_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters *)other {
-  [super copyAllFieldsTo:other];
-  other->tweak_ = tweak_;
-  other->key_ = key_;
+@end
+
+
+#line 15
+void OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_initWithOrgBouncycastleCryptoParamsKeyParameter_withByteArray_(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters *self, OrgBouncycastleCryptoParamsKeyParameter *key, IOSByteArray *tweak) {
+  (void) NSObject_init(self);
+  self->key_ = key;
+  self->tweak_ = OrgBouncycastleUtilArrays_cloneWithByteArray_(tweak);
 }
 
-@end
+
+#line 15
+OrgBouncycastleCryptoParamsTweakableBlockCipherParameters *new_OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_initWithOrgBouncycastleCryptoParamsKeyParameter_withByteArray_(OrgBouncycastleCryptoParamsKeyParameter *key, IOSByteArray *tweak) {
+  OrgBouncycastleCryptoParamsTweakableBlockCipherParameters *self = [OrgBouncycastleCryptoParamsTweakableBlockCipherParameters alloc];
+  OrgBouncycastleCryptoParamsTweakableBlockCipherParameters_initWithOrgBouncycastleCryptoParamsKeyParameter_withByteArray_(self, key, tweak);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsTweakableBlockCipherParameters)

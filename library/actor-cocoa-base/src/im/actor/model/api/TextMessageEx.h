@@ -6,30 +6,30 @@
 #ifndef _ImActorModelApiTextMessageEx_H_
 #define _ImActorModelApiTextMessageEx_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiTextMessageEx : BSBserObject {
-}
+@class IOSByteArray;
+
+@interface ImActorModelApiTextMessageEx : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+- (IOSByteArray *)buildContainer;
 
 + (ImActorModelApiTextMessageEx *)fromBytesWithByteArray:(IOSByteArray *)src;
 
 - (jint)getHeader;
 
-- (IOSByteArray *)buildContainer;
-
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiTextMessageEx)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelApiTextMessageEx *ImActorModelApiTextMessageEx_fromBytesWithByteArray_(IOSByteArray *src);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelApiTextMessageEx_init(ImActorModelApiTextMessageEx *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTextMessageEx)
 

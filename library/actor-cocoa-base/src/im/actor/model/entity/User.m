@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/User.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/User.java"
 
 #include "IOSClass.h"
@@ -32,7 +33,9 @@
   AMSexEnum *sex_;
   id<JavaUtilList> records_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMUser, name_, NSString *)
@@ -40,6 +43,10 @@ J2OBJC_FIELD_SETTER(AMUser, localName_, NSString *)
 J2OBJC_FIELD_SETTER(AMUser, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
 J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
+
+__attribute__((unused)) static void AMUser_init(AMUser *self);
+
+__attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 
 
 #line 16
@@ -58,81 +65,38 @@ J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
                withAMAvatar:(AMAvatar *)avatar
               withAMSexEnum:(AMSexEnum *)sex
            withJavaUtilList:(id<JavaUtilList>)records {
-  if (self = [super init]) {
-    
-#line 32
-    self->uid_ = uid;
-    
-#line 33
-    self->accessHash_ = accessHash;
-    
-#line 34
-    self->name_ = name;
-    
-#line 35
-    self->localName_ = localName;
-    
-#line 36
-    self->avatar_ = avatar;
-    
-#line 37
-    self->sex_ = sex;
-    
-#line 38
-    self->records_ = records;
-  }
+  AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(self, uid, accessHash, name, localName, avatar, sex, records);
+  return self;
+}
+
+- (instancetype)init {
+  AMUser_init(self);
   return self;
 }
 
 
-#line 41
-- (instancetype)init {
-  return [super init];
-}
-
+#line 45
 - (AMPeer *)peer {
-  
-#line 46
-  return [[AMPeer alloc] initWithAMPeerTypeEnum:AMPeerTypeEnum_get_PRIVATE() withInt:uid_];
+  return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_PRIVATE(), uid_);
 }
 
-
-#line 49
 - (jint)getUid {
-  
-#line 50
   return uid_;
 }
 
-
-#line 53
 - (jlong)getAccessHash {
-  
-#line 54
   return accessHash_;
 }
 
-
-#line 57
 - (NSString *)getServerName {
-  
-#line 58
   return name_;
 }
 
-
-#line 61
 - (NSString *)getLocalName {
-  
-#line 62
   return localName_;
 }
 
-
-#line 65
 - (NSString *)getName {
-  
-#line 66
   if (localName_ == nil) {
     return name_;
   }
@@ -146,49 +110,27 @@ J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
 
 #line 73
 - (AMAvatar *)getAvatar {
-  
-#line 74
   return avatar_;
 }
 
-
-#line 77
 - (AMSexEnum *)getSex {
-  
-#line 78
   return sex_;
 }
 
-
-#line 81
 - (id<JavaUtilList>)getRecords {
-  
-#line 82
   return records_;
 }
 
-
-#line 85
 - (AMUser *)editNameWithNSString:(NSString *)name {
-  
-#line 86
-  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name withNSString:localName_ withAMAvatar:avatar_ withAMSexEnum:sex_ withJavaUtilList:records_];
+  return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(uid_, accessHash_, name, localName_, avatar_, sex_, records_);
 }
 
-
-#line 89
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName {
-  
-#line 90
-  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName withAMAvatar:avatar_ withAMSexEnum:sex_ withJavaUtilList:records_];
+  return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(uid_, accessHash_, name_, localName, avatar_, sex_, records_);
 }
 
-
-#line 93
 - (AMUser *)editAvatarWithAMAvatar:(AMAvatar *)avatar {
-  
-#line 94
-  return [[AMUser alloc] initWithInt:uid_ withLong:accessHash_ withNSString:name_ withNSString:localName_ withAMAvatar:avatar withAMSexEnum:sex_ withJavaUtilList:records_];
+  return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(uid_, accessHash_, name_, localName_, avatar, sex_, records_);
 }
 
 
@@ -200,8 +142,6 @@ J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
 
 #line 103
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 104
   uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
   name_ = [values getStringWithInt:3];
@@ -213,9 +153,9 @@ J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
   sex_ = AMSexEnum_fromValueWithInt_([values getIntWithInt:6]);
   jint count = [values getRepeatedCountWithInt:7];
   if (count > 0) {
-    JavaUtilArrayList *rec = [[JavaUtilArrayList alloc] init];
+    JavaUtilArrayList *rec = new_JavaUtilArrayList_init();
     for (jint i = 0; i < count; i++) {
-      [rec addWithId:[[AMContactRecord alloc] init]];
+      [rec addWithId:new_AMContactRecord_init()];
     }
     records_ = [values getRepeatedObjWithInt:7 withJavaUtilList:rec];
   }
@@ -237,24 +177,50 @@ J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
   [writer writeRepeatedObjWithInt:7 withJavaUtilList:records_];
 }
 
-- (void)copyAllFieldsTo:(AMUser *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->accessHash_ = accessHash_;
-  other->name_ = name_;
-  other->localName_ = localName_;
-  other->avatar_ = avatar_;
-  other->sex_ = sex_;
-  other->records_ = records_;
-}
-
 @end
 
+
+#line 18
 AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMUser_init();
+  AMUser_initialize();
   
 #line 19
-  return ((AMUser *) BSBser_parseWithBSBserObject_withByteArray_([[AMUser alloc] init], data));
+  return ((AMUser *) BSBser_parseWithBSBserObject_withByteArray_(new_AMUser_init(), data));
+}
+
+
+#line 30
+void AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(AMUser *self, jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) {
+  (void) BSBserObject_init(self);
+  self->uid_ = uid;
+  self->accessHash_ = accessHash;
+  self->name_ = name;
+  self->localName_ = localName;
+  self->avatar_ = avatar;
+  self->sex_ = sex;
+  self->records_ = records;
+}
+
+
+#line 30
+AMUser *new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) {
+  AMUser *self = [AMUser alloc];
+  AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(self, uid, accessHash, name, localName, avatar, sex, records);
+  return self;
+}
+
+
+#line 41
+void AMUser_init(AMUser *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 41
+AMUser *new_AMUser_init() {
+  AMUser *self = [AMUser alloc];
+  AMUser_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUser)

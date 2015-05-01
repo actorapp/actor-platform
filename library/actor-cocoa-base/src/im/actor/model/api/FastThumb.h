@@ -6,27 +6,28 @@
 #ifndef _ImActorModelApiFastThumb_H_
 #define _ImActorModelApiFastThumb_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiFastThumb : BSBserObject
 
-@interface ImActorModelApiFastThumb : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)thumb;
 
-- (instancetype)init;
-
-- (jint)getW;
-
 - (jint)getH;
 
 - (IOSByteArray *)getThumb;
+
+- (jint)getW;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,8 +39,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiFastThumb)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(ImActorModelApiFastThumb *self, jint w, jint h, IOSByteArray *thumb);
+
+FOUNDATION_EXPORT ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiFastThumb_init(ImActorModelApiFastThumb *self);
+
+FOUNDATION_EXPORT ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiFastThumb)
 

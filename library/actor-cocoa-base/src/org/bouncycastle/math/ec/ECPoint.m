@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECPoint.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECPoint.java"
 
 #include "IOSClass.h"
@@ -26,24 +27,30 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 __attribute__((unused)) static OrgBouncycastleMathEcECFieldElement *OrgBouncycastleMathEcECPoint_getRawXCoord(OrgBouncycastleMathEcECPoint *self);
+
 __attribute__((unused)) static OrgBouncycastleMathEcECFieldElement *OrgBouncycastleMathEcECPoint_getRawYCoord(OrgBouncycastleMathEcECPoint *self);
+
 __attribute__((unused)) static IOSObjectArray *OrgBouncycastleMathEcECPoint_getRawZCoords(OrgBouncycastleMathEcECPoint *self);
-__attribute__((unused)) static void OrgBouncycastleMathEcECPoint_F2m_checkPointsWithOrgBouncycastleMathEcECPoint_withOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECPoint *a, OrgBouncycastleMathEcECPoint *b);
 
 @interface OrgBouncycastleMathEcECPoint_F2m ()
 
 + (void)checkPointsWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)a
                    withOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b;
+
 @end
 
-BOOL OrgBouncycastleMathEcECPoint_initialized = NO;
+__attribute__((unused)) static void OrgBouncycastleMathEcECPoint_F2m_checkPointsWithOrgBouncycastleMathEcECPoint_withOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECPoint *a, OrgBouncycastleMathEcECPoint *b);
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleMathEcECPoint)
+
+IOSObjectArray *OrgBouncycastleMathEcECPoint_EMPTY_ZS_;
 
 
 #line 9
 @implementation OrgBouncycastleMathEcECPoint
 
-IOSObjectArray * OrgBouncycastleMathEcECPoint_EMPTY_ZS_;
 
+#line 13
 + (IOSObjectArray *)getInitialZCoordsWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve {
   return OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastleMathEcECCurve_(curve);
 }
@@ -53,46 +60,20 @@ IOSObjectArray * OrgBouncycastleMathEcECPoint_EMPTY_ZS_;
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
-  return
-#line 56
-  [self initOrgBouncycastleMathEcECPointWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastleMathEcECCurve_(curve)];
+  OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
 }
 
 
 #line 59
-- (instancetype)initOrgBouncycastleMathEcECPointWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-                                         withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-                                         withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-                                    withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs {
-  if (self = [super init]) {
-    preCompTable_ =
-#line 52
-    nil;
-    self->curve_ = curve;
-    
-#line 62
-    self->x_ = x;
-    
-#line 63
-    self->y_ = y;
-    
-#line 64
-    self->zs_ = zs;
-  }
-  return self;
-}
-
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
         withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs {
-  return [self initOrgBouncycastleMathEcECPointWithOrgBouncycastleMathEcECCurve:
-#line 59
-curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs];
+  OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self, curve, x, y, zs);
+  return self;
 }
 
-
-#line 67
 - (jboolean)satisfiesCofactor {
   
 #line 69
@@ -224,13 +205,15 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   if (![self isNormalized]) {
     
 #line 210
-    @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"point not in normal form"];
+    @throw new_JavaLangIllegalStateException_initWithNSString_(@"point not in normal form");
   }
 }
 
 
 #line 214
 - (jboolean)isNormalized {
+  
+#line 216
   jint coord = [self getCurveCoordinateSystem];
   
 #line 218
@@ -300,7 +283,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
     }
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"not a projective coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"not a projective coordinate system");
     }
   }
 }
@@ -309,9 +292,13 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 #line 280
 - (OrgBouncycastleMathEcECPoint *)createScaledPointWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)sx
                                                    withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)sy {
+  
+#line 282
   return [((OrgBouncycastleMathEcECCurve *) nil_chk([self getCurve])) createRawPointWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(OrgBouncycastleMathEcECPoint_getRawXCoord(self))) multiplyWithOrgBouncycastleMathEcECFieldElement:sx] withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(OrgBouncycastleMathEcECPoint_getRawYCoord(self))) multiplyWithOrgBouncycastleMathEcECFieldElement:sy] withBoolean:self->withCompression_];
 }
 
+
+#line 285
 - (jboolean)isInfinity {
   
 #line 287
@@ -445,6 +432,8 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   return [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p1)) getXCoord])) isEqual:[((OrgBouncycastleMathEcECPoint *) nil_chk(p2)) getXCoord]] && [((OrgBouncycastleMathEcECFieldElement *) nil_chk([p1 getYCoord])) isEqual:[p2 getYCoord]];
 }
 
+
+#line 384
 - (jboolean)isEqual:(id)other {
   
 #line 386
@@ -465,6 +454,8 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   return [self equalsWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *) check_class_cast(other, [OrgBouncycastleMathEcECPoint class])];
 }
 
+
+#line 399
 - (NSUInteger)hash {
   
 #line 401
@@ -486,6 +477,8 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   return hc;
 }
 
+
+#line 417
 - (NSString *)description {
   
 #line 419
@@ -496,7 +489,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   }
   
 #line 424
-  JavaLangStringBuffer *sb = [[JavaLangStringBuffer alloc] init];
+  JavaLangStringBuffer *sb = new_JavaLangStringBuffer_init();
   (void) [sb appendWithChar:'('];
   (void) [sb appendWithId:OrgBouncycastleMathEcECPoint_getRawXCoord(self)];
   (void) [sb appendWithChar:','];
@@ -563,7 +556,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   if (e < 0) {
     
 #line 486
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'e' cannot be negative"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'e' cannot be negative");
   }
   
 #line 489
@@ -579,6 +572,8 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 
 #line 499
 - (OrgBouncycastleMathEcECPoint *)twicePlusWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b {
+  
+#line 501
   return [((OrgBouncycastleMathEcECPoint *) nil_chk([self twice])) addWithOrgBouncycastleMathEcECPoint:b];
 }
 
@@ -598,16 +593,6 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   return [((id<OrgBouncycastleMathEcECMultiplier>) nil_chk([((OrgBouncycastleMathEcECCurve *) nil_chk([self getCurve])) getMultiplier])) multiplyWithOrgBouncycastleMathEcECPoint:self withJavaMathBigInteger:k];
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcECPoint *)other {
-  [super copyAllFieldsTo:other];
-  other->curve_ = curve_;
-  other->x_ = x_;
-  other->y_ = y_;
-  other->zs_ = zs_;
-  other->withCompression_ = withCompression_;
-  other->preCompTable_ = preCompTable_;
-}
-
 + (void)initialize {
   if (self == [OrgBouncycastleMathEcECPoint class]) {
     OrgBouncycastleMathEcECPoint_EMPTY_ZS_ = [IOSObjectArray newArrayWithLength:
@@ -619,8 +604,10 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 
 @end
 
+
+#line 13
 IOSObjectArray *OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *curve) {
-  OrgBouncycastleMathEcECPoint_init();
+  OrgBouncycastleMathEcECPoint_initialize();
   
 #line 16
   jint coord = nil == curve ? OrgBouncycastleMathEcECCurve_COORD_AFFINE : [curve getCoordinateSystem];
@@ -652,22 +639,51 @@ IOSObjectArray *OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastl
     case OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED:
     return [IOSObjectArray newArrayWithObjects:(id[]){ one, [curve getA] } count:2 type:OrgBouncycastleMathEcECFieldElement_class_()];
     default:
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"unknown coordinate system"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"unknown coordinate system");
   }
 }
 
+
+#line 54
+void OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  (void) OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self,
+#line 56
+  curve, x, y, OrgBouncycastleMathEcECPoint_getInitialZCoordsWithOrgBouncycastleMathEcECCurve_(curve));
+}
+
+
+#line 59
+void OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(OrgBouncycastleMathEcECPoint *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs) {
+  (void) NSObject_init(self);
+  self->preCompTable_ =
+#line 52
+  nil;
+  
+#line 61
+  self->curve_ = curve;
+  self->x_ = x;
+  self->y_ = y;
+  self->zs_ = zs;
+}
+
+
+#line 191
 OrgBouncycastleMathEcECFieldElement *OrgBouncycastleMathEcECPoint_getRawXCoord(OrgBouncycastleMathEcECPoint *self) {
   
 #line 193
   return self->x_;
 }
 
+
+#line 196
 OrgBouncycastleMathEcECFieldElement *OrgBouncycastleMathEcECPoint_getRawYCoord(OrgBouncycastleMathEcECPoint *self) {
   
 #line 198
   return self->y_;
 }
 
+
+#line 201
 IOSObjectArray *OrgBouncycastleMathEcECPoint_getRawZCoords(OrgBouncycastleMathEcECPoint *self) {
   
 #line 203
@@ -683,27 +699,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint)
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
-  return
-#line 523
-  [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y];
+  OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
 }
 
 
 #line 526
-- (instancetype)initOrgBouncycastleMathEcECPoint_AbstractFpWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-                                                    withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-                                                    withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-                                               withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs {
-  return [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs];
-}
-
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
         withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs {
-  return [self initOrgBouncycastleMathEcECPoint_AbstractFpWithOrgBouncycastleMathEcECCurve:
-#line 526
-curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs];
+  OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self, curve, x, y, zs);
+  return self;
 }
 
 
@@ -756,7 +763,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       break;
     }
     default:
-    @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+    @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
   }
   
 #line 574
@@ -781,6 +788,22 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 
 @end
 
+
+#line 521
+void OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_AbstractFp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  (void) OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self,
+#line 523
+  curve, x, y);
+}
+
+
+#line 526
+void OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(OrgBouncycastleMathEcECPoint_AbstractFp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs) {
+  (void) OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self,
+#line 528
+  curve, x, y, zs);
+}
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint_AbstractFp)
 
 
@@ -792,41 +815,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint_AbstractFp)
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
-  return
-#line 606
-  [self initOrgBouncycastleMathEcECPoint_FpWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withBoolean:NO];
+  OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
 }
 
 
 #line 619
-- (instancetype)initOrgBouncycastleMathEcECPoint_FpWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-                                            withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-                                            withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-                                                                        withBoolean:(jboolean)withCompression {
-  if (self =
-#line 621
-  [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y]) {
-    
-#line 623
-    if ((x == nil) != (y == nil)) {
-      
-#line 625
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Exactly one of the field elements is null"];
-    }
-    
-#line 628
-    self->withCompression_ = withCompression;
-  }
-  return self;
-}
-
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
                                          withBoolean:(jboolean)withCompression {
-  return [self initOrgBouncycastleMathEcECPoint_FpWithOrgBouncycastleMathEcECCurve:
-#line 619
-curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withBoolean:withCompression];
+  OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(self, curve, x, y, withCompression);
+  return self;
 }
 
 
@@ -836,13 +836,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
         withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
                                          withBoolean:(jboolean)withCompression {
-  if (self =
-#line 633
-  [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs]) {
-    
-#line 635
-    self->withCompression_ = withCompression;
-  }
+  OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(self, curve, x, y, zs, withCompression);
   return self;
 }
 
@@ -851,7 +845,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 - (OrgBouncycastleMathEcECPoint *)detach {
   
 #line 640
-  return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:nil withOrgBouncycastleMathEcECFieldElement:[self getAffineXCoord] withOrgBouncycastleMathEcECFieldElement:[self getAffineYCoord]];
+  return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(nil, [self getAffineXCoord], [self getAffineYCoord]);
 }
 
 
@@ -872,6 +866,8 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 
 #line 654
 - (OrgBouncycastleMathEcECPoint *)addWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)b {
+  
+#line 656
   if ([self isInfinity]) {
     
 #line 658
@@ -924,7 +920,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Y3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([gamma multiplyWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) subtractWithOrgBouncycastleMathEcECFieldElement:X3]])) subtractWithOrgBouncycastleMathEcECFieldElement:Y1];
       
 #line 697
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X3, Y3, self->withCompression_);
     }
     
 #line 700
@@ -972,7 +968,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Z3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(vCubed)) multiplyWithOrgBouncycastleMathEcECFieldElement:w];
       
 #line 739
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, Y3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     
 #line 742
@@ -1138,13 +1134,13 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       }
       
 #line 869
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:zs withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, Y3, zs, self->withCompression_);
     }
     
 #line 872
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
@@ -1189,7 +1185,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Y3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([gamma multiplyWithOrgBouncycastleMathEcECFieldElement:[X1 subtractWithOrgBouncycastleMathEcECFieldElement:X3]])) subtractWithOrgBouncycastleMathEcECFieldElement:Y1];
       
 #line 908
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X3, Y3, self->withCompression_);
     }
     
 #line 911
@@ -1225,7 +1221,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Z3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([self twoWithOrgBouncycastleMathEcECFieldElement:_4sSquared])) multiplyWithOrgBouncycastleMathEcECFieldElement:s];
       
 #line 938
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, Y3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     
 #line 941
@@ -1297,7 +1293,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       }
       
 #line 997
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, Y3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     
 #line 1000
@@ -1309,7 +1305,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 #line 1005
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
@@ -1391,7 +1387,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Y4 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk(([((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) subtractWithOrgBouncycastleMathEcECFieldElement:X4]))) multiplyWithOrgBouncycastleMathEcECFieldElement:L2])) subtractWithOrgBouncycastleMathEcECFieldElement:Y1];
       
 #line 1076
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X4 withOrgBouncycastleMathEcECFieldElement:Y4 withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X4, Y4, self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED:
     {
@@ -1458,7 +1454,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 #line 1127
       OrgBouncycastleMathEcECFieldElement *X4 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk(([((OrgBouncycastleMathEcECFieldElement *) nil_chk(L2)) subtractWithOrgBouncycastleMathEcECFieldElement:L1]))) multiplyWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(L1)) addWithOrgBouncycastleMathEcECFieldElement:L2]])) addWithOrgBouncycastleMathEcECFieldElement:X1];
       OrgBouncycastleMathEcECFieldElement *Y4 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk(([X1 subtractWithOrgBouncycastleMathEcECFieldElement:X4]))) multiplyWithOrgBouncycastleMathEcECFieldElement:L2])) subtractWithOrgBouncycastleMathEcECFieldElement:Y1];
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X4 withOrgBouncycastleMathEcECFieldElement:Y4 withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X4, Y4, self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED:
     {
@@ -1481,7 +1477,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   if (e < 0) {
     
 #line 1147
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'e' cannot be negative"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'e' cannot be negative");
   }
   if (e == 0 || [self isInfinity]) {
     
@@ -1587,17 +1583,17 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       
 #line 1220
       zInv3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(zInv2)) multiplyWithOrgBouncycastleMathEcECFieldElement:zInv];
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) multiplyWithOrgBouncycastleMathEcECFieldElement:zInv2] withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y1)) multiplyWithOrgBouncycastleMathEcECFieldElement:zInv3] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) multiplyWithOrgBouncycastleMathEcECFieldElement:zInv2], [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y1)) multiplyWithOrgBouncycastleMathEcECFieldElement:zInv3], self->withCompression_);
       case OrgBouncycastleMathEcECCurve_COORD_HOMOGENEOUS:
       X1 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) multiplyWithOrgBouncycastleMathEcECFieldElement:Z1];
       Z1 = [Z1 multiplyWithOrgBouncycastleMathEcECFieldElement:[Z1 square]];
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X1 withOrgBouncycastleMathEcECFieldElement:Y1 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z1 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X1, Y1, [IOSObjectArray newArrayWithObjects:(id[]){ Z1 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
       case OrgBouncycastleMathEcECCurve_COORD_JACOBIAN:
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X1 withOrgBouncycastleMathEcECFieldElement:Y1 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z1 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X1, Y1, [IOSObjectArray newArrayWithObjects:(id[]){ Z1 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
       case OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED:
-      return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X1 withOrgBouncycastleMathEcECFieldElement:Y1 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z1, W1 } count:2 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X1, Y1, [IOSObjectArray newArrayWithObjects:(id[]){ Z1, W1 } count:2 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
       default:
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
@@ -1664,11 +1660,11 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   if (OrgBouncycastleMathEcECCurve_COORD_AFFINE != coord) {
     
 #line 1277
-    return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:self->x_ withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(self->y_)) negate] withOrgBouncycastleMathEcECFieldElementArray:self->zs_ withBoolean:self->withCompression_];
+    return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, self->x_, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(self->y_)) negate], self->zs_, self->withCompression_);
   }
   
 #line 1280
-  return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:self->x_ withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(self->y_)) negate] withBoolean:self->withCompression_];
+  return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, self->x_, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(self->y_)) negate], self->withCompression_);
 }
 
 
@@ -1716,7 +1712,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   if (W == nil) {
     
 #line 1315
-    IOSObjectArray_Set(self->zs_, 1, W = [self calculateJacobianModifiedWWithOrgBouncycastleMathEcECFieldElement:IOSObjectArray_Get(self->zs_, 0) withOrgBouncycastleMathEcECFieldElement:nil]);
+    (void) IOSObjectArray_Set(self->zs_, 1, W = [self calculateJacobianModifiedWWithOrgBouncycastleMathEcECFieldElement:IOSObjectArray_Get(self->zs_, 0) withOrgBouncycastleMathEcECFieldElement:nil]);
   }
   return W;
 }
@@ -1742,10 +1738,71 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
   OrgBouncycastleMathEcECFieldElement *Z3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Z1)) isOne] ? _2Y1 : [_2Y1 multiplyWithOrgBouncycastleMathEcECFieldElement:Z1];
   
 #line 1336
-  return [[OrgBouncycastleMathEcECPoint_Fp alloc] initWithOrgBouncycastleMathEcECCurve:[self getCurve] withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3, W3 } count:2 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+  return new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_([self getCurve], X3, Y3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3, W3 } count:2 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
 }
 
 @end
+
+
+#line 604
+void OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_Fp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  (void) OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(self,
+#line 606
+  curve, x, y, NO);
+}
+
+
+#line 604
+OrgBouncycastleMathEcECPoint_Fp *new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  OrgBouncycastleMathEcECPoint_Fp *self = [OrgBouncycastleMathEcECPoint_Fp alloc];
+  OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
+}
+
+
+#line 619
+void OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECPoint_Fp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression) {
+  (void) OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self,
+#line 621
+  curve, x, y);
+  
+#line 623
+  if ((x == nil) != (y == nil)) {
+    
+#line 625
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Exactly one of the field elements is null");
+  }
+  
+#line 628
+  self->withCompression_ = withCompression;
+}
+
+
+#line 619
+OrgBouncycastleMathEcECPoint_Fp *new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression) {
+  OrgBouncycastleMathEcECPoint_Fp *self = [OrgBouncycastleMathEcECPoint_Fp alloc];
+  OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(self, curve, x, y, withCompression);
+  return self;
+}
+
+
+#line 631
+void OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECPoint_Fp *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression) {
+  (void) OrgBouncycastleMathEcECPoint_AbstractFp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self,
+#line 633
+  curve, x, y, zs);
+  
+#line 635
+  self->withCompression_ = withCompression;
+}
+
+
+#line 631
+OrgBouncycastleMathEcECPoint_Fp *new_OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression) {
+  OrgBouncycastleMathEcECPoint_Fp *self = [OrgBouncycastleMathEcECPoint_Fp alloc];
+  OrgBouncycastleMathEcECPoint_Fp_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(self, curve, x, y, zs, withCompression);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint_Fp)
 
@@ -1756,27 +1813,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint_Fp)
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
-  return
-#line 1344
-  [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y];
+  OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
 }
 
 
 #line 1347
-- (instancetype)initOrgBouncycastleMathEcECPoint_AbstractF2mWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-                                                     withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-                                                     withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-                                                withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs {
-  return [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs];
-}
-
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
         withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs {
-  return [self initOrgBouncycastleMathEcECPoint_AbstractF2mWithOrgBouncycastleMathEcECCurve:
-#line 1347
-curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs];
+  OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self, curve, x, y, zs);
+  return self;
 }
 
 
@@ -1855,7 +1903,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       break;
     }
     default:
-    @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+    @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
   }
   
 #line 1416
@@ -1864,6 +1912,22 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 }
 
 @end
+
+
+#line 1342
+void OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_AbstractF2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  (void) OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self,
+#line 1344
+  curve, x, y);
+}
+
+
+#line 1347
+void OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(OrgBouncycastleMathEcECPoint_AbstractF2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs) {
+  (void) OrgBouncycastleMathEcECPoint_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self,
+#line 1349
+  curve, x, y, zs);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint_AbstractF2m)
 
@@ -1876,55 +1940,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECPoint_AbstractF2m)
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y {
-  return
-#line 1435
-  [self initOrgBouncycastleMathEcECPoint_F2mWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withBoolean:NO];
+  OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
 }
 
 
 #line 1446
-- (instancetype)initOrgBouncycastleMathEcECPoint_F2mWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
-                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
-                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
-                                                                         withBoolean:(jboolean)withCompression {
-  if (self =
-#line 1448
-  [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y]) {
-    
-#line 1450
-    if ((x == nil) != (y == nil)) {
-      
-#line 1452
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Exactly one of the field elements is null"];
-    }
-    
-#line 1455
-    if (x != nil) {
-      
-#line 1458
-      OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self->x_, self->y_);
-      
-#line 1461
-      if (curve != nil) {
-        
-#line 1463
-        OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self->x_, [((OrgBouncycastleMathEcECCurve *) nil_chk(self->curve_)) getA]);
-      }
-    }
-    
-#line 1467
-    self->withCompression_ = withCompression;
-  }
-  return self;
-}
-
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
                                          withBoolean:(jboolean)withCompression {
-  return [self initOrgBouncycastleMathEcECPoint_F2mWithOrgBouncycastleMathEcECCurve:
-#line 1446
-curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withBoolean:withCompression];
+  OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(self, curve, x, y, withCompression);
+  return self;
 }
 
 
@@ -1934,22 +1961,14 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y
         withOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
                                          withBoolean:(jboolean)withCompression {
-  if (self =
-#line 1474
-  [super initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECFieldElement:y withOrgBouncycastleMathEcECFieldElementArray:zs]) {
-    
-#line 1476
-    self->withCompression_ = withCompression;
-  }
+  OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(self, curve, x, y, zs, withCompression);
   return self;
 }
 
-
-#line 1481
 - (OrgBouncycastleMathEcECPoint *)detach {
   
 #line 1483
-  return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:nil withOrgBouncycastleMathEcECFieldElement:[self getAffineXCoord] withOrgBouncycastleMathEcECFieldElement:[self getAffineYCoord]];
+  return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(nil, [self getAffineXCoord], [self getAffineYCoord]);
 }
 
 
@@ -2189,7 +2208,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Y3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk([L multiplyWithOrgBouncycastleMathEcECFieldElement:[X1 addWithOrgBouncycastleMathEcECFieldElement:X3]])) addWithOrgBouncycastleMathEcECFieldElement:X3])) addWithOrgBouncycastleMathEcECFieldElement:Y1];
       
 #line 1691
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X3, Y3, self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_HOMOGENEOUS:
     {
@@ -2235,7 +2254,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Z3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(VCu)) multiplyWithOrgBouncycastleMathEcECFieldElement:W];
       
 #line 1728
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, Y3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_LAMBDA_PROJECTIVE:
     {
@@ -2312,7 +2331,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
         if ([((OrgBouncycastleMathEcECFieldElement *) nil_chk(X3)) isZero]) {
           
 #line 1788
-          return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt] withBoolean:self->withCompression_];
+          return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X3, [((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt], self->withCompression_);
         }
         
 #line 1791
@@ -2334,7 +2353,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
         if ([((OrgBouncycastleMathEcECFieldElement *) nil_chk(X3)) isZero]) {
           
 #line 1805
-          return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt] withBoolean:self->withCompression_];
+          return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X3, [((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt], self->withCompression_);
         }
         
 #line 1808
@@ -2358,11 +2377,11 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       }
       
 #line 1823
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:L3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, L3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
@@ -2394,6 +2413,8 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
 
 #line 1861
 - (OrgBouncycastleMathEcECPoint_F2m *)tau {
+  
+#line 1863
   if ([self isInfinity]) {
     
 #line 1865
@@ -2415,17 +2436,17 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
     case OrgBouncycastleMathEcECCurve_COORD_LAMBDA_AFFINE:
     {
       OrgBouncycastleMathEcECFieldElement *Y1 = self->y_;
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) square] withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y1)) square] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) square], [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y1)) square], self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_HOMOGENEOUS:
     case OrgBouncycastleMathEcECCurve_COORD_LAMBDA_PROJECTIVE:
     {
       OrgBouncycastleMathEcECFieldElement *Y1 = self->y_, *Z1 = IOSObjectArray_Get(nil_chk(self->zs_), 0);
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) square] withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y1)) square] withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Z1)) square] } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(X1)) square], [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y1)) square], [IOSObjectArray newArrayWithObjects:(id[]){ [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Z1)) square] } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
@@ -2471,7 +2492,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Y3 = [X1 squarePlusProductWithOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:[L1 addOne]];
       
 #line 1923
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, X3, Y3, self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_HOMOGENEOUS:
     {
@@ -2496,7 +2517,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *Z3 = [V multiplyWithOrgBouncycastleMathEcECFieldElement:vSquared];
       
 #line 1944
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:Y3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, Y3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_LAMBDA_PROJECTIVE:
     {
@@ -2512,7 +2533,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       if ([((OrgBouncycastleMathEcECFieldElement *) nil_chk(T)) isZero]) {
         
 #line 1958
-        return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:T withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt] withBoolean:withCompression_];
+        return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, T, [((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt], withCompression_);
       }
       
 #line 1961
@@ -2557,11 +2578,11 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       }
       
 #line 1995
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:L3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, L3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
@@ -2646,7 +2667,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       if ([((OrgBouncycastleMathEcECFieldElement *) nil_chk(A)) isZero]) {
         
 #line 2063
-        return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:A withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt] withBoolean:withCompression_];
+        return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve, A, [((OrgBouncycastleMathEcECFieldElement *) nil_chk([curve getB])) sqrt], withCompression_);
       }
       
 #line 2066
@@ -2655,7 +2676,7 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
       OrgBouncycastleMathEcECFieldElement *L3 = [((OrgBouncycastleMathEcECFieldElement *) nil_chk([((OrgBouncycastleMathEcECFieldElement *) nil_chk([A addWithOrgBouncycastleMathEcECFieldElement:B])) square])) multiplyPlusProductWithOrgBouncycastleMathEcECFieldElement:T withOrgBouncycastleMathEcECFieldElement:L2plus1 withOrgBouncycastleMathEcECFieldElement:Z3];
       
 #line 2070
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve withOrgBouncycastleMathEcECFieldElement:X3 withOrgBouncycastleMathEcECFieldElement:L3 withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve, X3, L3, [IOSObjectArray newArrayWithObjects:(id[]){ Z3 } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     default:
     {
@@ -2690,42 +2711,119 @@ curve withOrgBouncycastleMathEcECFieldElement:x withOrgBouncycastleMathEcECField
     case OrgBouncycastleMathEcECCurve_COORD_AFFINE:
     {
       OrgBouncycastleMathEcECFieldElement *Y = self->y_;
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve_ withOrgBouncycastleMathEcECFieldElement:X withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y)) addWithOrgBouncycastleMathEcECFieldElement:X] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve_, X, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y)) addWithOrgBouncycastleMathEcECFieldElement:X], self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_HOMOGENEOUS:
     {
       OrgBouncycastleMathEcECFieldElement *Y = self->y_, *Z = IOSObjectArray_Get(nil_chk(self->zs_), 0);
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve_ withOrgBouncycastleMathEcECFieldElement:X withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y)) addWithOrgBouncycastleMathEcECFieldElement:X] withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve_, X, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(Y)) addWithOrgBouncycastleMathEcECFieldElement:X], [IOSObjectArray newArrayWithObjects:(id[]){ Z } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_LAMBDA_AFFINE:
     {
       OrgBouncycastleMathEcECFieldElement *L = self->y_;
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve_ withOrgBouncycastleMathEcECFieldElement:X withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(L)) addOne] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(curve_, X, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(L)) addOne], self->withCompression_);
     }
     case OrgBouncycastleMathEcECCurve_COORD_LAMBDA_PROJECTIVE:
     {
       
 #line 2112
       OrgBouncycastleMathEcECFieldElement *L = self->y_, *Z = IOSObjectArray_Get(nil_chk(self->zs_), 0);
-      return [[OrgBouncycastleMathEcECPoint_F2m alloc] initWithOrgBouncycastleMathEcECCurve:curve_ withOrgBouncycastleMathEcECFieldElement:X withOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECFieldElement *) nil_chk(L)) addWithOrgBouncycastleMathEcECFieldElement:Z] withOrgBouncycastleMathEcECFieldElementArray:[IOSObjectArray newArrayWithObjects:(id[]){ Z } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()] withBoolean:self->withCompression_];
+      return new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(curve_, X, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(L)) addWithOrgBouncycastleMathEcECFieldElement:Z], [IOSObjectArray newArrayWithObjects:(id[]){ Z } count:1 type:OrgBouncycastleMathEcECFieldElement_class_()], self->withCompression_);
     }
     default:
     {
-      @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"unsupported coordinate system"];
+      @throw new_JavaLangIllegalStateException_initWithNSString_(@"unsupported coordinate system");
     }
   }
 }
 
 @end
 
+
+#line 1433
+void OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECPoint_F2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  (void) OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(self,
+#line 1435
+  curve, x, y, NO);
+}
+
+
+#line 1433
+OrgBouncycastleMathEcECPoint_F2m *new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y) {
+  OrgBouncycastleMathEcECPoint_F2m *self = [OrgBouncycastleMathEcECPoint_F2m alloc];
+  OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self, curve, x, y);
+  return self;
+}
+
+
+#line 1446
+void OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECPoint_F2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression) {
+  (void) OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self,
+#line 1448
+  curve, x, y);
+  
+#line 1450
+  if ((x == nil) != (y == nil)) {
+    
+#line 1452
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Exactly one of the field elements is null");
+  }
+  
+#line 1455
+  if (x != nil) {
+    
+#line 1458
+    OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self->x_, self->y_);
+    
+#line 1461
+    if (curve != nil) {
+      
+#line 1463
+      OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(self->x_, [((OrgBouncycastleMathEcECCurve *) nil_chk(self->curve_)) getA]);
+    }
+  }
+  
+#line 1467
+  self->withCompression_ = withCompression;
+}
+
+
+#line 1446
+OrgBouncycastleMathEcECPoint_F2m *new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, jboolean withCompression) {
+  OrgBouncycastleMathEcECPoint_F2m *self = [OrgBouncycastleMathEcECPoint_F2m alloc];
+  OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withBoolean_(self, curve, x, y, withCompression);
+  return self;
+}
+
+
+#line 1472
+void OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECPoint_F2m *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression) {
+  (void) OrgBouncycastleMathEcECPoint_AbstractF2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_(self,
+#line 1474
+  curve, x, y, zs);
+  
+#line 1476
+  self->withCompression_ = withCompression;
+}
+
+
+#line 1472
+OrgBouncycastleMathEcECPoint_F2m *new_OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcECFieldElement *x, OrgBouncycastleMathEcECFieldElement *y, IOSObjectArray *zs, jboolean withCompression) {
+  OrgBouncycastleMathEcECPoint_F2m *self = [OrgBouncycastleMathEcECPoint_F2m alloc];
+  OrgBouncycastleMathEcECPoint_F2m_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElementArray_withBoolean_(self, curve, x, y, zs, withCompression);
+  return self;
+}
+
+
+#line 1621
 void OrgBouncycastleMathEcECPoint_F2m_checkPointsWithOrgBouncycastleMathEcECPoint_withOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECPoint *a, OrgBouncycastleMathEcECPoint *b) {
-  OrgBouncycastleMathEcECPoint_F2m_init();
+  OrgBouncycastleMathEcECPoint_F2m_initialize();
   
 #line 1624
   if (((OrgBouncycastleMathEcECPoint *) nil_chk(a))->curve_ != ((OrgBouncycastleMathEcECPoint *) nil_chk(b))->curve_) {
     
 #line 1626
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Only points on the same curve can be added or subtracted"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Only points on the same curve can be added or subtracted");
   }
 }
 

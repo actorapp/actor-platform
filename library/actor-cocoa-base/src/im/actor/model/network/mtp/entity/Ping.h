@@ -6,16 +6,17 @@
 #ifndef _MTPing_H_
 #define _MTPing_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
+@class BSDataInput;
+@class BSDataOutput;
+
 #define MTPing_HEADER 1
 
-@interface MTPing : MTProtoStruct {
-}
+@interface MTPing : MTProtoStruct
+
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
@@ -23,25 +24,32 @@
 
 - (jlong)getRandomId;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTPing)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTPing, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTPing ImActorModelNetworkMtpEntityPing;
+FOUNDATION_EXPORT void MTPing_initWithBSDataInput_(MTPing *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTPing *new_MTPing_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTPing_initWithLong_(MTPing *self, jlong randomId);
+
+FOUNDATION_EXPORT MTPing *new_MTPing_initWithLong_(jlong randomId) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTPing)
+
+typedef MTPing ImActorModelNetworkMtpEntityPing;
 
 #endif // _MTPing_H_

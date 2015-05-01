@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiRpcRequestTerminateAllSessions_H_
 #define _ImActorModelApiRpcRequestTerminateAllSessions_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestTerminateAllSessions_HEADER 83
 
-@interface ImActorModelApiRpcRequestTerminateAllSessions : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestTerminateAllSessions : ImActorModelNetworkParserRequest
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiRpcRequestTerminateAllSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestTerminateAllSessions)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTerminateAllSessions, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateAllSessions *ImActorModelApiRpcRequestTerminateAllSessions_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTerminateAllSessions, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestTerminateAllSessions_init(ImActorModelApiRpcRequestTerminateAllSessions *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateAllSessions *new_ImActorModelApiRpcRequestTerminateAllSessions_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestTerminateAllSessions)
 

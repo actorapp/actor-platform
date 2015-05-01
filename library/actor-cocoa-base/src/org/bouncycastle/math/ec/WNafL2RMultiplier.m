@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WNafL2RMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WNafL2RMultiplier.java"
 
 #include "IOSObjectArray.h"
@@ -10,6 +11,7 @@
 #include "J2ObjC_source.h"
 #include "java/lang/Math.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECCurve.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/LongArray.h"
@@ -112,9 +114,20 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcWNafL2RMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcWNafL2RMultiplier_init(OrgBouncycastleMathEcWNafL2RMultiplier *self) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+}
+
+OrgBouncycastleMathEcWNafL2RMultiplier *new_OrgBouncycastleMathEcWNafL2RMultiplier_init() {
+  OrgBouncycastleMathEcWNafL2RMultiplier *self = [OrgBouncycastleMathEcWNafL2RMultiplier alloc];
+  OrgBouncycastleMathEcWNafL2RMultiplier_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcWNafL2RMultiplier)

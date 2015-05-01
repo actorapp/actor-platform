@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserOffline.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserOffline.java"
 
 #include "IOSClass.h"
@@ -13,14 +14,18 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateUserOffline () {
  @public
   jint uid_;
 }
+
 @end
 
+
+#line 20
 @implementation ImActorModelApiUpdatesUpdateUserOffline
 
 
@@ -32,23 +37,20 @@
 
 #line 29
 - (instancetype)initWithInt:(jint)uid {
-  if (self = [super init]) {
-    
-#line 30
-    self->uid_ = uid;
-  }
+  ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(self, uid);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateUserOffline_init(self);
+  return self;
 }
 
+
+#line 37
 - (jint)getUid {
-  
-#line 38
   return self->uid_;
 }
 
@@ -61,11 +63,11 @@
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 
+
+#line 52
 - (NSString *)description {
   NSString *res = @"update UserOffline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -73,24 +75,52 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 61
-  return ImActorModelApiUpdatesUpdateUserOffline_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserOffline *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
+#line 60
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateUserOffline_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateUserOffline *ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserOffline_init();
+  ImActorModelApiUpdatesUpdateUserOffline_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateUserOffline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserOffline alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserOffline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserOffline_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(ImActorModelApiUpdatesUpdateUserOffline *self, jint uid) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 30
+  self->uid_ = uid;
+}
+
+
+#line 29
+ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(jint uid) {
+  ImActorModelApiUpdatesUpdateUserOffline *self = [ImActorModelApiUpdatesUpdateUserOffline alloc];
+  ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(self, uid);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateUserOffline_init(ImActorModelApiUpdatesUpdateUserOffline *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_init() {
+  ImActorModelApiUpdatesUpdateUserOffline *self = [ImActorModelApiUpdatesUpdateUserOffline alloc];
+  ImActorModelApiUpdatesUpdateUserOffline_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserOffline)

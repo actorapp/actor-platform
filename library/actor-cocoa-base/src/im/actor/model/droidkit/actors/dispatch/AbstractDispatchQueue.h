@@ -6,41 +6,43 @@
 #ifndef _DKAbstractDispatchQueue_H_
 #define _DKAbstractDispatchQueue_H_
 
+#include "J2ObjC_header.h"
+
 @class DKDispatchResult;
 @protocol DKQueueListener;
 
-#include "J2ObjC_header.h"
-
 #define DKAbstractDispatchQueue_FOREVER 300000LL
 
-@interface DKAbstractDispatchQueue : NSObject {
-}
+@interface DKAbstractDispatchQueue : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (DKDispatchResult *)dispatchWithLong:(jlong)time;
-
-- (void)notifyQueueChanged;
-
-- (DKDispatchResult *)resultWithId:(id)obj;
-
-- (DKDispatchResult *)delayWithLong:(jlong)delay;
 
 - (id<DKQueueListener>)getListener;
 
 - (void)setListenerWithDKQueueListener:(id<DKQueueListener>)listener;
 
-- (instancetype)init;
+#pragma mark Protected
+
+- (DKDispatchResult *)delayWithLong:(jlong)delay;
+
+- (void)notifyQueueChanged;
+
+- (DKDispatchResult *)resultWithId:(id)obj;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKAbstractDispatchQueue)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(DKAbstractDispatchQueue, FOREVER, jlong)
-CF_EXTERN_C_END
 
-typedef DKAbstractDispatchQueue ImActorModelDroidkitActorsDispatchAbstractDispatchQueue;
+FOUNDATION_EXPORT void DKAbstractDispatchQueue_init(DKAbstractDispatchQueue *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatchQueue)
+
+typedef DKAbstractDispatchQueue ImActorModelDroidkitActorsDispatchAbstractDispatchQueue;
 
 #endif // _DKAbstractDispatchQueue_H_

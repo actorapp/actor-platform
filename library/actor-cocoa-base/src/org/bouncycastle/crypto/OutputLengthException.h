@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/DataLengthException.h"
 
-@interface OrgBouncycastleCryptoOutputLengthException : OrgBouncycastleCryptoDataLengthException {
-}
+@interface OrgBouncycastleCryptoOutputLengthException : OrgBouncycastleCryptoDataLengthException
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)msg;
 
@@ -18,8 +19,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoOutputLengthException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoOutputLengthException_initWithNSString_(OrgBouncycastleCryptoOutputLengthException *self, NSString *msg);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoOutputLengthException *new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(NSString *msg) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoOutputLengthException)
 

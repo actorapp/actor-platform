@@ -6,18 +6,16 @@
 #ifndef _ImActorModelJvmThreadsJavaDispatcherThreads_H_
 #define _ImActorModelJvmThreadsJavaDispatcherThreads_H_
 
-@class DKAbstractDispatchQueue;
-@class DKThreadPriorityEnum;
-@class IOSObjectArray;
-@class JavaUtilConcurrentAtomicAtomicInteger;
-@protocol DKDispatch;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatcher.h"
-#include "java/lang/Thread.h"
 
-@interface ImActorModelJvmThreadsJavaDispatcherThreads : DKAbstractDispatcher {
-}
+@class DKAbstractDispatchQueue;
+@class DKThreadPriorityEnum;
+@protocol DKDispatch;
+
+@interface ImActorModelJvmThreadsJavaDispatcherThreads : DKAbstractDispatcher
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)name
                          withInt:(jint)count
@@ -26,43 +24,22 @@
                   withDKDispatch:(id<DKDispatch>)dispatch
                      withBoolean:(jboolean)createThreads;
 
+- (void)close;
+
 - (void)startPool;
 
-- (void)close;
+#pragma mark Protected
 
 - (void)notifyDispatcher;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelJvmThreadsJavaDispatcherThreads_initialized;
 J2OBJC_STATIC_INIT(ImActorModelJvmThreadsJavaDispatcherThreads)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelJvmThreadsJavaDispatcherThreads_initWithNSString_withInt_withDKThreadPriorityEnum_withDKAbstractDispatchQueue_withDKDispatch_withBoolean_(ImActorModelJvmThreadsJavaDispatcherThreads *self, NSString *name, jint count, DKThreadPriorityEnum *priority, DKAbstractDispatchQueue *queue, id<DKDispatch> dispatch, jboolean createThreads);
 
-FOUNDATION_EXPORT JavaUtilConcurrentAtomicAtomicInteger *ImActorModelJvmThreadsJavaDispatcherThreads_INDEX_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelJvmThreadsJavaDispatcherThreads, INDEX_, JavaUtilConcurrentAtomicAtomicInteger *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelJvmThreadsJavaDispatcherThreads *new_ImActorModelJvmThreadsJavaDispatcherThreads_initWithNSString_withInt_withDKThreadPriorityEnum_withDKAbstractDispatchQueue_withDKDispatch_withBoolean_(NSString *name, jint count, DKThreadPriorityEnum *priority, DKAbstractDispatchQueue *queue, id<DKDispatch> dispatch, jboolean createThreads) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaDispatcherThreads)
-
-@interface ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread : JavaLangThread {
-}
-
-- (jboolean)isChanged;
-
-- (void)setChangedWithBoolean:(jboolean)isChanged;
-
-- (void)run;
-
-- (instancetype)initWithImActorModelJvmThreadsJavaDispatcherThreads:(ImActorModelJvmThreadsJavaDispatcherThreads *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaDispatcherThreads_DispatcherThread)
 
 #endif // _ImActorModelJvmThreadsJavaDispatcherThreads_H_

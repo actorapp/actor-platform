@@ -6,40 +6,44 @@
 #ifndef _AMServiceGroupUserAdded_H_
 #define _AMServiceGroupUserAdded_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/ServiceContent.h"
+@interface AMServiceGroupUserAdded : AMServiceContent
 
-@interface AMServiceGroupUserAdded : AMServiceContent {
-}
-
-+ (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)addedUid;
 
-- (jint)getAddedUid;
++ (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+- (jint)getAddedUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserAdded)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceGroupUserAdded *AMServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceGroupUserAdded ImActorModelEntityContentServiceGroupUserAdded;
+FOUNDATION_EXPORT void AMServiceGroupUserAdded_initWithInt_(AMServiceGroupUserAdded *self, jint addedUid);
+
+FOUNDATION_EXPORT AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_initWithInt_(jint addedUid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserAdded)
+
+typedef AMServiceGroupUserAdded ImActorModelEntityContentServiceGroupUserAdded;
 
 #endif // _AMServiceGroupUserAdded_H_

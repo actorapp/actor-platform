@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailTitleChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailTitleChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateEmailTitleChanged () {
@@ -20,6 +22,7 @@
   jint emailId_;
   NSString *title_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 #line 30
 - (instancetype)initWithInt:(jint)emailId
                withNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 31
-    self->emailId_ = emailId;
-    
-#line 32
-    self->title_ = title;
-  }
+  ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(self, emailId, title);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateEmailTitleChanged_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getEmailId {
-  
-#line 40
   return self->emailId_;
 }
 
-
-#line 43
 - (NSString *)getTitle {
-  
-#line 44
   return self->title_;
 }
 
@@ -79,15 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->title_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"update EmailTitleChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"emailId=", self->emailId_));
@@ -96,25 +89,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 73
-  return ImActorModelApiUpdatesUpdateEmailTitleChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateEmailTitleChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->emailId_ = emailId_;
-  other->title_ = title_;
+#line 72
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateEmailTitleChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateEmailTitleChanged *ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateEmailTitleChanged_init();
+  ImActorModelApiUpdatesUpdateEmailTitleChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateEmailTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEmailTitleChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateEmailTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateEmailTitleChanged_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateEmailTitleChanged *self, jint emailId, NSString *title) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->emailId_ = emailId;
+  self->title_ = title;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(jint emailId, NSString *title) {
+  ImActorModelApiUpdatesUpdateEmailTitleChanged *self = [ImActorModelApiUpdatesUpdateEmailTitleChanged alloc];
+  ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(self, emailId, title);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateEmailTitleChanged_init(ImActorModelApiUpdatesUpdateEmailTitleChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateEmailTitleChanged_init() {
+  ImActorModelApiUpdatesUpdateEmailTitleChanged *self = [ImActorModelApiUpdatesUpdateEmailTitleChanged alloc];
+  ImActorModelApiUpdatesUpdateEmailTitleChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateEmailTitleChanged)

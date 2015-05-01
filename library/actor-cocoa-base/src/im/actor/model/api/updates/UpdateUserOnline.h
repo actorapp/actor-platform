@@ -6,23 +6,26 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserOnline_H_
 #define _ImActorModelApiUpdatesUpdateUserOnline_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateUserOnline_HEADER 7
 
-@interface ImActorModelApiUpdatesUpdateUserOnline : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateUserOnline : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getUid;
 
@@ -32,18 +35,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserOnline)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserOnline, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOnline *ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserOnline, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(ImActorModelApiUpdatesUpdateUserOnline *self, jint uid);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserOnline_init(ImActorModelApiUpdatesUpdateUserOnline *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserOnline)
 

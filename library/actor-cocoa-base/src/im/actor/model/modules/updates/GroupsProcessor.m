@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/GroupsProcessor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/GroupsProcessor.java"
 
 #include "J2ObjC_source.h"
@@ -33,28 +34,26 @@
 #include "java/util/Collection.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(ImActorModelModulesUpdatesGroupsProcessor *self, AMGroup *group);
-
 @interface ImActorModelModulesUpdatesGroupsProcessor ()
 
 - (void)onGroupDescChangedWithAMGroup:(AMGroup *)group;
+
 @end
+
+__attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(ImActorModelModulesUpdatesGroupsProcessor *self, AMGroup *group);
 
 
 #line 29
 @implementation ImActorModelModulesUpdatesGroupsProcessor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  return
-#line 32
-  [super initWithImActorModelModulesModules:modules];
+  ImActorModelModulesUpdatesGroupsProcessor_initWithImActorModelModulesModules_(self, modules);
+  return self;
 }
 
-
-#line 36
 - (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                               withBoolean:(jboolean)forced {
-  JavaUtilArrayList *batch = [[JavaUtilArrayList alloc] init];
+  JavaUtilArrayList *batch = new_JavaUtilArrayList_init();
   for (ImActorModelApiGroup * __strong group in nil_chk(updated)) {
     AMGroup *saved = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
     if (saved == nil) {
@@ -88,8 +87,6 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                      withInt:(jint)inviterId
                     withLong:(jlong)date
                  withBoolean:(jboolean)isSilent {
-  
-#line 61
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     
@@ -105,15 +102,15 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
       if (inviterId == [self myUid]) {
         
 #line 72
-        AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+        AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, inviterId, AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupCreated_initWithNSString_(
 #line 73
-        [[AMServiceGroupCreated alloc] initWithNSString:[group getTitle]]];
+        [group getTitle]));
         [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
       }
       else {
-        AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:inviterId withAMMessageStateEnum:AMMessageStateEnum_get_SENT() withAMAbsContent:
+        AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, inviterId, AMMessageStateEnum_get_SENT(), new_AMServiceGroupUserAdded_initWithInt_(
 #line 78
-        [[AMServiceGroupUserAdded alloc] initWithInt:[self myUid]]];
+        [self myUid]));
         [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
       }
     }
@@ -127,8 +124,6 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                    withInt:(jint)uid
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
-  
-#line 87
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     
@@ -148,11 +143,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     
 #line 102
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid,
 #line 104
-      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
-#line 105
-      [[AMServiceGroupUserLeave alloc] init]];
+      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupUserLeave_init());
+      
+#line 106
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
@@ -166,8 +161,6 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                     withInt:(jint)kicker
                    withLong:(jlong)date
                 withBoolean:(jboolean)isSilent {
-  
-#line 113
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     
@@ -187,11 +180,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     
 #line 128
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:kicker withAMMessageStateEnum:
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, kicker,
 #line 130
-      kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+      kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupUserKicked_initWithInt_(
 #line 131
-      [[AMServiceGroupUserKicked alloc] initWithInt:uid]];
+      uid));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
@@ -205,8 +198,6 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                    withInt:(jint)adder
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
-  
-#line 139
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     
@@ -217,11 +208,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     
 #line 147
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:adder withAMMessageStateEnum:
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, adder,
 #line 149
-      adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+      adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupUserAdded_initWithInt_(
 #line 150
-      [[AMServiceGroupUserAdded alloc] initWithInt:uid]];
+      uid));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
@@ -255,11 +246,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     
 #line 178
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid,
 #line 180
-      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupTitleChanged_initWithNSString_(
 #line 181
-      [[AMServiceGroupTitleChanged alloc] initWithNSString:title]];
+      title));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
@@ -293,11 +284,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     
 #line 209
     if (!isSilent) {
-      AMMessage *message = [[AMMessage alloc] initWithLong:rid withLong:date withLong:date withInt:uid withAMMessageStateEnum:
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid,
 #line 211
-      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN() withAMAbsContent:
+      uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(
 #line 212
-      [[AMServiceGroupAvatarChanged alloc] initWithAMAvatar:avatar]];
+      avatar));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
@@ -307,8 +298,6 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 #line 219
 - (void)onMembersUpdatedWithInt:(jint)groupId
                withJavaUtilList:(id<JavaUtilList>)members {
-  
-#line 220
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
     
@@ -342,12 +331,26 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 
 @end
 
+
+#line 31
+void ImActorModelModulesUpdatesGroupsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesGroupsProcessor *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+}
+
+
+#line 31
+ImActorModelModulesUpdatesGroupsProcessor *new_ImActorModelModulesUpdatesGroupsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesUpdatesGroupsProcessor *self = [ImActorModelModulesUpdatesGroupsProcessor alloc];
+  ImActorModelModulesUpdatesGroupsProcessor_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
+
+
+#line 246
 void ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(ImActorModelModulesUpdatesGroupsProcessor *self, AMGroup *group) {
-  
-#line 247
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_GroupChanged_initWithAMGroup_(
 #line 248
-  [[ImActorModelModulesMessagesDialogsActor_GroupChanged alloc] initWithAMGroup:group]];
+  group)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesGroupsProcessor)

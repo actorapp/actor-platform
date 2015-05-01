@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/FiniteFields.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/FiniteFields.java"
 
 #include "IOSPrimitiveArray.h"
@@ -16,15 +17,17 @@
 #include "org/bouncycastle/math/field/PolynomialExtensionField.h"
 #include "org/bouncycastle/math/field/PrimeField.h"
 
-BOOL OrgBouncycastleMathFieldFiniteFields_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleMathFieldFiniteFields)
+
+id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_2_;
+id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_3_;
 
 
 #line 5
 @implementation OrgBouncycastleMathFieldFiniteFields
 
-id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_2_;
-id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_3_;
 
+#line 10
 + (id<OrgBouncycastleMathFieldPolynomialExtensionField>)getBinaryExtensionFieldWithIntArray:(IOSIntArray *)exponents {
   return OrgBouncycastleMathFieldFiniteFields_getBinaryExtensionFieldWithIntArray_(exponents);
 }
@@ -36,31 +39,32 @@ id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathFieldFiniteFields_init(self);
+  return self;
 }
 
 + (void)initialize {
   if (self == [OrgBouncycastleMathFieldFiniteFields class]) {
-    OrgBouncycastleMathFieldFiniteFields_GF_2_ =
+    OrgBouncycastleMathFieldFiniteFields_GF_2_ = new_OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(JavaMathBigInteger_valueOfWithLong_(
 #line 7
-    [[OrgBouncycastleMathFieldPrimeField alloc] initWithJavaMathBigInteger:JavaMathBigInteger_valueOfWithLong_(2)];
-    OrgBouncycastleMathFieldFiniteFields_GF_3_ =
+    2));
+    OrgBouncycastleMathFieldFiniteFields_GF_3_ = new_OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(JavaMathBigInteger_valueOfWithLong_(
 #line 8
-    [[OrgBouncycastleMathFieldPrimeField alloc] initWithJavaMathBigInteger:JavaMathBigInteger_valueOfWithLong_(3)];
+    3));
     J2OBJC_SET_INITIALIZED(OrgBouncycastleMathFieldFiniteFields)
   }
 }
 
 @end
 
+
+#line 10
 id<OrgBouncycastleMathFieldPolynomialExtensionField> OrgBouncycastleMathFieldFiniteFields_getBinaryExtensionFieldWithIntArray_(IOSIntArray *exponents) {
-  OrgBouncycastleMathFieldFiniteFields_init();
-  
-#line 12
+  OrgBouncycastleMathFieldFiniteFields_initialize();
   if (IOSIntArray_Get(nil_chk(exponents), 0) != 0) {
     
 #line 14
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Irreducible polynomials in GF(2) must have constant term"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Irreducible polynomials in GF(2) must have constant term");
   }
   for (jint i = 1; i < exponents->size_; ++i) {
     
@@ -68,23 +72,23 @@ id<OrgBouncycastleMathFieldPolynomialExtensionField> OrgBouncycastleMathFieldFin
     if (IOSIntArray_Get(exponents, i) <= IOSIntArray_Get(exponents, i - 1)) {
       
 #line 20
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Polynomial exponents must be montonically increasing"];
+      @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Polynomial exponents must be montonically increasing");
     }
   }
   
 #line 24
-  return [[OrgBouncycastleMathFieldGenericPolynomialExtensionField alloc] initWithOrgBouncycastleMathFieldFiniteField:OrgBouncycastleMathFieldFiniteFields_GF_2_ withOrgBouncycastleMathFieldPolynomial:[[OrgBouncycastleMathFieldGF2Polynomial alloc] initWithIntArray:exponents]];
+  return new_OrgBouncycastleMathFieldGenericPolynomialExtensionField_initWithOrgBouncycastleMathFieldFiniteField_withOrgBouncycastleMathFieldPolynomial_(OrgBouncycastleMathFieldFiniteFields_GF_2_, new_OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(exponents));
 }
 
+
+#line 32
 id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_getPrimeFieldWithJavaMathBigInteger_(JavaMathBigInteger *characteristic) {
-  OrgBouncycastleMathFieldFiniteFields_init();
-  
-#line 34
+  OrgBouncycastleMathFieldFiniteFields_initialize();
   jint bitLength = [((JavaMathBigInteger *) nil_chk(characteristic)) bitLength];
   if ([characteristic signum] <= 0 || bitLength < 2) {
     
 #line 37
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'characteristic' must be >= 2"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'characteristic' must be >= 2");
   }
   
 #line 40
@@ -102,7 +106,11 @@ id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_get
   }
   
 #line 51
-  return [[OrgBouncycastleMathFieldPrimeField alloc] initWithJavaMathBigInteger:characteristic];
+  return new_OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(characteristic);
+}
+
+void OrgBouncycastleMathFieldFiniteFields_init(OrgBouncycastleMathFieldFiniteFields *self) {
+  (void) NSObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathFieldFiniteFields)

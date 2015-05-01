@@ -16,31 +16,27 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiMessageState) {
   ImActorModelApiMessageState_UNSUPPORTED_VALUE = 3,
 };
 
-@interface ImActorModelApiMessageStateEnum : JavaLangEnum < NSCopying > {
-}
+@interface ImActorModelApiMessageStateEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
 
 + (ImActorModelApiMessageStateEnum *)parseWithInt:(jint)value;
 
+#pragma mark Package-Private
+
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiMessageStateEnum_values();
 
 + (ImActorModelApiMessageStateEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelApiMessageStateEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelApiMessageStateEnum)
-
-FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_parseWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_values_[];
 
@@ -55,6 +51,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, READ)
 
 #define ImActorModelApiMessageStateEnum_UNSUPPORTED_VALUE ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_UNSUPPORTED_VALUE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, UNSUPPORTED_VALUE)
+
+FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_parseWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMessageStateEnum)
 

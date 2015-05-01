@@ -6,34 +6,34 @@
 #ifndef _ImActorModelModulesPushPushRegisterActor_H_
 #define _ImActorModelModulesPushPushRegisterActor_H_
 
-@class AMRpcException;
-@class ImActorModelApiRpcResponseVoid;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-@interface ImActorModelModulesPushPushRegisterActor : ImActorModelModulesUtilsModuleActor {
-}
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesPushPushRegisterActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushPushRegisterActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPushPushRegisterActor_initWithImActorModelModulesModules_(ImActorModelModulesPushPushRegisterActor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesPushPushRegisterActor *new_ImActorModelModulesPushPushRegisterActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor)
 
-@interface ImActorModelModulesPushPushRegisterActor_RegisterGooglePush : NSObject {
-}
+@interface ImActorModelModulesPushPushRegisterActor_RegisterGooglePush : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)projectId
                 withNSString:(NSString *)token;
@@ -46,13 +46,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushPushRegisterActor_RegisterGooglePush)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPushPushRegisterActor_RegisterGooglePush_initWithLong_withNSString_(ImActorModelModulesPushPushRegisterActor_RegisterGooglePush *self, jlong projectId, NSString *token);
+
+FOUNDATION_EXPORT ImActorModelModulesPushPushRegisterActor_RegisterGooglePush *new_ImActorModelModulesPushPushRegisterActor_RegisterGooglePush_initWithLong_withNSString_(jlong projectId, NSString *token) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_RegisterGooglePush)
 
-@interface ImActorModelModulesPushPushRegisterActor_RegisterApplePush : NSObject {
-}
+@interface ImActorModelModulesPushPushRegisterActor_RegisterApplePush : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)apnsKey
                withNSString:(NSString *)token;
@@ -65,45 +67,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_RegisterGoog
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushPushRegisterActor_RegisterApplePush)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPushPushRegisterActor_RegisterApplePush_initWithInt_withNSString_(ImActorModelModulesPushPushRegisterActor_RegisterApplePush *self, jint apnsKey, NSString *token);
+
+FOUNDATION_EXPORT ImActorModelModulesPushPushRegisterActor_RegisterApplePush *new_ImActorModelModulesPushPushRegisterActor_RegisterApplePush_initWithInt_withNSString_(jint apnsKey, NSString *token) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_RegisterApplePush)
-
-@interface ImActorModelModulesPushPushRegisterActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesPushPushRegisterActor:(ImActorModelModulesPushPushRegisterActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushPushRegisterActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_$1)
-
-@interface ImActorModelModulesPushPushRegisterActor_$2 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesPushPushRegisterActor:(ImActorModelModulesPushPushRegisterActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushPushRegisterActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_$2)
 
 #endif // _ImActorModelModulesPushPushRegisterActor_H_

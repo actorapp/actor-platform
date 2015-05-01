@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/KeyValueRecord.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/KeyValueRecord.java"
 
 #include "IOSPrimitiveArray.h"
@@ -14,6 +15,7 @@
   jlong id__;
   IOSByteArray *data_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
@@ -26,39 +28,38 @@ J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 #line 10
 - (instancetype)initWithLong:(jlong)id_
                withByteArray:(IOSByteArray *)data {
-  if (self = [super init]) {
-    
-#line 11
-    self->id__ = id_;
-    
-#line 12
-    self->data_ = data;
-  }
+  DKKeyValueRecord_initWithLong_withByteArray_(self, id_, data);
   return self;
 }
 
 
 #line 15
 - (jlong)getId {
-  
-#line 16
   return id__;
 }
 
-
-#line 19
 - (IOSByteArray *)getData {
-  
-#line 20
   return data_;
 }
 
-- (void)copyAllFieldsTo:(DKKeyValueRecord *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
-  other->data_ = data_;
+@end
+
+
+#line 10
+void DKKeyValueRecord_initWithLong_withByteArray_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data) {
+  (void) NSObject_init(self);
+  
+#line 11
+  self->id__ = id_;
+  self->data_ = data;
 }
 
-@end
+
+#line 10
+DKKeyValueRecord *new_DKKeyValueRecord_initWithLong_withByteArray_(jlong id_, IOSByteArray *data) {
+  DKKeyValueRecord *self = [DKKeyValueRecord alloc];
+  DKKeyValueRecord_initWithLong_withByteArray_(self, id_, data);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKKeyValueRecord)

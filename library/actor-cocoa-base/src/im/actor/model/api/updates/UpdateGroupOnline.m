@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupOnline.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupOnline.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateGroupOnline () {
@@ -20,6 +22,7 @@
   jint groupId_;
   jint count_;
 }
+
 @end
 
 
@@ -36,34 +39,24 @@
 #line 30
 - (instancetype)initWithInt:(jint)groupId
                     withInt:(jint)count {
-  if (self = [super init]) {
-    
-#line 31
-    self->groupId_ = groupId;
-    
-#line 32
-    self->count_ = count;
-  }
+  ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(self, groupId, count);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateGroupOnline_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getGroupId {
-  
-#line 40
   return self->groupId_;
 }
 
-
-#line 43
 - (jint)getCount {
-  
-#line 44
   return self->count_;
 }
 
@@ -77,12 +70,12 @@
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeIntWithInt:2 withInt:self->count_];
 }
 
+
+#line 60
 - (NSString *)description {
   NSString *res = @"update GroupOnline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -91,25 +84,51 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 70
-  return ImActorModelApiUpdatesUpdateGroupOnline_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupOnline *)other {
-  [super copyAllFieldsTo:other];
-  other->groupId_ = groupId_;
-  other->count_ = count_;
+#line 69
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateGroupOnline_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateGroupOnline *ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupOnline_init();
+  ImActorModelApiUpdatesUpdateGroupOnline_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupOnline alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupOnline_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(ImActorModelApiUpdatesUpdateGroupOnline *self, jint groupId, jint count) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->groupId_ = groupId;
+  self->count_ = count;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(jint groupId, jint count) {
+  ImActorModelApiUpdatesUpdateGroupOnline *self = [ImActorModelApiUpdatesUpdateGroupOnline alloc];
+  ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(self, groupId, count);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateGroupOnline_init(ImActorModelApiUpdatesUpdateGroupOnline *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_init() {
+  ImActorModelApiUpdatesUpdateGroupOnline *self = [ImActorModelApiUpdatesUpdateGroupOnline alloc];
+  ImActorModelApiUpdatesUpdateGroupOnline_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupOnline)

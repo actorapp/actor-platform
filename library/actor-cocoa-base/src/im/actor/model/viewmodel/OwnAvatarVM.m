@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/OwnAvatarVM.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/OwnAvatarVM.java"
 
 #include "IOSClass.h"
@@ -15,6 +16,7 @@
  @public
   AMValueModel *uploadState_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
@@ -26,27 +28,27 @@ J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
 
 #line 17
 - (AMValueModel *)getUploadState {
-  
-#line 18
   return uploadState_;
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    uploadState_ =
-#line 9
-    [[AMValueModel alloc] initWithNSString:
-#line 10
-    @"avatar.my" withId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
-  }
+  AMOwnAvatarVM_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(AMOwnAvatarVM *)other {
-  [super copyAllFieldsTo:other];
-  other->uploadState_ = uploadState_;
+@end
+
+void AMOwnAvatarVM_init(AMOwnAvatarVM *self) {
+  (void) NSObject_init(self);
+  self->uploadState_ = new_AMValueModel_initWithNSString_withId_(
+#line 10
+  @"avatar.my", new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO));
 }
 
-@end
+AMOwnAvatarVM *new_AMOwnAvatarVM_init() {
+  AMOwnAvatarVM *self = [AMOwnAvatarVM alloc];
+  AMOwnAvatarVM_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMOwnAvatarVM)

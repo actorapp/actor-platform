@@ -6,16 +6,16 @@
 #ifndef _AMConversationVM_H_
 #define _AMConversationVM_H_
 
+#include "J2ObjC_header.h"
+
 @class AMBindedDisplayList;
 @class AMPeer;
 @class ImActorModelModulesModules;
 @protocol AMConversationVMCallback;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/mvvm/DisplayList.h"
+@interface AMConversationVM : NSObject
 
-@interface AMConversationVM : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
   withAMConversationVMCallback:(id<AMConversationVMCallback>)callback
@@ -28,31 +28,12 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules
 
 J2OBJC_EMPTY_STATIC_INIT(AMConversationVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(AMConversationVM *self, AMPeer *peer, id<AMConversationVMCallback> callback, ImActorModelModulesModules *modules, AMBindedDisplayList *displayList);
 
-typedef AMConversationVM ImActorModelViewmodelConversationVM;
+FOUNDATION_EXPORT AMConversationVM *new_AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(AMPeer *peer, id<AMConversationVMCallback> callback, ImActorModelModulesModules *modules, AMBindedDisplayList *displayList) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConversationVM)
 
-@interface AMConversationVM_$1 : NSObject < AMDisplayList_Listener > {
-}
-
-- (void)onCollectionChanged;
-
-- (instancetype)initWithAMConversationVM:(AMConversationVM *)outer$
-                 withAMBindedDisplayList:(AMBindedDisplayList *)capture$0
-          withImActorModelModulesModules:(ImActorModelModulesModules *)capture$1
-                              withAMPeer:(AMPeer *)capture$2
-            withAMConversationVMCallback:(id<AMConversationVMCallback>)capture$3;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMConversationVM_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMConversationVM_$1)
+typedef AMConversationVM ImActorModelViewmodelConversationVM;
 
 #endif // _AMConversationVM_H_

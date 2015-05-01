@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiUpdatesUpdateParameterChanged_H_
 #define _ImActorModelApiUpdatesUpdateParameterChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateParameterChanged_HEADER 131
 
-@interface ImActorModelApiUpdatesUpdateParameterChanged : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateParameterChanged : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateParameterChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateParameterChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getKey;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateParameterChanged)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateParameterChanged, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateParameterChanged *ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateParameterChanged, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(ImActorModelApiUpdatesUpdateParameterChanged *self, NSString *key, NSString *value);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateParameterChanged *new_ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(NSString *key, NSString *value) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateParameterChanged_init(ImActorModelApiUpdatesUpdateParameterChanged *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateParameterChanged *new_ImActorModelApiUpdatesUpdateParameterChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateParameterChanged)
 

@@ -6,13 +6,16 @@
 #ifndef _AMInputFile_H_
 #define _AMInputFile_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol AMInputFile < NSObject, JavaObject >
 
-- (jboolean)readAtOffset:(jint)fileOffset toArray:(IOSByteArray *)data withArrayOffset:(jint)offset withArrayLen:(jint)len;
+- (jboolean)readAtOffset:(jint)fileOffset
+                 toArray:(IOSByteArray *)data
+         withArrayOffset:(jint)offset
+            withArrayLen:(jint)len;
 
 - (jboolean)close;
 
@@ -20,8 +23,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMInputFile)
 
-#define ImActorModelFilesInputFile AMInputFile
-
 J2OBJC_TYPE_LITERAL_HEADER(AMInputFile)
+
+#define ImActorModelFilesInputFile AMInputFile
 
 #endif // _AMInputFile_H_

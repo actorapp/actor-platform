@@ -6,15 +6,14 @@
 #ifndef _AMDocumentContent_H_
 #define _AMDocumentContent_H_
 
-@class AMAbsContent_ContentTypeEnum;
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/AbsContent.h"
+
 @class AMFastThumb;
 @class AMFileSource;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/AbsContent.h"
 
 @interface AMDocumentContent : AMAbsContent {
  @public
@@ -24,30 +23,34 @@
   AMFastThumb *fastThumb_;
 }
 
-+ (AMDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMFileSource:(AMFileSource *)source
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
                      withAMFastThumb:(AMFastThumb *)fastThumb;
 
-- (instancetype)init;
-
-- (AMFileSource *)getSource;
-
-- (NSString *)getName;
-
-- (AMFastThumb *)getFastThumb;
++ (AMDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data;
 
 - (NSString *)getExt;
 
+- (AMFastThumb *)getFastThumb;
+
 - (NSString *)getMimetype;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+- (NSString *)getName;
+
+- (AMFileSource *)getSource;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+#pragma mark Protected
+
+- (instancetype)init;
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
@@ -58,13 +61,18 @@ J2OBJC_FIELD_SETTER(AMDocumentContent, mimetype_, NSString *)
 J2OBJC_FIELD_SETTER(AMDocumentContent, name_, NSString *)
 J2OBJC_FIELD_SETTER(AMDocumentContent, fastThumb_, AMFastThumb *)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMDocumentContent ImActorModelEntityContentDocumentContent;
+FOUNDATION_EXPORT void AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(AMDocumentContent *self, AMFileSource *source, NSString *mimetype, NSString *name, AMFastThumb *fastThumb);
+
+FOUNDATION_EXPORT AMDocumentContent *new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(AMFileSource *source, NSString *mimetype, NSString *name, AMFastThumb *fastThumb) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMDocumentContent_init(AMDocumentContent *self);
+
+FOUNDATION_EXPORT AMDocumentContent *new_AMDocumentContent_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDocumentContent)
+
+typedef AMDocumentContent ImActorModelEntityContentDocumentContent;
 
 #endif // _AMDocumentContent_H_

@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserLocalNameChanged_H_
 #define _ImActorModelApiUpdatesUpdateUserLocalNameChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER 51
 
-@interface ImActorModelApiUpdatesUpdateUserLocalNameChanged : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateUserLocalNameChanged : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateUserLocalNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)localName;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateUserLocalNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (jint)getUid;
+- (jint)getHeaderKey;
 
 - (NSString *)getLocalName;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserLocalNameChanged)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self, jint uid, NSString *localName);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(jint uid, NSString *localName) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserLocalNameChanged)
 

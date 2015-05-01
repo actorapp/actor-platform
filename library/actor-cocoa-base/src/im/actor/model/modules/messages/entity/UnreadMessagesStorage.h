@@ -6,18 +6,20 @@
 #ifndef _ImActorModelModulesMessagesEntityUnreadMessagesStorage_H_
 #define _ImActorModelModulesMessagesEntityUnreadMessagesStorage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class JavaUtilHashMap;
 @class JavaUtilHashSet;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityUnreadMessagesStorage : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityUnreadMessagesStorage : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelModulesMessagesEntityUnreadMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
@@ -27,16 +29,15 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityUnreadMessagesStorage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityUnreadMessagesStorage *ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityUnreadMessagesStorage_init(ImActorModelModulesMessagesEntityUnreadMessagesStorage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityUnreadMessagesStorage *new_ImActorModelModulesMessagesEntityUnreadMessagesStorage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityUnreadMessagesStorage)
 

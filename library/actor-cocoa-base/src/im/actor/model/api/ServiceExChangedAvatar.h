@@ -6,23 +6,24 @@
 #ifndef _ImActorModelApiServiceExChangedAvatar_H_
 #define _ImActorModelApiServiceExChangedAvatar_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/api/ServiceEx.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiAvatar;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/api/ServiceEx.h"
+@interface ImActorModelApiServiceExChangedAvatar : ImActorModelApiServiceEx
 
-@interface ImActorModelApiServiceExChangedAvatar : ImActorModelApiServiceEx {
-}
-
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
+#pragma mark Public
 
 - (instancetype)init;
 
-- (jint)getHeader;
+- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
 - (ImActorModelApiAvatar *)getAvatar;
+
+- (jint)getHeader;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -34,8 +35,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExChangedAvatar)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiServiceExChangedAvatar *self, ImActorModelApiAvatar *avatar);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiServiceExChangedAvatar_init(ImActorModelApiServiceExChangedAvatar *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExChangedAvatar)
 

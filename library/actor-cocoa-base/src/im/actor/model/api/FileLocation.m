@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FileLocation.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FileLocation.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/FileLocation.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -17,6 +19,7 @@
   jlong fileId_;
   jlong accessHash_;
 }
+
 @end
 
 
@@ -27,34 +30,24 @@
 #line 24
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash {
-  if (self = [super init]) {
-    
-#line 25
-    self->fileId_ = fileId;
-    
-#line 26
-    self->accessHash_ = accessHash;
-  }
+  ImActorModelApiFileLocation_initWithLong_withLong_(self, fileId, accessHash);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiFileLocation_init(self);
+  return self;
 }
 
+
+#line 33
 - (jlong)getFileId {
-  
-#line 34
   return self->fileId_;
 }
 
-
-#line 37
 - (jlong)getAccessHash {
-  
-#line 38
   return self->accessHash_;
 }
 
@@ -68,12 +61,12 @@
 
 #line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 49
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+
+#line 54
 - (NSString *)description {
   NSString *res = @"struct FileLocation{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"fileId=", self->fileId_));
@@ -81,12 +74,38 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiFileLocation *)other {
-  [super copyAllFieldsTo:other];
-  other->fileId_ = fileId_;
-  other->accessHash_ = accessHash_;
+@end
+
+
+#line 24
+void ImActorModelApiFileLocation_initWithLong_withLong_(ImActorModelApiFileLocation *self, jlong fileId, jlong accessHash) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->fileId_ = fileId;
+  self->accessHash_ = accessHash;
 }
 
-@end
+
+#line 24
+ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) {
+  ImActorModelApiFileLocation *self = [ImActorModelApiFileLocation alloc];
+  ImActorModelApiFileLocation_initWithLong_withLong_(self, fileId, accessHash);
+  return self;
+}
+
+
+#line 29
+void ImActorModelApiFileLocation_init(ImActorModelApiFileLocation *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 29
+ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_init() {
+  ImActorModelApiFileLocation *self = [ImActorModelApiFileLocation alloc];
+  ImActorModelApiFileLocation_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFileLocation)

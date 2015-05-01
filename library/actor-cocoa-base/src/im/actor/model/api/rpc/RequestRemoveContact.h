@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiRpcRequestRemoveContact_H_
 #define _ImActorModelApiRpcRequestRemoveContact_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestRemoveContact_HEADER 89
 
-@interface ImActorModelApiRpcRequestRemoveContact : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestRemoveContact : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestRemoveContact *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash;
 
-- (instancetype)init;
-
-- (jint)getUid;
++ (ImActorModelApiRpcRequestRemoveContact *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
+
+- (jint)getHeaderKey;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRemoveContact)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveContact, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveContact *ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveContact, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(ImActorModelApiRpcRequestRemoveContact *self, jint uid, jlong accessHash);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveContact_init(ImActorModelApiRpcRequestRemoveContact *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRemoveContact)
 

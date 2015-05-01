@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/providers/EmptyPhoneProvider.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/providers/EmptyPhoneProvider.java"
 
 #include "J2ObjC_source.h"
@@ -15,15 +16,24 @@
 @implementation ImActorModelProvidersEmptyPhoneProvider
 
 - (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback {
-  
-#line 14
-  [((id<AMPhoneBookProvider_Callback>) nil_chk(callback)) onLoadedWithJavaUtilList:[[JavaUtilArrayList alloc] init]];
+  [((id<AMPhoneBookProvider_Callback>) nil_chk(callback)) onLoadedWithJavaUtilList:new_JavaUtilArrayList_init()];
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelProvidersEmptyPhoneProvider_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelProvidersEmptyPhoneProvider_init(ImActorModelProvidersEmptyPhoneProvider *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelProvidersEmptyPhoneProvider *new_ImActorModelProvidersEmptyPhoneProvider_init() {
+  ImActorModelProvidersEmptyPhoneProvider *self = [ImActorModelProvidersEmptyPhoneProvider alloc];
+  ImActorModelProvidersEmptyPhoneProvider_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelProvidersEmptyPhoneProvider)

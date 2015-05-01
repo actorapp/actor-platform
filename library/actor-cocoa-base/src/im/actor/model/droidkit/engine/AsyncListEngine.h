@@ -6,23 +6,21 @@
 #ifndef _DKAsyncListEngine_H_
 #define _DKAsyncListEngine_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
+
 @class BSBserObject;
-@class DKAsyncStorageInt;
-@class DKObjectCache;
 @class IOSLongArray;
-@class JavaUtilConcurrentCopyOnWriteArrayList;
 @protocol BSBserCreator;
 @protocol DKListEngineDisplayListener;
+@protocol DKListEngineDisplayLoadCallback;
 @protocol DKListEngineItem;
 @protocol DKListStorageDisplayEx;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
-#include "im/actor/model/droidkit/engine/ListEngineDisplayLoadCallback.h"
+@interface DKAsyncListEngine : NSObject < DKListEngineDisplayExt >
 
-@interface DKAsyncListEngine : NSObject < DKListEngineDisplayExt > {
-}
+#pragma mark Public
 
 - (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)storage
                              withBSBserCreator:(id<BSBserCreator>)creator;
@@ -31,41 +29,15 @@
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items;
 
-- (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items;
-
-- (void)removeItemWithLong:(jlong)key;
-
-- (void)removeItemsWithLongArray:(IOSLongArray *)keys;
-
 - (void)clear;
-
-- (id)getValueWithLong:(jlong)key;
-
-- (id)getHeadValue;
-
-- (jboolean)isEmpty;
 
 - (jint)getCount;
 
-- (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
+- (id)getHeadValue;
 
-- (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
+- (id)getValueWithLong:(jlong)key;
 
-- (void)loadForwardWithInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
-
-- (void)loadForwardWithLong:(jlong)afterSortKey
-                    withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
-
-- (void)loadForwardWithNSString:(NSString *)query
-                        withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
-
-- (void)loadForwardWithNSString:(NSString *)query
-                       withLong:(jlong)afterSortKey
-                        withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (jboolean)isEmpty;
 
 - (void)loadBackwardWithInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
@@ -87,34 +59,42 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
                    withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
+- (void)loadForwardWithInt:(jint)limit
+withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+
+- (void)loadForwardWithLong:(jlong)afterSortKey
+                    withInt:(jint)limit
+withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+
+- (void)loadForwardWithNSString:(NSString *)query
+                        withInt:(jint)limit
+withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+
+- (void)loadForwardWithNSString:(NSString *)query
+                       withLong:(jlong)afterSortKey
+                        withInt:(jint)limit
+withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+
+- (void)removeItemWithLong:(jlong)key;
+
+- (void)removeItemsWithLongArray:(IOSLongArray *)keys;
+
+- (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items;
+
+- (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
+
+- (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKAsyncListEngine)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_(DKAsyncListEngine *self, id<DKListStorageDisplayEx> storage, id<BSBserCreator> creator);
 
-typedef DKAsyncListEngine ImActorModelDroidkitEngineAsyncListEngine;
+FOUNDATION_EXPORT DKAsyncListEngine *new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_(id<DKListStorageDisplayEx> storage, id<BSBserCreator> creator) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine)
 
-@interface DKAsyncListEngine_$1 : NSObject < DKListEngineDisplayLoadCallback > {
-}
-
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
-                        withLong:(jlong)topSortKey
-                        withLong:(jlong)bottomSortKey;
-
-- (instancetype)initWithDKAsyncListEngine:(DKAsyncListEngine *)outer$
-      withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(DKAsyncListEngine_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
+typedef DKAsyncListEngine ImActorModelDroidkitEngineAsyncListEngine;
 
 #endif // _DKAsyncListEngine_H_

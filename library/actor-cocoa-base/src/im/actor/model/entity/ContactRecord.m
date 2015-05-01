@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContactRecord.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContactRecord.java"
 
 #include "IOSClass.h"
@@ -23,18 +24,25 @@
   NSString *recordData_;
   NSString *recordTitle_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMContactRecord, recordData_, NSString *)
 J2OBJC_FIELD_SETTER(AMContactRecord, recordTitle_, NSString *)
 
+jint AMContactRecord_TYPE_PHONE_ = 
+#line 16
+0;
+jint AMContactRecord_TYPE_EMAIL_ = 
+#line 17
+1;
+
 
 #line 14
 @implementation AMContactRecord
 
-jint AMContactRecord_TYPE_PHONE_ = 0;
-jint AMContactRecord_TYPE_EMAIL_ = 1;
 
+#line 19
 + (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMContactRecord_fromBytesWithByteArray_(data);
 }
@@ -46,67 +54,36 @@ jint AMContactRecord_TYPE_EMAIL_ = 1;
                     withInt:(jint)recordType
                withNSString:(NSString *)recordData
                withNSString:(NSString *)recordTitle {
-  if (self = [super init]) {
-    
-#line 30
-    self->id__ = id_;
-    
-#line 31
-    self->accessHash_ = accessHash;
-    
-#line 32
-    self->recordType_ = recordType;
-    
-#line 33
-    self->recordData_ = recordData;
-    
-#line 34
-    self->recordTitle_ = recordTitle;
-  }
+  AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(self, id_, accessHash, recordType, recordData, recordTitle);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  AMContactRecord_init(self);
+  return self;
 }
 
+
+#line 41
 - (jint)getId {
-  
-#line 42
   return id__;
 }
 
-
-#line 45
 - (jlong)getAccessHash {
-  
-#line 46
   return accessHash_;
 }
 
-
-#line 49
 - (jint)getRecordType {
-  
-#line 50
   return recordType_;
 }
 
-
-#line 53
 - (NSString *)getRecordData {
-  
-#line 54
   return recordData_;
 }
 
-
-#line 57
 - (NSString *)getRecordTitle {
-  
-#line 58
   return recordTitle_;
 }
 
@@ -123,8 +100,6 @@ jint AMContactRecord_TYPE_EMAIL_ = 1;
 
 #line 71
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 72
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:id__];
   [writer writeLongWithInt:2 withLong:accessHash_];
   [writer writeIntWithInt:3 withInt:recordType_];
@@ -138,22 +113,50 @@ jint AMContactRecord_TYPE_EMAIL_ = 1;
   return id__;
 }
 
-- (void)copyAllFieldsTo:(AMContactRecord *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
-  other->accessHash_ = accessHash_;
-  other->recordType_ = recordType_;
-  other->recordData_ = recordData_;
-  other->recordTitle_ = recordTitle_;
-}
-
 @end
 
+
+#line 19
 AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMContactRecord_init();
+  AMContactRecord_initialize();
   
 #line 20
-  return ((AMContactRecord *) BSBser_parseWithBSBserObject_withByteArray_([[AMContactRecord alloc] init], data));
+  return ((AMContactRecord *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContactRecord_init(), data));
+}
+
+
+#line 29
+void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMContactRecord *self, jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
+  (void) BSBserObject_init(self);
+  
+#line 30
+  self->id__ = id_;
+  self->accessHash_ = accessHash;
+  self->recordType_ = recordType;
+  self->recordData_ = recordData;
+  self->recordTitle_ = recordTitle;
+}
+
+
+#line 29
+AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
+  AMContactRecord *self = [AMContactRecord alloc];
+  AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(self, id_, accessHash, recordType, recordData, recordTitle);
+  return self;
+}
+
+
+#line 37
+void AMContactRecord_init(AMContactRecord *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 37
+AMContactRecord *new_AMContactRecord_init() {
+  AMContactRecord *self = [AMContactRecord alloc];
+  AMContactRecord_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContactRecord)

@@ -6,39 +6,40 @@
 #ifndef _ImActorModelModulesUpdatesUsersProcessor_H_
 #define _ImActorModelModulesUpdatesUsersProcessor_H_
 
-@class AMUser;
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
 @class ImActorModelApiAvatar;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/modules/BaseModule.h"
+@interface ImActorModelModulesUpdatesUsersProcessor : ImActorModelModulesBaseModule
 
-@interface ImActorModelModulesUpdatesUsersProcessor : ImActorModelModulesBaseModule {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                              withBoolean:(jboolean)forced;
 
-- (void)onUserNameChangedWithInt:(jint)uid
-                    withNSString:(NSString *)name;
-
-- (void)onUserLocalNameChangedWithInt:(jint)uid
-                         withNSString:(NSString *)name;
+- (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids;
 
 - (void)onUserAvatarChangedWithInt:(jint)uid
          withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar;
 
-- (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids;
+- (void)onUserLocalNameChangedWithInt:(jint)uid
+                         withNSString:(NSString *)name;
+
+- (void)onUserNameChangedWithInt:(jint)uid
+                    withNSString:(NSString *)name;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesUsersProcessor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesUsersProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesUsersProcessor *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesUsersProcessor *new_ImActorModelModulesUpdatesUsersProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUsersProcessor)
 

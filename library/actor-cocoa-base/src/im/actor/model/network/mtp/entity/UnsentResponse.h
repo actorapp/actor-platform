@@ -6,48 +6,56 @@
 #ifndef _MTUnsentResponse_H_
 #define _MTUnsentResponse_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
+@class BSDataInput;
+@class BSDataOutput;
+
 #define MTUnsentResponse_HEADER 8
 
-@interface MTUnsentResponse : MTProtoStruct {
-}
+@interface MTUnsentResponse : MTProtoStruct
+
+#pragma mark Public
+
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)messageId
                     withLong:(jlong)responseMessageId
                      withInt:(jint)len;
 
+- (jint)getLen;
+
 - (jlong)getMessageId;
 
 - (jlong)getResponseMessageId;
 
-- (jint)getLen;
+- (NSString *)description;
 
-- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
+#pragma mark Protected
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTUnsentResponse)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTUnsentResponse, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTUnsentResponse ImActorModelNetworkMtpEntityUnsentResponse;
+FOUNDATION_EXPORT void MTUnsentResponse_initWithLong_withLong_withInt_(MTUnsentResponse *self, jlong messageId, jlong responseMessageId, jint len);
+
+FOUNDATION_EXPORT MTUnsentResponse *new_MTUnsentResponse_initWithLong_withLong_withInt_(jlong messageId, jlong responseMessageId, jint len) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTUnsentResponse_initWithBSDataInput_(MTUnsentResponse *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTUnsentResponse *new_MTUnsentResponse_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTUnsentResponse)
+
+typedef MTUnsentResponse ImActorModelNetworkMtpEntityUnsentResponse;
 
 #endif // _MTUnsentResponse_H_

@@ -6,15 +6,18 @@
 #ifndef _AMBaseAsyncStorageProvider_H_
 #define _AMBaseAsyncStorageProvider_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/StorageProvider.h"
+
 @class AMPeer;
 @protocol DKListEngine;
 @protocol DKListStorage;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/StorageProvider.h"
+@interface AMBaseAsyncStorageProvider : NSObject < AMStorageProvider >
 
-@interface AMBaseAsyncStorageProvider : NSObject < AMStorageProvider > {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage;
 
@@ -25,17 +28,14 @@
 
 - (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseAsyncStorageProvider)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef AMBaseAsyncStorageProvider ImActorModelStorageBaseAsyncStorageProvider;
+FOUNDATION_EXPORT void AMBaseAsyncStorageProvider_init(AMBaseAsyncStorageProvider *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBaseAsyncStorageProvider)
+
+typedef AMBaseAsyncStorageProvider ImActorModelStorageBaseAsyncStorageProvider;
 
 #endif // _AMBaseAsyncStorageProvider_H_

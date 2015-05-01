@@ -6,29 +6,32 @@
 #ifndef _ImActorModelApiRpcRequestMessageRead_H_
 #define _ImActorModelApiRpcRequestMessageRead_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestMessageRead_HEADER 57
 
-@interface ImActorModelApiRpcRequestMessageRead : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestMessageRead : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)date;
 
-- (instancetype)init;
-
-- (ImActorModelApiOutPeer *)getPeer;
++ (ImActorModelApiRpcRequestMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
+
+- (jint)getHeaderKey;
+
+- (ImActorModelApiOutPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -36,18 +39,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestMessageRead)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestMessageRead, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestMessageRead *ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestMessageRead, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiRpcRequestMessageRead *self, ImActorModelApiOutPeer *peer, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestMessageRead *new_ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiOutPeer *peer, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestMessageRead_init(ImActorModelApiRpcRequestMessageRead *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestMessageRead *new_ImActorModelApiRpcRequestMessageRead_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestMessageRead)
 

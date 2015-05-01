@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiRpcRequestDetachEmail_H_
 #define _ImActorModelApiRpcRequestDetachEmail_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestDetachEmail_HEADER 123
 
-@interface ImActorModelApiRpcRequestDetachEmail : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestDetachEmail : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestDetachEmail *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)email
                    withLong:(jlong)accessHash;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestDetachEmail *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getAccessHash;
 
 - (jint)getEmail;
 
-- (jlong)getAccessHash;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestDetachEmail)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDetachEmail, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestDetachEmail *ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDetachEmail, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestDetachEmail_initWithInt_withLong_(ImActorModelApiRpcRequestDetachEmail *self, jint email, jlong accessHash);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestDetachEmail *new_ImActorModelApiRpcRequestDetachEmail_initWithInt_withLong_(jint email, jlong accessHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestDetachEmail_init(ImActorModelApiRpcRequestDetachEmail *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestDetachEmail *new_ImActorModelApiRpcRequestDetachEmail_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestDetachEmail)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/util/MTUids.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/util/MTUids.java"
 
 #include "J2ObjC_source.h"
@@ -10,17 +11,14 @@
 #include "im/actor/model/network/util/MTUids.h"
 #include "im/actor/model/util/AtomicLongCompat.h"
 
-@interface ImActorModelNetworkUtilMTUids () {
-}
-@end
+static AMAtomicLongCompat *ImActorModelNetworkUtilMTUids_NEXT_ID_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkUtilMTUids, NEXT_ID_, AMAtomicLongCompat *)
 
-BOOL ImActorModelNetworkUtilMTUids_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkUtilMTUids)
 
 
 #line 9
 @implementation ImActorModelNetworkUtilMTUids
-
-AMAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 
 #line 12
@@ -29,7 +27,8 @@ AMAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelNetworkUtilMTUids_init(self);
+  return self;
 }
 
 + (void)initialize {
@@ -43,11 +42,23 @@ AMAtomicLongCompat * ImActorModelNetworkUtilMTUids_NEXT_ID_;
 
 @end
 
+
+#line 12
 jlong ImActorModelNetworkUtilMTUids_nextId() {
-  ImActorModelNetworkUtilMTUids_init();
+  ImActorModelNetworkUtilMTUids_initialize();
   
 #line 13
   return [((AMAtomicLongCompat *) nil_chk(ImActorModelNetworkUtilMTUids_NEXT_ID_)) getAndIncrement];
+}
+
+void ImActorModelNetworkUtilMTUids_init(ImActorModelNetworkUtilMTUids *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelNetworkUtilMTUids *new_ImActorModelNetworkUtilMTUids_init() {
+  ImActorModelNetworkUtilMTUids *self = [ImActorModelNetworkUtilMTUids alloc];
+  ImActorModelNetworkUtilMTUids_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkUtilMTUids)

@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestRegisterApplePush_H_
 #define _ImActorModelApiRpcRequestRegisterApplePush_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestRegisterApplePush_HEADER 76
 
-@interface ImActorModelApiRpcRequestRegisterApplePush : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestRegisterApplePush : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestRegisterApplePush *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)apnsKey
                withNSString:(NSString *)token;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestRegisterApplePush *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getApnsKey;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getToken;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRegisterApplePush)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRegisterApplePush, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestRegisterApplePush *ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRegisterApplePush, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(ImActorModelApiRpcRequestRegisterApplePush *self, jint apnsKey, NSString *token);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(jint apnsKey, NSString *token) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRegisterApplePush_init(ImActorModelApiRpcRequestRegisterApplePush *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRegisterApplePush)
 

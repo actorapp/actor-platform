@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/Actor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/Actor.java"
 
 #include "J2ObjC_source.h"
@@ -14,21 +15,24 @@
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 #include "im/actor/model/droidkit/actors/messages/DeadLetter.h"
 
-__attribute__((unused)) static DKActorSystem *DKActor_system(DKActor *self);
-__attribute__((unused)) static DKActorRef *DKActor_self__(DKActor *self);
-__attribute__((unused)) static DKActorRef *DKActor_sender(DKActor *self);
-
 @interface DKActor () {
  @public
   NSString *path_;
   DKActorContext *context__;
   DKMailbox *mailbox_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKActor, path_, NSString *)
 J2OBJC_FIELD_SETTER(DKActor, context__, DKActorContext *)
 J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
+
+__attribute__((unused)) static DKActorSystem *DKActor_system(DKActor *self);
+
+__attribute__((unused)) static DKActorRef *DKActor_self__(DKActor *self);
+
+__attribute__((unused)) static DKActorRef *DKActor_sender(DKActor *self);
 
 
 #line 11
@@ -37,7 +41,8 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 
 #line 18
 - (instancetype)init {
-  return [super init];
+  DKActor_init(self);
+  return self;
 }
 
 
@@ -45,8 +50,6 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 - (void)initActorWithNSString:(NSString *)path
            withDKActorContext:(DKActorContext *)context
                 withDKMailbox:(DKMailbox *)mailbox {
-  
-#line 31
   self->path_ = path;
   self->context__ = context;
   self->mailbox_ = mailbox;
@@ -67,8 +70,6 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 
 #line 59
 - (DKActorContext *)context {
-  
-#line 60
   return context__;
 }
 
@@ -81,16 +82,12 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 
 #line 77
 - (NSString *)getPath {
-  
-#line 78
   return path_;
 }
 
 
 #line 86
 - (DKMailbox *)getMailbox {
-  
-#line 87
   return mailbox_;
 }
 
@@ -102,8 +99,6 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 
 #line 102
 - (void)onReceiveWithId:(id)message {
-  
-#line 103
   [self dropWithId:message];
 }
 
@@ -120,8 +115,6 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 
 #line 125
 - (void)replyWithId:(id)message {
-  
-#line 126
   if ([((DKActorContext *) nil_chk(context__)) sender] != nil) {
     [((DKActorRef *) nil_chk([context__ sender])) sendWithId:message withDKActorRef:DKActor_self__(self)];
   }
@@ -130,38 +123,43 @@ J2OBJC_FIELD_SETTER(DKActor, mailbox_, DKMailbox *)
 
 #line 136
 - (void)dropWithId:(id)message {
-  
-#line 137
   if ([((DKActorSystem *) nil_chk(DKActor_system(self))) getTraceInterface] != nil) {
     [((id<DKTraceInterface>) nil_chk([((DKActorSystem *) nil_chk(DKActor_system(self))) getTraceInterface])) onDropWithDKActorRef:DKActor_sender(self) withId:message withDKActor:self];
   }
-  [self replyWithId:[[ImActorModelDroidkitActorsMessagesDeadLetter alloc] initWithId:message]];
-}
-
-- (void)copyAllFieldsTo:(DKActor *)other {
-  [super copyAllFieldsTo:other];
-  other->path_ = path_;
-  other->context__ = context__;
-  other->mailbox_ = mailbox_;
+  [self replyWithId:new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(message)];
 }
 
 @end
 
+
+#line 18
+void DKActor_init(DKActor *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 18
+DKActor *new_DKActor_init() {
+  DKActor *self = [DKActor alloc];
+  DKActor_init(self);
+  return self;
+}
+
+
+#line 41
 DKActorSystem *DKActor_system(DKActor *self) {
-  
-#line 42
   return [((DKActorContext *) nil_chk(self->context__)) getSystem];
 }
 
+
+#line 50
 DKActorRef *DKActor_self__(DKActor *self) {
-  
-#line 51
   return [((DKActorContext *) nil_chk(self->context__)) getSelf];
 }
 
+
+#line 68
 DKActorRef *DKActor_sender(DKActor *self) {
-  
-#line 69
   return [((DKActorContext *) nil_chk(self->context__)) sender];
 }
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserLeave.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserLeave.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateGroupUserLeave () {
@@ -22,6 +24,7 @@
   jint uid_;
   jlong date_;
 }
+
 @end
 
 
@@ -40,56 +43,32 @@
                    withLong:(jlong)rid
                     withInt:(jint)uid
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 33
-    self->groupId_ = groupId;
-    
-#line 34
-    self->rid_ = rid;
-    
-#line 35
-    self->uid_ = uid;
-    
-#line 36
-    self->date_ = date;
-  }
+  ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
   return self;
 }
 
 
 #line 39
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateGroupUserLeave_init(self);
+  return self;
 }
 
+
+#line 43
 - (jint)getGroupId {
-  
-#line 44
   return self->groupId_;
 }
 
-
-#line 47
 - (jlong)getRid {
-  
-#line 48
   return self->rid_;
 }
 
-
-#line 51
 - (jint)getUid {
-  
-#line 52
   return self->uid_;
 }
 
-
-#line 55
 - (jlong)getDate {
-  
-#line 56
   return self->date_;
 }
 
@@ -105,14 +84,14 @@
 
 #line 68
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 69
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+
+#line 76
 - (NSString *)description {
   NSString *res = @"update GroupUserLeave{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -123,27 +102,55 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 88
-  return ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupUserLeave *)other {
-  [super copyAllFieldsTo:other];
-  other->groupId_ = groupId_;
-  other->rid_ = rid_;
-  other->uid_ = uid_;
-  other->date_ = date_;
+#line 87
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateGroupUserLeave *ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupUserLeave_init();
+  ImActorModelApiUpdatesUpdateGroupUserLeave_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupUserLeave alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserLeave_init(), data));
+}
+
+
+#line 32
+void ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 33
+  self->groupId_ = groupId;
+  self->rid_ = rid;
+  self->uid_ = uid;
+  self->date_ = date;
+}
+
+
+#line 32
+ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) {
+  ImActorModelApiUpdatesUpdateGroupUserLeave *self = [ImActorModelApiUpdatesUpdateGroupUserLeave alloc];
+  ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
+  return self;
+}
+
+
+#line 39
+void ImActorModelApiUpdatesUpdateGroupUserLeave_init(ImActorModelApiUpdatesUpdateGroupUserLeave *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 39
+ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_init() {
+  ImActorModelApiUpdatesUpdateGroupUserLeave *self = [ImActorModelApiUpdatesUpdateGroupUserLeave alloc];
+  ImActorModelApiUpdatesUpdateGroupUserLeave_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupUserLeave)

@@ -3,16 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Modules.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Modules.java"
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/LocaleProvider.h"
+#include "im/actor/model/Messenger.h"
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/i18n/I18nEngine.h"
+#include "im/actor/model/modules/Analytics.h"
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Contacts.h"
@@ -32,6 +35,7 @@
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/modules/utils/PreferenceApiStorage.h"
 #include "im/actor/model/network/ActorApi.h"
+#include "im/actor/model/network/ActorApiCallback.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/util/Timing.h"
 
@@ -39,9 +43,11 @@
  @public
   AMConfiguration *configuration_;
   AMI18nEngine *i18nEngine_;
+  ImActorModelModulesAnalytics *analytics_;
   AMActorApi *actorApi_;
   ImActorModelModulesAuth *auth_;
   ImActorModelModulesAppStateModule *appStateModule_;
+  AMMessenger *messenger_;
   jboolean isAppVisible_;
   id<DKPreferencesStorage> preferences_;
   ImActorModelModulesUsers *users_;
@@ -59,13 +65,16 @@
   ImActorModelModulesSearchModule *search_;
   ImActorModelModulesSecurity *security_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, configuration_, AMConfiguration *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, i18nEngine_, AMI18nEngine *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, analytics_, ImActorModelModulesAnalytics *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, actorApi_, AMActorApi *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, auth_, ImActorModelModulesAuth *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, appStateModule_, ImActorModelModulesAppStateModule *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules, messenger_, AMMessenger *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, preferences_, id<DKPreferencesStorage>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, users_, ImActorModelModulesUsers *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, groups_, ImActorModelModulesGroups *)
@@ -82,121 +91,83 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, profile_, ImActorModelModulesPro
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, search_, ImActorModelModulesSearchModule *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules, security_, ImActorModelModulesSecurity *)
 
-@interface ImActorModelModulesModules_ActorApiCallbackImpl () {
+@interface ImActorModelModulesModules_ActorApiCallbackImpl : NSObject < AMActorApiCallback > {
  @public
   ImActorModelModulesModules *this$0_;
 }
+
+- (void)onAuthIdInvalidatedWithLong:(jlong)authKey;
+
+- (void)onNewSessionCreated;
+
+- (void)onUpdateReceivedWithId:(id)obj;
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules_ActorApiCallbackImpl)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, ImActorModelModulesModules *)
 
+__attribute__((unused)) static void ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(ImActorModelModulesModules_ActorApiCallbackImpl *self, ImActorModelModulesModules *outer$);
 
-#line 15
+__attribute__((unused)) static ImActorModelModulesModules_ActorApiCallbackImpl *new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(ImActorModelModulesModules *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
+
+
+#line 16
 @implementation ImActorModelModulesModules
 
 
-#line 39
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
-  if (self = [super init]) {
-    
-#line 40
-    self->configuration_ = configuration;
-    
 #line 42
-    AMTiming *timing = [[AMTiming alloc] initWithNSString:@"MODULES_INIT"];
-    
-#line 44
-    [timing sectionWithNSString:@"I18N"];
-    
-#line 45
-    self->i18nEngine_ = [[AMI18nEngine alloc] initWithAMLocaleProvider:[((AMConfiguration *) nil_chk(configuration)) getLocaleProvider] withImActorModelModulesModules:self];
-    
-#line 47
-    [timing sectionWithNSString:@"Preferences"];
-    
-#line 48
-    self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
-    
-#line 50
-    [timing sectionWithNSString:@"API"];
-    
-#line 51
-    self->actorApi_ = [[AMActorApi alloc] initWithAMEndpoints:[[AMEndpoints alloc] initWithAMConnectionEndpointArray:[configuration getEndpoints]] withAMAuthKeyStorage:
-#line 52
-    [[ImActorModelModulesUtilsPreferenceApiStorage alloc] initWithDKPreferencesStorage:preferences_] withAMActorApiCallback:
-#line 53
-    [[ImActorModelModulesModules_ActorApiCallbackImpl alloc] initWithImActorModelModulesModules:self] withAMNetworkProvider:
-#line 54
-    [configuration getNetworkProvider]];
-    
-#line 56
-    [timing sectionWithNSString:@"Auth"];
-    
-#line 57
-    self->auth_ = [[ImActorModelModulesAuth alloc] initWithImActorModelModulesModules:self];
-    
-#line 59
-    [timing sectionWithNSString:@"Pushes"];
-    
-#line 60
-    self->pushes_ = [[ImActorModelModulesPushes alloc] initWithImActorModelModulesModules:self];
-    
-#line 62
-    [timing sectionWithNSString:@"App State"];
-    
-#line 63
-    self->appStateModule_ = [[ImActorModelModulesAppStateModule alloc] initWithImActorModelModulesModules:self];
-    
-#line 65
-    [timing end];
-  }
+- (instancetype)initWithAMMessenger:(AMMessenger *)messenger
+                withAMConfiguration:(AMConfiguration *)configuration {
+  ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(self, messenger, configuration);
   return self;
 }
 
 
-#line 68
+#line 75
 - (void)run {
-  
-#line 69
   [((ImActorModelModulesAuth *) nil_chk(self->auth_)) run];
 }
 
-
-#line 72
 - (void)onLoggedIn {
-  
-#line 73
-  AMTiming *timing = [[AMTiming alloc] initWithNSString:@"ACCOUNT_CREATE"];
+  AMTiming *timing = new_AMTiming_initWithNSString_(@"ACCOUNT_CREATE");
   [timing sectionWithNSString:@"Users"];
-  users_ = [[ImActorModelModulesUsers alloc] initWithImActorModelModulesModules:self];
+  users_ = new_ImActorModelModulesUsers_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Groups"];
-  groups_ = [[ImActorModelModulesGroups alloc] initWithImActorModelModulesModules:self];
+  groups_ = new_ImActorModelModulesGroups_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Search"];
-  search_ = [[ImActorModelModulesSearchModule alloc] initWithImActorModelModulesModules:self];
+  search_ = new_ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Security"];
-  security_ = [[ImActorModelModulesSecurity alloc] initWithImActorModelModulesModules:self];
+  security_ = new_ImActorModelModulesSecurity_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Messages"];
-  messages_ = [[ImActorModelModulesMessages alloc] initWithImActorModelModulesModules:self];
+  messages_ = new_ImActorModelModulesMessages_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Updates"];
-  updates_ = [[ImActorModelModulesUpdates alloc] initWithImActorModelModulesModules:self];
+  updates_ = new_ImActorModelModulesUpdates_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Presence"];
-  presence_ = [[ImActorModelModulesPresence alloc] initWithImActorModelModulesModules:self];
+  presence_ = new_ImActorModelModulesPresence_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Typing"];
-  typing_ = [[ImActorModelModulesTyping alloc] initWithImActorModelModulesModules:self];
+  typing_ = new_ImActorModelModulesTyping_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Files"];
-  filesModule_ = [[ImActorModelModulesFiles alloc] initWithImActorModelModulesModules:self];
+  filesModule_ = new_ImActorModelModulesFiles_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Notifications"];
-  notifications_ = [[ImActorModelModulesNotifications alloc] initWithImActorModelModulesModules:self];
+  notifications_ = new_ImActorModelModulesNotifications_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Contacts"];
-  contacts_ = [[ImActorModelModulesContacts alloc] initWithImActorModelModulesModules:self];
+  contacts_ = new_ImActorModelModulesContacts_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Settings"];
-  settings_ = [[ImActorModelModulesSettings alloc] initWithImActorModelModulesModules:self];
+  settings_ = new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Profile"];
-  profile_ = [[ImActorModelModulesProfile alloc] initWithImActorModelModulesModules:self];
+  profile_ = new_ImActorModelModulesProfile_initWithImActorModelModulesModules_(self);
   [timing end];
   
-#line 102
-  timing = [[AMTiming alloc] initWithNSString:@"ACCOUNT_RUN"];
+#line 109
+  timing = new_AMTiming_initWithNSString_(@"ACCOUNT_RUN");
+  [timing sectionWithNSString:@"Settings"];
+  [settings_ run];
   [timing sectionWithNSString:@"Files"];
   [filesModule_ run];
   [timing sectionWithNSString:@"Search"];
@@ -215,245 +186,196 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules_ActorApiCallbackImpl, this$0_, Im
   [presence_ run];
   [timing end];
   
-#line 122
+#line 131
   if (isAppVisible_) {
     [presence_ onAppVisible];
     [notifications_ onAppVisible];
   }
   else {
     
-#line 128
+#line 137
     [notifications_ onAppHidden];
   }
 }
 
 
-#line 132
+#line 141
 - (id<DKPreferencesStorage>)getPreferences {
-  
-#line 133
   return preferences_;
 }
 
-
-#line 136
 - (AMConfiguration *)getConfiguration {
-  
-#line 137
   return configuration_;
 }
 
-
-#line 140
 - (ImActorModelModulesAuth *)getAuthModule {
-  
-#line 141
   return auth_;
 }
 
-
-#line 144
 - (ImActorModelModulesUsers *)getUsersModule {
-  
-#line 145
   return users_;
 }
 
-
-#line 148
 - (ImActorModelModulesGroups *)getGroupsModule {
-  
-#line 149
   return groups_;
 }
 
-
-#line 152
 - (ImActorModelModulesMessages *)getMessagesModule {
-  
-#line 153
   return messages_;
 }
 
-
-#line 156
 - (ImActorModelModulesUpdates *)getUpdatesModule {
-  
-#line 157
   return updates_;
 }
 
-
-#line 160
 - (ImActorModelModulesTyping *)getTypingModule {
-  
-#line 161
   return typing_;
 }
 
-
-#line 164
 - (ImActorModelModulesPresence *)getPresenceModule {
-  
-#line 165
   return presence_;
 }
 
-
-#line 168
 - (AMActorApi *)getActorApi {
-  
-#line 169
   return actorApi_;
 }
 
-
-#line 172
 - (AMI18nEngine *)getI18nEngine {
-  
-#line 173
   return i18nEngine_;
 }
 
-
-#line 176
 - (ImActorModelModulesContacts *)getContactsModule {
-  
-#line 177
   return contacts_;
 }
 
-
-#line 180
 - (ImActorModelModulesFiles *)getFilesModule {
-  
-#line 181
   return filesModule_;
 }
 
-
-#line 184
 - (ImActorModelModulesNotifications *)getNotifications {
-  
-#line 185
   return notifications_;
 }
 
-
-#line 188
 - (ImActorModelModulesSettings *)getSettings {
-  
-#line 189
   return settings_;
 }
 
-
-#line 192
 - (ImActorModelModulesProfile *)getProfile {
-  
-#line 193
   return profile_;
 }
 
-
-#line 196
 - (ImActorModelModulesAppStateModule *)getAppStateModule {
-  
-#line 197
   return appStateModule_;
 }
 
-
-#line 200
 - (ImActorModelModulesPushes *)getPushes {
-  
-#line 201
   return pushes_;
 }
 
-
-#line 204
 - (ImActorModelModulesSecurity *)getSecurity {
-  
-#line 205
   return security_;
 }
 
-
-#line 208
 - (ImActorModelModulesSearchModule *)getSearch {
-  
-#line 209
   return search_;
 }
 
+- (AMMessenger *)getMessenger {
+  return messenger_;
+}
 
-#line 212
+- (ImActorModelModulesAnalytics *)getAnalytics {
+  return analytics_;
+}
+
 - (void)onAppVisible {
-  
-#line 213
   isAppVisible_ = YES;
+  [((ImActorModelModulesAnalytics *) nil_chk(analytics_)) trackAppVisible];
   if ([self getPresenceModule] != nil) {
     [((ImActorModelModulesPresence *) nil_chk([self getPresenceModule])) onAppVisible];
     [((ImActorModelModulesNotifications *) nil_chk([self getNotifications])) onAppVisible];
   }
 }
 
-
-#line 220
 - (void)onAppHidden {
-  
-#line 221
   isAppVisible_ = NO;
+  [((ImActorModelModulesAnalytics *) nil_chk(analytics_)) trackAppHidden];
   if ([self getPresenceModule] != nil) {
     [((ImActorModelModulesPresence *) nil_chk([self getPresenceModule])) onAppHidden];
     [((ImActorModelModulesNotifications *) nil_chk([self getNotifications])) onAppHidden];
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesModules *)other {
-  [super copyAllFieldsTo:other];
-  other->configuration_ = configuration_;
-  other->i18nEngine_ = i18nEngine_;
-  other->actorApi_ = actorApi_;
-  other->auth_ = auth_;
-  other->appStateModule_ = appStateModule_;
-  other->isAppVisible_ = isAppVisible_;
-  other->preferences_ = preferences_;
-  other->users_ = users_;
-  other->groups_ = groups_;
-  other->updates_ = updates_;
-  other->messages_ = messages_;
-  other->pushes_ = pushes_;
-  other->presence_ = presence_;
-  other->typing_ = typing_;
-  other->filesModule_ = filesModule_;
-  other->contacts_ = contacts_;
-  other->notifications_ = notifications_;
-  other->settings_ = settings_;
-  other->profile_ = profile_;
-  other->search_ = search_;
-  other->security_ = security_;
+@end
+
+
+#line 42
+void ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(ImActorModelModulesModules *self, AMMessenger *messenger, AMConfiguration *configuration) {
+  (void) NSObject_init(self);
+  
+#line 43
+  self->messenger_ = messenger;
+  self->configuration_ = configuration;
+  
+#line 46
+  AMTiming *timing = new_AMTiming_initWithNSString_(@"MODULES_INIT");
+  
+#line 48
+  [timing sectionWithNSString:@"I18N"];
+  self->i18nEngine_ = new_AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_([((AMConfiguration *) nil_chk(configuration)) getLocaleProvider], self);
+  
+#line 51
+  [timing sectionWithNSString:@"Preferences"];
+  self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
+  
+#line 54
+  [timing sectionWithNSString:@"Analytics"];
+  self->analytics_ = new_ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(self);
+  
+#line 57
+  [timing sectionWithNSString:@"API"];
+  self->actorApi_ = new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(new_AMEndpoints_initWithAMConnectionEndpointArray_([configuration getEndpoints]), new_ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(self->preferences_), new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(self),
+#line 61
+  [configuration getNetworkProvider]);
+  
+#line 63
+  [timing sectionWithNSString:@"Auth"];
+  self->auth_ = new_ImActorModelModulesAuth_initWithImActorModelModulesModules_(self);
+  
+#line 66
+  [timing sectionWithNSString:@"Pushes"];
+  self->pushes_ = new_ImActorModelModulesPushes_initWithImActorModelModulesModules_(self);
+  
+#line 69
+  [timing sectionWithNSString:@"App State"];
+  self->appStateModule_ = new_ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(self);
+  
+#line 72
+  [timing end];
 }
 
-@end
+
+#line 42
+ImActorModelModulesModules *new_ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(AMMessenger *messenger, AMConfiguration *configuration) {
+  ImActorModelModulesModules *self = [ImActorModelModulesModules alloc];
+  ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(self, messenger, configuration);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 
 
-#line 228
+#line 247
 @implementation ImActorModelModulesModules_ActorApiCallbackImpl
 
 
-#line 231
+#line 250
 - (void)onAuthIdInvalidatedWithLong:(jlong)authKey {
 }
 
 
-#line 236
+#line 255
 - (void)onNewSessionCreated {
-  
-#line 237
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onNewSessionCreated];
   }
@@ -463,7 +385,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 }
 
 
-#line 246
+#line 265
 - (void)onUpdateReceivedWithId:(id)obj {
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onUpdateReceivedWithId:obj];
@@ -471,15 +393,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesModules_ActorApiCallbackImpl *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(ImActorModelModulesModules_ActorApiCallbackImpl *self, ImActorModelModulesModules *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesModules_ActorApiCallbackImpl *new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(ImActorModelModulesModules *outer$) {
+  ImActorModelModulesModules_ActorApiCallbackImpl *self = [ImActorModelModulesModules_ActorApiCallbackImpl alloc];
+  ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules_ActorApiCallbackImpl)

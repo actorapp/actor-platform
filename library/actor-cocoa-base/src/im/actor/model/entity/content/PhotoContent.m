@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/PhotoContent.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/PhotoContent.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/FastThumb.h"
 #include "im/actor/model/entity/content/FileSource.h"
 #include "im/actor/model/entity/content/PhotoContent.h"
@@ -23,6 +25,7 @@
   jint w_;
   jint h_;
 }
+
 @end
 
 
@@ -41,36 +44,24 @@
                      withAMFastThumb:(AMFastThumb *)fastThumb
                              withInt:(jint)w
                              withInt:(jint)h {
-  if (self =
-#line 22
-  [super initWithAMFileSource:location withNSString:mimetype withNSString:name withAMFastThumb:fastThumb]) {
-    
-#line 23
-    self->w_ = w;
-    
-#line 24
-    self->h_ = h;
-  }
+  AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(self, location, mimetype, name, fastThumb, w, h);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  AMPhotoContent_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getW {
-  
-#line 32
   return w_;
 }
 
-
-#line 35
 - (jint)getH {
-  
-#line 36
   return h_;
 }
 
@@ -83,8 +74,6 @@
 
 #line 45
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 46
   [super parseWithBSBserValues:values];
   w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   h_ = [values getIntWithInt:11];
@@ -98,19 +87,41 @@
   [writer writeIntWithInt:11 withInt:h_];
 }
 
-- (void)copyAllFieldsTo:(AMPhotoContent *)other {
-  [super copyAllFieldsTo:other];
-  other->w_ = w_;
-  other->h_ = h_;
-}
-
 @end
 
+
+#line 14
 AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
-  AMPhotoContent_init();
+  AMPhotoContent_initialize();
   
 #line 15
-  return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMPhotoContent alloc] init], data));
+  return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMPhotoContent_init(), data));
+}
+
+void AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMPhotoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) {
+  (void) AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, location, mimetype, name, fastThumb);
+  self->w_ = w;
+  self->h_ = h;
+}
+
+
+#line 21
+AMPhotoContent *new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) {
+  AMPhotoContent *self = [AMPhotoContent alloc];
+  AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(self, location, mimetype, name, fastThumb, w, h);
+  return self;
+}
+
+void AMPhotoContent_init(AMPhotoContent *self) {
+  (void) AMDocumentContent_init(self);
+}
+
+
+#line 27
+AMPhotoContent *new_AMPhotoContent_init() {
+  AMPhotoContent *self = [AMPhotoContent alloc];
+  AMPhotoContent_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPhotoContent)
