@@ -37,6 +37,7 @@ object Build extends sbt.Build {
         },
         resolvers ++= Resolvers.seq,
         scalacOptions in Compile ++= Seq(
+          "-target:jvm-1.8",
           "-encoding",
           "UTF-8",
           "-deprecation",
@@ -66,7 +67,7 @@ object Build extends sbt.Build {
           mainClass in Revolver.reStart := Some("im.actor.server.Main"),
           mainClass in Compile := Some("im.actor.server.Main"),
           autoCompilerPlugins := true,
-          scalacOptions in(Compile, doc) := Seq(
+          scalacOptions in(Compile, doc) ++= Seq(
             "-groups",
             "-implicits",
             "-diagrams"
