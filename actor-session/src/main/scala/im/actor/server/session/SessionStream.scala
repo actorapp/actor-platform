@@ -28,11 +28,11 @@ object SessionStreamMessage {
 private[session] object SessionStream {
 
   def graph(
-    authId:            Long,
-    sessionId:         Long,
-    rpcApiService:     ActorRef,
-    rpcRequestHandler: ActorRef,
-    updatesHandler:    ActorRef
+    authId:         Long,
+    sessionId:      Long,
+    rpcApiService:  ActorRef,
+    rpcHandler:     ActorRef,
+    updatesHandler: ActorRef
   )(implicit context: ActorContext) = {
     FlowGraph.partial() { implicit builder ⇒
       import FlowGraph.Implicits._
@@ -45,8 +45,8 @@ private[session] object SessionStream {
       val subscribe = discr.outSubscribe.buffer(100, OverflowStrategy.backpressure)
       val unmatched = discr.outUnmatched.buffer(100, OverflowStrategy.backpressure)
 
-      val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandler)))
-      val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcRequestHandler)))
+      val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcHandler)))
+      val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcHandler)))
 
       val updatesSubscriber = builder.add(Sink(ActorSubscriber[SubscribeCommand](updatesHandler)))
       val updatesPublisher = builder.add(Source(ActorPublisher[ProtoMessage](updatesHandler)))
