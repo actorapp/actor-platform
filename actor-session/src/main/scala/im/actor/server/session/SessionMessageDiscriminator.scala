@@ -6,10 +6,11 @@ import akka.stream.{ FanOutShape, OperationAttributes }
 
 import im.actor.server.mtproto.protocol._
 import im.actor.server.session.SessionMessage.SubscribeCommand
-import im.actor.server.session.SessionStream._
 
 class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[SessionStreamMessage]("SessionMessageDiscriminator"))
   extends FanOutShape[SessionStreamMessage](_init) {
+  import SessionStreamMessage._
+
   val outRpc = newOutlet[HandleRpcRequest]("outRpc")
   val outSubscribe = newOutlet[SubscribeCommand]("outSubscribe")
   val outUnmatched = newOutlet[SessionStreamMessage]("outUnmatched")
@@ -23,7 +24,7 @@ class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, Sessi
 
   import FlexiRoute._
 
-  import SessionStream._
+  import SessionStreamMessage._
 
   override def createRouteLogic(p: PortT) = new RouteLogic[SessionStreamMessage] {
     override def initialState = State[Any](DemandFromAll(p.outlets)) {

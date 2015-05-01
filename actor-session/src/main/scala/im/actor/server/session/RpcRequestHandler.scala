@@ -20,7 +20,7 @@ private[session] class RpcRequestHandler(rpcApiService: ActorRef) extends ActorS
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
 
-  import SessionStream._
+  import SessionStreamMessage._
 
   implicit val ec = context.dispatcher
 
