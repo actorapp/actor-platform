@@ -2,8 +2,10 @@ package im.actor.model.js.providers.websocket;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
+import im.actor.model.concurrency.TimerCompat;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
@@ -11,15 +13,31 @@ import im.actor.model.log.Log;
 import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
+import im.actor.model.util.CRC32;
 
 /**
  * Created by ex3ndr on 29.04.15.
  */
 public class PlatformConnection implements Connection {
 
+    private static final int CONNECTION_TIMEOUT = 5 * 1000;
+    private static final int HANDSHAKE_TIMEOUT = 5 * 1000;
+    private static final int RESPONSE_TIMEOUT = 1 * 1000;
+    private static final int PING_TIMEOUT = 5 * 60 * 1000;
+
+    private static final int HEADER_PROTO = 0;
+    private static final int HEADER_PING = 1;
+    private static final int HEADER_PONG = 2;
+    private static final int HEADER_DROP = 3;
+    private static final int HEADER_REDIRECT = 4;
+    private static final int HEADER_ACK = 6;
+    private static final int HEADER_HANDSHAKE_REQUEST = 0xFF;
+    private static final int HEADER_HANDSHAKE_RESPONSE = 0xFE;
+
     private static final Random RANDOM = new Random();
     private final AsyncConnectionInterface connectionInterface = new ConnectionInterface();
 
+    private final CRC32 CRC32_ENGINE = new CRC32();
     private final String TAG;
     private final AsyncConnection rawConnection;
     private final ConnectionCallback callback;
@@ -29,10 +47,17 @@ public class PlatformConnection implements Connection {
     private final int apiMajorVersion;
     private final int apiMinorVersion;
 
+    private int receivedPackages = 0;
+    private int sentPackages = 0;
+
     private boolean isClosed = false;
     private boolean isOpened = false;
     private boolean isHandshakePerformed = false;
     private byte[] handshakeRandomData;
+
+    private TimerCompat pingTask;
+    private final HashMap<Long, TimerCompat> schedulledPings = new HashMap<Long, TimerCompat>();
+    private final HashMap<Integer, TimerCompat> packageTimers = new HashMap<Integer, TimerCompat>();
 
     public PlatformConnection(int connectionId,
                               int mtprotoVersion,
@@ -42,7 +67,7 @@ public class PlatformConnection implements Connection {
                               ConnectionCallback callback,
                               PlatformConnectionCreateCallback factoryCallback,
                               AsyncConnectionFactory connectionFactory) {
-        this.TAG = "Connection#"+connectionId;
+        this.TAG = "Connection#" + connectionId;
         this.connectionId = connectionId;
         this.mtprotoVersion = mtprotoVersion;
         this.apiMajorVersion = apiMajorVersion;
@@ -52,9 +77,179 @@ public class PlatformConnection implements Connection {
         this.rawConnection = connectionFactory.createConnection(endpoint, connectionInterface);
         Log.d(TAG, "Starting connection");
         this.rawConnection.doConnect();
+
+        pingTask = new TimerCompat(new PingRunnable());
+        pingTask.schedule(PING_TIMEOUT);
     }
 
-    private synchronized void onConnected() {
+    // Handshake
+
+    private synchronized void sendHandshakeRequest() {
+        Log.d(TAG, "Starting handshake");
+
+        DataOutput handshakeRequest = new DataOutput();
+        handshakeRequest.writeByte(mtprotoVersion);
+        handshakeRequest.writeByte(apiMajorVersion);
+        handshakeRequest.writeByte(apiMinorVersion);
+        handshakeRandomData = new byte[32];
+        synchronized (RANDOM) {
+            RANDOM.nextBytes(handshakeRandomData);
+        }
+        handshakeRequest.writeInt(handshakeRandomData.length);
+        handshakeRequest.writeBytes(handshakeRandomData, 0, handshakeRandomData.length);
+
+        rawPost(HEADER_HANDSHAKE_REQUEST, handshakeRequest.toByteArray());
+    }
+
+    private synchronized void onHandshakePackage(byte[] data) throws IOException {
+        Log.d(TAG, "Handshake response received");
+        DataInput handshakeResponse = new DataInput(data);
+        int protoVersion = handshakeResponse.readByte();
+        int apiMajor = handshakeResponse.readByte();
+        int apiMinor = handshakeResponse.readByte();
+        byte[] sha256 = handshakeResponse.readBytes(32);
+        byte[] localSha256 = CryptoUtils.SHA256(handshakeRandomData);
+
+        if (!Arrays.equals(sha256, localSha256)) {
+            Log.d(TAG, "SHA 256 is incorrect");
+            Log.d(TAG, "Random data: " + CryptoUtils.hex(handshakeRandomData));
+            Log.d(TAG, "Remote SHA256: " + CryptoUtils.hex(sha256));
+            Log.d(TAG, "Local SHA256: " + CryptoUtils.hex(localSha256));
+            throw new IOException("SHA 256 is incorrect");
+        }
+        if (protoVersion != 1) {
+            Log.d(TAG, "Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
+            throw new IOException("Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
+        }
+        if (apiMajor != 1) {
+            Log.d(TAG, "Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
+            throw new IOException("Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
+        }
+        if (apiMinor != 0) {
+            Log.d(TAG, "Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
+            throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
+        }
+
+        Log.d(TAG, "Handshake successful");
+        isHandshakePerformed = true;
+        factoryCallback.onConnectionCreated(this);
+    }
+
+    // Proto package
+
+    private synchronized void onProtoPackage(byte[] data) throws IOException {
+        callback.onMessage(data, 0, data.length);
+        refreshTimeouts();
+    }
+
+    private synchronized void sendProtoPackage(byte[] data, int offset, int len) throws IOException {
+        if (isClosed) {
+            return;
+        }
+        rawPost(HEADER_PROTO, data, offset, len);
+    }
+
+    // Ping/Pong
+
+    private synchronized void onPingPackage(byte[] data) throws IOException {
+        // Just send pong package to server
+        rawPost(HEADER_PONG, data);
+        refreshTimeouts();
+    }
+
+    private synchronized void onPongPackage(byte[] data) throws IOException {
+        DataInput dataInput = new DataInput(data);
+        int size = dataInput.readInt();
+        if (size != 8) {
+            Log.d(TAG, "Received incorrect pong");
+            throw new IOException("Incorrect pong payload size");
+        }
+        long pingId = dataInput.readLong();
+
+        Log.d(TAG, "Received pong #" + pingId + "...");
+
+        TimerCompat timeoutTask = schedulledPings.remove(pingId);
+        if (timeoutTask == null) {
+            return;
+        }
+
+        timeoutTask.cancel();
+        refreshTimeouts();
+    }
+
+    private synchronized void sendPingMessage() {
+        if (isClosed) {
+            return;
+        }
+
+        final long pingId = RANDOM.nextLong();
+        DataOutput dataOutput = new DataOutput();
+        dataOutput.writeInt(8);
+        synchronized (RANDOM) {
+            dataOutput.writeLong(pingId);
+        }
+
+        TimerCompat pingTimeoutTask = new TimerCompat(new TimeoutRunnable());
+        schedulledPings.put(pingId, pingTimeoutTask);
+        pingTimeoutTask.schedule(RESPONSE_TIMEOUT);
+
+        Log.d(TAG, "Performing ping #" + pingId + "... " + pingTimeoutTask);
+        rawPost(HEADER_PING, dataOutput.toByteArray());
+    }
+
+    private void refreshTimeouts() {
+        // Settings all timeouts to now+RESPONSE_TIMEOUT
+        // Simple, but need some logic improvements to support detecting of frame lost.
+        
+        for(TimerCompat ping : schedulledPings.values()){
+            ping.schedule(RESPONSE_TIMEOUT);
+        }
+        for(TimerCompat ackTimeout: packageTimers.values()){
+            ackTimeout.schedule(RESPONSE_TIMEOUT);
+        }
+
+        pingTask.schedule(PING_TIMEOUT);
+    }
+
+    // Ack
+
+    private synchronized void onAckPackage(byte[] data) throws IOException {
+        DataInput ackContent = new DataInput(data);
+        int frameId = ackContent.readInt();
+
+        TimerCompat timerCompat = packageTimers.remove(frameId);
+        if (timerCompat == null) {
+            return;
+        }
+        timerCompat.cancel();
+        refreshTimeouts();
+    }
+
+    private synchronized void sendAckPackage(int receivedIndex) throws IOException {
+        if (isClosed) {
+            return;
+        }
+
+        DataOutput ackPackage = new DataOutput();
+        ackPackage.writeInt(receivedIndex);
+        rawPost(HEADER_ACK, ackPackage.toByteArray());
+    }
+
+    // Drop
+
+    private synchronized void onDropPackage(byte[] data) throws IOException {
+        DataInput drop = new DataInput(data);
+        long messageId = drop.readLong();
+        int errorCode = drop.readByte();
+        int messageLen = drop.readInt();
+        String message = new String(drop.readBytes(messageLen), "UTF-8");
+        Log.d(TAG, "Drop received: " + message);
+        throw new IOException("Drop received: " + message);
+    }
+
+    // Raw callbacks
+
+    private synchronized void onRawConnected() {
         Log.d(TAG, "onConnected");
         if (isClosed) {
             Log.d(TAG, "onConnected:isClosed");
@@ -66,68 +261,114 @@ public class PlatformConnection implements Connection {
         }
         isOpened = true;
 
-        Log.d(TAG, "Starting handshake");
-        DataOutput handshakeRequest = new DataOutput();
-        handshakeRequest.writeByte(mtprotoVersion);
-        handshakeRequest.writeByte(apiMajorVersion);
-        handshakeRequest.writeByte(apiMinorVersion);
-        handshakeRandomData = new byte[32];
-        synchronized (RANDOM) {
-            RANDOM.nextBytes(handshakeRandomData);
-        }
-        handshakeRequest.writeInt(handshakeRandomData.length);
-        handshakeRequest.writeBytes(handshakeRandomData, 0, handshakeRandomData.length);
-        rawConnection.doSend(handshakeRequest.toByteArray());
+        sendHandshakeRequest();
     }
 
-    private synchronized void onReceived(byte[] data) {
+    private synchronized void onRawReceived(byte[] data) {
         if (isClosed) {
             return;
         }
 
-        if (!isHandshakePerformed) {
-            Log.d(TAG, "Reading handshake response");
-            try {
-                DataInput handshakeResponse = new DataInput(data);
-                int protoVersion = handshakeResponse.readByte();
-                int apiMajor = handshakeResponse.readByte();
-                int apiMinor = handshakeResponse.readByte();
-                byte[] sha256 = handshakeResponse.readBytes(32);
-                byte[] localSha256 = CryptoUtils.SHA256(handshakeRandomData);
+        Log.w(TAG, "onRawReceived");
 
-                if (!Arrays.equals(sha256, localSha256)) {
-                    throw new IOException("SHA 256 is incorrect");
-                }
-                if (protoVersion != 1) {
-                    throw new IOException("Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
-                }
-                if (apiMajor != 1) {
-                    throw new IOException("Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
-                }
-                if (apiMinor != 0) {
-                    throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
-                }
+        try {
+            DataInput dataInput = new DataInput(data);
+            int packageIndex = dataInput.readInt();
 
-                Log.d(TAG, "Handshake successful");
-                isHandshakePerformed = true;
-                factoryCallback.onConnectionCreated(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-                close();
+            if (receivedPackages != packageIndex) {
+                Log.w(TAG, "Invalid package index. Expected: " + receivedPackages + ", got: " + packageIndex);
+                throw new IOException("Invalid package index. Expected: " + receivedPackages + ", got: " + packageIndex);
             }
-        } else {
-            Log.d(TAG, "Reading full package");
+            receivedPackages++;
+
+            int header = dataInput.readByte();
+            int dataLength = dataInput.readInt();
+            byte[] content = dataInput.readBytes(dataLength);
+            int crc32 = dataInput.readInt();
+
+            CRC32_ENGINE.reset();
+            CRC32_ENGINE.update(content);
+
+            if (((int) CRC32_ENGINE.getValue()) != crc32) {
+                Log.w(TAG, "Incorrect CRC32");
+                throw new IOException("Incorrect CRC32");
+            }
+
+            Log.w(TAG, "Received package: " + header);
+            if (header == HEADER_HANDSHAKE_RESPONSE) {
+                if (isHandshakePerformed) {
+                    throw new IOException("Double Handshake");
+                }
+                onHandshakePackage(content);
+            } else {
+                if (!isHandshakePerformed) {
+                    throw new IOException("Package before Handshake");
+                }
+
+                if (header == HEADER_PROTO) {
+                    onProtoPackage(content);
+                    sendAckPackage(packageIndex);
+                } else if (header == HEADER_PING) {
+                    onPingPackage(content);
+                } else if (header == HEADER_PONG) {
+                    onPongPackage(content);
+                } else if (header == HEADER_DROP) {
+                    onDropPackage(content);
+                } else if (header == HEADER_ACK) {
+                    onAckPackage(content);
+                } else {
+                    Log.w(TAG, "Received unknown package #" + header);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            close();
         }
     }
 
-    private synchronized void onClosed() {
+    private synchronized void onRawClosed() {
         close();
     }
+
+    // Raw send
+
+    private synchronized void rawPost(int header, byte[] data) {
+        rawPost(header, data, 0, data.length);
+    }
+
+    private synchronized void rawPost(int header, byte[] data, int offset, int len) {
+        int packageId = sentPackages++;
+        DataOutput dataOutput = new DataOutput();
+        dataOutput.writeInt(packageId);
+        dataOutput.writeByte(header);
+        dataOutput.writeInt(data.length);
+        dataOutput.writeBytes(data, offset, len);
+        CRC32_ENGINE.reset();
+        CRC32_ENGINE.update(data, offset, len);
+        dataOutput.writeInt((int) CRC32_ENGINE.getValue());
+
+        if (header == HEADER_PROTO) {
+            TimerCompat timeoutTask = new TimerCompat(new TimeoutRunnable());
+            packageTimers.put(packageId, timeoutTask);
+            timeoutTask.schedule(RESPONSE_TIMEOUT);
+        }
+
+        rawConnection.doSend(dataOutput.toByteArray());
+    }
+
+    // Public methods
 
     @Override
     public synchronized void post(byte[] data, int offset, int len) {
         if (isClosed) {
             return;
+        }
+        try {
+            sendProtoPackage(data, offset, len);
+        } catch (IOException e) {
+            e.printStackTrace();
+            close();
         }
     }
 
@@ -152,21 +393,41 @@ public class PlatformConnection implements Connection {
         }
     }
 
+    // Connection callback
+
     private class ConnectionInterface implements AsyncConnectionInterface {
 
         @Override
         public void onConnected() {
-            PlatformConnection.this.onConnected();
+            PlatformConnection.this.onRawConnected();
         }
 
         @Override
         public void onReceived(byte[] data) {
-            PlatformConnection.this.onReceived(data);
+            PlatformConnection.this.onRawReceived(data);
         }
 
         @Override
         public void onClosed() {
-            PlatformConnection.this.onClosed();
+            PlatformConnection.this.onRawClosed();
+        }
+    }
+
+    // Timer runanbles
+    private class PingRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            sendPingMessage();
+        }
+    }
+
+    private class TimeoutRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            Log.d(TAG, "Timeout " + this);
+            close();
         }
     }
 }

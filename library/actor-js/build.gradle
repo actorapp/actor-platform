@@ -102,6 +102,9 @@ gwt {
 //        disableClassMetadata = true;
 //        disableCastChecking = true;
     }
+
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
 }
 
 task explodedWar(type: Copy) {
