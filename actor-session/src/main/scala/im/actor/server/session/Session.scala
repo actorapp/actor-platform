@@ -17,8 +17,8 @@ import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
-import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
-import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion, UpdatesPusher }
+import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
 import im.actor.server.{ models, persist }
 
 object Session {
@@ -126,9 +126,11 @@ class Session(rpcApiService: ActorRef)(implicit
       withValidMessageBox(client, messageBoxBytes) { mb ⇒
         sendProtoMessage(authId, sessionId)(client, NewSession(sessionId, mb.messageId))
 
-        val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props())
+        val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
+        val rpcRequestHandler = context.actorOf(RpcRequestHandler.props(rpcApiService), "rpcRequestHandler")
+        val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
 
-        val graph = SessionStream.graph(rpcApiService)(context.system)
+        val graph = SessionStream.graph(authId, sessionId, rpcApiService, rpcRequestHandler, updatesHandler)
 
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
           import FlowGraph.Implicits._
@@ -144,16 +146,14 @@ class Session(rpcApiService: ActorRef)(implicit
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
-        val updatesPusher = context.actorOf(UpdatesPusher.props(authId, self))
-
-        context.become(resolved(authId, sessionId, sessionMessagePublisher, updatesPusher))
+        context.become(resolved(authId, sessionId, sessionMessagePublisher))
       }
     case Terminated(client) ⇒
       clients -= client
     case unmatched ⇒ handleUnmatched(unmatched)
   }
 
-  def resolved(authId: Long, sessionId: Long, publisher: ActorRef, updatesPusher: ActorRef): Receive = {
+  def resolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
     case env @ Envelope(eauthId, esessionId, msg) ⇒
       val client = sender()
 
@@ -162,7 +162,7 @@ class Session(rpcApiService: ActorRef)(implicit
       if (authId != eauthId || sessionId != esessionId) // Should never happen
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
-        handleSessionMessage(authId, sessionId, client, msg, publisher, updatesPusher)
+        handleSessionMessage(authId, sessionId, client, msg, publisher)
     case SendProtoMessage(protoMessage) ⇒
       log.debug("Sending proto message {}", protoMessage)
       sendProtoMessage(authId, sessionId, protoMessage)
@@ -179,12 +179,11 @@ class Session(rpcApiService: ActorRef)(implicit
   }
 
   private def handleSessionMessage(
-    authId:        Long,
-    sessionId:     Long,
-    client:        ActorRef,
-    message:       SessionMessage,
-    publisher:     ActorRef,
-    updatesPusher: ActorRef
+    authId:    Long,
+    sessionId: Long,
+    client:    ActorRef,
+    message:   SessionMessage,
+    publisher: ActorRef
   ): Unit = {
     log.debug("Session message {}", message)
     message match {
@@ -192,14 +191,8 @@ class Session(rpcApiService: ActorRef)(implicit
         withValidMessageBox(client, messageBoxBytes)(mb ⇒ publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId)))
       case SendProtoMessage(protoMessage) ⇒
         sendProtoMessage(authId, sessionId, protoMessage)
-      case SubscribeToOnline(userIds) ⇒
-        updatesPusher ! UpdatesPusher.SubscribeToUserPresences(userIds)
-      case SubscribeFromOnline(userIds) ⇒
-        updatesPusher ! UpdatesPusher.UnsubscribeFromUserPresences(userIds)
-      case SubscribeToGroupOnline(groupIds)   ⇒
-      // TODO: implement
-      case SubscribeFromGroupOnline(groupIds) ⇒
-      // TODO: implement
+      case cmd: SubscribeCommand ⇒
+        publisher ! cmd
       case UserAuthorized(userId) ⇒
         log.debug("User {} authorized session {}", userId, sessionId)
 

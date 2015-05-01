@@ -8,6 +8,7 @@ import akka.stream.actor._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol.{ Container, MessageBox }
+import im.actor.server.session.SessionMessage.SubscribeCommand
 
 private[session] object SessionMessagePublisher {
   def props() = Props[SessionMessagePublisher]
@@ -38,6 +39,15 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
             messageQueue = messageQueue.enqueue(HandleMessageBox(mb, clientData))
             deliverBuf()
           }
+      }
+    case command: SubscribeCommand ⇒
+      val elem = HandleSubscribe(command)
+
+      if (messageQueue.isEmpty && totalDemand > 0) {
+        onNext(elem)
+      } else {
+        messageQueue = messageQueue.enqueue(elem)
+        deliverBuf()
       }
     case Request(_) ⇒
       deliverBuf()
