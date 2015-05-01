@@ -46,7 +46,8 @@ object Build extends sbt.Build {
           "-feature",
           "-language:higherKinds",
           "-Xfatal-warnings",
-          "-Xlint"
+          "-Xlint",
+          "-Xfuture"
         ) ++ compilerWarnings,
         javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation")
