@@ -12,28 +12,27 @@ import im.actor.api.rpc.messaging.UpdateMessageSent
 import im.actor.api.rpc.sequence.WeakUpdate
 import im.actor.api.rpc.weak.{ UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
-import im.actor.server.models
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 
-trait UpdatesPusherMessage
+trait UpdatesConsumerMessage
 
-object UpdatesPusherMessage {
+object UpdatesConsumerMessage {
   @SerialVersionUID(1L)
-  object SubscribeToSeq extends UpdatesPusherMessage
-
-  @SerialVersionUID(1L)
-  object SubscribeToWeak extends UpdatesPusherMessage
+  object SubscribeToSeq extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class SubscribeToUserPresences(userIds: Set[Int]) extends UpdatesPusherMessage
+  object SubscribeToWeak extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class UnsubscribeFromUserPresences(userIds: Set[Int]) extends UpdatesPusherMessage
+  case class SubscribeToUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
+
+  @SerialVersionUID(1L)
+  case class UnsubscribeFromUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
 
 }
 
-object UpdatesPusher {
+object UpdatesConsumer {
   def props(authId: Long, session: ActorRef)(
     implicit
     seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
@@ -41,7 +40,7 @@ object UpdatesPusher {
     presenceManagerRegion:    PresenceManagerRegion
   ) =
     Props(
-      classOf[UpdatesPusher],
+      classOf[UpdatesConsumer],
       authId,
       session,
       seqUpdatesManagerRegion,
@@ -50,7 +49,7 @@ object UpdatesPusher {
     )
 }
 
-private[push] class UpdatesPusher(
+private[push] class UpdatesConsumer(
   authId:                                Long,
   subscriber:                            ActorRef,
   implicit val seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
@@ -60,13 +59,7 @@ private[push] class UpdatesPusher(
   extends Actor with ActorLogging with Stash {
 
   import PresenceManager._
-  import UpdatesPusherMessage._
-
-  @SerialVersionUID(1L)
-  private case class Initiated(
-    googlePushCredentials: Option[models.push.GooglePushCredentials],
-    applePushCredentials:  Option[models.push.ApplePushCredentials]
-  )
+  import UpdatesConsumerMessage._
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
