@@ -32,26 +32,26 @@
 #include "java/util/Random.h"
 #include "java/util/Set.h"
 
-#define ImActorModelNetworkConnectionManagedConnection_HANDSHAKE_TIMEOUT 5000
-#define ImActorModelNetworkConnectionManagedConnection_RESPONSE_TIMEOUT 5000
-#define ImActorModelNetworkConnectionManagedConnection_PING_TIMEOUT 300000
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_PROTO 0
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_PING 1
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_PONG 2
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_DROP 3
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_REDIRECT 4
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_ACK 6
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_HANDSHAKE_REQUEST 255
-#define ImActorModelNetworkConnectionManagedConnection_HEADER_HANDSHAKE_RESPONSE 254
+#define AMManagedConnection_HANDSHAKE_TIMEOUT 5000
+#define AMManagedConnection_RESPONSE_TIMEOUT 5000
+#define AMManagedConnection_PING_TIMEOUT 300000
+#define AMManagedConnection_HEADER_PROTO 0
+#define AMManagedConnection_HEADER_PING 1
+#define AMManagedConnection_HEADER_PONG 2
+#define AMManagedConnection_HEADER_DROP 3
+#define AMManagedConnection_HEADER_REDIRECT 4
+#define AMManagedConnection_HEADER_ACK 6
+#define AMManagedConnection_HEADER_HANDSHAKE_REQUEST 255
+#define AMManagedConnection_HEADER_HANDSHAKE_RESPONSE 254
 
-@interface ImActorModelNetworkConnectionManagedConnection () {
+@interface AMManagedConnection () {
  @public
-  id<ImActorModelNetworkConnectionAsyncConnectionInterface> connectionInterface_;
+  id<AMAsyncConnectionInterface> connectionInterface_;
   AMCRC32 *CRC32_ENGINE_;
   NSString *TAG_;
-  ImActorModelNetworkConnectionAsyncConnection *rawConnection_;
+  AMAsyncConnection *rawConnection_;
   id<AMConnectionCallback> callback_;
-  id<ImActorModelNetworkConnectionManagedConnectionCreateCallback> factoryCallback_;
+  id<AMManagedConnectionCreateCallback> factoryCallback_;
   jint connectionId_;
   jint mtprotoVersion_;
   jint apiMajorVersion_;
@@ -109,79 +109,79 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, connectionInterface_, id<ImActorModelNetworkConnectionAsyncConnectionInterface>)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, CRC32_ENGINE_, AMCRC32 *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, TAG_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, rawConnection_, ImActorModelNetworkConnectionAsyncConnection *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, callback_, id<AMConnectionCallback>)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, factoryCallback_, id<ImActorModelNetworkConnectionManagedConnectionCreateCallback>)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, handshakeRandomData_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, connectionTimeout_, AMTimerCompat *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, handshakeTimeout_, AMTimerCompat *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, pingTask_, AMTimerCompat *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, schedulledPings_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection, packageTimers_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, connectionInterface_, id<AMAsyncConnectionInterface>)
+J2OBJC_FIELD_SETTER(AMManagedConnection, CRC32_ENGINE_, AMCRC32 *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, TAG_, NSString *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, rawConnection_, AMAsyncConnection *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, callback_, id<AMConnectionCallback>)
+J2OBJC_FIELD_SETTER(AMManagedConnection, factoryCallback_, id<AMManagedConnectionCreateCallback>)
+J2OBJC_FIELD_SETTER(AMManagedConnection, handshakeRandomData_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, connectionTimeout_, AMTimerCompat *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, handshakeTimeout_, AMTimerCompat *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, pingTask_, AMTimerCompat *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, schedulledPings_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, packageTimers_, JavaUtilHashMap *)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HANDSHAKE_TIMEOUT, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HANDSHAKE_TIMEOUT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, RESPONSE_TIMEOUT, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, RESPONSE_TIMEOUT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, PING_TIMEOUT, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, PING_TIMEOUT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_PROTO, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_PROTO, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_PING, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_PING, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_PONG, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_PONG, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_DROP, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_DROP, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_REDIRECT, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_REDIRECT, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_ACK, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_ACK, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_HANDSHAKE_REQUEST, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_HANDSHAKE_REQUEST, jint)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, HEADER_HANDSHAKE_RESPONSE, jint)
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, HEADER_HANDSHAKE_RESPONSE, jint)
 
-static JavaUtilRandom *ImActorModelNetworkConnectionManagedConnection_RANDOM_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkConnectionManagedConnection, RANDOM_, JavaUtilRandom *)
+static JavaUtilRandom *AMManagedConnection_RANDOM_;
+J2OBJC_STATIC_FIELD_GETTER(AMManagedConnection, RANDOM_, JavaUtilRandom *)
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_sendHandshakeRequest(ImActorModelNetworkConnectionManagedConnection *self);
+__attribute__((unused)) static void AMManagedConnection_sendHandshakeRequest(AMManagedConnection *self);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onHandshakePackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onProtoPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onProtoPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data, jint offset, jint len);
+__attribute__((unused)) static void AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(AMManagedConnection *self, IOSByteArray *data, jint offset, jint len);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onPingPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onPingPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onPongPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onPongPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_sendPingMessage(ImActorModelNetworkConnectionManagedConnection *self);
+__attribute__((unused)) static void AMManagedConnection_sendPingMessage(AMManagedConnection *self);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(ImActorModelNetworkConnectionManagedConnection *self);
+__attribute__((unused)) static void AMManagedConnection_refreshTimeouts(AMManagedConnection *self);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onAckPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onAckPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_sendAckPackageWithInt_(ImActorModelNetworkConnectionManagedConnection *self, jint receivedIndex);
+__attribute__((unused)) static void AMManagedConnection_sendAckPackageWithInt_(AMManagedConnection *self, jint receivedIndex);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onDropPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onDropPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onRawConnected(ImActorModelNetworkConnectionManagedConnection *self);
+__attribute__((unused)) static void AMManagedConnection_onRawConnected(AMManagedConnection *self);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_onRawReceivedWithByteArray_(AMManagedConnection *self, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_onRawClosed(ImActorModelNetworkConnectionManagedConnection *self);
+__attribute__((unused)) static void AMManagedConnection_onRawClosed(AMManagedConnection *self);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(ImActorModelNetworkConnectionManagedConnection *self, jint header, IOSByteArray *data);
+__attribute__((unused)) static void AMManagedConnection_rawPostWithInt_withByteArray_(AMManagedConnection *self, jint header, IOSByteArray *data);
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(ImActorModelNetworkConnectionManagedConnection *self, jint header, IOSByteArray *data, jint offset, jint len);
+__attribute__((unused)) static void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManagedConnection *self, jint header, IOSByteArray *data, jint offset, jint len);
 
-@interface ImActorModelNetworkConnectionManagedConnection_ConnectionInterface : NSObject < ImActorModelNetworkConnectionAsyncConnectionInterface > {
+@interface AMManagedConnection_ConnectionInterface : NSObject < AMAsyncConnectionInterface > {
  @public
-  ImActorModelNetworkConnectionManagedConnection *this$0_;
+  AMManagedConnection *this$0_;
 }
 
 - (void)onConnected;
@@ -190,67 +190,67 @@ __attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnecti
 
 - (void)onClosed;
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)outer$;
+- (instancetype)initWithAMManagedConnection:(AMManagedConnection *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionManagedConnection_ConnectionInterface)
+J2OBJC_EMPTY_STATIC_INIT(AMManagedConnection_ConnectionInterface)
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection_ConnectionInterface, this$0_, ImActorModelNetworkConnectionManagedConnection *)
+J2OBJC_FIELD_SETTER(AMManagedConnection_ConnectionInterface, this$0_, AMManagedConnection *)
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection_ConnectionInterface *self, ImActorModelNetworkConnectionManagedConnection *outer$);
+__attribute__((unused)) static void AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(AMManagedConnection_ConnectionInterface *self, AMManagedConnection *outer$);
 
-__attribute__((unused)) static ImActorModelNetworkConnectionManagedConnection_ConnectionInterface *new_ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection *outer$) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMManagedConnection_ConnectionInterface *new_AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(AMManagedConnection *outer$) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedConnection_ConnectionInterface)
+J2OBJC_TYPE_LITERAL_HEADER(AMManagedConnection_ConnectionInterface)
 
-@interface ImActorModelNetworkConnectionManagedConnection_PingRunnable : NSObject < JavaLangRunnable > {
+@interface AMManagedConnection_PingRunnable : NSObject < JavaLangRunnable > {
  @public
-  ImActorModelNetworkConnectionManagedConnection *this$0_;
+  AMManagedConnection *this$0_;
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)outer$;
+- (instancetype)initWithAMManagedConnection:(AMManagedConnection *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionManagedConnection_PingRunnable)
+J2OBJC_EMPTY_STATIC_INIT(AMManagedConnection_PingRunnable)
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection_PingRunnable, this$0_, ImActorModelNetworkConnectionManagedConnection *)
+J2OBJC_FIELD_SETTER(AMManagedConnection_PingRunnable, this$0_, AMManagedConnection *)
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection_PingRunnable *self, ImActorModelNetworkConnectionManagedConnection *outer$);
+__attribute__((unused)) static void AMManagedConnection_PingRunnable_initWithAMManagedConnection_(AMManagedConnection_PingRunnable *self, AMManagedConnection *outer$);
 
-__attribute__((unused)) static ImActorModelNetworkConnectionManagedConnection_PingRunnable *new_ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection *outer$) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMManagedConnection_PingRunnable *new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(AMManagedConnection *outer$) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedConnection_PingRunnable)
+J2OBJC_TYPE_LITERAL_HEADER(AMManagedConnection_PingRunnable)
 
-@interface ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable : NSObject < JavaLangRunnable > {
+@interface AMManagedConnection_TimeoutRunnable : NSObject < JavaLangRunnable > {
  @public
-  ImActorModelNetworkConnectionManagedConnection *this$0_;
+  AMManagedConnection *this$0_;
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)outer$;
+- (instancetype)initWithAMManagedConnection:(AMManagedConnection *)outer$;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable)
+J2OBJC_EMPTY_STATIC_INIT(AMManagedConnection_TimeoutRunnable)
 
-J2OBJC_FIELD_SETTER(ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable, this$0_, ImActorModelNetworkConnectionManagedConnection *)
+J2OBJC_FIELD_SETTER(AMManagedConnection_TimeoutRunnable, this$0_, AMManagedConnection *)
 
-__attribute__((unused)) static void ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable *self, ImActorModelNetworkConnectionManagedConnection *outer$);
+__attribute__((unused)) static void AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(AMManagedConnection_TimeoutRunnable *self, AMManagedConnection *outer$);
 
-__attribute__((unused)) static ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable *new_ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection *outer$) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMManagedConnection_TimeoutRunnable *new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(AMManagedConnection *outer$) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable)
+J2OBJC_TYPE_LITERAL_HEADER(AMManagedConnection_TimeoutRunnable)
 
-J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkConnectionManagedConnection)
+J2OBJC_INITIALIZED_DEFN(AMManagedConnection)
 
 
 #line 21
-@implementation ImActorModelNetworkConnectionManagedConnection
+@implementation AMManagedConnection
 
 
 #line 64
@@ -260,28 +260,28 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkConnectionManagedConnection)
                     withInt:(jint)apiMinorVersion
    withAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
    withAMConnectionCallback:(id<AMConnectionCallback>)callback
-withImActorModelNetworkConnectionManagedConnectionCreateCallback:(id<ImActorModelNetworkConnectionManagedConnectionCreateCallback>)factoryCallback
-withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkConnectionAsyncConnectionFactory>)connectionFactory {
-  ImActorModelNetworkConnectionManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withImActorModelNetworkConnectionManagedConnectionCreateCallback_withImActorModelNetworkConnectionAsyncConnectionFactory_(self, connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, factoryCallback, connectionFactory);
+withAMManagedConnectionCreateCallback:(id<AMManagedConnectionCreateCallback>)factoryCallback
+withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
+  AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(self, connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, factoryCallback, connectionFactory);
   return self;
 }
 
 
 #line 92
 - (void)sendHandshakeRequest {
-  ImActorModelNetworkConnectionManagedConnection_sendHandshakeRequest(self);
+  AMManagedConnection_sendHandshakeRequest(self);
 }
 
 
 #line 110
 - (void)onHandshakePackageWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onHandshakePackageWithByteArray_(self, data);
+  AMManagedConnection_onHandshakePackageWithByteArray_(self, data);
 }
 
 
 #line 148
 - (void)onProtoPackageWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onProtoPackageWithByteArray_(self, data);
+  AMManagedConnection_onProtoPackageWithByteArray_(self, data);
 }
 
 
@@ -289,74 +289,74 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
 - (void)sendProtoPackageWithByteArray:(IOSByteArray *)data
                               withInt:(jint)offset
                               withInt:(jint)len {
-  ImActorModelNetworkConnectionManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(self, data, offset, len);
+  AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(self, data, offset, len);
 }
 
 
 #line 162
 - (void)onPingPackageWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onPingPackageWithByteArray_(self, data);
+  AMManagedConnection_onPingPackageWithByteArray_(self, data);
 }
 
 
 #line 168
 - (void)onPongPackageWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onPongPackageWithByteArray_(self, data);
+  AMManagedConnection_onPongPackageWithByteArray_(self, data);
 }
 
 
 #line 188
 - (void)sendPingMessage {
-  ImActorModelNetworkConnectionManagedConnection_sendPingMessage(self);
+  AMManagedConnection_sendPingMessage(self);
 }
 
 
 #line 208
 - (void)refreshTimeouts {
-  ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(self);
+  AMManagedConnection_refreshTimeouts(self);
 }
 
 
 #line 224
 - (void)onAckPackageWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onAckPackageWithByteArray_(self, data);
+  AMManagedConnection_onAckPackageWithByteArray_(self, data);
 }
 
 
 #line 236
 - (void)sendAckPackageWithInt:(jint)receivedIndex {
-  ImActorModelNetworkConnectionManagedConnection_sendAckPackageWithInt_(self, receivedIndex);
+  AMManagedConnection_sendAckPackageWithInt_(self, receivedIndex);
 }
 
 
 #line 248
 - (void)onDropPackageWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onDropPackageWithByteArray_(self, data);
+  AMManagedConnection_onDropPackageWithByteArray_(self, data);
 }
 
 
 #line 260
 - (void)onRawConnected {
-  ImActorModelNetworkConnectionManagedConnection_onRawConnected(self);
+  AMManagedConnection_onRawConnected(self);
 }
 
 
 #line 277
 - (void)onRawReceivedWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(self, data);
+  AMManagedConnection_onRawReceivedWithByteArray_(self, data);
 }
 
 
 #line 342
 - (void)onRawClosed {
-  ImActorModelNetworkConnectionManagedConnection_onRawClosed(self);
+  AMManagedConnection_onRawClosed(self);
 }
 
 
 #line 349
 - (void)rawPostWithInt:(jint)header
          withByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(self, header, data);
+  AMManagedConnection_rawPostWithInt_withByteArray_(self, header, data);
 }
 
 
@@ -365,7 +365,7 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
          withByteArray:(IOSByteArray *)data
                withInt:(jint)offset
                withInt:(jint)len {
-  ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, header, data, offset, len);
+  AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, header, data, offset, len);
 }
 
 
@@ -381,7 +381,7 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
       return;
     }
     @try {
-      ImActorModelNetworkConnectionManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(self, data, offset, len);
+      AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(self, data, offset, len);
     }
     @catch (
 #line 384
@@ -415,7 +415,7 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
     isClosed__ = YES;
     
 #line 403
-    [((ImActorModelNetworkConnectionAsyncConnection *) nil_chk(rawConnection_)) doClose];
+    [((AMAsyncConnection *) nil_chk(rawConnection_)) doClose];
     
 #line 405
     @synchronized(packageTimers_) {
@@ -436,7 +436,7 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
     
 #line 420
     if (!isOpened_ || !isHandshakePerformed_) {
-      [((id<ImActorModelNetworkConnectionManagedConnectionCreateCallback>) nil_chk(factoryCallback_)) onConnectionCreateErrorWithImActorModelNetworkConnectionManagedConnection:self];
+      [((id<AMManagedConnectionCreateCallback>) nil_chk(factoryCallback_)) onConnectionCreateErrorWithAMManagedConnection:self];
     }
     else {
       
@@ -447,9 +447,9 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
 }
 
 + (void)initialize {
-  if (self == [ImActorModelNetworkConnectionManagedConnection class]) {
-    ImActorModelNetworkConnectionManagedConnection_RANDOM_ = new_JavaUtilRandom_init();
-    J2OBJC_SET_INITIALIZED(ImActorModelNetworkConnectionManagedConnection)
+  if (self == [AMManagedConnection class]) {
+    AMManagedConnection_RANDOM_ = new_JavaUtilRandom_init();
+    J2OBJC_SET_INITIALIZED(AMManagedConnection)
   }
 }
 
@@ -457,9 +457,9 @@ withImActorModelNetworkConnectionAsyncConnectionFactory:(id<ImActorModelNetworkC
 
 
 #line 64
-void ImActorModelNetworkConnectionManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withImActorModelNetworkConnectionManagedConnectionCreateCallback_withImActorModelNetworkConnectionAsyncConnectionFactory_(ImActorModelNetworkConnectionManagedConnection *self, jint connectionId, jint mtprotoVersion, jint apiMajorVersion, jint apiMinorVersion, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<ImActorModelNetworkConnectionManagedConnectionCreateCallback> factoryCallback, id<ImActorModelNetworkConnectionAsyncConnectionFactory> connectionFactory) {
+void AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(AMManagedConnection *self, jint connectionId, jint mtprotoVersion, jint apiMajorVersion, jint apiMinorVersion, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<AMManagedConnectionCreateCallback> factoryCallback, id<AMAsyncConnectionFactory> connectionFactory) {
   (void) NSObject_init(self);
-  self->connectionInterface_ = new_ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(self);
+  self->connectionInterface_ = new_AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(self);
   self->CRC32_ENGINE_ = new_AMCRC32_init();
   self->receivedPackages_ =
 #line 50
@@ -481,30 +481,30 @@ void ImActorModelNetworkConnectionManagedConnection_initWithInt_withInt_withInt_
   self->apiMinorVersion_ = apiMinorVersion;
   self->callback_ = callback;
   self->factoryCallback_ = factoryCallback;
-  self->rawConnection_ = [((id<ImActorModelNetworkConnectionAsyncConnectionFactory>) nil_chk(connectionFactory)) createConnectionWithInt:connectionId withAMConnectionEndpoint:endpoint withImActorModelNetworkConnectionAsyncConnectionInterface:self->connectionInterface_];
+  self->rawConnection_ = [((id<AMAsyncConnectionFactory>) nil_chk(connectionFactory)) createConnectionWithInt:connectionId withAMConnectionEndpoint:endpoint withAMAsyncConnectionInterface:self->connectionInterface_];
   AMLog_dWithNSString_withNSString_(self->TAG_, @"Starting connection");
   
 #line 82
-  self->handshakeTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self));
-  self->pingTask_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self));
-  self->connectionTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self));
-  [self->connectionTimeout_ scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_CONNECTION_TIMEOUT];
+  self->handshakeTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
+  self->pingTask_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self));
+  self->connectionTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
+  [self->connectionTimeout_ scheduleWithLong:AMManagedConnection_CONNECTION_TIMEOUT];
   
 #line 87
-  [((ImActorModelNetworkConnectionAsyncConnection *) nil_chk(self->rawConnection_)) doConnect];
+  [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doConnect];
 }
 
 
 #line 64
-ImActorModelNetworkConnectionManagedConnection *new_ImActorModelNetworkConnectionManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withImActorModelNetworkConnectionManagedConnectionCreateCallback_withImActorModelNetworkConnectionAsyncConnectionFactory_(jint connectionId, jint mtprotoVersion, jint apiMajorVersion, jint apiMinorVersion, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<ImActorModelNetworkConnectionManagedConnectionCreateCallback> factoryCallback, id<ImActorModelNetworkConnectionAsyncConnectionFactory> connectionFactory) {
-  ImActorModelNetworkConnectionManagedConnection *self = [ImActorModelNetworkConnectionManagedConnection alloc];
-  ImActorModelNetworkConnectionManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withImActorModelNetworkConnectionManagedConnectionCreateCallback_withImActorModelNetworkConnectionAsyncConnectionFactory_(self, connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, factoryCallback, connectionFactory);
+AMManagedConnection *new_AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(jint connectionId, jint mtprotoVersion, jint apiMajorVersion, jint apiMinorVersion, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<AMManagedConnectionCreateCallback> factoryCallback, id<AMAsyncConnectionFactory> connectionFactory) {
+  AMManagedConnection *self = [AMManagedConnection alloc];
+  AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(self, connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, factoryCallback, connectionFactory);
   return self;
 }
 
 
 #line 92
-void ImActorModelNetworkConnectionManagedConnection_sendHandshakeRequest(ImActorModelNetworkConnectionManagedConnection *self) {
+void AMManagedConnection_sendHandshakeRequest(AMManagedConnection *self) {
   @synchronized(self) {
     
 #line 93
@@ -516,21 +516,21 @@ void ImActorModelNetworkConnectionManagedConnection_sendHandshakeRequest(ImActor
     [handshakeRequest writeByteWithInt:self->apiMajorVersion_];
     [handshakeRequest writeByteWithInt:self->apiMinorVersion_];
     self->handshakeRandomData_ = [IOSByteArray newArrayWithLength:32];
-    @synchronized(ImActorModelNetworkConnectionManagedConnection_RANDOM_) {
-      [((JavaUtilRandom *) nil_chk(ImActorModelNetworkConnectionManagedConnection_RANDOM_)) nextBytesWithByteArray:self->handshakeRandomData_];
+    @synchronized(AMManagedConnection_RANDOM_) {
+      [((JavaUtilRandom *) nil_chk(AMManagedConnection_RANDOM_)) nextBytesWithByteArray:self->handshakeRandomData_];
     }
     [handshakeRequest writeIntWithInt:self->handshakeRandomData_->size_];
     [handshakeRequest writeBytesWithByteArray:self->handshakeRandomData_ withInt:0 withInt:self->handshakeRandomData_->size_];
     
 #line 106
-    [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_HANDSHAKE_TIMEOUT];
-    ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(self, ImActorModelNetworkConnectionManagedConnection_HEADER_HANDSHAKE_REQUEST, [handshakeRequest toByteArray]);
+    [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) scheduleWithLong:AMManagedConnection_HANDSHAKE_TIMEOUT];
+    AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_HANDSHAKE_REQUEST, [handshakeRequest toByteArray]);
   }
 }
 
 
 #line 110
-void ImActorModelNetworkConnectionManagedConnection_onHandshakePackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 111
@@ -566,48 +566,48 @@ void ImActorModelNetworkConnectionManagedConnection_onHandshakePackageWithByteAr
 #line 139
     AMLog_dWithNSString_withNSString_(self->TAG_, @"Handshake successful");
     self->isHandshakePerformed_ = YES;
-    [((id<ImActorModelNetworkConnectionManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreatedWithImActorModelNetworkConnectionManagedConnection:self];
+    [((id<AMManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreatedWithAMManagedConnection:self];
     [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) cancel];
-    [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_PING_TIMEOUT];
+    [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
   }
 }
 
 
 #line 148
-void ImActorModelNetworkConnectionManagedConnection_onProtoPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onProtoPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 149
     [((id<AMConnectionCallback>) nil_chk(self->callback_)) onMessage:data withOffset:0 withLen:((IOSByteArray *) nil_chk(data))->size_];
-    ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(self);
+    AMManagedConnection_refreshTimeouts(self);
   }
 }
 
 
 #line 153
-void ImActorModelNetworkConnectionManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data, jint offset, jint len) {
+void AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(AMManagedConnection *self, IOSByteArray *data, jint offset, jint len) {
   @synchronized(self) {
     
 #line 154
     if (self->isClosed__) {
       return;
     }
-    ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, ImActorModelNetworkConnectionManagedConnection_HEADER_PROTO, data, offset, len);
+    AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, AMManagedConnection_HEADER_PROTO, data, offset, len);
   }
 }
 
 
 #line 162
-void ImActorModelNetworkConnectionManagedConnection_onPingPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onPingPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
-    ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(self, ImActorModelNetworkConnectionManagedConnection_HEADER_PONG, data);
-    ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(self);
+    AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_PONG, data);
+    AMManagedConnection_refreshTimeouts(self);
   }
 }
 
 
 #line 168
-void ImActorModelNetworkConnectionManagedConnection_onPongPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onPongPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 169
@@ -630,13 +630,13 @@ void ImActorModelNetworkConnectionManagedConnection_onPongPackageWithByteArray_(
     
 #line 184
     [((AMTimerCompat *) nil_chk(timeoutTask)) cancel];
-    ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(self);
+    AMManagedConnection_refreshTimeouts(self);
   }
 }
 
 
 #line 188
-void ImActorModelNetworkConnectionManagedConnection_sendPingMessage(ImActorModelNetworkConnectionManagedConnection *self) {
+void AMManagedConnection_sendPingMessage(AMManagedConnection *self) {
   @synchronized(self) {
     
 #line 189
@@ -645,43 +645,43 @@ void ImActorModelNetworkConnectionManagedConnection_sendPingMessage(ImActorModel
     }
     
 #line 193
-    jlong pingId = [((JavaUtilRandom *) nil_chk(ImActorModelNetworkConnectionManagedConnection_RANDOM_)) nextLong];
+    jlong pingId = [((JavaUtilRandom *) nil_chk(AMManagedConnection_RANDOM_)) nextLong];
     BSDataOutput *dataOutput = new_BSDataOutput_init();
     [dataOutput writeIntWithInt:8];
-    @synchronized(ImActorModelNetworkConnectionManagedConnection_RANDOM_) {
+    @synchronized(AMManagedConnection_RANDOM_) {
       [dataOutput writeLongWithLong:pingId];
     }
     
 #line 200
-    AMTimerCompat *pingTimeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self));
+    AMTimerCompat *pingTimeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
     (void) [((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) putWithId:JavaLangLong_valueOfWithLong_(pingId) withId:pingTimeoutTask];
-    [pingTimeoutTask scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_RESPONSE_TIMEOUT];
+    [pingTimeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     
 #line 204
     AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$J$@", @"Performing ping #", pingId, @"... ", pingTimeoutTask));
-    ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(self, ImActorModelNetworkConnectionManagedConnection_HEADER_PING, [dataOutput toByteArray]);
+    AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_PING, [dataOutput toByteArray]);
   }
 }
 
 
 #line 208
-void ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(ImActorModelNetworkConnectionManagedConnection *self) {
+void AMManagedConnection_refreshTimeouts(AMManagedConnection *self) {
   
 #line 212
   for (AMTimerCompat * __strong ping in nil_chk([((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) values])) {
-    [((AMTimerCompat *) nil_chk(ping)) scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_RESPONSE_TIMEOUT];
+    [((AMTimerCompat *) nil_chk(ping)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
   }
   for (AMTimerCompat * __strong ackTimeout in nil_chk([((JavaUtilHashMap *) nil_chk(self->packageTimers_)) values])) {
-    [((AMTimerCompat *) nil_chk(ackTimeout)) scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_RESPONSE_TIMEOUT];
+    [((AMTimerCompat *) nil_chk(ackTimeout)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
   }
   
 #line 219
-  [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_PING_TIMEOUT];
+  [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
 }
 
 
 #line 224
-void ImActorModelNetworkConnectionManagedConnection_onAckPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onAckPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 225
@@ -694,13 +694,13 @@ void ImActorModelNetworkConnectionManagedConnection_onAckPackageWithByteArray_(I
       return;
     }
     [((AMTimerCompat *) nil_chk(timerCompat)) cancel];
-    ImActorModelNetworkConnectionManagedConnection_refreshTimeouts(self);
+    AMManagedConnection_refreshTimeouts(self);
   }
 }
 
 
 #line 236
-void ImActorModelNetworkConnectionManagedConnection_sendAckPackageWithInt_(ImActorModelNetworkConnectionManagedConnection *self, jint receivedIndex) {
+void AMManagedConnection_sendAckPackageWithInt_(AMManagedConnection *self, jint receivedIndex) {
   @synchronized(self) {
     
 #line 237
@@ -711,13 +711,13 @@ void ImActorModelNetworkConnectionManagedConnection_sendAckPackageWithInt_(ImAct
 #line 241
     BSDataOutput *ackPackage = new_BSDataOutput_init();
     [ackPackage writeIntWithInt:receivedIndex];
-    ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(self, ImActorModelNetworkConnectionManagedConnection_HEADER_ACK, [ackPackage toByteArray]);
+    AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_ACK, [ackPackage toByteArray]);
   }
 }
 
 
 #line 248
-void ImActorModelNetworkConnectionManagedConnection_onDropPackageWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onDropPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 249
@@ -733,7 +733,7 @@ void ImActorModelNetworkConnectionManagedConnection_onDropPackageWithByteArray_(
 
 
 #line 260
-void ImActorModelNetworkConnectionManagedConnection_onRawConnected(ImActorModelNetworkConnectionManagedConnection *self) {
+void AMManagedConnection_onRawConnected(AMManagedConnection *self) {
   @synchronized(self) {
     
 #line 261
@@ -752,13 +752,13 @@ void ImActorModelNetworkConnectionManagedConnection_onRawConnected(ImActorModelN
     [((AMTimerCompat *) nil_chk(self->connectionTimeout_)) cancel];
     
 #line 274
-    ImActorModelNetworkConnectionManagedConnection_sendHandshakeRequest(self);
+    AMManagedConnection_sendHandshakeRequest(self);
   }
 }
 
 
 #line 277
-void ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(ImActorModelNetworkConnectionManagedConnection *self, IOSByteArray *data) {
+void AMManagedConnection_onRawReceivedWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 278
@@ -799,11 +799,11 @@ void ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(
       
 #line 307
       AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I", @"Received package: ", header));
-      if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_HANDSHAKE_RESPONSE) {
+      if (header == AMManagedConnection_HEADER_HANDSHAKE_RESPONSE) {
         if (self->isHandshakePerformed_) {
           @throw new_JavaIoIOException_initWithNSString_(@"Double Handshake");
         }
-        ImActorModelNetworkConnectionManagedConnection_onHandshakePackageWithByteArray_(self, content);
+        AMManagedConnection_onHandshakePackageWithByteArray_(self, content);
       }
       else {
         
@@ -813,29 +813,29 @@ void ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(
         }
         
 #line 318
-        if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_PROTO) {
-          ImActorModelNetworkConnectionManagedConnection_onProtoPackageWithByteArray_(self, content);
-          ImActorModelNetworkConnectionManagedConnection_sendAckPackageWithInt_(self, packageIndex);
+        if (header == AMManagedConnection_HEADER_PROTO) {
+          AMManagedConnection_onProtoPackageWithByteArray_(self, content);
+          AMManagedConnection_sendAckPackageWithInt_(self, packageIndex);
         }
         else
 #line 321
-        if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_PING) {
-          ImActorModelNetworkConnectionManagedConnection_onPingPackageWithByteArray_(self, content);
+        if (header == AMManagedConnection_HEADER_PING) {
+          AMManagedConnection_onPingPackageWithByteArray_(self, content);
         }
         else
 #line 323
-        if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_PONG) {
-          ImActorModelNetworkConnectionManagedConnection_onPongPackageWithByteArray_(self, content);
+        if (header == AMManagedConnection_HEADER_PONG) {
+          AMManagedConnection_onPongPackageWithByteArray_(self, content);
         }
         else
 #line 325
-        if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_DROP) {
-          ImActorModelNetworkConnectionManagedConnection_onDropPackageWithByteArray_(self, content);
+        if (header == AMManagedConnection_HEADER_DROP) {
+          AMManagedConnection_onDropPackageWithByteArray_(self, content);
         }
         else
 #line 327
-        if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_ACK) {
-          ImActorModelNetworkConnectionManagedConnection_onAckPackageWithByteArray_(self, content);
+        if (header == AMManagedConnection_HEADER_ACK) {
+          AMManagedConnection_onAckPackageWithByteArray_(self, content);
         }
         else {
           
@@ -856,7 +856,7 @@ void ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(
 
 
 #line 342
-void ImActorModelNetworkConnectionManagedConnection_onRawClosed(ImActorModelNetworkConnectionManagedConnection *self) {
+void AMManagedConnection_onRawClosed(AMManagedConnection *self) {
   @synchronized(self) {
     
 #line 343
@@ -867,17 +867,17 @@ void ImActorModelNetworkConnectionManagedConnection_onRawClosed(ImActorModelNetw
 
 
 #line 349
-void ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_(ImActorModelNetworkConnectionManagedConnection *self, jint header, IOSByteArray *data) {
+void AMManagedConnection_rawPostWithInt_withByteArray_(AMManagedConnection *self, jint header, IOSByteArray *data) {
   @synchronized(self) {
     
 #line 350
-    ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, header, data, 0, ((IOSByteArray *) nil_chk(data))->size_);
+    AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, header, data, 0, ((IOSByteArray *) nil_chk(data))->size_);
   }
 }
 
 
 #line 353
-void ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(ImActorModelNetworkConnectionManagedConnection *self, jint header, IOSByteArray *data, jint offset, jint len) {
+void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManagedConnection *self, jint header, IOSByteArray *data, jint offset, jint len) {
   @synchronized(self) {
     
 #line 354
@@ -893,94 +893,94 @@ void ImActorModelNetworkConnectionManagedConnection_rawPostWithInt_withByteArray
     [dataOutput writeIntWithInt:(jint) [self->CRC32_ENGINE_ getValue]];
     
 #line 365
-    if (header == ImActorModelNetworkConnectionManagedConnection_HEADER_PROTO) {
-      AMTimerCompat *timeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self));
+    if (header == AMManagedConnection_HEADER_PROTO) {
+      AMTimerCompat *timeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
       (void) [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) putWithId:JavaLangInteger_valueOfWithInt_(packageId) withId:timeoutTask];
-      [timeoutTask scheduleWithLong:ImActorModelNetworkConnectionManagedConnection_RESPONSE_TIMEOUT];
+      [timeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     }
     
 #line 371
-    [((ImActorModelNetworkConnectionAsyncConnection *) nil_chk(self->rawConnection_)) doSendWithByteArray:[dataOutput toByteArray]];
+    [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doSendWithByteArray:[dataOutput toByteArray]];
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedConnection)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection)
 
 
 #line 429
-@implementation ImActorModelNetworkConnectionManagedConnection_ConnectionInterface
+@implementation AMManagedConnection_ConnectionInterface
 
 
 #line 432
 - (void)onConnected {
-  ImActorModelNetworkConnectionManagedConnection_onRawConnected(this$0_);
+  AMManagedConnection_onRawConnected(this$0_);
 }
 
 
 #line 437
 - (void)onReceivedWithByteArray:(IOSByteArray *)data {
-  ImActorModelNetworkConnectionManagedConnection_onRawReceivedWithByteArray_(this$0_, data);
+  AMManagedConnection_onRawReceivedWithByteArray_(this$0_, data);
 }
 
 
 #line 442
 - (void)onClosed {
-  ImActorModelNetworkConnectionManagedConnection_onRawClosed(this$0_);
+  AMManagedConnection_onRawClosed(this$0_);
 }
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)outer$ {
-  ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(self, outer$);
+- (instancetype)initWithAMManagedConnection:(AMManagedConnection *)outer$ {
+  AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(self, outer$);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection_ConnectionInterface *self, ImActorModelNetworkConnectionManagedConnection *outer$) {
+void AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(AMManagedConnection_ConnectionInterface *self, AMManagedConnection *outer$) {
   self->this$0_ = outer$;
   (void) NSObject_init(self);
 }
 
-ImActorModelNetworkConnectionManagedConnection_ConnectionInterface *new_ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection *outer$) {
-  ImActorModelNetworkConnectionManagedConnection_ConnectionInterface *self = [ImActorModelNetworkConnectionManagedConnection_ConnectionInterface alloc];
-  ImActorModelNetworkConnectionManagedConnection_ConnectionInterface_initWithImActorModelNetworkConnectionManagedConnection_(self, outer$);
+AMManagedConnection_ConnectionInterface *new_AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(AMManagedConnection *outer$) {
+  AMManagedConnection_ConnectionInterface *self = [AMManagedConnection_ConnectionInterface alloc];
+  AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(self, outer$);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedConnection_ConnectionInterface)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection_ConnectionInterface)
 
 
 #line 448
-@implementation ImActorModelNetworkConnectionManagedConnection_PingRunnable
+@implementation AMManagedConnection_PingRunnable
 
 
 #line 451
 - (void)run {
-  ImActorModelNetworkConnectionManagedConnection_sendPingMessage(this$0_);
+  AMManagedConnection_sendPingMessage(this$0_);
 }
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)outer$ {
-  ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self, outer$);
+- (instancetype)initWithAMManagedConnection:(AMManagedConnection *)outer$ {
+  AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self, outer$);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection_PingRunnable *self, ImActorModelNetworkConnectionManagedConnection *outer$) {
+void AMManagedConnection_PingRunnable_initWithAMManagedConnection_(AMManagedConnection_PingRunnable *self, AMManagedConnection *outer$) {
   self->this$0_ = outer$;
   (void) NSObject_init(self);
 }
 
-ImActorModelNetworkConnectionManagedConnection_PingRunnable *new_ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection *outer$) {
-  ImActorModelNetworkConnectionManagedConnection_PingRunnable *self = [ImActorModelNetworkConnectionManagedConnection_PingRunnable alloc];
-  ImActorModelNetworkConnectionManagedConnection_PingRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self, outer$);
+AMManagedConnection_PingRunnable *new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(AMManagedConnection *outer$) {
+  AMManagedConnection_PingRunnable *self = [AMManagedConnection_PingRunnable alloc];
+  AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self, outer$);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedConnection_PingRunnable)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection_PingRunnable)
 
 
 #line 456
-@implementation ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable
+@implementation AMManagedConnection_TimeoutRunnable
 
 
 #line 459
@@ -989,22 +989,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedConnection_
   [this$0_ close];
 }
 
-- (instancetype)initWithImActorModelNetworkConnectionManagedConnection:(ImActorModelNetworkConnectionManagedConnection *)outer$ {
-  ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self, outer$);
+- (instancetype)initWithAMManagedConnection:(AMManagedConnection *)outer$ {
+  AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self, outer$);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable *self, ImActorModelNetworkConnectionManagedConnection *outer$) {
+void AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(AMManagedConnection_TimeoutRunnable *self, AMManagedConnection *outer$) {
   self->this$0_ = outer$;
   (void) NSObject_init(self);
 }
 
-ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable *new_ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(ImActorModelNetworkConnectionManagedConnection *outer$) {
-  ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable *self = [ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable alloc];
-  ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable_initWithImActorModelNetworkConnectionManagedConnection_(self, outer$);
+AMManagedConnection_TimeoutRunnable *new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(AMManagedConnection *outer$) {
+  AMManagedConnection_TimeoutRunnable *self = [AMManagedConnection_TimeoutRunnable alloc];
+  AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self, outer$);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkConnectionManagedConnection_TimeoutRunnable)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection_TimeoutRunnable)
