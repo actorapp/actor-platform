@@ -48,7 +48,7 @@ class GroupsServiceImpl(bucketName: String)(
       withGroupOutPeer(groupOutPeer) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
           scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
-            case Some(avatar) ⇒
+            case Right(avatar) ⇒
               val date = new DateTime
               val avatarData = getAvatarData(models.AvatarData.OfGroup, fullGroup.id, avatar)
 
@@ -62,7 +62,8 @@ class GroupsServiceImpl(bucketName: String)(
               } yield {
                 Ok(ResponseEditGroupAvatar(avatar, seqstate._1, seqstate._2, date.getMillis))
               }
-            case None ⇒
+            case Left(e) ⇒
+              actorSystem.log.error(e, "Failed to scale group avatar")
               DBIO.successful(Error(Errors.LocationInvalid))
           }
         }
