@@ -6,29 +6,24 @@
 #ifndef _BSDataOutput_H_
 #define _BSDataOutput_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSLongArray;
 
-#include "J2ObjC_header.h"
+@interface BSDataOutput : NSObject
 
-@interface BSDataOutput : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)init;
 
-- (void)writeLongWithLong:(jlong)v;
+- (IOSByteArray *)toByteArray;
 
-- (void)writeIntWithInt:(jint)v;
+- (void)writeASN1LengthWithInt:(jint)length;
 
 - (void)writeByteWithByte:(jbyte)v;
 
 - (void)writeByteWithInt:(jint)v;
-
-- (void)writeVarIntWithLong:(jlong)v;
-
-- (void)writeProtoBytesWithByteArray:(IOSByteArray *)v
-                             withInt:(jint)ofs
-                             withInt:(jint)len;
 
 - (void)writeBytesWithByteArray:(IOSByteArray *)v;
 
@@ -36,25 +31,32 @@
                         withInt:(jint)ofs
                         withInt:(jint)len;
 
+- (void)writeIntWithInt:(jint)v;
+
+- (void)writeLongWithLong:(jlong)v;
+
+- (void)writeProtoBoolWithBoolean:(jboolean)v;
+
+- (void)writeProtoBytesWithByteArray:(IOSByteArray *)v
+                             withInt:(jint)ofs
+                             withInt:(jint)len;
+
 - (void)writeProtoLongsWithLongArray:(IOSLongArray *)values;
 
 - (void)writeProtoStringWithNSString:(NSString *)value;
 
-- (void)writeProtoBoolWithBoolean:(jboolean)v;
-
-- (IOSByteArray *)toByteArray;
-
-- (void)writeASN1LengthWithInt:(jint)length;
+- (void)writeVarIntWithLong:(jlong)v;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSDataOutput)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSDataOutput_init(BSDataOutput *self);
 
-typedef BSDataOutput ImActorModelDroidkitBserDataOutput;
+FOUNDATION_EXPORT BSDataOutput *new_BSDataOutput_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSDataOutput)
+
+typedef BSDataOutput ImActorModelDroidkitBserDataOutput;
 
 #endif // _BSDataOutput_H_

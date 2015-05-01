@@ -6,6 +6,8 @@
 #ifndef _DKActorScope_H_
 #define _DKActorScope_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActor;
 @class DKActorDispatcher;
 @class DKActorEndpoint;
@@ -14,10 +16,9 @@
 @class DKMailbox;
 @class DKProps;
 
-#include "J2ObjC_header.h"
+@interface DKActorScope : NSObject
 
-@interface DKActorScope : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithDKActorSystem:(DKActorSystem *)actorSystem
                         withDKMailbox:(DKMailbox *)mailbox
@@ -26,39 +27,40 @@
                           withDKProps:(DKProps *)props
                   withDKActorEndpoint:(DKActorEndpoint *)endpoint;
 
-- (DKActorEndpoint *)getEndpoint;
+- (DKActor *)getActor;
+
+- (DKActorRef *)getActorRef;
+
+- (DKActorSystem *)getActorSystem;
 
 - (DKActorDispatcher *)getDispatcher;
+
+- (DKActorEndpoint *)getEndpoint;
+
+- (DKMailbox *)getMailbox;
 
 - (NSString *)getPath;
 
 - (DKProps *)getProps;
 
-- (DKActorRef *)getActorRef;
-
-- (DKMailbox *)getMailbox;
-
-- (DKActor *)getActor;
-
-- (DKActorSystem *)getActorSystem;
-
 - (DKActorRef *)getSender;
-
-- (void)setSenderWithDKActorRef:(DKActorRef *)sender;
 
 - (void)onActorCreatedWithDKActor:(DKActor *)actor;
 
 - (void)onActorDie;
 
+- (void)setSenderWithDKActorRef:(DKActorRef *)sender;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorScope)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorScope *self, DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint);
 
-typedef DKActorScope ImActorModelDroidkitActorsActorScope;
+FOUNDATION_EXPORT DKActorScope *new_DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorScope)
+
+typedef DKActorScope ImActorModelDroidkitActorsActorScope;
 
 #endif // _DKActorScope_H_

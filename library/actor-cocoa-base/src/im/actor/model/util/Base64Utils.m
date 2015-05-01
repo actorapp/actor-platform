@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/Base64Utils.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/Base64Utils.java"
 
 #include "IOSPrimitiveArray.h"
@@ -10,24 +11,27 @@
 #include "im/actor/model/util/Base64Utils.h"
 #include "java/lang/StringBuilder.h"
 
-__attribute__((unused)) static jboolean AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean_(JavaLangStringBuilder *sb, jint digit, jboolean haveNonZero);
-
-@interface AMBase64Utils () {
-}
+@interface AMBase64Utils ()
 
 + (jboolean)base64AppendWithJavaLangStringBuilder:(JavaLangStringBuilder *)sb
                                           withInt:(jint)digit
                                       withBoolean:(jboolean)haveNonZero;
+
 @end
 
-BOOL AMBase64Utils_initialized = NO;
+static IOSCharArray *AMBase64Utils_base64Chars_;
+J2OBJC_STATIC_FIELD_GETTER(AMBase64Utils, base64Chars_, IOSCharArray *)
+
+static IOSByteArray *AMBase64Utils_base64Values_;
+J2OBJC_STATIC_FIELD_GETTER(AMBase64Utils, base64Values_, IOSByteArray *)
+
+__attribute__((unused)) static jboolean AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean_(JavaLangStringBuilder *sb, jint digit, jboolean haveNonZero);
+
+J2OBJC_INITIALIZED_DEFN(AMBase64Utils)
 
 
 #line 22
 @implementation AMBase64Utils
-
-IOSCharArray * AMBase64Utils_base64Chars_;
-IOSByteArray * AMBase64Utils_base64Values_;
 
 
 #line 61
@@ -62,7 +66,8 @@ IOSByteArray * AMBase64Utils_base64Values_;
 }
 
 - (instancetype)init {
-  return [super init];
+  AMBase64Utils_init(self);
+  return self;
 }
 
 + (void)initialize {
@@ -94,8 +99,10 @@ IOSByteArray * AMBase64Utils_base64Values_;
 
 @end
 
+
+#line 61
 IOSByteArray *AMBase64Utils_fromBase64WithNSString_(NSString *data) {
-  AMBase64Utils_init();
+  AMBase64Utils_initialize();
   
 #line 62
   if (data == nil) {
@@ -153,8 +160,10 @@ IOSByteArray *AMBase64Utils_fromBase64WithNSString_(NSString *data) {
   return bytes;
 }
 
+
+#line 112
 jlong AMBase64Utils_longFromBase64WithNSString_(NSString *value) {
-  AMBase64Utils_init();
+  AMBase64Utils_initialize();
   
 #line 113
   jint pos = 0;
@@ -167,8 +176,10 @@ jlong AMBase64Utils_longFromBase64WithNSString_(NSString *value) {
   return longVal;
 }
 
+
+#line 134
 NSString *AMBase64Utils_toBase64WithByteArray_(IOSByteArray *data) {
-  AMBase64Utils_init();
+  AMBase64Utils_initialize();
   
 #line 135
   if (data == nil) {
@@ -215,15 +226,15 @@ NSString *AMBase64Utils_toBase64WithByteArray_(IOSByteArray *data) {
   return [NSString stringWithCharacters:chars];
 }
 
+
+#line 176
 NSString *AMBase64Utils_toBase64WithLong_(jlong value) {
-  AMBase64Utils_init();
-  
-#line 178
+  AMBase64Utils_initialize();
   jint low = (jint) (value & (jint) 0xffffffff);
   jint high = (jint) (RShift64(value, 32));
   
 #line 181
-  JavaLangStringBuilder *sb = [[JavaLangStringBuilder alloc] init];
+  JavaLangStringBuilder *sb = new_JavaLangStringBuilder_init();
   jboolean haveNonZero = AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean_(sb, (RShift32(high, 28)) & (jint) 0xf, NO);
   haveNonZero = AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean_(sb, (RShift32(high, 22)) & (jint) 0x3f, haveNonZero);
   haveNonZero = AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean_(sb, (RShift32(high, 16)) & (jint) 0x3f, haveNonZero);
@@ -241,10 +252,10 @@ NSString *AMBase64Utils_toBase64WithLong_(jlong value) {
   return [sb description];
 }
 
+
+#line 198
 jboolean AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean_(JavaLangStringBuilder *sb, jint digit, jboolean haveNonZero) {
-  AMBase64Utils_init();
-  
-#line 200
+  AMBase64Utils_initialize();
   if (digit > 0) {
     haveNonZero = YES;
   }
@@ -252,6 +263,16 @@ jboolean AMBase64Utils_base64AppendWithJavaLangStringBuilder_withInt_withBoolean
     (void) [((JavaLangStringBuilder *) nil_chk(sb)) appendWithChar:IOSCharArray_Get(nil_chk(AMBase64Utils_base64Chars_), digit)];
   }
   return haveNonZero;
+}
+
+void AMBase64Utils_init(AMBase64Utils *self) {
+  (void) NSObject_init(self);
+}
+
+AMBase64Utils *new_AMBase64Utils_init() {
+  AMBase64Utils *self = [AMBase64Utils alloc];
+  AMBase64Utils_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBase64Utils)

@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_H_
 #define _OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_H_
 
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
 
-@interface OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters : OrgBouncycastleCryptoParamsRSAKeyParameters {
-}
+@class JavaMathBigInteger;
+
+@interface OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters : OrgBouncycastleCryptoParamsRSAKeyParameters
+
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)publicExponent
@@ -23,15 +24,15 @@
                     withJavaMathBigInteger:(JavaMathBigInteger *)dQ
                     withJavaMathBigInteger:(JavaMathBigInteger *)qInv;
 
-- (JavaMathBigInteger *)getPublicExponent;
-
-- (JavaMathBigInteger *)getP;
-
-- (JavaMathBigInteger *)getQ;
-
 - (JavaMathBigInteger *)getDP;
 
 - (JavaMathBigInteger *)getDQ;
+
+- (JavaMathBigInteger *)getP;
+
+- (JavaMathBigInteger *)getPublicExponent;
+
+- (JavaMathBigInteger *)getQ;
 
 - (JavaMathBigInteger *)getQInv;
 
@@ -39,8 +40,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *self, JavaMathBigInteger *modulus, JavaMathBigInteger *publicExponent, JavaMathBigInteger *privateExponent, JavaMathBigInteger *p, JavaMathBigInteger *q, JavaMathBigInteger *dP, JavaMathBigInteger *dQ, JavaMathBigInteger *qInv);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *new_OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *publicExponent, JavaMathBigInteger *privateExponent, JavaMathBigInteger *p, JavaMathBigInteger *q, JavaMathBigInteger *dP, JavaMathBigInteger *dQ, JavaMathBigInteger *qInv) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GenericPolynomialExtensionField.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GenericPolynomialExtensionField.java"
 
 #include "J2ObjC_source.h"
@@ -20,19 +21,10 @@
 #line 12
 - (instancetype)initWithOrgBouncycastleMathFieldFiniteField:(id<OrgBouncycastleMathFieldFiniteField>)subfield
                      withOrgBouncycastleMathFieldPolynomial:(id<OrgBouncycastleMathFieldPolynomial>)polynomial {
-  if (self = [super init]) {
-    
-#line 14
-    self->subfield_ = subfield;
-    
-#line 15
-    self->minimalPolynomial_ = polynomial;
-  }
+  OrgBouncycastleMathFieldGenericPolynomialExtensionField_initWithOrgBouncycastleMathFieldFiniteField_withOrgBouncycastleMathFieldPolynomial_(self, subfield, polynomial);
   return self;
 }
 
-
-#line 18
 - (JavaMathBigInteger *)getCharacteristic {
   
 #line 20
@@ -71,6 +63,8 @@
   return minimalPolynomial_;
 }
 
+
+#line 43
 - (jboolean)isEqual:(id)obj {
   
 #line 45
@@ -88,20 +82,32 @@
   return [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) isEqual:((OrgBouncycastleMathFieldGenericPolynomialExtensionField *) nil_chk(other))->subfield_] && [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) isEqual:other->minimalPolynomial_];
 }
 
+
+#line 57
 - (NSUInteger)hash {
   
 #line 59
-  return ((jint) [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) hash]) ^ OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(
+  return ((jint) [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(subfield_)) hash]) ^ OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(((jint)
 #line 60
-  ((jint) [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) hash]), 16);
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleMathFieldGenericPolynomialExtensionField *)other {
-  [super copyAllFieldsTo:other];
-  other->subfield_ = subfield_;
-  other->minimalPolynomial_ = minimalPolynomial_;
+  [((id<OrgBouncycastleMathFieldPolynomial>) nil_chk(minimalPolynomial_)) hash]), 16);
 }
 
 @end
+
+
+#line 12
+void OrgBouncycastleMathFieldGenericPolynomialExtensionField_initWithOrgBouncycastleMathFieldFiniteField_withOrgBouncycastleMathFieldPolynomial_(OrgBouncycastleMathFieldGenericPolynomialExtensionField *self, id<OrgBouncycastleMathFieldFiniteField> subfield, id<OrgBouncycastleMathFieldPolynomial> polynomial) {
+  (void) NSObject_init(self);
+  self->subfield_ = subfield;
+  self->minimalPolynomial_ = polynomial;
+}
+
+
+#line 12
+OrgBouncycastleMathFieldGenericPolynomialExtensionField *new_OrgBouncycastleMathFieldGenericPolynomialExtensionField_initWithOrgBouncycastleMathFieldFiniteField_withOrgBouncycastleMathFieldPolynomial_(id<OrgBouncycastleMathFieldFiniteField> subfield, id<OrgBouncycastleMathFieldPolynomial> polynomial) {
+  OrgBouncycastleMathFieldGenericPolynomialExtensionField *self = [OrgBouncycastleMathFieldGenericPolynomialExtensionField alloc];
+  OrgBouncycastleMathFieldGenericPolynomialExtensionField_initWithOrgBouncycastleMathFieldFiniteField_withOrgBouncycastleMathFieldPolynomial_(self, subfield, polynomial);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathFieldGenericPolynomialExtensionField)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateConfig.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateConfig.java"
 
 #include "IOSClass.h"
@@ -14,12 +15,14 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateConfig () {
  @public
   ImActorModelApiConfig *config_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApiConfig *)
@@ -37,43 +40,40 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 
 #line 29
 - (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config {
-  if (self = [super init]) {
-    
-#line 30
-    self->config_ = config;
-  }
+  ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(self, config);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateConfig_init(self);
+  return self;
 }
 
+
+#line 37
 - (ImActorModelApiConfig *)getConfig {
-  
-#line 38
   return self->config_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiConfig alloc] init]];
+  self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiConfig_init()];
 }
 
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   if (self->config_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->config_];
 }
 
+
+#line 55
 - (NSString *)description {
   NSString *res = @"update Config{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"config=", self->config_));
@@ -81,24 +81,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 64
-  return ImActorModelApiUpdatesUpdateConfig_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateConfig *)other {
-  [super copyAllFieldsTo:other];
-  other->config_ = config_;
+#line 63
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateConfig_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateConfig_init();
+  ImActorModelApiUpdatesUpdateConfig_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateConfig *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateConfig alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateConfig *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateConfig_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiUpdatesUpdateConfig *self, ImActorModelApiConfig *config) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 30
+  self->config_ = config;
+}
+
+
+#line 29
+ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiConfig *config) {
+  ImActorModelApiUpdatesUpdateConfig *self = [ImActorModelApiUpdatesUpdateConfig alloc];
+  ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(self, config);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateConfig_init(ImActorModelApiUpdatesUpdateConfig *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_init() {
+  ImActorModelApiUpdatesUpdateConfig *self = [ImActorModelApiUpdatesUpdateConfig alloc];
+  ImActorModelApiUpdatesUpdateConfig_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateConfig)

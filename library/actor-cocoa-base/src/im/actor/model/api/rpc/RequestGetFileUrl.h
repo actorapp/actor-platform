@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestGetFileUrl_H_
 #define _ImActorModelApiRpcRequestGetFileUrl_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiFileLocation;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestGetFileUrl_HEADER 77
 
-@interface ImActorModelApiRpcRequestGetFileUrl : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestGetFileUrl : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)file;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)file;
+
++ (ImActorModelApiRpcRequestGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (ImActorModelApiFileLocation *)getFile;
+
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetFileUrl)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetFileUrl, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUrl *ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetFileUrl, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(ImActorModelApiRpcRequestGetFileUrl *self, ImActorModelApiFileLocation *file);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *file) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetFileUrl_init(ImActorModelApiRpcRequestGetFileUrl *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetFileUrl)
 

@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestSubscribeToGroupOnline_H_
 #define _ImActorModelApiRpcRequestSubscribeToGroupOnline_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER 74
 
-@interface ImActorModelApiRpcRequestSubscribeToGroupOnline : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestSubscribeToGroupOnline : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestSubscribeToGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups;
+
++ (ImActorModelApiRpcRequestSubscribeToGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (id<JavaUtilList>)getGroups;
+
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSubscribeToGroupOnline)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToGroupOnline *ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToGroupOnline *self, id<JavaUtilList> groups);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(id<JavaUtilList> groups) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeToGroupOnline_init(ImActorModelApiRpcRequestSubscribeToGroupOnline *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSubscribeToGroupOnline)
 

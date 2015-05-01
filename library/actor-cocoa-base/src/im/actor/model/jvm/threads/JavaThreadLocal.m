@@ -3,16 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaThreadLocal.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaThreadLocal.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/jvm/threads/JavaThreadLocal.h"
+#include "im/actor/model/util/ThreadLocalCompat.h"
 #include "java/lang/ThreadLocal.h"
 
 @interface ImActorModelJvmThreadsJavaThreadLocal () {
  @public
   JavaLangThreadLocal *tThreadLocal_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaThreadLocal, tThreadLocal_, JavaLangThreadLocal *)
@@ -24,8 +27,6 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaThreadLocal, tThreadLocal_, JavaLa
 
 #line 12
 - (id)get {
-  
-#line 13
   return [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) get];
 }
 
@@ -38,25 +39,25 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaThreadLocal, tThreadLocal_, JavaLa
 
 #line 22
 - (void)remove {
-  
-#line 23
   [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) remove];
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    tThreadLocal_ =
-#line 9
-    [[JavaLangThreadLocal alloc] init];
-  }
+  ImActorModelJvmThreadsJavaThreadLocal_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelJvmThreadsJavaThreadLocal *)other {
-  [super copyAllFieldsTo:other];
-  other->tThreadLocal_ = tThreadLocal_;
+@end
+
+void ImActorModelJvmThreadsJavaThreadLocal_init(ImActorModelJvmThreadsJavaThreadLocal *self) {
+  (void) AMThreadLocalCompat_init(self);
+  self->tThreadLocal_ = new_JavaLangThreadLocal_init();
 }
 
-@end
+ImActorModelJvmThreadsJavaThreadLocal *new_ImActorModelJvmThreadsJavaThreadLocal_init() {
+  ImActorModelJvmThreadsJavaThreadLocal *self = [ImActorModelJvmThreadsJavaThreadLocal alloc];
+  ImActorModelJvmThreadsJavaThreadLocal_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaThreadLocal)

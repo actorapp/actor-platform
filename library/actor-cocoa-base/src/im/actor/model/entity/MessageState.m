@@ -3,19 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/MessageState.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/MessageState.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/MessageState.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-#line 6
+__attribute__((unused)) static void AMMessageStateEnum_initWithInt_withNSString_withInt_(AMMessageStateEnum *self, jint value, NSString *__name, jint __ordinal);
 
-BOOL AMMessageStateEnum_initialized = NO;
+__attribute__((unused)) static AMMessageStateEnum *new_AMMessageStateEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(AMMessageStateEnum)
 
 AMMessageStateEnum *AMMessageStateEnum_values_[6];
 
+
+#line 6
 @implementation AMMessageStateEnum
 
 
@@ -23,32 +29,25 @@ AMMessageStateEnum *AMMessageStateEnum_values_[6];
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  if (self = [super initWithNSString:__name withInt:__ordinal]) {
-    
-#line 17
-    self->value_ = value;
-  }
+  AMMessageStateEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
 
 #line 20
 - (jint)getValue {
-  
-#line 21
   return value_;
 }
 
-
-#line 24
 + (AMMessageStateEnum *)fromValueWithInt:(jint)value {
   return AMMessageStateEnum_fromValueWithInt_(value);
 }
 
 IOSObjectArray *AMMessageStateEnum_values() {
-  AMMessageStateEnum_init();
+  AMMessageStateEnum_initialize();
   return [IOSObjectArray arrayWithObjects:AMMessageStateEnum_values_ count:6 type:AMMessageStateEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return AMMessageStateEnum_values();
 }
@@ -58,7 +57,7 @@ IOSObjectArray *AMMessageStateEnum_values() {
 }
 
 AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
-  AMMessageStateEnum_init();
+  AMMessageStateEnum_initialize();
   for (int i = 0; i < 6; i++) {
     AMMessageStateEnum *e = AMMessageStateEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -75,32 +74,51 @@ AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMMessageStateEnum class]) {
-    AMMessageStateEnum_PENDING = [[AMMessageStateEnum alloc] initWithInt:
+    AMMessageStateEnum_PENDING = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
 #line 7
-    1 withNSString:@"PENDING" withInt:0];
-    AMMessageStateEnum_SENT = [[AMMessageStateEnum alloc] initWithInt:
+    1, @"PENDING", 0);
+    AMMessageStateEnum_SENT = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
 #line 8
-    2 withNSString:@"SENT" withInt:1];
-    AMMessageStateEnum_RECEIVED = [[AMMessageStateEnum alloc] initWithInt:
+    2, @"SENT", 1);
+    AMMessageStateEnum_RECEIVED = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
 #line 9
-    3 withNSString:@"RECEIVED" withInt:2];
-    AMMessageStateEnum_READ = [[AMMessageStateEnum alloc] initWithInt:
+    3, @"RECEIVED", 2);
+    AMMessageStateEnum_READ = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
 #line 10
-    4 withNSString:@"READ" withInt:3];
-    AMMessageStateEnum_ERROR = [[AMMessageStateEnum alloc] initWithInt:
+    4, @"READ", 3);
+    AMMessageStateEnum_ERROR = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
 #line 11
-    5 withNSString:@"ERROR" withInt:4];
-    AMMessageStateEnum_UNKNOWN = [[AMMessageStateEnum alloc] initWithInt:
+    5, @"ERROR", 4);
+    AMMessageStateEnum_UNKNOWN = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
 #line 12
-    6 withNSString:@"UNKNOWN" withInt:5];
+    6, @"UNKNOWN", 5);
     J2OBJC_SET_INITIALIZED(AMMessageStateEnum)
   }
 }
 
 @end
 
+
+#line 16
+void AMMessageStateEnum_initWithInt_withNSString_withInt_(AMMessageStateEnum *self, jint value, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  
+#line 17
+  self->value_ = value;
+}
+
+
+#line 16
+AMMessageStateEnum *new_AMMessageStateEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  AMMessageStateEnum *self = [AMMessageStateEnum alloc];
+  AMMessageStateEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  return self;
+}
+
+
+#line 24
 AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value) {
-  AMMessageStateEnum_init();
+  AMMessageStateEnum_initialize();
   
 #line 25
   switch (value) {

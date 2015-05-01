@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/BaseParser.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/BaseParser.java"
 
 #include "IOSClass.h"
@@ -19,9 +20,14 @@
 @implementation ImActorModelNetworkParserBaseParser
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelNetworkParserBaseParser_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelNetworkParserBaseParser_init(ImActorModelNetworkParserBaseParser *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserBaseParser)

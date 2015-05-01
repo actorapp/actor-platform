@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Bser.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/Bser.java"
 
 #include "IOSClass.h"
@@ -17,8 +18,14 @@
 #include "java/io/IOException.h"
 
 @interface BSBser ()
+
 - (instancetype)init;
+
 @end
+
+__attribute__((unused)) static void BSBser_init(BSBser *self);
+
+__attribute__((unused)) static BSBser *new_BSBser_init() NS_RETURNS_RETAINED;
 
 
 #line 8
@@ -41,25 +48,44 @@
 
 #line 19
 - (instancetype)init {
-  return [super init];
+  BSBser_init(self);
+  return self;
 }
 
 @end
 
+
+#line 9
 id BSBser_parseWithBSBserObject_withBSDataInput_(BSBserObject *res, BSDataInput *inputStream) {
-  BSBser_init();
+  BSBser_initialize();
   
 #line 10
-  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_(inputStream)];
+  BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(inputStream));
   [((BSBserObject *) nil_chk(res)) parseWithBSBserValues:reader];
   return res;
 }
 
+
+#line 15
 id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data) {
-  BSBser_init();
+  BSBser_initialize();
   
 #line 16
-  return ((BSBserObject *) BSBser_parseWithBSBserObject_withBSDataInput_(res, [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_]));
+  return ((BSBserObject *) BSBser_parseWithBSBserObject_withBSDataInput_(res, new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
+}
+
+
+#line 19
+void BSBser_init(BSBser *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 19
+BSBser *new_BSBser_init() {
+  BSBser *self = [BSBser alloc];
+  BSBser_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBser)

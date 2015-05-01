@@ -16,31 +16,27 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiEncryptionType) {
   ImActorModelApiEncryptionType_UNSUPPORTED_VALUE = 3,
 };
 
-@interface ImActorModelApiEncryptionTypeEnum : JavaLangEnum < NSCopying > {
-}
+@interface ImActorModelApiEncryptionTypeEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
 
 + (ImActorModelApiEncryptionTypeEnum *)parseWithInt:(jint)value;
 
+#pragma mark Package-Private
+
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiEncryptionTypeEnum_values();
 
 + (ImActorModelApiEncryptionTypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelApiEncryptionTypeEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelApiEncryptionTypeEnum)
-
-FOUNDATION_EXPORT ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_parseWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_values_[];
 
@@ -55,6 +51,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiEncryptionTypeEnum, AES_THEN_MAC)
 
 #define ImActorModelApiEncryptionTypeEnum_UNSUPPORTED_VALUE ImActorModelApiEncryptionTypeEnum_values_[ImActorModelApiEncryptionType_UNSUPPORTED_VALUE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiEncryptionTypeEnum, UNSUPPORTED_VALUE)
+
+FOUNDATION_EXPORT ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_parseWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiEncryptionTypeEnum)
 

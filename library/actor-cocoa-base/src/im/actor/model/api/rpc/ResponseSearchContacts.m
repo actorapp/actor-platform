@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSearchContacts.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSearchContacts.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -22,6 +24,7 @@
  @public
   id<JavaUtilList> users_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUtilList>)
@@ -39,32 +42,29 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
 
 #line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users {
-  if (self = [super init]) {
-    
-#line 30
-    self->users_ = users;
-  }
+  ImActorModelApiRpcResponseSearchContacts_initWithJavaUtilList_(self, users);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcResponseSearchContacts_init(self);
+  return self;
 }
 
+
+#line 37
 - (id<JavaUtilList>)getUsers {
-  
-#line 38
   return self->users_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:[[ImActorModelApiUser alloc] init]];
+    [_users addWithId:new_ImActorModelApiUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
@@ -72,35 +72,63 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSearchContacts, users_, id<JavaUti
 
 #line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 52
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
 }
 
+
+#line 56
 - (NSString *)description {
   NSString *res = @"tuple SearchContacts{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 64
-  return ImActorModelApiRpcResponseSearchContacts_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcResponseSearchContacts *)other {
-  [super copyAllFieldsTo:other];
-  other->users_ = users_;
+#line 63
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcResponseSearchContacts_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcResponseSearchContacts *ImActorModelApiRpcResponseSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseSearchContacts_init();
+  ImActorModelApiRpcResponseSearchContacts_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcResponseSearchContacts *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseSearchContacts alloc] init], data));
+  return ((ImActorModelApiRpcResponseSearchContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSearchContacts_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcResponseSearchContacts_initWithJavaUtilList_(ImActorModelApiRpcResponseSearchContacts *self, id<JavaUtilList> users) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+  
+#line 30
+  self->users_ = users;
+}
+
+
+#line 29
+ImActorModelApiRpcResponseSearchContacts *new_ImActorModelApiRpcResponseSearchContacts_initWithJavaUtilList_(id<JavaUtilList> users) {
+  ImActorModelApiRpcResponseSearchContacts *self = [ImActorModelApiRpcResponseSearchContacts alloc];
+  ImActorModelApiRpcResponseSearchContacts_initWithJavaUtilList_(self, users);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcResponseSearchContacts_init(ImActorModelApiRpcResponseSearchContacts *self) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcResponseSearchContacts *new_ImActorModelApiRpcResponseSearchContacts_init() {
+  ImActorModelApiRpcResponseSearchContacts *self = [ImActorModelApiRpcResponseSearchContacts alloc];
+  ImActorModelApiRpcResponseSearchContacts_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSearchContacts)

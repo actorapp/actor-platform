@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/LongDigest.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/LongDigest.java"
 
 #include "IOSPrimitiveArray.h"
@@ -13,13 +14,7 @@
 
 #pragma clang diagnostic ignored "-Wprotocol"
 
-__attribute__((unused)) static void OrgBouncycastleCryptoDigestsLongDigest_adjustByteCounts(OrgBouncycastleCryptoDigestsLongDigest *self);
-__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x, jlong y, jlong z);
-__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x, jlong y, jlong z);
-__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
-__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
-__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sigma0WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
-__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sigma1WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
+#define OrgBouncycastleCryptoDigestsLongDigest_BYTE_LENGTH 128
 
 @interface OrgBouncycastleCryptoDigestsLongDigest () {
  @public
@@ -48,61 +43,53 @@ __attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sigm
 - (jlong)Sigma0WithLong:(jlong)x;
 
 - (jlong)Sigma1WithLong:(jlong)x;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsLongDigest, xBuf_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsLongDigest, W_, IOSLongArray *)
 
-BOOL OrgBouncycastleCryptoDigestsLongDigest_initialized = NO;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsLongDigest, BYTE_LENGTH, jint)
+
+__attribute__((unused)) static void OrgBouncycastleCryptoDigestsLongDigest_adjustByteCounts(OrgBouncycastleCryptoDigestsLongDigest *self);
+
+__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x, jlong y, jlong z);
+
+__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x, jlong y, jlong z);
+
+__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
+
+__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
+
+__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sigma0WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
+
+__attribute__((unused)) static jlong OrgBouncycastleCryptoDigestsLongDigest_Sigma1WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x);
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleCryptoDigestsLongDigest)
+
+IOSLongArray *OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 
 #line 11
 @implementation OrgBouncycastleCryptoDigestsLongDigest
 
-IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
-
 
 #line 29
 - (instancetype)init {
-  if (self = [super init]) {
-    xBuf_ = [IOSByteArray newArrayWithLength:
-#line 15
-    8];
-    W_ = [IOSLongArray newArrayWithLength:
-#line 23
-    80];
-    
-#line 30
-    xBufOff_ = 0;
-    
-#line 32
-    [self reset];
-  }
+  OrgBouncycastleCryptoDigestsLongDigest_init(self);
   return self;
 }
 
 
 #line 40
 - (instancetype)initWithOrgBouncycastleCryptoDigestsLongDigest:(OrgBouncycastleCryptoDigestsLongDigest *)t {
-  if (self = [super init]) {
-    xBuf_ = [IOSByteArray newArrayWithLength:
-#line 15
-    8];
-    W_ = [IOSLongArray newArrayWithLength:
-#line 23
-    80];
-    
-#line 41
-    [self copyInWithOrgBouncycastleCryptoDigestsLongDigest:t];
-  }
+  OrgBouncycastleCryptoDigestsLongDigest_initWithOrgBouncycastleCryptoDigestsLongDigest_(self, t);
   return self;
 }
 
 
 #line 44
 - (void)copyInWithOrgBouncycastleCryptoDigestsLongDigest:(OrgBouncycastleCryptoDigestsLongDigest *)t {
-  
-#line 45
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(((OrgBouncycastleCryptoDigestsLongDigest *) nil_chk(t))->xBuf_, 0, xBuf_, 0, ((IOSByteArray *) nil_chk(t->xBuf_))->size_);
   
 #line 47
@@ -128,8 +115,6 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 64
 - (void)populateStateWithByteArray:(IOSByteArray *)state {
-  
-#line 65
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(xBuf_, 0, state, 0, xBufOff_);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(xBufOff_, state, 8);
   OrgBouncycastleUtilPack_longToBigEndianWithLong_withByteArray_withInt_(byteCount1_, state, 12);
@@ -153,8 +138,6 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 84
 - (void)restoreStateWithByteArray:(IOSByteArray *)encodedState {
-  
-#line 85
   xBufOff_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 8);
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(encodedState, 0, xBuf_, 0, xBufOff_);
   byteCount1_ = OrgBouncycastleUtilPack_bigEndianToLongWithByteArray_withInt_(encodedState, 12);
@@ -180,14 +163,12 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 105
 - (jint)getEncodedStateSize {
-  
-#line 106
   return 96 + (wOff_ * 8);
 }
 
-
-#line 109
 - (void)updateWithByte:(jbyte)inArg {
+  
+#line 111
   *IOSByteArray_GetRef(nil_chk(xBuf_), xBufOff_++) = inArg;
   
 #line 113
@@ -238,8 +219,6 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 157
 - (void)finish {
-  
-#line 158
   OrgBouncycastleCryptoDigestsLongDigest_adjustByteCounts(self);
   
 #line 160
@@ -264,8 +243,6 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 177
 - (void)reset {
-  
-#line 178
   byteCount1_ = 0;
   byteCount2_ = 0;
   
@@ -285,13 +262,9 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 192
 - (jint)getByteLength {
-  
-#line 193
   return OrgBouncycastleCryptoDigestsLongDigest_BYTE_LENGTH;
 }
 
-
-#line 196
 - (void)processWordWithByteArray:(IOSByteArray *)inArg
                          withInt:(jint)inOff {
   
@@ -328,8 +301,6 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 #line 228
 - (void)processBlock {
-  
-#line 229
   OrgBouncycastleCryptoDigestsLongDigest_adjustByteCounts(self);
   
 #line 234
@@ -350,44 +321,68 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 #line 250
   jint t = 0;
   for (jint i = 0; i < 10; i++) {
+    jint unseq$1 =
+#line 253
+    t;
     
 #line 253
-    h += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, e) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, e, f, g) + IOSLongArray_Get(nil_chk(OrgBouncycastleCryptoDigestsLongDigest_K_), t) + IOSLongArray_Get(nil_chk(W_), t++);
+    h += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, e) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, e, f, g) + IOSLongArray_Get(nil_chk(OrgBouncycastleCryptoDigestsLongDigest_K_), unseq$1) + IOSLongArray_Get(nil_chk(W_), t++);
     d += h;
     h += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, a) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, a, b, c);
+    jint unseq$2 =
+#line 258
+    t;
     
 #line 258
-    g += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, d) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, d, e, f) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    g += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, d) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, d, e, f) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$2) + IOSLongArray_Get(W_, t++);
     c += g;
     g += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, h) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, h, a, b);
+    jint unseq$3 =
+#line 263
+    t;
     
 #line 263
-    f += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, c) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, c, d, e) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    f += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, c) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, c, d, e) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$3) + IOSLongArray_Get(W_, t++);
     b += f;
     f += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, g) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, g, h, a);
+    jint unseq$4 =
+#line 268
+    t;
     
 #line 268
-    e += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, b) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, b, c, d) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    e += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, b) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, b, c, d) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$4) + IOSLongArray_Get(W_, t++);
     a += e;
     e += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, f) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, f, g, h);
+    jint unseq$5 =
+#line 273
+    t;
     
 #line 273
-    d += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, a) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, a, b, c) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    d += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, a) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, a, b, c) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$5) + IOSLongArray_Get(W_, t++);
     h += d;
     d += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, e) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, e, f, g);
+    jint unseq$6 =
+#line 278
+    t;
     
 #line 278
-    c += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, h) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, h, a, b) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    c += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, h) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, h, a, b) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$6) + IOSLongArray_Get(W_, t++);
     g += c;
     c += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, d) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, d, e, f);
+    jint unseq$7 =
+#line 283
+    t;
     
 #line 283
-    b += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, g) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, g, h, a) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    b += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, g) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, g, h, a) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$7) + IOSLongArray_Get(W_, t++);
     f += b;
     b += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, c) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, c, d, e);
+    jint unseq$8 =
+#line 288
+    t;
     
 #line 288
-    a += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, f) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, f, g, h) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, t) + IOSLongArray_Get(W_, t++);
+    a += OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(self, f) + OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(self, f, g, h) + IOSLongArray_Get(OrgBouncycastleCryptoDigestsLongDigest_K_, unseq$8) + IOSLongArray_Get(W_, t++);
     e += a;
     a += OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(self, b) + OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(self, b, c, d);
   }
@@ -449,24 +444,6 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
   return OrgBouncycastleCryptoDigestsLongDigest_Sigma1WithLong_(self, x);
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoDigestsLongDigest *)other {
-  [super copyAllFieldsTo:other];
-  other->xBuf_ = xBuf_;
-  other->xBufOff_ = xBufOff_;
-  other->byteCount1_ = byteCount1_;
-  other->byteCount2_ = byteCount2_;
-  other->H1_ = H1_;
-  other->H2_ = H2_;
-  other->H3_ = H3_;
-  other->H4_ = H4_;
-  other->H5_ = H5_;
-  other->H6_ = H6_;
-  other->H7_ = H7_;
-  other->H8_ = H8_;
-  other->W_ = W_;
-  other->wOff_ = wOff_;
-}
-
 + (void)initialize {
   if (self == [OrgBouncycastleCryptoDigestsLongDigest class]) {
     OrgBouncycastleCryptoDigestsLongDigest_K_ = [IOSLongArray newArrayWithLongs:(jlong[]){
@@ -516,45 +493,90 @@ IOSLongArray * OrgBouncycastleCryptoDigestsLongDigest_K_;
 
 @end
 
-void OrgBouncycastleCryptoDigestsLongDigest_adjustByteCounts(OrgBouncycastleCryptoDigestsLongDigest *self) {
+
+#line 29
+void OrgBouncycastleCryptoDigestsLongDigest_init(OrgBouncycastleCryptoDigestsLongDigest *self) {
+  (void) NSObject_init(self);
+  self->xBuf_ = [IOSByteArray newArrayWithLength:
+#line 15
+  8];
+  self->W_ = [IOSLongArray newArrayWithLength:
+#line 23
+  80];
   
-#line 211
+#line 30
+  self->xBufOff_ = 0;
+  
+#line 32
+  [self reset];
+}
+
+
+#line 40
+void OrgBouncycastleCryptoDigestsLongDigest_initWithOrgBouncycastleCryptoDigestsLongDigest_(OrgBouncycastleCryptoDigestsLongDigest *self, OrgBouncycastleCryptoDigestsLongDigest *t) {
+  (void) NSObject_init(self);
+  self->xBuf_ = [IOSByteArray newArrayWithLength:
+#line 15
+  8];
+  self->W_ = [IOSLongArray newArrayWithLength:
+#line 23
+  80];
+  
+#line 41
+  [self copyInWithOrgBouncycastleCryptoDigestsLongDigest:t];
+}
+
+
+#line 210
+void OrgBouncycastleCryptoDigestsLongDigest_adjustByteCounts(OrgBouncycastleCryptoDigestsLongDigest *self) {
   if (self->byteCount1_ > (jlong) 0x1fffffffffffffffLL) {
     self->byteCount2_ += (URShift64(self->byteCount1_, 61));
     self->byteCount1_ &= (jlong) 0x1fffffffffffffffLL;
   }
 }
 
+
+#line 312
 jlong OrgBouncycastleCryptoDigestsLongDigest_ChWithLong_withLong_withLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x, jlong y, jlong z) {
   
 #line 316
   return ((x & y) ^ ((~x) & z));
 }
 
+
+#line 319
 jlong OrgBouncycastleCryptoDigestsLongDigest_MajWithLong_withLong_withLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x, jlong y, jlong z) {
   
 #line 323
   return ((x & y) ^ (x & z) ^ (y & z));
 }
 
+
+#line 326
 jlong OrgBouncycastleCryptoDigestsLongDigest_Sum0WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x) {
   
 #line 328
   return ((LShift64(x, 36)) | (URShift64(x, 28))) ^ ((LShift64(x, 30)) | (URShift64(x, 34))) ^ ((LShift64(x, 25)) | (URShift64(x, 39)));
 }
 
+
+#line 331
 jlong OrgBouncycastleCryptoDigestsLongDigest_Sum1WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x) {
   
 #line 333
   return ((LShift64(x, 50)) | (URShift64(x, 14))) ^ ((LShift64(x, 46)) | (URShift64(x, 18))) ^ ((LShift64(x, 23)) | (URShift64(x, 41)));
 }
 
+
+#line 336
 jlong OrgBouncycastleCryptoDigestsLongDigest_Sigma0WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x) {
   
 #line 338
   return ((LShift64(x, 63)) | (URShift64(x, 1))) ^ ((LShift64(x, 56)) | (URShift64(x, 8))) ^ (URShift64(x, 7));
 }
 
+
+#line 341
 jlong OrgBouncycastleCryptoDigestsLongDigest_Sigma1WithLong_(OrgBouncycastleCryptoDigestsLongDigest *self, jlong x) {
   
 #line 343

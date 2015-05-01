@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GF2Polynomial.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GF2Polynomial.java"
 
 #include "IOSPrimitiveArray.h"
@@ -17,16 +18,10 @@
 
 #line 9
 - (instancetype)initWithIntArray:(IOSIntArray *)exponents {
-  if (self = [super init]) {
-    
-#line 11
-    self->exponents_ = OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents);
-  }
+  OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(self, exponents);
   return self;
 }
 
-
-#line 14
 - (jint)getDegree {
   
 #line 16
@@ -41,6 +36,8 @@
   return OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents_);
 }
 
+
+#line 24
 - (jboolean)isEqual:(id)obj {
   
 #line 26
@@ -58,17 +55,29 @@
   return OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(exponents_, ((OrgBouncycastleMathFieldGF2Polynomial *) nil_chk(other))->exponents_);
 }
 
+
+#line 38
 - (NSUInteger)hash {
   
 #line 40
   return OrgBouncycastleUtilArrays_hashCodeWithIntArray_(exponents_);
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathFieldGF2Polynomial *)other {
-  [super copyAllFieldsTo:other];
-  other->exponents_ = exponents_;
+@end
+
+
+#line 9
+void OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(OrgBouncycastleMathFieldGF2Polynomial *self, IOSIntArray *exponents) {
+  (void) NSObject_init(self);
+  self->exponents_ = OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents);
 }
 
-@end
+
+#line 9
+OrgBouncycastleMathFieldGF2Polynomial *new_OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(IOSIntArray *exponents) {
+  OrgBouncycastleMathFieldGF2Polynomial *self = [OrgBouncycastleMathFieldGF2Polynomial alloc];
+  OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(self, exponents);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathFieldGF2Polynomial)

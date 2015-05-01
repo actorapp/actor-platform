@@ -6,22 +6,23 @@
 #ifndef _ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_H_
 #define _ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_H_
 
-@class DKEnvelope;
-
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope : NSObject {
-}
+@class DKEnvelope;
+
+@interface ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)time
               withDKEnvelope:(DKEnvelope *)envelope;
 
+- (DKEnvelope *)getEnvelope;
+
 - (jlong)getKey;
 
 - (jlong)getTime;
-
-- (DKEnvelope *)getEnvelope;
 
 - (NSString *)description;
 
@@ -29,8 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_initWithLong_withLong_withDKEnvelope_(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *self, jlong key, jlong time, DKEnvelope *envelope);
+
+FOUNDATION_EXPORT ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *new_ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_initWithLong_withLong_withDKEnvelope_(jlong key, jlong time, DKEnvelope *envelope) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope)
 

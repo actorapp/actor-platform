@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserContactsChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserContactsChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 #include "java/util/List.h"
 
@@ -22,6 +24,7 @@
   id<JavaUtilList> phones_;
   id<JavaUtilList> emails_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, phones_, id<JavaUtilList>)
@@ -42,45 +45,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id
 - (instancetype)initWithInt:(jint)uid
            withJavaUtilList:(id<JavaUtilList>)phones
            withJavaUtilList:(id<JavaUtilList>)emails {
-  if (self = [super init]) {
-    
-#line 32
-    self->uid_ = uid;
-    
-#line 33
-    self->phones_ = phones;
-    
-#line 34
-    self->emails_ = emails;
-  }
+  ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_withJavaUtilList_(self, uid, phones, emails);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateUserContactsChanged_init(self);
+  return self;
 }
 
+
+#line 41
 - (jint)getUid {
-  
-#line 42
   return self->uid_;
 }
 
-
-#line 45
 - (id<JavaUtilList>)getPhones {
-  
-#line 46
   return self->phones_;
 }
 
-
-#line 49
 - (id<JavaUtilList>)getEmails {
-  
-#line 50
   return self->emails_;
 }
 
@@ -95,13 +81,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeRepeatedIntWithInt:2 withJavaUtilList:self->phones_];
   [writer writeRepeatedIntWithInt:3 withJavaUtilList:self->emails_];
 }
 
+
+#line 68
 - (NSString *)description {
   NSString *res = @"update UserContactsChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -111,26 +97,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, emails_, id
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 79
-  return ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserContactsChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->phones_ = phones_;
-  other->emails_ = emails_;
+#line 78
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateUserContactsChanged *ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserContactsChanged_init();
+  ImActorModelApiUpdatesUpdateUserContactsChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserContactsChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserContactsChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserContactsChanged_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_withJavaUtilList_(ImActorModelApiUpdatesUpdateUserContactsChanged *self, jint uid, id<JavaUtilList> phones, id<JavaUtilList> emails) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 32
+  self->uid_ = uid;
+  self->phones_ = phones;
+  self->emails_ = emails;
+}
+
+
+#line 31
+ImActorModelApiUpdatesUpdateUserContactsChanged *new_ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_withJavaUtilList_(jint uid, id<JavaUtilList> phones, id<JavaUtilList> emails) {
+  ImActorModelApiUpdatesUpdateUserContactsChanged *self = [ImActorModelApiUpdatesUpdateUserContactsChanged alloc];
+  ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_withJavaUtilList_(self, uid, phones, emails);
+  return self;
+}
+
+void ImActorModelApiUpdatesUpdateUserContactsChanged_init(ImActorModelApiUpdatesUpdateUserContactsChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 37
+ImActorModelApiUpdatesUpdateUserContactsChanged *new_ImActorModelApiUpdatesUpdateUserContactsChanged_init() {
+  ImActorModelApiUpdatesUpdateUserContactsChanged *self = [ImActorModelApiUpdatesUpdateUserContactsChanged alloc];
+  ImActorModelApiUpdatesUpdateUserContactsChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserContactsChanged)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookContact.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookContact.java"
 
 #include "J2ObjC_source.h"
@@ -16,6 +17,7 @@
   JavaUtilArrayList *phones_;
   JavaUtilArrayList *emails_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMPhoneBookContact, name_, NSString *)
@@ -32,69 +34,50 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
                 withNSString:(NSString *)name
        withJavaUtilArrayList:(JavaUtilArrayList *)phones
        withJavaUtilArrayList:(JavaUtilArrayList *)emails {
-  if (self = [super init]) {
-    phones_ =
-#line 12
-    [[JavaUtilArrayList alloc] init];
-    emails_ =
-#line 13
-    [[JavaUtilArrayList alloc] init];
-    
-#line 16
-    self->contactId_ = contactId;
-    
-#line 17
-    self->name_ = name;
-    
-#line 18
-    self->phones_ = phones;
-    
-#line 19
-    self->emails_ = emails;
-  }
+  AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(self, contactId, name, phones, emails);
   return self;
 }
 
 
 #line 22
 - (JavaUtilArrayList *)getPhones {
-  
-#line 23
   return phones_;
 }
 
-
-#line 26
 - (JavaUtilArrayList *)getEmails {
-  
-#line 27
   return emails_;
 }
 
-
-#line 30
 - (NSString *)getName {
-  
-#line 31
   return name_;
 }
 
-
-#line 34
 - (jlong)getContactId {
-  
-#line 35
   return contactId_;
 }
 
-- (void)copyAllFieldsTo:(AMPhoneBookContact *)other {
-  [super copyAllFieldsTo:other];
-  other->contactId_ = contactId_;
-  other->name_ = name_;
-  other->phones_ = phones_;
-  other->emails_ = emails_;
+@end
+
+
+#line 15
+void AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(AMPhoneBookContact *self, jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) {
+  (void) NSObject_init(self);
+  self->phones_ = new_JavaUtilArrayList_init();
+  self->emails_ = new_JavaUtilArrayList_init();
+  
+#line 16
+  self->contactId_ = contactId;
+  self->name_ = name;
+  self->phones_ = phones;
+  self->emails_ = emails;
 }
 
-@end
+
+#line 15
+AMPhoneBookContact *new_AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) {
+  AMPhoneBookContact *self = [AMPhoneBookContact alloc];
+  AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(self, contactId, name, phones, emails);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPhoneBookContact)

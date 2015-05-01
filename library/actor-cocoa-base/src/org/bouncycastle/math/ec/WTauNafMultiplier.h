@@ -6,33 +6,33 @@
 #ifndef _OrgBouncycastleMathEcWTauNafMultiplier_H_
 #define _OrgBouncycastleMathEcWTauNafMultiplier_H_
 
-@class IOSByteArray;
-@class JavaMathBigInteger;
-@class OrgBouncycastleMathEcECPoint;
-@class OrgBouncycastleMathEcECPoint_F2m;
-@class OrgBouncycastleMathEcZTauElement;
-@protocol OrgBouncycastleMathEcPreCompInfo;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 
-@interface OrgBouncycastleMathEcWTauNafMultiplier : OrgBouncycastleMathEcAbstractECMultiplier {
-}
+@class JavaMathBigInteger;
+@class OrgBouncycastleMathEcECPoint;
+
+@interface OrgBouncycastleMathEcWTauNafMultiplier : OrgBouncycastleMathEcAbstractECMultiplier
+
+#pragma mark Public
+
+- (instancetype)init;
+
+#pragma mark Protected
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)point
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcWTauNafMultiplier)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT NSString *OrgBouncycastleMathEcWTauNafMultiplier_PRECOMP_NAME_;
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWTauNafMultiplier, PRECOMP_NAME_, NSString *)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcWTauNafMultiplier_init(OrgBouncycastleMathEcWTauNafMultiplier *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcWTauNafMultiplier *new_OrgBouncycastleMathEcWTauNafMultiplier_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcWTauNafMultiplier)
 

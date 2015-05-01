@@ -6,30 +6,35 @@
 #ifndef _AMGroupMember_H_
 #define _AMGroupMember_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMGroupMember : BSBserObject
 
-@interface AMGroupMember : BSBserObject {
-}
+#pragma mark Public
 
-+ (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)inviteDate
                 withBoolean:(jboolean)isAdministrator;
 
-- (instancetype)init;
+- (jboolean)isEqual:(id)o;
 
-- (jint)getUid;
++ (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getInviteDate;
 
 - (jint)getInviterUid;
 
-- (jlong)getInviteDate;
+- (jint)getUid;
+
+- (NSUInteger)hash;
 
 - (jboolean)isAdministrator;
 
@@ -37,21 +42,22 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jboolean)isEqual:(id)o;
-
-- (NSUInteger)hash;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupMember)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMGroupMember ImActorModelEntityGroupMember;
+FOUNDATION_EXPORT void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self, jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator);
+
+FOUNDATION_EXPORT AMGroupMember *new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_(jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMGroupMember_init(AMGroupMember *self);
+
+FOUNDATION_EXPORT AMGroupMember *new_AMGroupMember_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroupMember)
+
+typedef AMGroupMember ImActorModelEntityGroupMember;
 
 #endif // _AMGroupMember_H_

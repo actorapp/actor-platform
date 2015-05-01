@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedTitle.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedTitle.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExChangedTitle.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -16,40 +18,36 @@
  @public
   NSString *title_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
+
+#line 19
 @implementation ImActorModelApiServiceExChangedTitle
 
 
 #line 23
 - (instancetype)initWithNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 24
-    self->title_ = title;
-  }
+  ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceExChangedTitle_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getHeader {
-  
-#line 32
   return 5;
 }
 
-
-#line 35
 - (NSString *)getTitle {
-  
-#line 36
   return self->title_;
 }
 
@@ -62,14 +60,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 #line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 46
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->title_];
 }
 
+
+#line 53
 - (NSString *)description {
   NSString *res = @"struct ServiceExChangedTitle{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"title=", self->title_));
@@ -77,11 +75,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiServiceExChangedTitle *)other {
-  [super copyAllFieldsTo:other];
-  other->title_ = title_;
+@end
+
+
+#line 23
+void ImActorModelApiServiceExChangedTitle_initWithNSString_(ImActorModelApiServiceExChangedTitle *self, NSString *title) {
+  (void) ImActorModelApiServiceEx_init(self);
+  
+#line 24
+  self->title_ = title;
 }
 
-@end
+
+#line 23
+ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_initWithNSString_(NSString *title) {
+  ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
+  ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
+  return self;
+}
+
+
+#line 27
+void ImActorModelApiServiceExChangedTitle_init(ImActorModelApiServiceExChangedTitle *self) {
+  (void) ImActorModelApiServiceEx_init(self);
+}
+
+
+#line 27
+ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_init() {
+  ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
+  ImActorModelApiServiceExChangedTitle_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExChangedTitle)

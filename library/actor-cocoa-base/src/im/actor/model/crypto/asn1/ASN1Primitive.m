@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Primitive.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Primitive.java"
 
 #include "IOSPrimitiveArray.h"
@@ -20,17 +21,20 @@
 
 #line 12
 - (IOSByteArray *)serialize {
-  
-#line 13
-  BSDataOutput *res = [[BSDataOutput alloc] init];
+  BSDataOutput *res = new_BSDataOutput_init();
   [self serializeWithBSDataOutput:res];
   return [res toByteArray];
 }
 
 - (instancetype)init {
-  return [super init];
+  BCASN1Primitive_init(self);
+  return self;
 }
 
 @end
+
+void BCASN1Primitive_init(BCASN1Primitive *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1Primitive)

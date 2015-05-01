@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserLeave.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserLeave.java"
 
 #include "IOSClass.h"
@@ -11,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "java/io/IOException.h"
 
@@ -27,24 +29,37 @@
 
 #line 18
 - (AMAbsContent_ContentTypeEnum *)getContentType {
-  
-#line 19
   return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
 }
 
-
-#line 22
 - (instancetype)init {
-  return [super initWithNSString:@"User leave"];
+  AMServiceGroupUserLeave_init(self);
+  return self;
 }
 
 @end
 
+
+#line 13
 AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceGroupUserLeave_init();
+  AMServiceGroupUserLeave_initialize();
   
 #line 14
-  return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserLeave alloc] init], data));
+  return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserLeave_init(), data));
+}
+
+
+#line 22
+void AMServiceGroupUserLeave_init(AMServiceGroupUserLeave *self) {
+  (void) AMServiceContent_initWithNSString_(self, @"User leave");
+}
+
+
+#line 22
+AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_init() {
+  AMServiceGroupUserLeave *self = [AMServiceGroupUserLeave alloc];
+  AMServiceGroupUserLeave_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupUserLeave)

@@ -6,26 +6,28 @@
 #ifndef _ImActorModelModulesUpdatesInternalExecuteAfter_H_
 #define _ImActorModelModulesUpdatesInternalExecuteAfter_H_
 
-@protocol JavaLangRunnable;
-
 #include "J2ObjC_header.h"
 
-@interface ImActorModelModulesUpdatesInternalExecuteAfter : NSObject {
-}
+@protocol JavaLangRunnable;
+
+@interface ImActorModelModulesUpdatesInternalExecuteAfter : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)seq
        withJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
-- (jint)getSeq;
-
 - (id<JavaLangRunnable>)getRunnable;
+
+- (jint)getSeq;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalExecuteAfter)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(ImActorModelModulesUpdatesInternalExecuteAfter *self, jint seq, id<JavaLangRunnable> runnable);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalExecuteAfter *new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(jint seq, id<JavaLangRunnable> runnable) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalExecuteAfter)
 

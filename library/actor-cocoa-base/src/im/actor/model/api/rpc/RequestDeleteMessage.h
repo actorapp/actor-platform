@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestDeleteMessage_H_
 #define _ImActorModelApiRpcRequestDeleteMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestDeleteMessage_HEADER 98
 
-@interface ImActorModelApiRpcRequestDeleteMessage : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestDeleteMessage : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestDeleteMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                               withJavaUtilList:(id<JavaUtilList>)rids;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestDeleteMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
@@ -37,18 +40,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestDeleteMessage)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDeleteMessage, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteMessage *ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDeleteMessage, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(ImActorModelApiRpcRequestDeleteMessage *self, ImActorModelApiOutPeer *peer, id<JavaUtilList> rids);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteMessage *new_ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(ImActorModelApiOutPeer *peer, id<JavaUtilList> rids) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestDeleteMessage_init(ImActorModelApiRpcRequestDeleteMessage *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteMessage *new_ImActorModelApiRpcRequestDeleteMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestDeleteMessage)
 

@@ -6,32 +6,26 @@
 #ifndef _OrgBouncycastleCryptoDigestsLongDigest_H_
 #define _OrgBouncycastleCryptoDigestsLongDigest_H_
 
-@class IOSByteArray;
-@class IOSLongArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/ExtendedDigest.h"
 #include "org/bouncycastle/crypto/digests/EncodableDigest.h"
 #include "org/bouncycastle/util/Memoable.h"
 
-#define OrgBouncycastleCryptoDigestsLongDigest_BYTE_LENGTH 128
+@class IOSByteArray;
+@class IOSLongArray;
 
 @interface OrgBouncycastleCryptoDigestsLongDigest : NSObject < OrgBouncycastleCryptoExtendedDigest, OrgBouncycastleUtilMemoable, OrgBouncycastleCryptoDigestsEncodableDigest > {
  @public
   jlong H1_, H2_, H3_, H4_, H5_, H6_, H7_, H8_;
 }
 
-- (instancetype)init;
+#pragma mark Public
 
-- (instancetype)initWithOrgBouncycastleCryptoDigestsLongDigest:(OrgBouncycastleCryptoDigestsLongDigest *)t;
+- (void)finish;
 
-- (void)copyInWithOrgBouncycastleCryptoDigestsLongDigest:(OrgBouncycastleCryptoDigestsLongDigest *)t OBJC_METHOD_FAMILY_NONE;
+- (jint)getByteLength;
 
-- (void)populateStateWithByteArray:(IOSByteArray *)state;
-
-- (void)restoreStateWithByteArray:(IOSByteArray *)encodedState;
-
-- (jint)getEncodedStateSize;
+- (void)reset;
 
 - (void)updateWithByte:(jbyte)inArg;
 
@@ -39,32 +33,38 @@
                     withInt:(jint)inOff
                     withInt:(jint)len;
 
-- (void)finish;
+#pragma mark Protected
 
-- (void)reset;
+- (instancetype)init;
 
-- (jint)getByteLength;
+- (instancetype)initWithOrgBouncycastleCryptoDigestsLongDigest:(OrgBouncycastleCryptoDigestsLongDigest *)t;
 
-- (void)processWordWithByteArray:(IOSByteArray *)inArg
-                         withInt:(jint)inOff;
+- (void)copyInWithOrgBouncycastleCryptoDigestsLongDigest:(OrgBouncycastleCryptoDigestsLongDigest *)t OBJC_METHOD_FAMILY_NONE;
+
+- (jint)getEncodedStateSize;
+
+- (void)populateStateWithByteArray:(IOSByteArray *)state;
+
+- (void)processBlock;
 
 - (void)processLengthWithLong:(jlong)lowW
                      withLong:(jlong)hiW;
 
-- (void)processBlock;
+- (void)processWordWithByteArray:(IOSByteArray *)inArg
+                         withInt:(jint)inOff;
+
+- (void)restoreStateWithByteArray:(IOSByteArray *)encodedState;
 
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleCryptoDigestsLongDigest_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleCryptoDigestsLongDigest)
-
-CF_EXTERN_C_BEGIN
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsLongDigest, BYTE_LENGTH, jint)
 
 FOUNDATION_EXPORT IOSLongArray *OrgBouncycastleCryptoDigestsLongDigest_K_;
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsLongDigest, K_, IOSLongArray *)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsLongDigest_init(OrgBouncycastleCryptoDigestsLongDigest *self);
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsLongDigest_initWithOrgBouncycastleCryptoDigestsLongDigest_(OrgBouncycastleCryptoDigestsLongDigest *self, OrgBouncycastleCryptoDigestsLongDigest *t);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoDigestsLongDigest)
 

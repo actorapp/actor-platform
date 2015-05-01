@@ -6,24 +6,24 @@
 #ifndef _ImActorModelNetworkParserBaseParser_H_
 #define _ImActorModelNetworkParserBaseParser_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 
-@interface ImActorModelNetworkParserBaseParser : NSObject {
-}
+@class IOSByteArray;
+
+@interface ImActorModelNetworkParserBaseParser : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (id)readWithInt:(jint)type
     withByteArray:(IOSByteArray *)payload;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserBaseParser)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelNetworkParserBaseParser_init(ImActorModelNetworkParserBaseParser *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserBaseParser)
 

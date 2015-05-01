@@ -6,15 +6,18 @@
 #ifndef _OrgBouncycastleMathEcLongArray_H_
 #define _OrgBouncycastleMathEcLongArray_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSIntArray;
 @class IOSLongArray;
 @class JavaMathBigInteger;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleMathEcLongArray : NSObject
 
-@interface OrgBouncycastleMathEcLongArray : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)bigInt;
 
 - (instancetype)initWithInt:(jint)intLen;
 
@@ -24,32 +27,31 @@
                           withInt:(jint)off
                           withInt:(jint)len;
 
-- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)bigInt;
-
-- (jboolean)isOne;
-
-- (jboolean)isZero;
-
-- (jint)getUsedLength;
-
-- (jint)getUsedLengthFromWithInt:(jint)from;
-
-- (jint)degree;
-
-- (JavaMathBigInteger *)toBigInteger;
-
 - (OrgBouncycastleMathEcLongArray *)addOne;
 
 - (void)addShiftedByWordsWithOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)other
                                                     withInt:(jint)words;
 
+- (id)clone;
+
+- (jint)degree;
+
+- (jboolean)isEqual:(id)o;
+
 - (jint)getLength;
 
-- (jboolean)testBitZero;
+- (jint)getUsedLength;
 
-- (OrgBouncycastleMathEcLongArray *)modMultiplyLDWithOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)other
-                                                                            withInt:(jint)m
-                                                                       withIntArray:(IOSIntArray *)ks;
+- (jint)getUsedLengthFromWithInt:(jint)from;
+
+- (NSUInteger)hash;
+
+- (jboolean)isOne;
+
+- (jboolean)isZero;
+
+- (OrgBouncycastleMathEcLongArray *)modInverseWithInt:(jint)m
+                                         withIntArray:(IOSIntArray *)ks;
 
 - (OrgBouncycastleMathEcLongArray *)modMultiplyWithOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)other
                                                                           withInt:(jint)m
@@ -59,15 +61,12 @@
                                                                              withInt:(jint)m
                                                                         withIntArray:(IOSIntArray *)ks;
 
+- (OrgBouncycastleMathEcLongArray *)modMultiplyLDWithOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)other
+                                                                            withInt:(jint)m
+                                                                       withIntArray:(IOSIntArray *)ks;
+
 - (OrgBouncycastleMathEcLongArray *)modReduceWithInt:(jint)m
                                         withIntArray:(IOSIntArray *)ks;
-
-- (OrgBouncycastleMathEcLongArray *)multiplyWithOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)other
-                                                                       withInt:(jint)m
-                                                                  withIntArray:(IOSIntArray *)ks;
-
-- (void)reduceWithInt:(jint)m
-         withIntArray:(IOSIntArray *)ks;
 
 - (OrgBouncycastleMathEcLongArray *)modSquareWithInt:(jint)m
                                         withIntArray:(IOSIntArray *)ks;
@@ -76,48 +75,44 @@
                                               withInt:(jint)m
                                          withIntArray:(IOSIntArray *)ks;
 
+- (OrgBouncycastleMathEcLongArray *)multiplyWithOrgBouncycastleMathEcLongArray:(OrgBouncycastleMathEcLongArray *)other
+                                                                       withInt:(jint)m
+                                                                  withIntArray:(IOSIntArray *)ks;
+
+- (void)reduceWithInt:(jint)m
+         withIntArray:(IOSIntArray *)ks;
+
 - (OrgBouncycastleMathEcLongArray *)squareWithInt:(jint)m
                                      withIntArray:(IOSIntArray *)ks;
 
-- (OrgBouncycastleMathEcLongArray *)modInverseWithInt:(jint)m
-                                         withIntArray:(IOSIntArray *)ks;
+- (jboolean)testBitZero;
 
-- (jboolean)isEqual:(id)o;
-
-- (NSUInteger)hash;
-
-- (id)clone;
+- (JavaMathBigInteger *)toBigInteger;
 
 - (NSString *)description;
 
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleMathEcLongArray_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleMathEcLongArray)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE2_TABLE_, IOSIntArray *)
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE3_TABLE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE3_TABLE_, IOSIntArray *)
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE4_TABLE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE4_TABLE_, IOSIntArray *)
-
-FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE5_TABLE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE5_TABLE_, IOSIntArray *)
-
-FOUNDATION_EXPORT IOSLongArray *OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE7_TABLE_, IOSLongArray *)
-
-FOUNDATION_EXPORT NSString *OrgBouncycastleMathEcLongArray_ZEROES_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, ZEROES_, NSString *)
 
 FOUNDATION_EXPORT IOSByteArray *OrgBouncycastleMathEcLongArray_bitLengths_;
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, bitLengths_, IOSByteArray *)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcLongArray_initWithInt_(OrgBouncycastleMathEcLongArray *self, jint intLen);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithInt_(jint intLen) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcLongArray_initWithLongArray_(OrgBouncycastleMathEcLongArray *self, IOSLongArray *ints);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithLongArray_(IOSLongArray *ints) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(OrgBouncycastleMathEcLongArray *self, IOSLongArray *ints, jint off, jint len);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(IOSLongArray *ints, jint off, jint len) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcLongArray_initWithJavaMathBigInteger_(OrgBouncycastleMathEcLongArray *self, JavaMathBigInteger *bigInt);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithJavaMathBigInteger_(JavaMathBigInteger *bigInt) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcLongArray)
 

@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcRequestChangePhoneTitle_H_
 #define _ImActorModelApiRpcRequestChangePhoneTitle_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestChangePhoneTitle_HEADER 124
 
-@interface ImActorModelApiRpcRequestChangePhoneTitle : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestChangePhoneTitle : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestChangePhoneTitle *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestChangePhoneTitle *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getPhoneId;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestChangePhoneTitle)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestChangePhoneTitle, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestChangePhoneTitle *ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestChangePhoneTitle, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(ImActorModelApiRpcRequestChangePhoneTitle *self, jint phoneId, NSString *title);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(jint phoneId, NSString *title) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestChangePhoneTitle_init(ImActorModelApiRpcRequestChangePhoneTitle *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePhoneTitle_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestChangePhoneTitle)
 

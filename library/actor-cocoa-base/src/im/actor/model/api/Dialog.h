@@ -6,17 +6,20 @@
 #ifndef _ImActorModelApiDialog_H_
 #define _ImActorModelApiDialog_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiMessage;
 @class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiDialog : BSBserObject
 
-@interface ImActorModelApiDialog : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)unreadCount
@@ -27,23 +30,21 @@
                  withImActorModelApiMessage:(ImActorModelApiMessage *)message
         withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
-- (instancetype)init;
-
-- (ImActorModelApiPeer *)getPeer;
-
-- (jint)getUnreadCount;
-
-- (jlong)getSortDate;
-
-- (jint)getSenderUid;
-
-- (jlong)getRid;
-
 - (jlong)getDate;
 
 - (ImActorModelApiMessage *)getMessage;
 
+- (ImActorModelApiPeer *)getPeer;
+
+- (jlong)getRid;
+
+- (jint)getSenderUid;
+
+- (jlong)getSortDate;
+
 - (ImActorModelApiMessageStateEnum *)getState;
+
+- (jint)getUnreadCount;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -55,8 +56,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDialog)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiDialog *self, ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state);
+
+FOUNDATION_EXPORT ImActorModelApiDialog *new_ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiDialog_init(ImActorModelApiDialog *self);
+
+FOUNDATION_EXPORT ImActorModelApiDialog *new_ImActorModelApiDialog_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDialog)
 

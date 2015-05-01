@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/DialogsHistoryActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/DialogsHistoryActor.java"
 
 #include "J2ObjC_source.h"
@@ -17,11 +18,11 @@
 #include "im/actor/model/modules/messages/DialogsHistoryActor.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
+#include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "java/lang/Long.h"
 
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self);
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate);
+#define ImActorModelModulesMessagesDialogsHistoryActor_LIMIT 20
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor () {
  @public
@@ -34,65 +35,85 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryAct
 
 - (void)onLoadedMoreWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate;
+
 @end
+
+static NSString *ImActorModelModulesMessagesDialogsHistoryActor_TAG_ = 
+#line 17
+@"DialogsHistoryActor";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, TAG_, NSString *)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, LIMIT, jint)
+
+static NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ = 
+#line 21
+@"dialogs_history_date";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_DATE_, NSString *)
+
+static NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ = 
+#line 22
+@"dialogs_history_loaded";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_, NSString *)
+
+static NSString *ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = 
+#line 23
+@"dialogs_history_inited";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesDialogsHistoryActor, KEY_LOADED_INIT_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self);
+
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate);
 
 @interface ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore () {
  @public
   jint loaded_;
   jlong maxLoadedDate_;
 }
+
 @end
 
-@interface ImActorModelModulesMessagesDialogsHistoryActor_$1 () {
+@interface ImActorModelModulesMessagesDialogsHistoryActor_$1 : NSObject < AMRpcCallback > {
  @public
   ImActorModelModulesMessagesDialogsHistoryActor *this$0_;
 }
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadDialogs *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesMessagesDialogsHistoryActor:(ImActorModelModulesMessagesDialogsHistoryActor *)outer$;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsHistoryActor_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsHistoryActor_$1, this$0_, ImActorModelModulesMessagesDialogsHistoryActor *)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(ImActorModelModulesMessagesDialogsHistoryActor_$1 *self, ImActorModelModulesMessagesDialogsHistoryActor *outer$);
+
+__attribute__((unused)) static ImActorModelModulesMessagesDialogsHistoryActor_$1 *new_ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(ImActorModelModulesMessagesDialogsHistoryActor *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsHistoryActor_$1)
 
 
 #line 15
 @implementation ImActorModelModulesMessagesDialogsHistoryActor
 
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_TAG_ = @"DialogsHistoryActor";
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ = 
-#line 21
-@"dialogs_history_date";
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ = 
-#line 22
-@"dialogs_history_loaded";
-NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ = 
-#line 23
-@"dialogs_history_inited";
-
 
 #line 30
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self =
-#line 31
-  [super initWithImActorModelModulesModules:messenger]) {
-    isLoading_ =
-#line 28
-    NO;
-  }
+  ImActorModelModulesMessagesDialogsHistoryActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 35
 - (void)preStart {
-  
-#line 36
   historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
   historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_ withDefault:NO];
   if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ withDefault:NO]) {
-    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc] init]];
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init()];
   }
 }
 
-
-#line 43
 - (void)onLoadMore {
   ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(self);
 }
@@ -107,8 +128,6 @@ NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ =
 
 #line 90
 - (void)onReceiveWithId:(id)message {
-  
-#line 91
   if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsHistoryActor_LoadMore class]]) {
     ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(self);
   }
@@ -125,18 +144,28 @@ NSString * ImActorModelModulesMessagesDialogsHistoryActor_KEY_LOADED_INIT_ =
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor *)other {
-  [super copyAllFieldsTo:other];
-  other->historyMaxDate_ = historyMaxDate_;
-  other->historyLoaded_ = historyLoaded_;
-  other->isLoading_ = isLoading_;
-}
-
 @end
 
+
+#line 30
+void ImActorModelModulesMessagesDialogsHistoryActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesDialogsHistoryActor *self, ImActorModelModulesModules *messenger) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
+  self->isLoading_ =
+#line 28
+  NO;
+}
+
+
+#line 30
+ImActorModelModulesMessagesDialogsHistoryActor *new_ImActorModelModulesMessagesDialogsHistoryActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+  ImActorModelModulesMessagesDialogsHistoryActor *self = [ImActorModelModulesMessagesDialogsHistoryActor alloc];
+  ImActorModelModulesMessagesDialogsHistoryActor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
+}
+
+
+#line 43
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModulesMessagesDialogsHistoryActor *self) {
-  
-#line 44
   if (self->historyLoaded_) {
     return;
   }
@@ -149,14 +178,12 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModul
   AMLog_dWithNSString_withNSString_(ImActorModelModulesMessagesDialogsHistoryActor_TAG_, JreStrcat("$J", @"Loading history... after ", self->historyMaxDate_));
   
 #line 54
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestLoadDialogs alloc] initWithLong:self->historyMaxDate_ withInt:ImActorModelModulesMessagesDialogsHistoryActor_LIMIT] withAMRpcCallback:
-#line 55
-  [[ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc] initWithImActorModelModulesMessagesDialogsHistoryActor:self]];
+  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self->historyMaxDate_, ImActorModelModulesMessagesDialogsHistoryActor_LIMIT) withAMRpcCallback:new_ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(self)];
 }
 
+
+#line 71
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate) {
-  
-#line 72
   self->isLoading_ = NO;
   
 #line 74
@@ -184,10 +211,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor)
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_LoadMore
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesMessagesDialogsHistoryActor_LoadMore *new_ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init() {
+  ImActorModelModulesMessagesDialogsHistoryActor_LoadMore *self = [ImActorModelModulesMessagesDialogsHistoryActor_LoadMore alloc];
+  ImActorModelModulesMessagesDialogsHistoryActor_LoadMore_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_LoadMore)
 
@@ -199,24 +237,29 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 #line 109
 - (instancetype)initWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate {
-  if (self = [super init]) {
-    
-#line 110
-    self->loaded_ = loaded;
-    
-#line 111
-    self->maxLoadedDate_ = maxLoadedDate;
-  }
+  ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore_initWithInt_withLong_(self, loaded, maxLoadedDate);
   return self;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *)other {
-  [super copyAllFieldsTo:other];
-  other->loaded_ = loaded_;
-  other->maxLoadedDate_ = maxLoadedDate_;
+@end
+
+
+#line 109
+void ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore_initWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *self, jint loaded, jlong maxLoadedDate) {
+  (void) NSObject_init(self);
+  
+#line 110
+  self->loaded_ = loaded;
+  self->maxLoadedDate_ = maxLoadedDate;
 }
 
-@end
+
+#line 109
+ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *new_ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore_initWithInt_withLong_(jint loaded, jlong maxLoadedDate) {
+  ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore *self = [ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore alloc];
+  ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore_initWithInt_withLong_(self, loaded, maxLoadedDate);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_LoadedMore)
 
@@ -227,27 +270,31 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadDialogs *)response {
   
 #line 60
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc] initWithImActorModelApiRpcResponseLoadDialogs:response]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(response)];
 }
 
 
 #line 64
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  
-#line 65
   [((AMRpcException *) nil_chk(e)) printStackTrace];
 }
 
 - (instancetype)initWithImActorModelModulesMessagesDialogsHistoryActor:(ImActorModelModulesMessagesDialogsHistoryActor *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesDialogsHistoryActor_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(ImActorModelModulesMessagesDialogsHistoryActor_$1 *self, ImActorModelModulesMessagesDialogsHistoryActor *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesMessagesDialogsHistoryActor_$1 *new_ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(ImActorModelModulesMessagesDialogsHistoryActor *outer$) {
+  ImActorModelModulesMessagesDialogsHistoryActor_$1 *self = [ImActorModelModulesMessagesDialogsHistoryActor_$1 alloc];
+  ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_$1)

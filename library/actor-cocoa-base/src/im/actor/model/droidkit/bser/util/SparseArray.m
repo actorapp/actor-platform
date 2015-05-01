@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/SparseArray.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/SparseArray.java"
 
 #include "IOSClass.h"
@@ -16,8 +17,6 @@
 #include "java/lang/StringBuilder.h"
 #include "java/lang/System.h"
 
-__attribute__((unused)) static void ImActorModelDroidkitBserUtilSparseArray_gc(ImActorModelDroidkitBserUtilSparseArray *self);
-
 @interface ImActorModelDroidkitBserUtilSparseArray () {
  @public
   jboolean mGarbage_;
@@ -27,65 +26,40 @@ __attribute__((unused)) static void ImActorModelDroidkitBserUtilSparseArray_gc(I
 }
 
 - (void)gc;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserUtilSparseArray, mKeys_, IOSIntArray *)
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitBserUtilSparseArray, mValues_, IOSObjectArray *)
 
-BOOL ImActorModelDroidkitBserUtilSparseArray_initialized = NO;
+static id ImActorModelDroidkitBserUtilSparseArray_DELETED_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilSparseArray, DELETED_, id)
+
+__attribute__((unused)) static void ImActorModelDroidkitBserUtilSparseArray_gc(ImActorModelDroidkitBserUtilSparseArray *self);
+
+J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitBserUtilSparseArray)
 
 
 #line 47
 @implementation ImActorModelDroidkitBserUtilSparseArray
 
-id ImActorModelDroidkitBserUtilSparseArray_DELETED_;
-
 
 #line 58
 - (instancetype)init {
-  return
-#line 59
-  [self initImActorModelDroidkitBserUtilSparseArrayWithInt:10];
-}
-
-
-#line 69
-- (instancetype)initImActorModelDroidkitBserUtilSparseArrayWithInt:(jint)initialCapacity {
-  if (self = [super init]) {
-    mGarbage_ =
-#line 49
-    NO;
-    
-#line 70
-    if (initialCapacity == 0) {
-      mKeys_ = ImActorModelDroidkitBserUtilContainerHelpers_get_EMPTY_INTS_();
-      mValues_ = ImActorModelDroidkitBserUtilContainerHelpers_get_EMPTY_OBJECTS_();
-    }
-    else {
-      
-#line 74
-      initialCapacity = ImActorModelDroidkitBserUtilArrayUtils_idealIntArraySizeWithInt_(initialCapacity);
-      mKeys_ = [IOSIntArray newArrayWithLength:initialCapacity];
-      mValues_ = [IOSObjectArray newArrayWithLength:initialCapacity type:NSObject_class_()];
-    }
-    
-#line 78
-    mSize_ = 0;
-  }
+  ImActorModelDroidkitBserUtilSparseArray_init(self);
   return self;
 }
 
-- (instancetype)initWithInt:(jint)initialCapacity {
-  return [self initImActorModelDroidkitBserUtilSparseArrayWithInt:
+
 #line 69
-initialCapacity];
+- (instancetype)initWithInt:(jint)initialCapacity {
+  ImActorModelDroidkitBserUtilSparseArray_initWithInt_(self, initialCapacity);
+  return self;
 }
 
 
 #line 86
 - (id)getWithInt:(jint)key {
-  
-#line 87
   return [self getWithInt:key withId:nil];
 }
 
@@ -93,8 +67,6 @@ initialCapacity];
 #line 95
 - (id)getWithInt:(jint)key
           withId:(id)valueIfKeyNotFound {
-  
-#line 96
   jint i = ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(mKeys_, mSize_, key);
   
 #line 98
@@ -111,32 +83,28 @@ initialCapacity];
 
 #line 108
 - (void)delete__WithInt:(jint)key {
-  
-#line 109
   jint i = ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(mKeys_, mSize_, key);
   
 #line 111
   if (i >= 0) {
     if (IOSObjectArray_Get(nil_chk(mValues_), i) != ImActorModelDroidkitBserUtilSparseArray_DELETED_) {
-      IOSObjectArray_Set(mValues_, i, ImActorModelDroidkitBserUtilSparseArray_DELETED_);
+      (void) IOSObjectArray_Set(mValues_, i, ImActorModelDroidkitBserUtilSparseArray_DELETED_);
       mGarbage_ = YES;
     }
   }
 }
 
+
+#line 122
 - (void)removeWithInt:(jint)key {
-  
-#line 123
   [self delete__WithInt:key];
 }
 
 
 #line 129
 - (void)removeAtWithInt:(jint)index {
-  
-#line 130
   if (IOSObjectArray_Get(nil_chk(mValues_), index) != ImActorModelDroidkitBserUtilSparseArray_DELETED_) {
-    IOSObjectArray_Set(mValues_, index, ImActorModelDroidkitBserUtilSparseArray_DELETED_);
+    (void) IOSObjectArray_Set(mValues_, index, ImActorModelDroidkitBserUtilSparseArray_DELETED_);
     mGarbage_ = YES;
   }
 }
@@ -145,8 +113,6 @@ initialCapacity];
 #line 142
 - (void)removeAtRangeWithInt:(jint)index
                      withInt:(jint)size {
-  
-#line 143
   jint end = JavaLangMath_minWithInt_withInt_(mSize_, index + size);
   for (jint i = index; i < end; i++) {
     [self removeAtWithInt:i];
@@ -163,13 +129,11 @@ initialCapacity];
 #line 182
 - (void)putWithInt:(jint)key
             withId:(id)value {
-  
-#line 183
   jint i = ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(mKeys_, mSize_, key);
   
 #line 185
   if (i >= 0) {
-    IOSObjectArray_Set(nil_chk(mValues_), i, value);
+    (void) IOSObjectArray_Set(nil_chk(mValues_), i, value);
   }
   else {
     
@@ -179,7 +143,7 @@ initialCapacity];
 #line 190
     if (i < mSize_ && IOSObjectArray_Get(nil_chk(mValues_), i) == ImActorModelDroidkitBserUtilSparseArray_DELETED_) {
       *IOSIntArray_GetRef(nil_chk(mKeys_), i) = key;
-      IOSObjectArray_Set(mValues_, i, value);
+      (void) IOSObjectArray_Set(mValues_, i, value);
       return;
     }
     
@@ -218,7 +182,7 @@ initialCapacity];
     
 #line 223
     *IOSIntArray_GetRef(mKeys_, i) = key;
-    IOSObjectArray_Set(nil_chk(mValues_), i, value);
+    (void) IOSObjectArray_Set(nil_chk(mValues_), i, value);
     mSize_++;
   }
 }
@@ -226,8 +190,6 @@ initialCapacity];
 
 #line 233
 - (jint)size {
-  
-#line 234
   if (mGarbage_) {
     ImActorModelDroidkitBserUtilSparseArray_gc(self);
   }
@@ -239,8 +201,6 @@ initialCapacity];
 
 #line 251
 - (jint)keyAtWithInt:(jint)index {
-  
-#line 252
   if (mGarbage_) {
     ImActorModelDroidkitBserUtilSparseArray_gc(self);
   }
@@ -252,8 +212,6 @@ initialCapacity];
 
 #line 271
 - (id)valueAtWithInt:(jint)index {
-  
-#line 272
   if (mGarbage_) {
     ImActorModelDroidkitBserUtilSparseArray_gc(self);
   }
@@ -266,21 +224,17 @@ initialCapacity];
 #line 284
 - (void)setValueAtWithInt:(jint)index
                    withId:(id)value {
-  
-#line 285
   if (mGarbage_) {
     ImActorModelDroidkitBserUtilSparseArray_gc(self);
   }
   
 #line 289
-  IOSObjectArray_Set(nil_chk(mValues_), index, value);
+  (void) IOSObjectArray_Set(nil_chk(mValues_), index, value);
 }
 
 
 #line 297
 - (jint)indexOfKeyWithInt:(jint)key {
-  
-#line 298
   if (mGarbage_) {
     ImActorModelDroidkitBserUtilSparseArray_gc(self);
   }
@@ -292,16 +246,12 @@ initialCapacity];
 
 #line 305
 - (jboolean)containsKeyWithInt:(jint)key {
-  
-#line 306
   return [self indexOfKeyWithInt:key] >= 0;
 }
 
 
 #line 319
 - (jint)indexOfValueWithId:(id)value {
-  
-#line 320
   if (mGarbage_) {
     ImActorModelDroidkitBserUtilSparseArray_gc(self);
   }
@@ -320,14 +270,12 @@ initialCapacity];
 
 #line 334
 - (void)clear {
-  
-#line 335
   jint n = mSize_;
   IOSObjectArray *values = mValues_;
   
 #line 338
   for (jint i = 0; i < n; i++) {
-    IOSObjectArray_Set(nil_chk(values), i, nil);
+    (void) IOSObjectArray_Set(nil_chk(values), i, nil);
   }
   
 #line 342
@@ -335,10 +283,10 @@ initialCapacity];
   mGarbage_ = NO;
 }
 
+
+#line 350
 - (void)appendWithInt:(jint)key
                withId:(id)value {
-  
-#line 351
   if (mSize_ != 0 && key <= IOSIntArray_Get(nil_chk(mKeys_), mSize_ - 1)) {
     [self putWithInt:key withId:value];
     return;
@@ -369,19 +317,19 @@ initialCapacity];
   
 #line 375
   *IOSIntArray_GetRef(mKeys_, pos) = key;
-  IOSObjectArray_Set(nil_chk(mValues_), pos, value);
+  (void) IOSObjectArray_Set(nil_chk(mValues_), pos, value);
   mSize_ = pos + 1;
 }
 
+
+#line 388
 - (NSString *)description {
-  
-#line 389
   if ([self size] <= 0) {
     return @"{}";
   }
   
 #line 393
-  JavaLangStringBuilder *buffer = [[JavaLangStringBuilder alloc] initWithInt:mSize_ * 28];
+  JavaLangStringBuilder *buffer = new_JavaLangStringBuilder_initWithInt_(mSize_ * 28);
   (void) [buffer appendWithChar:'{'];
   for (jint i = 0; i < mSize_; i++) {
     if (i > 0) {
@@ -404,29 +352,66 @@ initialCapacity];
   return [buffer description];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitBserUtilSparseArray *)other {
-  [super copyAllFieldsTo:other];
-  other->mGarbage_ = mGarbage_;
-  other->mKeys_ = mKeys_;
-  other->mValues_ = mValues_;
-  other->mSize_ = mSize_;
-}
-
 - (id)copyWithZone:(NSZone *)zone {
   return [self clone];
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitBserUtilSparseArray class]) {
-    ImActorModelDroidkitBserUtilSparseArray_DELETED_ =
-#line 48
-    [[NSObject alloc] init];
+    ImActorModelDroidkitBserUtilSparseArray_DELETED_ = new_NSObject_init();
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitBserUtilSparseArray)
   }
 }
 
 @end
 
+
+#line 58
+void ImActorModelDroidkitBserUtilSparseArray_init(ImActorModelDroidkitBserUtilSparseArray *self) {
+  (void) ImActorModelDroidkitBserUtilSparseArray_initWithInt_(self, 10);
+}
+
+
+#line 58
+ImActorModelDroidkitBserUtilSparseArray *new_ImActorModelDroidkitBserUtilSparseArray_init() {
+  ImActorModelDroidkitBserUtilSparseArray *self = [ImActorModelDroidkitBserUtilSparseArray alloc];
+  ImActorModelDroidkitBserUtilSparseArray_init(self);
+  return self;
+}
+
+
+#line 69
+void ImActorModelDroidkitBserUtilSparseArray_initWithInt_(ImActorModelDroidkitBserUtilSparseArray *self, jint initialCapacity) {
+  (void) NSObject_init(self);
+  self->mGarbage_ =
+#line 49
+  NO;
+  
+#line 70
+  if (initialCapacity == 0) {
+    self->mKeys_ = ImActorModelDroidkitBserUtilContainerHelpers_get_EMPTY_INTS_();
+    self->mValues_ = ImActorModelDroidkitBserUtilContainerHelpers_get_EMPTY_OBJECTS_();
+  }
+  else {
+    
+#line 74
+    initialCapacity = ImActorModelDroidkitBserUtilArrayUtils_idealIntArraySizeWithInt_(initialCapacity);
+    self->mKeys_ = [IOSIntArray newArrayWithLength:initialCapacity];
+    self->mValues_ = [IOSObjectArray newArrayWithLength:initialCapacity type:NSObject_class_()];
+  }
+  self->mSize_ = 0;
+}
+
+
+#line 69
+ImActorModelDroidkitBserUtilSparseArray *new_ImActorModelDroidkitBserUtilSparseArray_initWithInt_(jint initialCapacity) {
+  ImActorModelDroidkitBserUtilSparseArray *self = [ImActorModelDroidkitBserUtilSparseArray alloc];
+  ImActorModelDroidkitBserUtilSparseArray_initWithInt_(self, initialCapacity);
+  return self;
+}
+
+
+#line 149
 void ImActorModelDroidkitBserUtilSparseArray_gc(ImActorModelDroidkitBserUtilSparseArray *self) {
   
 #line 152
@@ -443,8 +428,8 @@ void ImActorModelDroidkitBserUtilSparseArray_gc(ImActorModelDroidkitBserUtilSpar
     if (val != ImActorModelDroidkitBserUtilSparseArray_DELETED_) {
       if (i != o) {
         *IOSIntArray_GetRef(nil_chk(keys), o) = IOSIntArray_Get(keys, i);
-        IOSObjectArray_Set(values, o, val);
-        IOSObjectArray_Set(values, i, nil);
+        (void) IOSObjectArray_Set(values, o, val);
+        (void) IOSObjectArray_Set(values, i, nil);
       }
       
 #line 167

@@ -6,10 +6,10 @@
 #ifndef _DKMailboxCreator_H_
 #define _DKMailboxCreator_H_
 
+#include "J2ObjC_header.h"
+
 @class DKMailbox;
 @class DKMailboxesQueue;
-
-#include "J2ObjC_header.h"
 
 @protocol DKMailboxCreator < NSObject, JavaObject >
 
@@ -19,8 +19,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKMailboxCreator)
 
-#define ImActorModelDroidkitActorsMailboxCreator DKMailboxCreator
-
 J2OBJC_TYPE_LITERAL_HEADER(DKMailboxCreator)
+
+#define ImActorModelDroidkitActorsMailboxCreator DKMailboxCreator
 
 #endif // _DKMailboxCreator_H_

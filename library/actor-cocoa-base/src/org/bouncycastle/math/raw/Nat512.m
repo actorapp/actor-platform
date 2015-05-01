@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Nat512.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Nat512.java"
 
 #include "IOSPrimitiveArray.h"
@@ -29,15 +30,16 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathRawNat512_init(self);
+  return self;
 }
 
 @end
 
+
+#line 6
 void OrgBouncycastleMathRawNat512_mulWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *zz) {
-  OrgBouncycastleMathRawNat512_init();
-  
-#line 8
+  OrgBouncycastleMathRawNat512_initialize();
   OrgBouncycastleMathRawNat256_mulWithIntArray_withIntArray_withIntArray_(x, y, zz);
   OrgBouncycastleMathRawNat256_mulWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, 8, y, 8, zz, 16);
   
@@ -59,10 +61,10 @@ void OrgBouncycastleMathRawNat512_mulWithIntArray_withIntArray_withIntArray_(IOS
   OrgBouncycastleMathRawNat_addWordAtWithInt_withInt_withIntArray_withInt_(32, c24, zz, 24);
 }
 
+
+#line 25
 void OrgBouncycastleMathRawNat512_squareWithIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *zz) {
-  OrgBouncycastleMathRawNat512_init();
-  
-#line 27
+  OrgBouncycastleMathRawNat512_initialize();
   OrgBouncycastleMathRawNat256_squareWithIntArray_withIntArray_(x, zz);
   OrgBouncycastleMathRawNat256_squareWithIntArray_withInt_withIntArray_withInt_(x, 8, zz, 16);
   
@@ -82,6 +84,10 @@ void OrgBouncycastleMathRawNat512_squareWithIntArray_withIntArray_(IOSIntArray *
 #line 40
   c24 += OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withInt_withIntArray_withInt_(16, tt, 0, zz, 8);
   OrgBouncycastleMathRawNat_addWordAtWithInt_withInt_withIntArray_withInt_(32, c24, zz, 24);
+}
+
+void OrgBouncycastleMathRawNat512_init(OrgBouncycastleMathRawNat512 *self) {
+  (void) NSObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathRawNat512)

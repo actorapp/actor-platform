@@ -6,21 +6,24 @@
 #ifndef _DKAbstractDispatcher_H_
 #define _DKAbstractDispatcher_H_
 
+#include "J2ObjC_header.h"
+
 @class DKAbstractDispatchQueue;
 @protocol DKDispatch;
-
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/dispatch/QueueListener.h"
 
 @interface DKAbstractDispatcher : NSObject {
  @public
   id<DKDispatch> dispatch_;
 }
 
-- (instancetype)initWithDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
-                                 withDKDispatch:(id<DKDispatch>)dispatch;
+#pragma mark Public
 
 - (id)getQueue;
+
+#pragma mark Protected
+
+- (instancetype)initWithDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
+                                 withDKDispatch:(id<DKDispatch>)dispatch;
 
 - (void)dispatchMessageWithId:(id)message;
 
@@ -32,27 +35,10 @@ J2OBJC_EMPTY_STATIC_INIT(DKAbstractDispatcher)
 
 J2OBJC_FIELD_SETTER(DKAbstractDispatcher, dispatch_, id<DKDispatch>)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef DKAbstractDispatcher ImActorModelDroidkitActorsDispatchAbstractDispatcher;
+FOUNDATION_EXPORT void DKAbstractDispatcher_initWithDKAbstractDispatchQueue_withDKDispatch_(DKAbstractDispatcher *self, DKAbstractDispatchQueue *queue, id<DKDispatch> dispatch);
 
 J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher)
 
-@interface DKAbstractDispatcher_$1 : NSObject < DKQueueListener > {
-}
-
-- (void)onQueueChanged;
-
-- (instancetype)initWithDKAbstractDispatcher:(DKAbstractDispatcher *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(DKAbstractDispatcher_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher_$1)
+typedef DKAbstractDispatcher ImActorModelDroidkitActorsDispatchAbstractDispatcher;
 
 #endif // _DKAbstractDispatcher_H_

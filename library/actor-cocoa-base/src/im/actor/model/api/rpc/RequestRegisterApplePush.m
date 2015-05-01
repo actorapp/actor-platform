@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterApplePush.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterApplePush.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestRegisterApplePush () {
@@ -20,6 +22,7 @@
   jint apnsKey_;
   NSString *token_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
 #line 30
 - (instancetype)initWithInt:(jint)apnsKey
                withNSString:(NSString *)token {
-  if (self = [super init]) {
-    
-#line 31
-    self->apnsKey_ = apnsKey;
-    
-#line 32
-    self->token_ = token;
-  }
+  ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestRegisterApplePush_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getApnsKey {
-  
-#line 40
   return self->apnsKey_;
 }
 
-
-#line 43
 - (NSString *)getToken {
-  
-#line 44
   return self->token_;
 }
 
@@ -79,40 +72,66 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->apnsKey_];
   if (self->token_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"rpc RegisterApplePush{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 71
-  return ImActorModelApiRpcRequestRegisterApplePush_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestRegisterApplePush *)other {
-  [super copyAllFieldsTo:other];
-  other->apnsKey_ = apnsKey_;
-  other->token_ = token_;
+#line 70
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestRegisterApplePush_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestRegisterApplePush *ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestRegisterApplePush_init();
+  ImActorModelApiRpcRequestRegisterApplePush_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestRegisterApplePush *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestRegisterApplePush alloc] init], data));
+  return ((ImActorModelApiRpcRequestRegisterApplePush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRegisterApplePush_init(), data));
+}
+
+void ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(ImActorModelApiRpcRequestRegisterApplePush *self, jint apnsKey, NSString *token) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->apnsKey_ = apnsKey;
+  self->token_ = token;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(jint apnsKey, NSString *token) {
+  ImActorModelApiRpcRequestRegisterApplePush *self = [ImActorModelApiRpcRequestRegisterApplePush alloc];
+  ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestRegisterApplePush_init(ImActorModelApiRpcRequestRegisterApplePush *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_init() {
+  ImActorModelApiRpcRequestRegisterApplePush *self = [ImActorModelApiRpcRequestRegisterApplePush alloc];
+  ImActorModelApiRpcRequestRegisterApplePush_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRegisterApplePush)

@@ -6,16 +6,17 @@
 #ifndef _OrgBouncycastleUtilBigIntegers_H_
 #define _OrgBouncycastleUtilBigIntegers_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class JavaMathBigInteger;
 @protocol BCRandomProvider;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleUtilBigIntegers : NSObject
 
-#define OrgBouncycastleUtilBigIntegers_MAX_ITERATIONS 1000
+#pragma mark Public
 
-@interface OrgBouncycastleUtilBigIntegers : NSObject {
-}
+- (instancetype)init;
 
 + (IOSByteArray *)asUnsignedByteArrayWithJavaMathBigInteger:(JavaMathBigInteger *)value;
 
@@ -32,14 +33,9 @@
                                                    withInt:(jint)off
                                                    withInt:(jint)length;
 
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleUtilBigIntegers_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleUtilBigIntegers)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT IOSByteArray *OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithJavaMathBigInteger_(JavaMathBigInteger *value);
 
@@ -51,11 +47,9 @@ FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_fromUnsigne
 
 FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_fromUnsignedByteArrayWithByteArray_withInt_withInt_(IOSByteArray *buf, jint off, jint length);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleUtilBigIntegers, MAX_ITERATIONS, jint)
+FOUNDATION_EXPORT void OrgBouncycastleUtilBigIntegers_init(OrgBouncycastleUtilBigIntegers *self);
 
-FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_ZERO_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleUtilBigIntegers, ZERO_, JavaMathBigInteger *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleUtilBigIntegers *new_OrgBouncycastleUtilBigIntegers_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilBigIntegers)
 

@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Avatar.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Avatar.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/AvatarImage.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -19,6 +21,7 @@
   ImActorModelApiAvatarImage *largeImage_;
   ImActorModelApiAvatarImage *fullImage_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, smallImage_, ImActorModelApiAvatarImage *)
@@ -34,61 +37,42 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 - (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)smallImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage {
-  if (self = [super init]) {
-    
-#line 26
-    self->smallImage_ = smallImage;
-    
-#line 27
-    self->largeImage_ = largeImage;
-    
-#line 28
-    self->fullImage_ = fullImage;
-  }
+  ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(self, smallImage, largeImage, fullImage);
   return self;
 }
 
 
 #line 31
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiAvatar_init(self);
+  return self;
 }
 
+
+#line 35
 - (ImActorModelApiAvatarImage *)getSmallImage {
-  
-#line 36
   return self->smallImage_;
 }
 
-
-#line 39
 - (ImActorModelApiAvatarImage *)getLargeImage {
-  
-#line 40
   return self->largeImage_;
 }
 
-
-#line 43
 - (ImActorModelApiAvatarImage *)getFullImage {
-  
-#line 44
   return self->fullImage_;
 }
 
 
 #line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
-  self->largeImage_ = [values optObjWithInt:2 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
-  self->fullImage_ = [values optObjWithInt:3 withBSBserObject:[[ImActorModelApiAvatarImage alloc] init]];
+  self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
+  self->largeImage_ = [values optObjWithInt:2 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
+  self->fullImage_ = [values optObjWithInt:3 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
 }
 
 
 #line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 56
   if (self->smallImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->smallImage_];
   }
@@ -100,6 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   }
 }
 
+
+#line 68
 - (NSString *)description {
   NSString *res = @"struct Avatar{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"smallImage=", (self->smallImage_ != nil ? @"set" : @"empty")));
@@ -109,13 +95,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiAvatar *)other {
-  [super copyAllFieldsTo:other];
-  other->smallImage_ = smallImage_;
-  other->largeImage_ = largeImage_;
-  other->fullImage_ = fullImage_;
+@end
+
+
+#line 25
+void ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatar *self, ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) {
+  (void) BSBserObject_init(self);
+  
+#line 26
+  self->smallImage_ = smallImage;
+  self->largeImage_ = largeImage;
+  self->fullImage_ = fullImage;
 }
 
-@end
+
+#line 25
+ImActorModelApiAvatar *new_ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) {
+  ImActorModelApiAvatar *self = [ImActorModelApiAvatar alloc];
+  ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(self, smallImage, largeImage, fullImage);
+  return self;
+}
+
+void ImActorModelApiAvatar_init(ImActorModelApiAvatar *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 31
+ImActorModelApiAvatar *new_ImActorModelApiAvatar_init() {
+  ImActorModelApiAvatar *self = [ImActorModelApiAvatar alloc];
+  ImActorModelApiAvatar_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAvatar)

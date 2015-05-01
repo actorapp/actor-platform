@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPhone.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPhone.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
   jlong phone_;
   NSString *title_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
@@ -26,33 +28,24 @@ J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 #line 17
 - (instancetype)initWithLong:(jlong)phone
                 withNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 18
-    self->phone_ = phone;
-    
-#line 19
-    self->title_ = title;
-  }
+  AMUserPhone_initWithLong_withNSString_(self, phone, title);
   return self;
 }
 
 
 #line 27
 - (jlong)getPhone {
-  
-#line 28
   return phone_;
 }
 
 
 #line 36
 - (NSString *)getTitle {
-  
-#line 37
   return title_;
 }
 
+
+#line 41
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -67,18 +60,30 @@ J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
   return YES;
 }
 
+
+#line 53
 - (NSUInteger)hash {
-  
-#line 54
   return (jint) (phone_ ^ (URShift64(phone_, 32)));
 }
 
-- (void)copyAllFieldsTo:(AMUserPhone *)other {
-  [super copyAllFieldsTo:other];
-  other->phone_ = phone_;
-  other->title_ = title_;
+@end
+
+
+#line 17
+void AMUserPhone_initWithLong_withNSString_(AMUserPhone *self, jlong phone, NSString *title) {
+  (void) NSObject_init(self);
+  
+#line 18
+  self->phone_ = phone;
+  self->title_ = title;
 }
 
-@end
+
+#line 17
+AMUserPhone *new_AMUserPhone_initWithLong_withNSString_(jlong phone, NSString *title) {
+  AMUserPhone *self = [AMUserPhone alloc];
+  AMUserPhone_initWithLong_withNSString_(self, phone, title);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPhone)

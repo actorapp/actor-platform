@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMUploadFileCallback)
 
-#define ImActorModelViewmodelUploadFileCallback AMUploadFileCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileCallback)
+
+#define ImActorModelViewmodelUploadFileCallback AMUploadFileCallback
 
 #endif // _AMUploadFileCallback_H_

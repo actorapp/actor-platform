@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/SimpleBigDecimal.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/SimpleBigDecimal.java"
 
 #include "IOSPrimitiveArray.h"
@@ -13,7 +14,7 @@
 #include "org/bouncycastle/math/ec/ECConstants.h"
 #include "org/bouncycastle/math/ec/SimpleBigDecimal.h"
 
-__attribute__((unused)) static void OrgBouncycastleMathEcSimpleBigDecimal_checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal_(OrgBouncycastleMathEcSimpleBigDecimal *self, OrgBouncycastleMathEcSimpleBigDecimal *b);
+#define OrgBouncycastleMathEcSimpleBigDecimal_serialVersionUID 1LL
 
 @interface OrgBouncycastleMathEcSimpleBigDecimal () {
  @public
@@ -22,9 +23,14 @@ __attribute__((unused)) static void OrgBouncycastleMathEcSimpleBigDecimal_checkS
 }
 
 - (void)checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigInteger *)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcSimpleBigDecimal, serialVersionUID, jlong)
+
+__attribute__((unused)) static void OrgBouncycastleMathEcSimpleBigDecimal_checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal_(OrgBouncycastleMathEcSimpleBigDecimal *self, OrgBouncycastleMathEcSimpleBigDecimal *b);
 
 
 #line 17
@@ -41,21 +47,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 #line 46
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)bigInt
                                    withInt:(jint)scale_ {
-  if (self = [super init]) {
-    
-#line 48
-    if (scale_ < 0) {
-      
-#line 50
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"scale may not be negative"];
-    }
-    
-#line 53
-    self->bigInt_ = bigInt;
-    
-#line 54
-    self->scale__ = scale_;
-  }
+  OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(self, bigInt, scale_);
   return self;
 }
 
@@ -73,7 +65,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   if (newScale < 0) {
     
 #line 70
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"scale may not be negative"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"scale may not be negative");
   }
   
 #line 73
@@ -84,9 +76,9 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   }
   
 #line 78
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) shiftLeftWithInt:newScale - scale__] withInt:
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) shiftLeftWithInt:newScale - scale__],
 #line 79
-  newScale];
+  newScale);
 }
 
 
@@ -95,7 +87,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   
 #line 84
   OrgBouncycastleMathEcSimpleBigDecimal_checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal_(self, b);
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) addWithJavaMathBigInteger:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->bigInt_] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) addWithJavaMathBigInteger:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->bigInt_], scale__);
 }
 
 
@@ -103,7 +95,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (OrgBouncycastleMathEcSimpleBigDecimal *)addWithJavaMathBigInteger:(JavaMathBigInteger *)b {
   
 #line 90
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) addWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(b)) shiftLeftWithInt:scale__]] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) addWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(b)) shiftLeftWithInt:scale__]], scale__);
 }
 
 
@@ -111,7 +103,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (OrgBouncycastleMathEcSimpleBigDecimal *)negate {
   
 #line 95
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) negate] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) negate], scale__);
 }
 
 
@@ -127,16 +119,18 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (OrgBouncycastleMathEcSimpleBigDecimal *)subtractWithJavaMathBigInteger:(JavaMathBigInteger *)b {
   
 #line 105
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(b)) shiftLeftWithInt:scale__]] withInt:
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) subtractWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(b)) shiftLeftWithInt:scale__]],
 #line 106
-  scale__];
+  scale__);
 }
 
 
 #line 109
 - (OrgBouncycastleMathEcSimpleBigDecimal *)multiplyWithOrgBouncycastleMathEcSimpleBigDecimal:(OrgBouncycastleMathEcSimpleBigDecimal *)b {
+  
+#line 111
   OrgBouncycastleMathEcSimpleBigDecimal_checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal_(self, b);
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) multiplyWithJavaMathBigInteger:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->bigInt_] withInt:scale__ + scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) multiplyWithJavaMathBigInteger:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->bigInt_], scale__ + scale__);
 }
 
 
@@ -144,7 +138,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (OrgBouncycastleMathEcSimpleBigDecimal *)multiplyWithJavaMathBigInteger:(JavaMathBigInteger *)b {
   
 #line 117
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) multiplyWithJavaMathBigInteger:b] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) multiplyWithJavaMathBigInteger:b], scale__);
 }
 
 
@@ -154,7 +148,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 #line 122
   OrgBouncycastleMathEcSimpleBigDecimal_checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal_(self, b);
   JavaMathBigInteger *dividend = [((JavaMathBigInteger *) nil_chk(bigInt_)) shiftLeftWithInt:scale__];
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(dividend)) divideWithJavaMathBigInteger:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->bigInt_] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(dividend)) divideWithJavaMathBigInteger:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->bigInt_], scale__);
 }
 
 
@@ -162,7 +156,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (OrgBouncycastleMathEcSimpleBigDecimal *)divideWithJavaMathBigInteger:(JavaMathBigInteger *)b {
   
 #line 129
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) divideWithJavaMathBigInteger:b] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) divideWithJavaMathBigInteger:b], scale__);
 }
 
 
@@ -170,7 +164,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (OrgBouncycastleMathEcSimpleBigDecimal *)shiftLeftWithInt:(jint)n {
   
 #line 134
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(bigInt_)) shiftLeftWithInt:n] withInt:scale__];
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(bigInt_)) shiftLeftWithInt:n], scale__);
 }
 
 
@@ -203,7 +197,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
 - (JavaMathBigInteger *)round {
   
 #line 155
-  OrgBouncycastleMathEcSimpleBigDecimal *oneHalf = [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:OrgBouncycastleMathEcECConstants_get_ONE_() withInt:1];
+  OrgBouncycastleMathEcSimpleBigDecimal *oneHalf = new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(OrgBouncycastleMathEcECConstants_get_ONE_(), 1);
   return [((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk([self addWithOrgBouncycastleMathEcSimpleBigDecimal:[oneHalf adjustScaleWithInt:scale__]])) floor];
 }
 
@@ -231,6 +225,8 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   return scale__;
 }
 
+
+#line 184
 - (NSString *)description {
   
 #line 186
@@ -277,7 +273,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   NSString *rightOfPoint = [NSString stringWithCharacters:fractCharArr];
   
 #line 219
-  JavaLangStringBuffer *sb = [[JavaLangStringBuffer alloc] initWithNSString:leftOfPoint];
+  JavaLangStringBuffer *sb = new_JavaLangStringBuffer_initWithNSString_(leftOfPoint);
   (void) [sb appendWithNSString:@"."];
   (void) [sb appendWithNSString:rightOfPoint];
   
@@ -285,6 +281,8 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   return [sb description];
 }
 
+
+#line 226
 - (jboolean)isEqual:(id)o {
   
 #line 228
@@ -306,34 +304,55 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcSimpleBigDecimal, bigInt_, JavaMathBigI
   return (([((JavaMathBigInteger *) nil_chk(bigInt_)) isEqual:((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(other))->bigInt_]) && (scale__ == other->scale__));
 }
 
+
+#line 242
 - (NSUInteger)hash {
   
 #line 244
   return ((jint) [((JavaMathBigInteger *) nil_chk(bigInt_)) hash]) ^ scale__;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcSimpleBigDecimal *)other {
-  [super copyAllFieldsTo:other];
-  other->bigInt_ = bigInt_;
-  other->scale__ = scale__;
-}
-
 @end
 
+
+#line 34
 OrgBouncycastleMathEcSimpleBigDecimal *OrgBouncycastleMathEcSimpleBigDecimal_getInstanceWithJavaMathBigInteger_withInt_(JavaMathBigInteger *value, jint scale_) {
-  OrgBouncycastleMathEcSimpleBigDecimal_init();
-  
-#line 36
-  return [[OrgBouncycastleMathEcSimpleBigDecimal alloc] initWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(value)) shiftLeftWithInt:scale_] withInt:scale_];
+  OrgBouncycastleMathEcSimpleBigDecimal_initialize();
+  return new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_([((JavaMathBigInteger *) nil_chk(value)) shiftLeftWithInt:scale_], scale_);
 }
 
+
+#line 46
+void OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(OrgBouncycastleMathEcSimpleBigDecimal *self, JavaMathBigInteger *bigInt, jint scale_) {
+  (void) NSObject_init(self);
+  if (scale_ < 0) {
+    
+#line 50
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"scale may not be negative");
+  }
+  
+#line 53
+  self->bigInt_ = bigInt;
+  self->scale__ = scale_;
+}
+
+
+#line 46
+OrgBouncycastleMathEcSimpleBigDecimal *new_OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(JavaMathBigInteger *bigInt, jint scale_) {
+  OrgBouncycastleMathEcSimpleBigDecimal *self = [OrgBouncycastleMathEcSimpleBigDecimal alloc];
+  OrgBouncycastleMathEcSimpleBigDecimal_initWithJavaMathBigInteger_withInt_(self, bigInt, scale_);
+  return self;
+}
+
+
+#line 57
 void OrgBouncycastleMathEcSimpleBigDecimal_checkScaleWithOrgBouncycastleMathEcSimpleBigDecimal_(OrgBouncycastleMathEcSimpleBigDecimal *self, OrgBouncycastleMathEcSimpleBigDecimal *b) {
   
 #line 59
   if (self->scale__ != ((OrgBouncycastleMathEcSimpleBigDecimal *) nil_chk(b))->scale__) {
     
 #line 61
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Only SimpleBigDecimal of same scale allowed in arithmetic operations"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Only SimpleBigDecimal of same scale allowed in arithmetic operations");
   }
 }
 

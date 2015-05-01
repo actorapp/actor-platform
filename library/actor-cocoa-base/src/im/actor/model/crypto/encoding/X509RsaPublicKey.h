@@ -6,22 +6,23 @@
 #ifndef _BCX509RsaPublicKey_H_
 #define _BCX509RsaPublicKey_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class JavaMathBigInteger;
 
-#include "J2ObjC_header.h"
+@interface BCX509RsaPublicKey : NSObject
 
-@interface BCX509RsaPublicKey : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)exponent;
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data;
 
-- (JavaMathBigInteger *)getModulus;
-
 - (JavaMathBigInteger *)getExponent;
+
+- (JavaMathBigInteger *)getModulus;
 
 - (IOSByteArray *)serialize;
 
@@ -29,14 +30,16 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCX509RsaPublicKey)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(BCX509RsaPublicKey *self, JavaMathBigInteger *modulus, JavaMathBigInteger *exponent);
 
-FOUNDATION_EXPORT NSString *BCX509RsaPublicKey_ALGO_TYPE_;
-J2OBJC_STATIC_FIELD_GETTER(BCX509RsaPublicKey, ALGO_TYPE_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT BCX509RsaPublicKey *new_BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *exponent) NS_RETURNS_RETAINED;
 
-typedef BCX509RsaPublicKey ImActorModelCryptoEncodingX509RsaPublicKey;
+FOUNDATION_EXPORT void BCX509RsaPublicKey_initWithByteArray_(BCX509RsaPublicKey *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT BCX509RsaPublicKey *new_BCX509RsaPublicKey_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCX509RsaPublicKey)
+
+typedef BCX509RsaPublicKey ImActorModelCryptoEncodingX509RsaPublicKey;
 
 #endif // _BCX509RsaPublicKey_H_

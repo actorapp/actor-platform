@@ -3,29 +3,59 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/DataLengthException.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/DataLengthException.java"
 
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/DataLengthException.h"
+#include "org/bouncycastle/crypto/RuntimeCryptoException.h"
 
-
-#line 9
 @implementation OrgBouncycastleCryptoDataLengthException
 
 
 #line 15
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleCryptoDataLengthException_init(self);
+  return self;
 }
 
 
 #line 24
 - (instancetype)initWithNSString:(NSString *)message {
-  return
-#line 27
-  [super initWithNSString:message];
+  OrgBouncycastleCryptoDataLengthException_initWithNSString_(self, message);
+  return self;
 }
 
 @end
+
+
+#line 15
+void OrgBouncycastleCryptoDataLengthException_init(OrgBouncycastleCryptoDataLengthException *self) {
+  (void) OrgBouncycastleCryptoRuntimeCryptoException_init(self);
+}
+
+
+#line 15
+OrgBouncycastleCryptoDataLengthException *new_OrgBouncycastleCryptoDataLengthException_init() {
+  OrgBouncycastleCryptoDataLengthException *self = [OrgBouncycastleCryptoDataLengthException alloc];
+  OrgBouncycastleCryptoDataLengthException_init(self);
+  return self;
+}
+
+
+#line 24
+void OrgBouncycastleCryptoDataLengthException_initWithNSString_(OrgBouncycastleCryptoDataLengthException *self, NSString *message) {
+  (void) OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(self,
+#line 27
+  message);
+}
+
+
+#line 24
+OrgBouncycastleCryptoDataLengthException *new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(NSString *message) {
+  OrgBouncycastleCryptoDataLengthException *self = [OrgBouncycastleCryptoDataLengthException alloc];
+  OrgBouncycastleCryptoDataLengthException_initWithNSString_(self, message);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoDataLengthException)

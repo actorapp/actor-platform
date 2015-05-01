@@ -6,26 +6,27 @@
 #ifndef _ImActorModelApiServiceMessage_H_
 #define _ImActorModelApiServiceMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/api/Message.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiServiceEx;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/api/Message.h"
+@interface ImActorModelApiServiceMessage : ImActorModelApiMessage
 
-@interface ImActorModelApiServiceMessage : ImActorModelApiMessage {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)text
     withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext;
 
-- (instancetype)init;
+- (ImActorModelApiServiceEx *)getExt;
 
 - (jint)getHeader;
 
 - (NSString *)getText;
-
-- (ImActorModelApiServiceEx *)getExt;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -37,8 +38,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(ImActorModelApiServiceMessage *self, NSString *text, ImActorModelApiServiceEx *ext);
+
+FOUNDATION_EXPORT ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(NSString *text, ImActorModelApiServiceEx *ext) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiServiceMessage_init(ImActorModelApiServiceMessage *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceMessage)
 

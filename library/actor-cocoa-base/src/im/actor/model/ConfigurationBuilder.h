@@ -6,9 +6,11 @@
 #ifndef _AMConfigurationBuilder_H_
 #define _AMConfigurationBuilder_H_
 
+#include "J2ObjC_header.h"
+
 @class AMApiConfiguration;
 @class AMConfiguration;
-@class JavaUtilArrayList;
+@protocol AMAnalyticsProvider;
 @protocol AMCryptoProvider;
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
@@ -22,58 +24,60 @@
 @protocol AMStorageProvider;
 @protocol AMThreadingProvider;
 
-#include "J2ObjC_header.h"
+@interface AMConfigurationBuilder : NSObject
 
-@interface AMConfigurationBuilder : NSObject {
-}
+#pragma mark Public
 
-- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider;
-
-- (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
-
-- (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
-
-- (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
-
-- (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging;
-
-- (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
-
-- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging;
-
-- (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
-
-- (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;
-
-- (AMConfigurationBuilder *)setLogProvider:(id<AMLogProvider>)log;
-
-- (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider;
-
-- (AMConfigurationBuilder *)setThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
-
-- (AMConfigurationBuilder *)setStorageProvider:(id<AMStorageProvider>)storageProvider;
-
-- (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
-
-- (AMConfigurationBuilder *)setDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider;
+- (instancetype)init;
 
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url;
 
-- (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider;
-
 - (AMConfiguration *)build;
 
-- (instancetype)init;
+- (AMConfigurationBuilder *)setAnalyticsProviderWithAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
+
+- (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
+
+- (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
+
+- (AMConfigurationBuilder *)setDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider;
+
+- (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging;
+
+- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging;
+
+- (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
+
+- (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
+
+- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider;
+
+- (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
+
+- (AMConfigurationBuilder *)setLogProvider:(id<AMLogProvider>)log;
+
+- (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider;
+
+- (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+
+- (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider;
+
+- (AMConfigurationBuilder *)setPhoneBookProvider:(id<AMPhoneBookProvider>)phoneBookProvider;
+
+- (AMConfigurationBuilder *)setStorageProvider:(id<AMStorageProvider>)storageProvider;
+
+- (AMConfigurationBuilder *)setThreadingProvider:(id<AMThreadingProvider>)threadingProvider;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMConfigurationBuilder)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMConfigurationBuilder_init(AMConfigurationBuilder *self);
 
-typedef AMConfigurationBuilder ImActorModelConfigurationBuilder;
+FOUNDATION_EXPORT AMConfigurationBuilder *new_AMConfigurationBuilder_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConfigurationBuilder)
+
+typedef AMConfigurationBuilder ImActorModelConfigurationBuilder;
 
 #endif // _AMConfigurationBuilder_H_

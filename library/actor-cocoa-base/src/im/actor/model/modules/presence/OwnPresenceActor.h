@@ -6,19 +6,14 @@
 #ifndef _ImActorModelModulesPresenceOwnPresenceActor_H_
 #define _ImActorModelModulesPresenceOwnPresenceActor_H_
 
-@class AMRpcException;
-@class ImActorModelApiRpcResponseVoid;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-#define ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT 60000
-#define ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT 90000
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesPresenceOwnPresenceActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesPresenceOwnPresenceActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
@@ -28,17 +23,15 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresenceOwnPresenceActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesPresenceOwnPresenceActor *self, ImActorModelModulesModules *messenger);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresenceOwnPresenceActor, RESEND_TIMEOUT, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresenceOwnPresenceActor, TIMEOUT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesPresenceOwnPresenceActor *new_ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor)
 
-@interface ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible : NSObject {
-}
+@interface ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -46,13 +39,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible *self);
+
+FOUNDATION_EXPORT ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible *new_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible)
 
-@interface ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden : NSObject {
-}
+@interface ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -60,13 +55,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisi
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden *self);
+
+FOUNDATION_EXPORT ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden *new_ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden)
 
-@interface ImActorModelModulesPresenceOwnPresenceActor_PerformOnline : NSObject {
-}
+@interface ImActorModelModulesPresenceOwnPresenceActor_PerformOnline : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -74,27 +71,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidd
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresenceOwnPresenceActor_PerformOnline)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init(ImActorModelModulesPresenceOwnPresenceActor_PerformOnline *self);
+
+FOUNDATION_EXPORT ImActorModelModulesPresenceOwnPresenceActor_PerformOnline *new_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_PerformOnline)
-
-@interface ImActorModelModulesPresenceOwnPresenceActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresenceOwnPresenceActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_$1)
 
 #endif // _ImActorModelModulesPresenceOwnPresenceActor_H_

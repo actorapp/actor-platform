@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1ObjectIdentifier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1ObjectIdentifier.java"
 
 #include "IOSClass.h"
@@ -21,6 +22,7 @@
  @public
   NSString *identifier_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
@@ -36,19 +38,13 @@ J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
 
 #line 49
 - (instancetype)initWithNSString:(NSString *)identifier {
-  if (self = [super init]) {
-    
-#line 50
-    self->identifier_ = identifier;
-  }
+  BCASN1ObjectIdentifier_initWithNSString_(self, identifier);
   return self;
 }
 
 
 #line 53
 - (NSString *)getIdentifier {
-  
-#line 54
   return identifier_;
 }
 
@@ -60,7 +56,7 @@ J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_OBJECT_IDENTIFIER];
   
 #line 62
-  BSDataOutput *content = [[BSDataOutput alloc] init];
+  BSDataOutput *content = new_BSDataOutput_init();
   
 #line 64
   IOSObjectArray *items = [((NSString *) nil_chk(identifier_)) split:@"\\."];
@@ -91,15 +87,12 @@ J2OBJC_FIELD_SETTER(BCASN1ObjectIdentifier, identifier_, NSString *)
   [dataOutput writeBytesWithByteArray:contentV withInt:0 withInt:contentV->size_];
 }
 
-- (void)copyAllFieldsTo:(BCASN1ObjectIdentifier *)other {
-  [super copyAllFieldsTo:other];
-  other->identifier_ = identifier_;
-}
-
 @end
 
+
+#line 13
 BCASN1ObjectIdentifier *BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(BSDataInput *dataInput) {
-  BCASN1ObjectIdentifier_init();
+  BCASN1ObjectIdentifier_initialize();
   
 #line 14
   NSString *res;
@@ -143,7 +136,24 @@ BCASN1ObjectIdentifier *BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInp
   }
   
 #line 44
-  return [[BCASN1ObjectIdentifier alloc] initWithNSString:res];
+  return new_BCASN1ObjectIdentifier_initWithNSString_(res);
+}
+
+
+#line 49
+void BCASN1ObjectIdentifier_initWithNSString_(BCASN1ObjectIdentifier *self, NSString *identifier) {
+  (void) BCASN1Primitive_init(self);
+  
+#line 50
+  self->identifier_ = identifier;
+}
+
+
+#line 49
+BCASN1ObjectIdentifier *new_BCASN1ObjectIdentifier_initWithNSString_(NSString *identifier) {
+  BCASN1ObjectIdentifier *self = [BCASN1ObjectIdentifier alloc];
+  BCASN1ObjectIdentifier_initWithNSString_(self, identifier);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1ObjectIdentifier)

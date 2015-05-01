@@ -8,8 +8,9 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMPhoneBookPhone : NSObject {
-}
+@interface AMPhoneBookPhone : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)id_
                     withLong:(jlong)number;
@@ -22,11 +23,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMPhoneBookPhone)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMPhoneBookPhone_initWithLong_withLong_(AMPhoneBookPhone *self, jlong id_, jlong number);
 
-typedef AMPhoneBookPhone ImActorModelEntityPhoneBookPhone;
+FOUNDATION_EXPORT AMPhoneBookPhone *new_AMPhoneBookPhone_initWithLong_withLong_(jlong id_, jlong number) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPhoneBookPhone)
+
+typedef AMPhoneBookPhone ImActorModelEntityPhoneBookPhone;
 
 #endif // _AMPhoneBookPhone_H_

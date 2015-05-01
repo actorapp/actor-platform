@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRemoveContact.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRemoveContact.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestRemoveContact () {
@@ -20,6 +22,7 @@
   jint uid_;
   jlong accessHash_;
 }
+
 @end
 
 
@@ -36,34 +39,24 @@
 #line 30
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash {
-  if (self = [super init]) {
-    
-#line 31
-    self->uid_ = uid;
-    
-#line 32
-    self->accessHash_ = accessHash;
-  }
+  ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(self, uid, accessHash);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestRemoveContact_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getUid {
-  
-#line 40
   return self->uid_;
 }
 
-
-#line 43
 - (jlong)getAccessHash {
-  
-#line 44
   return self->accessHash_;
 }
 
@@ -77,12 +70,12 @@
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
+
+#line 60
 - (NSString *)description {
   NSString *res = @"rpc RemoveContact{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -90,25 +83,51 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 69
-  return ImActorModelApiRpcRequestRemoveContact_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestRemoveContact *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->accessHash_ = accessHash_;
+#line 68
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestRemoveContact_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestRemoveContact *ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestRemoveContact_init();
+  ImActorModelApiRpcRequestRemoveContact_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestRemoveContact *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestRemoveContact alloc] init], data));
+  return ((ImActorModelApiRpcRequestRemoveContact *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRemoveContact_init(), data));
+}
+
+void ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(ImActorModelApiRpcRequestRemoveContact *self, jint uid, jlong accessHash) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->uid_ = uid;
+  self->accessHash_ = accessHash;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(jint uid, jlong accessHash) {
+  ImActorModelApiRpcRequestRemoveContact *self = [ImActorModelApiRpcRequestRemoveContact alloc];
+  ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(self, uid, accessHash);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestRemoveContact_init(ImActorModelApiRpcRequestRemoveContact *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_init() {
+  ImActorModelApiRpcRequestRemoveContact *self = [ImActorModelApiRpcRequestRemoveContact alloc];
+  ImActorModelApiRpcRequestRemoveContact_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRemoveContact)

@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngineItem)
 
-#define ImActorModelDroidkitEngineListEngineItem DKListEngineItem
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngineItem)
+
+#define ImActorModelDroidkitEngineListEngineItem DKListEngineItem
 
 #endif // _DKListEngineItem_H_

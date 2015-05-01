@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVideo.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVideo.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/DocumentEx.h"
 #include "im/actor/model/api/DocumentExVideo.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -18,8 +20,11 @@
   jint h_;
   jint duration_;
 }
+
 @end
 
+
+#line 19
 @implementation ImActorModelApiDocumentExVideo
 
 
@@ -27,53 +32,32 @@
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
                     withInt:(jint)duration {
-  if (self = [super init]) {
-    
-#line 26
-    self->w_ = w;
-    
-#line 27
-    self->h_ = h;
-    
-#line 28
-    self->duration_ = duration;
-  }
+  ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
   return self;
 }
 
 
 #line 31
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiDocumentExVideo_init(self);
+  return self;
 }
 
+
+#line 35
 - (jint)getHeader {
-  
-#line 36
   return 2;
 }
 
-
-#line 39
 - (jint)getW {
-  
-#line 40
   return self->w_;
 }
 
-
-#line 43
 - (jint)getH {
-  
-#line 44
   return self->h_;
 }
 
-
-#line 47
 - (jint)getDuration {
-  
-#line 48
   return self->duration_;
 }
 
@@ -88,13 +72,13 @@
 
 #line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 60
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
   [writer writeIntWithInt:3 withInt:self->duration_];
 }
 
+
+#line 66
 - (NSString *)description {
   NSString *res = @"struct DocumentExVideo{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
@@ -104,13 +88,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiDocumentExVideo *)other {
-  [super copyAllFieldsTo:other];
-  other->w_ = w_;
-  other->h_ = h_;
-  other->duration_ = duration_;
+@end
+
+
+#line 25
+void ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(ImActorModelApiDocumentExVideo *self, jint w, jint h, jint duration) {
+  (void) ImActorModelApiDocumentEx_init(self);
+  
+#line 26
+  self->w_ = w;
+  self->h_ = h;
+  self->duration_ = duration;
 }
 
-@end
+
+#line 25
+ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) {
+  ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
+  ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
+  return self;
+}
+
+void ImActorModelApiDocumentExVideo_init(ImActorModelApiDocumentExVideo *self) {
+  (void) ImActorModelApiDocumentEx_init(self);
+}
+
+
+#line 31
+ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_init() {
+  ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
+  ImActorModelApiDocumentExVideo_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExVideo)

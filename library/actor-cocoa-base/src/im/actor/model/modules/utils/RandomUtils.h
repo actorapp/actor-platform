@@ -6,29 +6,25 @@
 #ifndef _ImActorModelModulesUtilsRandomUtils_H_
 #define _ImActorModelModulesUtilsRandomUtils_H_
 
-@class JavaUtilRandom;
-
 #include "J2ObjC_header.h"
 
-@interface ImActorModelModulesUtilsRandomUtils : NSObject {
-}
+@interface ImActorModelModulesUtilsRandomUtils : NSObject
 
-+ (jlong)nextRid;
+#pragma mark Public
 
 - (instancetype)init;
 
++ (jlong)nextRid;
+
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelModulesUtilsRandomUtils_initialized;
 J2OBJC_STATIC_INIT(ImActorModelModulesUtilsRandomUtils)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jlong ImActorModelModulesUtilsRandomUtils_nextRid();
 
-FOUNDATION_EXPORT JavaUtilRandom *ImActorModelModulesUtilsRandomUtils_RANDOM_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsRandomUtils, RANDOM_, JavaUtilRandom *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUtilsRandomUtils_init(ImActorModelModulesUtilsRandomUtils *self);
+
+FOUNDATION_EXPORT ImActorModelModulesUtilsRandomUtils *new_ImActorModelModulesUtilsRandomUtils_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsRandomUtils)
 

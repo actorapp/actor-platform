@@ -6,23 +6,26 @@
 #ifndef _ImActorModelApiRpcRequestTerminateSession_H_
 #define _ImActorModelApiRpcRequestTerminateSession_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestTerminateSession_HEADER 82
 
-@interface ImActorModelApiRpcRequestTerminateSession : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestTerminateSession : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestTerminateSession *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)id_;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestTerminateSession *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getId;
 
@@ -32,18 +35,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestTerminateSession)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTerminateSession, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTerminateSession, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestTerminateSession_initWithInt_(ImActorModelApiRpcRequestTerminateSession *self, jint id_);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateSession *new_ImActorModelApiRpcRequestTerminateSession_initWithInt_(jint id_) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestTerminateSession_init(ImActorModelApiRpcRequestTerminateSession *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateSession *new_ImActorModelApiRpcRequestTerminateSession_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestTerminateSession)
 

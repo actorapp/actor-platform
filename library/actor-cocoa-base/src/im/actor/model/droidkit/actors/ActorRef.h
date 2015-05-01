@@ -6,23 +6,27 @@
 #ifndef _DKActorRef_H_
 #define _DKActorRef_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActorDispatcher;
 @class DKActorEndpoint;
 @class DKActorSystem;
 
-#include "J2ObjC_header.h"
+@interface DKActorRef : NSObject
 
-@interface DKActorRef : NSObject {
-}
-
-- (NSString *)getPath;
-
-- (DKActorSystem *)system;
+#pragma mark Public
 
 - (instancetype)initWithDKActorEndpoint:(DKActorEndpoint *)endpoint
                       withDKActorSystem:(DKActorSystem *)system
                   withDKActorDispatcher:(DKActorDispatcher *)dispatcher
                            withNSString:(NSString *)path;
+
+- (void)cancelMessageWithId:(id)message;
+
+- (void)cancelMessageWithId:(id)message
+             withDKActorRef:(DKActorRef *)sender;
+
+- (NSString *)getPath;
 
 - (void)sendWithId:(id)message;
 
@@ -48,15 +52,18 @@
               withLong:(jlong)delay
         withDKActorRef:(DKActorRef *)sender;
 
+- (DKActorSystem *)system;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorRef)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKActorRef_initWithDKActorEndpoint_withDKActorSystem_withDKActorDispatcher_withNSString_(DKActorRef *self, DKActorEndpoint *endpoint, DKActorSystem *system, DKActorDispatcher *dispatcher, NSString *path);
 
-typedef DKActorRef ImActorModelDroidkitActorsActorRef;
+FOUNDATION_EXPORT DKActorRef *new_DKActorRef_initWithDKActorEndpoint_withDKActorSystem_withDKActorDispatcher_withNSString_(DKActorEndpoint *endpoint, DKActorSystem *system, DKActorDispatcher *dispatcher, NSString *path) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorRef)
+
+typedef DKActorRef ImActorModelDroidkitActorsActorRef;
 
 #endif // _DKActorRef_H_

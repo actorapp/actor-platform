@@ -6,29 +6,32 @@
 #ifndef _ImActorModelApiRpcRequestKickUser_H_
 #define _ImActorModelApiRpcRequestKickUser_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiGroupOutPeer;
 @class ImActorModelApiUserOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestKickUser_HEADER 71
 
-@interface ImActorModelApiRpcRequestKickUser : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestKickUser : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestKickUser *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                      withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestKickUser *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer;
+
+- (jint)getHeaderKey;
 
 - (jlong)getRid;
 
@@ -40,18 +43,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestKickUser)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestKickUser, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestKickUser *ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestKickUser, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestKickUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestKickUser *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestKickUser *new_ImActorModelApiRpcRequestKickUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestKickUser_init(ImActorModelApiRpcRequestKickUser *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestKickUser *new_ImActorModelApiRpcRequestKickUser_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestKickUser)
 

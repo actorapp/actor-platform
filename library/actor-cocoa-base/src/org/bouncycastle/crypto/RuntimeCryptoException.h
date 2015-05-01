@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "java/lang/RuntimeException.h"
 
-@interface OrgBouncycastleCryptoRuntimeCryptoException : JavaLangRuntimeException {
-}
+@interface OrgBouncycastleCryptoRuntimeCryptoException : JavaLangRuntimeException
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -20,8 +21,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoRuntimeCryptoException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoRuntimeCryptoException_init(OrgBouncycastleCryptoRuntimeCryptoException *self);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoRuntimeCryptoException *new_OrgBouncycastleCryptoRuntimeCryptoException_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(OrgBouncycastleCryptoRuntimeCryptoException *self, NSString *message);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoRuntimeCryptoException *new_OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(NSString *message) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoRuntimeCryptoException)
 

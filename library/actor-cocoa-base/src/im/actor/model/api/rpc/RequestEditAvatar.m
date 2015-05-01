@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditAvatar.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditAvatar.java"
 
 #include "IOSClass.h"
@@ -14,12 +15,14 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestEditAvatar () {
  @public
   ImActorModelApiFileLocation *fileLocation_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorModelApiFileLocation *)
@@ -37,43 +40,40 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
 
 #line 29
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation {
-  if (self = [super init]) {
-    
-#line 30
-    self->fileLocation_ = fileLocation;
-  }
+  ImActorModelApiRpcRequestEditAvatar_initWithImActorModelApiFileLocation_(self, fileLocation);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestEditAvatar_init(self);
+  return self;
 }
 
+
+#line 37
 - (ImActorModelApiFileLocation *)getFileLocation {
-  
-#line 38
   return self->fileLocation_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
+  self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiFileLocation_init()];
 }
 
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   if (self->fileLocation_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->fileLocation_];
 }
 
+
+#line 55
 - (NSString *)description {
   NSString *res = @"rpc EditAvatar{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"fileLocation=", (self->fileLocation_ != nil ? @"set" : @"empty")));
@@ -81,24 +81,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditAvatar, fileLocation_, ImActorM
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 64
-  return ImActorModelApiRpcRequestEditAvatar_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditAvatar *)other {
-  [super copyAllFieldsTo:other];
-  other->fileLocation_ = fileLocation_;
+#line 63
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestEditAvatar_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestEditAvatar *ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestEditAvatar_init();
+  ImActorModelApiRpcRequestEditAvatar_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditAvatar alloc] init], data));
+  return ((ImActorModelApiRpcRequestEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditAvatar_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestEditAvatar_initWithImActorModelApiFileLocation_(ImActorModelApiRpcRequestEditAvatar *self, ImActorModelApiFileLocation *fileLocation) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->fileLocation_ = fileLocation;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestEditAvatar *new_ImActorModelApiRpcRequestEditAvatar_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *fileLocation) {
+  ImActorModelApiRpcRequestEditAvatar *self = [ImActorModelApiRpcRequestEditAvatar alloc];
+  ImActorModelApiRpcRequestEditAvatar_initWithImActorModelApiFileLocation_(self, fileLocation);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestEditAvatar_init(ImActorModelApiRpcRequestEditAvatar *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestEditAvatar *new_ImActorModelApiRpcRequestEditAvatar_init() {
+  ImActorModelApiRpcRequestEditAvatar *self = [ImActorModelApiRpcRequestEditAvatar alloc];
+  ImActorModelApiRpcRequestEditAvatar_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditAvatar)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/SyncKeyValue.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/SyncKeyValue.java"
 
 #include "IOSPrimitiveArray.h"
@@ -14,6 +15,7 @@
  @public
   id<DKKeyValueStorage> storage_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
@@ -25,11 +27,7 @@ J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
 
 #line 10
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
-  if (self = [super init]) {
-    
-#line 11
-    self->storage_ = storage;
-  }
+  DKSyncKeyValue_initWithDKKeyValueStorage_(self, storage);
   return self;
 }
 
@@ -64,11 +62,23 @@ J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
   }
 }
 
-- (void)copyAllFieldsTo:(DKSyncKeyValue *)other {
-  [super copyAllFieldsTo:other];
-  other->storage_ = storage_;
+@end
+
+
+#line 10
+void DKSyncKeyValue_initWithDKKeyValueStorage_(DKSyncKeyValue *self, id<DKKeyValueStorage> storage) {
+  (void) NSObject_init(self);
+  
+#line 11
+  self->storage_ = storage;
 }
 
-@end
+
+#line 10
+DKSyncKeyValue *new_DKSyncKeyValue_initWithDKKeyValueStorage_(id<DKKeyValueStorage> storage) {
+  DKSyncKeyValue *self = [DKSyncKeyValue alloc];
+  DKSyncKeyValue_initWithDKKeyValueStorage_(self, storage);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKSyncKeyValue)

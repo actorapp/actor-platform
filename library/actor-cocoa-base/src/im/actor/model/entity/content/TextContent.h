@@ -6,40 +6,43 @@
 #ifndef _AMTextContent_H_
 #define _AMTextContent_H_
 
-@class AMAbsContent_ContentTypeEnum;
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/AbsContent.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+@interface AMTextContent : AMAbsContent
 
-@interface AMTextContent : AMAbsContent {
-}
-
-+ (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)text;
 
 - (NSString *)getText;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
-
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
++ (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data;
+
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMTextContent)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMTextContent ImActorModelEntityContentTextContent;
+FOUNDATION_EXPORT void AMTextContent_initWithNSString_(AMTextContent *self, NSString *text);
+
+FOUNDATION_EXPORT AMTextContent *new_AMTextContent_initWithNSString_(NSString *text) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMTextContent)
+
+typedef AMTextContent ImActorModelEntityContentTextContent;
 
 #endif // _AMTextContent_H_

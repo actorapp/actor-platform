@@ -14,6 +14,8 @@
   jboolean privateKey_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithBoolean:(jboolean)privateKey;
 
 - (jboolean)isPrivate;
@@ -22,8 +24,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsAsymmetricKeyParameter)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsAsymmetricKeyParameter_initWithBoolean_(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *self, jboolean privateKey);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsAsymmetricKeyParameter *new_OrgBouncycastleCryptoParamsAsymmetricKeyParameter_initWithBoolean_(jboolean privateKey) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsAsymmetricKeyParameter)
 

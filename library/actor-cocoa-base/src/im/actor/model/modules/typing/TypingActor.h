@@ -6,28 +6,20 @@
 #ifndef _ImActorModelModulesTypingTypingActor_H_
 #define _ImActorModelModulesTypingTypingActor_H_
 
-@class DKActorRef;
-@class DKEnvelope;
-@class DKMailboxesQueue;
-@class ImActorModelApiTypingTypeEnum;
-@class ImActorModelModulesModules;
-@class JavaUtilHashMap;
-@class JavaUtilHashSet;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/droidkit/actors/MailboxCreator.h"
-#include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-#define ImActorModelModulesTypingTypingActor_TYPING_TEXT_TIMEOUT 3000
+@class DKActorRef;
+@class ImActorModelApiTypingTypeEnum;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesTypingTypingActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesTypingTypingActor : ImActorModelModulesUtilsModuleActor
 
-+ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+
++ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -35,23 +27,23 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT DKActorRef *ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesTypingTypingActor, TYPING_TEXT_TIMEOUT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_initWithImActorModelModulesModules_(ImActorModelModulesTypingTypingActor *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor *new_ImActorModelModulesTypingTypingActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor)
 
-@interface ImActorModelModulesTypingTypingActor_StopTyping : NSObject {
-}
+@interface ImActorModelModulesTypingTypingActor_StopTyping : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid;
 
-- (jint)getUid;
-
 - (jboolean)isEqual:(id)o;
+
+- (jint)getUid;
 
 - (NSUInteger)hash;
 
@@ -59,22 +51,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_StopTyping)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_StopTyping_initWithInt_(ImActorModelModulesTypingTypingActor_StopTyping *self, jint uid);
+
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_StopTyping *new_ImActorModelModulesTypingTypingActor_StopTyping_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_StopTyping)
 
-@interface ImActorModelModulesTypingTypingActor_StopGroupTyping : NSObject {
-}
+@interface ImActorModelModulesTypingTypingActor_StopGroupTyping : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid;
 
+- (jboolean)isEqual:(id)o;
+
 - (jint)getGid;
 
 - (jint)getUid;
-
-- (jboolean)isEqual:(id)o;
 
 - (NSUInteger)hash;
 
@@ -82,22 +76,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_StopTyping)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_StopGroupTyping)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_StopGroupTyping_initWithInt_withInt_(ImActorModelModulesTypingTypingActor_StopGroupTyping *self, jint gid, jint uid);
+
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_StopGroupTyping *new_ImActorModelModulesTypingTypingActor_StopGroupTyping_initWithInt_withInt_(jint gid, jint uid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_StopGroupTyping)
 
-@interface ImActorModelModulesTypingTypingActor_PrivateTyping : NSObject {
-}
+@interface ImActorModelModulesTypingTypingActor_PrivateTyping : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid
 withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
-- (jint)getUid;
+- (jboolean)isEqual:(id)o;
 
 - (ImActorModelApiTypingTypeEnum *)getType;
 
-- (jboolean)isEqual:(id)o;
+- (jint)getUid;
 
 - (NSUInteger)hash;
 
@@ -105,25 +101,27 @@ withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor_PrivateTyping *self, jint uid, ImActorModelApiTypingTypeEnum *type);
+
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_PrivateTyping *new_ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withImActorModelApiTypingTypeEnum_(jint uid, ImActorModelApiTypingTypeEnum *type) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
-@interface ImActorModelModulesTypingTypingActor_GroupTyping : NSObject {
-}
+@interface ImActorModelModulesTypingTypingActor_GroupTyping : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid
 withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
-- (jint)getGid;
+- (jboolean)isEqual:(id)o;
 
-- (jint)getUid;
+- (jint)getGid;
 
 - (ImActorModelApiTypingTypeEnum *)getType;
 
-- (jboolean)isEqual:(id)o;
+- (jint)getUid;
 
 - (NSUInteger)hash;
 
@@ -131,58 +129,10 @@ withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_GroupTyping)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor_GroupTyping *self, jint gid, jint uid, ImActorModelApiTypingTypeEnum *type);
+
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_GroupTyping *new_ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withImActorModelApiTypingTypeEnum_(jint gid, jint uid, ImActorModelApiTypingTypeEnum *type) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_GroupTyping)
-
-@interface ImActorModelModulesTypingTypingActor_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesTypingTypingActor *)create;
-
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_$1)
-
-@interface ImActorModelModulesTypingTypingActor_$2 : NSObject < DKMailboxCreator > {
-}
-
-- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_$2)
-
-@interface ImActorModelModulesTypingTypingActor_$2_$1 : DKMailbox {
-}
-
-- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
-                           withDKEnvelope:(DKEnvelope *)b;
-
-- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_$2_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_$2_$1)
 
 #endif // _ImActorModelModulesTypingTypingActor_H_

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1BitString.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1BitString.java"
 
 #include "IOSClass.h"
@@ -19,6 +20,7 @@
   jint paddingBit_;
   IOSByteArray *content_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
@@ -35,30 +37,17 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 #line 21
 - (instancetype)initWithInt:(jint)paddingBit
               withByteArray:(IOSByteArray *)content {
-  if (self = [super init]) {
-    
-#line 22
-    self->paddingBit_ = paddingBit;
-    
-#line 23
-    self->content_ = content;
-  }
+  BCASN1BitString_initWithInt_withByteArray_(self, paddingBit, content);
   return self;
 }
 
 
 #line 26
 - (jint)getPaddingBit {
-  
-#line 27
   return paddingBit_;
 }
 
-
-#line 30
 - (IOSByteArray *)getContent {
-  
-#line 31
   return content_;
 }
 
@@ -71,20 +60,32 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
   [dataOutput writeBytesWithByteArray:content_ withInt:0 withInt:content_->size_];
 }
 
-- (void)copyAllFieldsTo:(BCASN1BitString *)other {
-  [super copyAllFieldsTo:other];
-  other->paddingBit_ = paddingBit_;
-  other->content_ = content_;
-}
-
 @end
 
+
+#line 13
 BCASN1BitString *BCASN1BitString_readBitStringWithBSDataInput_(BSDataInput *dataInput) {
-  BCASN1BitString_init();
+  BCASN1BitString_initialize();
   
 #line 14
   jint paddingBytes = [((BSDataInput *) nil_chk(dataInput)) readByte];
-  return [[BCASN1BitString alloc] initWithInt:paddingBytes withByteArray:[dataInput readBytesWithInt:[dataInput getRemaining]]];
+  return new_BCASN1BitString_initWithInt_withByteArray_(paddingBytes, [dataInput readBytesWithInt:[dataInput getRemaining]]);
+}
+
+void BCASN1BitString_initWithInt_withByteArray_(BCASN1BitString *self, jint paddingBit, IOSByteArray *content) {
+  (void) BCASN1Primitive_init(self);
+  
+#line 22
+  self->paddingBit_ = paddingBit;
+  self->content_ = content;
+}
+
+
+#line 21
+BCASN1BitString *new_BCASN1BitString_initWithInt_withByteArray_(jint paddingBit, IOSByteArray *content) {
+  BCASN1BitString *self = [BCASN1BitString alloc];
+  BCASN1BitString_initWithInt_withByteArray_(self, paddingBit, content);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1BitString)

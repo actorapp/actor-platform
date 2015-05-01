@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetParameters.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetParameters.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 
@@ -28,11 +30,10 @@
 
 #line 28
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestGetParameters_init(self);
+  return self;
 }
 
-
-#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
@@ -41,27 +42,43 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+
+#line 41
 - (NSString *)description {
-  
-#line 42
   NSString *res = @"rpc GetParameters{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
+
+#line 48
 - (jint)getHeaderKey {
-  
-#line 49
   return ImActorModelApiRpcRequestGetParameters_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestGetParameters *ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetParameters_init();
+  ImActorModelApiRpcRequestGetParameters_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestGetParameters *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestGetParameters alloc] init], data));
+  return ((ImActorModelApiRpcRequestGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetParameters_init(), data));
+}
+
+
+#line 28
+void ImActorModelApiRpcRequestGetParameters_init(ImActorModelApiRpcRequestGetParameters *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 28
+ImActorModelApiRpcRequestGetParameters *new_ImActorModelApiRpcRequestGetParameters_init() {
+  ImActorModelApiRpcRequestGetParameters *self = [ImActorModelApiRpcRequestGetParameters alloc];
+  ImActorModelApiRpcRequestGetParameters_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetParameters)

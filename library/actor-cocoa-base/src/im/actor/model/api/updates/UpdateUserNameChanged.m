@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserNameChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserNameChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateUserNameChanged () {
@@ -20,6 +22,7 @@
   jint uid_;
   NSString *name_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
 #line 30
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)name {
-  if (self = [super init]) {
-    
-#line 31
-    self->uid_ = uid;
-    
-#line 32
-    self->name_ = name;
-  }
+  ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(self, uid, name);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateUserNameChanged_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getUid {
-  
-#line 40
   return self->uid_;
 }
 
-
-#line 43
 - (NSString *)getName {
-  
-#line 44
   return self->name_;
 }
 
@@ -79,15 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->name_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->name_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"update UserNameChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -96,25 +89,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 73
-  return ImActorModelApiUpdatesUpdateUserNameChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserNameChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->name_ = name_;
+#line 72
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateUserNameChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateUserNameChanged *ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserNameChanged_init();
+  ImActorModelApiUpdatesUpdateUserNameChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateUserNameChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserNameChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserNameChanged_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateUserNameChanged *self, jint uid, NSString *name) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->uid_ = uid;
+  self->name_ = name;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateUserNameChanged *new_ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(jint uid, NSString *name) {
+  ImActorModelApiUpdatesUpdateUserNameChanged *self = [ImActorModelApiUpdatesUpdateUserNameChanged alloc];
+  ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(self, uid, name);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateUserNameChanged_init(ImActorModelApiUpdatesUpdateUserNameChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateUserNameChanged *new_ImActorModelApiUpdatesUpdateUserNameChanged_init() {
+  ImActorModelApiUpdatesUpdateUserNameChanged *self = [ImActorModelApiUpdatesUpdateUserNameChanged alloc];
+  ImActorModelApiUpdatesUpdateUserNameChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserNameChanged)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/BigIntegers.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/BigIntegers.java"
 
 #include "IOSPrimitiveArray.h"
@@ -13,17 +14,18 @@
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/util/BigIntegers.h"
 
-@interface OrgBouncycastleUtilBigIntegers () {
-}
-@end
+#define OrgBouncycastleUtilBigIntegers_MAX_ITERATIONS 1000
 
-BOOL OrgBouncycastleUtilBigIntegers_initialized = NO;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleUtilBigIntegers, MAX_ITERATIONS, jint)
+
+static JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_ZERO_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleUtilBigIntegers, ZERO_, JavaMathBigInteger *)
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleUtilBigIntegers)
 
 
 #line 10
 @implementation OrgBouncycastleUtilBigIntegers
-
-JavaMathBigInteger * OrgBouncycastleUtilBigIntegers_ZERO_;
 
 
 #line 20
@@ -59,7 +61,8 @@ JavaMathBigInteger * OrgBouncycastleUtilBigIntegers_ZERO_;
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleUtilBigIntegers_init(self);
+  return self;
 }
 
 + (void)initialize {
@@ -73,10 +76,10 @@ JavaMathBigInteger * OrgBouncycastleUtilBigIntegers_ZERO_;
 
 @end
 
+
+#line 20
 IOSByteArray *OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithJavaMathBigInteger_(JavaMathBigInteger *value) {
-  OrgBouncycastleUtilBigIntegers_init();
-  
-#line 22
+  OrgBouncycastleUtilBigIntegers_initialize();
   IOSByteArray *bytes = [((JavaMathBigInteger *) nil_chk(value)) toByteArray];
   
 #line 24
@@ -94,8 +97,10 @@ IOSByteArray *OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithJavaMathBigI
   return bytes;
 }
 
+
+#line 41
 IOSByteArray *OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithInt_withJavaMathBigInteger_(jint length, JavaMathBigInteger *value) {
-  OrgBouncycastleUtilBigIntegers_init();
+  OrgBouncycastleUtilBigIntegers_initialize();
   
 #line 42
   IOSByteArray *bytes = [((JavaMathBigInteger *) nil_chk(value)) toByteArray];
@@ -109,7 +114,7 @@ IOSByteArray *OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithInt_withJava
   
 #line 50
   if (count > length) {
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"standard length exceeded for value"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"standard length exceeded for value");
   }
   
 #line 54
@@ -118,14 +123,16 @@ IOSByteArray *OrgBouncycastleUtilBigIntegers_asUnsignedByteArrayWithInt_withJava
   return tmp;
 }
 
+
+#line 67
 JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_createRandomInRangeWithJavaMathBigInteger_withJavaMathBigInteger_withBCRandomProvider_(JavaMathBigInteger *min, JavaMathBigInteger *max, id<BCRandomProvider> random) {
-  OrgBouncycastleUtilBigIntegers_init();
+  OrgBouncycastleUtilBigIntegers_initialize();
   
 #line 71
   jint cmp = [((JavaMathBigInteger *) nil_chk(min)) compareToWithId:max];
   if (cmp >= 0) {
     if (cmp > 0) {
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'min' may not be greater than 'max'"];
+      @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'min' may not be greater than 'max'");
     }
     
 #line 77
@@ -149,15 +156,19 @@ JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_createRandomInRangeWithJavaMa
   return [((JavaMathBigInteger *) nil_chk([((id<BCRandomProvider>) nil_chk(random)) generateBigIntegerWithInt:[((JavaMathBigInteger *) nil_chk([max subtractWithJavaMathBigInteger:min])) bitLength] - 1])) addWithJavaMathBigInteger:min];
 }
 
+
+#line 95
 JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_fromUnsignedByteArrayWithByteArray_(IOSByteArray *buf) {
-  OrgBouncycastleUtilBigIntegers_init();
+  OrgBouncycastleUtilBigIntegers_initialize();
   
 #line 96
-  return [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:buf];
+  return new_JavaMathBigInteger_initWithInt_withByteArray_(1, buf);
 }
 
+
+#line 99
 JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_fromUnsignedByteArrayWithByteArray_withInt_withInt_(IOSByteArray *buf, jint off, jint length) {
-  OrgBouncycastleUtilBigIntegers_init();
+  OrgBouncycastleUtilBigIntegers_initialize();
   
 #line 100
   IOSByteArray *mag = buf;
@@ -165,7 +176,17 @@ JavaMathBigInteger *OrgBouncycastleUtilBigIntegers_fromUnsignedByteArrayWithByte
     mag = [IOSByteArray newArrayWithLength:length];
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(buf, off, mag, 0, length);
   }
-  return [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:mag];
+  return new_JavaMathBigInteger_initWithInt_withByteArray_(1, mag);
+}
+
+void OrgBouncycastleUtilBigIntegers_init(OrgBouncycastleUtilBigIntegers *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleUtilBigIntegers *new_OrgBouncycastleUtilBigIntegers_init() {
+  OrgBouncycastleUtilBigIntegers *self = [OrgBouncycastleUtilBigIntegers alloc];
+  OrgBouncycastleUtilBigIntegers_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleUtilBigIntegers)

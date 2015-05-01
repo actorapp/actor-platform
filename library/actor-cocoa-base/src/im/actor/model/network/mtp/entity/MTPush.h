@@ -6,41 +6,45 @@
 #ifndef _MTMTPush_H_
 #define _MTMTPush_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
-
 #define MTMTPush_HEADER 5
 
-@interface MTMTPush : MTProtoStruct {
-}
+@interface MTMTPush : MTProtoStruct
+
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (IOSByteArray *)getPayload;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTMTPush)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTMTPush, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTMTPush ImActorModelNetworkMtpEntityMTPush;
+FOUNDATION_EXPORT void MTMTPush_initWithBSDataInput_(MTMTPush *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTMTPush *new_MTMTPush_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTMTPush)
+
+typedef MTMTPush ImActorModelNetworkMtpEntityMTPush;
 
 #endif // _MTMTPush_H_

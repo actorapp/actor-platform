@@ -6,33 +6,30 @@
 #ifndef _ImActorModelModulesAuth_H_
 #define _ImActorModelModulesAuth_H_
 
-@class AMApiConfiguration;
-@class AMAuthStateEnum;
-@class AMRpcException;
-@class IOSByteArray;
-@class ImActorModelApiRpcResponseAuth;
-@class ImActorModelApiRpcResponseSendAuthCode;
-@class ImActorModelModulesModules;
-@protocol AMCommandCallback;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/modules/BaseModule.h"
-#include "im/actor/model/network/RpcCallback.h"
-#include "java/lang/Runnable.h"
 
-@interface ImActorModelModulesAuth : ImActorModelModulesBaseModule {
-}
+@class AMAuthStateEnum;
+@class ImActorModelModulesModules;
+@protocol AMCommand;
+
+@interface ImActorModelModulesAuth : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)run;
+- (AMAuthStateEnum *)getAuthState;
+
+- (jlong)getPhone;
 
 - (jint)myUid;
 
-- (AMAuthStateEnum *)getAuthState;
-
 - (id<AMCommand>)requestSmsWithLong:(jlong)phone;
+
+- (void)resetAuth;
+
+- (void)run;
 
 - (id<AMCommand>)sendCodeWithInt:(jint)code;
 
@@ -40,244 +37,14 @@
                        withNSString:(NSString *)avatarPath
                         withBoolean:(jboolean)isSilent;
 
-- (void)resetAuth;
-
-- (jlong)getPhone;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesAuth_initWithImActorModelModulesModules_(ImActorModelModulesAuth *self, ImActorModelModulesModules *modules);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_DEVICE_HASH_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_DEVICE_HASH_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_AUTH_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_AUTH_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_AUTH_UID_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_AUTH_UID_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_PHONE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_PHONE_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_SMS_HASH_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_HASH_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_SMS_CODE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_CODE_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesAuth *new_ImActorModelModulesAuth_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth)
-
-@interface ImActorModelModulesAuth_$1 : NSObject < AMCommand > {
-}
-
-- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
-
-- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
-                                       withLong:(jlong)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1)
-
-@interface ImActorModelModulesAuth_$1_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSendAuthCode *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAuth_$1:(ImActorModelModulesAuth_$1 *)outer$
-                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1_$1)
-
-@interface ImActorModelModulesAuth_$1_$1_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAuth_$1_$1:(ImActorModelModulesAuth_$1_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$1_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1_$1_$1)
-
-@interface ImActorModelModulesAuth_$1_$1_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAuth_$1_$1:(ImActorModelModulesAuth_$1_$1 *)outer$
-                                   withAMRpcException:(AMRpcException *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$1_$1_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$1_$1_$2)
-
-@interface ImActorModelModulesAuth_$2 : NSObject < AMCommand > {
-}
-
-- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
-
-- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
-                                        withInt:(jint)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2)
-
-@interface ImActorModelModulesAuth_$2_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAuth_$2:(ImActorModelModulesAuth_$2 *)outer$
-                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$2_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2_$1)
-
-@interface ImActorModelModulesAuth_$2_$1_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAuth_$2_$1:(ImActorModelModulesAuth_$2_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$2_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2_$1_$1)
-
-@interface ImActorModelModulesAuth_$2_$1_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAuth_$2_$1:(ImActorModelModulesAuth_$2_$1 *)outer$
-                                   withAMRpcException:(AMRpcException *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$2_$1_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$2_$1_$2)
-
-@interface ImActorModelModulesAuth_$3 : NSObject < AMCommand > {
-}
-
-- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
-
-- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
-                                   withNSString:(NSString *)capture$0
-                                    withBoolean:(jboolean)capture$1
-                                   withNSString:(NSString *)capture$2;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3)
-
-@interface ImActorModelModulesAuth_$3_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseAuth *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAuth_$3:(ImActorModelModulesAuth_$3 *)outer$
-                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3_$1)
-
-@interface ImActorModelModulesAuth_$3_$1_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAuth_$3_$1:(ImActorModelModulesAuth_$3_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3_$1_$1)
-
-@interface ImActorModelModulesAuth_$3_$1_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAuth_$3_$1:(ImActorModelModulesAuth_$3_$1 *)outer$
-                                   withAMRpcException:(AMRpcException *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$3_$1_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$3_$1_$2)
 
 #endif // _ImActorModelModulesAuth_H_

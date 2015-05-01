@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSABlindingParameters.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSABlindingParameters.java"
 
 #include "J2ObjC_source.h"
@@ -17,6 +18,7 @@
   OrgBouncycastleCryptoParamsRSAKeyParameters *publicKey_;
   JavaMathBigInteger *blindingFactor_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSABlindingParameters, publicKey_, OrgBouncycastleCryptoParamsRSAKeyParameters *)
@@ -30,21 +32,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSABlindingParameters, blindingFa
 #line 13
 - (instancetype)initWithOrgBouncycastleCryptoParamsRSAKeyParameters:(OrgBouncycastleCryptoParamsRSAKeyParameters *)publicKey
                                              withJavaMathBigInteger:(JavaMathBigInteger *)blindingFactor {
-  if (self = [super init]) {
-    
-#line 17
-    if ([publicKey isKindOfClass:[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]]) {
-      
-#line 19
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"RSA parameters should be for a public key"];
-    }
-    
-#line 22
-    self->publicKey_ = publicKey;
-    
-#line 23
-    self->blindingFactor_ = blindingFactor;
-  }
+  OrgBouncycastleCryptoParamsRSABlindingParameters_initWithOrgBouncycastleCryptoParamsRSAKeyParameters_withJavaMathBigInteger_(self, publicKey, blindingFactor);
   return self;
 }
 
@@ -64,12 +52,31 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSABlindingParameters, blindingFa
   return blindingFactor_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsRSABlindingParameters *)other {
-  [super copyAllFieldsTo:other];
-  other->publicKey_ = publicKey_;
-  other->blindingFactor_ = blindingFactor_;
+@end
+
+
+#line 13
+void OrgBouncycastleCryptoParamsRSABlindingParameters_initWithOrgBouncycastleCryptoParamsRSAKeyParameters_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSABlindingParameters *self, OrgBouncycastleCryptoParamsRSAKeyParameters *publicKey, JavaMathBigInteger *blindingFactor) {
+  (void) NSObject_init(self);
+  
+#line 17
+  if ([publicKey isKindOfClass:[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]]) {
+    
+#line 19
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"RSA parameters should be for a public key");
+  }
+  
+#line 22
+  self->publicKey_ = publicKey;
+  self->blindingFactor_ = blindingFactor;
 }
 
-@end
+
+#line 13
+OrgBouncycastleCryptoParamsRSABlindingParameters *new_OrgBouncycastleCryptoParamsRSABlindingParameters_initWithOrgBouncycastleCryptoParamsRSAKeyParameters_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSAKeyParameters *publicKey, JavaMathBigInteger *blindingFactor) {
+  OrgBouncycastleCryptoParamsRSABlindingParameters *self = [OrgBouncycastleCryptoParamsRSABlindingParameters alloc];
+  OrgBouncycastleCryptoParamsRSABlindingParameters_initWithOrgBouncycastleCryptoParamsRSAKeyParameters_withJavaMathBigInteger_(self, publicKey, blindingFactor);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsRSABlindingParameters)

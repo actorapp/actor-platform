@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/SHA512Digest.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/SHA512Digest.java"
 
 #include "IOSPrimitiveArray.h"
@@ -12,9 +13,9 @@
 #include "org/bouncycastle/util/Memoable.h"
 #include "org/bouncycastle/util/Pack.h"
 
-@interface OrgBouncycastleCryptoDigestsSHA512Digest () {
-}
-@end
+#define OrgBouncycastleCryptoDigestsSHA512Digest_DIGEST_LENGTH 64
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA512Digest, DIGEST_LENGTH, jint)
 
 
 #line 18
@@ -23,44 +24,34 @@
 
 #line 24
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleCryptoDigestsSHA512Digest_init(self);
+  return self;
 }
 
 
 #line 31
 - (instancetype)initWithOrgBouncycastleCryptoDigestsSHA512Digest:(OrgBouncycastleCryptoDigestsSHA512Digest *)t {
-  return
-#line 32
-  [super initWithOrgBouncycastleCryptoDigestsLongDigest:t];
+  OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(self, t);
+  return self;
 }
 
 
 #line 35
 - (instancetype)initWithByteArray:(IOSByteArray *)encodedState {
-  if (self = [super init]) {
-    [self restoreStateWithByteArray:encodedState];
-  }
+  OrgBouncycastleCryptoDigestsSHA512Digest_initWithByteArray_(self, encodedState);
   return self;
 }
 
 
 #line 39
 - (NSString *)getAlgorithmName {
-  
-#line 40
   return @"SHA-512";
 }
 
-
-#line 43
 - (jint)getDigestSize {
-  
-#line 44
   return OrgBouncycastleCryptoDigestsSHA512Digest_DIGEST_LENGTH;
 }
 
-
-#line 47
 - (jint)doFinalWithByteArray:(IOSByteArray *)outArg
                      withInt:(jint)outOff {
   
@@ -103,16 +94,10 @@
 
 #line 86
 - (id<OrgBouncycastleUtilMemoable>)copy__ {
-  
-#line 87
-  return [[OrgBouncycastleCryptoDigestsSHA512Digest alloc] initWithOrgBouncycastleCryptoDigestsSHA512Digest:self];
+  return new_OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(self);
 }
 
-
-#line 90
 - (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other {
-  
-#line 91
   OrgBouncycastleCryptoDigestsSHA512Digest *d = (OrgBouncycastleCryptoDigestsSHA512Digest *) check_class_cast(other, [OrgBouncycastleCryptoDigestsSHA512Digest class]);
   
 #line 93
@@ -122,13 +107,56 @@
 
 #line 96
 - (IOSByteArray *)getEncodedState {
-  
-#line 97
   IOSByteArray *encoded = [IOSByteArray newArrayWithLength:[self getEncodedStateSize]];
   [super populateStateWithByteArray:encoded];
   return encoded;
 }
 
 @end
+
+
+#line 24
+void OrgBouncycastleCryptoDigestsSHA512Digest_init(OrgBouncycastleCryptoDigestsSHA512Digest *self) {
+  (void) OrgBouncycastleCryptoDigestsLongDigest_init(self);
+}
+
+
+#line 24
+OrgBouncycastleCryptoDigestsSHA512Digest *new_OrgBouncycastleCryptoDigestsSHA512Digest_init() {
+  OrgBouncycastleCryptoDigestsSHA512Digest *self = [OrgBouncycastleCryptoDigestsSHA512Digest alloc];
+  OrgBouncycastleCryptoDigestsSHA512Digest_init(self);
+  return self;
+}
+
+
+#line 31
+void OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(OrgBouncycastleCryptoDigestsSHA512Digest *self, OrgBouncycastleCryptoDigestsSHA512Digest *t) {
+  (void) OrgBouncycastleCryptoDigestsLongDigest_initWithOrgBouncycastleCryptoDigestsLongDigest_(self, t);
+}
+
+
+#line 31
+OrgBouncycastleCryptoDigestsSHA512Digest *new_OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(OrgBouncycastleCryptoDigestsSHA512Digest *t) {
+  OrgBouncycastleCryptoDigestsSHA512Digest *self = [OrgBouncycastleCryptoDigestsSHA512Digest alloc];
+  OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(self, t);
+  return self;
+}
+
+
+#line 35
+void OrgBouncycastleCryptoDigestsSHA512Digest_initWithByteArray_(OrgBouncycastleCryptoDigestsSHA512Digest *self, IOSByteArray *encodedState) {
+  (void) OrgBouncycastleCryptoDigestsLongDigest_init(self);
+  
+#line 36
+  [self restoreStateWithByteArray:encodedState];
+}
+
+
+#line 35
+OrgBouncycastleCryptoDigestsSHA512Digest *new_OrgBouncycastleCryptoDigestsSHA512Digest_initWithByteArray_(IOSByteArray *encodedState) {
+  OrgBouncycastleCryptoDigestsSHA512Digest *self = [OrgBouncycastleCryptoDigestsSHA512Digest alloc];
+  OrgBouncycastleCryptoDigestsSHA512Digest_initWithByteArray_(self, encodedState);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoDigestsSHA512Digest)

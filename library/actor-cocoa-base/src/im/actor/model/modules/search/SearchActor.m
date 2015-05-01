@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/search/SearchActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/search/SearchActor.java"
 
 #include "IOSPrimitiveArray.h"
@@ -22,8 +23,7 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onDialogsUpdatedWithJavaUtilList_(ImActorModelModulesSearchSearchActor *self, id<JavaUtilList> dialogs);
-__attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(ImActorModelModulesSearchSearchActor *self, IOSIntArray *contactsList);
+#define ImActorModelModulesSearchSearchActor_CONTACTS_PREFIX 4294967296LL
 
 @interface ImActorModelModulesSearchSearchActor () {
  @public
@@ -33,14 +33,22 @@ __attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onConta
 - (void)onDialogsUpdatedWithJavaUtilList:(id<JavaUtilList>)dialogs;
 
 - (void)onContactsUpdatedWithIntArray:(IOSIntArray *)contactsList;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor, listEngine_, id<DKListEngine>)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSearchSearchActor, CONTACTS_PREFIX, jlong)
+
+__attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onDialogsUpdatedWithJavaUtilList_(ImActorModelModulesSearchSearchActor *self, id<JavaUtilList> dialogs);
+
+__attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(ImActorModelModulesSearchSearchActor *self, IOSIntArray *contactsList);
 
 @interface ImActorModelModulesSearchSearchActor_OnDialogsUpdated () {
  @public
   id<JavaUtilList> dialogs_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnDialogsUpdated, dialogs_, id<JavaUtilList>)
@@ -49,6 +57,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnDialogsUpdated, dialo
  @public
   IOSIntArray *contactsList_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnContactsUpdated, contactsList_, IOSIntArray *)
@@ -60,13 +69,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnContactsUpdated, cont
 
 #line 23
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  return
-#line 24
-  [super initWithImActorModelModulesModules:modules];
+  ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_(self, modules);
+  return self;
 }
 
-
-#line 28
 - (void)preStart {
   [super preStart];
   
@@ -89,8 +95,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnContactsUpdated, cont
 
 #line 54
 - (void)onReceiveWithId:(id)message {
-  
-#line 55
   if ([message isKindOfClass:[ImActorModelModulesSearchSearchActor_OnDialogsUpdated class]]) {
     ImActorModelModulesSearchSearchActor_OnDialogsUpdated *onDialogsUpdated = (ImActorModelModulesSearchSearchActor_OnDialogsUpdated *) check_class_cast(message, [ImActorModelModulesSearchSearchActor_OnDialogsUpdated class]);
     ImActorModelModulesSearchSearchActor_onDialogsUpdatedWithJavaUtilList_(self, [((ImActorModelModulesSearchSearchActor_OnDialogsUpdated *) nil_chk(onDialogsUpdated)) getDialogs]);
@@ -108,34 +112,43 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnContactsUpdated, cont
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesSearchSearchActor *)other {
-  [super copyAllFieldsTo:other];
-  other->listEngine_ = listEngine_;
-}
-
 @end
 
+
+#line 23
+void ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_(ImActorModelModulesSearchSearchActor *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, modules);
+}
+
+
+#line 23
+ImActorModelModulesSearchSearchActor *new_ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesSearchSearchActor *self = [ImActorModelModulesSearchSearchActor alloc];
+  ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
+
+
+#line 34
 void ImActorModelModulesSearchSearchActor_onDialogsUpdatedWithJavaUtilList_(ImActorModelModulesSearchSearchActor *self, id<JavaUtilList> dialogs) {
-  
-#line 35
-  id<JavaUtilList> updated = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> updated = new_JavaUtilArrayList_init();
   for (AMDialog * __strong d in nil_chk(dialogs)) {
-    [updated addWithId:[[AMSearchEntity alloc] initWithAMPeer:[((AMDialog *) nil_chk(d)) getPeer] withLong:[d getSortDate] withAMAvatar:[d getDialogAvatar] withNSString:
+    [updated addWithId:new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_([((AMDialog *) nil_chk(d)) getPeer], [d getSortDate], [d getDialogAvatar],
 #line 38
-    [d getDialogTitle]]];
+    [d getDialogTitle])];
   }
   [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItemsWithJavaUtilList:updated];
 }
 
+
+#line 43
 void ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(ImActorModelModulesSearchSearchActor *self, IOSIntArray *contactsList) {
-  
-#line 44
-  id<JavaUtilList> updated = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> updated = new_JavaUtilArrayList_init();
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(contactsList))->size_; i++) {
     AMUser *user = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:IOSIntArray_Get(contactsList, i)];
-    [updated addWithId:[[AMSearchEntity alloc] initWithAMPeer:AMPeer_userWithInt_([((AMUser *) nil_chk(user)) getUid]) withLong:ImActorModelModulesSearchSearchActor_CONTACTS_PREFIX + i withAMAvatar:[user getAvatar] withNSString:
+    [updated addWithId:new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMPeer_userWithInt_([((AMUser *) nil_chk(user)) getUid]), ImActorModelModulesSearchSearchActor_CONTACTS_PREFIX + i, [user getAvatar],
 #line 48
-    [user getName]]];
+    [user getName])];
   }
   [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItemsWithJavaUtilList:updated];
 }
@@ -149,28 +162,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor)
 
 #line 69
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)dialogs {
-  if (self = [super init]) {
-    
-#line 70
-    self->dialogs_ = dialogs;
-  }
+  ImActorModelModulesSearchSearchActor_OnDialogsUpdated_initWithJavaUtilList_(self, dialogs);
   return self;
 }
 
 
 #line 73
 - (id<JavaUtilList>)getDialogs {
-  
-#line 74
   return dialogs_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesSearchSearchActor_OnDialogsUpdated *)other {
-  [super copyAllFieldsTo:other];
-  other->dialogs_ = dialogs_;
+@end
+
+
+#line 69
+void ImActorModelModulesSearchSearchActor_OnDialogsUpdated_initWithJavaUtilList_(ImActorModelModulesSearchSearchActor_OnDialogsUpdated *self, id<JavaUtilList> dialogs) {
+  (void) NSObject_init(self);
+  
+#line 70
+  self->dialogs_ = dialogs;
 }
 
-@end
+
+#line 69
+ImActorModelModulesSearchSearchActor_OnDialogsUpdated *new_ImActorModelModulesSearchSearchActor_OnDialogsUpdated_initWithJavaUtilList_(id<JavaUtilList> dialogs) {
+  ImActorModelModulesSearchSearchActor_OnDialogsUpdated *self = [ImActorModelModulesSearchSearchActor_OnDialogsUpdated alloc];
+  ImActorModelModulesSearchSearchActor_OnDialogsUpdated_initWithJavaUtilList_(self, dialogs);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor_OnDialogsUpdated)
 
@@ -181,27 +200,33 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor_OnDialogsU
 
 #line 81
 - (instancetype)initWithIntArray:(IOSIntArray *)contactsList {
-  if (self = [super init]) {
-    
-#line 82
-    self->contactsList_ = contactsList;
-  }
+  ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(self, contactsList);
   return self;
 }
 
 
 #line 85
 - (IOSIntArray *)getContactsList {
-  
-#line 86
   return contactsList_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesSearchSearchActor_OnContactsUpdated *)other {
-  [super copyAllFieldsTo:other];
-  other->contactsList_ = contactsList_;
+@end
+
+
+#line 81
+void ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(ImActorModelModulesSearchSearchActor_OnContactsUpdated *self, IOSIntArray *contactsList) {
+  (void) NSObject_init(self);
+  
+#line 82
+  self->contactsList_ = contactsList;
 }
 
-@end
+
+#line 81
+ImActorModelModulesSearchSearchActor_OnContactsUpdated *new_ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(IOSIntArray *contactsList) {
+  ImActorModelModulesSearchSearchActor_OnContactsUpdated *self = [ImActorModelModulesSearchSearchActor_OnContactsUpdated alloc];
+  ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(self, contactsList);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor_OnContactsUpdated)

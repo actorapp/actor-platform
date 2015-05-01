@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZSignedDigitL2RMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZSignedDigitL2RMultiplier.java"
 
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/ZSignedDigitL2RMultiplier.h"
 
@@ -45,9 +47,20 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcZSignedDigitL2RMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcZSignedDigitL2RMultiplier_init(OrgBouncycastleMathEcZSignedDigitL2RMultiplier *self) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+}
+
+OrgBouncycastleMathEcZSignedDigitL2RMultiplier *new_OrgBouncycastleMathEcZSignedDigitL2RMultiplier_init() {
+  OrgBouncycastleMathEcZSignedDigitL2RMultiplier *self = [OrgBouncycastleMathEcZSignedDigitL2RMultiplier alloc];
+  OrgBouncycastleMathEcZSignedDigitL2RMultiplier_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcZSignedDigitL2RMultiplier)

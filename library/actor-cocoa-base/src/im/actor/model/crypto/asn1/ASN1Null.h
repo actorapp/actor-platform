@@ -6,27 +6,29 @@
 #ifndef _BCASN1Null_H_
 #define _BCASN1Null_H_
 
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
 
-@interface BCASN1Null : BCASN1Primitive {
-}
+@class BSDataOutput;
 
-- (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput;
+@interface BCASN1Null : BCASN1Primitive
+
+#pragma mark Public
 
 - (instancetype)init;
+
+- (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BCASN1Null)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BCASN1Null_init(BCASN1Null *self);
 
-typedef BCASN1Null ImActorModelCryptoAsn1ASN1Null;
+FOUNDATION_EXPORT BCASN1Null *new_BCASN1Null_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCASN1Null)
+
+typedef BCASN1Null ImActorModelCryptoAsn1ASN1Null;
 
 #endif // _BCASN1Null_H_

@@ -6,20 +6,16 @@
 #ifndef _ImActorModelModulesUpdates_H_
 #define _ImActorModelModulesUpdates_H_
 
-@class DKActorRef;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesUpdatesSequenceActor;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdates : ImActorModelModulesBaseModule {
-}
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesUpdates : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
-
-- (void)run;
 
 - (void)onNewSessionCreated;
 
@@ -27,29 +23,16 @@
 
 - (void)onUpdateReceivedWithId:(id)update;
 
+- (void)run;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdates)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdates_initWithImActorModelModulesModules_(ImActorModelModulesUpdates *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdates *new_ImActorModelModulesUpdates_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates)
-
-@interface ImActorModelModulesUpdates_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesUpdatesSequenceActor *)create;
-
-- (instancetype)initWithImActorModelModulesUpdates:(ImActorModelModulesUpdates *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdates_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates_$1)
 
 #endif // _ImActorModelModulesUpdates_H_

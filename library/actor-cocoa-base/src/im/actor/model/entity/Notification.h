@@ -6,33 +6,35 @@
 #ifndef _AMNotification_H_
 #define _AMNotification_H_
 
+#include "J2ObjC_header.h"
+
 @class AMContentDescription;
 @class AMPeer;
 
-#include "J2ObjC_header.h"
+@interface AMNotification : NSObject
 
-@interface AMNotification : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
       withAMContentDescription:(AMContentDescription *)contentDescription;
 
+- (AMContentDescription *)getContentDescription;
+
 - (AMPeer *)getPeer;
 
 - (jint)getSender;
-
-- (AMContentDescription *)getContentDescription;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMNotification)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMNotification *self, AMPeer *peer, jint sender, AMContentDescription *contentDescription);
 
-typedef AMNotification ImActorModelEntityNotification;
+FOUNDATION_EXPORT AMNotification *new_AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMPeer *peer, jint sender, AMContentDescription *contentDescription) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMNotification)
+
+typedef AMNotification ImActorModelEntityNotification;
 
 #endif // _AMNotification_H_

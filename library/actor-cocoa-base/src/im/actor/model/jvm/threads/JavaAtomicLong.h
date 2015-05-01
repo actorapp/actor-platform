@@ -6,23 +6,25 @@
 #ifndef _ImActorModelJvmThreadsJavaAtomicLong_H_
 #define _ImActorModelJvmThreadsJavaAtomicLong_H_
 
-@class JavaUtilConcurrentAtomicAtomicLong;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/util/AtomicLongCompat.h"
+
+@class JavaUtilConcurrentAtomicAtomicLong;
 
 @interface ImActorModelJvmThreadsJavaAtomicLong : AMAtomicLongCompat {
  @public
   JavaUtilConcurrentAtomicAtomicLong *atomicLong_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithLong:(jlong)value;
 
 - (jlong)get;
 
-- (jlong)incrementAndGet;
-
 - (jlong)getAndIncrement;
+
+- (jlong)incrementAndGet;
 
 - (void)setWithLong:(jlong)v;
 
@@ -32,8 +34,9 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmThreadsJavaAtomicLong)
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicLong, atomicLong_, JavaUtilConcurrentAtomicAtomicLong *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(ImActorModelJvmThreadsJavaAtomicLong *self, jlong value);
+
+FOUNDATION_EXPORT ImActorModelJvmThreadsJavaAtomicLong *new_ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(jlong value) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaAtomicLong)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/Push.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/Push.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/rpc/Push.h"
 #include "java/io/IOException.h"
 
@@ -20,29 +22,19 @@
 
 #line 17
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 18
-  [super initWithBSDataInput:stream];
+  MTPush_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 21
 - (instancetype)initWithInt:(jint)updateType
               withByteArray:(IOSByteArray *)body {
-  if (self = [super init]) {
-    self->updateType_ = updateType;
-    
-#line 23
-    self->body_ = body;
-  }
+  MTPush_initWithInt_withByteArray_(self, updateType, body);
   return self;
 }
 
-
-#line 27
 - (jbyte)getHeader {
-  
-#line 28
   return 0;
 }
 
@@ -56,22 +48,48 @@
 
 #line 38
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
-  
-#line 39
   updateType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   body_ = [bs readProtoBytes];
 }
 
+
+#line 44
 - (NSString *)description {
   return JreStrcat("$IC", @"Update[", updateType_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTPush *)other {
-  [super copyAllFieldsTo:other];
-  other->updateType_ = updateType_;
-  other->body_ = body_;
+@end
+
+
+#line 17
+void MTPush_initWithBSDataInput_(MTPush *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 17
+MTPush *new_MTPush_initWithBSDataInput_(BSDataInput *stream) {
+  MTPush *self = [MTPush alloc];
+  MTPush_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 21
+void MTPush_initWithInt_withByteArray_(MTPush *self, jint updateType, IOSByteArray *body) {
+  (void) MTProtoStruct_init(self);
+  
+#line 22
+  self->updateType_ = updateType;
+  self->body_ = body;
+}
+
+
+#line 21
+MTPush *new_MTPush_initWithInt_withByteArray_(jint updateType, IOSByteArray *body) {
+  MTPush *self = [MTPush alloc];
+  MTPush_initWithInt_withByteArray_(self, updateType, body);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTPush)

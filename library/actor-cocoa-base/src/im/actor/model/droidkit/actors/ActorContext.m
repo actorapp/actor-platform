@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorContext.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorContext.java"
 
 #include "J2ObjC_source.h"
@@ -17,6 +18,7 @@
  @public
   DKActorScope *actorScope_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKActorContext, actorScope_, DKActorScope *)
@@ -28,41 +30,31 @@ J2OBJC_FIELD_SETTER(DKActorContext, actorScope_, DKActorScope *)
 
 #line 18
 - (instancetype)initWithDKActorScope:(DKActorScope *)scope {
-  if (self = [super init]) {
-    
-#line 19
-    self->actorScope_ = scope;
-  }
+  DKActorContext_initWithDKActorScope_(self, scope);
   return self;
 }
 
+
+#line 27
 - (DKActorRef *)getSelf {
-  
-#line 28
   return [((DKActorScope *) nil_chk(actorScope_)) getActorRef];
 }
 
 
 #line 36
 - (DKActorSystem *)getSystem {
-  
-#line 37
   return [((DKActorScope *) nil_chk(actorScope_)) getActorSystem];
 }
 
 
 #line 46
 - (DKActorRef *)sender {
-  
-#line 47
   return [((DKActorScope *) nil_chk(actorScope_)) getSender];
 }
 
 
 #line 53
 - (void)stopSelf {
-  
-#line 54
   @try {
     [((DKActorDispatcher *) nil_chk([((DKActorScope *) nil_chk(actorScope_)) getDispatcher])) killGracefullyWithDKActorScope:actorScope_];
   }
@@ -73,11 +65,23 @@ J2OBJC_FIELD_SETTER(DKActorContext, actorScope_, DKActorScope *)
   }
 }
 
-- (void)copyAllFieldsTo:(DKActorContext *)other {
-  [super copyAllFieldsTo:other];
-  other->actorScope_ = actorScope_;
+@end
+
+
+#line 18
+void DKActorContext_initWithDKActorScope_(DKActorContext *self, DKActorScope *scope) {
+  (void) NSObject_init(self);
+  
+#line 19
+  self->actorScope_ = scope;
 }
 
-@end
+
+#line 18
+DKActorContext *new_DKActorContext_initWithDKActorScope_(DKActorScope *scope) {
+  DKActorContext *self = [DKActorContext alloc];
+  DKActorContext_initWithDKActorScope_(self, scope);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorContext)

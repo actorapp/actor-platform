@@ -3,14 +3,17 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Presence.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Presence.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Presence.h"
 #include "im/actor/model/modules/presence/OwnPresenceActor.h"
@@ -21,18 +24,32 @@
   DKActorRef *myPresence_;
   DKActorRef *presence_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresence, myPresence_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresence, presence_, DKActorRef *)
 
-@interface ImActorModelModulesPresence_$1 () {
+@interface ImActorModelModulesPresence_$1 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesModules *val$modules_;
 }
+
+- (ImActorModelModulesPresenceOwnPresenceActor *)create;
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresence_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresence_$1, val$modules_, ImActorModelModulesModules *)
+
+__attribute__((unused)) static void ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(ImActorModelModulesPresence_$1 *self, ImActorModelModulesModules *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesPresence_$1 *new_ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence_$1)
 
 
 #line 15
@@ -41,68 +58,51 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresence_$1, val$modules_, ImActorModelMo
 
 #line 19
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 20
-  [super initWithImActorModelModulesModules:modules]) {
-    
-#line 21
-    self->myPresence_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesPresenceOwnPresenceActor_class_(), [[ImActorModelModulesPresence_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:
-#line 26
-    @"actor/presence/own"];
-    
-#line 27
-    presence_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
-  }
+  ImActorModelModulesPresence_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
 #line 30
 - (void)run {
-  
-#line 31
-  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc] init]];
+  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:new_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init()];
 }
 
-
-#line 34
 - (void)onAppVisible {
-  
-#line 35
-  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc] init]];
+  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:new_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init()];
 }
 
-
-#line 38
 - (void)onAppHidden {
-  
-#line 39
-  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:[[ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden alloc] init]];
+  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:new_ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init()];
 }
 
-
-#line 42
 - (void)subscribeWithAMPeer:(AMPeer *)peer {
-  
-#line 43
-  [((DKActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_Subscribe alloc] initWithAMPeer:peer]];
+  [((DKActorRef *) nil_chk(presence_)) sendWithId:new_ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(peer)];
 }
 
-
-#line 46
 - (void)onNewSessionCreated {
-  
-#line 47
-  [((DKActorRef *) nil_chk(presence_)) sendWithId:[[ImActorModelModulesPresencePresenceActor_SessionCreated alloc] init]];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesPresence *)other {
-  [super copyAllFieldsTo:other];
-  other->myPresence_ = myPresence_;
-  other->presence_ = presence_;
+  [((DKActorRef *) nil_chk(presence_)) sendWithId:new_ImActorModelModulesPresencePresenceActor_SessionCreated_init()];
 }
 
 @end
+
+
+#line 19
+void ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesPresence *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+  self->myPresence_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesPresenceOwnPresenceActor_class_(), new_ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(modules)) withNSString:
+#line 26
+  @"actor/presence/own"];
+  self->presence_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
+}
+
+
+#line 19
+ImActorModelModulesPresence *new_ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesPresence *self = [ImActorModelModulesPresence alloc];
+  ImActorModelModulesPresence_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresence)
 
@@ -111,21 +111,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresence)
 
 #line 23
 - (ImActorModelModulesPresenceOwnPresenceActor *)create {
-  
-#line 24
-  return [[ImActorModelModulesPresenceOwnPresenceActor alloc] initWithImActorModelModulesModules:val$modules_];
+  return new_ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(val$modules_);
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0 {
-  val$modules_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesPresence_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$modules_ = val$modules_;
+  ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(self, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(ImActorModelModulesPresence_$1 *self, ImActorModelModulesModules *capture$0) {
+  self->val$modules_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresence_$1 *new_ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *capture$0) {
+  ImActorModelModulesPresence_$1 *self = [ImActorModelModulesPresence_$1 alloc];
+  ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresence_$1)

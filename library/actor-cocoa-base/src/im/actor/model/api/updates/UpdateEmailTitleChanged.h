@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiUpdatesUpdateEmailTitleChanged_H_
 #define _ImActorModelApiUpdatesUpdateEmailTitleChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateEmailTitleChanged_HEADER 98
 
-@interface ImActorModelApiUpdatesUpdateEmailTitleChanged : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateEmailTitleChanged : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateEmailTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)emailId
                withNSString:(NSString *)title;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateEmailTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getEmailId;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getTitle;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateEmailTitleChanged)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateEmailTitleChanged *ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateEmailTitleChanged *self, jint emailId, NSString *title);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(jint emailId, NSString *title) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateEmailTitleChanged_init(ImActorModelApiUpdatesUpdateEmailTitleChanged *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateEmailTitleChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateEmailTitleChanged)
 

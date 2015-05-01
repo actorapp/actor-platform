@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserKicked.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserKicked.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "java/io/IOException.h"
 
@@ -20,8 +22,14 @@
  @public
   jint kickedUid_;
 }
+
 - (instancetype)init;
+
 @end
+
+__attribute__((unused)) static void AMServiceGroupUserKicked_init(AMServiceGroupUserKicked *self);
+
+__attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_init() NS_RETURNS_RETAINED;
 
 
 #line 12
@@ -34,25 +42,18 @@
 
 #line 20
 - (instancetype)initWithInt:(jint)kickedUid {
-  if (self =
-#line 21
-  [super initWithNSString:@"User kicked"]) {
-    
-#line 22
-    self->kickedUid_ = kickedUid;
-  }
+  AMServiceGroupUserKicked_initWithInt_(self, kickedUid);
+  return self;
+}
+
+- (instancetype)init {
+  AMServiceGroupUserKicked_init(self);
   return self;
 }
 
 
-#line 25
-- (instancetype)init {
-  return [super init];
-}
-
+#line 29
 - (jint)getKickedUid {
-  
-#line 30
   return kickedUid_;
 }
 
@@ -65,8 +66,6 @@
 
 #line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 40
   [super parseWithBSBserValues:values];
   kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
 }
@@ -78,18 +77,44 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
 }
 
-- (void)copyAllFieldsTo:(AMServiceGroupUserKicked *)other {
-  [super copyAllFieldsTo:other];
-  other->kickedUid_ = kickedUid_;
-}
-
 @end
 
+
+#line 14
 AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceGroupUserKicked_init();
+  AMServiceGroupUserKicked_initialize();
   
 #line 15
-  return ((AMServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupUserKicked alloc] init], data));
+  return ((AMServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserKicked_init(), data));
+}
+
+
+#line 20
+void AMServiceGroupUserKicked_initWithInt_(AMServiceGroupUserKicked *self, jint kickedUid) {
+  (void) AMServiceContent_initWithNSString_(self, @"User kicked");
+  self->kickedUid_ = kickedUid;
+}
+
+
+#line 20
+AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_initWithInt_(jint kickedUid) {
+  AMServiceGroupUserKicked *self = [AMServiceGroupUserKicked alloc];
+  AMServiceGroupUserKicked_initWithInt_(self, kickedUid);
+  return self;
+}
+
+
+#line 25
+void AMServiceGroupUserKicked_init(AMServiceGroupUserKicked *self) {
+  (void) AMServiceContent_init(self);
+}
+
+
+#line 25
+AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_init() {
+  AMServiceGroupUserKicked *self = [AMServiceGroupUserKicked alloc];
+  AMServiceGroupUserKicked_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupUserKicked)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/OwnReadActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/OwnReadActor.java"
 
 #include "IOSObjectArray.h"
@@ -28,8 +29,6 @@
 #include "java/util/List.h"
 #include "java/util/Set.h"
 
-__attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self);
-
 @interface ImActorModelModulesMessagesOwnReadActor () {
  @public
   ImActorModelModulesMessagesEntityUnreadMessagesStorage *messagesStorage_;
@@ -37,10 +36,13 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 }
 
 - (void)saveStorage;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, messagesStorage_, ImActorModelModulesMessagesEntityUnreadMessagesStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSyncKeyValue *)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self);
 
 
 #line 18
@@ -49,25 +51,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
 
 #line 23
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self =
-#line 24
-  [super initWithImActorModelModulesModules:messenger]) {
-    
-#line 25
-    self->syncKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getCursorStorage];
-  }
+  ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
 
 #line 29
 - (void)preStart {
-  
-#line 30
   [super preStart];
   
 #line 32
-  messagesStorage_ = [[ImActorModelModulesMessagesEntityUnreadMessagesStorage alloc] init];
+  messagesStorage_ = new_ImActorModelModulesMessagesEntityUnreadMessagesStorage_init();
   IOSByteArray *st = [((DKSyncKeyValue *) nil_chk(syncKeyValue_)) getWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ];
   if (st != nil) {
     @try {
@@ -97,13 +91,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
   
 #line 52
   JavaUtilHashSet *unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
-  [((JavaUtilHashSet *) nil_chk(unread)) addWithId:[[ImActorModelModulesMessagesEntityUnreadMessage alloc] initWithAMPeer:peer withLong:rid withLong:sortingDate]];
+  [((JavaUtilHashSet *) nil_chk(unread)) addWithId:new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(peer, rid, sortingDate)];
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
   
 #line 57
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
 #line 58
-  [[ImActorModelModulesMessagesDialogsActor_CounterChanged alloc] initWithAMPeer:peer withInt:[unread size]]];
+  peer, [unread size])];
 }
 
 
@@ -150,18 +144,18 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
   
 #line 85
   if (maxPlainReadDate > 0) {
-    [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReadActor])) sendWithId:
+    [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReadActor])) sendWithId:new_ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(
 #line 87
-    [[ImActorModelModulesMessagesCursorReaderActor_MarkRead alloc] initWithAMPeer:peer withLong:maxPlainReadDate]];
+    peer, maxPlainReadDate)];
   }
   
 #line 91
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) saveReadStateWithAMPeer:peer withLong:sortingDate];
   
 #line 94
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
 #line 95
-  [[ImActorModelModulesMessagesDialogsActor_CounterChanged alloc] initWithAMPeer:peer withInt:[unread size]]];
+  peer, [unread size])];
   
 #line 97
   [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onOwnReadWithAMPeer:peer withLong:sortingDate];
@@ -201,8 +195,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
 #line 117
 - (void)onMessageDeleteWithAMPeer:(AMPeer *)peer
                  withJavaUtilList:(id<JavaUtilList>)rids {
-  
-#line 118
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   jboolean isRemoved = NO;
   {
@@ -231,9 +223,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
   
 #line 133
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
 #line 134
-  [[ImActorModelModulesMessagesDialogsActor_CounterChanged alloc] initWithAMPeer:peer withInt:[unread size]]];
+  peer, [unread size])];
 }
 
 
@@ -245,8 +237,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
 
 #line 146
 - (void)onReceiveWithId:(id)message {
-  
-#line 147
   if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_NewMessage class]]) {
     ImActorModelModulesMessagesOwnReadActor_NewMessage *newMessage = (ImActorModelModulesMessagesOwnReadActor_NewMessage *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_NewMessage class]);
     [self onNewInMessageWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_NewMessage *) nil_chk(newMessage)) getPeer] withLong:[newMessage getRid] withLong:[newMessage getSortingDate]];
@@ -276,17 +266,26 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor *)other {
-  [super copyAllFieldsTo:other];
-  other->messagesStorage_ = messagesStorage_;
-  other->syncKeyValue_ = syncKeyValue_;
-}
-
 @end
 
+
+#line 23
+void ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesOwnReadActor *self, ImActorModelModulesModules *messenger) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
+  self->syncKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getCursorStorage];
+}
+
+
+#line 23
+ImActorModelModulesMessagesOwnReadActor *new_ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+  ImActorModelModulesMessagesOwnReadActor *self = [ImActorModelModulesMessagesOwnReadActor alloc];
+  ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
+}
+
+
+#line 139
 void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self) {
-  
-#line 140
   [((DKSyncKeyValue *) nil_chk(self->syncKeyValue_)) putWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ withByteArray:[((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
 }
 
@@ -300,40 +299,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)
 #line 168
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid {
-  if (self = [super init]) {
-    
-#line 169
-    self->peer_ = peer;
-    
-#line 170
-    self->rid_ = rid;
-  }
+  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
   return self;
 }
 
 
 #line 173
 - (AMPeer *)getPeer {
-  
-#line 174
   return peer_;
 }
 
-
-#line 177
 - (jlong)getRid {
-  
-#line 178
   return rid_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rid_ = rid_;
+@end
+
+
+#line 168
+void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid) {
+  (void) NSObject_init(self);
+  
+#line 169
+  self->peer_ = peer;
+  self->rid_ = rid;
 }
 
-@end
+
+#line 168
+ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) {
+  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self = [ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted alloc];
+  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
 
@@ -345,40 +343,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 #line 186
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortDate {
-  if (self = [super init]) {
-    
-#line 187
-    self->peer_ = peer;
-    
-#line 188
-    self->sortDate_ = sortDate;
-  }
+  ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(self, peer, sortDate);
   return self;
 }
 
 
 #line 191
 - (AMPeer *)getPeer {
-  
-#line 192
   return peer_;
 }
 
-
-#line 195
 - (jlong)getSortDate {
-  
-#line 196
   return sortDate_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->sortDate_ = sortDate_;
+@end
+
+
+#line 186
+void ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *self, AMPeer *peer, jlong sortDate) {
+  (void) NSObject_init(self);
+  
+#line 187
+  self->peer_ = peer;
+  self->sortDate_ = sortDate;
 }
 
-@end
+
+#line 186
+ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(AMPeer *peer, jlong sortDate) {
+  ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *self = [ImActorModelModulesMessagesOwnReadActor_MessageReadByMe alloc];
+  ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(self, peer, sortDate);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe)
 
@@ -390,40 +387,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 #line 204
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortingDate {
-  if (self = [super init]) {
-    
-#line 205
-    self->peer_ = peer;
-    
-#line 206
-    self->sortingDate_ = sortingDate;
-  }
+  ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(self, peer, sortingDate);
   return self;
 }
 
 
 #line 209
 - (AMPeer *)getPeer {
-  
-#line 210
   return peer_;
 }
 
-
-#line 213
 - (jlong)getSortingDate {
-  
-#line 214
   return sortingDate_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor_MessageRead *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->sortingDate_ = sortingDate_;
+@end
+
+
+#line 204
+void ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageRead *self, AMPeer *peer, jlong sortingDate) {
+  (void) NSObject_init(self);
+  
+#line 205
+  self->peer_ = peer;
+  self->sortingDate_ = sortingDate;
 }
 
-@end
+
+#line 204
+ImActorModelModulesMessagesOwnReadActor_MessageRead *new_ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(AMPeer *peer, jlong sortingDate) {
+  ImActorModelModulesMessagesOwnReadActor_MessageRead *self = [ImActorModelModulesMessagesOwnReadActor_MessageRead alloc];
+  ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(self, peer, sortingDate);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 
@@ -436,52 +432,44 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
                       withLong:(jlong)sortingDate {
-  if (self = [super init]) {
-    
-#line 224
-    self->peer_ = peer;
-    
-#line 225
-    self->rid_ = rid;
-    
-#line 226
-    self->sortingDate_ = sortingDate;
-  }
+  ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortingDate);
   return self;
 }
 
 
 #line 229
 - (AMPeer *)getPeer {
-  
-#line 230
   return peer_;
 }
 
-
-#line 233
 - (jlong)getRid {
-  
-#line 234
   return rid_;
 }
 
-
-#line 237
 - (jlong)getSortingDate {
-  
-#line 238
   return sortingDate_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor_NewMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rid_ = rid_;
-  other->sortingDate_ = sortingDate_;
+@end
+
+
+#line 223
+void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesOwnReadActor_NewMessage *self, AMPeer *peer, jlong rid, jlong sortingDate) {
+  (void) NSObject_init(self);
+  
+#line 224
+  self->peer_ = peer;
+  self->rid_ = rid;
+  self->sortingDate_ = sortingDate;
 }
 
-@end
+
+#line 223
+ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortingDate) {
+  ImActorModelModulesMessagesOwnReadActor_NewMessage *self = [ImActorModelModulesMessagesOwnReadActor_NewMessage alloc];
+  ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortingDate);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_NewMessage)
 
@@ -493,39 +481,38 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_NewMess
 #line 246
 - (instancetype)initWithAMPeer:(AMPeer *)peer
               withJavaUtilList:(id<JavaUtilList>)rids {
-  if (self = [super init]) {
-    
-#line 247
-    self->peer_ = peer;
-    
-#line 248
-    self->rids_ = rids;
-  }
+  ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(self, peer, rids);
   return self;
 }
 
 
 #line 251
 - (AMPeer *)getPeer {
-  
-#line 252
   return peer_;
 }
 
-
-#line 255
 - (id<JavaUtilList>)getRids {
-  
-#line 256
   return rids_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesOwnReadActor_MessageDeleted *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rids_ = rids_;
+@end
+
+
+#line 246
+void ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(ImActorModelModulesMessagesOwnReadActor_MessageDeleted *self, AMPeer *peer, id<JavaUtilList> rids) {
+  (void) NSObject_init(self);
+  
+#line 247
+  self->peer_ = peer;
+  self->rids_ = rids;
 }
 
-@end
+
+#line 246
+ImActorModelModulesMessagesOwnReadActor_MessageDeleted *new_ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(AMPeer *peer, id<JavaUtilList> rids) {
+  ImActorModelModulesMessagesOwnReadActor_MessageDeleted *self = [ImActorModelModulesMessagesOwnReadActor_MessageDeleted alloc];
+  ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(self, peer, rids);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageDeleted)

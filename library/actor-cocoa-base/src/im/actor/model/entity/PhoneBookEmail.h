@@ -8,25 +8,27 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMPhoneBookEmail : NSObject {
-}
+@interface AMPhoneBookEmail : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)id_
                 withNSString:(NSString *)email;
 
-- (jlong)getId;
-
 - (NSString *)getEmail;
+
+- (jlong)getId;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMPhoneBookEmail)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMPhoneBookEmail_initWithLong_withNSString_(AMPhoneBookEmail *self, jlong id_, NSString *email);
 
-typedef AMPhoneBookEmail ImActorModelEntityPhoneBookEmail;
+FOUNDATION_EXPORT AMPhoneBookEmail *new_AMPhoneBookEmail_initWithLong_withNSString_(jlong id_, NSString *email) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPhoneBookEmail)
+
+typedef AMPhoneBookEmail ImActorModelEntityPhoneBookEmail;
 
 #endif // _AMPhoneBookEmail_H_

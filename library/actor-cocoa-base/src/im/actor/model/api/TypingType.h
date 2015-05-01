@@ -14,31 +14,27 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiTypingType) {
   ImActorModelApiTypingType_UNSUPPORTED_VALUE = 1,
 };
 
-@interface ImActorModelApiTypingTypeEnum : JavaLangEnum < NSCopying > {
-}
+@interface ImActorModelApiTypingTypeEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
 
 + (ImActorModelApiTypingTypeEnum *)parseWithInt:(jint)value;
 
+#pragma mark Package-Private
+
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiTypingTypeEnum_values();
 
 + (ImActorModelApiTypingTypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelApiTypingTypeEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelApiTypingTypeEnum)
-
-FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_parseWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_values_[];
 
@@ -47,6 +43,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiTypingTypeEnum, TEXT)
 
 #define ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE ImActorModelApiTypingTypeEnum_values_[ImActorModelApiTypingType_UNSUPPORTED_VALUE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiTypingTypeEnum, UNSUPPORTED_VALUE)
+
+FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_parseWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTypingTypeEnum)
 

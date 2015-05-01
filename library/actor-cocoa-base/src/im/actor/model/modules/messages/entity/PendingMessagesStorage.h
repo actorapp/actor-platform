@@ -6,16 +6,19 @@
 #ifndef _ImActorModelModulesMessagesEntityPendingMessagesStorage_H_
 #define _ImActorModelModulesMessagesEntityPendingMessagesStorage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class JavaUtilArrayList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityPendingMessagesStorage : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityPendingMessagesStorage : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelModulesMessagesEntityPendingMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
@@ -25,16 +28,15 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityPendingMessagesStorage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPendingMessagesStorage *ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityPendingMessagesStorage_init(ImActorModelModulesMessagesEntityPendingMessagesStorage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPendingMessagesStorage *new_ImActorModelModulesMessagesEntityPendingMessagesStorage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityPendingMessagesStorage)
 

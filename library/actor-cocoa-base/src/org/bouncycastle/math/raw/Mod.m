@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Mod.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Mod.java"
 
 #include "IOSPrimitiveArray.h"
@@ -12,10 +13,6 @@
 #include "java/util/Random.h"
 #include "org/bouncycastle/math/raw/Mod.h"
 #include "org/bouncycastle/math/raw/Nat.h"
-
-__attribute__((unused)) static void OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(IOSIntArray *p, jint ac, IOSIntArray *a, IOSIntArray *z);
-__attribute__((unused)) static jint OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(IOSIntArray *p, IOSIntArray *u, jint uLen, IOSIntArray *x, jint xc);
-__attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(jint x);
 
 @interface OrgBouncycastleMathRawMod ()
 
@@ -31,7 +28,14 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
                           withInt:(jint)xc;
 
 + (jint)getTrailingZeroesWithInt:(jint)x;
+
 @end
+
+__attribute__((unused)) static void OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(IOSIntArray *p, jint ac, IOSIntArray *a, IOSIntArray *z);
+
+__attribute__((unused)) static jint OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(IOSIntArray *p, IOSIntArray *u, jint uLen, IOSIntArray *x, jint xc);
+
+__attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(jint x);
 
 
 #line 5
@@ -99,13 +103,16 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathRawMod_init(self);
+  return self;
 }
 
 @end
 
+
+#line 7
 jint OrgBouncycastleMathRawMod_inverse32WithInt_(jint d) {
-  OrgBouncycastleMathRawMod_init();
+  OrgBouncycastleMathRawMod_initialize();
   
 #line 10
   jint x = d;
@@ -118,15 +125,15 @@ jint OrgBouncycastleMathRawMod_inverse32WithInt_(jint d) {
   return x;
 }
 
+
+#line 19
 void OrgBouncycastleMathRawMod_invertWithIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *z) {
-  OrgBouncycastleMathRawMod_init();
-  
-#line 21
+  OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   if (OrgBouncycastleMathRawNat_isZeroWithInt_withIntArray_(len, x)) {
     
 #line 24
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'x' cannot be 0"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'x' cannot be 0");
   }
   if (OrgBouncycastleMathRawNat_isOneWithInt_withIntArray_(len, x)) {
     
@@ -206,12 +213,12 @@ void OrgBouncycastleMathRawMod_invertWithIntArray_withIntArray_withIntArray_(IOS
   }
 }
 
+
+#line 87
 IOSIntArray *OrgBouncycastleMathRawMod_randomWithIntArray_(IOSIntArray *p) {
-  OrgBouncycastleMathRawMod_init();
-  
-#line 89
+  OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
-  JavaUtilRandom *rand = [[JavaUtilRandom alloc] init];
+  JavaUtilRandom *rand = new_JavaUtilRandom_init();
   IOSIntArray *s = OrgBouncycastleMathRawNat_createWithInt_(len);
   
 #line 93
@@ -239,10 +246,10 @@ IOSIntArray *OrgBouncycastleMathRawMod_randomWithIntArray_(IOSIntArray *p) {
   return s;
 }
 
+
+#line 113
 void OrgBouncycastleMathRawMod_addWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *y, IOSIntArray *z) {
-  OrgBouncycastleMathRawMod_init();
-  
-#line 115
+  OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   jint c = OrgBouncycastleMathRawNat_addWithInt_withIntArray_withIntArray_withIntArray_(len, x, y, z);
   if (c != 0) {
@@ -252,10 +259,10 @@ void OrgBouncycastleMathRawMod_addWithIntArray_withIntArray_withIntArray_withInt
   }
 }
 
+
+#line 123
 void OrgBouncycastleMathRawMod_subtractWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *y, IOSIntArray *z) {
-  OrgBouncycastleMathRawMod_init();
-  
-#line 125
+  OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   jint c = OrgBouncycastleMathRawNat_subWithInt_withIntArray_withIntArray_withIntArray_(len, x, y, z);
   if (c != 0) {
@@ -265,10 +272,10 @@ void OrgBouncycastleMathRawMod_subtractWithIntArray_withIntArray_withIntArray_wi
   }
 }
 
+
+#line 133
 void OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(IOSIntArray *p, jint ac, IOSIntArray *a, IOSIntArray *z) {
-  OrgBouncycastleMathRawMod_init();
-  
-#line 135
+  OrgBouncycastleMathRawMod_initialize();
   if (ac < 0) {
     
 #line 137
@@ -281,10 +288,10 @@ void OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_
   }
 }
 
+
+#line 145
 jint OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(IOSIntArray *p, IOSIntArray *u, jint uLen, IOSIntArray *x, jint xc) {
-  OrgBouncycastleMathRawMod_init();
-  
-#line 147
+  OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   jint count = 0;
   while (IOSIntArray_Get(nil_chk(u), 0) == 0) {
@@ -332,8 +339,10 @@ jint OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_wi
   return xc;
 }
 
+
+#line 185
 jint OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(jint x) {
-  OrgBouncycastleMathRawMod_init();
+  OrgBouncycastleMathRawMod_initialize();
   
 #line 189
   jint count = 0;
@@ -344,6 +353,10 @@ jint OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(jint x) {
     ++count;
   }
   return count;
+}
+
+void OrgBouncycastleMathRawMod_init(OrgBouncycastleMathRawMod *self) {
+  (void) NSObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathRawMod)

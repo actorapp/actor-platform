@@ -6,9 +6,9 @@
 #ifndef _DKActorCreator_H_
 #define _DKActorCreator_H_
 
-@class DKActor;
-
 #include "J2ObjC_header.h"
+
+@class DKActor;
 
 @protocol DKActorCreator < NSObject, JavaObject >
 
@@ -18,8 +18,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorCreator)
 
-#define ImActorModelDroidkitActorsActorCreator DKActorCreator
-
 J2OBJC_TYPE_LITERAL_HEADER(DKActorCreator)
+
+#define ImActorModelDroidkitActorsActorCreator DKActorCreator
 
 #endif // _DKActorCreator_H_

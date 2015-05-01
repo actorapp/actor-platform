@@ -6,46 +6,44 @@
 #ifndef _ImActorModelModulesAvatarOwnAvatarChangeActor_H_
 #define _ImActorModelModulesAvatarOwnAvatarChangeActor_H_
 
-@class AMFileReference;
-@class AMRpcException;
-@class ImActorModelApiRpcResponseEditAvatar;
-@class ImActorModelApiRpcResponseSeq;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
-#include "java/lang/Runnable.h"
 
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor : ImActorModelModulesUtilsModuleActor {
-}
+@class AMFileReference;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesAvatarOwnAvatarChangeActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
+- (void)avatarChangedWithLong:(jlong)rid;
+
 - (void)changeAvatarWithNSString:(NSString *)descriptor;
+
+- (void)onReceiveWithId:(id)message;
+
+- (void)removeAvatar;
 
 - (void)uploadCompletedWithLong:(jlong)rid
             withAMFileReference:(AMFileReference *)fileReference;
 
-- (void)avatarChangedWithLong:(jlong)rid;
-
 - (void)uploadErrorWithLong:(jlong)rid;
-
-- (void)removeAvatar;
-
-- (void)onReceiveWithId:(id)message;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarOwnAvatarChangeActor_initWithImActorModelModulesModules_(ImActorModelModulesAvatarOwnAvatarChangeActor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarOwnAvatarChangeActor *new_ImActorModelModulesAvatarOwnAvatarChangeActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor)
 
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar : NSObject {
-}
+@interface ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)descriptor;
 
@@ -55,13 +53,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar_initWithNSString_(ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar *self, NSString *descriptor);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar *new_ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar_initWithNSString_(NSString *descriptor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar)
 
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar : NSObject {
-}
+@interface ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -69,13 +69,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeA
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar_init(ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar *self);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar *new_ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar)
 
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged : NSObject {
-}
+@interface ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid;
 
@@ -85,79 +87,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveA
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged_initWithLong_(ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged *self, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged *new_ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged_initWithLong_(jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_AvatarChanged)
-
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseEditAvatar *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAvatarOwnAvatarChangeActor:(ImActorModelModulesAvatarOwnAvatarChangeActor *)outer$
-                                                             withLong:(jlong)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_$1)
-
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_$1_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAvatarOwnAvatarChangeActor_$1:(ImActorModelModulesAvatarOwnAvatarChangeActor_$1 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_$1_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_$1_$1)
-
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_$2 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesAvatarOwnAvatarChangeActor:(ImActorModelModulesAvatarOwnAvatarChangeActor *)outer$
-                                                             withLong:(jlong)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_$2)
-
-@interface ImActorModelModulesAvatarOwnAvatarChangeActor_$2_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesAvatarOwnAvatarChangeActor_$2:(ImActorModelModulesAvatarOwnAvatarChangeActor_$2 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarOwnAvatarChangeActor_$2_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarOwnAvatarChangeActor_$2_$1)
 
 #endif // _ImActorModelModulesAvatarOwnAvatarChangeActor_H_
