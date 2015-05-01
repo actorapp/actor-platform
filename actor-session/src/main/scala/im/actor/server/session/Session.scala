@@ -135,7 +135,7 @@ class Session(rpcApiService: ActorRef)(implicit
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
           import FlowGraph.Implicits._
 
-          val source = b.add(Source(ActorPublisher[SessionStream.SessionStreamMessage](sessionMessagePublisher)))
+          val source = b.add(Source(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
           val sink = b.add(Sink.foreach[ProtoMessage](m ⇒ self ! SendProtoMessage(m)))
 
           source ~> g.inlet
