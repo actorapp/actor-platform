@@ -61,26 +61,7 @@ md-toolbar.md-default-theme {
     }
   }
 }
-.login-image {
-  background-image: url("/assets/img/auth-splash.jpg");
-  background-repeat: no-repeat;
-  background-position: 30% 0;
-  background-size: cover;
-}
-.login {
-  form {
-    max-width: 360px;
-    padding: 0 16px 16px;
-    p {
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 36px;
-      padding: 0 4px;
-      text-align: center;
-      color: rgba(0,0,0,.4);
-    }
-  }
-}
+
 .md-button {
   &.md-primary {
     font-size: 14px;
@@ -183,6 +164,7 @@ md-list-item {
     height: 100%;
     font-size: 18px;
     font-weight: 700;
+    text-transform: uppercase;
     text-shadow: 0 -1px 5px rgba(0,0,0,.07);
     color: rgb(255,255,255);
     line-height: 48px;

@@ -1,0 +1,21 @@
+.login-image {
+  background-image: url("/assets/img/auth-splash.jpg");
+  background-repeat: no-repeat;
+  background-position: 30% 0;
+  background-size: cover;
+}
+
+.login {
+  max-width: 380px;
+  padding: 16px 16px;
+  &__message {
+    margin: 16px 2px;
+    p {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 36px;
+      padding: 0 4px;
+      color: rgba(0,0,0,.4);
+    }
+  }
+}
