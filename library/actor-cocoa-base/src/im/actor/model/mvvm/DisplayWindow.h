@@ -6,26 +6,40 @@
 #ifndef _AMDisplayWindow_H_
 #define _AMDisplayWindow_H_
 
-@class JavaLangLong;
-
 #include "J2ObjC_header.h"
 
-@interface AMDisplayWindow : NSObject {
-}
+@class JavaLangLong;
+
+@interface AMDisplayWindow : NSObject
+
+#pragma mark Public
+
+- (void)completeForwardLoading;
+
+- (void)completeInitBackwardWithJavaLangLong:(JavaLangLong *)head;
+
+- (void)completeInitCenterWithJavaLangLong:(JavaLangLong *)forwardHead
+                          withJavaLangLong:(JavaLangLong *)backwardHead;
+
+- (void)completeInitForwardWithJavaLangLong:(JavaLangLong *)tail;
+
+- (void)emptyInit;
+
+- (void)endBackwardLoading;
 
 - (JavaLangLong *)getCurrentBackwardHead;
 
 - (JavaLangLong *)getCurrentForwardHead;
 
-- (jboolean)isInited;
+- (jboolean)isBackwardLoaded;
 
 - (jboolean)isForwardCompleted;
 
-- (jboolean)isBackwardLoaded;
+- (jboolean)isInited;
 
-- (jboolean)startForwardLoading;
+- (void)onBackwardCompleted;
 
-- (void)completeForwardLoading;
+- (void)onBackwardSliceLoadedWithJavaLangLong:(JavaLangLong *)head;
 
 - (void)onForwardCompleted;
 
@@ -33,26 +47,15 @@
 
 - (jboolean)startBackwardLoading;
 
-- (void)endBackwardLoading;
-
-- (void)onBackwardCompleted;
-
-- (void)onBackwardSliceLoadedWithJavaLangLong:(JavaLangLong *)head;
-
-- (void)startInitCenter;
-
-- (void)completeInitCenterWithJavaLangLong:(JavaLangLong *)forwardHead
-                          withJavaLangLong:(JavaLangLong *)backwardHead;
-
-- (void)emptyInit;
-
-- (void)startInitForward;
-
-- (void)completeInitForwardWithJavaLangLong:(JavaLangLong *)tail;
+- (jboolean)startForwardLoading;
 
 - (void)startInitBackward;
 
-- (void)completeInitBackwardWithJavaLangLong:(JavaLangLong *)head;
+- (void)startInitCenter;
+
+- (void)startInitForward;
+
+#pragma mark Package-Private
 
 - (instancetype)init;
 
@@ -60,11 +63,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayWindow)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMDisplayWindow_init(AMDisplayWindow *self);
 
-typedef AMDisplayWindow ImActorModelMvvmDisplayWindow;
+FOUNDATION_EXPORT AMDisplayWindow *new_AMDisplayWindow_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayWindow)
+
+typedef AMDisplayWindow ImActorModelMvvmDisplayWindow;
 
 #endif // _AMDisplayWindow_H_

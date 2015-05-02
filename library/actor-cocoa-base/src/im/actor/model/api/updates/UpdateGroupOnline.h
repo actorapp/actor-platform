@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiUpdatesUpdateGroupOnline_H_
 #define _ImActorModelApiUpdatesUpdateGroupOnline_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateGroupOnline_HEADER 33
 
-@interface ImActorModelApiUpdatesUpdateGroupOnline : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateGroupOnline : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)groupId
                     withInt:(jint)count;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getCount;
 
 - (jint)getGroupId;
 
-- (jint)getCount;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupOnline)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupOnline, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupOnline *ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupOnline, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(ImActorModelApiUpdatesUpdateGroupOnline *self, jint groupId, jint count);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(jint groupId, jint count) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupOnline_init(ImActorModelApiUpdatesUpdateGroupOnline *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupOnline)
 

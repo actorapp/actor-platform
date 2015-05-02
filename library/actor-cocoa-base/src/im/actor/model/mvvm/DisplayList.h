@@ -6,22 +6,17 @@
 #ifndef _AMDisplayList_H_
 #define _AMDisplayList_H_
 
-@class DKActorRef;
-@class IOSObjectArray;
-@class JavaUtilArrayList;
-@class JavaUtilConcurrentCopyOnWriteArrayList;
+#include "J2ObjC_header.h"
+
 @protocol AMDisplayList_Hook;
 @protocol AMDisplayList_Listener;
 @protocol AMDisplayList_Modification;
+@protocol JavaLangRunnable;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/Actor.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "java/lang/Runnable.h"
+@interface AMDisplayList : NSObject
 
-@interface AMDisplayList : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -30,16 +25,16 @@
 - (instancetype)initWithAMDisplayList_Hook:(id<AMDisplayList_Hook>)hook
                           withJavaUtilList:(id<JavaUtilList>)defaultValues;
 
-- (jint)getSize;
-
-- (id)getItemWithInt:(jint)index;
+- (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
 
 - (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod;
 
 - (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod
                           withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter;
 
-- (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
+- (id)getItemWithInt:(jint)index;
+
+- (jint)getSize;
 
 - (void)removeListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
 
@@ -47,16 +42,21 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayList)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void AMDisplayList_init(AMDisplayList *self);
 
-FOUNDATION_EXPORT jint AMDisplayList_NEXT_ID_;
-J2OBJC_STATIC_FIELD_GETTER(AMDisplayList, NEXT_ID_, jint)
-J2OBJC_STATIC_FIELD_REF_GETTER(AMDisplayList, NEXT_ID_, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_init() NS_RETURNS_RETAINED;
 
-typedef AMDisplayList ImActorModelMvvmDisplayList;
+FOUNDATION_EXPORT void AMDisplayList_initWithAMDisplayList_Hook_(AMDisplayList *self, id<AMDisplayList_Hook> hook);
+
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithAMDisplayList_Hook_(id<AMDisplayList_Hook> hook) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMDisplayList_initWithAMDisplayList_Hook_withJavaUtilList_(AMDisplayList *self, id<AMDisplayList_Hook> hook, id<JavaUtilList> defaultValues);
+
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithAMDisplayList_Hook_withJavaUtilList_(id<AMDisplayList_Hook> hook, id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList)
+
+typedef AMDisplayList ImActorModelMvvmDisplayList;
 
 @protocol AMDisplayList_Modification < NSObject, JavaObject >
 
@@ -78,78 +78,6 @@ J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Hook)
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Hook)
 
-@interface AMDisplayList_ListSwitcher : DKActor {
-}
-
-- (void)onEditListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification
-                            withJavaLangRunnable:(id<JavaLangRunnable>)runnable;
-
-- (void)onListSwitchedWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications;
-
-- (void)onReceiveWithId:(id)message;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ListSwitcher)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher)
-
-@interface AMDisplayList_ListSwitcher_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMDisplayList_ListSwitcher:(AMDisplayList_ListSwitcher *)outer$
-         withAMDisplayList_ModificationHolderArray:(IOSObjectArray *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ListSwitcher_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher_$1)
-
-@interface AMDisplayList_ListSwitched : NSObject {
-}
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ListSwitched)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitched)
-
-@interface AMDisplayList_EditList : NSObject {
-}
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_EditList)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_EditList)
-
-@interface AMDisplayList_ModificationHolder : NSObject {
-}
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ModificationHolder)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationHolder)
-
 @protocol AMDisplayList_Listener < NSObject, JavaObject >
 
 - (void)onCollectionChanged;
@@ -159,21 +87,5 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationHolder)
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Listener)
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Listener)
-
-@interface AMDisplayList_$1 : NSObject < DKActorCreator > {
-}
-
-- (AMDisplayList_ListSwitcher *)create;
-
-- (instancetype)initWithAMDisplayList:(AMDisplayList *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_$1)
 
 #endif // _AMDisplayList_H_

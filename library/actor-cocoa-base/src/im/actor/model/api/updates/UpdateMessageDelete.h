@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiUpdatesUpdateMessageDelete_H_
 #define _ImActorModelApiUpdatesUpdateMessageDelete_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiPeer;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateMessageDelete_HEADER 46
 
-@interface ImActorModelApiUpdatesUpdateMessageDelete : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateMessageDelete : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateMessageDelete *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                            withJavaUtilList:(id<JavaUtilList>)rids;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateMessageDelete *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiPeer *)getPeer;
 
@@ -37,18 +40,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateMessageDelete)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageDelete, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageDelete *ImActorModelApiUpdatesUpdateMessageDelete_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageDelete, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageDelete_initWithImActorModelApiPeer_withJavaUtilList_(ImActorModelApiUpdatesUpdateMessageDelete *self, ImActorModelApiPeer *peer, id<JavaUtilList> rids);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageDelete *new_ImActorModelApiUpdatesUpdateMessageDelete_initWithImActorModelApiPeer_withJavaUtilList_(ImActorModelApiPeer *peer, id<JavaUtilList> rids) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageDelete_init(ImActorModelApiUpdatesUpdateMessageDelete *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageDelete *new_ImActorModelApiUpdatesUpdateMessageDelete_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateMessageDelete)
 

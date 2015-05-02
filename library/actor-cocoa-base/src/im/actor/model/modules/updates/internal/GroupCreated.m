@@ -3,18 +3,21 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/GroupCreated.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/GroupCreated.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/modules/updates/internal/GroupCreated.h"
+#include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
 @interface ImActorModelModulesUpdatesInternalGroupCreated () {
  @public
   ImActorModelApiGroup *group_;
   id<AMCommandCallback> callback_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, group_, ImActorModelApiGroup *)
@@ -28,39 +31,38 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, callback_, i
 #line 13
 - (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group
                        withAMCommandCallback:(id<AMCommandCallback>)callback {
-  if (self = [super init]) {
-    
-#line 14
-    self->group_ = group;
-    
-#line 15
-    self->callback_ = callback;
-  }
+  ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(self, group, callback);
   return self;
 }
 
 
 #line 18
 - (ImActorModelApiGroup *)getGroup {
-  
-#line 19
   return group_;
 }
 
-
-#line 22
 - (id<AMCommandCallback>)getCallback {
-  
-#line 23
   return callback_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUpdatesInternalGroupCreated *)other {
-  [super copyAllFieldsTo:other];
-  other->group_ = group_;
-  other->callback_ = callback_;
+@end
+
+
+#line 13
+void ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, ImActorModelApiGroup *group, id<AMCommandCallback> callback) {
+  (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
+  
+#line 14
+  self->group_ = group;
+  self->callback_ = callback;
 }
 
-@end
+
+#line 13
+ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelApiGroup *group, id<AMCommandCallback> callback) {
+  ImActorModelModulesUpdatesInternalGroupCreated *self = [ImActorModelModulesUpdatesInternalGroupCreated alloc];
+  ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(self, group, callback);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesInternalGroupCreated)

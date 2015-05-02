@@ -6,13 +6,14 @@
 #ifndef _BSUnknownFieldException_H_
 #define _BSUnknownFieldException_H_
 
-@class JavaLangThrowable;
-
 #include "J2ObjC_header.h"
 #include "java/lang/RuntimeException.h"
 
-@interface BSUnknownFieldException : JavaLangRuntimeException {
-}
+@class JavaLangThrowable;
+
+@interface BSUnknownFieldException : JavaLangRuntimeException
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -27,11 +28,24 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BSUnknownFieldException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSUnknownFieldException_init(BSUnknownFieldException *self);
 
-typedef BSUnknownFieldException ImActorModelDroidkitBserUnknownFieldException;
+FOUNDATION_EXPORT BSUnknownFieldException *new_BSUnknownFieldException_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSUnknownFieldException_initWithNSString_(BSUnknownFieldException *self, NSString *message);
+
+FOUNDATION_EXPORT BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_(NSString *message) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(BSUnknownFieldException *self, NSString *message, JavaLangThrowable *cause);
+
+FOUNDATION_EXPORT BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(NSString *message, JavaLangThrowable *cause) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSUnknownFieldException_initWithJavaLangThrowable_(BSUnknownFieldException *self, JavaLangThrowable *cause);
+
+FOUNDATION_EXPORT BSUnknownFieldException *new_BSUnknownFieldException_initWithJavaLangThrowable_(JavaLangThrowable *cause) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSUnknownFieldException)
+
+typedef BSUnknownFieldException ImActorModelDroidkitBserUnknownFieldException;
 
 #endif // _BSUnknownFieldException_H_

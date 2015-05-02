@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiUpdatesUpdateUserPhoneRemoved_H_
 #define _ImActorModelApiUpdatesUpdateUserPhoneRemoved_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateUserPhoneRemoved_HEADER 88
 
-@interface ImActorModelApiUpdatesUpdateUserPhoneRemoved : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateUserPhoneRemoved : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateUserPhoneRemoved *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)phoneId;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateUserPhoneRemoved *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (jint)getUid;
+- (jint)getHeaderKey;
 
 - (jint)getPhoneId;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserPhoneRemoved)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserPhoneRemoved, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserPhoneRemoved *ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserPhoneRemoved, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserPhoneRemoved_initWithInt_withInt_(ImActorModelApiUpdatesUpdateUserPhoneRemoved *self, jint uid, jint phoneId);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserPhoneRemoved *new_ImActorModelApiUpdatesUpdateUserPhoneRemoved_initWithInt_withInt_(jint uid, jint phoneId) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserPhoneRemoved_init(ImActorModelApiUpdatesUpdateUserPhoneRemoved *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserPhoneRemoved *new_ImActorModelApiUpdatesUpdateUserPhoneRemoved_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserPhoneRemoved)
 

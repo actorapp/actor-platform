@@ -1,0 +1,27 @@
+<md-toolbar>
+    <div class="md-toolbar-tools">
+      <div class="user" layout="row">
+          <div class="user__avatar">
+            <div class="no-avatar no-avatar--lblue">
+              <span>U</span>
+            </div>
+          </div>
+          <div class="user__body" flex>
+            <p class="user__name">User name</p>
+            <a class="user__profile-link" href="">My profile</a>
+          </div>
+        </div>
+
+        <span flex></span>
+
+        <md-button class="md-icon-button" aria-label="New message">
+            <md-icon md-svg-icon="assets/img/icons/ic_message_24px.svg"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" aria-label="Menu">
+            <md-icon md-svg-icon="assets/img/icons/ic_more_vert_24px.svg"></md-icon>
+        </md-button>
+
+    </div>
+</md-toolbar>
+
+<md-content ng-include="'app/shared/chats/chatsListView.html'" flex layout="column"></md-content>

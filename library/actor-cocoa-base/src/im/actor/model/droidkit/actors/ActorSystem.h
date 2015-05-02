@@ -6,59 +6,57 @@
 #ifndef _DKActorSystem_H_
 #define _DKActorSystem_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActorDispatcher;
 @class DKActorRef;
 @class DKActorSelection;
 @class DKProps;
-@class JavaUtilHashMap;
 @protocol DKTraceInterface;
 
-#include "J2ObjC_header.h"
+@interface DKActorSystem : NSObject
 
-@interface DKActorSystem : NSObject {
-}
-
-+ (DKActorSystem *)system;
+#pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithBoolean:(jboolean)addDefaultDispatcher;
-
-- (void)addDispatcherWithNSString:(NSString *)dispatcherId
-                          withInt:(jint)threadsCount;
-
-- (void)addDispatcherWithNSString:(NSString *)dispatcherId;
-
-- (void)addDispatcherWithNSString:(NSString *)dispatcherId
-            withDKActorDispatcher:(DKActorDispatcher *)dispatcher;
 
 - (DKActorRef *)actorOfWithDKActorSelection:(DKActorSelection *)selection;
 
 - (DKActorRef *)actorOfWithDKProps:(DKProps *)props
                       withNSString:(NSString *)path;
 
+- (void)addDispatcherWithNSString:(NSString *)dispatcherId;
+
+- (void)addDispatcherWithNSString:(NSString *)dispatcherId
+            withDKActorDispatcher:(DKActorDispatcher *)dispatcher;
+
+- (void)addDispatcherWithNSString:(NSString *)dispatcherId
+                          withInt:(jint)threadsCount;
+
 - (id<DKTraceInterface>)getTraceInterface;
 
 - (void)setTraceInterfaceWithDKTraceInterface:(id<DKTraceInterface>)traceInterface;
 
++ (DKActorSystem *)system;
+
 @end
 
-FOUNDATION_EXPORT BOOL DKActorSystem_initialized;
 J2OBJC_STATIC_INIT(DKActorSystem)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT DKActorSystem *DKActorSystem_system();
 
-FOUNDATION_EXPORT DKActorSystem *DKActorSystem_mainSystem_;
-J2OBJC_STATIC_FIELD_GETTER(DKActorSystem, mainSystem_, DKActorSystem *)
+FOUNDATION_EXPORT void DKActorSystem_init(DKActorSystem *self);
 
-FOUNDATION_EXPORT NSString *DKActorSystem_DEFAULT_DISPATCHER_;
-J2OBJC_STATIC_FIELD_GETTER(DKActorSystem, DEFAULT_DISPATCHER_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT DKActorSystem *new_DKActorSystem_init() NS_RETURNS_RETAINED;
 
-typedef DKActorSystem ImActorModelDroidkitActorsActorSystem;
+FOUNDATION_EXPORT void DKActorSystem_initWithBoolean_(DKActorSystem *self, jboolean addDefaultDispatcher);
+
+FOUNDATION_EXPORT DKActorSystem *new_DKActorSystem_initWithBoolean_(jboolean addDefaultDispatcher) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorSystem)
+
+typedef DKActorSystem ImActorModelDroidkitActorsActorSystem;
 
 #endif // _DKActorSystem_H_

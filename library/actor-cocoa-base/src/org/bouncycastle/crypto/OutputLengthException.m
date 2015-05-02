@@ -3,9 +3,11 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/OutputLengthException.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/OutputLengthException.java"
 
 #include "J2ObjC_source.h"
+#include "org/bouncycastle/crypto/DataLengthException.h"
 #include "org/bouncycastle/crypto/OutputLengthException.h"
 
 
@@ -15,11 +17,26 @@
 
 #line 6
 - (instancetype)initWithNSString:(NSString *)msg {
-  return
-#line 8
-  [super initWithNSString:msg];
+  OrgBouncycastleCryptoOutputLengthException_initWithNSString_(self, msg);
+  return self;
 }
 
 @end
+
+
+#line 6
+void OrgBouncycastleCryptoOutputLengthException_initWithNSString_(OrgBouncycastleCryptoOutputLengthException *self, NSString *msg) {
+  (void) OrgBouncycastleCryptoDataLengthException_initWithNSString_(self,
+#line 8
+  msg);
+}
+
+
+#line 6
+OrgBouncycastleCryptoOutputLengthException *new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(NSString *msg) {
+  OrgBouncycastleCryptoOutputLengthException *self = [OrgBouncycastleCryptoOutputLengthException alloc];
+  OrgBouncycastleCryptoOutputLengthException_initWithNSString_(self, msg);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoOutputLengthException)

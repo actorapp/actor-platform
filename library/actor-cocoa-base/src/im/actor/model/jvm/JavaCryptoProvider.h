@@ -6,13 +6,14 @@
 #ifndef _AMJavaCryptoProvider_H_
 #define _AMJavaCryptoProvider_H_
 
-@protocol BCRandomProvider;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
 
-@interface AMJavaCryptoProvider : BCBouncyCastleProvider {
-}
+@protocol BCRandomProvider;
+
+@interface AMJavaCryptoProvider : BCBouncyCastleProvider
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -22,11 +23,16 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMJavaCryptoProvider)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMJavaCryptoProvider_init(AMJavaCryptoProvider *self);
 
-typedef AMJavaCryptoProvider ImActorModelJvmJavaCryptoProvider;
+FOUNDATION_EXPORT AMJavaCryptoProvider *new_AMJavaCryptoProvider_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMJavaCryptoProvider_initWithBCRandomProvider_(AMJavaCryptoProvider *self, id<BCRandomProvider> provider);
+
+FOUNDATION_EXPORT AMJavaCryptoProvider *new_AMJavaCryptoProvider_initWithBCRandomProvider_(id<BCRandomProvider> provider) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMJavaCryptoProvider)
+
+typedef AMJavaCryptoProvider ImActorModelJvmJavaCryptoProvider;
 
 #endif // _AMJavaCryptoProvider_H_

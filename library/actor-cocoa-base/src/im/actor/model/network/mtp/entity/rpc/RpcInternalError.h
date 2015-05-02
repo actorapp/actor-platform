@@ -6,43 +6,51 @@
 #ifndef _MTRpcInternalError_H_
 #define _MTRpcInternalError_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
+@class BSDataInput;
+@class BSDataOutput;
+
 #define MTRpcInternalError_HEADER 4
 
-@interface MTRpcInternalError : MTProtoStruct {
-}
+@interface MTRpcInternalError : MTProtoStruct
 
-- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
+#pragma mark Public
 
 - (instancetype)initWithBoolean:(jboolean)canTryAgain
                         withInt:(jint)tryAgainDelay;
 
-- (jboolean)isCanTryAgain;
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (jint)getTryAgainDelay;
 
+- (jboolean)isCanTryAgain;
+
+#pragma mark Protected
+
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
+
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTRpcInternalError)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTRpcInternalError, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTRpcInternalError ImActorModelNetworkMtpEntityRpcRpcInternalError;
+FOUNDATION_EXPORT void MTRpcInternalError_initWithBSDataInput_(MTRpcInternalError *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTRpcInternalError *new_MTRpcInternalError_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTRpcInternalError_initWithBoolean_withInt_(MTRpcInternalError *self, jboolean canTryAgain, jint tryAgainDelay);
+
+FOUNDATION_EXPORT MTRpcInternalError *new_MTRpcInternalError_initWithBoolean_withInt_(jboolean canTryAgain, jint tryAgainDelay) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTRpcInternalError)
+
+typedef MTRpcInternalError ImActorModelNetworkMtpEntityRpcRpcInternalError;
 
 #endif // _MTRpcInternalError_H_

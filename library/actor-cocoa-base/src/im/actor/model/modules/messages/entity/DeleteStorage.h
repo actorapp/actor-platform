@@ -6,16 +6,19 @@
 #ifndef _ImActorModelModulesMessagesEntityDeleteStorage_H_
 #define _ImActorModelModulesMessagesEntityDeleteStorage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class JavaUtilHashMap;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityDeleteStorage : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityDeleteStorage : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelModulesMessagesEntityDeleteStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
@@ -25,16 +28,15 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityDeleteStorage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityDeleteStorage *ImActorModelModulesMessagesEntityDeleteStorage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityDeleteStorage_init(ImActorModelModulesMessagesEntityDeleteStorage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityDeleteStorage *new_ImActorModelModulesMessagesEntityDeleteStorage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityDeleteStorage)
 

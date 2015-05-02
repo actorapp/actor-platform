@@ -6,10 +6,10 @@
 #ifndef _AMFileSystemReference_H_
 #define _AMFileSystemReference_H_
 
+#include "J2ObjC_header.h"
+
 @protocol AMInputFile;
 @protocol AMOutputFile;
-
-#include "J2ObjC_header.h"
 
 @protocol AMFileSystemReference < NSObject, JavaObject >
 
@@ -27,8 +27,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileSystemReference)
 
-#define ImActorModelFilesFileSystemReference AMFileSystemReference
-
 J2OBJC_TYPE_LITERAL_HEADER(AMFileSystemReference)
+
+#define ImActorModelFilesFileSystemReference AMFileSystemReference
 
 #endif // _AMFileSystemReference_H_

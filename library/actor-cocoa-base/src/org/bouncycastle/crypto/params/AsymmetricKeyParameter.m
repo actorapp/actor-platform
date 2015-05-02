@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/AsymmetricKeyParameter.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/AsymmetricKeyParameter.java"
 
 #include "J2ObjC_source.h"
@@ -15,11 +16,7 @@
 
 #line 10
 - (instancetype)initWithBoolean:(jboolean)privateKey {
-  if (self = [super init]) {
-    
-#line 13
-    self->privateKey_ = privateKey;
-  }
+  OrgBouncycastleCryptoParamsAsymmetricKeyParameter_initWithBoolean_(self, privateKey);
   return self;
 }
 
@@ -31,11 +28,23 @@
   return privateKey_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *)other {
-  [super copyAllFieldsTo:other];
-  other->privateKey_ = privateKey_;
+@end
+
+
+#line 10
+void OrgBouncycastleCryptoParamsAsymmetricKeyParameter_initWithBoolean_(OrgBouncycastleCryptoParamsAsymmetricKeyParameter *self, jboolean privateKey) {
+  (void) NSObject_init(self);
+  
+#line 13
+  self->privateKey_ = privateKey;
 }
 
-@end
+
+#line 10
+OrgBouncycastleCryptoParamsAsymmetricKeyParameter *new_OrgBouncycastleCryptoParamsAsymmetricKeyParameter_initWithBoolean_(jboolean privateKey) {
+  OrgBouncycastleCryptoParamsAsymmetricKeyParameter *self = [OrgBouncycastleCryptoParamsAsymmetricKeyParameter alloc];
+  OrgBouncycastleCryptoParamsAsymmetricKeyParameter_initWithBoolean_(self, privateKey);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsAsymmetricKeyParameter)

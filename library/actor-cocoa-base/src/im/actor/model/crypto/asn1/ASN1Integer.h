@@ -6,30 +6,31 @@
 #ifndef _BCASN1Integer_H_
 #define _BCASN1Integer_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/crypto/asn1/ASN1Primitive.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 @class JavaMathBigInteger;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/crypto/asn1/ASN1Primitive.h"
+@interface BCASN1Integer : BCASN1Primitive
 
-@interface BCASN1Integer : BCASN1Primitive {
-}
-
-+ (BCASN1Integer *)readIntegerWithBSDataInput:(BSDataInput *)dataInput;
-
-- (instancetype)initWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)data;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)data;
+
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
+
 - (instancetype)initWithInt:(jint)val;
+
+- (JavaMathBigInteger *)asBigInteger;
 
 - (IOSByteArray *)getData;
 
-- (JavaMathBigInteger *)asBigInteger;
++ (BCASN1Integer *)readIntegerWithBSDataInput:(BSDataInput *)dataInput;
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput;
 
@@ -37,13 +38,26 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCASN1Integer)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT BCASN1Integer *BCASN1Integer_readIntegerWithBSDataInput_(BSDataInput *dataInput);
-CF_EXTERN_C_END
 
-typedef BCASN1Integer ImActorModelCryptoAsn1ASN1Integer;
+FOUNDATION_EXPORT void BCASN1Integer_initWithByteArray_(BCASN1Integer *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT BCASN1Integer *new_BCASN1Integer_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BCASN1Integer_initWithJavaMathBigInteger_(BCASN1Integer *self, JavaMathBigInteger *data);
+
+FOUNDATION_EXPORT BCASN1Integer *new_BCASN1Integer_initWithJavaMathBigInteger_(JavaMathBigInteger *data) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BCASN1Integer_init(BCASN1Integer *self);
+
+FOUNDATION_EXPORT BCASN1Integer *new_BCASN1Integer_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BCASN1Integer_initWithInt_(BCASN1Integer *self, jint val);
+
+FOUNDATION_EXPORT BCASN1Integer *new_BCASN1Integer_initWithInt_(jint val) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCASN1Integer)
+
+typedef BCASN1Integer ImActorModelCryptoAsn1ASN1Integer;
 
 #endif // _BCASN1Integer_H_

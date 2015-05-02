@@ -6,19 +6,20 @@
 #ifndef _ImActorModelApiUpdatesUpdateGroupUserKick_H_
 #define _ImActorModelApiUpdatesUpdateGroupUserKick_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateGroupUserKick_HEADER 24
 
-@interface ImActorModelApiUpdatesUpdateGroupUserKick : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateGroupUserKick : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
@@ -26,17 +27,19 @@
                     withInt:(jint)kickerUid
                    withLong:(jlong)date;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getDate;
 
 - (jint)getGroupId;
+
+- (jint)getHeaderKey;
+
+- (jint)getKickerUid;
 
 - (jlong)getRid;
 
 - (jint)getUid;
-
-- (jint)getKickerUid;
-
-- (jlong)getDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -44,18 +47,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupUserKick)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupUserKick, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserKick *ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupUserKick, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserKick *self, jint groupId, jlong rid, jint uid, jint kickerUid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserKick_init(ImActorModelApiUpdatesUpdateGroupUserKick *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupUserKick)
 

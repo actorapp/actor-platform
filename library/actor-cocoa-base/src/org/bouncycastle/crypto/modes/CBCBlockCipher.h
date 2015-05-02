@@ -6,25 +6,26 @@
 #ifndef _OrgBouncycastleCryptoModesCBCBlockCipher_H_
 #define _OrgBouncycastleCryptoModesCBCBlockCipher_H_
 
-@class IOSByteArray;
-@protocol OrgBouncycastleCryptoCipherParameters;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/BlockCipher.h"
 
-@interface OrgBouncycastleCryptoModesCBCBlockCipher : NSObject < OrgBouncycastleCryptoBlockCipher > {
-}
+@class IOSByteArray;
+@protocol OrgBouncycastleCryptoCipherParameters;
+
+@interface OrgBouncycastleCryptoModesCBCBlockCipher : NSObject < OrgBouncycastleCryptoBlockCipher >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher;
+
+- (NSString *)getAlgorithmName;
+
+- (jint)getBlockSize;
 
 - (id<OrgBouncycastleCryptoBlockCipher>)getUnderlyingCipher;
 
 - (void)init__WithBoolean:(jboolean)encrypting
 withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)params OBJC_METHOD_FAMILY_NONE;
-
-- (NSString *)getAlgorithmName;
-
-- (jint)getBlockSize;
 
 - (jint)processBlockWithByteArray:(IOSByteArray *)inArg
                           withInt:(jint)inOff
@@ -37,8 +38,9 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoModesCBCBlockCipher)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoModesCBCBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(OrgBouncycastleCryptoModesCBCBlockCipher *self, id<OrgBouncycastleCryptoBlockCipher> cipher);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoModesCBCBlockCipher *new_OrgBouncycastleCryptoModesCBCBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(id<OrgBouncycastleCryptoBlockCipher> cipher) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoModesCBCBlockCipher)
 

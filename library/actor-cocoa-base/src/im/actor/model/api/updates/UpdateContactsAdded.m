@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactsAdded.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactsAdded.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 #include "java/util/List.h"
 
@@ -20,6 +22,7 @@
  @public
   id<JavaUtilList> uids_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUtilList>)
@@ -37,23 +40,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
 
 #line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids {
-  if (self = [super init]) {
-    
-#line 30
-    self->uids_ = uids;
-  }
+  ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(self, uids);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateContactsAdded_init(self);
+  return self;
 }
 
+
+#line 37
 - (id<JavaUtilList>)getUids {
-  
-#line 38
   return self->uids_;
 }
 
@@ -66,11 +66,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedIntWithInt:1 withJavaUtilList:self->uids_];
 }
 
+
+#line 52
 - (NSString *)description {
   NSString *res = @"update ContactsAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uids=", [((id<JavaUtilList>) nil_chk(self->uids_)) size]));
@@ -78,24 +78,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 61
-  return ImActorModelApiUpdatesUpdateContactsAdded_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateContactsAdded *)other {
-  [super copyAllFieldsTo:other];
-  other->uids_ = uids_;
+#line 60
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateContactsAdded_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateContactsAdded *ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateContactsAdded_init();
+  ImActorModelApiUpdatesUpdateContactsAdded_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateContactsAdded *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactsAdded alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateContactsAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactsAdded_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(ImActorModelApiUpdatesUpdateContactsAdded *self, id<JavaUtilList> uids) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 30
+  self->uids_ = uids;
+}
+
+
+#line 29
+ImActorModelApiUpdatesUpdateContactsAdded *new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(id<JavaUtilList> uids) {
+  ImActorModelApiUpdatesUpdateContactsAdded *self = [ImActorModelApiUpdatesUpdateContactsAdded alloc];
+  ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(self, uids);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateContactsAdded_init(ImActorModelApiUpdatesUpdateContactsAdded *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateContactsAdded *new_ImActorModelApiUpdatesUpdateContactsAdded_init() {
+  ImActorModelApiUpdatesUpdateContactsAdded *self = [ImActorModelApiUpdatesUpdateContactsAdded alloc];
+  ImActorModelApiUpdatesUpdateContactsAdded_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactsAdded)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupTitleChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupTitleChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
 #include "java/io/IOException.h"
 
@@ -20,10 +22,16 @@
  @public
   NSString *newTitle_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
+
+__attribute__((unused)) static void AMServiceGroupTitleChanged_init(AMServiceGroupTitleChanged *self);
+
+__attribute__((unused)) static AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_init() NS_RETURNS_RETAINED;
 
 
 #line 12
@@ -36,25 +44,18 @@ J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
 
 #line 20
 - (instancetype)initWithNSString:(NSString *)newTitle {
-  if (self =
-#line 21
-  [super initWithNSString:@"Group theme changed"]) {
-    
-#line 22
-    self->newTitle_ = newTitle;
-  }
+  AMServiceGroupTitleChanged_initWithNSString_(self, newTitle);
+  return self;
+}
+
+- (instancetype)init {
+  AMServiceGroupTitleChanged_init(self);
   return self;
 }
 
 
-#line 25
-- (instancetype)init {
-  return [super init];
-}
-
+#line 29
 - (NSString *)getNewTitle {
-  
-#line 30
   return newTitle_;
 }
 
@@ -67,8 +68,6 @@ J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
 
 #line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 40
   [super parseWithBSBserValues:values];
   newTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
@@ -80,18 +79,44 @@ J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
 }
 
-- (void)copyAllFieldsTo:(AMServiceGroupTitleChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->newTitle_ = newTitle_;
-}
-
 @end
 
+
+#line 14
 AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceGroupTitleChanged_init();
+  AMServiceGroupTitleChanged_initialize();
   
 #line 15
-  return ((AMServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupTitleChanged alloc] init], data));
+  return ((AMServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupTitleChanged_init(), data));
+}
+
+
+#line 20
+void AMServiceGroupTitleChanged_initWithNSString_(AMServiceGroupTitleChanged *self, NSString *newTitle) {
+  (void) AMServiceContent_initWithNSString_(self, @"Group theme changed");
+  self->newTitle_ = newTitle;
+}
+
+
+#line 20
+AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_initWithNSString_(NSString *newTitle) {
+  AMServiceGroupTitleChanged *self = [AMServiceGroupTitleChanged alloc];
+  AMServiceGroupTitleChanged_initWithNSString_(self, newTitle);
+  return self;
+}
+
+
+#line 25
+void AMServiceGroupTitleChanged_init(AMServiceGroupTitleChanged *self) {
+  (void) AMServiceContent_init(self);
+}
+
+
+#line 25
+AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_init() {
+  AMServiceGroupTitleChanged *self = [AMServiceGroupTitleChanged alloc];
+  AMServiceGroupTitleChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupTitleChanged)

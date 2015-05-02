@@ -6,68 +6,63 @@
 #ifndef _ImActorModelModulesNotificationsNotificationsActor_H_
 #define _ImActorModelModulesNotificationsNotificationsActor_H_
 
-@class AMContentDescription;
-@class AMPeer;
-@class DKSyncKeyValue;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesNotificationsEntityPendingStorage;
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-#define ImActorModelModulesNotificationsNotificationsActor_MAX_NOTIFICATION_COUNT 10
+@class AMContentDescription;
+@class AMPeer;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesNotificationsNotificationsActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)preStart;
+- (void)onAppHidden;
+
+- (void)onAppVisible;
+
+- (void)onConversationHiddenWithAMPeer:(AMPeer *)peer;
+
+- (void)onConversationVisibleWithAMPeer:(AMPeer *)peer;
+
+- (void)onDialogsHidden;
+
+- (void)onDialogsVisible;
+
+- (void)onMessagesReadWithAMPeer:(AMPeer *)peer
+                        withLong:(jlong)fromDate;
 
 - (void)onNewMessageWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)date
       withAMContentDescription:(AMContentDescription *)description_;
 
-- (void)onMessagesReadWithAMPeer:(AMPeer *)peer
-                        withLong:(jlong)fromDate;
-
-- (void)onConversationVisibleWithAMPeer:(AMPeer *)peer;
-
-- (void)onConversationHiddenWithAMPeer:(AMPeer *)peer;
-
-- (void)onAppVisible;
-
-- (void)onAppHidden;
-
-- (void)onDialogsVisible;
-
-- (void)onDialogsHidden;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_(ImActorModelModulesNotificationsNotificationsActor *self, ImActorModelModulesModules *messenger);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAGE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesNotificationsNotificationsActor, PREFERENCES_STORAGE_, NSString *)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesNotificationsNotificationsActor, MAX_NOTIFICATION_COUNT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor *new_ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_NewMessage : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_NewMessage : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)sortDate
       withAMContentDescription:(AMContentDescription *)contentDescription;
+
+- (AMContentDescription *)getContentDescription;
 
 - (AMPeer *)getPeer;
 
@@ -75,38 +70,40 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor)
 
 - (jlong)getSortDate;
 
-- (AMContentDescription *)getContentDescription;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_MessagesRead : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_MessagesRead : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)fromDate;
 
-- (AMPeer *)getPeer;
-
 - (jlong)getFromDate;
+
+- (AMPeer *)getPeer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_MessagesRead)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_MessagesRead_initWithAMPeer_withLong_(ImActorModelModulesNotificationsNotificationsActor_MessagesRead *self, AMPeer *peer, jlong fromDate);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_MessagesRead *new_ImActorModelModulesNotificationsNotificationsActor_MessagesRead_initWithAMPeer_withLong_(AMPeer *peer, jlong fromDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_MessagesRead)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer;
 
@@ -116,13 +113,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_Me
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible *self, AMPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible *new_ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(AMPeer *peer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer;
 
@@ -132,13 +131,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_On
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden_initWithAMPeer_(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden *self, AMPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden_initWithAMPeer_(AMPeer *peer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnConversationHidden)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_OnAppVisible : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_OnAppVisible : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -146,13 +147,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_On
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_OnAppVisible)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnAppVisible_init(ImActorModelModulesNotificationsNotificationsActor_OnAppVisible *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnAppVisible *new_ImActorModelModulesNotificationsNotificationsActor_OnAppVisible_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnAppVisible)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_OnAppHidden : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_OnAppHidden : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -160,13 +163,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_On
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_OnAppHidden)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init(ImActorModelModulesNotificationsNotificationsActor_OnAppHidden *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnAppHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnAppHidden)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -174,13 +179,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_On
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible_init(ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible *new_ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnDialogsVisible)
 
-@interface ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden : NSObject {
-}
+@interface ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -188,8 +195,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_On
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden)
 

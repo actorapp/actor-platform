@@ -3,29 +3,61 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaCryptoProvider.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaCryptoProvider.java"
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
 #include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 #include "im/actor/model/jvm/JavaCryptoProvider.h"
 #include "im/actor/model/jvm/JavaRandomProvider.h"
 
+
+#line 9
 @implementation AMJavaCryptoProvider
 
 
 #line 10
 - (instancetype)init {
-  return
-#line 11
-  [super initWithBCRandomProvider:[[AMJavaRandomProvider alloc] init]];
+  AMJavaCryptoProvider_init(self);
+  return self;
 }
 
 
 #line 14
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider {
-  return [super initWithBCRandomProvider:provider];
+  AMJavaCryptoProvider_initWithBCRandomProvider_(self, provider);
+  return self;
 }
 
 @end
+
+
+#line 10
+void AMJavaCryptoProvider_init(AMJavaCryptoProvider *self) {
+  (void) BCBouncyCastleProvider_initWithBCRandomProvider_(self, new_AMJavaRandomProvider_init());
+}
+
+
+#line 10
+AMJavaCryptoProvider *new_AMJavaCryptoProvider_init() {
+  AMJavaCryptoProvider *self = [AMJavaCryptoProvider alloc];
+  AMJavaCryptoProvider_init(self);
+  return self;
+}
+
+
+#line 14
+void AMJavaCryptoProvider_initWithBCRandomProvider_(AMJavaCryptoProvider *self, id<BCRandomProvider> provider) {
+  (void) BCBouncyCastleProvider_initWithBCRandomProvider_(self, provider);
+}
+
+
+#line 14
+AMJavaCryptoProvider *new_AMJavaCryptoProvider_initWithBCRandomProvider_(id<BCRandomProvider> provider) {
+  AMJavaCryptoProvider *self = [AMJavaCryptoProvider alloc];
+  AMJavaCryptoProvider_initWithBCRandomProvider_(self, provider);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaCryptoProvider)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/RSACoreEngine.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/RSACoreEngine.java"
 
 #include "IOSPrimitiveArray.h"
@@ -21,6 +22,7 @@
   OrgBouncycastleCryptoParamsRSAKeyParameters *key_;
   jboolean forEncryption_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEnginesRSACoreEngine, key_, OrgBouncycastleCryptoParamsRSAKeyParameters *)
@@ -44,8 +46,6 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 #line 39
 - (jint)getInputBlockSize {
-  
-#line 40
   jint bitSize = [((JavaMathBigInteger *) nil_chk([((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getModulus])) bitLength];
   
 #line 42
@@ -62,8 +62,6 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 #line 56
 - (jint)getOutputBlockSize {
-  
-#line 57
   jint bitSize = [((JavaMathBigInteger *) nil_chk([((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getModulus])) bitLength];
   
 #line 59
@@ -85,12 +83,12 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   
 #line 70
   if (inLen > ([self getInputBlockSize] + 1)) {
-    @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"input too large for RSA cipher."];
+    @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input too large for RSA cipher.");
   }
   else
 #line 72
   if (inLen == ([self getInputBlockSize] + 1) && !forEncryption_) {
-    @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"input too large for RSA cipher."];
+    @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input too large for RSA cipher.");
   }
   
 #line 76
@@ -110,9 +108,9 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   }
   
 #line 86
-  JavaMathBigInteger *res = [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:block];
+  JavaMathBigInteger *res = new_JavaMathBigInteger_initWithInt_withByteArray_(1, block);
   if ([res compareToWithId:[((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getModulus]] >= 0) {
-    @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"input too large for RSA cipher."];
+    @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input too large for RSA cipher.");
   }
   
 #line 91
@@ -176,8 +174,6 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 #line 130
 - (JavaMathBigInteger *)processBlockWithJavaMathBigInteger:(JavaMathBigInteger *)input {
-  
-#line 131
   if ([key_ isKindOfClass:[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]]) {
     
 #line 137
@@ -221,15 +217,20 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 }
 
 - (instancetype)init {
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoEnginesRSACoreEngine *)other {
-  [super copyAllFieldsTo:other];
-  other->key_ = key_;
-  other->forEncryption_ = forEncryption_;
+  OrgBouncycastleCryptoEnginesRSACoreEngine_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleCryptoEnginesRSACoreEngine_init(OrgBouncycastleCryptoEnginesRSACoreEngine *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleCryptoEnginesRSACoreEngine *new_OrgBouncycastleCryptoEnginesRSACoreEngine_init() {
+  OrgBouncycastleCryptoEnginesRSACoreEngine *self = [OrgBouncycastleCryptoEnginesRSACoreEngine alloc];
+  OrgBouncycastleCryptoEnginesRSACoreEngine_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoEnginesRSACoreEngine)

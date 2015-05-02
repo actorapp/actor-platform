@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookPhone.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookPhone.java"
 
 #include "J2ObjC_source.h"
@@ -13,6 +14,7 @@
   jlong id__;
   jlong number_;
 }
+
 @end
 
 
@@ -23,39 +25,38 @@
 #line 10
 - (instancetype)initWithLong:(jlong)id_
                     withLong:(jlong)number {
-  if (self = [super init]) {
-    
-#line 11
-    self->id__ = id_;
-    
-#line 12
-    self->number_ = number;
-  }
+  AMPhoneBookPhone_initWithLong_withLong_(self, id_, number);
   return self;
 }
 
 
 #line 15
 - (jlong)getId {
-  
-#line 16
   return id__;
 }
 
-
-#line 19
 - (jlong)getNumber {
-  
-#line 20
   return number_;
 }
 
-- (void)copyAllFieldsTo:(AMPhoneBookPhone *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
-  other->number_ = number_;
+@end
+
+
+#line 10
+void AMPhoneBookPhone_initWithLong_withLong_(AMPhoneBookPhone *self, jlong id_, jlong number) {
+  (void) NSObject_init(self);
+  
+#line 11
+  self->id__ = id_;
+  self->number_ = number;
 }
 
-@end
+
+#line 10
+AMPhoneBookPhone *new_AMPhoneBookPhone_initWithLong_withLong_(jlong id_, jlong number) {
+  AMPhoneBookPhone *self = [AMPhoneBookPhone alloc];
+  AMPhoneBookPhone_initWithLong_withLong_(self, id_, number);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPhoneBookPhone)

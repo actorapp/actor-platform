@@ -6,27 +6,28 @@
 #ifndef _ImActorModelApiAvatar_H_
 #define _ImActorModelApiAvatar_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiAvatarImage;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiAvatar : BSBserObject
 
-@interface ImActorModelApiAvatar : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)smallImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage;
 
-- (instancetype)init;
-
-- (ImActorModelApiAvatarImage *)getSmallImage;
+- (ImActorModelApiAvatarImage *)getFullImage;
 
 - (ImActorModelApiAvatarImage *)getLargeImage;
 
-- (ImActorModelApiAvatarImage *)getFullImage;
+- (ImActorModelApiAvatarImage *)getSmallImage;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,8 +39,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiAvatar)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatar *self, ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage);
+
+FOUNDATION_EXPORT ImActorModelApiAvatar *new_ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiAvatar_init(ImActorModelApiAvatar *self);
+
+FOUNDATION_EXPORT ImActorModelApiAvatar *new_ImActorModelApiAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAvatar)
 

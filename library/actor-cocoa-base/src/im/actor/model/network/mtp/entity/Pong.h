@@ -6,16 +6,17 @@
 #ifndef _MTPong_H_
 #define _MTPong_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
+@class BSDataInput;
+@class BSDataOutput;
+
 #define MTPong_HEADER 2
 
-@interface MTPong : MTProtoStruct {
-}
+@interface MTPong : MTProtoStruct
+
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
@@ -23,25 +24,32 @@
 
 - (jlong)getRandomId;
 
-- (jbyte)getHeader;
+- (NSString *)description;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Protected
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTPong)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTPong, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTPong ImActorModelNetworkMtpEntityPong;
+FOUNDATION_EXPORT void MTPong_initWithBSDataInput_(MTPong *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTPong *new_MTPong_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTPong_initWithLong_(MTPong *self, jlong randomId);
+
+FOUNDATION_EXPORT MTPong *new_MTPong_initWithLong_(jlong randomId) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTPong)
+
+typedef MTPong ImActorModelNetworkMtpEntityPong;
 
 #endif // _MTPong_H_

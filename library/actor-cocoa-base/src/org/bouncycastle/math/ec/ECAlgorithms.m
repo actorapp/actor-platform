@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECAlgorithms.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ECAlgorithms.java"
 
 #include "IOSClass.h"
@@ -25,9 +26,6 @@
 #include "org/bouncycastle/math/field/FiniteField.h"
 #include "org/bouncycastle/math/field/PolynomialExtensionField.h"
 
-__attribute__((unused)) static OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_withOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_(IOSObjectArray *preCompP, IOSObjectArray *preCompNegP, IOSByteArray *wnafP, IOSObjectArray *preCompQ, IOSObjectArray *preCompNegQ, IOSByteArray *wnafQ);
-__attribute__((unused)) static OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithBooleanArray_withOrgBouncycastleMathEcWNafPreCompInfoArray_withByteArray2_(IOSBooleanArray *negs, IOSObjectArray *infos, IOSObjectArray *wnafs);
-
 @interface OrgBouncycastleMathEcECAlgorithms ()
 
 + (OrgBouncycastleMathEcECPoint *)implShamirsTrickWNafWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preCompP
@@ -40,7 +38,12 @@ __attribute__((unused)) static OrgBouncycastleMathEcECPoint *OrgBouncycastleMath
 + (OrgBouncycastleMathEcECPoint *)implSumOfMultipliesWithBooleanArray:(IOSBooleanArray *)negs
                         withOrgBouncycastleMathEcWNafPreCompInfoArray:(IOSObjectArray *)infos
                                                        withByteArray2:(IOSObjectArray *)wnafs;
+
 @end
+
+__attribute__((unused)) static OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_withOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_(IOSObjectArray *preCompP, IOSObjectArray *preCompNegP, IOSByteArray *wnafP, IOSObjectArray *preCompQ, IOSObjectArray *preCompNegQ, IOSByteArray *wnafQ);
+
+__attribute__((unused)) static OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithBooleanArray_withOrgBouncycastleMathEcWNafPreCompInfoArray_withByteArray2_(IOSBooleanArray *negs, IOSObjectArray *infos, IOSObjectArray *wnafs);
 
 
 #line 10
@@ -179,36 +182,35 @@ __attribute__((unused)) static OrgBouncycastleMathEcECPoint *OrgBouncycastleMath
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcECAlgorithms_init(self);
+  return self;
 }
 
 @end
 
+
+#line 12
 jboolean OrgBouncycastleMathEcECAlgorithms_isF2mCurveWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *c) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 14
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   id<OrgBouncycastleMathFieldFiniteField> field = [((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getField];
   return [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk(field)) getDimension] > 1 && [((JavaMathBigInteger *) nil_chk([field getCharacteristic])) isEqual:OrgBouncycastleMathEcECConstants_get_TWO_()] &&
 #line 16
   [OrgBouncycastleMathFieldPolynomialExtensionField_class_() isInstance:field];
 }
 
+
+#line 19
 jboolean OrgBouncycastleMathEcECAlgorithms_isFpCurveWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *c) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 21
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   return [((id<OrgBouncycastleMathFieldFiniteField>) nil_chk([((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getField])) getDimension] == 1;
 }
 
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_sumOfMultipliesWithOrgBouncycastleMathEcECPointArray_withJavaMathBigIntegerArray_(IOSObjectArray *ps, IOSObjectArray *ks) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 26
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   if (ps == nil || ks == nil || ps->size_ != ks->size_ || ps->size_ < 1) {
     
 #line 28
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"point and scalar arrays should be non-null, and of equal, non-zero, length"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"point and scalar arrays should be non-null, and of equal, non-zero, length");
   }
   
 #line 31
@@ -230,11 +232,11 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_sumOfMultipliesW
   
 #line 45
   IOSObjectArray *imported = [IOSObjectArray newArrayWithLength:count type:OrgBouncycastleMathEcECPoint_class_()];
-  IOSObjectArray_Set(imported, 0, p);
+  (void) IOSObjectArray_Set(imported, 0, p);
   for (jint i = 1; i < count; ++i) {
     
 #line 49
-    IOSObjectArray_Set(imported, i, OrgBouncycastleMathEcECAlgorithms_importPointWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECPoint_(c, IOSObjectArray_Get(ps, i)));
+    (void) IOSObjectArray_Set(imported, i, OrgBouncycastleMathEcECAlgorithms_importPointWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECPoint_(c, IOSObjectArray_Get(ps, i)));
   }
   
 #line 52
@@ -249,8 +251,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_sumOfMultipliesW
   return OrgBouncycastleMathEcECAlgorithms_validatePointWithOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray_withJavaMathBigIntegerArray_(imported, ks));
 }
 
+
+#line 61
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_sumOfTwoMultipliesWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(OrgBouncycastleMathEcECPoint *P, JavaMathBigInteger *a, OrgBouncycastleMathEcECPoint *Q, JavaMathBigInteger *b) {
-  OrgBouncycastleMathEcECAlgorithms_init();
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   
 #line 64
   OrgBouncycastleMathEcECCurve *cp = [((OrgBouncycastleMathEcECPoint *) nil_chk(P)) getCurve];
@@ -282,8 +286,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_sumOfTwoMultipli
     return OrgBouncycastleMathEcECAlgorithms_validatePointWithOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(P, a, Q, b));
   }
 
+
+#line 106
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_shamirsTrickWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(OrgBouncycastleMathEcECPoint *P, JavaMathBigInteger *k, OrgBouncycastleMathEcECPoint *Q, JavaMathBigInteger *l) {
-  OrgBouncycastleMathEcECAlgorithms_init();
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   
 #line 109
   OrgBouncycastleMathEcECCurve *cp = [((OrgBouncycastleMathEcECPoint *) nil_chk(P)) getCurve];
@@ -293,32 +299,34 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_shamirsTrickWith
   return OrgBouncycastleMathEcECAlgorithms_validatePointWithOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECAlgorithms_implShamirsTrickJsfWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(P, k, Q, l));
 }
 
+
+#line 115
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_importPointWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECCurve *c, OrgBouncycastleMathEcECPoint *p) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 117
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   OrgBouncycastleMathEcECCurve *cp = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
   if (![((OrgBouncycastleMathEcECCurve *) nil_chk(c)) equalsWithOrgBouncycastleMathEcECCurve:cp]) {
     
 #line 120
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Point must be on the same curve"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Point must be on the same curve");
   }
   return [c importPointWithOrgBouncycastleMathEcECPoint:p];
 }
 
+
+#line 125
 void OrgBouncycastleMathEcECAlgorithms_montgomeryTrickWithOrgBouncycastleMathEcECFieldElementArray_withInt_withInt_(IOSObjectArray *zs, jint off, jint len) {
-  OrgBouncycastleMathEcECAlgorithms_init();
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   
 #line 134
   IOSObjectArray *c = [IOSObjectArray newArrayWithLength:len type:OrgBouncycastleMathEcECFieldElement_class_()];
-  IOSObjectArray_Set(c, 0, IOSObjectArray_Get(nil_chk(zs), off));
+  (void) IOSObjectArray_Set(c, 0, IOSObjectArray_Get(nil_chk(zs), off));
   
 #line 137
   jint i = 0;
   while (++i < len) {
     
 #line 140
-    IOSObjectArray_Set(c, i, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(IOSObjectArray_Get(c, i - 1))) multiplyWithOrgBouncycastleMathEcECFieldElement:IOSObjectArray_Get(zs, off + i)]);
+    (void) IOSObjectArray_Set(c, i, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(IOSObjectArray_Get(c, i - 1))) multiplyWithOrgBouncycastleMathEcECFieldElement:IOSObjectArray_Get(zs, off + i)]);
   }
   
 #line 143
@@ -330,18 +338,18 @@ void OrgBouncycastleMathEcECAlgorithms_montgomeryTrickWithOrgBouncycastleMathEcE
 #line 147
     jint j = off + i--;
     OrgBouncycastleMathEcECFieldElement *tmp = IOSObjectArray_Get(zs, j);
-    IOSObjectArray_Set(zs, j, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(IOSObjectArray_Get(c, i))) multiplyWithOrgBouncycastleMathEcECFieldElement:u]);
+    (void) IOSObjectArray_Set(zs, j, [((OrgBouncycastleMathEcECFieldElement *) nil_chk(IOSObjectArray_Get(c, i))) multiplyWithOrgBouncycastleMathEcECFieldElement:u]);
     u = [((OrgBouncycastleMathEcECFieldElement *) nil_chk(u)) multiplyWithOrgBouncycastleMathEcECFieldElement:tmp];
   }
   
 #line 153
-  IOSObjectArray_Set(zs, off, u);
+  (void) IOSObjectArray_Set(zs, off, u);
 }
 
+
+#line 166
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_referenceMultiplyWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(OrgBouncycastleMathEcECPoint *p, JavaMathBigInteger *k) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 168
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   JavaMathBigInteger *x = [((JavaMathBigInteger *) nil_chk(k)) abs];
   OrgBouncycastleMathEcECPoint *q = [((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve])) getInfinity];
   jint t = [((JavaMathBigInteger *) nil_chk(x)) bitLength];
@@ -367,22 +375,24 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_referenceMultipl
   return [k signum] < 0 ? [((OrgBouncycastleMathEcECPoint *) nil_chk(q)) negate] : q;
 }
 
+
+#line 189
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_validatePointWithOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECPoint *p) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 191
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   if (![((OrgBouncycastleMathEcECPoint *) nil_chk(p)) isValid]) {
     
 #line 193
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Invalid point"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Invalid point");
   }
   
 #line 196
   return p;
 }
 
+
+#line 199
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrickJsfWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(OrgBouncycastleMathEcECPoint *P, JavaMathBigInteger *k, OrgBouncycastleMathEcECPoint *Q, JavaMathBigInteger *l) {
-  OrgBouncycastleMathEcECAlgorithms_init();
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   
 #line 202
   OrgBouncycastleMathEcECCurve *curve = [((OrgBouncycastleMathEcECPoint *) nil_chk(P)) getCurve];
@@ -430,8 +440,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrick
     return R;
   }
 
+
+#line 236
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(OrgBouncycastleMathEcECPoint *P, JavaMathBigInteger *k, OrgBouncycastleMathEcECPoint *Q, JavaMathBigInteger *l) {
-  OrgBouncycastleMathEcECAlgorithms_init();
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   
 #line 239
   jboolean negK = [((JavaMathBigInteger *) nil_chk(k)) signum] < 0, negL = [((JavaMathBigInteger *) nil_chk(l)) signum] < 0;
@@ -462,10 +474,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrick
   return OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_withOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_(preCompP, preCompNegP, wnafP, preCompQ, preCompNegQ, wnafQ);
 }
 
+
+#line 261
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPointMap_withJavaMathBigInteger_(OrgBouncycastleMathEcECPoint *P, JavaMathBigInteger *k, id<OrgBouncycastleMathEcECPointMap> pointMapQ, JavaMathBigInteger *l) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 263
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   jboolean negK = [((JavaMathBigInteger *) nil_chk(k)) signum] < 0, negL = [((JavaMathBigInteger *) nil_chk(l)) signum] < 0;
   
 #line 265
@@ -494,8 +506,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrick
   return OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_withOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_(preCompP, preCompNegP, wnafP, preCompQ, preCompNegQ, wnafQ);
 }
 
+
+#line 285
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_withOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointArray_withByteArray_(IOSObjectArray *preCompP, IOSObjectArray *preCompNegP, IOSByteArray *wnafP, IOSObjectArray *preCompQ, IOSObjectArray *preCompNegQ, IOSByteArray *wnafQ) {
-  OrgBouncycastleMathEcECAlgorithms_init();
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   
 #line 288
   jint len = JavaLangMath_maxWithInt_withInt_(((IOSByteArray *) nil_chk(wnafP))->size_, ((IOSByteArray *) nil_chk(wnafQ))->size_);
@@ -563,10 +577,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implShamirsTrick
   return R;
 }
 
+
+#line 338
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray_withJavaMathBigIntegerArray_(IOSObjectArray *ps, IOSObjectArray *ks) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 340
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   jint count = ((IOSObjectArray *) nil_chk(ps))->size_;
   IOSBooleanArray *negs = [IOSBooleanArray newArrayWithLength:count];
   IOSObjectArray *infos = [IOSObjectArray newArrayWithLength:count type:OrgBouncycastleMathEcWNafPreCompInfo_class_()];
@@ -586,18 +600,18 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipl
     
 #line 349
     jint width = JavaLangMath_maxWithInt_withInt_(2, JavaLangMath_minWithInt_withInt_(16, OrgBouncycastleMathEcWNafUtil_getWindowSizeWithInt_([((JavaMathBigInteger *) nil_chk(ki)) bitLength])));
-    IOSObjectArray_Set(infos, i, OrgBouncycastleMathEcWNafUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_(IOSObjectArray_Get(ps, i), width, YES));
-    IOSObjectArray_Set(wnafs, i, OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(width, ki));
+    (void) IOSObjectArray_Set(infos, i, OrgBouncycastleMathEcWNafUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_(IOSObjectArray_Get(ps, i), width, YES));
+    (void) IOSObjectArray_Set(wnafs, i, OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(width, ki));
   }
   
 #line 354
   return OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithBooleanArray_withOrgBouncycastleMathEcWNafPreCompInfoArray_withByteArray2_(negs, infos, wnafs);
 }
 
+
+#line 357
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesGLVWithOrgBouncycastleMathEcECPointArray_withJavaMathBigIntegerArray_withOrgBouncycastleMathEcEndoGLVEndomorphism_(IOSObjectArray *ps, IOSObjectArray *ks, id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 359
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   JavaMathBigInteger *n = [((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(nil_chk(ps), 0))) getCurve])) getOrder];
   
 #line 361
@@ -609,8 +623,8 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipl
     
 #line 366
     IOSObjectArray *ab = [((id<OrgBouncycastleMathEcEndoGLVEndomorphism>) nil_chk(glvEndomorphism)) decomposeScalarWithJavaMathBigInteger:[((JavaMathBigInteger *) nil_chk(IOSObjectArray_Get(nil_chk(ks), i))) modWithJavaMathBigInteger:n]];
-    IOSObjectArray_Set(abs, j++, IOSObjectArray_Get(nil_chk(ab), 0));
-    IOSObjectArray_Set(abs, j++, IOSObjectArray_Get(ab, 1));
+    (void) IOSObjectArray_Set(abs, j++, IOSObjectArray_Get(nil_chk(ab), 0));
+    (void) IOSObjectArray_Set(abs, j++, IOSObjectArray_Get(ab, 1));
   }
   
 #line 371
@@ -627,18 +641,18 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipl
     
 #line 380
     OrgBouncycastleMathEcECPoint *p = IOSObjectArray_Get(ps, i), *q = [((id<OrgBouncycastleMathEcECPointMap>) nil_chk(pointMap)) mapWithOrgBouncycastleMathEcECPoint:p];
-    IOSObjectArray_Set(pqs, j++, p);
-    IOSObjectArray_Set(pqs, j++, q);
+    (void) IOSObjectArray_Set(pqs, j++, p);
+    (void) IOSObjectArray_Set(pqs, j++, q);
   }
   
 #line 385
   return OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray_withJavaMathBigIntegerArray_(pqs, abs);
 }
 
+
+#line 389
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointMap_withJavaMathBigIntegerArray_(IOSObjectArray *ps, id<OrgBouncycastleMathEcECPointMap> pointMap, IOSObjectArray *ks) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 391
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   jint halfCount = ((IOSObjectArray *) nil_chk(ps))->size_, fullCount = LShift32(halfCount, 1);
   
 #line 393
@@ -673,20 +687,20 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipl
     
 #line 406
     OrgBouncycastleMathEcECPoint *P = IOSObjectArray_Get(ps, i), *Q = OrgBouncycastleMathEcWNafUtil_mapPointWithPrecompWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_withOrgBouncycastleMathEcECPointMap_(P, width, YES, pointMap);
-    IOSObjectArray_Set(infos, j0, OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint_(P));
-    IOSObjectArray_Set(infos, j1, OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint_(Q));
-    IOSObjectArray_Set(wnafs, j0, OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(width, kj0));
-    IOSObjectArray_Set(wnafs, j1, OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(width, kj1));
+    (void) IOSObjectArray_Set(infos, j0, OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint_(P));
+    (void) IOSObjectArray_Set(infos, j1, OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint_(Q));
+    (void) IOSObjectArray_Set(wnafs, j0, OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(width, kj0));
+    (void) IOSObjectArray_Set(wnafs, j1, OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(width, kj1));
   }
   
 #line 413
   return OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithBooleanArray_withOrgBouncycastleMathEcWNafPreCompInfoArray_withByteArray2_(negs, infos, wnafs);
 }
 
+
+#line 416
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithBooleanArray_withOrgBouncycastleMathEcWNafPreCompInfoArray_withByteArray2_(IOSBooleanArray *negs, IOSObjectArray *infos, IOSObjectArray *wnafs) {
-  OrgBouncycastleMathEcECAlgorithms_init();
-  
-#line 418
+  OrgBouncycastleMathEcECAlgorithms_initialize();
   jint len = 0, count = ((IOSObjectArray *) nil_chk(wnafs))->size_;
   for (jint i = 0; i < count; ++i) {
     
@@ -753,6 +767,16 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipl
   
 #line 467
   return R;
+}
+
+void OrgBouncycastleMathEcECAlgorithms_init(OrgBouncycastleMathEcECAlgorithms *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleMathEcECAlgorithms *new_OrgBouncycastleMathEcECAlgorithms_init() {
+  OrgBouncycastleMathEcECAlgorithms *self = [OrgBouncycastleMathEcECAlgorithms alloc];
+  OrgBouncycastleMathEcECAlgorithms_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcECAlgorithms)

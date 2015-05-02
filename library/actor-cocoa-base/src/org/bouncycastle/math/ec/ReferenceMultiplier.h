@@ -6,26 +6,30 @@
 #ifndef _OrgBouncycastleMathEcReferenceMultiplier_H_
 #define _OrgBouncycastleMathEcReferenceMultiplier_H_
 
-@class JavaMathBigInteger;
-@class OrgBouncycastleMathEcECPoint;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 
-@interface OrgBouncycastleMathEcReferenceMultiplier : OrgBouncycastleMathEcAbstractECMultiplier {
-}
+@class JavaMathBigInteger;
+@class OrgBouncycastleMathEcECPoint;
+
+@interface OrgBouncycastleMathEcReferenceMultiplier : OrgBouncycastleMathEcAbstractECMultiplier
+
+#pragma mark Public
+
+- (instancetype)init;
+
+#pragma mark Protected
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcReferenceMultiplier)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcReferenceMultiplier_init(OrgBouncycastleMathEcReferenceMultiplier *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcReferenceMultiplier *new_OrgBouncycastleMathEcReferenceMultiplier_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcReferenceMultiplier)
 

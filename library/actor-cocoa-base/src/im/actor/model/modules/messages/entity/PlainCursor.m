@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PlainCursor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PlainCursor.java"
 
 #include "IOSClass.h"
@@ -22,10 +23,16 @@
   jlong sortDate_;
   jlong pendingSortDate_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursor, peer_, AMPeer *)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesEntityPlainCursor_init(ImActorModelModulesMessagesEntityPlainCursor *self);
+
+__attribute__((unused)) static ImActorModelModulesMessagesEntityPlainCursor *new_ImActorModelModulesMessagesEntityPlainCursor_init() NS_RETURNS_RETAINED;
 
 
 #line 14
@@ -40,62 +47,37 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursor, peer_, AMPeer 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortDate
                       withLong:(jlong)pendingSortDate {
-  if (self = [super init]) {
-    
-#line 25
-    self->peer_ = peer;
-    
-#line 26
-    self->sortDate_ = sortDate;
-    
-#line 27
-    self->pendingSortDate_ = pendingSortDate;
-  }
+  ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(self, peer, sortDate, pendingSortDate);
   return self;
 }
 
 
 #line 30
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesEntityPlainCursor_init(self);
+  return self;
 }
 
+
+#line 34
 - (AMPeer *)getPeer {
-  
-#line 35
   return peer_;
 }
 
-
-#line 38
 - (jlong)getSortDate {
-  
-#line 39
   return sortDate_;
 }
 
-
-#line 42
 - (jlong)getPendingSortDate {
-  
-#line 43
   return pendingSortDate_;
 }
 
-
-#line 46
 - (ImActorModelModulesMessagesEntityPlainCursor *)changeSortDateWithLong:(jlong)date {
-  
-#line 47
-  return [[ImActorModelModulesMessagesEntityPlainCursor alloc] initWithAMPeer:peer_ withLong:date withLong:pendingSortDate_];
+  return new_ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(peer_, date, pendingSortDate_);
 }
 
-
-#line 50
 - (ImActorModelModulesMessagesEntityPlainCursor *)changePendingSortDateWithLong:(jlong)pendingDate {
-  
-#line 51
-  return [[ImActorModelModulesMessagesEntityPlainCursor alloc] initWithAMPeer:peer_ withLong:sortDate_ withLong:pendingDate];
+  return new_ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(peer_, sortDate_, pendingDate);
 }
 
 
@@ -109,27 +91,51 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursor, peer_, AMPeer 
 
 #line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 63
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:sortDate_];
   [writer writeLongWithInt:3 withLong:pendingSortDate_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityPlainCursor *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->sortDate_ = sortDate_;
-  other->pendingSortDate_ = pendingSortDate_;
-}
-
 @end
 
+
+#line 16
 ImActorModelModulesMessagesEntityPlainCursor *ImActorModelModulesMessagesEntityPlainCursor_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityPlainCursor_init();
+  ImActorModelModulesMessagesEntityPlainCursor_initialize();
   
 #line 17
-  return ((ImActorModelModulesMessagesEntityPlainCursor *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityPlainCursor alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityPlainCursor *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityPlainCursor_init(), data));
+}
+
+
+#line 24
+void ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesEntityPlainCursor *self, AMPeer *peer, jlong sortDate, jlong pendingSortDate) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->peer_ = peer;
+  self->sortDate_ = sortDate;
+  self->pendingSortDate_ = pendingSortDate;
+}
+
+
+#line 24
+ImActorModelModulesMessagesEntityPlainCursor *new_ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong sortDate, jlong pendingSortDate) {
+  ImActorModelModulesMessagesEntityPlainCursor *self = [ImActorModelModulesMessagesEntityPlainCursor alloc];
+  ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(self, peer, sortDate, pendingSortDate);
+  return self;
+}
+
+void ImActorModelModulesMessagesEntityPlainCursor_init(ImActorModelModulesMessagesEntityPlainCursor *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 30
+ImActorModelModulesMessagesEntityPlainCursor *new_ImActorModelModulesMessagesEntityPlainCursor_init() {
+  ImActorModelModulesMessagesEntityPlainCursor *self = [ImActorModelModulesMessagesEntityPlainCursor alloc];
+  ImActorModelModulesMessagesEntityPlainCursor_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityPlainCursor)

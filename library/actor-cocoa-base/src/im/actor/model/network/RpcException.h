@@ -6,13 +6,14 @@
 #ifndef _AMRpcException_H_
 #define _AMRpcException_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "java/lang/Exception.h"
 
-@interface AMRpcException : JavaLangException {
-}
+@class IOSByteArray;
+
+@interface AMRpcException : JavaLangException
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)tag
                          withInt:(jint)code
@@ -20,25 +21,26 @@
                      withBoolean:(jboolean)canTryAgain
                    withByteArray:(IOSByteArray *)relatedData;
 
-- (jboolean)isCanTryAgain;
+- (jint)getCode;
+
+- (NSString *)getMessage;
 
 - (IOSByteArray *)getRelatedData;
 
 - (NSString *)getTag;
 
-- (jint)getCode;
-
-- (NSString *)getMessage;
+- (jboolean)isCanTryAgain;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMRpcException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(AMRpcException *self, NSString *tag, jint code, NSString *message, jboolean canTryAgain, IOSByteArray *relatedData);
 
-typedef AMRpcException ImActorModelNetworkRpcException;
+FOUNDATION_EXPORT AMRpcException *new_AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(NSString *tag, jint code, NSString *message, jboolean canTryAgain, IOSByteArray *relatedData) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMRpcException)
+
+typedef AMRpcException ImActorModelNetworkRpcException;
 
 #endif // _AMRpcException_H_

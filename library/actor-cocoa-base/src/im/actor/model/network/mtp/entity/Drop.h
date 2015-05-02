@@ -6,11 +6,11 @@
 #ifndef _MTDrop_H_
 #define _MTDrop_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
+@class BSDataInput;
+@class BSDataOutput;
 
 #define MTDrop_HEADER 13
 
@@ -20,22 +20,26 @@
   NSString *message_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)messageId
                 withNSString:(NSString *)message;
 
+- (NSString *)getMessage;
+
 - (jlong)getMessageId;
 
-- (NSString *)getMessage;
+- (NSString *)description;
+
+#pragma mark Protected
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
@@ -43,13 +47,18 @@ J2OBJC_EMPTY_STATIC_INIT(MTDrop)
 
 J2OBJC_FIELD_SETTER(MTDrop, message_, NSString *)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTDrop, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTDrop ImActorModelNetworkMtpEntityDrop;
+FOUNDATION_EXPORT void MTDrop_initWithBSDataInput_(MTDrop *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTDrop *new_MTDrop_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTDrop_initWithLong_withNSString_(MTDrop *self, jlong messageId, NSString *message);
+
+FOUNDATION_EXPORT MTDrop *new_MTDrop_initWithLong_withNSString_(jlong messageId, NSString *message) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTDrop)
+
+typedef MTDrop ImActorModelNetworkMtpEntityDrop;
 
 #endif // _MTDrop_H_

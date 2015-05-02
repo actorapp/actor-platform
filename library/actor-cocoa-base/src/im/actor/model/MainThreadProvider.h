@@ -6,9 +6,9 @@
 #ifndef _AMMainThreadProvider_H_
 #define _AMMainThreadProvider_H_
 
-@protocol JavaLangRunnable;
-
 #include "J2ObjC_header.h"
+
+@protocol JavaLangRunnable;
 
 @protocol AMMainThreadProvider < NSObject, JavaObject >
 
@@ -22,8 +22,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMMainThreadProvider)
 
-#define ImActorModelMainThreadProvider AMMainThreadProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMMainThreadProvider)
+
+#define ImActorModelMainThreadProvider AMMainThreadProvider
 
 #endif // _AMMainThreadProvider_H_

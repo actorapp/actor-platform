@@ -8,24 +8,28 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMBaseValueModel : NSObject {
-}
+@interface AMBaseValueModel : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithId:(id)rawObj;
 
-- (void)updateWithId:(id)rawObj;
+#pragma mark Protected
 
 - (void)updateValuesWithId:(id)rawObj;
+
+#pragma mark Package-Private
+
+- (void)updateWithId:(id)rawObj;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseValueModel)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef AMBaseValueModel ImActorModelMvvmBaseValueModel;
+FOUNDATION_EXPORT void AMBaseValueModel_initWithId_(AMBaseValueModel *self, id rawObj);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBaseValueModel)
+
+typedef AMBaseValueModel ImActorModelMvvmBaseValueModel;
 
 #endif // _AMBaseValueModel_H_

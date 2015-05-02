@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleCryptoAsymmetricBlockCipher_H_
 #define _OrgBouncycastleCryptoAsymmetricBlockCipher_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class OrgBouncycastleCryptoParamsParametersWithRandom;
-
-#include "J2ObjC_header.h"
 
 @protocol OrgBouncycastleCryptoAsymmetricBlockCipher < NSObject, JavaObject >
 

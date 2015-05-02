@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactRegistered.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactRegistered.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateContactRegistered () {
@@ -21,6 +23,7 @@
   jboolean isSilent__;
   jlong date_;
 }
+
 @end
 
 
@@ -38,45 +41,28 @@
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 32
-    self->uid_ = uid;
-    
-#line 33
-    self->isSilent__ = isSilent;
-    
-#line 34
-    self->date_ = date;
-  }
+  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateContactRegistered_init(self);
+  return self;
 }
 
+
+#line 41
 - (jint)getUid {
-  
-#line 42
   return self->uid_;
 }
 
-
-#line 45
 - (jboolean)isSilent {
-  
-#line 46
   return self->isSilent__;
 }
 
-
-#line 49
 - (jlong)getDate {
-  
-#line 50
   return self->date_;
 }
 
@@ -91,13 +77,13 @@
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeBoolWithInt:2 withBoolean:self->isSilent__];
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+
+#line 68
 - (NSString *)description {
   NSString *res = @"update ContactRegistered{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -107,26 +93,52 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 79
-  return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateContactRegistered *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->isSilent__ = isSilent__;
-  other->date_ = date_;
+#line 78
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateContactRegistered_init();
+  ImActorModelApiUpdatesUpdateContactRegistered_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateContactRegistered alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactRegistered_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 32
+  self->uid_ = uid;
+  self->isSilent__ = isSilent;
+  self->date_ = date;
+}
+
+
+#line 31
+ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(jint uid, jboolean isSilent, jlong date) {
+  ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
+  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
+  return self;
+}
+
+void ImActorModelApiUpdatesUpdateContactRegistered_init(ImActorModelApiUpdatesUpdateContactRegistered *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 37
+ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_init() {
+  ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
+  ImActorModelApiUpdatesUpdateContactRegistered_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactRegistered)

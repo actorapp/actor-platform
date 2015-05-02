@@ -6,13 +6,15 @@
 #ifndef _BSBserUnknownFields_H_
 #define _BSBserUnknownFields_H_
 
-@class IOSByteArray;
-@class JavaUtilArrayList;
-
 #include "J2ObjC_header.h"
 
-@interface BSBserUnknownFields : NSObject {
-}
+@class IOSByteArray;
+
+@interface BSBserUnknownFields : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
@@ -22,17 +24,16 @@
            withInt:(jint)type
           withLong:(jlong)value;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserUnknownFields)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSBserUnknownFields_init(BSBserUnknownFields *self);
 
-typedef BSBserUnknownFields ImActorModelDroidkitBserBserUnknownFields;
+FOUNDATION_EXPORT BSBserUnknownFields *new_BSBserUnknownFields_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSBserUnknownFields)
+
+typedef BSBserUnknownFields ImActorModelDroidkitBserBserUnknownFields;
 
 #endif // _BSBserUnknownFields_H_

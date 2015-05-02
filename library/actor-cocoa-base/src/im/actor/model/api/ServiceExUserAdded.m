@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserAdded.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserAdded.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExUserAdded.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -16,6 +18,7 @@
  @public
   jint addedUid_;
 }
+
 @end
 
 
@@ -25,31 +28,24 @@
 
 #line 23
 - (instancetype)initWithInt:(jint)addedUid {
-  if (self = [super init]) {
-    
-#line 24
-    self->addedUid_ = addedUid;
-  }
+  ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceExUserAdded_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getHeader {
-  
-#line 32
   return 1;
 }
 
-
-#line 35
 - (jint)getAddedUid {
-  
-#line 36
   return self->addedUid_;
 }
 
@@ -62,11 +58,11 @@
 
 #line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 46
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
 }
 
+
+#line 50
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"addedUid=", self->addedUid_));
@@ -74,11 +70,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiServiceExUserAdded *)other {
-  [super copyAllFieldsTo:other];
-  other->addedUid_ = addedUid_;
+@end
+
+
+#line 23
+void ImActorModelApiServiceExUserAdded_initWithInt_(ImActorModelApiServiceExUserAdded *self, jint addedUid) {
+  (void) ImActorModelApiServiceEx_init(self);
+  
+#line 24
+  self->addedUid_ = addedUid;
 }
 
-@end
+
+#line 23
+ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_initWithInt_(jint addedUid) {
+  ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
+  ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
+  return self;
+}
+
+
+#line 27
+void ImActorModelApiServiceExUserAdded_init(ImActorModelApiServiceExUserAdded *self) {
+  (void) ImActorModelApiServiceEx_init(self);
+}
+
+
+#line 27
+ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_init() {
+  ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
+  ImActorModelApiServiceExUserAdded_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserAdded)

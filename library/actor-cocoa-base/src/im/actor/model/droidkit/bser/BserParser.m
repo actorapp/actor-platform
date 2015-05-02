@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserParser.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserParser.java"
 
 #include "IOSClass.h"
@@ -17,15 +18,21 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(jint id_, id res, ImActorModelDroidkitBserUtilSparseArray *hashMap);
-
 @interface BSBserParser ()
 
 + (void)putWithInt:(jint)id_
             withId:(id)res
 withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)hashMap;
+
 - (instancetype)init;
+
 @end
+
+__attribute__((unused)) static void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(jint id_, id res, ImActorModelDroidkitBserUtilSparseArray *hashMap);
+
+__attribute__((unused)) static void BSBserParser_init(BSBserParser *self);
+
+__attribute__((unused)) static BSBserParser *new_BSBserParser_init() NS_RETURNS_RETAINED;
 
 
 #line 17
@@ -48,16 +55,19 @@ withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseA
 
 #line 57
 - (instancetype)init {
-  return [super init];
+  BSBserParser_init(self);
+  return self;
 }
 
 @end
 
+
+#line 18
 ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithBSDataInput_(BSDataInput *is) {
-  BSBserParser_init();
+  BSBserParser_initialize();
   
 #line 19
-  ImActorModelDroidkitBserUtilSparseArray *hashMap = [[ImActorModelDroidkitBserUtilSparseArray alloc] init];
+  ImActorModelDroidkitBserUtilSparseArray *hashMap = new_ImActorModelDroidkitBserUtilSparseArray_init();
   while (![((BSDataInput *) nil_chk(is)) isEOF]) {
     jint currentTag = (jint) [is readByte];
     
@@ -88,14 +98,16 @@ ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithBSDataInput
     else {
       
 #line 36
-      @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unknown Wire Type #", type)];
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I", @"Unknown Wire Type #", type));
     }
   }
   return hashMap;
 }
 
+
+#line 42
 void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(jint id_, id res, ImActorModelDroidkitBserUtilSparseArray *hashMap) {
-  BSBserParser_init();
+  BSBserParser_initialize();
   
 #line 43
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(hashMap)) getWithInt:id_] != nil) {
@@ -105,7 +117,7 @@ void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_
     else {
       
 #line 47
-      JavaUtilArrayList *list = [[JavaUtilArrayList alloc] init];
+      JavaUtilArrayList *list = new_JavaUtilArrayList_init();
       [list addWithId:[hashMap getWithInt:id_]];
       [list addWithId:res];
       [hashMap putWithInt:id_ withId:list];
@@ -116,6 +128,20 @@ void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_
 #line 53
     [hashMap putWithInt:id_ withId:res];
   }
+}
+
+
+#line 57
+void BSBserParser_init(BSBserParser *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 57
+BSBserParser *new_BSBserParser_init() {
+  BSBserParser *self = [BSBserParser alloc];
+  BSBserParser_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BSBserParser)

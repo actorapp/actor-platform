@@ -6,32 +6,34 @@
 #ifndef _OrgBouncycastleCryptoPaddingsPKCS7Padding_H_
 #define _OrgBouncycastleCryptoPaddingsPKCS7Padding_H_
 
-@class IOSByteArray;
-@protocol BCRandomProvider;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/paddings/BlockCipherPadding.h"
 
-@interface OrgBouncycastleCryptoPaddingsPKCS7Padding : NSObject < OrgBouncycastleCryptoPaddingsBlockCipherPadding > {
-}
+@class IOSByteArray;
+@protocol BCRandomProvider;
 
-- (void)init__WithBCRandomProvider:(id<BCRandomProvider>)random OBJC_METHOD_FAMILY_NONE;
+@interface OrgBouncycastleCryptoPaddingsPKCS7Padding : NSObject < OrgBouncycastleCryptoPaddingsBlockCipherPadding >
 
-- (NSString *)getPaddingName;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (jint)addPaddingWithByteArray:(IOSByteArray *)inArg
                         withInt:(jint)inOff;
 
-- (jint)padCountWithByteArray:(IOSByteArray *)inArg;
+- (NSString *)getPaddingName;
 
-- (instancetype)init;
+- (void)init__WithBCRandomProvider:(id<BCRandomProvider>)random OBJC_METHOD_FAMILY_NONE;
+
+- (jint)padCountWithByteArray:(IOSByteArray *)inArg;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoPaddingsPKCS7Padding)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoPaddingsPKCS7Padding_init(OrgBouncycastleCryptoPaddingsPKCS7Padding *self);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoPaddingsPKCS7Padding *new_OrgBouncycastleCryptoPaddingsPKCS7Padding_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoPaddingsPKCS7Padding)
 

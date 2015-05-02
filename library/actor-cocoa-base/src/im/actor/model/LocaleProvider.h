@@ -6,9 +6,9 @@
 #ifndef _AMLocaleProvider_H_
 #define _AMLocaleProvider_H_
 
-@class JavaUtilHashMap;
-
 #include "J2ObjC_header.h"
+
+@class JavaUtilHashMap;
 
 @protocol AMLocaleProvider < NSObject, JavaObject >
 
@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMLocaleProvider)
 
-#define ImActorModelLocaleProvider AMLocaleProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMLocaleProvider)
+
+#define ImActorModelLocaleProvider AMLocaleProvider
 
 #endif // _AMLocaleProvider_H_

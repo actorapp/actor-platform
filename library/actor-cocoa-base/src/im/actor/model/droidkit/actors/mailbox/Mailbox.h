@@ -6,18 +6,22 @@
 #ifndef _DKMailbox_H_
 #define _DKMailbox_H_
 
+#include "J2ObjC_header.h"
+
 @class DKEnvelope;
 @class DKMailboxesQueue;
 @class IOSObjectArray;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/mailbox/collections/EnvelopeCollection.h"
+@interface DKMailbox : NSObject
 
-@interface DKMailbox : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
+
+- (IOSObjectArray *)allEnvelopes;
+
+- (void)clear;
 
 - (void)scheduleWithDKEnvelope:(DKEnvelope *)envelope
                       withLong:(jlong)time;
@@ -27,12 +31,12 @@
 
 - (void)unscheduleWithDKEnvelope:(DKEnvelope *)envelope;
 
-- (IOSObjectArray *)allEnvelopes;
-
-- (void)clear;
+#pragma mark Protected
 
 - (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
                            withDKEnvelope:(DKEnvelope *)b;
+
+#pragma mark Package-Private
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)getEnvelopes;
 
@@ -40,28 +44,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKMailbox)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKMailbox_initWithDKMailboxesQueue_(DKMailbox *self, DKMailboxesQueue *queue);
 
-typedef DKMailbox ImActorModelDroidkitActorsMailboxMailbox;
+FOUNDATION_EXPORT DKMailbox *new_DKMailbox_initWithDKMailboxesQueue_(DKMailboxesQueue *queue) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKMailbox)
 
-@interface DKMailbox_$1 : NSObject < ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator > {
-}
-
-- (jboolean)equalsWithDKEnvelope:(DKEnvelope *)a
-                  withDKEnvelope:(DKEnvelope *)b;
-
-- (instancetype)initWithDKMailbox:(DKMailbox *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(DKMailbox_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(DKMailbox_$1)
+typedef DKMailbox ImActorModelDroidkitActorsMailboxMailbox;
 
 #endif // _DKMailbox_H_

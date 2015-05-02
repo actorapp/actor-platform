@@ -6,34 +6,37 @@
 #ifndef _ImActorModelApiUpdatesUpdateGroupUserLeave_H_
 #define _ImActorModelApiUpdatesUpdateGroupUserLeave_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER 23
 
-@interface ImActorModelApiUpdatesUpdateGroupUserLeave : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateGroupUserLeave : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
                    withLong:(jlong)date;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getDate;
 
 - (jint)getGroupId;
+
+- (jint)getHeaderKey;
 
 - (jlong)getRid;
 
 - (jint)getUid;
-
-- (jlong)getDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -41,18 +44,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupUserLeave)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupUserLeave, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserLeave *ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupUserLeave, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserLeave_init(ImActorModelApiUpdatesUpdateGroupUserLeave *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupUserLeave)
 

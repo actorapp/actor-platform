@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/AsyncVM.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/AsyncVM.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/AsyncVM.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
+#include "java/lang/Runnable.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -16,17 +18,32 @@
  @public
   jboolean isDetached_;
 }
+
 @end
 
-@interface AMAsyncVM_$1 () {
+@interface AMAsyncVM_$1 : NSObject < JavaLangRunnable > {
  @public
   AMAsyncVM *this$0_;
   id val$obj_;
 }
+
+- (void)run;
+
+- (instancetype)initWithAMAsyncVM:(AMAsyncVM *)outer$
+                           withId:(id)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMAsyncVM_$1)
 
 J2OBJC_FIELD_SETTER(AMAsyncVM_$1, this$0_, AMAsyncVM *)
 J2OBJC_FIELD_SETTER(AMAsyncVM_$1, val$obj_, id)
+
+__attribute__((unused)) static void AMAsyncVM_$1_initWithAMAsyncVM_withId_(AMAsyncVM_$1 *self, AMAsyncVM *outer$, id capture$0);
+
+__attribute__((unused)) static AMAsyncVM_$1 *new_AMAsyncVM_$1_initWithAMAsyncVM_withId_(AMAsyncVM *outer$, id capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMAsyncVM_$1)
 
 
 #line 6
@@ -35,29 +52,25 @@ J2OBJC_FIELD_SETTER(AMAsyncVM_$1, val$obj_, id)
 
 #line 9
 - (void)postWithId:(id)obj {
-  
-#line 10
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_([[AMAsyncVM_$1 alloc] initWithAMAsyncVM:self withId:obj]);
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMAsyncVM_$1_initWithAMAsyncVM_withId_(self, obj));
 }
 
 
 #line 22
 - (void)detach {
-  
-#line 23
   isDetached_ = YES;
 }
 
 - (instancetype)init {
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMAsyncVM *)other {
-  [super copyAllFieldsTo:other];
-  other->isDetached_ = isDetached_;
+  AMAsyncVM_init(self);
+  return self;
 }
 
 @end
+
+void AMAsyncVM_init(AMAsyncVM *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAsyncVM)
 
@@ -66,8 +79,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAsyncVM)
 
 #line 12
 - (void)run {
-  
-#line 13
   if (!this$0_->isDetached_) {
     [this$0_ onObjectReceivedWithId:val$obj_];
   }
@@ -75,17 +86,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAsyncVM)
 
 - (instancetype)initWithAMAsyncVM:(AMAsyncVM *)outer$
                            withId:(id)capture$0 {
-  this$0_ = outer$;
-  val$obj_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMAsyncVM_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$obj_ = val$obj_;
+  AMAsyncVM_$1_initWithAMAsyncVM_withId_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void AMAsyncVM_$1_initWithAMAsyncVM_withId_(AMAsyncVM_$1 *self, AMAsyncVM *outer$, id capture$0) {
+  self->this$0_ = outer$;
+  self->val$obj_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMAsyncVM_$1 *new_AMAsyncVM_$1_initWithAMAsyncVM_withId_(AMAsyncVM *outer$, id capture$0) {
+  AMAsyncVM_$1 *self = [AMAsyncVM_$1 alloc];
+  AMAsyncVM_$1_initWithAMAsyncVM_withId_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAsyncVM_$1)

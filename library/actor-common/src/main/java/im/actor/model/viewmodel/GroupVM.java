@@ -19,7 +19,7 @@ public class GroupVM extends BaseValueModel<Group> {
 
     private int id;
     private long hash;
-    private long creatorId;
+    private int creatorId;
     private ValueModel<Avatar> avatar;
     private ValueModel<String> name;
     private ValueModel<Boolean> isMember;
@@ -69,7 +69,7 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return creator user id
      */
-    public long getCreatorId() {
+    public int getCreatorId() {
         return creatorId;
     }
 

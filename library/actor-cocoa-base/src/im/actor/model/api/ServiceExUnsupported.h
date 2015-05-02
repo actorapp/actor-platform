@@ -6,15 +6,16 @@
 #ifndef _ImActorModelApiServiceExUnsupported_H_
 #define _ImActorModelApiServiceExUnsupported_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/api/ServiceEx.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/api/ServiceEx.h"
+@interface ImActorModelApiServiceExUnsupported : ImActorModelApiServiceEx
 
-@interface ImActorModelApiServiceExUnsupported : ImActorModelApiServiceEx {
-}
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content;
@@ -29,8 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExUnsupported)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(ImActorModelApiServiceExUnsupported *self, jint key, IOSByteArray *content);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExUnsupported *new_ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExUnsupported)
 

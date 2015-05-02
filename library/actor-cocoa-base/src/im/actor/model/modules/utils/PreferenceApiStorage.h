@@ -6,13 +6,14 @@
 #ifndef _ImActorModelModulesUtilsPreferenceApiStorage_H_
 #define _ImActorModelModulesUtilsPreferenceApiStorage_H_
 
-@protocol DKPreferencesStorage;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
 
-@interface ImActorModelModulesUtilsPreferenceApiStorage : NSObject < AMAuthKeyStorage > {
-}
+@protocol DKPreferencesStorage;
+
+@interface ImActorModelModulesUtilsPreferenceApiStorage : NSObject < AMAuthKeyStorage >
+
+#pragma mark Public
 
 - (instancetype)initWithDKPreferencesStorage:(id<DKPreferencesStorage>)preferencesStorage;
 
@@ -24,8 +25,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsPreferenceApiStorage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(ImActorModelModulesUtilsPreferenceApiStorage *self, id<DKPreferencesStorage> preferencesStorage);
+
+FOUNDATION_EXPORT ImActorModelModulesUtilsPreferenceApiStorage *new_ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(id<DKPreferencesStorage> preferencesStorage) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsPreferenceApiStorage)
 

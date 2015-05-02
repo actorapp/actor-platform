@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessage.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/modules/messages/entity/OutUnreadMessage.h"
@@ -17,6 +19,7 @@
   jlong rid_;
   jlong date_;
 }
+
 @end
 
 
@@ -27,34 +30,24 @@
 #line 16
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 17
-    self->rid_ = rid;
-    
-#line 18
-    self->date_ = date;
-  }
+  ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(self, rid, date);
   return self;
 }
 
 
 #line 21
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesEntityOutUnreadMessage_init(self);
+  return self;
 }
 
+
+#line 25
 - (jlong)getDate {
-  
-#line 26
   return date_;
 }
 
-
-#line 29
 - (jlong)getRid {
-  
-#line 30
   return rid_;
 }
 
@@ -68,18 +61,42 @@
 
 #line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 41
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
   [writer writeLongWithInt:2 withLong:date_];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityOutUnreadMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->rid_ = rid_;
-  other->date_ = date_;
+@end
+
+
+#line 16
+void ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(ImActorModelModulesMessagesEntityOutUnreadMessage *self, jlong rid, jlong date) {
+  (void) BSBserObject_init(self);
+  
+#line 17
+  self->rid_ = rid;
+  self->date_ = date;
 }
 
-@end
+
+#line 16
+ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(jlong rid, jlong date) {
+  ImActorModelModulesMessagesEntityOutUnreadMessage *self = [ImActorModelModulesMessagesEntityOutUnreadMessage alloc];
+  ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(self, rid, date);
+  return self;
+}
+
+
+#line 21
+void ImActorModelModulesMessagesEntityOutUnreadMessage_init(ImActorModelModulesMessagesEntityOutUnreadMessage *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 21
+ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessagesEntityOutUnreadMessage_init() {
+  ImActorModelModulesMessagesEntityOutUnreadMessage *self = [ImActorModelModulesMessagesEntityOutUnreadMessage alloc];
+  ImActorModelModulesMessagesEntityOutUnreadMessage_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityOutUnreadMessage)

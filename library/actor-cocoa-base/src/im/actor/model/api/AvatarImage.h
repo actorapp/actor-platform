@@ -6,30 +6,31 @@
 #ifndef _ImActorModelApiAvatarImage_H_
 #define _ImActorModelApiAvatarImage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiFileLocation;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiAvatarImage : BSBserObject
 
-@interface ImActorModelApiAvatarImage : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
                                             withInt:(jint)width
                                             withInt:(jint)height
                                             withInt:(jint)fileSize;
 
-- (instancetype)init;
-
 - (ImActorModelApiFileLocation *)getFileLocation;
 
-- (jint)getWidth;
+- (jint)getFileSize;
 
 - (jint)getHeight;
 
-- (jint)getFileSize;
+- (jint)getWidth;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -41,8 +42,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiAvatarImage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiAvatarImage *self, ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize);
+
+FOUNDATION_EXPORT ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiAvatarImage_init(ImActorModelApiAvatarImage *self);
+
+FOUNDATION_EXPORT ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAvatarImage)
 

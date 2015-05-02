@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestChangePhoneTitle.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestChangePhoneTitle.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestChangePhoneTitle () {
@@ -20,6 +22,7 @@
   jint phoneId_;
   NSString *title_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 #line 30
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 31
-    self->phoneId_ = phoneId;
-    
-#line 32
-    self->title_ = title;
-  }
+  ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(self, phoneId, title);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestChangePhoneTitle_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getPhoneId {
-  
-#line 40
   return self->phoneId_;
 }
 
-
-#line 43
 - (NSString *)getTitle {
-  
-#line 44
   return self->title_;
 }
 
@@ -79,15 +72,15 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->phoneId_];
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->title_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"rpc ChangePhoneTitle{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"phoneId=", self->phoneId_));
@@ -96,25 +89,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 73
-  return ImActorModelApiRpcRequestChangePhoneTitle_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestChangePhoneTitle *)other {
-  [super copyAllFieldsTo:other];
-  other->phoneId_ = phoneId_;
-  other->title_ = title_;
+#line 72
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestChangePhoneTitle_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestChangePhoneTitle *ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestChangePhoneTitle_init();
+  ImActorModelApiRpcRequestChangePhoneTitle_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestChangePhoneTitle *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestChangePhoneTitle alloc] init], data));
+  return ((ImActorModelApiRpcRequestChangePhoneTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestChangePhoneTitle_init(), data));
+}
+
+void ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(ImActorModelApiRpcRequestChangePhoneTitle *self, jint phoneId, NSString *title) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->phoneId_ = phoneId;
+  self->title_ = title;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(jint phoneId, NSString *title) {
+  ImActorModelApiRpcRequestChangePhoneTitle *self = [ImActorModelApiRpcRequestChangePhoneTitle alloc];
+  ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(self, phoneId, title);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestChangePhoneTitle_init(ImActorModelApiRpcRequestChangePhoneTitle *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePhoneTitle_init() {
+  ImActorModelApiRpcRequestChangePhoneTitle *self = [ImActorModelApiRpcRequestChangePhoneTitle alloc];
+  ImActorModelApiRpcRequestChangePhoneTitle_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestChangePhoneTitle)

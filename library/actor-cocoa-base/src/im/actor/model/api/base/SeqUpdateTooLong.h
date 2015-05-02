@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiBaseSeqUpdateTooLong_H_
 #define _ImActorModelApiBaseSeqUpdateTooLong_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/RpcScope.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/RpcScope.h"
-
 #define ImActorModelApiBaseSeqUpdateTooLong_HEADER 25
 
-@interface ImActorModelApiBaseSeqUpdateTooLong : ImActorModelNetworkParserRpcScope {
-}
+@interface ImActorModelApiBaseSeqUpdateTooLong : ImActorModelNetworkParserRpcScope
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiBaseSeqUpdateTooLong *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiBaseSeqUpdateTooLong)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseSeqUpdateTooLong, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseSeqUpdateTooLong, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiBaseSeqUpdateTooLong_init(ImActorModelApiBaseSeqUpdateTooLong *self);
+
+FOUNDATION_EXPORT ImActorModelApiBaseSeqUpdateTooLong *new_ImActorModelApiBaseSeqUpdateTooLong_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiBaseSeqUpdateTooLong)
 

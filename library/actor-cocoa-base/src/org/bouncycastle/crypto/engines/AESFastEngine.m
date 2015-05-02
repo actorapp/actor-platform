@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/AESFastEngine.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/AESFastEngine.java"
 
 #include "IOSClass.h"
@@ -18,15 +19,10 @@
 #include "org/bouncycastle/crypto/params/KeyParameter.h"
 #include "org/bouncycastle/util/Pack.h"
 
-__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_shiftWithInt_withInt_(jint r, jint shift);
-__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_FFmulXWithInt_(jint x);
-__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_inv_mcolWithInt_(jint x);
-__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_subWordWithInt_(jint x);
-__attribute__((unused)) static IOSObjectArray *OrgBouncycastleCryptoEnginesAESFastEngine_generateWorkingKeyWithByteArray_withBoolean_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *key, jboolean forEncryption);
-__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_unpackBlockWithByteArray_withInt_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *bytes, jint off);
-__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_packBlockWithByteArray_withInt_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *bytes, jint off);
-__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_encryptBlockWithIntArray2_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSObjectArray *KW);
-__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_decryptBlockWithIntArray2_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSObjectArray *KW);
+#define OrgBouncycastleCryptoEnginesAESFastEngine_m1 -2139062144
+#define OrgBouncycastleCryptoEnginesAESFastEngine_m2 2139062143
+#define OrgBouncycastleCryptoEnginesAESFastEngine_m3 27
+#define OrgBouncycastleCryptoEnginesAESFastEngine_BLOCK_SIZE 16
 
 @interface OrgBouncycastleCryptoEnginesAESFastEngine () {
  @public
@@ -57,21 +53,57 @@ __attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_de
 - (void)encryptBlockWithIntArray2:(IOSObjectArray *)KW;
 
 - (void)decryptBlockWithIntArray2:(IOSObjectArray *)KW;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEnginesAESFastEngine, WorkingKey_, IOSObjectArray *)
 
-BOOL OrgBouncycastleCryptoEnginesAESFastEngine_initialized = NO;
+static IOSByteArray *OrgBouncycastleCryptoEnginesAESFastEngine_S_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, S_, IOSByteArray *)
+
+static IOSByteArray *OrgBouncycastleCryptoEnginesAESFastEngine_Si_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, Si_, IOSByteArray *)
+
+static IOSIntArray *OrgBouncycastleCryptoEnginesAESFastEngine_rcon_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, rcon_, IOSIntArray *)
+
+static IOSIntArray *OrgBouncycastleCryptoEnginesAESFastEngine_T_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, T_, IOSIntArray *)
+
+static IOSIntArray *OrgBouncycastleCryptoEnginesAESFastEngine_Tinv_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, Tinv_, IOSIntArray *)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, m1, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, m2, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, m3, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoEnginesAESFastEngine, BLOCK_SIZE, jint)
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_shiftWithInt_withInt_(jint r, jint shift);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_FFmulXWithInt_(jint x);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_inv_mcolWithInt_(jint x);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoEnginesAESFastEngine_subWordWithInt_(jint x);
+
+__attribute__((unused)) static IOSObjectArray *OrgBouncycastleCryptoEnginesAESFastEngine_generateWorkingKeyWithByteArray_withBoolean_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *key, jboolean forEncryption);
+
+__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_unpackBlockWithByteArray_withInt_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *bytes, jint off);
+
+__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_packBlockWithByteArray_withInt_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *bytes, jint off);
+
+__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_encryptBlockWithIntArray2_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSObjectArray *KW);
+
+__attribute__((unused)) static void OrgBouncycastleCryptoEnginesAESFastEngine_decryptBlockWithIntArray2_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSObjectArray *KW);
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleCryptoEnginesAESFastEngine)
 
 
 #line 33
 @implementation OrgBouncycastleCryptoEnginesAESFastEngine
-
-IOSByteArray * OrgBouncycastleCryptoEnginesAESFastEngine_S_;
-IOSByteArray * OrgBouncycastleCryptoEnginesAESFastEngine_Si_;
-IOSIntArray * OrgBouncycastleCryptoEnginesAESFastEngine_rcon_;
-IOSIntArray * OrgBouncycastleCryptoEnginesAESFastEngine_T_;
-IOSIntArray * OrgBouncycastleCryptoEnginesAESFastEngine_Tinv_;
 
 
 #line 550
@@ -108,11 +140,7 @@ IOSIntArray * OrgBouncycastleCryptoEnginesAESFastEngine_Tinv_;
 
 #line 671
 - (instancetype)init {
-  if (self = [super init]) {
-    WorkingKey_ =
-#line 662
-    nil;
-  }
+  OrgBouncycastleCryptoEnginesAESFastEngine_init(self);
   return self;
 }
 
@@ -131,12 +159,14 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   }
   
 #line 694
-  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:JreStrcat("$$", @"invalid parameter passed to AES init - ", [[((id<OrgBouncycastleCryptoCipherParameters>) nil_chk(params)) getClass] getName])];
+  @throw new_JavaLangIllegalArgumentException_initWithNSString_(JreStrcat("$$", @"invalid parameter passed to AES init - ", [[((id<OrgBouncycastleCryptoCipherParameters>) nil_chk(params)) getClass] getName]));
 }
 
 
 #line 697
 - (NSString *)getAlgorithmName {
+  
+#line 699
   return @"AES";
 }
 
@@ -159,21 +189,21 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   if (WorkingKey_ == nil) {
     
 #line 715
-    @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"AES engine not initialised"];
+    @throw new_JavaLangIllegalStateException_initWithNSString_(@"AES engine not initialised");
   }
   
 #line 718
   if ((inOff + (32 / 2)) > ((IOSByteArray *) nil_chk(inArg))->size_) {
     
 #line 720
-    @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"input buffer too short"];
+    @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input buffer too short");
   }
   
 #line 723
   if ((outOff + (32 / 2)) > ((IOSByteArray *) nil_chk(outArg))->size_) {
     
 #line 725
-    @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short"];
+    @throw new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(@"output buffer too short");
   }
   
 #line 728
@@ -227,17 +257,6 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
 #line 850
 - (void)decryptBlockWithIntArray2:(IOSObjectArray *)KW {
   OrgBouncycastleCryptoEnginesAESFastEngine_decryptBlockWithIntArray2_(self, KW);
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoEnginesAESFastEngine *)other {
-  [super copyAllFieldsTo:other];
-  other->ROUNDS_ = ROUNDS_;
-  other->WorkingKey_ = WorkingKey_;
-  other->C0_ = C0_;
-  other->C1_ = C1_;
-  other->C2_ = C2_;
-  other->C3_ = C3_;
-  other->forEncryption_ = forEncryption_;
 }
 
 + (void)initialize {
@@ -1217,24 +1236,24 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
 
 @end
 
+
+#line 550
 jint OrgBouncycastleCryptoEnginesAESFastEngine_shiftWithInt_withInt_(jint r, jint shift) {
-  OrgBouncycastleCryptoEnginesAESFastEngine_init();
-  
-#line 552
+  OrgBouncycastleCryptoEnginesAESFastEngine_initialize();
   return (URShift32(r, shift)) | (LShift32(r, -shift));
 }
 
+
+#line 561
 jint OrgBouncycastleCryptoEnginesAESFastEngine_FFmulXWithInt_(jint x) {
-  OrgBouncycastleCryptoEnginesAESFastEngine_init();
-  
-#line 563
+  OrgBouncycastleCryptoEnginesAESFastEngine_initialize();
   return ((LShift32((x & OrgBouncycastleCryptoEnginesAESFastEngine_m2), 1)) ^ ((URShift32((x & OrgBouncycastleCryptoEnginesAESFastEngine_m1), 7)) * OrgBouncycastleCryptoEnginesAESFastEngine_m3));
 }
 
+
+#line 576
 jint OrgBouncycastleCryptoEnginesAESFastEngine_inv_mcolWithInt_(jint x) {
-  OrgBouncycastleCryptoEnginesAESFastEngine_init();
-  
-#line 578
+  OrgBouncycastleCryptoEnginesAESFastEngine_initialize();
   jint f2 = OrgBouncycastleCryptoEnginesAESFastEngine_FFmulXWithInt_(x);
   jint f4 = OrgBouncycastleCryptoEnginesAESFastEngine_FFmulXWithInt_(f2);
   jint f8 = OrgBouncycastleCryptoEnginesAESFastEngine_FFmulXWithInt_(f4);
@@ -1244,10 +1263,10 @@ jint OrgBouncycastleCryptoEnginesAESFastEngine_inv_mcolWithInt_(jint x) {
   return f2 ^ f4 ^ f8 ^ OrgBouncycastleCryptoEnginesAESFastEngine_shiftWithInt_withInt_(f2 ^ f9, 8) ^ OrgBouncycastleCryptoEnginesAESFastEngine_shiftWithInt_withInt_(f4 ^ f9, 16) ^ OrgBouncycastleCryptoEnginesAESFastEngine_shiftWithInt_withInt_(f9, 24);
 }
 
+
+#line 586
 jint OrgBouncycastleCryptoEnginesAESFastEngine_subWordWithInt_(jint x) {
-  OrgBouncycastleCryptoEnginesAESFastEngine_init();
-  
-#line 588
+  OrgBouncycastleCryptoEnginesAESFastEngine_initialize();
   jint i0 = x, i1 = URShift32(x, 8), i2 = URShift32(x, 16), i3 = URShift32(x, 24);
   i0 = IOSByteArray_Get(nil_chk(OrgBouncycastleCryptoEnginesAESFastEngine_S_), i0 & 255) & 255;
   
@@ -1259,9 +1278,11 @@ jint OrgBouncycastleCryptoEnginesAESFastEngine_subWordWithInt_(jint x) {
   
 #line 589
   i3 = IOSByteArray_Get(OrgBouncycastleCryptoEnginesAESFastEngine_S_, i3 & 255) & 255;
-  return ((i0 | (LShift32(i1, 8))) | (LShift32(i2, 16))) | (LShift32(i3, 24));
+  return i0 | (LShift32(i1, 8)) | LShift32(i2, 16) | LShift32(i3, 24);
 }
 
+
+#line 599
 IOSObjectArray *OrgBouncycastleCryptoEnginesAESFastEngine_generateWorkingKeyWithByteArray_withBoolean_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *key, jboolean forEncryption) {
   
 #line 603
@@ -1272,7 +1293,7 @@ IOSObjectArray *OrgBouncycastleCryptoEnginesAESFastEngine_generateWorkingKeyWith
   if (((KC != 4) && (KC != 6) && (KC != 8)) || ((KC * 4) != key->size_)) {
     
 #line 608
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Key length not 128/192/256 bits."];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Key length not 128/192/256 bits.");
   }
   
 #line 611
@@ -1330,6 +1351,25 @@ IOSObjectArray *OrgBouncycastleCryptoEnginesAESFastEngine_generateWorkingKeyWith
   return W;
 }
 
+
+#line 671
+void OrgBouncycastleCryptoEnginesAESFastEngine_init(OrgBouncycastleCryptoEnginesAESFastEngine *self) {
+  (void) NSObject_init(self);
+  self->WorkingKey_ =
+#line 662
+  nil;
+}
+
+
+#line 671
+OrgBouncycastleCryptoEnginesAESFastEngine *new_OrgBouncycastleCryptoEnginesAESFastEngine_init() {
+  OrgBouncycastleCryptoEnginesAESFastEngine *self = [OrgBouncycastleCryptoEnginesAESFastEngine alloc];
+  OrgBouncycastleCryptoEnginesAESFastEngine_init(self);
+  return self;
+}
+
+
+#line 748
 void OrgBouncycastleCryptoEnginesAESFastEngine_unpackBlockWithByteArray_withInt_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *bytes, jint off) {
   
 #line 750
@@ -1339,6 +1379,8 @@ void OrgBouncycastleCryptoEnginesAESFastEngine_unpackBlockWithByteArray_withInt_
   self->C3_ = OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_(bytes, off + 12);
 }
 
+
+#line 756
 void OrgBouncycastleCryptoEnginesAESFastEngine_packBlockWithByteArray_withInt_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSByteArray *bytes, jint off) {
   
 #line 758
@@ -1348,6 +1390,8 @@ void OrgBouncycastleCryptoEnginesAESFastEngine_packBlockWithByteArray_withInt_(O
   OrgBouncycastleUtilPack_intToLittleEndianWithInt_withByteArray_withInt_(self->C3_, bytes, off + 12);
 }
 
+
+#line 764
 void OrgBouncycastleCryptoEnginesAESFastEngine_encryptBlockWithIntArray2_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSObjectArray *KW) {
   
 #line 766
@@ -1732,6 +1776,8 @@ void OrgBouncycastleCryptoEnginesAESFastEngine_encryptBlockWithIntArray2_(OrgBou
   self->C3_ = i0 ^ LShift32(i1, 8) ^ LShift32(i2, 16) ^ LShift32(i3, 24) ^ IOSIntArray_Get(nil_chk(IOSObjectArray_Get(KW, r)), 3);
 }
 
+
+#line 850
 void OrgBouncycastleCryptoEnginesAESFastEngine_decryptBlockWithIntArray2_(OrgBouncycastleCryptoEnginesAESFastEngine *self, IOSObjectArray *KW) {
   
 #line 852

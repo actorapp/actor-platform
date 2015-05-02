@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WNafUtil.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WNafUtil.java"
 
 #include "IOSObjectArray.h"
@@ -19,12 +20,7 @@
 #include "org/bouncycastle/math/ec/WNafPreCompInfo.h"
 #include "org/bouncycastle/math/ec/WNafUtil.h"
 
-__attribute__((unused)) static IOSByteArray *OrgBouncycastleMathEcWNafUtil_trimWithByteArray_withInt_(IOSByteArray *a, jint length);
-__attribute__((unused)) static IOSIntArray *OrgBouncycastleMathEcWNafUtil_trimWithIntArray_withInt_(IOSIntArray *a, jint length);
-__attribute__((unused)) static IOSObjectArray *OrgBouncycastleMathEcWNafUtil_resizeTableWithOrgBouncycastleMathEcECPointArray_withInt_(IOSObjectArray *a, jint length);
-
-@interface OrgBouncycastleMathEcWNafUtil () {
-}
+@interface OrgBouncycastleMathEcWNafUtil ()
 
 + (IOSByteArray *)trimWithByteArray:(IOSByteArray *)a
                             withInt:(jint)length;
@@ -34,18 +30,33 @@ __attribute__((unused)) static IOSObjectArray *OrgBouncycastleMathEcWNafUtil_res
 
 + (IOSObjectArray *)resizeTableWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)a
                                                              withInt:(jint)length;
+
 @end
 
-BOOL OrgBouncycastleMathEcWNafUtil_initialized = NO;
+static IOSIntArray *OrgBouncycastleMathEcWNafUtil_DEFAULT_WINDOW_SIZE_CUTOFFS_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, DEFAULT_WINDOW_SIZE_CUTOFFS_, IOSIntArray *)
+
+static IOSByteArray *OrgBouncycastleMathEcWNafUtil_EMPTY_BYTES_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, EMPTY_BYTES_, IOSByteArray *)
+
+static IOSIntArray *OrgBouncycastleMathEcWNafUtil_EMPTY_INTS_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcWNafUtil, EMPTY_INTS_, IOSIntArray *)
+
+__attribute__((unused)) static IOSByteArray *OrgBouncycastleMathEcWNafUtil_trimWithByteArray_withInt_(IOSByteArray *a, jint length);
+
+__attribute__((unused)) static IOSIntArray *OrgBouncycastleMathEcWNafUtil_trimWithIntArray_withInt_(IOSIntArray *a, jint length);
+
+__attribute__((unused)) static IOSObjectArray *OrgBouncycastleMathEcWNafUtil_resizeTableWithOrgBouncycastleMathEcECPointArray_withInt_(IOSObjectArray *a, jint length);
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleMathEcWNafUtil)
+
+NSString *OrgBouncycastleMathEcWNafUtil_PRECOMP_NAME_ = 
+#line 7
+@"bc_wnaf";
 
 
 #line 5
 @implementation OrgBouncycastleMathEcWNafUtil
-
-NSString * OrgBouncycastleMathEcWNafUtil_PRECOMP_NAME_ = @"bc_wnaf";
-IOSIntArray * OrgBouncycastleMathEcWNafUtil_DEFAULT_WINDOW_SIZE_CUTOFFS_;
-IOSByteArray * OrgBouncycastleMathEcWNafUtil_EMPTY_BYTES_;
-IOSIntArray * OrgBouncycastleMathEcWNafUtil_EMPTY_INTS_;
 
 
 #line 14
@@ -150,7 +161,8 @@ IOSIntArray * OrgBouncycastleMathEcWNafUtil_EMPTY_INTS_;
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcWNafUtil_init(self);
+  return self;
 }
 
 + (void)initialize {
@@ -170,14 +182,14 @@ IOSIntArray * OrgBouncycastleMathEcWNafUtil_EMPTY_INTS_;
 
 @end
 
+
+#line 14
 IOSIntArray *OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInteger_(JavaMathBigInteger *k) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 16
+  OrgBouncycastleMathEcWNafUtil_initialize();
   if ((URShift32([((JavaMathBigInteger *) nil_chk(k)) bitLength], 16)) != 0) {
     
 #line 18
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'k' must have bitlength < 2^16"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'k' must have bitlength < 2^16");
   }
   if ([k signum] == 0) {
     
@@ -228,10 +240,10 @@ IOSIntArray *OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInte
   return naf;
 }
 
+
+#line 57
 IOSIntArray *OrgBouncycastleMathEcWNafUtil_generateCompactWindowNafWithInt_withJavaMathBigInteger_(jint width, JavaMathBigInteger *k) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 59
+  OrgBouncycastleMathEcWNafUtil_initialize();
   if (width == 2) {
     
 #line 61
@@ -242,12 +254,12 @@ IOSIntArray *OrgBouncycastleMathEcWNafUtil_generateCompactWindowNafWithInt_withJ
   if (width < 2 || width > 16) {
     
 #line 66
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'width' must be in the range [2, 16]"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'width' must be in the range [2, 16]");
   }
   if ((URShift32([((JavaMathBigInteger *) nil_chk(k)) bitLength], 16)) != 0) {
     
 #line 70
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'k' must have bitlength < 2^16"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'k' must have bitlength < 2^16");
   }
   if ([k signum] == 0) {
     
@@ -314,10 +326,10 @@ IOSIntArray *OrgBouncycastleMathEcWNafUtil_generateCompactWindowNafWithInt_withJ
   return wnaf;
 }
 
+
+#line 123
 IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateJSFWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *g, JavaMathBigInteger *h) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 125
+  OrgBouncycastleMathEcWNafUtil_initialize();
   jint digits = JavaLangMath_maxWithInt_withInt_([((JavaMathBigInteger *) nil_chk(g)) bitLength], [((JavaMathBigInteger *) nil_chk(h)) bitLength]) + 1;
   IOSByteArray *jsf = [IOSByteArray newArrayWithLength:digits];
   
@@ -394,10 +406,10 @@ IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateJSFWithJavaMathBigInteger_wi
   return jsf;
 }
 
+
+#line 184
 IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateNafWithJavaMathBigInteger_(JavaMathBigInteger *k) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 186
+  OrgBouncycastleMathEcWNafUtil_initialize();
   if ([((JavaMathBigInteger *) nil_chk(k)) signum] == 0) {
     
 #line 188
@@ -433,10 +445,10 @@ IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateNafWithJavaMathBigInteger_(J
   return naf;
 }
 
+
+#line 224
 IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMathBigInteger_(jint width, JavaMathBigInteger *k) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 226
+  OrgBouncycastleMathEcWNafUtil_initialize();
   if (width == 2) {
     
 #line 228
@@ -447,7 +459,7 @@ IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMat
   if (width < 2 || width > 8) {
     
 #line 233
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"'width' must be in the range [2, 8]"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'width' must be in the range [2, 8]");
   }
   if ([((JavaMathBigInteger *) nil_chk(k)) signum] == 0) {
     
@@ -514,10 +526,10 @@ IOSByteArray *OrgBouncycastleMathEcWNafUtil_generateWindowNafWithInt_withJavaMat
   return wnaf;
 }
 
+
+#line 286
 jint OrgBouncycastleMathEcWNafUtil_getNafWeightWithJavaMathBigInteger_(JavaMathBigInteger *k) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 288
+  OrgBouncycastleMathEcWNafUtil_initialize();
   if ([((JavaMathBigInteger *) nil_chk(k)) signum] == 0) {
     
 #line 290
@@ -532,17 +544,15 @@ jint OrgBouncycastleMathEcWNafUtil_getNafWeightWithJavaMathBigInteger_(JavaMathB
   return [((JavaMathBigInteger *) nil_chk(diff)) bitCount];
 }
 
+
+#line 299
 OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcECPoint_(OrgBouncycastleMathEcECPoint *p) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 301
+  OrgBouncycastleMathEcWNafUtil_initialize();
   return OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcPreCompInfo_([((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve])) getPreCompInfoWithOrgBouncycastleMathEcECPoint:p withNSString:OrgBouncycastleMathEcWNafUtil_PRECOMP_NAME_]);
 }
 
 OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcPreCompInfo_(id<OrgBouncycastleMathEcPreCompInfo> preCompInfo) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 306
+  OrgBouncycastleMathEcWNafUtil_initialize();
   if ((preCompInfo != nil) && ([preCompInfo isKindOfClass:[OrgBouncycastleMathEcWNafPreCompInfo class]])) {
     
 #line 308
@@ -550,20 +560,20 @@ OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_getWNafPreCo
   }
   
 #line 311
-  return [[OrgBouncycastleMathEcWNafPreCompInfo alloc] init];
+  return new_OrgBouncycastleMathEcWNafPreCompInfo_init();
 }
 
+
+#line 320
 jint OrgBouncycastleMathEcWNafUtil_getWindowSizeWithInt_(jint bits) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 322
+  OrgBouncycastleMathEcWNafUtil_initialize();
   return OrgBouncycastleMathEcWNafUtil_getWindowSizeWithInt_withIntArray_(bits, OrgBouncycastleMathEcWNafUtil_DEFAULT_WINDOW_SIZE_CUTOFFS_);
 }
 
+
+#line 332
 jint OrgBouncycastleMathEcWNafUtil_getWindowSizeWithInt_withIntArray_(jint bits, IOSIntArray *windowSizeCutoffs) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 334
+  OrgBouncycastleMathEcWNafUtil_initialize();
   jint w = 0;
   for (; w < ((IOSIntArray *) nil_chk(windowSizeCutoffs))->size_; ++w) {
     
@@ -577,8 +587,10 @@ jint OrgBouncycastleMathEcWNafUtil_getWindowSizeWithInt_withIntArray_(jint bits,
   return w + 2;
 }
 
+
+#line 345
 OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcWNafUtil_mapPointWithPrecompWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_withOrgBouncycastleMathEcECPointMap_(OrgBouncycastleMathEcECPoint *p, jint width, jboolean includeNegated, id<OrgBouncycastleMathEcECPointMap> pointMap) {
-  OrgBouncycastleMathEcWNafUtil_init();
+  OrgBouncycastleMathEcWNafUtil_initialize();
   
 #line 348
   OrgBouncycastleMathEcECCurve *c = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
@@ -603,7 +615,7 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcWNafUtil_mapPointWithPrecompW
   for (jint i = 0; i < preCompP->size_; ++i) {
     
 #line 365
-    IOSObjectArray_Set(preCompQ, i, [pointMap mapWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(preCompP, i)]);
+    (void) IOSObjectArray_Set(preCompQ, i, [pointMap mapWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(preCompP, i)]);
   }
   [((OrgBouncycastleMathEcWNafPreCompInfo *) nil_chk(wnafPreCompQ)) setPreCompWithOrgBouncycastleMathEcECPointArray:preCompQ];
   
@@ -615,7 +627,7 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcWNafUtil_mapPointWithPrecompW
     for (jint i = 0; i < preCompNegQ->size_; ++i) {
       
 #line 374
-      IOSObjectArray_Set(preCompNegQ, i, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(preCompQ, i))) negate]);
+      (void) IOSObjectArray_Set(preCompNegQ, i, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(preCompQ, i))) negate]);
     }
     [wnafPreCompQ setPreCompNegWithOrgBouncycastleMathEcECPointArray:preCompNegQ];
   }
@@ -627,10 +639,10 @@ OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcWNafUtil_mapPointWithPrecompW
   return q;
 }
 
+
+#line 384
 OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_(OrgBouncycastleMathEcECPoint *p, jint width, jboolean includeNegated) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 386
+  OrgBouncycastleMathEcWNafUtil_initialize();
   OrgBouncycastleMathEcECCurve *c = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
   OrgBouncycastleMathEcWNafPreCompInfo *wnafPreCompInfo = OrgBouncycastleMathEcWNafUtil_getWNafPreCompInfoWithOrgBouncycastleMathEcPreCompInfo_([((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getPreCompInfoWithOrgBouncycastleMathEcECPoint:p withNSString:OrgBouncycastleMathEcWNafUtil_PRECOMP_NAME_]);
   
@@ -654,7 +666,7 @@ OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_precomputeWi
     if (reqPreCompLen == 2) {
       
 #line 403
-      IOSObjectArray_Set(nil_chk(preComp), 1, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(preComp, 0))) threeTimes]);
+      (void) IOSObjectArray_Set(nil_chk(preComp), 1, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(preComp, 0))) threeTimes]);
     }
     else {
       
@@ -671,7 +683,7 @@ OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_precomputeWi
       for (jint i = preCompLen; i < reqPreCompLen; i++) {
         
 #line 420
-        IOSObjectArray_Set(nil_chk(preComp), i, [((OrgBouncycastleMathEcECPoint *) nil_chk(twiceP)) addWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(preComp, i - 1)]);
+        (void) IOSObjectArray_Set(nil_chk(preComp), i, [((OrgBouncycastleMathEcECPoint *) nil_chk(twiceP)) addWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(preComp, i - 1)]);
       }
     }
     
@@ -711,7 +723,7 @@ OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_precomputeWi
     while (pos < reqPreCompLen) {
       
 #line 453
-      IOSObjectArray_Set(nil_chk(preCompNeg), pos, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(nil_chk(preComp), pos))) negate]);
+      (void) IOSObjectArray_Set(nil_chk(preCompNeg), pos, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(nil_chk(preComp), pos))) negate]);
       ++pos;
     }
     
@@ -726,31 +738,31 @@ OrgBouncycastleMathEcWNafPreCompInfo *OrgBouncycastleMathEcWNafUtil_precomputeWi
   return wnafPreCompInfo;
 }
 
+
+#line 465
 IOSByteArray *OrgBouncycastleMathEcWNafUtil_trimWithByteArray_withInt_(IOSByteArray *a, jint length) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 467
+  OrgBouncycastleMathEcWNafUtil_initialize();
   IOSByteArray *result = [IOSByteArray newArrayWithLength:length];
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(a, 0, result, 0, result->size_);
   return result;
 }
 
 IOSIntArray *OrgBouncycastleMathEcWNafUtil_trimWithIntArray_withInt_(IOSIntArray *a, jint length) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 474
+  OrgBouncycastleMathEcWNafUtil_initialize();
   IOSIntArray *result = [IOSIntArray newArrayWithLength:length];
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(a, 0, result, 0, result->size_);
   return result;
 }
 
 IOSObjectArray *OrgBouncycastleMathEcWNafUtil_resizeTableWithOrgBouncycastleMathEcECPointArray_withInt_(IOSObjectArray *a, jint length) {
-  OrgBouncycastleMathEcWNafUtil_init();
-  
-#line 481
+  OrgBouncycastleMathEcWNafUtil_initialize();
   IOSObjectArray *result = [IOSObjectArray newArrayWithLength:length type:OrgBouncycastleMathEcECPoint_class_()];
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(a, 0, result, 0, ((IOSObjectArray *) nil_chk(a))->size_);
   return result;
+}
+
+void OrgBouncycastleMathEcWNafUtil_init(OrgBouncycastleMathEcWNafUtil *self) {
+  (void) NSObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcWNafUtil)

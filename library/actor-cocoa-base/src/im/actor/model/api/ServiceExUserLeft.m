@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserLeft.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserLeft.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExUserLeft.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -19,12 +21,13 @@
 
 #line 22
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceExUserLeft_init(self);
+  return self;
 }
 
+
+#line 26
 - (jint)getHeader {
-  
-#line 27
   return 3;
 }
 
@@ -38,14 +41,28 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+
+#line 39
 - (NSString *)description {
-  
-#line 40
   NSString *res = @"struct ServiceExUserLeft{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 @end
+
+
+#line 22
+void ImActorModelApiServiceExUserLeft_init(ImActorModelApiServiceExUserLeft *self) {
+  (void) ImActorModelApiServiceEx_init(self);
+}
+
+
+#line 22
+ImActorModelApiServiceExUserLeft *new_ImActorModelApiServiceExUserLeft_init() {
+  ImActorModelApiServiceExUserLeft *self = [ImActorModelApiServiceExUserLeft alloc];
+  ImActorModelApiServiceExUserLeft_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserLeft)

@@ -6,9 +6,9 @@
 #ifndef _AMValueChangedListener_H_
 #define _AMValueChangedListener_H_
 
-@class AMValueModel;
-
 #include "J2ObjC_header.h"
+
+@class AMValueModel;
 
 @protocol AMValueChangedListener < NSObject, JavaObject >
 
@@ -19,8 +19,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMValueChangedListener)
 
-#define ImActorModelMvvmValueChangedListener AMValueChangedListener
-
 J2OBJC_TYPE_LITERAL_HEADER(AMValueChangedListener)
+
+#define ImActorModelMvvmValueChangedListener AMValueChangedListener
 
 #endif // _AMValueChangedListener_H_

@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointCombMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointCombMultiplier.java"
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalStateException.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECCurve.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/FixedPointCombMultiplier.h"
@@ -30,7 +32,7 @@
   if ([((JavaMathBigInteger *) nil_chk(k)) bitLength] > size) {
     
 #line 20
-    @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"fixed-point comb doesn't support scalars larger than the curve order"];
+    @throw new_JavaLangIllegalStateException_initWithNSString_(@"fixed-point comb doesn't support scalars larger than the curve order");
   }
   
 #line 23
@@ -83,9 +85,20 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcFixedPointCombMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcFixedPointCombMultiplier_init(OrgBouncycastleMathEcFixedPointCombMultiplier *self) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+}
+
+OrgBouncycastleMathEcFixedPointCombMultiplier *new_OrgBouncycastleMathEcFixedPointCombMultiplier_init() {
+  OrgBouncycastleMathEcFixedPointCombMultiplier *self = [OrgBouncycastleMathEcFixedPointCombMultiplier alloc];
+  OrgBouncycastleMathEcFixedPointCombMultiplier_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcFixedPointCombMultiplier)

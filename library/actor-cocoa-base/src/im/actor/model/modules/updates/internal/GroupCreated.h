@@ -6,28 +6,30 @@
 #ifndef _ImActorModelModulesUpdatesInternalGroupCreated_H_
 #define _ImActorModelModulesUpdatesInternalGroupCreated_H_
 
-@class ImActorModelApiGroup;
-@protocol AMCommandCallback;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
-@interface ImActorModelModulesUpdatesInternalGroupCreated : ImActorModelModulesUpdatesInternalInternalUpdate {
-}
+@class ImActorModelApiGroup;
+@protocol AMCommandCallback;
+
+@interface ImActorModelModulesUpdatesInternalGroupCreated : ImActorModelModulesUpdatesInternalInternalUpdate
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group
                        withAMCommandCallback:(id<AMCommandCallback>)callback;
 
-- (ImActorModelApiGroup *)getGroup;
-
 - (id<AMCommandCallback>)getCallback;
+
+- (ImActorModelApiGroup *)getGroup;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalGroupCreated)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, ImActorModelApiGroup *group, id<AMCommandCallback> callback);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelApiGroup *group, id<AMCommandCallback> callback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalGroupCreated)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorSelection.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorSelection.java"
 
 #include "J2ObjC_source.h"
@@ -14,6 +15,7 @@
   DKProps *props_;
   NSString *path_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKActorSelection, props_, DKProps *)
@@ -27,39 +29,38 @@ J2OBJC_FIELD_SETTER(DKActorSelection, path_, NSString *)
 #line 12
 - (instancetype)initWithDKProps:(DKProps *)props
                    withNSString:(NSString *)path {
-  if (self = [super init]) {
-    
-#line 13
-    self->props_ = props;
-    
-#line 14
-    self->path_ = path;
-  }
+  DKActorSelection_initWithDKProps_withNSString_(self, props, path);
   return self;
 }
 
 
 #line 17
 - (DKProps *)getProps {
-  
-#line 18
   return props_;
 }
 
-
-#line 21
 - (NSString *)getPath {
-  
-#line 22
   return path_;
 }
 
-- (void)copyAllFieldsTo:(DKActorSelection *)other {
-  [super copyAllFieldsTo:other];
-  other->props_ = props_;
-  other->path_ = path_;
+@end
+
+
+#line 12
+void DKActorSelection_initWithDKProps_withNSString_(DKActorSelection *self, DKProps *props, NSString *path) {
+  (void) NSObject_init(self);
+  
+#line 13
+  self->props_ = props;
+  self->path_ = path;
 }
 
-@end
+
+#line 12
+DKActorSelection *new_DKActorSelection_initWithDKProps_withNSString_(DKProps *props, NSString *path) {
+  DKActorSelection *self = [DKActorSelection alloc];
+  DKActorSelection_initWithDKProps_withNSString_(self, props, path);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorSelection)

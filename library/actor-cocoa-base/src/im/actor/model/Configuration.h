@@ -6,11 +6,15 @@
 #ifndef _AMConfiguration_H_
 #define _AMConfiguration_H_
 
+#include "J2ObjC_header.h"
+
 @class AMApiConfiguration;
 @class IOSObjectArray;
+@protocol AMAnalyticsProvider;
 @protocol AMCryptoProvider;
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
+@protocol AMHttpDownloaderProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -20,10 +24,47 @@
 @protocol AMStorageProvider;
 @protocol AMThreadingProvider;
 
-#include "J2ObjC_header.h"
+@interface AMConfiguration : NSObject
 
-@interface AMConfiguration : NSObject {
-}
+#pragma mark Public
+
+- (id<AMAnalyticsProvider>)getAnalyticsProvider;
+
+- (AMApiConfiguration *)getApiConfiguration;
+
+- (id<AMCryptoProvider>)getCryptoProvider;
+
+- (id<AMDispatcherProvider>)getDispatcherProvider;
+
+- (IOSObjectArray *)getEndpoints;
+
+- (id<AMFileSystemProvider>)getFileSystemProvider;
+
+- (id<AMHttpDownloaderProvider>)getHttpDownloaderProvider;
+
+- (id<AMLocaleProvider>)getLocaleProvider;
+
+- (id<AMLogProvider>)getLog;
+
+- (id<AMMainThreadProvider>)getMainThreadProvider;
+
+- (id<AMNetworkProvider>)getNetworkProvider;
+
+- (id<AMNotificationProvider>)getNotificationProvider;
+
+- (id<AMPhoneBookProvider>)getPhoneBookProvider;
+
+- (id<AMStorageProvider>)getStorageProvider;
+
+- (id<AMThreadingProvider>)getThreadingProvider;
+
+- (jboolean)isEnableContactsLogging;
+
+- (jboolean)isEnableFilesLogging;
+
+- (jboolean)isEnableNetworkLogging;
+
+#pragma mark Package-Private
 
 - (instancetype)initWithAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
             withAMConnectionEndpointArray:(IOSObjectArray *)endpoints
@@ -40,49 +81,20 @@
                    withAMApiConfiguration:(AMApiConfiguration *)apiConfiguration
                               withBoolean:(jboolean)enableContactsLogging
                               withBoolean:(jboolean)enableNetworkLogging
-                              withBoolean:(jboolean)enableFilesLogging;
-
-- (AMApiConfiguration *)getApiConfiguration;
-
-- (id<AMNotificationProvider>)getNotificationProvider;
-
-- (jboolean)isEnableContactsLogging;
-
-- (jboolean)isEnableNetworkLogging;
-
-- (jboolean)isEnableFilesLogging;
-
-- (id<AMCryptoProvider>)getCryptoProvider;
-
-- (id<AMPhoneBookProvider>)getPhoneBookProvider;
-
-- (id<AMNetworkProvider>)getNetworkProvider;
-
-- (IOSObjectArray *)getEndpoints;
-
-- (id<AMThreadingProvider>)getThreadingProvider;
-
-- (id<AMMainThreadProvider>)getMainThreadProvider;
-
-- (id<AMStorageProvider>)getStorageProvider;
-
-- (id<AMLogProvider>)getLog;
-
-- (id<AMLocaleProvider>)getLocaleProvider;
-
-- (id<AMFileSystemProvider>)getFileSystemProvider;
-
-- (id<AMDispatcherProvider>)getDispatcherProvider;
+                              withBoolean:(jboolean)enableFilesLogging
+             withAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider
+                  withAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMConfiguration)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpDownloaderProvider> httpDownloaderProvider, id<AMAnalyticsProvider> analyticsProvider);
 
-typedef AMConfiguration ImActorModelConfiguration;
+FOUNDATION_EXPORT AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpDownloaderProvider> httpDownloaderProvider, id<AMAnalyticsProvider> analyticsProvider) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConfiguration)
+
+typedef AMConfiguration ImActorModelConfiguration;
 
 #endif // _AMConfiguration_H_

@@ -6,66 +6,52 @@
 #ifndef _ImActorModelModulesSettings_H_
 #define _ImActorModelModulesSettings_H_
 
-@class AMPeer;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesSettings : ImActorModelModulesBaseModule {
-}
+@class AMPeer;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesSettings : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (jboolean)isConversationTonesEnabled;
-
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val;
-
-- (jboolean)isNotificationSoundEnabled;
-
-- (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val;
-
-- (jboolean)isVibrationEnabled;
-
-- (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val;
-
-- (jboolean)isShowNotificationsText;
-
-- (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
-
-- (jboolean)isSendByEnterEnabled;
-
-- (void)changeSendByEnterWithBoolean:(jboolean)val;
-
-- (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer;
 
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val;
+
+- (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val;
+
+- (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val;
+
+- (void)changeSendByEnterWithBoolean:(jboolean)val;
+
+- (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
+
+- (jboolean)isConversationTonesEnabled;
+
+- (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer;
+
+- (jboolean)isNotificationSoundEnabled;
+
+- (jboolean)isSendByEnterEnabled;
+
+- (jboolean)isShowNotificationsText;
+
+- (jboolean)isVibrationEnabled;
+
+- (void)run;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSettings)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesSettings *self, ImActorModelModulesModules *modules);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TONES_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_SOUND_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_VIBRATION_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_CHAT_SEND_BY_ENTER_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesSettings *new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings)
 

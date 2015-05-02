@@ -6,11 +6,11 @@
 #ifndef _OrgBouncycastleMathEcWNafPreCompInfo_H_
 #define _OrgBouncycastleMathEcWNafPreCompInfo_H_
 
-@class IOSObjectArray;
-@class OrgBouncycastleMathEcECPoint;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/PreCompInfo.h"
+
+@class IOSObjectArray;
+@class OrgBouncycastleMathEcECPoint;
 
 @interface OrgBouncycastleMathEcWNafPreCompInfo : NSObject < OrgBouncycastleMathEcPreCompInfo > {
  @public
@@ -19,19 +19,21 @@
   OrgBouncycastleMathEcECPoint *twice_;
 }
 
-- (IOSObjectArray *)getPreComp;
+#pragma mark Public
 
-- (void)setPreCompWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preComp;
+- (instancetype)init;
+
+- (IOSObjectArray *)getPreComp;
 
 - (IOSObjectArray *)getPreCompNeg;
 
-- (void)setPreCompNegWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preCompNeg;
-
 - (OrgBouncycastleMathEcECPoint *)getTwice;
 
-- (void)setTwiceWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)twice;
+- (void)setPreCompWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preComp;
 
-- (instancetype)init;
+- (void)setPreCompNegWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preCompNeg;
+
+- (void)setTwiceWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)twice;
 
 @end
 
@@ -41,8 +43,9 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcWNafPreCompInfo, preComp_, IOSObjectArr
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcWNafPreCompInfo, preCompNeg_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcWNafPreCompInfo, twice_, OrgBouncycastleMathEcECPoint *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcWNafPreCompInfo_init(OrgBouncycastleMathEcWNafPreCompInfo *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcWNafPreCompInfo *new_OrgBouncycastleMathEcWNafPreCompInfo_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcWNafPreCompInfo)
 

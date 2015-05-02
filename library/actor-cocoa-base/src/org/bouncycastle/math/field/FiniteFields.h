@@ -6,39 +6,38 @@
 #ifndef _OrgBouncycastleMathFieldFiniteFields_H_
 #define _OrgBouncycastleMathFieldFiniteFields_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSIntArray;
 @class JavaMathBigInteger;
 @protocol OrgBouncycastleMathFieldFiniteField;
 @protocol OrgBouncycastleMathFieldPolynomialExtensionField;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleMathFieldFiniteFields : NSObject
 
-@interface OrgBouncycastleMathFieldFiniteFields : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (id<OrgBouncycastleMathFieldPolynomialExtensionField>)getBinaryExtensionFieldWithIntArray:(IOSIntArray *)exponents;
 
 + (id<OrgBouncycastleMathFieldFiniteField>)getPrimeFieldWithJavaMathBigInteger:(JavaMathBigInteger *)characteristic;
 
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleMathFieldFiniteFields_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleMathFieldFiniteFields)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT id<OrgBouncycastleMathFieldPolynomialExtensionField> OrgBouncycastleMathFieldFiniteFields_getBinaryExtensionFieldWithIntArray_(IOSIntArray *exponents);
-
-FOUNDATION_EXPORT id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_getPrimeFieldWithJavaMathBigInteger_(JavaMathBigInteger *characteristic);
 
 FOUNDATION_EXPORT id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_2_;
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathFieldFiniteFields, GF_2_, id<OrgBouncycastleMathFieldFiniteField>)
 
 FOUNDATION_EXPORT id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_GF_3_;
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathFieldFiniteFields, GF_3_, id<OrgBouncycastleMathFieldFiniteField>)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT id<OrgBouncycastleMathFieldPolynomialExtensionField> OrgBouncycastleMathFieldFiniteFields_getBinaryExtensionFieldWithIntArray_(IOSIntArray *exponents);
+
+FOUNDATION_EXPORT id<OrgBouncycastleMathFieldFiniteField> OrgBouncycastleMathFieldFiniteFields_getPrimeFieldWithJavaMathBigInteger_(JavaMathBigInteger *characteristic);
+
+FOUNDATION_EXPORT void OrgBouncycastleMathFieldFiniteFields_init(OrgBouncycastleMathFieldFiniteFields *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathFieldFiniteFields)
 

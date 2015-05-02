@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceUserRegistered.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceUserRegistered.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "java/io/IOException.h"
 
@@ -22,18 +24,33 @@
 }
 
 - (instancetype)init {
-  return
-#line 17
-  [super initWithNSString:@"User registered"];
+  AMServiceUserRegistered_init(self);
+  return self;
 }
 
 @end
 
+
+#line 12
 AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceUserRegistered_init();
+  AMServiceUserRegistered_initialize();
   
 #line 13
-  return ((AMServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceUserRegistered alloc] init], data));
+  return ((AMServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceUserRegistered_init(), data));
+}
+
+
+#line 16
+void AMServiceUserRegistered_init(AMServiceUserRegistered *self) {
+  (void) AMServiceContent_initWithNSString_(self, @"User registered");
+}
+
+
+#line 16
+AMServiceUserRegistered *new_AMServiceUserRegistered_init() {
+  AMServiceUserRegistered *self = [AMServiceUserRegistered alloc];
+  AMServiceUserRegistered_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceUserRegistered)

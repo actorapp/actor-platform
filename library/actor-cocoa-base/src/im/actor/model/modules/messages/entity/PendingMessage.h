@@ -6,27 +6,28 @@
 #ifndef _ImActorModelModulesMessagesEntityPendingMessage_H_
 #define _ImActorModelModulesMessagesEntityPendingMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMAbsContent;
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityPendingMessage : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityPendingMessage : BSBserObject {
-}
-
-+ (ImActorModelModulesMessagesEntityPendingMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
               withAMAbsContent:(AMAbsContent *)content;
 
-- (AMPeer *)getPeer;
++ (ImActorModelModulesMessagesEntityPendingMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAbsContent *)getContent;
+
+- (AMPeer *)getPeer;
 
 - (jlong)getRid;
 
@@ -40,10 +41,11 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityPendingMessage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesEntityPendingMessage *self, AMPeer *peer, jlong rid, AMAbsContent *content);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(AMPeer *peer, jlong rid, AMAbsContent *content) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityPendingMessage)
 

@@ -6,9 +6,9 @@
 #ifndef _MTMTProtoCallback_H_
 #define _MTMTProtoCallback_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol MTMTProtoCallback < NSObject, JavaObject >
 
@@ -25,8 +25,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(MTMTProtoCallback)
 
-#define ImActorModelNetworkMtpMTProtoCallback MTMTProtoCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(MTMTProtoCallback)
+
+#define ImActorModelNetworkMtpMTProtoCallback MTMTProtoCallback
 
 #endif // _MTMTProtoCallback_H_

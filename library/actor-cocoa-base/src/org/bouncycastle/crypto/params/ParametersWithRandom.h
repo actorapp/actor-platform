@@ -6,27 +6,29 @@
 #ifndef _OrgBouncycastleCryptoParamsParametersWithRandom_H_
 #define _OrgBouncycastleCryptoParamsParametersWithRandom_H_
 
-@protocol BCRandomProvider;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsParametersWithRandom : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@protocol BCRandomProvider;
+
+@interface OrgBouncycastleCryptoParamsParametersWithRandom : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                          withBCRandomProvider:(id<BCRandomProvider>)random;
 
-- (id<BCRandomProvider>)getRandom;
-
 - (id<OrgBouncycastleCryptoCipherParameters>)getParameters;
+
+- (id<BCRandomProvider>)getRandom;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsParametersWithRandom)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(OrgBouncycastleCryptoParamsParametersWithRandom *self, id<OrgBouncycastleCryptoCipherParameters> parameters, id<BCRandomProvider> random);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsParametersWithRandom *new_OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(id<OrgBouncycastleCryptoCipherParameters> parameters, id<BCRandomProvider> random) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsParametersWithRandom)
 

@@ -6,12 +6,20 @@
 #ifndef _OrgBouncycastleMathRawMod_H_
 #define _OrgBouncycastleMathRawMod_H_
 
-@class IOSIntArray;
-
 #include "J2ObjC_header.h"
 
-@interface OrgBouncycastleMathRawMod : NSObject {
-}
+@class IOSIntArray;
+
+@interface OrgBouncycastleMathRawMod : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
++ (void)addWithIntArray:(IOSIntArray *)p
+           withIntArray:(IOSIntArray *)x
+           withIntArray:(IOSIntArray *)y
+           withIntArray:(IOSIntArray *)z;
 
 + (jint)inverse32WithInt:(jint)d;
 
@@ -21,23 +29,14 @@
 
 + (IOSIntArray *)randomWithIntArray:(IOSIntArray *)p;
 
-+ (void)addWithIntArray:(IOSIntArray *)p
-           withIntArray:(IOSIntArray *)x
-           withIntArray:(IOSIntArray *)y
-           withIntArray:(IOSIntArray *)z;
-
 + (void)subtractWithIntArray:(IOSIntArray *)p
                 withIntArray:(IOSIntArray *)x
                 withIntArray:(IOSIntArray *)y
                 withIntArray:(IOSIntArray *)z;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathRawMod)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jint OrgBouncycastleMathRawMod_inverse32WithInt_(jint d);
 
@@ -48,7 +47,8 @@ FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleMathRawMod_randomWithIntArray_(IOS
 FOUNDATION_EXPORT void OrgBouncycastleMathRawMod_addWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *y, IOSIntArray *z);
 
 FOUNDATION_EXPORT void OrgBouncycastleMathRawMod_subtractWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *y, IOSIntArray *z);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathRawMod_init(OrgBouncycastleMathRawMod *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathRawMod)
 

@@ -6,9 +6,9 @@
 #ifndef _AMRsaEncryptCipher_H_
 #define _AMRsaEncryptCipher_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol AMRsaEncryptCipher < NSObject, JavaObject >
 
@@ -18,8 +18,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMRsaEncryptCipher)
 
-#define ImActorModelCryptoRsaEncryptCipher AMRsaEncryptCipher
-
 J2OBJC_TYPE_LITERAL_HEADER(AMRsaEncryptCipher)
+
+#define ImActorModelCryptoRsaEncryptCipher AMRsaEncryptCipher
 
 #endif // _AMRsaEncryptCipher_H_

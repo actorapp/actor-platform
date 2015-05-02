@@ -6,13 +6,14 @@
 #ifndef _ImActorModelModulesUpdatesInternalContactsLoaded_H_
 #define _ImActorModelModulesUpdatesInternalContactsLoaded_H_
 
-@class ImActorModelApiRpcResponseGetContacts;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
-@interface ImActorModelModulesUpdatesInternalContactsLoaded : ImActorModelModulesUpdatesInternalInternalUpdate {
-}
+@class ImActorModelApiRpcResponseGetContacts;
+
+@interface ImActorModelModulesUpdatesInternalContactsLoaded : ImActorModelModulesUpdatesInternalInternalUpdate
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)contacts;
 
@@ -22,8 +23,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalContactsLoaded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelModulesUpdatesInternalContactsLoaded *self, ImActorModelApiRpcResponseGetContacts *contacts);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalContactsLoaded *new_ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelApiRpcResponseGetContacts *contacts) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalContactsLoaded)
 

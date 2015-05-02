@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/SeqUpdateTooLong.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/SeqUpdateTooLong.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/RpcScope.h"
 #include "java/io/IOException.h"
 
 
@@ -28,11 +30,10 @@
 
 #line 28
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiBaseSeqUpdateTooLong_init(self);
+  return self;
 }
 
-
-#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
@@ -41,27 +42,43 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+
+#line 41
 - (NSString *)description {
-  
-#line 42
   NSString *res = @"update box SeqUpdateTooLong{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
+
+#line 48
 - (jint)getHeaderKey {
-  
-#line 49
   return ImActorModelApiBaseSeqUpdateTooLong_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiBaseSeqUpdateTooLong_init();
+  ImActorModelApiBaseSeqUpdateTooLong_initialize();
   
 #line 24
-  return ((ImActorModelApiBaseSeqUpdateTooLong *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiBaseSeqUpdateTooLong alloc] init], data));
+  return ((ImActorModelApiBaseSeqUpdateTooLong *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseSeqUpdateTooLong_init(), data));
+}
+
+
+#line 28
+void ImActorModelApiBaseSeqUpdateTooLong_init(ImActorModelApiBaseSeqUpdateTooLong *self) {
+  (void) ImActorModelNetworkParserRpcScope_init(self);
+}
+
+
+#line 28
+ImActorModelApiBaseSeqUpdateTooLong *new_ImActorModelApiBaseSeqUpdateTooLong_init() {
+  ImActorModelApiBaseSeqUpdateTooLong *self = [ImActorModelApiBaseSeqUpdateTooLong alloc];
+  ImActorModelApiBaseSeqUpdateTooLong_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiBaseSeqUpdateTooLong)

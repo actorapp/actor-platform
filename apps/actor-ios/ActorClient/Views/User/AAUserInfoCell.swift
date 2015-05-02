@@ -28,9 +28,8 @@ class AAUserInfoCell: AATableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = UITableViewCellSelectionStyle.None
-        
-        userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage(named: "profile_default")!)
-        userAvatarView.backgroundColor = MainAppTheme.navigation.barColor
+        userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage())
+        userAvatarView.backgroundColor = UIColor(patternImage: UIImage(named: "bg_gplay")!.tintBgImage(MainAppTheme.chat.profileBgTint))
         contentView.addSubview(userAvatarView)
         
         usernameLabel = UILabel()

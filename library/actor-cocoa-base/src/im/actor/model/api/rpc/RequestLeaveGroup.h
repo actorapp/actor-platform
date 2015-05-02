@@ -6,27 +6,30 @@
 #ifndef _ImActorModelApiRpcRequestLeaveGroup_H_
 #define _ImActorModelApiRpcRequestLeaveGroup_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiGroupOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestLeaveGroup_HEADER 70
 
-@interface ImActorModelApiRpcRequestLeaveGroup : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestLeaveGroup : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer;
+
+- (jint)getHeaderKey;
 
 - (jlong)getRid;
 
@@ -36,18 +39,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestLeaveGroup)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLeaveGroup, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestLeaveGroup *ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLeaveGroup, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiRpcRequestLeaveGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestLeaveGroup_init(ImActorModelApiRpcRequestLeaveGroup *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestLeaveGroup)
 

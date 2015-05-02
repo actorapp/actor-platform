@@ -6,23 +6,21 @@
 #ifndef _ImActorModelModulesProfile_H_
 #define _ImActorModelModulesProfile_H_
 
-@class AMOwnAvatarVM;
-@class DKActorRef;
-@class ImActorModelModulesAvatarOwnAvatarChangeActor;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesProfile : ImActorModelModulesBaseModule {
-}
+@class AMOwnAvatarVM;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesProfile : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (AMOwnAvatarVM *)getOwnAvatarVM;
-
 - (void)changeAvatarWithNSString:(NSString *)descriptor;
+
+- (AMOwnAvatarVM *)getOwnAvatarVM;
 
 - (void)removeAvatar;
 
@@ -30,25 +28,10 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesProfile)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesProfile *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesProfile *new_ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesProfile)
-
-@interface ImActorModelModulesProfile_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesAvatarOwnAvatarChangeActor *)create;
-
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesProfile_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesProfile_$1)
 
 #endif // _ImActorModelModulesProfile_H_

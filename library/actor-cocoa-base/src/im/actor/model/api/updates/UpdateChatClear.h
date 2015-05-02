@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiUpdatesUpdateChatClear_H_
 #define _ImActorModelApiUpdatesUpdateChatClear_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateChatClear_HEADER 47
 
-@interface ImActorModelApiUpdatesUpdateChatClear : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateChatClear : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateChatClear *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateChatClear *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiPeer *)getPeer;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateChatClear)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateChatClear, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateChatClear, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiUpdatesUpdateChatClear *self, ImActorModelApiPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiPeer *peer) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateChatClear_init(ImActorModelApiUpdatesUpdateChatClear *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateChatClear)
 

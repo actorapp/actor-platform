@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MixedNafR2LMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MixedNafR2LMultiplier.java"
 
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECCurve.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/MixedNafR2LMultiplier.h"
@@ -21,35 +23,16 @@
 
 #line 17
 - (instancetype)init {
-  return
-#line 19
-  [self initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:OrgBouncycastleMathEcECCurve_COORD_JACOBIAN withInt:OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED];
-}
-
-
-#line 22
-- (instancetype)initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:(jint)additionCoord
-                                                              withInt:(jint)doublingCoord {
-  if (self = [super init]) {
-    
-#line 24
-    self->additionCoord_ = additionCoord;
-    
-#line 25
-    self->doublingCoord_ = doublingCoord;
-  }
+  OrgBouncycastleMathEcMixedNafR2LMultiplier_init(self);
   return self;
 }
 
 - (instancetype)initWithInt:(jint)additionCoord
                     withInt:(jint)doublingCoord {
-  return [self initOrgBouncycastleMathEcMixedNafR2LMultiplierWithInt:
-#line 22
-additionCoord withInt:doublingCoord];
+  OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(self, additionCoord, doublingCoord);
+  return self;
 }
 
-
-#line 28
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
   
@@ -114,19 +97,45 @@ additionCoord withInt:doublingCoord];
   if (![c supportsCoordinateSystemWithInt:coord]) {
     
 #line 72
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:JreStrcat("$I$", @"Coordinate system ", coord, @" not supported by this curve")];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(JreStrcat("$I$", @"Coordinate system ", coord, @" not supported by this curve"));
   }
   
 #line 75
   return [((OrgBouncycastleMathEcECCurve_Config *) nil_chk([((OrgBouncycastleMathEcECCurve_Config *) nil_chk([c configure])) setCoordinateSystemWithInt:coord])) create];
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcMixedNafR2LMultiplier *)other {
-  [super copyAllFieldsTo:other];
-  other->additionCoord_ = additionCoord_;
-  other->doublingCoord_ = doublingCoord_;
+@end
+
+
+#line 17
+void OrgBouncycastleMathEcMixedNafR2LMultiplier_init(OrgBouncycastleMathEcMixedNafR2LMultiplier *self) {
+  (void) OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(self,
+#line 19
+  OrgBouncycastleMathEcECCurve_COORD_JACOBIAN, OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED);
 }
 
-@end
+
+#line 17
+OrgBouncycastleMathEcMixedNafR2LMultiplier *new_OrgBouncycastleMathEcMixedNafR2LMultiplier_init() {
+  OrgBouncycastleMathEcMixedNafR2LMultiplier *self = [OrgBouncycastleMathEcMixedNafR2LMultiplier alloc];
+  OrgBouncycastleMathEcMixedNafR2LMultiplier_init(self);
+  return self;
+}
+
+
+#line 22
+void OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(OrgBouncycastleMathEcMixedNafR2LMultiplier *self, jint additionCoord, jint doublingCoord) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+  self->additionCoord_ = additionCoord;
+  self->doublingCoord_ = doublingCoord;
+}
+
+
+#line 22
+OrgBouncycastleMathEcMixedNafR2LMultiplier *new_OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(jint additionCoord, jint doublingCoord) {
+  OrgBouncycastleMathEcMixedNafR2LMultiplier *self = [OrgBouncycastleMathEcMixedNafR2LMultiplier alloc];
+  OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(self, additionCoord, doublingCoord);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcMixedNafR2LMultiplier)

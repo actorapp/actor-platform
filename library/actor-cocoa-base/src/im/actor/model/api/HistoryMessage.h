@@ -6,16 +6,19 @@
 #ifndef _ImActorModelApiHistoryMessage_H_
 #define _ImActorModelApiHistoryMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiMessage;
 @class ImActorModelApiMessageStateEnum;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiHistoryMessage : BSBserObject
 
-@interface ImActorModelApiHistoryMessage : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)senderUid
                    withLong:(jlong)rid
@@ -23,15 +26,13 @@
  withImActorModelApiMessage:(ImActorModelApiMessage *)message
 withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
-- (instancetype)init;
-
-- (jint)getSenderUid;
-
-- (jlong)getRid;
-
 - (jlong)getDate;
 
 - (ImActorModelApiMessage *)getMessage;
+
+- (jlong)getRid;
+
+- (jint)getSenderUid;
 
 - (ImActorModelApiMessageStateEnum *)getState;
 
@@ -45,8 +46,13 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiHistoryMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiHistoryMessage *self, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state);
+
+FOUNDATION_EXPORT ImActorModelApiHistoryMessage *new_ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiHistoryMessage_init(ImActorModelApiHistoryMessage *self);
+
+FOUNDATION_EXPORT ImActorModelApiHistoryMessage *new_ImActorModelApiHistoryMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiHistoryMessage)
 

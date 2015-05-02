@@ -6,46 +6,31 @@
 #ifndef _DKRunnableActor_H_
 #define _DKRunnableActor_H_
 
-@class DKActorRef;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 
-@interface DKRunnableActor : DKActor {
-}
+@class DKActorRef;
 
-+ (DKActorRef *)buildActorWithNSString:(NSString *)path;
+@interface DKRunnableActor : DKActor
+
+#pragma mark Public
 
 - (instancetype)init;
+
++ (DKActorRef *)buildActorWithNSString:(NSString *)path;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKRunnableActor)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT DKActorRef *DKRunnableActor_buildActorWithNSString_(NSString *path);
-CF_EXTERN_C_END
 
-typedef DKRunnableActor ImActorModelDroidkitActorsRunnableActor;
+FOUNDATION_EXPORT void DKRunnableActor_init(DKRunnableActor *self);
+
+FOUNDATION_EXPORT DKRunnableActor *new_DKRunnableActor_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKRunnableActor)
 
-@interface DKRunnableActor_$1 : NSObject < DKActorCreator > {
-}
-
-- (DKRunnableActor *)create;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(DKRunnableActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(DKRunnableActor_$1)
+typedef DKRunnableActor ImActorModelDroidkitActorsRunnableActor;
 
 #endif // _DKRunnableActor_H_

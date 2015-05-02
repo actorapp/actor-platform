@@ -6,28 +6,28 @@
 #ifndef _ImActorModelJvmThreadsJavaThreadLocal_H_
 #define _ImActorModelJvmThreadsJavaThreadLocal_H_
 
-@class JavaLangThreadLocal;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/util/ThreadLocalCompat.h"
 
-@interface ImActorModelJvmThreadsJavaThreadLocal : AMThreadLocalCompat {
-}
+@interface ImActorModelJvmThreadsJavaThreadLocal : AMThreadLocalCompat
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (id)get;
 
-- (void)setWithId:(id)v;
-
 - (void)remove;
 
-- (instancetype)init;
+- (void)setWithId:(id)v;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelJvmThreadsJavaThreadLocal)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelJvmThreadsJavaThreadLocal_init(ImActorModelJvmThreadsJavaThreadLocal *self);
+
+FOUNDATION_EXPORT ImActorModelJvmThreadsJavaThreadLocal *new_ImActorModelJvmThreadsJavaThreadLocal_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaThreadLocal)
 

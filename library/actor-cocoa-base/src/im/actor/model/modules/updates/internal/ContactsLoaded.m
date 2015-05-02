@@ -3,16 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/ContactsLoaded.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/ContactsLoaded.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/ResponseGetContacts.h"
 #include "im/actor/model/modules/updates/internal/ContactsLoaded.h"
+#include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
 @interface ImActorModelModulesUpdatesInternalContactsLoaded () {
  @public
   ImActorModelApiRpcResponseGetContacts *contacts_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalContactsLoaded, contacts_, ImActorModelApiRpcResponseGetContacts *)
@@ -24,27 +27,33 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalContactsLoaded, contacts_,
 
 #line 11
 - (instancetype)initWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)contacts {
-  if (self = [super init]) {
-    
-#line 12
-    self->contacts_ = contacts;
-  }
+  ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(self, contacts);
   return self;
 }
 
 
 #line 15
 - (ImActorModelApiRpcResponseGetContacts *)getContacts {
-  
-#line 16
   return contacts_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUpdatesInternalContactsLoaded *)other {
-  [super copyAllFieldsTo:other];
-  other->contacts_ = contacts_;
+@end
+
+
+#line 11
+void ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelModulesUpdatesInternalContactsLoaded *self, ImActorModelApiRpcResponseGetContacts *contacts) {
+  (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
+  
+#line 12
+  self->contacts_ = contacts;
 }
 
-@end
+
+#line 11
+ImActorModelModulesUpdatesInternalContactsLoaded *new_ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelApiRpcResponseGetContacts *contacts) {
+  ImActorModelModulesUpdatesInternalContactsLoaded *self = [ImActorModelModulesUpdatesInternalContactsLoaded alloc];
+  ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(self, contacts);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesInternalContactsLoaded)

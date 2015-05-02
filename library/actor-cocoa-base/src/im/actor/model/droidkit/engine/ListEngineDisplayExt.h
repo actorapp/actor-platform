@@ -6,13 +6,14 @@
 #ifndef _DKListEngineDisplayExt_H_
 #define _DKListEngineDisplayExt_H_
 
-@protocol DKListEngineDisplayListener;
-@protocol DKListEngineDisplayLoadCallback;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 
+@protocol DKListEngineDisplayListener;
+@protocol DKListEngineDisplayLoadCallback;
+
 @protocol DKListEngineDisplayExt < DKListEngine, NSObject, JavaObject >
+
 - (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
 
 - (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
@@ -57,8 +58,8 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngineDisplayExt)
 
-#define ImActorModelDroidkitEngineListEngineDisplayExt DKListEngineDisplayExt
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngineDisplayExt)
+
+#define ImActorModelDroidkitEngineListEngineDisplayExt DKListEngineDisplayExt
 
 #endif // _DKListEngineDisplayExt_H_

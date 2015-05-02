@@ -6,56 +6,62 @@
 #ifndef _AMDialogBuilder_H_
 #define _AMDialogBuilder_H_
 
+#include "J2ObjC_header.h"
+
 @class AMAvatar;
 @class AMContentTypeEnum;
 @class AMDialog;
 @class AMMessageStateEnum;
 @class AMPeer;
 
-#include "J2ObjC_header.h"
+@interface AMDialogBuilder : NSObject
 
-@interface AMDialogBuilder : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithAMDialog:(AMDialog *)dialog;
 
-- (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer;
-
-- (AMDialogBuilder *)setSortKeyWithLong:(jlong)sortKey;
-
-- (AMDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle;
-
-- (AMDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount;
-
-- (AMDialogBuilder *)setRidWithLong:(jlong)rid;
-
-- (AMDialogBuilder *)setMessageTypeWithAMContentTypeEnum:(AMContentTypeEnum *)messageType;
-
-- (AMDialogBuilder *)setTextWithNSString:(NSString *)text;
-
-- (AMDialogBuilder *)setStatusWithAMMessageStateEnum:(AMMessageStateEnum *)status;
-
-- (AMDialogBuilder *)setSenderIdWithInt:(jint)senderId;
-
-- (AMDialogBuilder *)setTimeWithLong:(jlong)time;
-
-- (AMDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid;
+- (AMDialog *)createDialog;
 
 - (AMDialogBuilder *)setDialogAvatarWithAMAvatar:(AMAvatar *)avatar;
 
-- (AMDialog *)createDialog;
+- (AMDialogBuilder *)setDialogTitleWithNSString:(NSString *)dialogTitle;
+
+- (AMDialogBuilder *)setMessageTypeWithAMContentTypeEnum:(AMContentTypeEnum *)messageType;
+
+- (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer;
+
+- (AMDialogBuilder *)setRelatedUidWithInt:(jint)relatedUid;
+
+- (AMDialogBuilder *)setRidWithLong:(jlong)rid;
+
+- (AMDialogBuilder *)setSenderIdWithInt:(jint)senderId;
+
+- (AMDialogBuilder *)setSortKeyWithLong:(jlong)sortKey;
+
+- (AMDialogBuilder *)setStatusWithAMMessageStateEnum:(AMMessageStateEnum *)status;
+
+- (AMDialogBuilder *)setTextWithNSString:(NSString *)text;
+
+- (AMDialogBuilder *)setTimeWithLong:(jlong)time;
+
+- (AMDialogBuilder *)setUnreadCountWithInt:(jint)unreadCount;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMDialogBuilder)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMDialogBuilder_init(AMDialogBuilder *self);
 
-typedef AMDialogBuilder ImActorModelEntityDialogBuilder;
+FOUNDATION_EXPORT AMDialogBuilder *new_AMDialogBuilder_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMDialogBuilder_initWithAMDialog_(AMDialogBuilder *self, AMDialog *dialog);
+
+FOUNDATION_EXPORT AMDialogBuilder *new_AMDialogBuilder_initWithAMDialog_(AMDialog *dialog) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDialogBuilder)
+
+typedef AMDialogBuilder ImActorModelEntityDialogBuilder;
 
 #endif // _AMDialogBuilder_H_

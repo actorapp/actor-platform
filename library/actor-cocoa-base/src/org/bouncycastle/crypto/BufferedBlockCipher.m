@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/BufferedBlockCipher.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/BufferedBlockCipher.java"
 
 #include "IOSClass.h"
@@ -26,44 +27,14 @@
 
 #line 26
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleCryptoBufferedBlockCipher_init(self);
+  return self;
 }
 
 
 #line 35
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher {
-  if (self = [super init]) {
-    
-#line 38
-    self->cipher_ = cipher;
-    
-#line 40
-    buf_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher)) getBlockSize]];
-    
-#line 41
-    bufOff_ = 0;
-    
-#line 46
-    NSString *name = [cipher getAlgorithmName];
-    
-#line 47
-    jint idx = [((NSString *) nil_chk(name)) indexOf:'/'] + 1;
-    
-#line 49
-    pgpCFB_ = (idx > 0 && [name hasPrefix:@"PGP" offset:idx]);
-    
-#line 51
-    if (pgpCFB_ || [OrgBouncycastleCryptoStreamCipher_class_() isInstance:cipher]) {
-      
-#line 53
-      partialBlockOkay_ = YES;
-    }
-    else {
-      
-#line 57
-      partialBlockOkay_ = (idx > 0 && ([name hasPrefix:@"OpenPGP" offset:idx]));
-    }
-  }
+  OrgBouncycastleCryptoBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(self, cipher);
   return self;
 }
 
@@ -166,7 +137,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   if (len < 0) {
     
 #line 194
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Can't have a negative input length!"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Can't have a negative input length!");
   }
   
 #line 197
@@ -180,7 +151,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
     if ((outOff + length) > ((IOSByteArray *) nil_chk(outArg))->size_) {
       
 #line 204
-      @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short"];
+      @throw new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(@"output buffer too short");
     }
   }
   
@@ -247,7 +218,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
     if (outOff + bufOff_ > ((IOSByteArray *) nil_chk(outArg))->size_) {
       
 #line 268
-      @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short for doFinal()"];
+      @throw new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(@"output buffer too short for doFinal()");
     }
     
 #line 271
@@ -257,7 +228,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
       if (!partialBlockOkay_) {
         
 #line 275
-        @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"data not block size aligned"];
+        @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"data not block size aligned");
       }
       
 #line 278
@@ -295,16 +266,60 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   [((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher_)) reset];
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoBufferedBlockCipher *)other {
-  [super copyAllFieldsTo:other];
-  other->buf_ = buf_;
-  other->bufOff_ = bufOff_;
-  other->forEncryption_ = forEncryption_;
-  other->cipher_ = cipher_;
-  other->partialBlockOkay_ = partialBlockOkay_;
-  other->pgpCFB_ = pgpCFB_;
+@end
+
+
+#line 26
+void OrgBouncycastleCryptoBufferedBlockCipher_init(OrgBouncycastleCryptoBufferedBlockCipher *self) {
+  (void) NSObject_init(self);
 }
 
-@end
+
+#line 26
+OrgBouncycastleCryptoBufferedBlockCipher *new_OrgBouncycastleCryptoBufferedBlockCipher_init() {
+  OrgBouncycastleCryptoBufferedBlockCipher *self = [OrgBouncycastleCryptoBufferedBlockCipher alloc];
+  OrgBouncycastleCryptoBufferedBlockCipher_init(self);
+  return self;
+}
+
+
+#line 35
+void OrgBouncycastleCryptoBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(OrgBouncycastleCryptoBufferedBlockCipher *self, id<OrgBouncycastleCryptoBlockCipher> cipher) {
+  (void) NSObject_init(self);
+  
+#line 38
+  self->cipher_ = cipher;
+  
+#line 40
+  self->buf_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher)) getBlockSize]];
+  self->bufOff_ = 0;
+  
+#line 46
+  NSString *name = [cipher getAlgorithmName];
+  jint idx = [((NSString *) nil_chk(name)) indexOf:'/'] + 1;
+  
+#line 49
+  self->pgpCFB_ = (idx > 0 && [name hasPrefix:@"PGP" offset:idx]);
+  
+#line 51
+  if (self->pgpCFB_ || [OrgBouncycastleCryptoStreamCipher_class_() isInstance:cipher]) {
+    
+#line 53
+    self->partialBlockOkay_ = YES;
+  }
+  else {
+    
+#line 57
+    self->partialBlockOkay_ = (idx > 0 && ([name hasPrefix:@"OpenPGP" offset:idx]));
+  }
+}
+
+
+#line 35
+OrgBouncycastleCryptoBufferedBlockCipher *new_OrgBouncycastleCryptoBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(id<OrgBouncycastleCryptoBlockCipher> cipher) {
+  OrgBouncycastleCryptoBufferedBlockCipher *self = [OrgBouncycastleCryptoBufferedBlockCipher alloc];
+  OrgBouncycastleCryptoBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(self, cipher);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoBufferedBlockCipher)

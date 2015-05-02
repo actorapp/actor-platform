@@ -6,9 +6,9 @@
 #ifndef _AMFileVMCallback_H_
 #define _AMFileVMCallback_H_
 
-@protocol AMFileSystemReference;
-
 #include "J2ObjC_header.h"
+
+@protocol AMFileSystemReference;
 
 @protocol AMFileVMCallback < NSObject, JavaObject >
 
@@ -22,8 +22,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileVMCallback)
 
-#define ImActorModelViewmodelFileVMCallback AMFileVMCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMFileVMCallback)
+
+#define ImActorModelViewmodelFileVMCallback AMFileVMCallback
 
 #endif // _AMFileVMCallback_H_

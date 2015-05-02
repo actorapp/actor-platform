@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/SearchEntity.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/SearchEntity.java"
 
 #include "IOSClass.h"
@@ -25,23 +26,43 @@
   AMAvatar *avatar_;
   NSString *title_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMSearchEntity, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMSearchEntity, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMSearchEntity, title_, NSString *)
 
-BOOL AMSearchEntity_initialized = NO;
+__attribute__((unused)) static void AMSearchEntity_init(AMSearchEntity *self);
+
+__attribute__((unused)) static AMSearchEntity *new_AMSearchEntity_init() NS_RETURNS_RETAINED;
+
+@interface AMSearchEntity_$1 : NSObject < BSBserCreator >
+
+- (AMSearchEntity *)createInstance;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMSearchEntity_$1)
+
+__attribute__((unused)) static void AMSearchEntity_$1_init(AMSearchEntity_$1 *self);
+
+__attribute__((unused)) static AMSearchEntity_$1 *new_AMSearchEntity_$1_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMSearchEntity_$1)
+
+J2OBJC_INITIALIZED_DEFN(AMSearchEntity)
+
+id<BSBserCreator> AMSearchEntity_CREATOR_;
 
 
 #line 15
 @implementation AMSearchEntity
 
-id<BSBserCreator> AMSearchEntity_CREATOR_;
-
-
-#line 17
 + (AMSearchEntity *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMSearchEntity_fromBytesWithByteArray_(data);
 }
@@ -52,56 +73,32 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
                       withLong:(jlong)order
                   withAMAvatar:(AMAvatar *)avatar
                   withNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 35
-    self->peer_ = peer;
-    
-#line 36
-    self->order_ = order;
-    
-#line 37
-    self->avatar_ = avatar;
-    
-#line 38
-    self->title_ = title;
-  }
+  AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(self, peer, order, avatar, title);
   return self;
 }
 
 
 #line 41
 - (instancetype)init {
-  return [super init];
+  AMSearchEntity_init(self);
+  return self;
 }
 
+
+#line 45
 - (AMPeer *)getPeer {
-  
-#line 46
   return peer_;
 }
 
-
-#line 49
 - (AMAvatar *)getAvatar {
-  
-#line 50
   return avatar_;
 }
 
-
-#line 53
 - (NSString *)getTitle {
-  
-#line 54
   return title_;
 }
 
-
-#line 57
 - (jlong)getOrder {
-  
-#line 58
   return order_;
 }
 
@@ -124,8 +121,6 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 
 #line 74
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 75
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:peer_];
   [writer writeLongWithInt:2 withLong:order_];
   if (avatar_ != nil) {
@@ -143,8 +138,6 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 
 #line 89
 - (jlong)getEngineSort {
-  
-#line 90
   return order_;
 }
 
@@ -154,30 +147,56 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
   return title_;
 }
 
-- (void)copyAllFieldsTo:(AMSearchEntity *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->order_ = order_;
-  other->avatar_ = avatar_;
-  other->title_ = title_;
-}
-
 + (void)initialize {
   if (self == [AMSearchEntity class]) {
-    AMSearchEntity_CREATOR_ =
-#line 21
-    [[AMSearchEntity_$1 alloc] init];
+    AMSearchEntity_CREATOR_ = new_AMSearchEntity_$1_init();
     J2OBJC_SET_INITIALIZED(AMSearchEntity)
   }
 }
 
 @end
 
+
+#line 17
 AMSearchEntity *AMSearchEntity_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMSearchEntity_init();
+  AMSearchEntity_initialize();
   
 #line 18
-  return ((AMSearchEntity *) BSBser_parseWithBSBserObject_withByteArray_([[AMSearchEntity alloc] init], data));
+  return ((AMSearchEntity *) BSBser_parseWithBSBserObject_withByteArray_(new_AMSearchEntity_init(), data));
+}
+
+
+#line 34
+void AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMSearchEntity *self, AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title) {
+  (void) BSBserObject_init(self);
+  
+#line 35
+  self->peer_ = peer;
+  self->order_ = order;
+  self->avatar_ = avatar;
+  self->title_ = title;
+}
+
+
+#line 34
+AMSearchEntity *new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title) {
+  AMSearchEntity *self = [AMSearchEntity alloc];
+  AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(self, peer, order, avatar, title);
+  return self;
+}
+
+
+#line 41
+void AMSearchEntity_init(AMSearchEntity *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 41
+AMSearchEntity *new_AMSearchEntity_init() {
+  AMSearchEntity *self = [AMSearchEntity alloc];
+  AMSearchEntity_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMSearchEntity)
@@ -187,15 +206,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMSearchEntity)
 
 #line 23
 - (AMSearchEntity *)createInstance {
-  
-#line 24
-  return [[AMSearchEntity alloc] init];
+  return new_AMSearchEntity_init();
 }
 
 - (instancetype)init {
-  return [super init];
+  AMSearchEntity_$1_init(self);
+  return self;
 }
 
 @end
+
+void AMSearchEntity_$1_init(AMSearchEntity_$1 *self) {
+  (void) NSObject_init(self);
+}
+
+AMSearchEntity_$1 *new_AMSearchEntity_$1_init() {
+  AMSearchEntity_$1 *self = [AMSearchEntity_$1 alloc];
+  AMSearchEntity_$1_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMSearchEntity_$1)

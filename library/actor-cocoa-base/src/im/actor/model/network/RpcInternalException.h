@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/RpcException.h"
 
-@interface AMRpcInternalException : AMRpcException {
-}
+@interface AMRpcInternalException : AMRpcException
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -18,11 +19,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMRpcInternalException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMRpcInternalException_init(AMRpcInternalException *self);
 
-typedef AMRpcInternalException ImActorModelNetworkRpcInternalException;
+FOUNDATION_EXPORT AMRpcInternalException *new_AMRpcInternalException_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMRpcInternalException)
+
+typedef AMRpcInternalException ImActorModelNetworkRpcInternalException;
 
 #endif // _AMRpcInternalException_H_

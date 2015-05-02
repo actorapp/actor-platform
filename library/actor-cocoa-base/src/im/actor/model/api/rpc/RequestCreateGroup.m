@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCreateGroup.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCreateGroup.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -24,6 +26,7 @@
   NSString *title_;
   id<JavaUtilList> users_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, title_, NSString *)
@@ -44,45 +47,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 - (instancetype)initWithLong:(jlong)rid
                 withNSString:(NSString *)title
             withJavaUtilList:(id<JavaUtilList>)users {
-  if (self = [super init]) {
-    
-#line 32
-    self->rid_ = rid;
-    
-#line 33
-    self->title_ = title;
-    
-#line 34
-    self->users_ = users;
-  }
+  ImActorModelApiRpcRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(self, rid, title, users);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestCreateGroup_init(self);
+  return self;
 }
 
+
+#line 41
 - (jlong)getRid {
-  
-#line 42
   return self->rid_;
 }
 
-
-#line 45
 - (NSString *)getTitle {
-  
-#line 46
   return self->title_;
 }
 
-
-#line 49
 - (id<JavaUtilList>)getUsers {
-  
-#line 50
   return self->users_;
 }
 
@@ -91,9 +77,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->title_ = [values getStringWithInt:2];
-  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_users addWithId:[[ImActorModelApiUserOutPeer alloc] init]];
+    [_users addWithId:new_ImActorModelApiUserOutPeer_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_users];
 }
@@ -101,16 +87,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
 
 #line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 66
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->rid_];
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->title_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->users_];
 }
 
+
+#line 75
 - (NSString *)description {
   NSString *res = @"rpc CreateGroup{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"rid=", self->rid_));
@@ -120,26 +106,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCreateGroup, users_, id<JavaUtilLis
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 86
-  return ImActorModelApiRpcRequestCreateGroup_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestCreateGroup *)other {
-  [super copyAllFieldsTo:other];
-  other->rid_ = rid_;
-  other->title_ = title_;
-  other->users_ = users_;
+#line 85
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestCreateGroup_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestCreateGroup *ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestCreateGroup_init();
+  ImActorModelApiRpcRequestCreateGroup_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestCreateGroup *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestCreateGroup alloc] init], data));
+  return ((ImActorModelApiRpcRequestCreateGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestCreateGroup_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiRpcRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(ImActorModelApiRpcRequestCreateGroup *self, jlong rid, NSString *title, id<JavaUtilList> users) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 32
+  self->rid_ = rid;
+  self->title_ = title;
+  self->users_ = users;
+}
+
+
+#line 31
+ImActorModelApiRpcRequestCreateGroup *new_ImActorModelApiRpcRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(jlong rid, NSString *title, id<JavaUtilList> users) {
+  ImActorModelApiRpcRequestCreateGroup *self = [ImActorModelApiRpcRequestCreateGroup alloc];
+  ImActorModelApiRpcRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(self, rid, title, users);
+  return self;
+}
+
+void ImActorModelApiRpcRequestCreateGroup_init(ImActorModelApiRpcRequestCreateGroup *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 37
+ImActorModelApiRpcRequestCreateGroup *new_ImActorModelApiRpcRequestCreateGroup_init() {
+  ImActorModelApiRpcRequestCreateGroup *self = [ImActorModelApiRpcRequestCreateGroup alloc];
+  ImActorModelApiRpcRequestCreateGroup_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestCreateGroup)

@@ -1,0 +1,46 @@
+<div flex ng-controller="chatsController as chats">
+  <!-- <md-subheader>Opened chats</md-subheader> -->
+
+  <md-list flex class="chatlist">
+      <md-list-item class="chatlist__item"
+                    ng-repeat="chat in chats.list"
+                    ng-class="{'chatlist__item--selected' : chat.peer.peer==main.actorService.currentPeer}"
+                    ng-click="chats.selectChat(chat.peer.peer)">
+        <div class="chatlist__avatar">
+          <img class="md-avatar" ng-src="{{ chat.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.avatar" />
+          <div class="no-avatar no-avatar--{{ chat.peer.placeholder }}" ng-if="!chat.avatar">
+            <span>{{ chat.peer.title | limitTo:1 }}</span>
+          </div>
+        </div>
+        <div class="md-list-item-text chatlist__body" flex>
+            <h3 layout="row" class="chatlist__body__title">
+              <span flex >
+                <md-icon md-svg-icon="assets/img/icons/ic_group_24px.svg"
+                         ng-if="chat.peer.peer.type == 'group'"
+                         class="chatlist__body__title__icon"></md-icon>
+                {{ chat.peer.title }}
+              </span>
+              <time class="chatlist__body__title__timestamp">{{ chat.date }}</time>
+            </h3>
+            <p class="chatlist__body__message"  ng-if="chat.state != 'unknown'">
+              <md-icon md-svg-icon="assets/img/icons/ic_access_time_24px.svg"
+                       ng-if="chat.state == 'pending'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--penging"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_done_24px.svg"
+                       ng-if="chat.state == 'sent'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--sent"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
+                       ng-if="chat.state == 'received'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--received"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
+                       ng-if="chat.state == 'read'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--read"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_report_problem_24px.svg"
+                       ng-if="chat.state == 'error'"
+                       class="chatlist__body__message__icon chatlist__body__message__icon--error"></md-icon>
+              {{ chat.text | truncate : 23 }}
+            </p>
+        </div>
+      </md-list-item>
+  </md-list>
+</div>

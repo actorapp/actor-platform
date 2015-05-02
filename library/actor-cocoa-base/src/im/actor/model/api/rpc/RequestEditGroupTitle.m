@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupTitle.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupTitle.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestEditGroupTitle () {
@@ -22,6 +24,7 @@
   jlong rid_;
   NSString *title_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, groupPeer_, ImActorModelApiGroupOutPeer *)
@@ -42,52 +45,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                                        withNSString:(NSString *)title {
-  if (self = [super init]) {
-    
-#line 32
-    self->groupPeer_ = groupPeer;
-    
-#line 33
-    self->rid_ = rid;
-    
-#line 34
-    self->title_ = title;
-  }
+  ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(self, groupPeer, rid, title);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestEditGroupTitle_init(self);
+  return self;
 }
 
+
+#line 41
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
-  
-#line 42
   return self->groupPeer_;
 }
 
-
-#line 45
 - (jlong)getRid {
-  
-#line 46
   return self->rid_;
 }
 
-
-#line 49
 - (NSString *)getTitle {
-  
-#line 50
   return self->title_;
 }
 
 
 #line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
   self->title_ = [values getStringWithInt:3];
 }
@@ -95,19 +81,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   if (self->groupPeer_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
 }
 
+
+#line 74
 - (NSString *)description {
   NSString *res = @"rpc EditGroupTitle{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -117,26 +103,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 85
-  return ImActorModelApiRpcRequestEditGroupTitle_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditGroupTitle *)other {
-  [super copyAllFieldsTo:other];
-  other->groupPeer_ = groupPeer_;
-  other->rid_ = rid_;
-  other->title_ = title_;
+#line 84
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestEditGroupTitle_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestEditGroupTitle *ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestEditGroupTitle_init();
+  ImActorModelApiRpcRequestEditGroupTitle_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestEditGroupTitle *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditGroupTitle alloc] init], data));
+  return ((ImActorModelApiRpcRequestEditGroupTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditGroupTitle_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(ImActorModelApiRpcRequestEditGroupTitle *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, NSString *title) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 32
+  self->groupPeer_ = groupPeer;
+  self->rid_ = rid;
+  self->title_ = title;
+}
+
+
+#line 31
+ImActorModelApiRpcRequestEditGroupTitle *new_ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, NSString *title) {
+  ImActorModelApiRpcRequestEditGroupTitle *self = [ImActorModelApiRpcRequestEditGroupTitle alloc];
+  ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(self, groupPeer, rid, title);
+  return self;
+}
+
+void ImActorModelApiRpcRequestEditGroupTitle_init(ImActorModelApiRpcRequestEditGroupTitle *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 37
+ImActorModelApiRpcRequestEditGroupTitle *new_ImActorModelApiRpcRequestEditGroupTitle_init() {
+  ImActorModelApiRpcRequestEditGroupTitle *self = [ImActorModelApiRpcRequestEditGroupTitle alloc];
+  ImActorModelApiRpcRequestEditGroupTitle_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditGroupTitle)

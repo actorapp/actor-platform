@@ -6,37 +6,39 @@
 #ifndef _DKMailboxesQueue_H_
 #define _DKMailboxesQueue_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
+
 @class DKDispatchResult;
 @class DKMailbox;
 @class ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
+@interface DKMailboxesQueue : DKAbstractDispatchQueue
 
-@interface DKMailboxesQueue : DKAbstractDispatchQueue {
-}
+#pragma mark Public
 
 - (instancetype)init;
 
-- (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)getEnvelopeRoot;
-
-- (void)unlockMailboxWithDKMailbox:(DKMailbox *)mailbox;
-
 - (void)disconnectMailboxWithDKMailbox:(DKMailbox *)mailbox;
+
+- (DKDispatchResult *)dispatchWithLong:(jlong)time;
+
+- (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)getEnvelopeRoot;
 
 - (void)notifyQueueChanged;
 
-- (DKDispatchResult *)dispatchWithLong:(jlong)time;
+- (void)unlockMailboxWithDKMailbox:(DKMailbox *)mailbox;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKMailboxesQueue)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKMailboxesQueue_init(DKMailboxesQueue *self);
 
-typedef DKMailboxesQueue ImActorModelDroidkitActorsMailboxMailboxesQueue;
+FOUNDATION_EXPORT DKMailboxesQueue *new_DKMailboxesQueue_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKMailboxesQueue)
+
+typedef DKMailboxesQueue ImActorModelDroidkitActorsMailboxMailboxesQueue;
 
 #endif // _DKMailboxesQueue_H_

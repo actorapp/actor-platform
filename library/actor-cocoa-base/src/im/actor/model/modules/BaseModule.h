@@ -6,69 +6,66 @@
 #ifndef _ImActorModelModulesBaseModule_H_
 #define _ImActorModelModulesBaseModule_H_
 
+#include "J2ObjC_header.h"
+
 @class AMPeer;
-@class AMRpcException;
 @class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
 @class ImActorModelNetworkParserRequest;
-@class ImActorModelNetworkParserResponse;
 @protocol AMCryptoProvider;
+@protocol AMRpcCallback;
 @protocol AMStorageProvider;
 @protocol DKKeyValueEngine;
 @protocol DKPreferencesStorage;
 @protocol JavaLangRunnable;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/RpcCallback.h"
+@interface ImActorModelModulesBaseModule : NSObject
 
-@interface ImActorModelModulesBaseModule : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
-
-- (ImActorModelModulesModules *)modules;
-
-- (ImActorModelModulesUpdates *)updates;
-
-- (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
-
-- (DKActorRef *)sendActor;
-
-- (DKActorRef *)dialogsActor;
-
-- (DKActorRef *)dialogsHistoryActor;
-
-- (DKActorRef *)ownReadActor;
-
-- (DKActorRef *)plainReceiveActor;
 
 - (DKActorRef *)conversationActorWithAMPeer:(AMPeer *)peer;
 
 - (DKActorRef *)conversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
-- (id<DKPreferencesStorage>)preferences;
-
 - (id<AMCryptoProvider>)crypto;
 
-- (id<AMStorageProvider>)storage;
+- (DKActorRef *)dialogsActor;
+
+- (DKActorRef *)dialogsHistoryActor;
+
+- (id<DKKeyValueEngine>)groups;
+
+- (ImActorModelModulesModules *)modules;
 
 - (jint)myUid;
+
+- (DKActorRef *)ownReadActor;
+
+- (DKActorRef *)plainReceiveActor;
+
+- (id<DKPreferencesStorage>)preferences;
+
+- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
+- (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
+
+- (DKActorRef *)sendActor;
+
+- (id<AMStorageProvider>)storage;
+
+- (ImActorModelModulesUpdates *)updates;
 
 - (id<DKKeyValueEngine>)users;
-
-- (id<DKKeyValueEngine>)groups;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesBaseModule)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_DIALOGS_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_DIALOGS_, NSString *)
@@ -102,26 +99,11 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_PENDING_, NSSt
 
 FOUNDATION_EXPORT NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesBaseModule, STORAGE_CURSOR_, NSString *)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(ImActorModelModulesBaseModule *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesBaseModule *new_ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesBaseModule)
-
-@interface ImActorModelModulesBaseModule_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesBaseModule_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesBaseModule_$1)
 
 #endif // _ImActorModelModulesBaseModule_H_

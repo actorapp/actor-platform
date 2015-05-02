@@ -8,17 +8,18 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMUserPhone : NSObject {
-}
+@interface AMUserPhone : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)phone
                 withNSString:(NSString *)title;
 
+- (jboolean)isEqual:(id)o;
+
 - (jlong)getPhone;
 
 - (NSString *)getTitle;
-
-- (jboolean)isEqual:(id)o;
 
 - (NSUInteger)hash;
 
@@ -26,11 +27,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMUserPhone)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMUserPhone_initWithLong_withNSString_(AMUserPhone *self, jlong phone, NSString *title);
 
-typedef AMUserPhone ImActorModelViewmodelUserPhone;
+FOUNDATION_EXPORT AMUserPhone *new_AMUserPhone_initWithLong_withNSString_(jlong phone, NSString *title) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUserPhone)
+
+typedef AMUserPhone ImActorModelViewmodelUserPhone;
 
 #endif // _AMUserPhone_H_

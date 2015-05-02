@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLastSeen.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLastSeen.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateUserLastSeen () {
@@ -20,6 +22,7 @@
   jint uid_;
   jlong date_;
 }
+
 @end
 
 
@@ -36,34 +39,24 @@
 #line 30
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 31
-    self->uid_ = uid;
-    
-#line 32
-    self->date_ = date;
-  }
+  ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateUserLastSeen_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getUid {
-  
-#line 40
   return self->uid_;
 }
 
-
-#line 43
 - (jlong)getDate {
-  
-#line 44
   return self->date_;
 }
 
@@ -77,12 +70,12 @@
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->date_];
 }
 
+
+#line 60
 - (NSString *)description {
   NSString *res = @"update UserLastSeen{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -91,25 +84,51 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 70
-  return ImActorModelApiUpdatesUpdateUserLastSeen_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserLastSeen *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->date_ = date_;
+#line 69
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateUserLastSeen_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateUserLastSeen *ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserLastSeen_init();
+  ImActorModelApiUpdatesUpdateUserLastSeen_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateUserLastSeen *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserLastSeen alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserLastSeen *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserLastSeen_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(ImActorModelApiUpdatesUpdateUserLastSeen *self, jint uid, jlong date) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->uid_ = uid;
+  self->date_ = date;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) {
+  ImActorModelApiUpdatesUpdateUserLastSeen *self = [ImActorModelApiUpdatesUpdateUserLastSeen alloc];
+  ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateUserLastSeen_init(ImActorModelApiUpdatesUpdateUserLastSeen *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_init() {
+  ImActorModelApiUpdatesUpdateUserLastSeen *self = [ImActorModelApiUpdatesUpdateUserLastSeen alloc];
+  ImActorModelApiUpdatesUpdateUserLastSeen_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserLastSeen)

@@ -6,12 +6,13 @@
 #ifndef _OrgBouncycastleCryptoKeyGenerationParameters_H_
 #define _OrgBouncycastleCryptoKeyGenerationParameters_H_
 
-@protocol BCRandomProvider;
-
 #include "J2ObjC_header.h"
 
-@interface OrgBouncycastleCryptoKeyGenerationParameters : NSObject {
-}
+@protocol BCRandomProvider;
+
+@interface OrgBouncycastleCryptoKeyGenerationParameters : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                                  withInt:(jint)strength;
@@ -24,8 +25,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoKeyGenerationParameters)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(OrgBouncycastleCryptoKeyGenerationParameters *self, id<BCRandomProvider> random, jint strength);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoKeyGenerationParameters *new_OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(id<BCRandomProvider> random, jint strength) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoKeyGenerationParameters)
 

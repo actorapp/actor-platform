@@ -6,15 +6,16 @@
 #ifndef _MTProtoPackage_H_
 #define _MTProtoPackage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoObject.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class MTProtoMessage;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoObject.h"
+@interface MTProtoPackage : MTProtoObject
 
-@interface MTProtoPackage : MTProtoObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
@@ -24,25 +25,30 @@
 
 - (jlong)getAuthId;
 
-- (jlong)getSessionId;
-
 - (MTProtoMessage *)getPayload;
 
-- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
+- (jlong)getSessionId;
 
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
 
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTProtoPackage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTProtoPackage_initWithBSDataInput_(MTProtoPackage *self, BSDataInput *stream);
 
-typedef MTProtoPackage ImActorModelNetworkMtpEntityProtoPackage;
+FOUNDATION_EXPORT MTProtoPackage *new_MTProtoPackage_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(MTProtoPackage *self, jlong authId, jlong sessionId, MTProtoMessage *payload);
+
+FOUNDATION_EXPORT MTProtoPackage *new_MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(jlong authId, jlong sessionId, MTProtoMessage *payload) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTProtoPackage)
+
+typedef MTProtoPackage ImActorModelNetworkMtpEntityProtoPackage;
 
 #endif // _MTProtoPackage_H_

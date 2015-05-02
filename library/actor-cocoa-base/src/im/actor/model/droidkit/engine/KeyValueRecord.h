@@ -6,29 +6,31 @@
 #ifndef _DKKeyValueRecord_H_
 #define _DKKeyValueRecord_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 
-@interface DKKeyValueRecord : NSObject {
-}
+@class IOSByteArray;
+
+@interface DKKeyValueRecord : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)id_
                withByteArray:(IOSByteArray *)data;
 
-- (jlong)getId;
-
 - (IOSByteArray *)getData;
+
+- (jlong)getId;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKKeyValueRecord)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKKeyValueRecord_initWithLong_withByteArray_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data);
 
-typedef DKKeyValueRecord ImActorModelDroidkitEngineKeyValueRecord;
+FOUNDATION_EXPORT DKKeyValueRecord *new_DKKeyValueRecord_initWithLong_withByteArray_(jlong id_, IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueRecord)
+
+typedef DKKeyValueRecord ImActorModelDroidkitEngineKeyValueRecord;
 
 #endif // _DKKeyValueRecord_H_

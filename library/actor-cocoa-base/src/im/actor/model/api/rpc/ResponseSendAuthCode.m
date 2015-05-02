@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSendAuthCode.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSendAuthCode.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcResponseSendAuthCode () {
@@ -20,6 +22,7 @@
   NSString *smsHash_;
   jboolean isRegistered__;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
 #line 30
 - (instancetype)initWithNSString:(NSString *)smsHash
                      withBoolean:(jboolean)isRegistered {
-  if (self = [super init]) {
-    
-#line 31
-    self->smsHash_ = smsHash;
-    
-#line 32
-    self->isRegistered__ = isRegistered;
-  }
+  ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcResponseSendAuthCode_init(self);
+  return self;
 }
 
+
+#line 39
 - (NSString *)getSmsHash {
-  
-#line 40
   return self->smsHash_;
 }
 
-
-#line 43
 - (jboolean)isRegistered {
-  
-#line 44
   return self->isRegistered__;
 }
 
@@ -79,40 +72,66 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   if (self->smsHash_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->smsHash_];
   [writer writeBoolWithInt:2 withBoolean:self->isRegistered__];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"tuple SendAuthCode{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 71
-  return ImActorModelApiRpcResponseSendAuthCode_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcResponseSendAuthCode *)other {
-  [super copyAllFieldsTo:other];
-  other->smsHash_ = smsHash_;
-  other->isRegistered__ = isRegistered__;
+#line 70
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcResponseSendAuthCode_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcResponseSendAuthCode *ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseSendAuthCode_init();
+  ImActorModelApiRpcResponseSendAuthCode_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcResponseSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseSendAuthCode alloc] init], data));
+  return ((ImActorModelApiRpcResponseSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSendAuthCode_init(), data));
+}
+
+void ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(ImActorModelApiRpcResponseSendAuthCode *self, NSString *smsHash, jboolean isRegistered) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+  
+#line 31
+  self->smsHash_ = smsHash;
+  self->isRegistered__ = isRegistered;
+}
+
+
+#line 30
+ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(NSString *smsHash, jboolean isRegistered) {
+  ImActorModelApiRpcResponseSendAuthCode *self = [ImActorModelApiRpcResponseSendAuthCode alloc];
+  ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcResponseSendAuthCode_init(ImActorModelApiRpcResponseSendAuthCode *self) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_init() {
+  ImActorModelApiRpcResponseSendAuthCode *self = [ImActorModelApiRpcResponseSendAuthCode alloc];
+  ImActorModelApiRpcResponseSendAuthCode_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSendAuthCode)

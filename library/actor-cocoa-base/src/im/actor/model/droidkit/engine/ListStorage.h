@@ -6,11 +6,11 @@
 #ifndef _DKListStorage_H_
 #define _DKListStorage_H_
 
+#include "J2ObjC_header.h"
+
 @class DKListEngineRecord;
 @class IOSLongArray;
 @protocol JavaUtilList;
-
-#include "J2ObjC_header.h"
 
 @protocol DKListStorage < NSObject, JavaObject >
 
@@ -34,8 +34,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListStorage)
 
-#define ImActorModelDroidkitEngineListStorage DKListStorage
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListStorage)
+
+#define ImActorModelDroidkitEngineListStorage DKListStorage
 
 #endif // _DKListStorage_H_

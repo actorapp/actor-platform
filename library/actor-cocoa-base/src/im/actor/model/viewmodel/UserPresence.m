@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPresence.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPresence.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/viewmodel/UserPresence.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
 @interface AMUserPresence () {
@@ -15,9 +17,14 @@
   AMUserPresence_StateEnum *state_;
   jlong lastSeen_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
+
+__attribute__((unused)) static void AMUserPresence_StateEnum_initWithNSString_withInt_(AMUserPresence_StateEnum *self, NSString *__name, jint __ordinal);
+
+__attribute__((unused)) static AMUserPresence_StateEnum *new_AMUserPresence_StateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
 
 #line 6
@@ -26,73 +33,89 @@ J2OBJC_FIELD_SETTER(AMUserPresence, state_, AMUserPresence_StateEnum *)
 
 #line 16
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state {
-  if (self = [super init]) {
-    
-#line 17
-    self->state_ = state;
-    
-#line 18
-    self->lastSeen_ = 0;
-  }
+  AMUserPresence_initWithAMUserPresence_StateEnum_(self, state);
   return self;
 }
 
+
+#line 28
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
                                         withLong:(jlong)lastSeen {
-  if (self = [super init]) {
-    
-#line 29
-    self->state_ = state;
-    
-#line 30
-    self->lastSeen_ = lastSeen;
-  }
+  AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(self, state, lastSeen);
   return self;
 }
 
 
 #line 38
 - (AMUserPresence_StateEnum *)getState {
-  
-#line 39
   return state_;
 }
 
 
 #line 47
 - (jlong)getLastSeen {
-  
-#line 48
   return lastSeen_;
-}
-
-- (void)copyAllFieldsTo:(AMUserPresence *)other {
-  [super copyAllFieldsTo:other];
-  other->state_ = state_;
-  other->lastSeen_ = lastSeen_;
 }
 
 @end
 
+
+#line 16
+void AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence *self, AMUserPresence_StateEnum *state) {
+  (void) NSObject_init(self);
+  
+#line 17
+  self->state_ = state;
+  self->lastSeen_ = 0;
+}
+
+
+#line 16
+AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum *state) {
+  AMUserPresence *self = [AMUserPresence alloc];
+  AMUserPresence_initWithAMUserPresence_StateEnum_(self, state);
+  return self;
+}
+
+
+#line 28
+void AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence *self, AMUserPresence_StateEnum *state, jlong lastSeen) {
+  (void) NSObject_init(self);
+  
+#line 29
+  self->state_ = state;
+  self->lastSeen_ = lastSeen;
+}
+
+
+#line 28
+AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum *state, jlong lastSeen) {
+  AMUserPresence *self = [AMUserPresence alloc];
+  AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(self, state, lastSeen);
+  return self;
+}
+
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPresence)
 
-#line 51
-
-BOOL AMUserPresence_StateEnum_initialized = NO;
+J2OBJC_INITIALIZED_DEFN(AMUserPresence_StateEnum)
 
 AMUserPresence_StateEnum *AMUserPresence_StateEnum_values_[3];
 
+
+#line 51
 @implementation AMUserPresence_StateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
                          withInt:(jint)__ordinal {
-  return [super initWithNSString:__name withInt:__ordinal];
+  AMUserPresence_StateEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
 }
 
 IOSObjectArray *AMUserPresence_StateEnum_values() {
-  AMUserPresence_StateEnum_init();
+  AMUserPresence_StateEnum_initialize();
   return [IOSObjectArray arrayWithObjects:AMUserPresence_StateEnum_values_ count:3 type:AMUserPresence_StateEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return AMUserPresence_StateEnum_values();
 }
@@ -102,7 +125,7 @@ IOSObjectArray *AMUserPresence_StateEnum_values() {
 }
 
 AMUserPresence_StateEnum *AMUserPresence_StateEnum_valueOfWithNSString_(NSString *name) {
-  AMUserPresence_StateEnum_init();
+  AMUserPresence_StateEnum_initialize();
   for (int i = 0; i < 3; i++) {
     AMUserPresence_StateEnum *e = AMUserPresence_StateEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -119,13 +142,23 @@ AMUserPresence_StateEnum *AMUserPresence_StateEnum_valueOfWithNSString_(NSString
 
 + (void)initialize {
   if (self == [AMUserPresence_StateEnum class]) {
-    AMUserPresence_StateEnum_UNKNOWN = [[AMUserPresence_StateEnum alloc] initWithNSString:@"UNKNOWN" withInt:0];
-    AMUserPresence_StateEnum_ONLINE = [[AMUserPresence_StateEnum alloc] initWithNSString:@"ONLINE" withInt:1];
-    AMUserPresence_StateEnum_OFFLINE = [[AMUserPresence_StateEnum alloc] initWithNSString:@"OFFLINE" withInt:2];
+    AMUserPresence_StateEnum_UNKNOWN = new_AMUserPresence_StateEnum_initWithNSString_withInt_(@"UNKNOWN", 0);
+    AMUserPresence_StateEnum_ONLINE = new_AMUserPresence_StateEnum_initWithNSString_withInt_(@"ONLINE", 1);
+    AMUserPresence_StateEnum_OFFLINE = new_AMUserPresence_StateEnum_initWithNSString_withInt_(@"OFFLINE", 2);
     J2OBJC_SET_INITIALIZED(AMUserPresence_StateEnum)
   }
 }
 
 @end
+
+void AMUserPresence_StateEnum_initWithNSString_withInt_(AMUserPresence_StateEnum *self, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+}
+
+AMUserPresence_StateEnum *new_AMUserPresence_StateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) {
+  AMUserPresence_StateEnum *self = [AMUserPresence_StateEnum alloc];
+  AMUserPresence_StateEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserPresence_StateEnum)

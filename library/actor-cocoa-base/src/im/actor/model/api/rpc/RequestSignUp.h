@@ -6,50 +6,50 @@
 #ifndef _ImActorModelApiRpcRequestSignUp_H_
 #define _ImActorModelApiRpcRequestSignUp_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestSignUp_HEADER 4
 
-@interface ImActorModelApiRpcRequestSignUp : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestSignUp : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestSignUp *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)smsHash
                 withNSString:(NSString *)smsCode
                 withNSString:(NSString *)name
-               withByteArray:(IOSByteArray *)publicKey
                withByteArray:(IOSByteArray *)deviceHash
                 withNSString:(NSString *)deviceTitle
                      withInt:(jint)appId
                 withNSString:(NSString *)appKey
                  withBoolean:(jboolean)isSilent;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestSignUp *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (jlong)getPhoneNumber;
+- (jint)getAppId;
 
-- (NSString *)getSmsHash;
-
-- (NSString *)getSmsCode;
-
-- (NSString *)getName;
-
-- (IOSByteArray *)getPublicKey;
+- (NSString *)getAppKey;
 
 - (IOSByteArray *)getDeviceHash;
 
 - (NSString *)getDeviceTitle;
 
-- (jint)getAppId;
+- (jint)getHeaderKey;
 
-- (NSString *)getAppKey;
+- (NSString *)getName;
+
+- (jlong)getPhoneNumber;
+
+- (NSString *)getSmsCode;
+
+- (NSString *)getSmsHash;
 
 - (jboolean)isSilent;
 
@@ -59,18 +59,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSignUp)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSignUp, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestSignUp *ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSignUp, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(ImActorModelApiRpcRequestSignUp *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSignUp_init(ImActorModelApiRpcRequestSignUp *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSignUp)
 

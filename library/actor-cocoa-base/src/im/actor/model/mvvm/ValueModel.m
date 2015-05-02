@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/ValueModel.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/ValueModel.java"
 
 #include "IOSObjectArray.h"
@@ -11,9 +12,8 @@
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/ValueChangedListener.h"
 #include "im/actor/model/mvvm/ValueModel.h"
+#include "java/lang/Runnable.h"
 #include "java/util/ArrayList.h"
-
-__attribute__((unused)) static void AMValueModel_notifyWithId_(AMValueModel *self, id value);
 
 @interface AMValueModel () {
  @public
@@ -23,21 +23,38 @@ __attribute__((unused)) static void AMValueModel_notifyWithId_(AMValueModel *sel
 }
 
 - (void)notifyWithId:(id)value;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMValueModel, listeners_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMValueModel, name_, NSString *)
 J2OBJC_FIELD_SETTER(AMValueModel, value_, id)
 
-@interface AMValueModel_$1 () {
+__attribute__((unused)) static void AMValueModel_notifyWithId_(AMValueModel *self, id value);
+
+@interface AMValueModel_$1 : NSObject < JavaLangRunnable > {
  @public
   AMValueModel *this$0_;
   id val$value_;
 }
+
+- (void)run;
+
+- (instancetype)initWithAMValueModel:(AMValueModel *)outer$
+                              withId:(id)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(AMValueModel_$1)
 
 J2OBJC_FIELD_SETTER(AMValueModel_$1, this$0_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
+
+__attribute__((unused)) static void AMValueModel_$1_initWithAMValueModel_withId_(AMValueModel_$1 *self, AMValueModel *outer$, id capture$0);
+
+__attribute__((unused)) static AMValueModel_$1 *new_AMValueModel_$1_initWithAMValueModel_withId_(AMValueModel *outer$, id capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMValueModel_$1)
 
 
 #line 10
@@ -47,33 +64,19 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 #line 22
 - (instancetype)initWithNSString:(NSString *)name
                           withId:(id)defaultValue {
-  if (self = [super init]) {
-    listeners_ =
-#line 12
-    [[JavaUtilArrayList alloc] init];
-    
-#line 23
-    self->name_ = name;
-    
-#line 24
-    self->value_ = defaultValue;
-  }
+  AMValueModel_initWithNSString_withId_(self, name, defaultValue);
   return self;
 }
 
 
 #line 32
 - (id)get {
-  
-#line 33
   return value_;
 }
 
 
 #line 43
 - (jboolean)changeWithId:(id)value {
-  
-#line 44
   if (self->value_ != nil && value != nil && [value isEqual:self->value_]) {
     return NO;
   }
@@ -91,8 +94,6 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 
 #line 62
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
-  
-#line 63
   [self subscribeWithAMValueChangedListener:listener withBoolean:YES];
 }
 
@@ -100,8 +101,6 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 #line 73
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
                                 withBoolean:(jboolean)notify {
-  
-#line 74
   AMMVVMEngine_checkMainThread();
   
 #line 76
@@ -117,8 +116,6 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
 
 #line 91
 - (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
-  
-#line 92
   AMMVVMEngine_checkMainThread();
   
 #line 94
@@ -131,25 +128,37 @@ J2OBJC_FIELD_SETTER(AMValueModel_$1, val$value_, id)
   AMValueModel_notifyWithId_(self, value);
 }
 
-- (NSString *)description {
-  
-#line 111
-  return JreStrcat("@", value_);
-}
 
-- (void)copyAllFieldsTo:(AMValueModel *)other {
-  [super copyAllFieldsTo:other];
-  other->listeners_ = listeners_;
-  other->name_ = name_;
-  other->value_ = value_;
+#line 110
+- (NSString *)description {
+  return JreStrcat("@", value_);
 }
 
 @end
 
-void AMValueModel_notifyWithId_(AMValueModel *self, id value) {
+
+#line 22
+void AMValueModel_initWithNSString_withId_(AMValueModel *self, NSString *name, id defaultValue) {
+  (void) NSObject_init(self);
+  self->listeners_ = new_JavaUtilArrayList_init();
   
-#line 98
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:[[AMValueModel_$1 alloc] initWithAMValueModel:self withId:value]];
+#line 23
+  self->name_ = name;
+  self->value_ = defaultValue;
+}
+
+
+#line 22
+AMValueModel *new_AMValueModel_initWithNSString_withId_(NSString *name, id defaultValue) {
+  AMValueModel *self = [AMValueModel alloc];
+  AMValueModel_initWithNSString_withId_(self, name, defaultValue);
+  return self;
+}
+
+
+#line 97
+void AMValueModel_notifyWithId_(AMValueModel *self, id value) {
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:new_AMValueModel_$1_initWithAMValueModel_withId_(self, value)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)
@@ -160,9 +169,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)
 #line 100
 - (void)run {
   {
-    IOSObjectArray *a__ =
-#line 102
-    [this$0_->listeners_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) size] type:AMValueChangedListener_class_()]];
+    IOSObjectArray *a__ = [this$0_->listeners_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) size] type:AMValueChangedListener_class_()]];
     id<AMValueChangedListener> const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     id<AMValueChangedListener> const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -176,17 +183,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)
 
 - (instancetype)initWithAMValueModel:(AMValueModel *)outer$
                               withId:(id)capture$0 {
-  this$0_ = outer$;
-  val$value_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(AMValueModel_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$value_ = val$value_;
+  AMValueModel_$1_initWithAMValueModel_withId_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void AMValueModel_$1_initWithAMValueModel_withId_(AMValueModel_$1 *self, AMValueModel *outer$, id capture$0) {
+  self->this$0_ = outer$;
+  self->val$value_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMValueModel_$1 *new_AMValueModel_$1_initWithAMValueModel_withId_(AMValueModel *outer$, id capture$0) {
+  AMValueModel_$1 *self = [AMValueModel_$1 alloc];
+  AMValueModel_$1_initWithAMValueModel_withId_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel_$1)

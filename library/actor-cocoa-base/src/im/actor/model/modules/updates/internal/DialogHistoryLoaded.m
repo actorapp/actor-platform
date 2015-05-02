@@ -3,16 +3,19 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/DialogHistoryLoaded.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/DialogHistoryLoaded.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/modules/updates/internal/DialogHistoryLoaded.h"
+#include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
 @interface ImActorModelModulesUpdatesInternalDialogHistoryLoaded () {
  @public
   ImActorModelApiRpcResponseLoadDialogs *dialogs_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialogs_, ImActorModelApiRpcResponseLoadDialogs *)
@@ -24,27 +27,33 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialo
 
 #line 11
 - (instancetype)initWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogs {
-  if (self = [super init]) {
-    
-#line 12
-    self->dialogs_ = dialogs;
-  }
+  ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(self, dialogs);
   return self;
 }
 
 
 #line 15
 - (ImActorModelApiRpcResponseLoadDialogs *)getDialogs {
-  
-#line 16
   return dialogs_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesUpdatesInternalDialogHistoryLoaded *)other {
-  [super copyAllFieldsTo:other];
-  other->dialogs_ = dialogs_;
+@end
+
+
+#line 11
+void ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(ImActorModelModulesUpdatesInternalDialogHistoryLoaded *self, ImActorModelApiRpcResponseLoadDialogs *dialogs) {
+  (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
+  
+#line 12
+  self->dialogs_ = dialogs;
 }
 
-@end
+
+#line 11
+ImActorModelModulesUpdatesInternalDialogHistoryLoaded *new_ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(ImActorModelApiRpcResponseLoadDialogs *dialogs) {
+  ImActorModelModulesUpdatesInternalDialogHistoryLoaded *self = [ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc];
+  ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(self, dialogs);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesInternalDialogHistoryLoaded)

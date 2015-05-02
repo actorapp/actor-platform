@@ -16,8 +16,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMModelChangedListener)
 
-#define ImActorModelMvvmModelChangedListener AMModelChangedListener
-
 J2OBJC_TYPE_LITERAL_HEADER(AMModelChangedListener)
+
+#define ImActorModelMvvmModelChangedListener AMModelChangedListener
 
 #endif // _AMModelChangedListener_H_

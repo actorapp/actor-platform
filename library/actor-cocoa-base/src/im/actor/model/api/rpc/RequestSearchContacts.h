@@ -6,23 +6,26 @@
 #ifndef _ImActorModelApiRpcRequestSearchContacts_H_
 #define _ImActorModelApiRpcRequestSearchContacts_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestSearchContacts_HEADER 112
 
-@interface ImActorModelApiRpcRequestSearchContacts : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestSearchContacts : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)request;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getRequest;
 
@@ -32,18 +35,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSearchContacts)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSearchContacts, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestSearchContacts *ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSearchContacts, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSearchContacts_initWithNSString_(ImActorModelApiRpcRequestSearchContacts *self, NSString *request);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_initWithNSString_(NSString *request) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSearchContacts_init(ImActorModelApiRpcRequestSearchContacts *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSearchContacts)
 

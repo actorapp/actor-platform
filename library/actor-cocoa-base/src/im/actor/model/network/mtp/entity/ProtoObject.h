@@ -6,34 +6,38 @@
 #ifndef _MTProtoObject_H_
 #define _MTProtoObject_H_
 
+#include "J2ObjC_header.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
+@interface MTProtoObject : NSObject
 
-@interface MTProtoObject : NSObject {
-}
-
-- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
-
-- (instancetype)init;
-
-- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Public
 
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
 - (IOSByteArray *)toByteArray;
 
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
+
+#pragma mark Protected
+
+- (instancetype)init;
+
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTProtoObject)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTProtoObject_initWithBSDataInput_(MTProtoObject *self, BSDataInput *stream);
 
-typedef MTProtoObject ImActorModelNetworkMtpEntityProtoObject;
+FOUNDATION_EXPORT void MTProtoObject_init(MTProtoObject *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(MTProtoObject)
+
+typedef MTProtoObject ImActorModelNetworkMtpEntityProtoObject;
 
 #endif // _MTProtoObject_H_

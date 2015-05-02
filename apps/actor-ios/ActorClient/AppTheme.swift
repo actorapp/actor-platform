@@ -37,6 +37,8 @@ class AppChat {
     var sendEnabled: UIColor { get { return UIColor.RGB(0x50A1D6) } }
     
     var sendDisabled: UIColor { get { return UIColor.alphaBlack(0.56) } }
+    
+    var profileBgTint: UIColor { get { return UIColor.RGB(0x5085CB) } }
 }
 
 class ChatBubbles {

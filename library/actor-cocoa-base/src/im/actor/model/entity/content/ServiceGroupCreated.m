@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupCreated.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupCreated.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "java/io/IOException.h"
 
@@ -20,10 +22,16 @@
  @public
   NSString *groupTitle_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
+
+__attribute__((unused)) static void AMServiceGroupCreated_init(AMServiceGroupCreated *self);
+
+__attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_init() NS_RETURNS_RETAINED;
 
 
 #line 12
@@ -36,25 +44,18 @@ J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
 
 #line 20
 - (instancetype)initWithNSString:(NSString *)groupTitle {
-  if (self =
-#line 21
-  [super initWithNSString:JreStrcat("$$$", @"Group '", groupTitle, @"' created")]) {
-    
-#line 22
-    self->groupTitle_ = groupTitle;
-  }
+  AMServiceGroupCreated_initWithNSString_(self, groupTitle);
+  return self;
+}
+
+- (instancetype)init {
+  AMServiceGroupCreated_init(self);
   return self;
 }
 
 
-#line 25
-- (instancetype)init {
-  return [super init];
-}
-
+#line 29
 - (NSString *)getGroupTitle {
-  
-#line 30
   return groupTitle_;
 }
 
@@ -67,8 +68,6 @@ J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
 
 #line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 40
   [super parseWithBSBserValues:values];
   groupTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
@@ -80,18 +79,44 @@ J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
 }
 
-- (void)copyAllFieldsTo:(AMServiceGroupCreated *)other {
-  [super copyAllFieldsTo:other];
-  other->groupTitle_ = groupTitle_;
-}
-
 @end
 
+
+#line 14
 AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceGroupCreated_init();
+  AMServiceGroupCreated_initialize();
   
 #line 15
-  return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupCreated alloc] init], data));
+  return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupCreated_init(), data));
+}
+
+
+#line 20
+void AMServiceGroupCreated_initWithNSString_(AMServiceGroupCreated *self, NSString *groupTitle) {
+  (void) AMServiceContent_initWithNSString_(self, JreStrcat("$$$", @"Group '", groupTitle, @"' created"));
+  self->groupTitle_ = groupTitle;
+}
+
+
+#line 20
+AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *groupTitle) {
+  AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
+  AMServiceGroupCreated_initWithNSString_(self, groupTitle);
+  return self;
+}
+
+
+#line 25
+void AMServiceGroupCreated_init(AMServiceGroupCreated *self) {
+  (void) AMServiceContent_init(self);
+}
+
+
+#line 25
+AMServiceGroupCreated *new_AMServiceGroupCreated_init() {
+  AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
+  AMServiceGroupCreated_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupCreated)

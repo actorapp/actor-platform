@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Integers.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Integers.java"
 
 #include "J2ObjC_source.h"
@@ -28,30 +29,37 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleUtilIntegers_init(self);
+  return self;
 }
 
 @end
 
+
+#line 5
 jint OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(jint i, jint distance) {
-  OrgBouncycastleUtilIntegers_init();
-  
-#line 7
+  OrgBouncycastleUtilIntegers_initialize();
   return JavaLangInteger_rotateLeftWithInt_withInt_(i, distance);
 }
 
 jint OrgBouncycastleUtilIntegers_rotateRightWithInt_withInt_(jint i, jint distance) {
-  OrgBouncycastleUtilIntegers_init();
-  
-#line 12
+  OrgBouncycastleUtilIntegers_initialize();
   return JavaLangInteger_rotateRightWithInt_withInt_(i, distance);
 }
 
 JavaLangInteger *OrgBouncycastleUtilIntegers_valueOfWithInt_(jint value) {
-  OrgBouncycastleUtilIntegers_init();
-  
-#line 17
+  OrgBouncycastleUtilIntegers_initialize();
   return JavaLangInteger_valueOfWithInt_(value);
+}
+
+void OrgBouncycastleUtilIntegers_init(OrgBouncycastleUtilIntegers *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleUtilIntegers *new_OrgBouncycastleUtilIntegers_init() {
+  OrgBouncycastleUtilIntegers *self = [OrgBouncycastleUtilIntegers alloc];
+  OrgBouncycastleUtilIntegers_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleUtilIntegers)
