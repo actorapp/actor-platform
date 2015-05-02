@@ -21,6 +21,7 @@ object DepartmentsJsonImplicits {
 
   implicit val departmentWrites: Writes[NestedDept] = (
     (__ \ "id").write[LTree] and
+    (__ \ "internal-id").write[String] and
     (__ \ "title").write[String] and
     (__ \ "items").lazyWrite(Writes.traversableWrites[NestedDept](departmentWrites))
   )(unlift(NestedDept.unapply))

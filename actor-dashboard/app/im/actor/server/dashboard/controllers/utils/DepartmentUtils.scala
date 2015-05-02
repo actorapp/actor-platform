@@ -4,14 +4,14 @@ import com.github.tminglei.slickpg.LTree
 
 import im.actor.server.models
 
-case class NestedDept(id: LTree, title: String, items: List[NestedDept] = List())
+case class NestedDept(id: LTree, internalId: String, title: String, items: List[NestedDept] = List())
 
 object DepartmentUtils {
   def nestDepartments(list: Seq[models.Department]): List[NestedDept] = {
     def run(from: List[models.Department], acc: List[NestedDept]): List[NestedDept] = {
       from match {
         case h :: t ⇒
-          val toNested = NestedDept(h.struct, h.name)
+          val toNested = NestedDept(h.struct, h.struct.toString, h.name)
           acc.lastOption.map { last ⇒
             val headStruct = h.struct.value
             val tailStruct = last.id.value
