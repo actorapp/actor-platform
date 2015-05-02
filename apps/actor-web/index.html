@@ -40,6 +40,8 @@
                 md-is-locked-open="main.$mdMedia('gt-sm')"
                 ng-class="{'login-image': $state.includes('login')}"
                 flex
+                ng-controller="sidebarController as sidebar"
+                md-swipe-left="sidebar.onSwipeLeft()"
                 layout="column"
                 ui-view="sidebar"></md-sidenav>
 
