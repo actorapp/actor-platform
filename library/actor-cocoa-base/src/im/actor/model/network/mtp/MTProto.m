@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/MTProto.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/MTProto.java"
 
 #include "IOSPrimitiveArray.h"
@@ -31,6 +32,7 @@
   DKActorRef *sender_;
   NSString *actorPath_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(MTMTProto, endpoints_, AMEndpoints *)
@@ -52,117 +54,73 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
        withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
-  if (self = [super init]) {
-    actorPath_ =
-#line 27
-    @"mtproto";
-    
-#line 31
-    self->authId_ = authId;
-    
-#line 32
-    self->sessionId_ = sessionId;
-    
-#line 33
-    self->endpoints_ = endpoints;
-    
-#line 34
-    self->callback_ = callback;
-    
-#line 35
-    self->networkProvider_ = networkProvider;
-    
-#line 36
-    self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
-    
-#line 37
-    self->sender_ = MTSenderActor_senderActorWithMTMTProto_(self);
-    
-#line 38
-    self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
-  }
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(self, authId, sessionId, endpoints, callback, networkProvider);
   return self;
 }
 
 
 #line 41
 - (id<AMNetworkProvider>)getNetworkProvider {
-  
-#line 42
   return networkProvider_;
 }
 
-
-#line 45
 - (id<MTMTProtoCallback>)getCallback {
-  
-#line 46
   return callback_;
 }
 
-
-#line 49
 - (AMEndpoints *)getEndpoints {
-  
-#line 50
   return endpoints_;
 }
 
-
-#line 53
 - (jlong)getAuthId {
-  
-#line 54
   return authId_;
 }
 
-
-#line 57
 - (jlong)getSessionId {
-  
-#line 58
   return sessionId_;
 }
 
-
-#line 61
 - (NSString *)getActorPath {
-  
-#line 62
   return actorPath_;
 }
 
-
-#line 65
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct {
-  
-#line 66
   jlong mtId = ImActorModelNetworkUtilMTUids_nextId();
-  [((DKActorRef *) nil_chk(sender_)) sendWithId:[[MTSenderActor_SendMessage alloc] initWithLong:mtId withByteArray:[((MTMTRpcRequest *) [[MTMTRpcRequest alloc] initWithByteArray:[((MTProtoStruct *) nil_chk(protoStruct)) toByteArray]]) toByteArray]]];
+  [((DKActorRef *) nil_chk(sender_)) sendWithId:new_MTSenderActor_SendMessage_initWithLong_withByteArray_(mtId, [new_MTMTRpcRequest_initWithByteArray_([((MTProtoStruct *) nil_chk(protoStruct)) toByteArray]) toByteArray])];
   return mtId;
 }
 
-
-#line 71
 - (void)cancelRpcWithLong:(jlong)mtId {
-  
-#line 72
-  [((DKActorRef *) nil_chk(sender_)) sendWithId:[[MTSenderActor_ForgetMessage alloc] initWithLong:mtId]];
-}
-
-- (void)copyAllFieldsTo:(MTMTProto *)other {
-  [super copyAllFieldsTo:other];
-  other->authId_ = authId_;
-  other->sessionId_ = sessionId_;
-  other->endpoints_ = endpoints_;
-  other->callback_ = callback_;
-  other->networkProvider_ = networkProvider_;
-  other->receiver_ = receiver_;
-  other->manager_ = manager_;
-  other->sender_ = sender_;
-  other->actorPath_ = actorPath_;
+  [((DKActorRef *) nil_chk(sender_)) sendWithId:new_MTSenderActor_ForgetMessage_initWithLong_(mtId)];
 }
 
 @end
+
+
+#line 29
+void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {
+  (void) NSObject_init(self);
+  self->actorPath_ =
+#line 27
+  @"mtproto";
+  
+#line 31
+  self->authId_ = authId;
+  self->sessionId_ = sessionId;
+  self->endpoints_ = endpoints;
+  self->callback_ = callback;
+  self->networkProvider_ = networkProvider;
+  self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
+  self->sender_ = MTSenderActor_senderActorWithMTMTProto_(self);
+  self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
+}
+
+
+#line 29
+MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {
+  MTMTProto *self = [MTMTProto alloc];
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(self, authId, sessionId, endpoints, callback, networkProvider);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMTProto)

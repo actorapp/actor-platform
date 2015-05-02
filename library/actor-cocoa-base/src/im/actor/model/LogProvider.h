@@ -6,26 +6,30 @@
 #ifndef _AMLogProvider_H_
 #define _AMLogProvider_H_
 
-@class JavaLangThrowable;
-
 #include "J2ObjC_header.h"
+
+@class JavaLangThrowable;
 
 @protocol AMLogProvider < NSObject, JavaObject >
 
-- (void)w:(NSString *)tag withMessage:(NSString *)message;
+- (void)w:(NSString *)tag
+withMessage:(NSString *)message;
 
-- (void)v:(NSString *)tag withError:(JavaLangThrowable *)throwable;
+- (void)v:(NSString *)tag
+withError:(JavaLangThrowable *)throwable;
 
-- (void)d:(NSString *)tag withMessage:(NSString *)message;
+- (void)d:(NSString *)tag
+withMessage:(NSString *)message;
 
-- (void)v:(NSString *)tag withMessage:(NSString *)message;
+- (void)v:(NSString *)tag
+withMessage:(NSString *)message;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMLogProvider)
 
-#define ImActorModelLogProvider AMLogProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMLogProvider)
+
+#define ImActorModelLogProvider AMLogProvider
 
 #endif // _AMLogProvider_H_

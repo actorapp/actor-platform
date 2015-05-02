@@ -11,12 +11,17 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primary_hovered</item>
         <item name="android:colorAccent">@color/accent</item>
+
+
     </style>
 
     <style name="MainActivityTheme" parent="AppToolbarTheme">
-        <item name="windowActionBar">false</item>
-        <item name="android:windowActionBar">false</item>
         <item name="android:windowBackground">@color/bg_main</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="ProfileActivityTheme" parent="AppToolbarTheme">

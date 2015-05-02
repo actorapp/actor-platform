@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSignIn.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSignIn.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/Utils.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestSignIn () {
@@ -21,17 +23,16 @@
   jlong phoneNumber_;
   NSString *smsHash_;
   NSString *smsCode_;
-  IOSByteArray *publicKey_;
   IOSByteArray *deviceHash_;
   NSString *deviceTitle_;
   jint appId_;
   NSString *appKey_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, smsHash_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, smsCode_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, publicKey_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, deviceHash_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, deviceTitle_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
@@ -47,119 +48,61 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
 }
 
 
-#line 36
+#line 35
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)smsHash
                 withNSString:(NSString *)smsCode
-               withByteArray:(IOSByteArray *)publicKey
                withByteArray:(IOSByteArray *)deviceHash
                 withNSString:(NSString *)deviceTitle
                      withInt:(jint)appId
                 withNSString:(NSString *)appKey {
-  if (self = [super init]) {
-    
-#line 37
-    self->phoneNumber_ = phoneNumber;
-    
-#line 38
-    self->smsHash_ = smsHash;
-    
-#line 39
-    self->smsCode_ = smsCode;
-    
-#line 40
-    self->publicKey_ = publicKey;
-    
-#line 41
-    self->deviceHash_ = deviceHash;
-    
-#line 42
-    self->deviceTitle_ = deviceTitle;
-    
-#line 43
-    self->appId_ = appId;
-    
-#line 44
-    self->appKey_ = appKey;
-  }
+  ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, smsCode, deviceHash, deviceTitle, appId, appKey);
   return self;
 }
 
 
-#line 47
+#line 45
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestSignIn_init(self);
+  return self;
 }
 
+
+#line 49
 - (jlong)getPhoneNumber {
-  
-#line 52
   return self->phoneNumber_;
 }
 
-
-#line 55
 - (NSString *)getSmsHash {
-  
-#line 56
   return self->smsHash_;
 }
 
-
-#line 59
 - (NSString *)getSmsCode {
-  
-#line 60
   return self->smsCode_;
 }
 
-
-#line 63
-- (IOSByteArray *)getPublicKey {
-  
-#line 64
-  return self->publicKey_;
-}
-
-
-#line 67
 - (IOSByteArray *)getDeviceHash {
-  
-#line 68
   return self->deviceHash_;
 }
 
-
-#line 71
 - (NSString *)getDeviceTitle {
-  
-#line 72
   return self->deviceTitle_;
 }
 
-
-#line 75
 - (jint)getAppId {
-  
-#line 76
   return self->appId_;
 }
 
-
-#line 79
 - (NSString *)getAppKey {
-  
-#line 80
   return self->appKey_;
 }
 
 
-#line 84
+#line 78
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->smsHash_ = [values getStringWithInt:2];
   self->smsCode_ = [values getStringWithInt:3];
-  self->publicKey_ = [values getBytesWithInt:4];
   self->deviceHash_ = [values getBytesWithInt:5];
   self->deviceTitle_ = [values getStringWithInt:6];
   self->appId_ = [values getIntWithInt:7];
@@ -167,72 +110,94 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
 }
 
 
-#line 96
+#line 89
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 97
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->smsHash_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:2 withNSString:self->smsHash_];
   if (self->smsCode_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:3 withNSString:self->smsCode_];
-  if (self->publicKey_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
-  }
-  [writer writeBytesWithInt:4 withByteArray:self->publicKey_];
   if (self->deviceHash_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:5 withByteArray:self->deviceHash_];
   if (self->deviceTitle_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:6 withNSString:self->deviceTitle_];
   [writer writeIntWithInt:7 withInt:self->appId_];
   if (self->appKey_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:8 withNSString:self->appKey_];
 }
 
+
+#line 115
 - (NSString *)description {
   NSString *res = @"rpc SignIn{";
-  res = JreStrcat("$$", res, JreStrcat("$$", @"publicKey=", BSUtils_byteArrayToStringCompactWithByteArray_(self->publicKey_)));
-  res = JreStrcat("$$", res, JreStrcat("$$", @", deviceHash=", BSUtils_byteArrayToStringWithByteArray_(self->deviceHash_)));
+  res = JreStrcat("$$", res, JreStrcat("$$", @"deviceHash=", BSUtils_byteArrayToStringWithByteArray_(self->deviceHash_)));
   res = JreStrcat("$$", res, JreStrcat("$$", @", deviceTitle=", self->deviceTitle_));
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 137
-  return ImActorModelApiRpcRequestSignIn_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSignIn *)other {
-  [super copyAllFieldsTo:other];
-  other->phoneNumber_ = phoneNumber_;
-  other->smsHash_ = smsHash_;
-  other->smsCode_ = smsCode_;
-  other->publicKey_ = publicKey_;
-  other->deviceHash_ = deviceHash_;
-  other->deviceTitle_ = deviceTitle_;
-  other->appId_ = appId_;
-  other->appKey_ = appKey_;
+#line 124
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestSignIn_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestSignIn *ImActorModelApiRpcRequestSignIn_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSignIn_init();
+  ImActorModelApiRpcRequestSignIn_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestSignIn *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSignIn alloc] init], data));
+  return ((ImActorModelApiRpcRequestSignIn *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSignIn_init(), data));
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(ImActorModelApiRpcRequestSignIn *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 36
+  self->phoneNumber_ = phoneNumber;
+  self->smsHash_ = smsHash;
+  self->smsCode_ = smsCode;
+  self->deviceHash_ = deviceHash;
+  self->deviceTitle_ = deviceTitle;
+  self->appId_ = appId;
+  self->appKey_ = appKey;
+}
+
+
+#line 35
+ImActorModelApiRpcRequestSignIn *new_ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) {
+  ImActorModelApiRpcRequestSignIn *self = [ImActorModelApiRpcRequestSignIn alloc];
+  ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, smsCode, deviceHash, deviceTitle, appId, appKey);
+  return self;
+}
+
+
+#line 45
+void ImActorModelApiRpcRequestSignIn_init(ImActorModelApiRpcRequestSignIn *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 45
+ImActorModelApiRpcRequestSignIn *new_ImActorModelApiRpcRequestSignIn_init() {
+  ImActorModelApiRpcRequestSignIn *self = [ImActorModelApiRpcRequestSignIn alloc];
+  ImActorModelApiRpcRequestSignIn_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSignIn)

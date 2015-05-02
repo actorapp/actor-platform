@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleCryptoAsymmetricCipherKeyPairGenerator_H_
 #define _OrgBouncycastleCryptoAsymmetricCipherKeyPairGenerator_H_
 
+#include "J2ObjC_header.h"
+
 @class OrgBouncycastleCryptoAsymmetricCipherKeyPair;
 @class OrgBouncycastleCryptoKeyGenerationParameters;
-
-#include "J2ObjC_header.h"
 
 @protocol OrgBouncycastleCryptoAsymmetricCipherKeyPairGenerator < NSObject, JavaObject >
 

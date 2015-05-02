@@ -6,40 +6,36 @@
 #ifndef _ImActorModelModulesMessagesConversationHistoryActor_H_
 #define _ImActorModelModulesMessagesConversationHistoryActor_H_
 
-@class AMPeer;
-@class AMRpcException;
-@class ImActorModelApiRpcResponseLoadHistory;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-#define ImActorModelModulesMessagesConversationHistoryActor_LIMIT 20
+@class AMPeer;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesMessagesConversationHistoryActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesMessagesConversationHistoryActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationHistoryActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationHistoryActor_initWithAMPeer_withImActorModelModulesModules_(ImActorModelModulesMessagesConversationHistoryActor *self, AMPeer *peer, ImActorModelModulesModules *modules);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesConversationHistoryActor, LIMIT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationHistoryActor *new_ImActorModelModulesMessagesConversationHistoryActor_initWithAMPeer_withImActorModelModulesModules_(AMPeer *peer, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor)
 
-@interface ImActorModelModulesMessagesConversationHistoryActor_LoadMore : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationHistoryActor_LoadMore : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -47,13 +43,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationHistoryActor_LoadMore)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init(ImActorModelModulesMessagesConversationHistoryActor_LoadMore *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationHistoryActor_LoadMore *new_ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor_LoadMore)
 
-@interface ImActorModelModulesMessagesConversationHistoryActor_LoadedMore : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationHistoryActor_LoadedMore : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)loaded
                    withLong:(jlong)maxLoadedDate;
@@ -62,27 +60,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor_L
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationHistoryActor_LoadedMore)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *self, jint loaded, jlong maxLoadedDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationHistoryActor_LoadedMore *new_ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_(jint loaded, jlong maxLoadedDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor_LoadedMore)
-
-@interface ImActorModelModulesMessagesConversationHistoryActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadHistory *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesMessagesConversationHistoryActor:(ImActorModelModulesMessagesConversationHistoryActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationHistoryActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationHistoryActor_$1)
 
 #endif // _ImActorModelModulesMessagesConversationHistoryActor_H_

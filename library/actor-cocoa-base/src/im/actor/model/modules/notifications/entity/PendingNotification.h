@@ -6,31 +6,32 @@
 #ifndef _ImActorModelModulesNotificationsEntityPendingNotification_H_
 #define _ImActorModelModulesNotificationsEntityPendingNotification_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMContentDescription;
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesNotificationsEntityPendingNotification : BSBserObject
 
-@interface ImActorModelModulesNotificationsEntityPendingNotification : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)date
       withAMContentDescription:(AMContentDescription *)content;
 
-- (instancetype)init;
+- (AMContentDescription *)getContent;
+
+- (jlong)getDate;
 
 - (AMPeer *)getPeer;
 
 - (jint)getSender;
-
-- (jlong)getDate;
-
-- (AMContentDescription *)getContent;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -40,8 +41,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsEntityPendingNotification)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(ImActorModelModulesNotificationsEntityPendingNotification *self, AMPeer *peer, jint sender, jlong date, AMContentDescription *content);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsEntityPendingNotification *new_ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(AMPeer *peer, jint sender, jlong date, AMContentDescription *content) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsEntityPendingNotification_init(ImActorModelModulesNotificationsEntityPendingNotification *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsEntityPendingNotification *new_ImActorModelModulesNotificationsEntityPendingNotification_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsEntityPendingNotification)
 

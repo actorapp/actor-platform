@@ -23,28 +23,25 @@ typedef NS_ENUM(NSUInteger, AMMessageState) {
   jint value_;
 }
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
+
++ (AMMessageStateEnum *)fromValueWithInt:(jint)value;
 
 - (jint)getValue;
 
-+ (AMMessageStateEnum *)fromValueWithInt:(jint)value;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMMessageStateEnum_values();
 
 + (AMMessageStateEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMMessageStateEnum_initialized;
 J2OBJC_STATIC_INIT(AMMessageStateEnum)
-
-FOUNDATION_EXPORT AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value);
 
 FOUNDATION_EXPORT AMMessageStateEnum *AMMessageStateEnum_values_[];
 
@@ -66,8 +63,10 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMMessageStateEnum, ERROR)
 #define AMMessageStateEnum_UNKNOWN AMMessageStateEnum_values_[AMMessageState_UNKNOWN]
 J2OBJC_ENUM_CONSTANT_GETTER(AMMessageStateEnum, UNKNOWN)
 
-typedef AMMessageStateEnum ImActorModelEntityMessageStateEnum;
+FOUNDATION_EXPORT AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMessageStateEnum)
+
+typedef AMMessageStateEnum ImActorModelEntityMessageStateEnum;
 
 #endif // _AMMessageState_H_

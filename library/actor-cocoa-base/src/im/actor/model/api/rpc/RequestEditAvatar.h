@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestEditAvatar_H_
 #define _ImActorModelApiRpcRequestEditAvatar_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiFileLocation;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestEditAvatar_HEADER 31
 
-@interface ImActorModelApiRpcRequestEditAvatar : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestEditAvatar : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation;
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation;
+
++ (ImActorModelApiRpcRequestEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 - (ImActorModelApiFileLocation *)getFileLocation;
+
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditAvatar)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditAvatar, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestEditAvatar *ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditAvatar, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditAvatar_initWithImActorModelApiFileLocation_(ImActorModelApiRpcRequestEditAvatar *self, ImActorModelApiFileLocation *fileLocation);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditAvatar *new_ImActorModelApiRpcRequestEditAvatar_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *fileLocation) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditAvatar_init(ImActorModelApiRpcRequestEditAvatar *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestEditAvatar *new_ImActorModelApiRpcRequestEditAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditAvatar)
 

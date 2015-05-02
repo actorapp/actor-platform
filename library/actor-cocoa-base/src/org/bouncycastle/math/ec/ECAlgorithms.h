@@ -6,8 +6,8 @@
 #ifndef _OrgBouncycastleMathEcECAlgorithms_H_
 #define _OrgBouncycastleMathEcECAlgorithms_H_
 
-@class IOSBooleanArray;
-@class IOSByteArray;
+#include "J2ObjC_header.h"
+
 @class IOSObjectArray;
 @class JavaMathBigInteger;
 @class OrgBouncycastleMathEcECCurve;
@@ -15,14 +15,30 @@
 @protocol OrgBouncycastleMathEcECPointMap;
 @protocol OrgBouncycastleMathEcEndoGLVEndomorphism;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleMathEcECAlgorithms : NSObject
 
-@interface OrgBouncycastleMathEcECAlgorithms : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
+
++ (OrgBouncycastleMathEcECPoint *)importPointWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c
+                                             withOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
 
 + (jboolean)isF2mCurveWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c;
 
 + (jboolean)isFpCurveWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c;
+
++ (void)montgomeryTrickWithOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
+                                                            withInt:(jint)off
+                                                            withInt:(jint)len;
+
++ (OrgBouncycastleMathEcECPoint *)referenceMultiplyWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
+                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k;
+
++ (OrgBouncycastleMathEcECPoint *)shamirsTrickWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)P
+                                                        withJavaMathBigInteger:(JavaMathBigInteger *)k
+                                              withOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)Q
+                                                        withJavaMathBigInteger:(JavaMathBigInteger *)l;
 
 + (OrgBouncycastleMathEcECPoint *)sumOfMultipliesWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)ps
                                                            withJavaMathBigIntegerArray:(IOSObjectArray *)ks;
@@ -32,22 +48,9 @@
                                                     withOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)Q
                                                               withJavaMathBigInteger:(JavaMathBigInteger *)b;
 
-+ (OrgBouncycastleMathEcECPoint *)shamirsTrickWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)P
-                                                        withJavaMathBigInteger:(JavaMathBigInteger *)k
-                                              withOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)Q
-                                                        withJavaMathBigInteger:(JavaMathBigInteger *)l;
-
-+ (OrgBouncycastleMathEcECPoint *)importPointWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c
-                                             withOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
-
-+ (void)montgomeryTrickWithOrgBouncycastleMathEcECFieldElementArray:(IOSObjectArray *)zs
-                                                            withInt:(jint)off
-                                                            withInt:(jint)len;
-
-+ (OrgBouncycastleMathEcECPoint *)referenceMultiplyWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
-                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k;
-
 + (OrgBouncycastleMathEcECPoint *)validatePointWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p;
+
+#pragma mark Package-Private
 
 + (OrgBouncycastleMathEcECPoint *)implShamirsTrickJsfWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)P
                                                                withJavaMathBigInteger:(JavaMathBigInteger *)k
@@ -67,21 +70,17 @@
 + (OrgBouncycastleMathEcECPoint *)implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)ps
                                                                withJavaMathBigIntegerArray:(IOSObjectArray *)ks;
 
-+ (OrgBouncycastleMathEcECPoint *)implSumOfMultipliesGLVWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)ps
-                                                                  withJavaMathBigIntegerArray:(IOSObjectArray *)ks
-                                                 withOrgBouncycastleMathEcEndoGLVEndomorphism:(id<OrgBouncycastleMathEcEndoGLVEndomorphism>)glvEndomorphism;
-
 + (OrgBouncycastleMathEcECPoint *)implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)ps
                                                        withOrgBouncycastleMathEcECPointMap:(id<OrgBouncycastleMathEcECPointMap>)pointMap
                                                                withJavaMathBigIntegerArray:(IOSObjectArray *)ks;
 
-- (instancetype)init;
++ (OrgBouncycastleMathEcECPoint *)implSumOfMultipliesGLVWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)ps
+                                                                  withJavaMathBigIntegerArray:(IOSObjectArray *)ks
+                                                 withOrgBouncycastleMathEcEndoGLVEndomorphism:(id<OrgBouncycastleMathEcEndoGLVEndomorphism>)glvEndomorphism;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECAlgorithms)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jboolean OrgBouncycastleMathEcECAlgorithms_isF2mCurveWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *c);
 
@@ -112,7 +111,10 @@ FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithm
 FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesGLVWithOrgBouncycastleMathEcECPointArray_withJavaMathBigIntegerArray_withOrgBouncycastleMathEcEndoGLVEndomorphism_(IOSObjectArray *ps, IOSObjectArray *ks, id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism);
 
 FOUNDATION_EXPORT OrgBouncycastleMathEcECPoint *OrgBouncycastleMathEcECAlgorithms_implSumOfMultipliesWithOrgBouncycastleMathEcECPointArray_withOrgBouncycastleMathEcECPointMap_withJavaMathBigIntegerArray_(IOSObjectArray *ps, id<OrgBouncycastleMathEcECPointMap> pointMap, IOSObjectArray *ks);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECAlgorithms_init(OrgBouncycastleMathEcECAlgorithms *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECAlgorithms *new_OrgBouncycastleMathEcECAlgorithms_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECAlgorithms)
 

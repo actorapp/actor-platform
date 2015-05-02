@@ -6,41 +6,45 @@
 #ifndef _AMServiceGroupAvatarChanged_H_
 #define _AMServiceGroupAvatarChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class AMAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/ServiceContent.h"
+@interface AMServiceGroupAvatarChanged : AMServiceContent
 
-@interface AMServiceGroupAvatarChanged : AMServiceContent {
-}
-
-+ (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar;
 
-- (AMAvatar *)getNewAvatar;
++ (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+- (AMAvatar *)getNewAvatar;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupAvatarChanged)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceGroupAvatarChanged ImActorModelEntityContentServiceGroupAvatarChanged;
+FOUNDATION_EXPORT void AMServiceGroupAvatarChanged_initWithAMAvatar_(AMServiceGroupAvatarChanged *self, AMAvatar *newAvatar);
+
+FOUNDATION_EXPORT AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithAMAvatar_(AMAvatar *newAvatar) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupAvatarChanged)
+
+typedef AMServiceGroupAvatarChanged ImActorModelEntityContentServiceGroupAvatarChanged;
 
 #endif // _AMServiceGroupAvatarChanged_H_

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/AuthIdRetriever.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/AuthIdRetriever.java"
 
 #include "IOSPrimitiveArray.h"
@@ -13,45 +14,87 @@
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/Connection.h"
+#include "im/actor/model/network/ConnectionCallback.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
+#include "im/actor/model/network/CreateConnectionCallback.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/mtp/AuthIdRetriever.h"
 #include "im/actor/model/util/ExponentialBackoff.h"
 #include "java/lang/Exception.h"
 #include "java/lang/RuntimeException.h"
 
-@interface MTAuthIdRetriever () {
-}
-@end
+static NSString *MTAuthIdRetriever_TAG_ = 
+#line 19
+@"AuthId";
+J2OBJC_STATIC_FIELD_GETTER(MTAuthIdRetriever, TAG_, NSString *)
 
-@interface MTAuthIdRetriever_$1 () {
+@interface MTAuthIdRetriever_$1 : NSObject < AMConnectionCallback > {
  @public
   IOSBooleanArray *val$isFinished_;
   id<MTAuthIdRetriever_AuthIdCallback> val$callback_;
 }
+
+- (void)onConnectionRedirect:(NSString *)host
+                    withPort:(jint)port
+                 withTimeout:(jint)timeout;
+
+- (void)onMessage:(IOSByteArray *)data
+       withOffset:(jint)offset
+          withLen:(jint)len;
+
+- (void)onConnectionDie;
+
+- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
+withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(MTAuthIdRetriever_$1)
 
 J2OBJC_FIELD_SETTER(MTAuthIdRetriever_$1, val$isFinished_, IOSBooleanArray *)
 J2OBJC_FIELD_SETTER(MTAuthIdRetriever_$1, val$callback_, id<MTAuthIdRetriever_AuthIdCallback>)
 
-@interface MTAuthIdRetriever_$2 () {
+__attribute__((unused)) static void MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(MTAuthIdRetriever_$1 *self, IOSBooleanArray *capture$0, id<MTAuthIdRetriever_AuthIdCallback> capture$1);
+
+__attribute__((unused)) static MTAuthIdRetriever_$1 *new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(IOSBooleanArray *capture$0, id<MTAuthIdRetriever_AuthIdCallback> capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$1)
+
+@interface MTAuthIdRetriever_$2 : NSObject < AMCreateConnectionCallback > {
  @public
   IOSBooleanArray *val$isFinished_;
   AMExponentialBackoff *val$backoff_;
   id<MTAuthIdRetriever_AuthIdCallback> val$callback_;
 }
+
+- (void)onConnectionCreated:(id<AMConnection>)connection;
+
+- (void)onConnectionCreateError;
+
+- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
+            withAMExponentialBackoff:(AMExponentialBackoff *)capture$1
+withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$2;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(MTAuthIdRetriever_$2)
 
 J2OBJC_FIELD_SETTER(MTAuthIdRetriever_$2, val$isFinished_, IOSBooleanArray *)
 J2OBJC_FIELD_SETTER(MTAuthIdRetriever_$2, val$backoff_, AMExponentialBackoff *)
 J2OBJC_FIELD_SETTER(MTAuthIdRetriever_$2, val$callback_, id<MTAuthIdRetriever_AuthIdCallback>)
 
+__attribute__((unused)) static void MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(MTAuthIdRetriever_$2 *self, IOSBooleanArray *capture$0, AMExponentialBackoff *capture$1, id<MTAuthIdRetriever_AuthIdCallback> capture$2);
+
+__attribute__((unused)) static MTAuthIdRetriever_$2 *new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(IOSBooleanArray *capture$0, AMExponentialBackoff *capture$1, id<MTAuthIdRetriever_AuthIdCallback> capture$2) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$2)
+
 
 #line 17
 @implementation MTAuthIdRetriever
 
-NSString * MTAuthIdRetriever_TAG_ = @"AuthId";
 
+#line 21
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
                withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback {
@@ -59,20 +102,23 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callb
 }
 
 - (instancetype)init {
-  return [super init];
+  MTAuthIdRetriever_init(self);
+  return self;
 }
 
 @end
 
+
+#line 21
 void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, id<MTAuthIdRetriever_AuthIdCallback> callback) {
-  MTAuthIdRetriever_init();
+  MTAuthIdRetriever_initialize();
   
 #line 22
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_TAG_, @"Requesting AuthId");
   
 #line 24
   IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
-  AMExponentialBackoff *backoff = [[AMExponentialBackoff alloc] init];
+  AMExponentialBackoff *backoff = new_AMExponentialBackoff_init();
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
   
 #line 28
@@ -84,9 +130,17 @@ void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMT
 #line 31
   AMActorApi_API_MINOR_VERSION withEndpoint:
 #line 32
-  [((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:[[MTAuthIdRetriever_$1 alloc] initWithBooleanArray:isFinished withMTAuthIdRetriever_AuthIdCallback:callback] withCreateCallback:
-#line 86
-  [[MTAuthIdRetriever_$2 alloc] initWithBooleanArray:isFinished withAMExponentialBackoff:backoff withMTAuthIdRetriever_AuthIdCallback:callback]];
+  [((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(isFinished, callback) withCreateCallback:new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(isFinished, backoff, callback)];
+}
+
+void MTAuthIdRetriever_init(MTAuthIdRetriever *self) {
+  (void) NSObject_init(self);
+}
+
+MTAuthIdRetriever *new_MTAuthIdRetriever_init() {
+  MTAuthIdRetriever *self = [MTAuthIdRetriever alloc];
+  MTAuthIdRetriever_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever)
@@ -95,9 +149,11 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 
 @implementation MTAuthIdRetriever_$1
 
-- (void)onConnectionRedirect:(NSString *)host withPort:(jint)port withTimeout:(jint)timeout {
-  
-#line 36
+
+#line 35
+- (void)onConnectionRedirect:(NSString *)host
+                    withPort:(jint)port
+                 withTimeout:(jint)timeout {
   if (!IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
     [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onFailure];
@@ -105,23 +161,25 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
   }
 }
 
-- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len {
-  
-#line 45
+
+#line 44
+- (void)onMessage:(IOSByteArray *)data
+       withOffset:(jint)offset
+          withLen:(jint)len {
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
   
 #line 49
   @try {
-    BSDataInput *dataInput = [[BSDataInput alloc] initWithByteArray:data withInt:offset withInt:len];
+    BSDataInput *dataInput = new_BSDataInput_initWithByteArray_withInt_withInt_(data, offset, len);
     jlong pAuthId = [dataInput readLong];
     jlong pSessionId = [dataInput readLong];
     jlong messageId = [dataInput readLong];
     IOSByteArray *payload = [dataInput readProtoBytes];
     
 #line 56
-    BSDataInput *msg = [[BSDataInput alloc] initWithByteArray:payload withInt:0 withInt:((IOSByteArray *) nil_chk(payload))->size_];
+    BSDataInput *msg = new_BSDataInput_initWithByteArray_withInt_withInt_(payload, 0, ((IOSByteArray *) nil_chk(payload))->size_);
     jint header = [msg readByte];
     jlong authId = [msg readLong];
     
@@ -145,14 +203,12 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
   }
   
 #line 74
-  @throw [[JavaLangRuntimeException alloc] init];
+  @throw new_JavaLangRuntimeException_init();
 }
 
 
 #line 78
 - (void)onConnectionDie {
-  
-#line 79
   if (!IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
     [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onFailure];
@@ -164,26 +220,31 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 
 - (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$1 {
-  val$isFinished_ = capture$0;
-  val$callback_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(MTAuthIdRetriever_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$isFinished_ = val$isFinished_;
-  other->val$callback_ = val$callback_;
+  MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(self, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(MTAuthIdRetriever_$1 *self, IOSBooleanArray *capture$0, id<MTAuthIdRetriever_AuthIdCallback> capture$1) {
+  self->val$isFinished_ = capture$0;
+  self->val$callback_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+MTAuthIdRetriever_$1 *new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(IOSBooleanArray *capture$0, id<MTAuthIdRetriever_AuthIdCallback> capture$1) {
+  MTAuthIdRetriever_$1 *self = [MTAuthIdRetriever_$1 alloc];
+  MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(self, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 
 @implementation MTAuthIdRetriever_$2
 
+
+#line 88
 - (void)onConnectionCreated:(id<AMConnection>)connection {
-  
-#line 89
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
@@ -194,7 +255,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
   
 #line 96
   @try {
-    BSDataOutput *output = [[BSDataOutput alloc] init];
+    BSDataOutput *output = new_BSDataOutput_init();
     [output writeLongWithLong:0];
     [output writeLongWithLong:0];
     [output writeLongWithLong:0];
@@ -218,8 +279,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 
 #line 116
 - (void)onConnectionCreateError {
-  
-#line 117
   if (!IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
     [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onFailure];
@@ -230,19 +289,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 - (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0
             withAMExponentialBackoff:(AMExponentialBackoff *)capture$1
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)capture$2 {
-  val$isFinished_ = capture$0;
-  val$backoff_ = capture$1;
-  val$callback_ = capture$2;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(MTAuthIdRetriever_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$isFinished_ = val$isFinished_;
-  other->val$backoff_ = val$backoff_;
-  other->val$callback_ = val$callback_;
+  MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(self, capture$0, capture$1, capture$2);
+  return self;
 }
 
 @end
+
+void MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(MTAuthIdRetriever_$2 *self, IOSBooleanArray *capture$0, AMExponentialBackoff *capture$1, id<MTAuthIdRetriever_AuthIdCallback> capture$2) {
+  self->val$isFinished_ = capture$0;
+  self->val$backoff_ = capture$1;
+  self->val$callback_ = capture$2;
+  (void) NSObject_init(self);
+}
+
+MTAuthIdRetriever_$2 *new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(IOSBooleanArray *capture$0, AMExponentialBackoff *capture$1, id<MTAuthIdRetriever_AuthIdCallback> capture$2) {
+  MTAuthIdRetriever_$2 *self = [MTAuthIdRetriever_$2 alloc];
+  MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(self, capture$0, capture$1, capture$2);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$2)

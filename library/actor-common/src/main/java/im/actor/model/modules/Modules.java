@@ -1,6 +1,7 @@
 package im.actor.model.modules;
 
 import im.actor.model.Configuration;
+import im.actor.model.Messenger;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.modules.utils.PreferenceApiStorage;
@@ -15,9 +16,11 @@ import im.actor.model.util.Timing;
 public class Modules {
     private final Configuration configuration;
     private final I18nEngine i18nEngine;
+    private final Analytics analytics;
     private final ActorApi actorApi;
     private final Auth auth;
     private final AppStateModule appStateModule;
+    private final Messenger messenger;
 
     private boolean isAppVisible;
     private volatile PreferencesStorage preferences;
@@ -36,7 +39,8 @@ public class Modules {
     private volatile SearchModule search;
     private volatile Security security;
 
-    public Modules(Configuration configuration) {
+    public Modules(Messenger messenger, Configuration configuration) {
+        this.messenger = messenger;
         this.configuration = configuration;
 
         Timing timing = new Timing("MODULES_INIT");
@@ -46,6 +50,9 @@ public class Modules {
 
         timing.section("Preferences");
         this.preferences = configuration.getStorageProvider().createPreferencesStorage();
+
+        timing.section("Analytics");
+        this.analytics = new Analytics(this);
 
         timing.section("API");
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
@@ -100,6 +107,8 @@ public class Modules {
         timing.end();
 
         timing = new Timing("ACCOUNT_RUN");
+        timing.section("Settings");
+        settings.run();
         timing.section("Files");
         filesModule.run();
         timing.section("Search");
@@ -209,8 +218,17 @@ public class Modules {
         return search;
     }
 
+    public Messenger getMessenger() {
+        return messenger;
+    }
+
+    public Analytics getAnalytics() {
+        return analytics;
+    }
+
     public void onAppVisible() {
         isAppVisible = true;
+        analytics.trackAppVisible();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppVisible();
             getNotifications().onAppVisible();
@@ -219,6 +237,7 @@ public class Modules {
 
     public void onAppHidden() {
         isAppVisible = false;
+        analytics.trackAppHidden();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppHidden();
             getNotifications().onAppHidden();

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ObjectCache.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ObjectCache.java"
 
 #include "J2ObjC_source.h"
@@ -14,6 +15,7 @@
  @public
   jboolean lockLoading_;
 }
+
 @end
 
 
@@ -105,27 +107,25 @@
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    memoryCache_ =
-#line 10
-    [[JavaUtilHashMap alloc] init];
-    removedItems_ =
-#line 11
-    [[JavaUtilHashSet alloc] init];
-    lockLoading_ =
-#line 12
-    NO;
-  }
+  DKObjectCache_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(DKObjectCache *)other {
-  [super copyAllFieldsTo:other];
-  other->memoryCache_ = memoryCache_;
-  other->removedItems_ = removedItems_;
-  other->lockLoading_ = lockLoading_;
+@end
+
+void DKObjectCache_init(DKObjectCache *self) {
+  (void) NSObject_init(self);
+  self->memoryCache_ = new_JavaUtilHashMap_init();
+  self->removedItems_ = new_JavaUtilHashSet_init();
+  self->lockLoading_ =
+#line 12
+  NO;
 }
 
-@end
+DKObjectCache *new_DKObjectCache_init() {
+  DKObjectCache *self = [DKObjectCache alloc];
+  DKObjectCache_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKObjectCache)

@@ -6,59 +6,59 @@
 #ifndef _ImActorModelModulesMessagesConversationActor_H_
 #define _ImActorModelModulesMessagesConversationActor_H_
 
-@class AMAbsContent;
-@class AMMessage;
-@class AMPeer;
-@class DKActorRef;
-@class DKSyncKeyValue;
-@class ImActorModelModulesMessagesEntityOutUnreadMessagesStorage;
-@class ImActorModelModulesModules;
-@protocol DKListEngine;
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-@interface ImActorModelModulesMessagesConversationActor : ImActorModelModulesUtilsModuleActor {
-}
+@class AMAbsContent;
+@class AMPeer;
+@class ImActorModelModulesModules;
+@protocol JavaUtilList;
+
+@interface ImActorModelModulesMessagesConversationActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
 withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_initWithAMPeer_withImActorModelModulesModules_(ImActorModelModulesMessagesConversationActor *self, AMPeer *peer, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor *new_ImActorModelModulesMessagesConversationActor_initWithAMPeer_withImActorModelModulesModules_(AMPeer *peer, ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageContentUpdated : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageContentUpdated : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid
             withAMAbsContent:(AMAbsContent *)content;
 
-- (jlong)getRid;
-
 - (AMAbsContent *)getContent;
+
+- (jlong)getRid;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageContentUpdated)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageContentUpdated_initWithLong_withAMAbsContent_(ImActorModelModulesMessagesConversationActor_MessageContentUpdated *self, jlong rid, AMAbsContent *content);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageContentUpdated *new_ImActorModelModulesMessagesConversationActor_MessageContentUpdated_initWithLong_withAMAbsContent_(jlong rid, AMAbsContent *content) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageContentUpdated)
 
-@interface ImActorModelModulesMessagesConversationActor_HistoryLoaded : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_HistoryLoaded : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)messages;
 
@@ -68,13 +68,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageC
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_HistoryLoaded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_HistoryLoaded_initWithJavaUtilList_(ImActorModelModulesMessagesConversationActor_HistoryLoaded *self, id<JavaUtilList> messages);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_HistoryLoaded *new_ImActorModelModulesMessagesConversationActor_HistoryLoaded_initWithJavaUtilList_(id<JavaUtilList> messages) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_HistoryLoaded)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageReceived : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageReceived : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)date;
 
@@ -84,13 +86,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_HistoryL
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageReceived)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageReceived_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageReceived *self, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageReceived *new_ImActorModelModulesMessagesConversationActor_MessageReceived_initWithLong_(jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageReceived)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid;
 
@@ -100,13 +104,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageR
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *self, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *new_ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageRead : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageRead : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)date;
 
@@ -116,13 +122,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageE
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageRead)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageRead_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageRead *self, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageRead *new_ImActorModelModulesMessagesConversationActor_MessageRead_initWithLong_(jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageRead)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedRead : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedRead : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid;
 
@@ -132,13 +140,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageR
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *self, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *new_ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageSent : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageSent : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)date;
@@ -151,13 +161,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageE
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageSent)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageSent_initWithLong_withLong_(ImActorModelModulesMessagesConversationActor_MessageSent *self, jlong rid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageSent *new_ImActorModelModulesMessagesConversationActor_MessageSent_initWithLong_withLong_(jlong rid, jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageSent)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageError : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessageError : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)rid;
 
@@ -167,13 +179,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageS
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageError)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageError_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageError *self, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageError *new_ImActorModelModulesMessagesConversationActor_MessageError_initWithLong_(jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageError)
 
-@interface ImActorModelModulesMessagesConversationActor_MessagesDeleted : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_MessagesDeleted : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)rids;
 
@@ -183,13 +197,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageE
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessagesDeleted)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessagesDeleted_initWithJavaUtilList_(ImActorModelModulesMessagesConversationActor_MessagesDeleted *self, id<JavaUtilList> rids);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessagesDeleted *new_ImActorModelModulesMessagesConversationActor_MessagesDeleted_initWithJavaUtilList_(id<JavaUtilList> rids) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessagesDeleted)
 
-@interface ImActorModelModulesMessagesConversationActor_ClearConversation : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_ClearConversation : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -197,13 +213,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_Messages
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_ClearConversation)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_ClearConversation_init(ImActorModelModulesMessagesConversationActor_ClearConversation *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_ClearConversation *new_ImActorModelModulesMessagesConversationActor_ClearConversation_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_ClearConversation)
 
-@interface ImActorModelModulesMessagesConversationActor_DeleteConversation : NSObject {
-}
+@interface ImActorModelModulesMessagesConversationActor_DeleteConversation : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -211,8 +229,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_ClearCon
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_DeleteConversation)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_DeleteConversation_init(ImActorModelModulesMessagesConversationActor_DeleteConversation *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_DeleteConversation *new_ImActorModelModulesMessagesConversationActor_DeleteConversation_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_DeleteConversation)
 

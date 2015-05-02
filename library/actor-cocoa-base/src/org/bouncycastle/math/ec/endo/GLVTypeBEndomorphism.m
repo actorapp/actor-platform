@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBEndomorphism.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/endo/GLVTypeBEndomorphism.java"
 
 #include "IOSObjectArray.h"
@@ -24,17 +25,7 @@
 #line 16
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
      withOrgBouncycastleMathEcEndoGLVTypeBParameters:(OrgBouncycastleMathEcEndoGLVTypeBParameters *)parameters {
-  if (self = [super init]) {
-    
-#line 18
-    self->curve_ = curve;
-    
-#line 19
-    self->parameters_ = parameters;
-    
-#line 20
-    self->pointMap_ = [[OrgBouncycastleMathEcScaleXPointMap alloc] initWithOrgBouncycastleMathEcECFieldElement:[((OrgBouncycastleMathEcECCurve *) nil_chk(curve)) fromBigIntegerWithJavaMathBigInteger:[((OrgBouncycastleMathEcEndoGLVTypeBParameters *) nil_chk(parameters)) getBeta]]];
-  }
+  OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVTypeBParameters_(self, curve, parameters);
   return self;
 }
 
@@ -91,13 +82,23 @@
   return negative ? [((JavaMathBigInteger *) nil_chk(b)) negate] : b;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism *)other {
-  [super copyAllFieldsTo:other];
-  other->curve_ = curve_;
-  other->parameters_ = parameters_;
-  other->pointMap_ = pointMap_;
+@end
+
+
+#line 16
+void OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVTypeBParameters_(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcEndoGLVTypeBParameters *parameters) {
+  (void) NSObject_init(self);
+  self->curve_ = curve;
+  self->parameters_ = parameters;
+  self->pointMap_ = new_OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_([((OrgBouncycastleMathEcECCurve *) nil_chk(curve)) fromBigIntegerWithJavaMathBigInteger:[((OrgBouncycastleMathEcEndoGLVTypeBParameters *) nil_chk(parameters)) getBeta]]);
 }
 
-@end
+
+#line 16
+OrgBouncycastleMathEcEndoGLVTypeBEndomorphism *new_OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVTypeBParameters_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcEndoGLVTypeBParameters *parameters) {
+  OrgBouncycastleMathEcEndoGLVTypeBEndomorphism *self = [OrgBouncycastleMathEcEndoGLVTypeBEndomorphism alloc];
+  OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVTypeBParameters_(self, curve, parameters);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism)

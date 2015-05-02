@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PaddedBufferedBlockCipher.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/paddings/PaddedBufferedBlockCipher.java"
 
 #include "IOSClass.h"
@@ -30,40 +31,17 @@
 
 
 #line 24
-- (instancetype)initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher
-                                                           withOrgBouncycastleCryptoPaddingsBlockCipherPadding:(id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>)padding {
-  if (self = [super init]) {
-    
-#line 28
-    self->cipher_ = cipher;
-    
-#line 29
-    self->padding_ = padding;
-    
-#line 31
-    buf_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher)) getBlockSize]];
-    
-#line 32
-    bufOff_ = 0;
-  }
-  return self;
-}
-
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher
      withOrgBouncycastleCryptoPaddingsBlockCipherPadding:(id<OrgBouncycastleCryptoPaddingsBlockCipherPadding>)padding {
-  return [self initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:
-#line 25
-cipher withOrgBouncycastleCryptoPaddingsBlockCipherPadding:
-#line 26
-padding];
+  OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(self, cipher, padding);
+  return self;
 }
 
 
 #line 40
 - (instancetype)initWithOrgBouncycastleCryptoBlockCipher:(id<OrgBouncycastleCryptoBlockCipher>)cipher {
-  return
-#line 43
-  [self initOrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipherWithOrgBouncycastleCryptoBlockCipher:cipher withOrgBouncycastleCryptoPaddingsBlockCipherPadding:[[OrgBouncycastleCryptoPaddingsPKCS7Padding alloc] init]];
+  OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(self, cipher);
+  return self;
 }
 
 
@@ -180,7 +158,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   if (len < 0) {
     
 #line 180
-    @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Can't have a negative input length!"];
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Can't have a negative input length!");
   }
   
 #line 183
@@ -194,7 +172,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
     if ((outOff + length) > ((IOSByteArray *) nil_chk(outArg))->size_) {
       
 #line 190
-      @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short"];
+      @throw new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(@"output buffer too short");
     }
   }
   
@@ -260,7 +238,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
         [self reset];
         
 #line 253
-        @throw [[OrgBouncycastleCryptoOutputLengthException alloc] initWithNSString:@"output buffer too short"];
+        @throw new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(@"output buffer too short");
       }
       
 #line 256
@@ -292,7 +270,7 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
       [self reset];
       
 #line 277
-      @throw [[OrgBouncycastleCryptoDataLengthException alloc] initWithNSString:@"last block incomplete in decryption"];
+      @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"last block incomplete in decryption");
     }
     
 #line 280
@@ -315,11 +293,44 @@ withOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParamet
   return resultLen;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *)other {
-  [super copyAllFieldsTo:other];
-  other->padding_ = padding_;
+@end
+
+
+#line 24
+void OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *self, id<OrgBouncycastleCryptoBlockCipher> cipher, id<OrgBouncycastleCryptoPaddingsBlockCipherPadding> padding) {
+  (void) OrgBouncycastleCryptoBufferedBlockCipher_init(self);
+  
+#line 28
+  self->cipher_ = cipher;
+  self->padding_ = padding;
+  
+#line 31
+  self->buf_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoBlockCipher>) nil_chk(cipher)) getBlockSize]];
+  self->bufOff_ = 0;
 }
 
-@end
+
+#line 24
+OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *new_OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(id<OrgBouncycastleCryptoBlockCipher> cipher, id<OrgBouncycastleCryptoPaddingsBlockCipherPadding> padding) {
+  OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *self = [OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc];
+  OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(self, cipher, padding);
+  return self;
+}
+
+
+#line 40
+void OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *self, id<OrgBouncycastleCryptoBlockCipher> cipher) {
+  (void) OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_withOrgBouncycastleCryptoPaddingsBlockCipherPadding_(self,
+#line 43
+  cipher, new_OrgBouncycastleCryptoPaddingsPKCS7Padding_init());
+}
+
+
+#line 40
+OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *new_OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(id<OrgBouncycastleCryptoBlockCipher> cipher) {
+  OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher *self = [OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher alloc];
+  OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher_initWithOrgBouncycastleCryptoBlockCipher_(self, cipher);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoPaddingsPaddedBufferedBlockCipher)

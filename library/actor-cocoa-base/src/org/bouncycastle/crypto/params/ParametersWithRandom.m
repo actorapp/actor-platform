@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithRandom.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithRandom.java"
 
 #include "J2ObjC_source.h"
@@ -15,6 +16,7 @@
   id<BCRandomProvider> random_;
   id<OrgBouncycastleCryptoCipherParameters> parameters_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithRandom, random_, id<BCRandomProvider>)
@@ -28,39 +30,38 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithRandom, parameters_
 #line 11
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                          withBCRandomProvider:(id<BCRandomProvider>)random {
-  if (self = [super init]) {
-    
-#line 14
-    self->random_ = random;
-    
-#line 15
-    self->parameters_ = parameters;
-  }
+  OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(self, parameters, random);
   return self;
 }
 
 
 #line 18
 - (id<BCRandomProvider>)getRandom {
-  
-#line 19
   return random_;
 }
 
-
-#line 22
 - (id<OrgBouncycastleCryptoCipherParameters>)getParameters {
-  
-#line 23
   return parameters_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsParametersWithRandom *)other {
-  [super copyAllFieldsTo:other];
-  other->random_ = random_;
-  other->parameters_ = parameters_;
+@end
+
+
+#line 11
+void OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(OrgBouncycastleCryptoParamsParametersWithRandom *self, id<OrgBouncycastleCryptoCipherParameters> parameters, id<BCRandomProvider> random) {
+  (void) NSObject_init(self);
+  
+#line 14
+  self->random_ = random;
+  self->parameters_ = parameters;
 }
 
-@end
+
+#line 11
+OrgBouncycastleCryptoParamsParametersWithRandom *new_OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(id<OrgBouncycastleCryptoCipherParameters> parameters, id<BCRandomProvider> random) {
+  OrgBouncycastleCryptoParamsParametersWithRandom *self = [OrgBouncycastleCryptoParamsParametersWithRandom alloc];
+  OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(self, parameters, random);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsParametersWithRandom)

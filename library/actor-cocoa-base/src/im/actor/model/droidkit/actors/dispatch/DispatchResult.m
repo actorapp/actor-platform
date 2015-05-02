@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/DispatchResult.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/DispatchResult.java"
 
 #include "IOSClass.h"
@@ -17,18 +18,23 @@
   id res_;
   jlong delay__;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKDispatchResult, res_, id)
 
-BOOL DKDispatchResult_initialized = NO;
+static AMThreadLocalCompat *DKDispatchResult_FREE_RESULTS_;
+J2OBJC_STATIC_FIELD_GETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat *)
+J2OBJC_STATIC_FIELD_SETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat *)
+
+J2OBJC_INITIALIZED_DEFN(DKDispatchResult)
 
 
 #line 9
 @implementation DKDispatchResult
 
-AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 
+#line 13
 + (DKDispatchResult *)resultWithId:(id)res {
   return DKDispatchResult_resultWithId_(res);
 }
@@ -44,17 +50,7 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 - (instancetype)initWithBoolean:(jboolean)isResult
                          withId:(id)res
                        withLong:(jlong)delay {
-  if (self = [super init]) {
-    
-#line 41
-    self->isResult__ = isResult;
-    
-#line 42
-    self->res_ = res;
-    
-#line 43
-    self->delay__ = delay;
-  }
+  DKDispatchResult_initWithBoolean_withId_withLong_(self, isResult, res, delay);
   return self;
 }
 
@@ -63,8 +59,6 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 - (void)updateWithBoolean:(jboolean)isResult
                    withId:(id)res
                  withLong:(jlong)delay {
-  
-#line 47
   self->isResult__ = isResult;
   self->res_ = res;
   self->delay__ = delay;
@@ -73,40 +67,19 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 
 #line 52
 - (jboolean)isResult {
-  
-#line 53
   return isResult__;
 }
 
-
-#line 56
 - (id)getRes {
-  
-#line 57
   return res_;
 }
 
-
-#line 60
 - (jlong)getDelay {
-  
-#line 61
   return delay__;
 }
 
-
-#line 64
 - (void)recycle {
-  
-#line 65
   [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) setWithId:self];
-}
-
-- (void)copyAllFieldsTo:(DKDispatchResult *)other {
-  [super copyAllFieldsTo:other];
-  other->isResult__ = isResult__;
-  other->res_ = res_;
-  other->delay__ = delay__;
 }
 
 + (void)initialize {
@@ -118,8 +91,10 @@ AMThreadLocalCompat * DKDispatchResult_FREE_RESULTS_;
 
 @end
 
+
+#line 13
 DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
-  DKDispatchResult_init();
+  DKDispatchResult_initialize();
   
 #line 14
   DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
@@ -130,13 +105,15 @@ DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
   else {
     
 #line 19
-    result = [[DKDispatchResult alloc] initWithBoolean:YES withId:res withLong:0];
+    result = new_DKDispatchResult_initWithBoolean_withId_withLong_(YES, res, 0);
   }
   return result;
 }
 
+
+#line 24
 DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay) {
-  DKDispatchResult_init();
+  DKDispatchResult_initialize();
   
 #line 25
   DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
@@ -147,9 +124,28 @@ DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay) {
   else {
     
 #line 30
-    result = [[DKDispatchResult alloc] initWithBoolean:NO withId:nil withLong:delay];
+    result = new_DKDispatchResult_initWithBoolean_withId_withLong_(NO, nil, delay);
   }
   return result;
+}
+
+
+#line 40
+void DKDispatchResult_initWithBoolean_withId_withLong_(DKDispatchResult *self, jboolean isResult, id res, jlong delay) {
+  (void) NSObject_init(self);
+  
+#line 41
+  self->isResult__ = isResult;
+  self->res_ = res;
+  self->delay__ = delay;
+}
+
+
+#line 40
+DKDispatchResult *new_DKDispatchResult_initWithBoolean_withId_withLong_(jboolean isResult, id res, jlong delay) {
+  DKDispatchResult *self = [DKDispatchResult alloc];
+  DKDispatchResult_initWithBoolean_withId_withLong_(self, isResult, res, delay);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKDispatchResult)

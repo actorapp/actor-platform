@@ -6,13 +6,14 @@
 #ifndef _BSBserParser_H_
 #define _BSBserParser_H_
 
+#include "J2ObjC_header.h"
+
 @class BSDataInput;
 @class ImActorModelDroidkitBserUtilSparseArray;
 
-#include "J2ObjC_header.h"
+@interface BSBserParser : NSObject
 
-@interface BSBserParser : NSObject {
-}
+#pragma mark Public
 
 + (ImActorModelDroidkitBserUtilSparseArray *)deserializeWithBSDataInput:(BSDataInput *)is;
 
@@ -20,13 +21,10 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserParser)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithBSDataInput_(BSDataInput *is);
-CF_EXTERN_C_END
-
-typedef BSBserParser ImActorModelDroidkitBserBserParser;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSBserParser)
+
+typedef BSBserParser ImActorModelDroidkitBserBserParser;
 
 #endif // _BSBserParser_H_

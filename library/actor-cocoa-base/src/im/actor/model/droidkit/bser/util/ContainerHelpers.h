@@ -6,15 +6,18 @@
 #ifndef _ImActorModelDroidkitBserUtilContainerHelpers_H_
 #define _ImActorModelDroidkitBserUtilContainerHelpers_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSBooleanArray;
 @class IOSIntArray;
 @class IOSLongArray;
 @class IOSObjectArray;
 
-#include "J2ObjC_header.h"
+@interface ImActorModelDroidkitBserUtilContainerHelpers : NSObject
 
-@interface ImActorModelDroidkitBserUtilContainerHelpers : NSObject {
-}
+#pragma mark Package-Private
+
+- (instancetype)init;
 
 + (jint)binarySearchWithIntArray:(IOSIntArray *)array
                          withInt:(jint)size
@@ -24,18 +27,9 @@
                           withInt:(jint)size
                          withLong:(jlong)value;
 
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitBserUtilContainerHelpers_initialized;
 J2OBJC_STATIC_INIT(ImActorModelDroidkitBserUtilContainerHelpers)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(IOSIntArray *array, jint size, jint value);
-
-FOUNDATION_EXPORT jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithLongArray_withInt_withLong_(IOSLongArray *array, jint size, jlong value);
 
 FOUNDATION_EXPORT IOSBooleanArray *ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_BOOLEANS_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilContainerHelpers, EMPTY_BOOLEANS_, IOSBooleanArray *)
@@ -48,7 +42,14 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilContainerHelpers, EMPTY_L
 
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelDroidkitBserUtilContainerHelpers_EMPTY_OBJECTS_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilContainerHelpers, EMPTY_OBJECTS_, IOSObjectArray *)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithIntArray_withInt_withInt_(IOSIntArray *array, jint size, jint value);
+
+FOUNDATION_EXPORT jint ImActorModelDroidkitBserUtilContainerHelpers_binarySearchWithLongArray_withInt_withLong_(IOSLongArray *array, jint size, jlong value);
+
+FOUNDATION_EXPORT void ImActorModelDroidkitBserUtilContainerHelpers_init(ImActorModelDroidkitBserUtilContainerHelpers *self);
+
+FOUNDATION_EXPORT ImActorModelDroidkitBserUtilContainerHelpers *new_ImActorModelDroidkitBserUtilContainerHelpers_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserUtilContainerHelpers)
 

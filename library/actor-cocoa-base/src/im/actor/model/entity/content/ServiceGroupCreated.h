@@ -6,40 +6,44 @@
 #ifndef _AMServiceGroupCreated_H_
 #define _AMServiceGroupCreated_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/ServiceContent.h"
+@interface AMServiceGroupCreated : AMServiceContent
 
-@interface AMServiceGroupCreated : AMServiceContent {
-}
-
-+ (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)groupTitle;
 
-- (NSString *)getGroupTitle;
++ (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+- (NSString *)getGroupTitle;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupCreated)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceGroupCreated ImActorModelEntityContentServiceGroupCreated;
+FOUNDATION_EXPORT void AMServiceGroupCreated_initWithNSString_(AMServiceGroupCreated *self, NSString *groupTitle);
+
+FOUNDATION_EXPORT AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *groupTitle) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupCreated)
+
+typedef AMServiceGroupCreated ImActorModelEntityContentServiceGroupCreated;
 
 #endif // _AMServiceGroupCreated_H_

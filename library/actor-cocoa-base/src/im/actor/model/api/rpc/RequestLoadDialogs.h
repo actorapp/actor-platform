@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiRpcRequestLoadDialogs_H_
 #define _ImActorModelApiRpcRequestLoadDialogs_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestLoadDialogs_HEADER 104
 
-@interface ImActorModelApiRpcRequestLoadDialogs : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestLoadDialogs : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithLong:(jlong)startDate
-                     withInt:(jint)limit;
+#pragma mark Public
 
 - (instancetype)init;
 
-- (jlong)getStartDate;
+- (instancetype)initWithLong:(jlong)minDate
+                     withInt:(jint)limit;
+
++ (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getLimit;
+
+- (jlong)getMinDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestLoadDialogs)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLoadDialogs, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLoadDialogs, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(ImActorModelApiRpcRequestLoadDialogs *self, jlong minDate, jint limit);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestLoadDialogs_init(ImActorModelApiRpcRequestLoadDialogs *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestLoadDialogs)
 

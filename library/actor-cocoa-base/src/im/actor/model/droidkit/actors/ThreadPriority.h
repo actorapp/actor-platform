@@ -15,23 +15,20 @@ typedef NS_ENUM(NSUInteger, DKThreadPriority) {
   DKThreadPriority_LOW = 2,
 };
 
-@interface DKThreadPriorityEnum : JavaLangEnum < NSCopying > {
-}
+@interface DKThreadPriorityEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *DKThreadPriorityEnum_values();
 
 + (DKThreadPriorityEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT DKThreadPriorityEnum *DKThreadPriorityEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL DKThreadPriorityEnum_initialized;
 J2OBJC_STATIC_INIT(DKThreadPriorityEnum)
 
 FOUNDATION_EXPORT DKThreadPriorityEnum *DKThreadPriorityEnum_values_[];
@@ -45,8 +42,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(DKThreadPriorityEnum, NORMAL)
 #define DKThreadPriorityEnum_LOW DKThreadPriorityEnum_values_[DKThreadPriority_LOW]
 J2OBJC_ENUM_CONSTANT_GETTER(DKThreadPriorityEnum, LOW)
 
-typedef DKThreadPriorityEnum ImActorModelDroidkitActorsThreadPriorityEnum;
-
 J2OBJC_TYPE_LITERAL_HEADER(DKThreadPriorityEnum)
+
+typedef DKThreadPriorityEnum ImActorModelDroidkitActorsThreadPriorityEnum;
 
 #endif // _DKThreadPriority_H_

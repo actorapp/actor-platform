@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/DocumentContent.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/DocumentContent.java"
 
 #include "IOSClass.h"
@@ -32,56 +33,32 @@
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
                      withAMFastThumb:(AMFastThumb *)fastThumb {
-  if (self = [super init]) {
-    
-#line 24
-    self->source_ = source;
-    
-#line 25
-    self->mimetype_ = mimetype;
-    
-#line 26
-    self->name_ = name;
-    
-#line 27
-    self->fastThumb_ = fastThumb;
-  }
+  AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, source, mimetype, name, fastThumb);
   return self;
 }
 
 
 #line 30
 - (instancetype)init {
-  return [super init];
+  AMDocumentContent_init(self);
+  return self;
 }
 
+
+#line 34
 - (AMFileSource *)getSource {
-  
-#line 35
   return source_;
 }
 
-
-#line 38
 - (NSString *)getName {
-  
-#line 39
   return name_;
 }
 
-
-#line 42
 - (AMFastThumb *)getFastThumb {
-  
-#line 43
   return fastThumb_;
 }
 
-
-#line 46
 - (NSString *)getExt {
-  
-#line 47
   NSString *ext = @"";
   jint dotIndex = [((NSString *) nil_chk(name_)) lastIndexOf:'.'];
   if (dotIndex >= 0) {
@@ -90,11 +67,7 @@
   return ext;
 }
 
-
-#line 55
 - (NSString *)getMimetype {
-  
-#line 56
   return mimetype_;
 }
 
@@ -107,8 +80,6 @@
 
 #line 65
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 66
   [super parseWithBSBserValues:values];
   source_ = AMFileSource_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
   mimetype_ = [values getStringWithInt:3];
@@ -131,21 +102,49 @@
   }
 }
 
-- (void)copyAllFieldsTo:(AMDocumentContent *)other {
-  [super copyAllFieldsTo:other];
-  other->source_ = source_;
-  other->mimetype_ = mimetype_;
-  other->name_ = name_;
-  other->fastThumb_ = fastThumb_;
-}
-
 @end
 
+
+#line 14
 AMDocumentContent *AMDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data) {
-  AMDocumentContent_init();
+  AMDocumentContent_initialize();
   
 #line 15
-  return ((AMDocumentContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMDocumentContent alloc] init], data));
+  return ((AMDocumentContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMDocumentContent_init(), data));
+}
+
+
+#line 23
+void AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(AMDocumentContent *self, AMFileSource *source, NSString *mimetype, NSString *name, AMFastThumb *fastThumb) {
+  (void) AMAbsContent_init(self);
+  
+#line 24
+  self->source_ = source;
+  self->mimetype_ = mimetype;
+  self->name_ = name;
+  self->fastThumb_ = fastThumb;
+}
+
+
+#line 23
+AMDocumentContent *new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(AMFileSource *source, NSString *mimetype, NSString *name, AMFastThumb *fastThumb) {
+  AMDocumentContent *self = [AMDocumentContent alloc];
+  AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, source, mimetype, name, fastThumb);
+  return self;
+}
+
+
+#line 30
+void AMDocumentContent_init(AMDocumentContent *self) {
+  (void) AMAbsContent_init(self);
+}
+
+
+#line 30
+AMDocumentContent *new_AMDocumentContent_init() {
+  AMDocumentContent *self = [AMDocumentContent alloc];
+  AMDocumentContent_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDocumentContent)

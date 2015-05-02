@@ -6,6 +6,9 @@
 #ifndef _AMVideoContent_H_
 #define _AMVideoContent_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/DocumentContent.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class AMFastThumb;
 @class AMFileSource;
@@ -13,13 +16,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/DocumentContent.h"
+@interface AMVideoContent : AMDocumentContent
 
-@interface AMVideoContent : AMDocumentContent {
-}
-
-+ (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
@@ -31,27 +30,32 @@
 
 - (jint)getDuration;
 
-- (jint)getW;
-
 - (jint)getH;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+- (jint)getW;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
++ (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data;
+
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMVideoContent)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMVideoContent ImActorModelEntityContentVideoContent;
+FOUNDATION_EXPORT void AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMVideoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h);
+
+FOUNDATION_EXPORT AMVideoContent *new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMVideoContent)
+
+typedef AMVideoContent ImActorModelEntityContentVideoContent;
 
 #endif // _AMVideoContent_H_

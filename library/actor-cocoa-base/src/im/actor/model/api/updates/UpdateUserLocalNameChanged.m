@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLocalNameChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLocalNameChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateUserLocalNameChanged () {
@@ -20,6 +22,7 @@
   jint uid_;
   NSString *localName_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_, NSString *)
@@ -38,34 +41,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 #line 30
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)localName {
-  if (self = [super init]) {
-    
-#line 31
-    self->uid_ = uid;
-    
-#line 32
-    self->localName_ = localName;
-  }
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getUid {
-  
-#line 40
   return self->uid_;
 }
 
-
-#line 43
 - (NSString *)getLocalName {
-  
-#line 44
   return self->localName_;
 }
 
@@ -79,14 +72,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->localName_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->localName_];
   }
 }
 
+
+#line 62
 - (NSString *)description {
   NSString *res = @"update UserLocalNameChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -95,25 +88,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 72
-  return ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateUserLocalNameChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->localName_ = localName_;
+#line 71
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_init();
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self, jint uid, NSString *localName) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->uid_ = uid;
+  self->localName_ = localName;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(jint uid, NSString *localName) {
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged *self = [ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc];
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init() {
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged *self = [ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc];
+  ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserLocalNameChanged)

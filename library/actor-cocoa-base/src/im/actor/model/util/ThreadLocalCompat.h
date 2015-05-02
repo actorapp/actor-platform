@@ -8,26 +8,26 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMThreadLocalCompat : NSObject {
-}
+@interface AMThreadLocalCompat : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (id)get;
 
-- (void)setWithId:(id)v;
-
 - (void)remove;
 
-- (instancetype)init;
+- (void)setWithId:(id)v;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMThreadLocalCompat)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef AMThreadLocalCompat ImActorModelUtilThreadLocalCompat;
+FOUNDATION_EXPORT void AMThreadLocalCompat_init(AMThreadLocalCompat *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMThreadLocalCompat)
+
+typedef AMThreadLocalCompat ImActorModelUtilThreadLocalCompat;
 
 #endif // _AMThreadLocalCompat_H_

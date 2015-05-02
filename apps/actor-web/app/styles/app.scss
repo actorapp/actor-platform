@@ -1,0 +1,198 @@
+@charset 'UTF-8';
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin,cyrillic);
+@import 'variables';
+@import '../../bower_components/normalize.css/normalize.css';
+html {
+  background-color: $bodyColor;
+  background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 300px;
+}
+body {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  padding: 24px;
+  transition: padding 0.4s cubic-bezier(.25,.8,.25,1);
+  background-color: transparent;
+  text-rendering: optimizeLegibility;
+  @media (max-height: 600px) {
+    padding-top: 0;
+    padding-bottom: 0;
+    .main {
+      border-radius: 0;
+    }
+  }
+  @media (max-width: 1024px) {
+    padding: 0;
+  }
+}
+.main {
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  border-radius: 4px;
+  background: rgb(255, 255, 255);
+  box-shadow: 0 1px 1px rgba(97, 127, 152, .2), 1px 0 0 rgba(97, 127, 152, .1), -1px 0 0 rgba(97, 127, 152, .1);
+  @media (max-width: 1024px) {
+    overflow: visible;
+    width: 100%;
+    border-radius: 0;
+  }
+}
+md-toolbar.md-default-theme {
+  min-height: 56px;
+  border-bottom: 1px solid rgb(239,239,239);
+  background-color: rgb(250,250,250);
+  box-shadow: none;
+  md-icon {
+    color: rgb(160,160,160);
+  }
+  .md-toolbar-tools {
+    font-size: 16px;
+    height: 56px;
+    max-height: 56px;
+    color: rgb(160,160,160);
+    & > .md-button:first-child {
+      margin-right: 8px;
+      margin-left: -4px;
+    }
+    & > .md-button {
+      margin-right: -4px;
+      margin-left: 8px;
+    }
+  }
+}
+.login-image {
+  background-image: url("/assets/img/auth-splash.jpg");
+  background-repeat: no-repeat;
+  background-position: 30% 0;
+  background-size: cover;
+}
+.login {
+  form {
+    max-width: 360px;
+    padding: 0 16px 16px;
+    p {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 36px;
+      padding: 0 4px;
+      text-align: center;
+      color: rgba(0,0,0,.4);
+    }
+  }
+}
+.md-button {
+  &.md-primary {
+    font-size: 14px;
+    background-color: $baseColor !important;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26) !important;
+    &:hover {
+      box-shadow: 0 8px 17px rgba(0, 0, 0, .2) !important;
+    }
+  }
+  &.md-big {
+    line-height: 36px;
+    min-width: 100px;
+    padding: 0 16px;
+  }
+  &.md-wide {
+    width: 100%;
+  }
+  &.md-icon-button {
+    font-size: 12px;
+    text-transform: inherit;
+    color: inherit !important;
+    md-icon {
+      /* padding: 1px; */
+      vertical-align: middle;
+    }
+    @media (max-width: 350px) {
+      span {
+        display: none;
+      }
+    }
+    span {
+      padding-right: 4px;
+      line-height: 24px;
+      vertical-align: middle;
+    }
+  }
+}
+.md-default-theme {
+  .md-input-focused {
+    label {
+      color: $baseColor !important;
+    }
+    .md-input {
+      border-color: $baseColor !important;
+    }
+  }
+}
+md-list {
+  display: block;
+}
+md-list-item {
+  display: flex;
+  padding: 0 16px;
+  text-overflow: ellipsis;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  align-items: flex-start;
+}
+.md-sidenav-left {
+  border-radius: 4px 0 0 4px;
+  @media (max-width: 1024px) {
+    border-radius: 0;
+  }
+  @media (max-height: 600px) {
+    border-radius: 0;
+  }
+}
+.no-avatar {
+  cursor: default;
+  &--empty {
+    background-color: $emptyColor;
+  }
+  &--lblue {
+    background-color: $lblueColor;
+  }
+  &--blue {
+    background-color: $blueColor;
+  }
+  &--purple {
+    background-color: $purpleColor;
+  }
+  &--red {
+    background-color: $redColor;
+  }
+  &--orange {
+    background-color: $orangeColor;
+  }
+  &--yellow {
+    background-color: $yellowColor;
+  }
+  &--green {
+    background-color: $greenColor;
+  }
+  span {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    display: block;
+    height: 100%;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 -1px 5px rgba(0,0,0,.07);
+    color: rgb(255,255,255);
+    line-height: 48px;
+  }
+}
+
+.md-subheader {
+  padding-right: 16px;
+  margin-right: 0;
+  &:after {
+    right: 0 !important;
+  }
+}

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessagesStorage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessagesStorage.java"
 
 #include "IOSClass.h"
@@ -25,6 +26,7 @@
  @public
   JavaUtilHashMap *unreadMessages_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unreadMessages_, JavaUtilHashMap *)
@@ -40,10 +42,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unre
 
 #line 25
 - (JavaUtilHashSet *)getUnreadWithAMPeer:(AMPeer *)peer {
-  
-#line 26
   if (![((JavaUtilHashMap *) nil_chk(unreadMessages_)) containsKeyWithId:peer]) {
-    (void) [unreadMessages_ putWithId:peer withId:[[JavaUtilHashSet alloc] init]];
+    (void) [unreadMessages_ putWithId:peer withId:new_JavaUtilHashSet_init()];
   }
   return [unreadMessages_ getWithId:peer];
 }
@@ -68,8 +68,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unre
 
 #line 46
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 47
   for (AMPeer * __strong peer in nil_chk([((JavaUtilHashMap *) nil_chk(unreadMessages_)) keySet])) {
     for (ImActorModelModulesMessagesEntityUnreadMessage * __strong u in nil_chk([unreadMessages_ getWithId:peer])) {
       [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:u];
@@ -78,26 +76,30 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unre
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    unreadMessages_ =
-#line 23
-    [[JavaUtilHashMap alloc] init];
-  }
+  ImActorModelModulesMessagesEntityUnreadMessagesStorage_init(self);
   return self;
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityUnreadMessagesStorage *)other {
-  [super copyAllFieldsTo:other];
-  other->unreadMessages_ = unreadMessages_;
 }
 
 @end
 
+
+#line 19
 ImActorModelModulesMessagesEntityUnreadMessagesStorage *ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityUnreadMessagesStorage_init();
+  ImActorModelModulesMessagesEntityUnreadMessagesStorage_initialize();
   
 #line 20
-  return ((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityUnreadMessagesStorage alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityUnreadMessagesStorage_init(), data));
+}
+
+void ImActorModelModulesMessagesEntityUnreadMessagesStorage_init(ImActorModelModulesMessagesEntityUnreadMessagesStorage *self) {
+  (void) BSBserObject_init(self);
+  self->unreadMessages_ = new_JavaUtilHashMap_init();
+}
+
+ImActorModelModulesMessagesEntityUnreadMessagesStorage *new_ImActorModelModulesMessagesEntityUnreadMessagesStorage_init() {
+  ImActorModelModulesMessagesEntityUnreadMessagesStorage *self = [ImActorModelModulesMessagesEntityUnreadMessagesStorage alloc];
+  ImActorModelModulesMessagesEntityUnreadMessagesStorage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityUnreadMessagesStorage)

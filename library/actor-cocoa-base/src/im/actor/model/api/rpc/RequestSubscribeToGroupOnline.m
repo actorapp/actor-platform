@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeToGroupOnline.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeToGroupOnline.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -22,6 +24,7 @@
  @public
   id<JavaUtilList> groups_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id<JavaUtilList>)
@@ -39,32 +42,29 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
 
 #line 29
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups {
-  if (self = [super init]) {
-    
-#line 30
-    self->groups_ = groups;
-  }
+  ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(self, groups);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestSubscribeToGroupOnline_init(self);
+  return self;
 }
 
+
+#line 37
 - (id<JavaUtilList>)getGroups {
-  
-#line 38
   return self->groups_;
 }
 
 
 #line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  id<JavaUtilList> _groups = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_groups addWithId:[[ImActorModelApiGroupOutPeer alloc] init]];
+    [_groups addWithId:new_ImActorModelApiGroupOutPeer_init()];
   }
   self->groups_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_groups];
 }
@@ -72,11 +72,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
 
 #line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 52
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
 }
 
+
+#line 56
 - (NSString *)description {
   NSString *res = @"rpc SubscribeToGroupOnline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groups=", [((id<JavaUtilList>) nil_chk(self->groups_)) size]));
@@ -84,24 +84,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 65
-  return ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSubscribeToGroupOnline *)other {
-  [super copyAllFieldsTo:other];
-  other->groups_ = groups_;
+#line 64
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestSubscribeToGroupOnline *ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSubscribeToGroupOnline_init();
+  ImActorModelApiRpcRequestSubscribeToGroupOnline_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestSubscribeToGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSubscribeToGroupOnline alloc] init], data));
+  return ((ImActorModelApiRpcRequestSubscribeToGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSubscribeToGroupOnline_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToGroupOnline *self, id<JavaUtilList> groups) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->groups_ = groups;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(id<JavaUtilList> groups) {
+  ImActorModelApiRpcRequestSubscribeToGroupOnline *self = [ImActorModelApiRpcRequestSubscribeToGroupOnline alloc];
+  ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(self, groups);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestSubscribeToGroupOnline_init(ImActorModelApiRpcRequestSubscribeToGroupOnline *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_init() {
+  ImActorModelApiRpcRequestSubscribeToGroupOnline *self = [ImActorModelApiRpcRequestSubscribeToGroupOnline alloc];
+  ImActorModelApiRpcRequestSubscribeToGroupOnline_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSubscribeToGroupOnline)

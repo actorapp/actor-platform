@@ -6,13 +6,15 @@
 #ifndef _AMConnection_H_
 #define _AMConnection_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol AMConnection < NSObject, JavaObject >
 
-- (void)post:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
+- (void)post:(IOSByteArray *)data
+  withOffset:(jint)offset
+     withLen:(jint)len;
 
 - (jboolean)isClosed;
 
@@ -22,8 +24,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMConnection)
 
-#define ImActorModelNetworkConnection AMConnection
-
 J2OBJC_TYPE_LITERAL_HEADER(AMConnection)
+
+#define ImActorModelNetworkConnection AMConnection
 
 #endif // _AMConnection_H_

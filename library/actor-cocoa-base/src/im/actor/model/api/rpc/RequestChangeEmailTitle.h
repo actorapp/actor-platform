@@ -6,26 +6,29 @@
 #ifndef _ImActorModelApiRpcRequestChangeEmailTitle_H_
 #define _ImActorModelApiRpcRequestChangeEmailTitle_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestChangeEmailTitle_HEADER 125
 
-@interface ImActorModelApiRpcRequestChangeEmailTitle : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestChangeEmailTitle : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestChangeEmailTitle *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)emailId
                withNSString:(NSString *)title;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestChangeEmailTitle *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getEmailId;
+
+- (jint)getHeaderKey;
 
 - (NSString *)getTitle;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestChangeEmailTitle)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestChangeEmailTitle, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestChangeEmailTitle *ImActorModelApiRpcRequestChangeEmailTitle_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestChangeEmailTitle, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestChangeEmailTitle_initWithInt_withNSString_(ImActorModelApiRpcRequestChangeEmailTitle *self, jint emailId, NSString *title);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestChangeEmailTitle *new_ImActorModelApiRpcRequestChangeEmailTitle_initWithInt_withNSString_(jint emailId, NSString *title) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestChangeEmailTitle_init(ImActorModelApiRpcRequestChangeEmailTitle *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestChangeEmailTitle *new_ImActorModelApiRpcRequestChangeEmailTitle_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestChangeEmailTitle)
 

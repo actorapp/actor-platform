@@ -6,9 +6,9 @@
 #ifndef _AMValueTripleChangedListener_H_
 #define _AMValueTripleChangedListener_H_
 
-@class AMValueModel;
-
 #include "J2ObjC_header.h"
+
+@class AMValueModel;
 
 @protocol AMValueTripleChangedListener < NSObject, JavaObject >
 
@@ -23,8 +23,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMValueTripleChangedListener)
 
-#define ImActorModelMvvmValueTripleChangedListener AMValueTripleChangedListener
-
 J2OBJC_TYPE_LITERAL_HEADER(AMValueTripleChangedListener)
+
+#define ImActorModelMvvmValueTripleChangedListener AMValueTripleChangedListener
 
 #endif // _AMValueTripleChangedListener_H_

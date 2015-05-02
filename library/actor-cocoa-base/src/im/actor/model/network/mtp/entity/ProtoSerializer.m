@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoSerializer.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoSerializer.java"
 
 #include "IOSClass.h"
@@ -68,20 +69,25 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  MTProtoSerializer_init(self);
+  return self;
 }
 
 @end
 
+
+#line 9
 MTProtoStruct *MTProtoSerializer_readMessagePayloadWithByteArray_(IOSByteArray *bs) {
-  MTProtoSerializer_init();
+  MTProtoSerializer_initialize();
   
 #line 10
-  return MTProtoSerializer_readMessagePayloadWithBSDataInput_([[BSDataInput alloc] initWithByteArray:bs withInt:0 withInt:((IOSByteArray *) nil_chk(bs))->size_]);
+  return MTProtoSerializer_readMessagePayloadWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(bs, 0, ((IOSByteArray *) nil_chk(bs))->size_));
 }
 
+
+#line 13
 MTProtoStruct *MTProtoSerializer_readMessagePayloadWithBSDataInput_(BSDataInput *bs) {
-  MTProtoSerializer_init();
+  MTProtoSerializer_initialize();
   
 #line 14
   jint header = [((BSDataInput *) nil_chk(bs)) readByte];
@@ -89,78 +95,96 @@ MTProtoStruct *MTProtoSerializer_readMessagePayloadWithBSDataInput_(BSDataInput 
 #line 16
   switch (header) {
     case MTPing_HEADER:
-    return [[MTPing alloc] initWithBSDataInput:bs];
+    return new_MTPing_initWithBSDataInput_(bs);
     case MTPong_HEADER:
-    return [[MTPong alloc] initWithBSDataInput:bs];
+    return new_MTPong_initWithBSDataInput_(bs);
     case MTDrop_HEADER:
-    return [[MTDrop alloc] initWithBSDataInput:bs];
+    return new_MTDrop_initWithBSDataInput_(bs);
     case MTContainer_HEADER:
-    return [[MTContainer alloc] initWithBSDataInput:bs];
+    return new_MTContainer_initWithBSDataInput_(bs);
     case MTMTRpcRequest_HEADER:
-    return [[MTMTRpcRequest alloc] initWithBSDataInput:bs];
+    return new_MTMTRpcRequest_initWithBSDataInput_(bs);
     case MTMTRpcResponse_HEADER:
-    return [[MTMTRpcResponse alloc] initWithBSDataInput:bs];
+    return new_MTMTRpcResponse_initWithBSDataInput_(bs);
     case MTMessageAck_HEADER:
-    return [[MTMessageAck alloc] initWithBSDataInput:bs];
+    return new_MTMessageAck_initWithBSDataInput_(bs);
     case MTNewSessionCreated_HEADER:
-    return [[MTNewSessionCreated alloc] initWithBSDataInput:bs];
+    return new_MTNewSessionCreated_initWithBSDataInput_(bs);
     case MTMTPush_HEADER:
-    return [[MTMTPush alloc] initWithBSDataInput:bs];
+    return new_MTMTPush_initWithBSDataInput_(bs);
     case MTUnsentMessage_HEADER:
-    return [[MTUnsentMessage alloc] initWithBSDataInput:bs];
+    return new_MTUnsentMessage_initWithBSDataInput_(bs);
     case MTUnsentResponse_HEADER:
-    return [[MTUnsentResponse alloc] initWithBSDataInput:bs];
+    return new_MTUnsentResponse_initWithBSDataInput_(bs);
     case MTRequestResend_HEADER:
-    return [[MTUnsentResponse alloc] initWithBSDataInput:bs];
+    return new_MTUnsentResponse_initWithBSDataInput_(bs);
   }
   
 #line 43
-  @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unable to read proto object with header #", header)];
+  @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I", @"Unable to read proto object with header #", header));
 }
 
+
+#line 46
 MTProtoStruct *MTProtoSerializer_readRpcResponsePayloadWithByteArray_(IOSByteArray *data) {
-  MTProtoSerializer_init();
+  MTProtoSerializer_initialize();
   
 #line 47
-  BSDataInput *bs = [[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
+  BSDataInput *bs = new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_);
   jint header = [bs readByte];
   switch (header) {
     case MTRpcOk_HEADER:
-    return [[MTRpcOk alloc] initWithBSDataInput:bs];
+    return new_MTRpcOk_initWithBSDataInput_(bs);
     case MTRpcError_HEADER:
-    return [[MTRpcError alloc] initWithBSDataInput:bs];
+    return new_MTRpcError_initWithBSDataInput_(bs);
     case MTRpcFloodWait_HEADER:
-    return [[MTRpcFloodWait alloc] initWithBSDataInput:bs];
+    return new_MTRpcFloodWait_initWithBSDataInput_(bs);
     case MTRpcInternalError_HEADER:
-    return [[MTRpcInternalError alloc] initWithBSDataInput:bs];
+    return new_MTRpcInternalError_initWithBSDataInput_(bs);
   }
-  @throw [[JavaIoIOException alloc] initWithNSString:@"Unable to read proto object"];
+  @throw new_JavaIoIOException_initWithNSString_(@"Unable to read proto object");
 }
 
+
+#line 62
 MTProtoStruct *MTProtoSerializer_readRpcRequestPayloadWithBSDataInput_(BSDataInput *bs) {
-  MTProtoSerializer_init();
+  MTProtoSerializer_initialize();
   
 #line 63
   jint header = [((BSDataInput *) nil_chk(bs)) readByte];
   switch (header) {
     case MTRpcRequest_HEADER:
-    return [[MTRpcRequest alloc] initWithBSDataInput:bs];
+    return new_MTRpcRequest_initWithBSDataInput_(bs);
   }
-  @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unable to read proto object with header #", header)];
+  @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I", @"Unable to read proto object with header #", header));
 }
 
+
+#line 71
 MTPush *MTProtoSerializer_readUpdateWithByteArray_(IOSByteArray *bs) {
-  MTProtoSerializer_init();
+  MTProtoSerializer_initialize();
   
 #line 72
-  return MTProtoSerializer_readUpdateWithBSDataInput_([[BSDataInput alloc] initWithByteArray:bs withInt:0 withInt:((IOSByteArray *) nil_chk(bs))->size_]);
+  return MTProtoSerializer_readUpdateWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(bs, 0, ((IOSByteArray *) nil_chk(bs))->size_));
 }
 
+
+#line 75
 MTPush *MTProtoSerializer_readUpdateWithBSDataInput_(BSDataInput *bs) {
-  MTProtoSerializer_init();
+  MTProtoSerializer_initialize();
   
 #line 76
-  return [[MTPush alloc] initWithBSDataInput:bs];
+  return new_MTPush_initWithBSDataInput_(bs);
+}
+
+void MTProtoSerializer_init(MTProtoSerializer *self) {
+  (void) NSObject_init(self);
+}
+
+MTProtoSerializer *new_MTProtoSerializer_init() {
+  MTProtoSerializer *self = [MTProtoSerializer alloc];
+  MTProtoSerializer_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTProtoSerializer)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/Endpoints.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/Endpoints.java"
 
 #include "IOSObjectArray.h"
@@ -15,6 +16,7 @@
   jint roundRobin_;
   IOSObjectArray *endpoints_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
@@ -26,30 +28,37 @@ J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
 
 #line 10
 - (instancetype)initWithAMConnectionEndpointArray:(IOSObjectArray *)endpoints {
-  if (self = [super init]) {
-    roundRobin_ = 0;
-    
-#line 11
-    self->endpoints_ = endpoints;
-  }
+  AMEndpoints_initWithAMConnectionEndpointArray_(self, endpoints);
   return self;
 }
 
 
 #line 14
 - (AMConnectionEndpoint *)fetchEndpoint {
-  
-#line 15
   roundRobin_ = (roundRobin_ + 1) % ((IOSObjectArray *) nil_chk(endpoints_))->size_;
   return IOSObjectArray_Get(endpoints_, roundRobin_);
 }
 
-- (void)copyAllFieldsTo:(AMEndpoints *)other {
-  [super copyAllFieldsTo:other];
-  other->roundRobin_ = roundRobin_;
-  other->endpoints_ = endpoints_;
+@end
+
+
+#line 10
+void AMEndpoints_initWithAMConnectionEndpointArray_(AMEndpoints *self, IOSObjectArray *endpoints) {
+  (void) NSObject_init(self);
+  self->roundRobin_ =
+#line 7
+  0;
+  
+#line 11
+  self->endpoints_ = endpoints;
 }
 
-@end
+
+#line 10
+AMEndpoints *new_AMEndpoints_initWithAMConnectionEndpointArray_(IOSObjectArray *endpoints) {
+  AMEndpoints *self = [AMEndpoints alloc];
+  AMEndpoints_initWithAMConnectionEndpointArray_(self, endpoints);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMEndpoints)

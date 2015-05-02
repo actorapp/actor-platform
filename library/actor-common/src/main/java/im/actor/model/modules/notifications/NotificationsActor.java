@@ -64,13 +64,13 @@ public class NotificationsActor extends ModuleActor {
         if (config().getNotificationProvider() != null) {
             if (visiblePeer != null && visiblePeer.equals(peer)) {
                 if (modules().getSettings().isConversationTonesEnabled()) {
-                    config().getNotificationProvider().onMessageArriveInApp();
+                    config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
                 }
                 return;
             }
             if (isDialogsVisible) {
                 if (modules().getSettings().isConversationTonesEnabled()) {
-                    config().getNotificationProvider().onMessageArriveInApp();
+                    config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
                 }
                 return;
             }
@@ -104,7 +104,7 @@ public class NotificationsActor extends ModuleActor {
             }
             int chatsCount = peers.size();
 
-            config().getNotificationProvider().onNotification(res, messagesCount, chatsCount);
+            config().getNotificationProvider().onNotification(modules().getMessenger(), res, messagesCount, chatsCount);
         }
     }
 
@@ -125,7 +125,7 @@ public class NotificationsActor extends ModuleActor {
     public void onConversationVisible(Peer peer) {
         this.visiblePeer = peer;
         if (config().getNotificationProvider() != null) {
-            config().getNotificationProvider().onChatOpen(peer);
+            config().getNotificationProvider().onChatOpen(modules().getMessenger(), peer);
         }
     }
 
@@ -146,7 +146,7 @@ public class NotificationsActor extends ModuleActor {
     public void onDialogsVisible() {
         isDialogsVisible = true;
         if (config().getNotificationProvider() != null) {
-            config().getNotificationProvider().onDialogsOpen();
+            config().getNotificationProvider().onDialogsOpen(modules().getMessenger());
         }
     }
 

@@ -6,43 +6,44 @@
 #ifndef _ImActorModelModulesUtilsBaseKeyValueEngine_H_
 #define _ImActorModelModulesUtilsBaseKeyValueEngine_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+
 @class IOSByteArray;
 @class IOSLongArray;
-@class JavaUtilHashMap;
 @protocol DKKeyValueItem;
 @protocol DKKeyValueStorage;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
+@interface ImActorModelModulesUtilsBaseKeyValueEngine : NSObject < DKKeyValueEngine >
 
-@interface ImActorModelModulesUtilsBaseKeyValueEngine : NSObject < DKKeyValueEngine > {
-}
-
-- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage;
-
-- (IOSByteArray *)serializeWithDKKeyValueItem:(id<DKKeyValueItem>)value;
-
-- (id)deserializeWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
 
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
 
+- (void)clear;
+
+- (id)getValueWithLong:(jlong)id_;
+
 - (void)removeItemWithLong:(jlong)id_;
 
 - (void)removeItemsWithLongArray:(IOSLongArray *)ids;
 
-- (void)clear;
+#pragma mark Protected
 
-- (id)getValueWithLong:(jlong)id_;
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage;
+
+- (id)deserializeWithByteArray:(IOSByteArray *)data;
+
+- (IOSByteArray *)serializeWithDKKeyValueItem:(id<DKKeyValueItem>)value;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUtilsBaseKeyValueEngine)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUtilsBaseKeyValueEngine_initWithDKKeyValueStorage_(ImActorModelModulesUtilsBaseKeyValueEngine *self, id<DKKeyValueStorage> storage);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsBaseKeyValueEngine)
 

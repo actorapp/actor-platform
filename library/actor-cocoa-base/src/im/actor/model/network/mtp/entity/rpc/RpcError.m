@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcError.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcError.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcError.h"
 #include "java/io/IOException.h"
 
@@ -20,9 +22,8 @@
 
 #line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 20
-  [super initWithBSDataInput:stream];
+  MTRpcError_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
@@ -32,29 +33,11 @@
                withNSString:(NSString *)userMessage
                 withBoolean:(jboolean)canTryAgain
               withByteArray:(IOSByteArray *)relatedData {
-  if (self = [super init]) {
-    self->errorCode_ = errorCode;
-    
-#line 25
-    self->errorTag_ = errorTag;
-    
-#line 26
-    self->userMessage_ = userMessage;
-    
-#line 27
-    self->canTryAgain_ = canTryAgain;
-    
-#line 28
-    self->relatedData_ = relatedData;
-  }
+  MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(self, errorCode, errorTag, userMessage, canTryAgain, relatedData);
   return self;
 }
 
-
-#line 32
 - (jbyte)getHeader {
-  
-#line 33
   return MTRpcError_HEADER;
 }
 
@@ -71,8 +54,6 @@
 
 #line 46
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
-  
-#line 47
   errorCode_ = [((BSDataInput *) nil_chk(bs)) readInt];
   errorTag_ = [bs readProtoString];
   userMessage_ = [bs readProtoString];
@@ -80,19 +61,47 @@
   relatedData_ = [bs readProtoBytes];
 }
 
+
+#line 55
 - (NSString *)description {
   return JreStrcat("$IC$C", @"RpcError [#", errorCode_, ' ', errorTag_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTRpcError *)other {
-  [super copyAllFieldsTo:other];
-  other->errorCode_ = errorCode_;
-  other->errorTag_ = errorTag_;
-  other->userMessage_ = userMessage_;
-  other->canTryAgain_ = canTryAgain_;
-  other->relatedData_ = relatedData_;
+@end
+
+
+#line 19
+void MTRpcError_initWithBSDataInput_(MTRpcError *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 19
+MTRpcError *new_MTRpcError_initWithBSDataInput_(BSDataInput *stream) {
+  MTRpcError *self = [MTRpcError alloc];
+  MTRpcError_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 23
+void MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(MTRpcError *self, jint errorCode, NSString *errorTag, NSString *userMessage, jboolean canTryAgain, IOSByteArray *relatedData) {
+  (void) MTProtoStruct_init(self);
+  
+#line 24
+  self->errorCode_ = errorCode;
+  self->errorTag_ = errorTag;
+  self->userMessage_ = userMessage;
+  self->canTryAgain_ = canTryAgain;
+  self->relatedData_ = relatedData;
+}
+
+
+#line 23
+MTRpcError *new_MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(jint errorCode, NSString *errorTag, NSString *userMessage, jboolean canTryAgain, IOSByteArray *relatedData) {
+  MTRpcError *self = [MTRpcError alloc];
+  MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(self, errorCode, errorTag, userMessage, canTryAgain, relatedData);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcError)

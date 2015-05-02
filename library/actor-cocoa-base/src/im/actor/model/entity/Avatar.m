@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Avatar.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Avatar.java"
 
 #include "IOSClass.h"
@@ -22,12 +23,18 @@
   AMAvatarImage *largeImage_;
   AMAvatarImage *fullImage_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMAvatar, smallImage_, AMAvatarImage *)
 J2OBJC_FIELD_SETTER(AMAvatar, largeImage_, AMAvatarImage *)
 J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
+
+__attribute__((unused)) static void AMAvatar_init(AMAvatar *self);
+
+__attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED;
 
 
 #line 13
@@ -42,48 +49,33 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 - (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
                     withAMAvatarImage:(AMAvatarImage *)largeImage
                     withAMAvatarImage:(AMAvatarImage *)fullImage {
-  if (self = [super init]) {
-    
-#line 24
-    self->smallImage_ = smallImage;
-    
-#line 25
-    self->largeImage_ = largeImage;
-    
-#line 26
-    self->fullImage_ = fullImage;
-  }
+  AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(self, smallImage, largeImage, fullImage);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  AMAvatar_init(self);
+  return self;
 }
 
+
+#line 33
 - (AMAvatarImage *)getSmallImage {
-  
-#line 34
   return smallImage_;
 }
 
-
-#line 37
 - (AMAvatarImage *)getLargeImage {
-  
-#line 38
   return largeImage_;
 }
 
-
-#line 41
 - (AMAvatarImage *)getFullImage {
-  
-#line 42
   return fullImage_;
 }
 
+
+#line 46
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -106,9 +98,9 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
   return YES;
 }
 
+
+#line 63
 - (NSUInteger)hash {
-  
-#line 64
   jint result = smallImage_ != nil ? ((jint) [smallImage_ hash]) : 0;
   result = 31 * result + (largeImage_ != nil ? ((jint) [largeImage_ hash]) : 0);
   result = 31 * result + (fullImage_ != nil ? ((jint) [fullImage_ hash]) : 0);
@@ -118,8 +110,6 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 
 #line 71
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 72
   IOSByteArray *small = [((BSBserValues *) nil_chk(values)) optBytesWithInt:1];
   if (small != nil) {
     smallImage_ = AMAvatarImage_fromBytesWithByteArray_(small);
@@ -141,8 +131,6 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 
 #line 89
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 90
   if (smallImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:smallImage_];
   }
@@ -154,20 +142,46 @@ J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
   }
 }
 
-- (void)copyAllFieldsTo:(AMAvatar *)other {
-  [super copyAllFieldsTo:other];
-  other->smallImage_ = smallImage_;
-  other->largeImage_ = largeImage_;
-  other->fullImage_ = fullImage_;
-}
-
 @end
 
+
+#line 15
 AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMAvatar_init();
+  AMAvatar_initialize();
   
 #line 16
-  return ((AMAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[AMAvatar alloc] init], data));
+  return ((AMAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_AMAvatar_init(), data));
+}
+
+
+#line 23
+void AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatar *self, AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) {
+  (void) BSBserObject_init(self);
+  
+#line 24
+  self->smallImage_ = smallImage;
+  self->largeImage_ = largeImage;
+  self->fullImage_ = fullImage;
+}
+
+
+#line 23
+AMAvatar *new_AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) {
+  AMAvatar *self = [AMAvatar alloc];
+  AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(self, smallImage, largeImage, fullImage);
+  return self;
+}
+
+void AMAvatar_init(AMAvatar *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 29
+AMAvatar *new_AMAvatar_init() {
+  AMAvatar *self = [AMAvatar alloc];
+  AMAvatar_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAvatar)

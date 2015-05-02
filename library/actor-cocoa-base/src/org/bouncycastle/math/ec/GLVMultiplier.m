@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/GLVMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/GLVMultiplier.java"
 
 #include "IOSObjectArray.h"
@@ -10,6 +11,7 @@
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/IllegalStateException.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECAlgorithms.h"
 #include "org/bouncycastle/math/ec/ECCurve.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
@@ -25,21 +27,7 @@
 #line 12
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
         withOrgBouncycastleMathEcEndoGLVEndomorphism:(id<OrgBouncycastleMathEcEndoGLVEndomorphism>)glvEndomorphism {
-  if (self = [super init]) {
-    
-#line 14
-    if (curve == nil || [curve getOrder] == nil) {
-      
-#line 16
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"Need curve with known group order"];
-    }
-    
-#line 19
-    self->curve_ = curve;
-    
-#line 20
-    self->glvEndomorphism_ = glvEndomorphism;
-  }
+  OrgBouncycastleMathEcGLVMultiplier_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVEndomorphism_(self, curve, glvEndomorphism);
   return self;
 }
 
@@ -52,7 +40,7 @@
   if (![((OrgBouncycastleMathEcECCurve *) nil_chk(curve_)) equalsWithOrgBouncycastleMathEcECCurve:[((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve]]) {
     
 #line 27
-    @throw [[JavaLangIllegalStateException alloc] init];
+    @throw new_JavaLangIllegalStateException_init();
   }
   
 #line 30
@@ -72,12 +60,29 @@
   return OrgBouncycastleMathEcECAlgorithms_implShamirsTrickWNafWithOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_withOrgBouncycastleMathEcECPoint_withJavaMathBigInteger_(p, a, [((id<OrgBouncycastleMathEcECPointMap>) nil_chk(pointMap)) mapWithOrgBouncycastleMathEcECPoint:p], b);
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcGLVMultiplier *)other {
-  [super copyAllFieldsTo:other];
-  other->curve_ = curve_;
-  other->glvEndomorphism_ = glvEndomorphism_;
+@end
+
+
+#line 12
+void OrgBouncycastleMathEcGLVMultiplier_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVEndomorphism_(OrgBouncycastleMathEcGLVMultiplier *self, OrgBouncycastleMathEcECCurve *curve, id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+  if (curve == nil || [curve getOrder] == nil) {
+    
+#line 16
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Need curve with known group order");
+  }
+  
+#line 19
+  self->curve_ = curve;
+  self->glvEndomorphism_ = glvEndomorphism;
 }
 
-@end
+
+#line 12
+OrgBouncycastleMathEcGLVMultiplier *new_OrgBouncycastleMathEcGLVMultiplier_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVEndomorphism_(OrgBouncycastleMathEcECCurve *curve, id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism) {
+  OrgBouncycastleMathEcGLVMultiplier *self = [OrgBouncycastleMathEcGLVMultiplier alloc];
+  OrgBouncycastleMathEcGLVMultiplier_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVEndomorphism_(self, curve, glvEndomorphism);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcGLVMultiplier)

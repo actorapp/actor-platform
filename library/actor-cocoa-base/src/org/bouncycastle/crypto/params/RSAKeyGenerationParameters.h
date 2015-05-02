@@ -6,30 +6,32 @@
 #ifndef _OrgBouncycastleCryptoParamsRSAKeyGenerationParameters_H_
 #define _OrgBouncycastleCryptoParamsRSAKeyGenerationParameters_H_
 
-@class JavaMathBigInteger;
-@protocol BCRandomProvider;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/KeyGenerationParameters.h"
 
-@interface OrgBouncycastleCryptoParamsRSAKeyGenerationParameters : OrgBouncycastleCryptoKeyGenerationParameters {
-}
+@class JavaMathBigInteger;
+@protocol BCRandomProvider;
+
+@interface OrgBouncycastleCryptoParamsRSAKeyGenerationParameters : OrgBouncycastleCryptoKeyGenerationParameters
+
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)publicExponent
                       withBCRandomProvider:(id<BCRandomProvider>)random
                                    withInt:(jint)strength
                                    withInt:(jint)certainty;
 
-- (JavaMathBigInteger *)getPublicExponent;
-
 - (jint)getCertainty;
+
+- (JavaMathBigInteger *)getPublicExponent;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsRSAKeyGenerationParameters)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsRSAKeyGenerationParameters_initWithJavaMathBigInteger_withBCRandomProvider_withInt_withInt_(OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *self, JavaMathBigInteger *publicExponent, id<BCRandomProvider> random, jint strength, jint certainty);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *new_OrgBouncycastleCryptoParamsRSAKeyGenerationParameters_initWithJavaMathBigInteger_withBCRandomProvider_withInt_withInt_(JavaMathBigInteger *publicExponent, id<BCRandomProvider> random, jint strength, jint certainty) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsRSAKeyGenerationParameters)
 

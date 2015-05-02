@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetContacts.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetContacts.java"
 
 #include "IOSClass.h"
@@ -13,12 +14,14 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestGetContacts () {
  @public
   NSString *contactsHash_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSString *)
@@ -36,23 +39,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
 
 #line 29
 - (instancetype)initWithNSString:(NSString *)contactsHash {
-  if (self = [super init]) {
-    
-#line 30
-    self->contactsHash_ = contactsHash;
-  }
+  ImActorModelApiRpcRequestGetContacts_initWithNSString_(self, contactsHash);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestGetContacts_init(self);
+  return self;
 }
 
+
+#line 37
 - (NSString *)getContactsHash {
-  
-#line 38
   return self->contactsHash_;
 }
 
@@ -65,14 +65,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
 
 #line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 48
   if (self->contactsHash_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->contactsHash_];
 }
 
+
+#line 55
 - (NSString *)description {
   NSString *res = @"rpc GetContacts{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"contactsHash=", self->contactsHash_));
@@ -80,24 +80,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 64
-  return ImActorModelApiRpcRequestGetContacts_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestGetContacts *)other {
-  [super copyAllFieldsTo:other];
-  other->contactsHash_ = contactsHash_;
+#line 63
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestGetContacts_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestGetContacts *ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetContacts_init();
+  ImActorModelApiRpcRequestGetContacts_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestGetContacts *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestGetContacts alloc] init], data));
+  return ((ImActorModelApiRpcRequestGetContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetContacts_init(), data));
+}
+
+
+#line 29
+void ImActorModelApiRpcRequestGetContacts_initWithNSString_(ImActorModelApiRpcRequestGetContacts *self, NSString *contactsHash) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 30
+  self->contactsHash_ = contactsHash;
+}
+
+
+#line 29
+ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_initWithNSString_(NSString *contactsHash) {
+  ImActorModelApiRpcRequestGetContacts *self = [ImActorModelApiRpcRequestGetContacts alloc];
+  ImActorModelApiRpcRequestGetContacts_initWithNSString_(self, contactsHash);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiRpcRequestGetContacts_init(ImActorModelApiRpcRequestGetContacts *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 33
+ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_init() {
+  ImActorModelApiRpcRequestGetContacts *self = [ImActorModelApiRpcRequestGetContacts alloc];
+  ImActorModelApiRpcRequestGetContacts_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetContacts)

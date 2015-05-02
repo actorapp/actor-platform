@@ -6,14 +6,15 @@
 #ifndef _ImActorModelModulesMessagesEntityDialogHistory_H_
 #define _ImActorModelModulesMessagesEntityDialogHistory_H_
 
+#include "J2ObjC_header.h"
+
 @class AMAbsContent;
 @class AMMessageStateEnum;
 @class AMPeer;
 
-#include "J2ObjC_header.h"
+@interface ImActorModelModulesMessagesEntityDialogHistory : NSObject
 
-@interface ImActorModelModulesMessagesEntityDialogHistory : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)unreadCount
@@ -24,28 +25,29 @@
               withAMAbsContent:(AMAbsContent *)content
         withAMMessageStateEnum:(AMMessageStateEnum *)status;
 
-- (AMPeer *)getPeer;
-
-- (jint)getUnreadCount;
-
-- (jlong)getSortDate;
-
-- (jlong)getRid;
+- (AMAbsContent *)getContent;
 
 - (jlong)getDate;
 
+- (AMPeer *)getPeer;
+
+- (jlong)getRid;
+
 - (jint)getSenderId;
 
-- (AMAbsContent *)getContent;
+- (jlong)getSortDate;
 
 - (AMMessageStateEnum *)getStatus;
+
+- (jint)getUnreadCount;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityDialogHistory)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(ImActorModelModulesMessagesEntityDialogHistory *self, AMPeer *peer, jint unreadCount, jlong sortDate, jlong rid, jlong date, jint senderId, AMAbsContent *content, AMMessageStateEnum *status);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityDialogHistory *new_ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(AMPeer *peer, jint unreadCount, jlong sortDate, jlong rid, jlong date, jint senderId, AMAbsContent *content, AMMessageStateEnum *status) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityDialogHistory)
 

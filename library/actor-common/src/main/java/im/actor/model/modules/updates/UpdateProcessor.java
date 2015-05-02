@@ -27,6 +27,7 @@ import im.actor.model.api.updates.UpdateMessageRead;
 import im.actor.model.api.updates.UpdateMessageReadByMe;
 import im.actor.model.api.updates.UpdateMessageReceived;
 import im.actor.model.api.updates.UpdateMessageSent;
+import im.actor.model.api.updates.UpdateParameterChanged;
 import im.actor.model.api.updates.UpdateTyping;
 import im.actor.model.api.updates.UpdateUserAvatarChanged;
 import im.actor.model.api.updates.UpdateUserLastSeen;
@@ -56,6 +57,7 @@ public class UpdateProcessor extends BaseModule {
 
     private static final String TAG = "Updates";
 
+    private SettingsProcessor settingsProcessor;
     private UsersProcessor usersProcessor;
     private MessagesProcessor messagesProcessor;
     private GroupsProcessor groupsProcessor;
@@ -65,6 +67,7 @@ public class UpdateProcessor extends BaseModule {
 
     public UpdateProcessor(Modules modules) {
         super(modules);
+        this.settingsProcessor = new SettingsProcessor(modules);
         this.usersProcessor = new UsersProcessor(modules);
         this.messagesProcessor = new MessagesProcessor(modules);
         this.groupsProcessor = new GroupsProcessor(modules);
@@ -229,6 +232,10 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateGroupMembersUpdate) {
             groupsProcessor.onMembersUpdated(((UpdateGroupMembersUpdate) update).getGroupId(),
                     ((UpdateGroupMembersUpdate) update).getMembers());
+        } else if (update instanceof UpdateParameterChanged) {
+            settingsProcessor.onSettingsChanged(
+                    ((UpdateParameterChanged) update).getKey(),
+                    ((UpdateParameterChanged) update).getValue());
         }
     }
 

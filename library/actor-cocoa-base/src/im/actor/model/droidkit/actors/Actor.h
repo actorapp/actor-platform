@@ -6,55 +6,59 @@
 #ifndef _DKActor_H_
 #define _DKActor_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActorContext;
 @class DKActorRef;
 @class DKActorSystem;
 @class DKMailbox;
 
-#include "J2ObjC_header.h"
+@interface DKActor : NSObject
 
-@interface DKActor : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)init;
+
+- (void)dropWithId:(id)message;
+
+- (void)finallyStop;
+
+- (DKMailbox *)getMailbox;
 
 - (void)initActorWithNSString:(NSString *)path
            withDKActorContext:(DKActorContext *)context
                 withDKMailbox:(DKMailbox *)mailbox OBJC_METHOD_FAMILY_NONE;
 
-- (DKActorSystem *)system;
-
-- (DKActorRef *)self__;
-
-- (DKActorContext *)context;
-
-- (DKActorRef *)sender;
-
-- (NSString *)getPath;
-
-- (DKMailbox *)getMailbox;
-
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
 
 - (void)postStop;
 
-- (void)finallyStop;
+- (void)preStart;
 
 - (void)replyWithId:(id)message;
 
-- (void)dropWithId:(id)message;
+- (DKActorRef *)self__;
+
+- (DKActorRef *)sender;
+
+- (DKActorSystem *)system;
+
+#pragma mark Protected
+
+- (DKActorContext *)context;
+
+- (NSString *)getPath;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKActor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKActor_init(DKActor *self);
 
-typedef DKActor ImActorModelDroidkitActorsActor;
+FOUNDATION_EXPORT DKActor *new_DKActor_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActor)
+
+typedef DKActor ImActorModelDroidkitActorsActor;
 
 #endif // _DKActor_H_

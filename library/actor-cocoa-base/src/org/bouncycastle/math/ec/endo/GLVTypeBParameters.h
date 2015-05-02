@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleMathEcEndoGLVTypeBParameters_H_
 #define _OrgBouncycastleMathEcEndoGLVTypeBParameters_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSObjectArray;
 @class JavaMathBigInteger;
-
-#include "J2ObjC_header.h"
 
 @interface OrgBouncycastleMathEcEndoGLVTypeBParameters : NSObject {
  @public
@@ -19,6 +19,8 @@
   JavaMathBigInteger *g1_, *g2_;
   jint bits_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)beta
                     withJavaMathBigInteger:(JavaMathBigInteger *)lambda
@@ -30,17 +32,17 @@
 
 - (JavaMathBigInteger *)getBeta;
 
-- (JavaMathBigInteger *)getLambda;
-
-- (IOSObjectArray *)getV1;
-
-- (IOSObjectArray *)getV2;
+- (jint)getBits;
 
 - (JavaMathBigInteger *)getG1;
 
 - (JavaMathBigInteger *)getG2;
 
-- (jint)getBits;
+- (JavaMathBigInteger *)getLambda;
+
+- (IOSObjectArray *)getV1;
+
+- (IOSObjectArray *)getV2;
 
 @end
 
@@ -53,8 +55,9 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcEndoGLVTypeBParameters, v2_, IOSObjectA
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcEndoGLVTypeBParameters, g1_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcEndoGLVTypeBParameters, g2_, JavaMathBigInteger *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcEndoGLVTypeBParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigIntegerArray_withJavaMathBigIntegerArray_withJavaMathBigInteger_withJavaMathBigInteger_withInt_(OrgBouncycastleMathEcEndoGLVTypeBParameters *self, JavaMathBigInteger *beta, JavaMathBigInteger *lambda, IOSObjectArray *v1, IOSObjectArray *v2, JavaMathBigInteger *g1, JavaMathBigInteger *g2, jint bits);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcEndoGLVTypeBParameters *new_OrgBouncycastleMathEcEndoGLVTypeBParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigIntegerArray_withJavaMathBigIntegerArray_withJavaMathBigInteger_withJavaMathBigInteger_withInt_(JavaMathBigInteger *beta, JavaMathBigInteger *lambda, IOSObjectArray *v1, IOSObjectArray *v2, JavaMathBigInteger *g1, JavaMathBigInteger *g2, jint bits) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcEndoGLVTypeBParameters)
 

@@ -6,37 +6,38 @@
 #ifndef _AMContentDescription_H_
 #define _AMContentDescription_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMAbsContent;
 @class AMContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMContentDescription : BSBserObject
 
-@interface AMContentDescription : BSBserObject {
-}
+#pragma mark Public
 
-+ (AMContentDescription *)fromBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType;
 
-+ (AMContentDescription *)fromContentWithAMAbsContent:(AMAbsContent *)msg;
+- (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
+                             withNSString:(NSString *)text;
 
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
                              withNSString:(NSString *)text
                                   withInt:(jint)relatedUser
                               withBoolean:(jboolean)isSilent;
 
-- (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
-                             withNSString:(NSString *)text;
++ (AMContentDescription *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType;
++ (AMContentDescription *)fromContentWithAMAbsContent:(AMAbsContent *)msg;
 
 - (AMContentTypeEnum *)getContentType;
 
-- (NSString *)getText;
-
 - (jint)getRelatedUser;
+
+- (NSString *)getText;
 
 - (jboolean)isSilent;
 
@@ -48,15 +49,24 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMContentDescription)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMContentDescription *AMContentDescription_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT AMContentDescription *AMContentDescription_fromContentWithAMAbsContent_(AMAbsContent *msg);
-CF_EXTERN_C_END
 
-typedef AMContentDescription ImActorModelEntityContentDescription;
+FOUNDATION_EXPORT void AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentDescription *self, AMContentTypeEnum *contentType, NSString *text, jint relatedUser, jboolean isSilent);
+
+FOUNDATION_EXPORT AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum *contentType, NSString *text, jint relatedUser, jboolean isSilent) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentDescription *self, AMContentTypeEnum *contentType, NSString *text);
+
+FOUNDATION_EXPORT AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum *contentType, NSString *text) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMContentDescription_initWithAMContentTypeEnum_(AMContentDescription *self, AMContentTypeEnum *contentType);
+
+FOUNDATION_EXPORT AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum *contentType) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMContentDescription)
+
+typedef AMContentDescription ImActorModelEntityContentDescription;
 
 #endif // _AMContentDescription_H_

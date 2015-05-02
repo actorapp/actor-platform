@@ -6,9 +6,9 @@
 #ifndef _OrgBouncycastleMathFieldFiniteField_H_
 #define _OrgBouncycastleMathFieldFiniteField_H_
 
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
+
+@class JavaMathBigInteger;
 
 @protocol OrgBouncycastleMathFieldFiniteField < NSObject, JavaObject >
 

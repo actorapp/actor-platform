@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoPackage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoPackage.java"
 
 #include "IOSClass.h"
@@ -20,6 +21,7 @@
   jlong sessionId_;
   MTProtoMessage *payload_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
@@ -31,9 +33,8 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
 #line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 15
-  [super initWithBSDataInput:stream];
+  MTProtoPackage_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
@@ -41,39 +42,21 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
           withMTProtoMessage:(MTProtoMessage *)payload {
-  if (self = [super init]) {
-    self->authId_ = authId;
-    
-#line 20
-    self->sessionId_ = sessionId;
-    
-#line 21
-    self->payload_ = payload;
-  }
+  MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(self, authId, sessionId, payload);
   return self;
 }
 
 
 #line 24
 - (jlong)getAuthId {
-  
-#line 25
   return authId_;
 }
 
-
-#line 28
 - (jlong)getSessionId {
-  
-#line 29
   return sessionId_;
 }
 
-
-#line 32
 - (MTProtoMessage *)getPayload {
-  
-#line 33
   return payload_;
 }
 
@@ -88,25 +71,51 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
 #line 44
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
-  
-#line 45
   authId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   sessionId_ = [bs readLong];
-  payload_ = [[MTProtoMessage alloc] initWithBSDataInput:bs];
+  payload_ = new_MTProtoMessage_initWithBSDataInput_(bs);
   return self;
 }
 
+
+#line 52
 - (NSString *)description {
   return JreStrcat("$JCJC", @"ProtoPackage[", authId_, '|', sessionId_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTProtoPackage *)other {
-  [super copyAllFieldsTo:other];
-  other->authId_ = authId_;
-  other->sessionId_ = sessionId_;
-  other->payload_ = payload_;
+@end
+
+
+#line 14
+void MTProtoPackage_initWithBSDataInput_(MTProtoPackage *self, BSDataInput *stream) {
+  (void) MTProtoObject_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 14
+MTProtoPackage *new_MTProtoPackage_initWithBSDataInput_(BSDataInput *stream) {
+  MTProtoPackage *self = [MTProtoPackage alloc];
+  MTProtoPackage_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 18
+void MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(MTProtoPackage *self, jlong authId, jlong sessionId, MTProtoMessage *payload) {
+  (void) MTProtoObject_init(self);
+  
+#line 19
+  self->authId_ = authId;
+  self->sessionId_ = sessionId;
+  self->payload_ = payload;
+}
+
+
+#line 18
+MTProtoPackage *new_MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(jlong authId, jlong sessionId, MTProtoMessage *payload) {
+  MTProtoPackage *self = [MTProtoPackage alloc];
+  MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(self, authId, sessionId, payload);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTProtoPackage)

@@ -6,21 +6,22 @@
 #ifndef _BCASN1OctetString_H_
 #define _BCASN1OctetString_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/crypto/asn1/ASN1Primitive.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/crypto/asn1/ASN1Primitive.h"
+@interface BCASN1OctetString : BCASN1Primitive
 
-@interface BCASN1OctetString : BCASN1Primitive {
-}
-
-+ (BCASN1OctetString *)readOctetStringWithBSDataInput:(BSDataInput *)dataInput;
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data;
 
 - (IOSByteArray *)getData;
+
++ (BCASN1OctetString *)readOctetStringWithBSDataInput:(BSDataInput *)dataInput;
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput;
 
@@ -28,13 +29,14 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCASN1OctetString)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT BCASN1OctetString *BCASN1OctetString_readOctetStringWithBSDataInput_(BSDataInput *dataInput);
-CF_EXTERN_C_END
 
-typedef BCASN1OctetString ImActorModelCryptoAsn1ASN1OctetString;
+FOUNDATION_EXPORT void BCASN1OctetString_initWithByteArray_(BCASN1OctetString *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT BCASN1OctetString *new_BCASN1OctetString_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCASN1OctetString)
+
+typedef BCASN1OctetString ImActorModelCryptoAsn1ASN1OctetString;
 
 #endif // _BCASN1OctetString_H_

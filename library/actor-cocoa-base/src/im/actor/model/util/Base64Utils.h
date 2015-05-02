@@ -6,14 +6,15 @@
 #ifndef _AMBase64Utils_H_
 #define _AMBase64Utils_H_
 
-@class IOSByteArray;
-@class IOSCharArray;
-@class JavaLangStringBuilder;
-
 #include "J2ObjC_header.h"
 
-@interface AMBase64Utils : NSObject {
-}
+@class IOSByteArray;
+
+@interface AMBase64Utils : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (IOSByteArray *)fromBase64WithNSString:(NSString *)data;
 
@@ -23,14 +24,9 @@
 
 + (NSString *)toBase64WithLong:(jlong)value;
 
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL AMBase64Utils_initialized;
 J2OBJC_STATIC_INIT(AMBase64Utils)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT IOSByteArray *AMBase64Utils_fromBase64WithNSString_(NSString *data);
 
@@ -40,15 +36,12 @@ FOUNDATION_EXPORT NSString *AMBase64Utils_toBase64WithByteArray_(IOSByteArray *d
 
 FOUNDATION_EXPORT NSString *AMBase64Utils_toBase64WithLong_(jlong value);
 
-FOUNDATION_EXPORT IOSCharArray *AMBase64Utils_base64Chars_;
-J2OBJC_STATIC_FIELD_GETTER(AMBase64Utils, base64Chars_, IOSCharArray *)
+FOUNDATION_EXPORT void AMBase64Utils_init(AMBase64Utils *self);
 
-FOUNDATION_EXPORT IOSByteArray *AMBase64Utils_base64Values_;
-J2OBJC_STATIC_FIELD_GETTER(AMBase64Utils, base64Values_, IOSByteArray *)
-CF_EXTERN_C_END
-
-typedef AMBase64Utils ImActorModelUtilBase64Utils;
+FOUNDATION_EXPORT AMBase64Utils *new_AMBase64Utils_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBase64Utils)
+
+typedef AMBase64Utils ImActorModelUtilBase64Utils;
 
 #endif // _AMBase64Utils_H_

@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Phone.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Phone.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Phone.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -19,6 +21,7 @@
   jlong phone_;
   NSString *phoneTitle_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiPhone, phoneTitle_, NSString *)
@@ -33,56 +36,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhone, phoneTitle_, NSString *)
                    withLong:(jlong)accessHash
                    withLong:(jlong)phone
                withNSString:(NSString *)phoneTitle {
-  if (self = [super init]) {
-    
-#line 27
-    self->id__ = id_;
-    
-#line 28
-    self->accessHash_ = accessHash;
-    
-#line 29
-    self->phone_ = phone;
-    
-#line 30
-    self->phoneTitle_ = phoneTitle;
-  }
+  ImActorModelApiPhone_initWithInt_withLong_withLong_withNSString_(self, id_, accessHash, phone, phoneTitle);
   return self;
 }
 
 
 #line 33
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiPhone_init(self);
+  return self;
 }
 
+
+#line 37
 - (jint)getId {
-  
-#line 38
   return self->id__;
 }
 
-
-#line 41
 - (jlong)getAccessHash {
-  
-#line 42
   return self->accessHash_;
 }
 
-
-#line 45
 - (jlong)getPhone {
-  
-#line 46
   return self->phone_;
 }
 
-
-#line 49
 - (NSString *)getPhoneTitle {
-  
-#line 50
   return self->phoneTitle_;
 }
 
@@ -98,17 +77,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhone, phoneTitle_, NSString *)
 
 #line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 63
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
   [writer writeLongWithInt:3 withLong:self->phone_];
   if (self->phoneTitle_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:4 withNSString:self->phoneTitle_];
 }
 
+
+#line 73
 - (NSString *)description {
   NSString *res = @"struct Phone{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
@@ -118,14 +97,40 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhone, phoneTitle_, NSString *)
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiPhone *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
-  other->accessHash_ = accessHash_;
-  other->phone_ = phone_;
-  other->phoneTitle_ = phoneTitle_;
+@end
+
+
+#line 26
+void ImActorModelApiPhone_initWithInt_withLong_withLong_withNSString_(ImActorModelApiPhone *self, jint id_, jlong accessHash, jlong phone, NSString *phoneTitle) {
+  (void) BSBserObject_init(self);
+  
+#line 27
+  self->id__ = id_;
+  self->accessHash_ = accessHash;
+  self->phone_ = phone;
+  self->phoneTitle_ = phoneTitle;
 }
 
-@end
+
+#line 26
+ImActorModelApiPhone *new_ImActorModelApiPhone_initWithInt_withLong_withLong_withNSString_(jint id_, jlong accessHash, jlong phone, NSString *phoneTitle) {
+  ImActorModelApiPhone *self = [ImActorModelApiPhone alloc];
+  ImActorModelApiPhone_initWithInt_withLong_withLong_withNSString_(self, id_, accessHash, phone, phoneTitle);
+  return self;
+}
+
+
+#line 33
+void ImActorModelApiPhone_init(ImActorModelApiPhone *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 33
+ImActorModelApiPhone *new_ImActorModelApiPhone_init() {
+  ImActorModelApiPhone *self = [ImActorModelApiPhone alloc];
+  ImActorModelApiPhone_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPhone)

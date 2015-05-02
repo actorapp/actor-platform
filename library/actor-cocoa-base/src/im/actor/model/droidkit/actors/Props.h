@@ -6,26 +6,22 @@
 #ifndef _DKProps_H_
 #define _DKProps_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActor;
 @class DKMailbox;
 @class DKMailboxesQueue;
 @class IOSClass;
-@class IOSObjectArray;
 @protocol DKActorCreator;
 @protocol DKMailboxCreator;
 
-#include "J2ObjC_header.h"
+@interface DKProps : NSObject
 
-@interface DKProps : NSObject {
-}
-
-- (id)create;
-
-- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
-
-- (NSString *)getDispatcher;
+#pragma mark Public
 
 - (DKProps *)changeDispatcherWithNSString:(NSString *)dispatcher;
+
+- (id)create;
 
 + (DKProps *)createWithIOSClass:(IOSClass *)clazz
              withDKActorCreator:(id<DKActorCreator>)creator;
@@ -34,19 +30,20 @@
              withDKActorCreator:(id<DKActorCreator>)creator
            withDKMailboxCreator:(id<DKMailboxCreator>)mailboxCreator;
 
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
+
+- (NSString *)getDispatcher;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKProps)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT DKProps *DKProps_createWithIOSClass_withDKActorCreator_(IOSClass *clazz, id<DKActorCreator> creator);
 
 FOUNDATION_EXPORT DKProps *DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(IOSClass *clazz, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator);
-CF_EXTERN_C_END
-
-typedef DKProps ImActorModelDroidkitActorsProps;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKProps)
+
+typedef DKProps ImActorModelDroidkitActorsProps;
 
 #endif // _DKProps_H_

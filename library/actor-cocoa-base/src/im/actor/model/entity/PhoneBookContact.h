@@ -6,35 +6,37 @@
 #ifndef _AMPhoneBookContact_H_
 #define _AMPhoneBookContact_H_
 
-@class JavaUtilArrayList;
-
 #include "J2ObjC_header.h"
 
-@interface AMPhoneBookContact : NSObject {
-}
+@class JavaUtilArrayList;
+
+@interface AMPhoneBookContact : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)contactId
                 withNSString:(NSString *)name
        withJavaUtilArrayList:(JavaUtilArrayList *)phones
        withJavaUtilArrayList:(JavaUtilArrayList *)emails;
 
-- (JavaUtilArrayList *)getPhones;
+- (jlong)getContactId;
 
 - (JavaUtilArrayList *)getEmails;
 
 - (NSString *)getName;
 
-- (jlong)getContactId;
+- (JavaUtilArrayList *)getPhones;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMPhoneBookContact)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(AMPhoneBookContact *self, jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails);
 
-typedef AMPhoneBookContact ImActorModelEntityPhoneBookContact;
+FOUNDATION_EXPORT AMPhoneBookContact *new_AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPhoneBookContact)
+
+typedef AMPhoneBookContact ImActorModelEntityPhoneBookContact;
 
 #endif // _AMPhoneBookContact_H_

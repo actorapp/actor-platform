@@ -6,57 +6,40 @@
 #ifndef _ImActorModelModulesAppStateModule_H_
 #define _ImActorModelModulesAppStateModule_H_
 
-@class AMAppStateVM;
-@class DKActorRef;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesStateListsStatesActor;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesAppStateModule : ImActorModelModulesBaseModule {
-}
+@class AMAppStateVM;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesAppStateModule : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)run;
-
-- (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty;
-
-- (void)onContactsUpdateWithBoolean:(jboolean)isEmpty;
+- (AMAppStateVM *)getAppStateVM;
 
 - (void)onBookImported;
 
 - (void)onContactsLoaded;
 
+- (void)onContactsUpdateWithBoolean:(jboolean)isEmpty;
+
 - (void)onDialogsLoaded;
 
-- (AMAppStateVM *)getAppStateVM;
+- (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty;
+
+- (void)run;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAppStateModule)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesAppStateModule *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesAppStateModule *new_ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule)
-
-@interface ImActorModelModulesAppStateModule_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesStateListsStatesActor *)create;
-
-- (instancetype)initWithImActorModelModulesAppStateModule:(ImActorModelModulesAppStateModule *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAppStateModule_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule_$1)
 
 #endif // _ImActorModelModulesAppStateModule_H_

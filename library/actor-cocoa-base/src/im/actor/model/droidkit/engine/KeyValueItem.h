@@ -16,8 +16,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKKeyValueItem)
 
-#define ImActorModelDroidkitEngineKeyValueItem DKKeyValueItem
-
 J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueItem)
+
+#define ImActorModelDroidkitEngineKeyValueItem DKKeyValueItem
 
 #endif // _DKKeyValueItem_H_

@@ -257,7 +257,7 @@ class AAUserInfoController: AATableViewController {
             return notificationsCell(indexPath)
         } else if indexPath.section == 4 {
             if ((user!.isContact().get() as! JavaLangBoolean).booleanValue()) {
-                return deleteUserCell(indexPath) // TODO: Make it work
+                return deleteUserCell(indexPath)
             } else {
                 return addUserCell(indexPath)
             }

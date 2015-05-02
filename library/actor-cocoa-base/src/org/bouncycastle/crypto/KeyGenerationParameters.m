@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/KeyGenerationParameters.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/KeyGenerationParameters.java"
 
 #include "J2ObjC_source.h"
@@ -14,6 +15,7 @@
   id<BCRandomProvider> random_;
   jint strength_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoKeyGenerationParameters, random_, id<BCRandomProvider>)
@@ -26,37 +28,40 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoKeyGenerationParameters, random_, id<BC
 #line 19
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                                  withInt:(jint)strength {
-  if (self = [super init]) {
-    
-#line 22
-    self->random_ = random;
-    
-#line 23
-    self->strength_ = strength;
-  }
+  OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(self, random, strength);
   return self;
 }
 
+
+#line 32
 - (id<BCRandomProvider>)getRandom {
-  
-#line 33
   return random_;
 }
 
 
 #line 41
 - (jint)getStrength {
-  
-#line 42
   return strength_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoKeyGenerationParameters *)other {
-  [super copyAllFieldsTo:other];
-  other->random_ = random_;
-  other->strength_ = strength_;
+@end
+
+
+#line 19
+void OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(OrgBouncycastleCryptoKeyGenerationParameters *self, id<BCRandomProvider> random, jint strength) {
+  (void) NSObject_init(self);
+  
+#line 22
+  self->random_ = random;
+  self->strength_ = strength;
 }
 
-@end
+
+#line 19
+OrgBouncycastleCryptoKeyGenerationParameters *new_OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(id<BCRandomProvider> random, jint strength) {
+  OrgBouncycastleCryptoKeyGenerationParameters *self = [OrgBouncycastleCryptoKeyGenerationParameters alloc];
+  OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(self, random, strength);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoKeyGenerationParameters)

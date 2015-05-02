@@ -19,19 +19,19 @@ import AVFoundation
         AudioServicesCreateSystemSoundID(path, &internalMessage)
     }
     
-    func onMessageArriveInApp() {
+    func onMessageArriveInAppWithAMMessenger(messenger: AMMessenger!) {
         AudioServicesPlaySystemSound(internalMessage)
     }
     
-    func onDialogsOpen() {
+    func onDialogsOpenWithAMMessenger(messenger: AMMessenger!) {
         
     }
     
-    func onChatOpenWithAMPeer(peer: AMPeer!) {
+    func onChatOpenWithAMMessenger(messenger: AMMessenger!, withAMPeer peer: AMPeer!) {
         
     }
     
-    func onNotificationWithJavaUtilList(topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint) {
+    func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint) {
         
     }
 }

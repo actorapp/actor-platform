@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Notification.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Notification.java"
 
 #include "J2ObjC_source.h"
@@ -16,6 +17,7 @@
   jint sender_;
   AMContentDescription *contentDescription_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMNotification, peer_, AMPeer *)
@@ -30,51 +32,43 @@ J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
       withAMContentDescription:(AMContentDescription *)contentDescription {
-  if (self = [super init]) {
-    
-#line 12
-    self->peer_ = peer;
-    
-#line 13
-    self->sender_ = sender;
-    
-#line 14
-    self->contentDescription_ = contentDescription;
-  }
+  AMNotification_initWithAMPeer_withInt_withAMContentDescription_(self, peer, sender, contentDescription);
   return self;
 }
 
 
 #line 17
 - (AMPeer *)getPeer {
-  
-#line 18
   return peer_;
 }
 
-
-#line 21
 - (jint)getSender {
-  
-#line 22
   return sender_;
 }
 
-
-#line 25
 - (AMContentDescription *)getContentDescription {
-  
-#line 26
   return contentDescription_;
 }
 
-- (void)copyAllFieldsTo:(AMNotification *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->sender_ = sender_;
-  other->contentDescription_ = contentDescription_;
+@end
+
+
+#line 11
+void AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMNotification *self, AMPeer *peer, jint sender, AMContentDescription *contentDescription) {
+  (void) NSObject_init(self);
+  
+#line 12
+  self->peer_ = peer;
+  self->sender_ = sender;
+  self->contentDescription_ = contentDescription;
 }
 
-@end
+
+#line 11
+AMNotification *new_AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMPeer *peer, jint sender, AMContentDescription *contentDescription) {
+  AMNotification *self = [AMNotification alloc];
+  AMNotification_initWithAMPeer_withInt_withAMContentDescription_(self, peer, sender, contentDescription);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMNotification)

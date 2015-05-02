@@ -6,12 +6,12 @@
 #ifndef _MTRpcRequest_H_
 #define _MTRpcRequest_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
-
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
 #define MTRpcRequest_HEADER 1
 
@@ -21,22 +21,26 @@
   IOSByteArray *payload_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithInt:(jint)requestType
               withByteArray:(IOSByteArray *)payload;
 
+- (IOSByteArray *)getPayload;
+
 - (jint)getRequestType;
 
-- (IOSByteArray *)getPayload;
+- (NSString *)description;
+
+#pragma mark Protected
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
 
-- (NSString *)description;
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
@@ -44,13 +48,18 @@ J2OBJC_EMPTY_STATIC_INIT(MTRpcRequest)
 
 J2OBJC_FIELD_SETTER(MTRpcRequest, payload_, IOSByteArray *)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTRpcRequest, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTRpcRequest ImActorModelNetworkMtpEntityRpcRpcRequest;
+FOUNDATION_EXPORT void MTRpcRequest_initWithBSDataInput_(MTRpcRequest *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTRpcRequest *new_MTRpcRequest_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTRpcRequest_initWithInt_withByteArray_(MTRpcRequest *self, jint requestType, IOSByteArray *payload);
+
+FOUNDATION_EXPORT MTRpcRequest *new_MTRpcRequest_initWithInt_withByteArray_(jint requestType, IOSByteArray *payload) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTRpcRequest)
+
+typedef MTRpcRequest ImActorModelNetworkMtpEntityRpcRpcRequest;
 
 #endif // _MTRpcRequest_H_

@@ -6,9 +6,9 @@
 #ifndef _AMDispatcherProvider_H_
 #define _AMDispatcherProvider_H_
 
-@protocol JavaLangRunnable;
-
 #include "J2ObjC_header.h"
+
+@protocol JavaLangRunnable;
 
 @protocol AMDispatcherProvider < NSObject, JavaObject >
 
@@ -18,8 +18,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMDispatcherProvider)
 
-#define ImActorModelDispatcherProvider AMDispatcherProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMDispatcherProvider)
+
+#define ImActorModelDispatcherProvider AMDispatcherProvider
 
 #endif // _AMDispatcherProvider_H_

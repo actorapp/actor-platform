@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/presence/OwnPresenceActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/presence/OwnPresenceActor.java"
 
 #include "J2ObjC_source.h"
@@ -13,11 +14,11 @@
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/presence/OwnPresenceActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
+#include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 
-__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(ImActorModelModulesPresenceOwnPresenceActor *self);
-__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(ImActorModelModulesPresenceOwnPresenceActor *self);
-__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModulesPresenceOwnPresenceActor *self);
+#define ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT 60000
+#define ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT 90000
 
 @interface ImActorModelModulesPresenceOwnPresenceActor () {
  @public
@@ -29,7 +30,36 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 - (void)onAppHidden;
 
 - (void)performOnline;
+
 @end
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresenceOwnPresenceActor, RESEND_TIMEOUT, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresenceOwnPresenceActor, TIMEOUT, jint)
+
+__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(ImActorModelModulesPresenceOwnPresenceActor *self);
+
+__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(ImActorModelModulesPresenceOwnPresenceActor *self);
+
+__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModulesPresenceOwnPresenceActor *self);
+
+@interface ImActorModelModulesPresenceOwnPresenceActor_$1 : NSObject < AMRpcCallback >
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresenceOwnPresenceActor_$1)
+
+__attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_$1_init(ImActorModelModulesPresenceOwnPresenceActor_$1 *self);
+
+__attribute__((unused)) static ImActorModelModulesPresenceOwnPresenceActor_$1 *new_ImActorModelModulesPresenceOwnPresenceActor_$1_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresenceOwnPresenceActor_$1)
 
 
 #line 14
@@ -38,13 +68,7 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 
 #line 21
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self =
-#line 22
-  [super initWithImActorModelModulesModules:messenger]) {
-    isVisible_ =
-#line 19
-    NO;
-  }
+  ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
@@ -69,8 +93,6 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 
 #line 56
 - (void)onReceiveWithId:(id)message {
-  
-#line 57
   if ([message isKindOfClass:[ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible class]]) {
     ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(self);
   }
@@ -91,37 +113,43 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresenceOwnPresenceActor *)other {
-  [super copyAllFieldsTo:other];
-  other->isVisible_ = isVisible_;
-}
-
 @end
 
+
+#line 21
+void ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesPresenceOwnPresenceActor *self, ImActorModelModulesModules *messenger) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
+  self->isVisible_ =
+#line 19
+  NO;
+}
+
+
+#line 21
+ImActorModelModulesPresenceOwnPresenceActor *new_ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+  ImActorModelModulesPresenceOwnPresenceActor *self = [ImActorModelModulesPresenceOwnPresenceActor alloc];
+  ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
+}
+
+
+#line 25
 void ImActorModelModulesPresenceOwnPresenceActor_onAppVisible(ImActorModelModulesPresenceOwnPresenceActor *self) {
-  
-#line 26
   self->isVisible_ = YES;
-  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init()];
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(ImActorModelModulesPresenceOwnPresenceActor *self) {
-  
-#line 31
   self->isVisible_ = NO;
-  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init]];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init()];
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModulesPresenceOwnPresenceActor *self) {
-  
-#line 36
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSetOnline alloc] initWithBoolean:self->isVisible_ withLong:ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT] withAMRpcCallback:
-#line 37
-  [[ImActorModelModulesPresenceOwnPresenceActor_$1 alloc] init]];
+  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(self->isVisible_, ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT) withAMRpcCallback:new_ImActorModelModulesPresenceOwnPresenceActor_$1_init()];
   
 #line 48
   if (self->isVisible_) {
-    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc] init] withLong:ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT];
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init() withLong:ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT];
   }
 }
 
@@ -132,10 +160,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor)
 @implementation ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible *new_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init() {
+  ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible *self = [ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible alloc];
+  ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible)
 
@@ -144,10 +183,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnA
 @implementation ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden *new_ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init() {
+  ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden *self = [ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden alloc];
+  ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnAppHidden)
 
@@ -156,10 +206,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_OnA
 @implementation ImActorModelModulesPresenceOwnPresenceActor_PerformOnline
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init(ImActorModelModulesPresenceOwnPresenceActor_PerformOnline *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresenceOwnPresenceActor_PerformOnline *new_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init() {
+  ImActorModelModulesPresenceOwnPresenceActor_PerformOnline *self = [ImActorModelModulesPresenceOwnPresenceActor_PerformOnline alloc];
+  ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_PerformOnline)
 
@@ -176,9 +237,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_Per
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesPresenceOwnPresenceActor_$1_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresenceOwnPresenceActor_$1_init(ImActorModelModulesPresenceOwnPresenceActor_$1 *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresenceOwnPresenceActor_$1 *new_ImActorModelModulesPresenceOwnPresenceActor_$1_init() {
+  ImActorModelModulesPresenceOwnPresenceActor_$1 *self = [ImActorModelModulesPresenceOwnPresenceActor_$1 alloc];
+  ImActorModelModulesPresenceOwnPresenceActor_$1_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_$1)

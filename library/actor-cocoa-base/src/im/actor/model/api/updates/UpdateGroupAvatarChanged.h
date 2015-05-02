@@ -6,20 +6,21 @@
 #ifndef _ImActorModelApiUpdatesUpdateGroupAvatarChanged_H_
 #define _ImActorModelApiUpdatesUpdateGroupAvatarChanged_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiAvatar;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER 39
 
-@interface ImActorModelApiUpdatesUpdateGroupAvatarChanged : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateGroupAvatarChanged : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
@@ -27,17 +28,19 @@
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                    withLong:(jlong)date;
 
-- (instancetype)init;
-
-- (jint)getGroupId;
-
-- (jlong)getRid;
-
-- (jint)getUid;
++ (ImActorModelApiUpdatesUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (ImActorModelApiAvatar *)getAvatar;
 
 - (jlong)getDate;
+
+- (jint)getGroupId;
+
+- (jint)getHeaderKey;
+
+- (jlong)getRid;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -45,18 +48,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupAvatarChanged)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupAvatarChanged *ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self, jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupAvatarChanged)
 

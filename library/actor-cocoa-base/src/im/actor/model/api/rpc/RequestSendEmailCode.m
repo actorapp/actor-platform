@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendEmailCode.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendEmailCode.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestSendEmailCode () {
@@ -20,6 +22,7 @@
   NSString *email_;
   NSString *description__;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, email_, NSString *)
@@ -39,34 +42,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 #line 30
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)description_ {
-  if (self = [super init]) {
-    
-#line 31
-    self->email_ = email;
-    
-#line 32
-    self->description__ = description_;
-  }
+  ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(self, email, description_);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestSendEmailCode_init(self);
+  return self;
 }
 
+
+#line 39
 - (NSString *)getEmail {
-  
-#line 40
   return self->email_;
 }
 
-
-#line 43
 - (NSString *)getDescription {
-  
-#line 44
   return self->description__;
 }
 
@@ -80,10 +73,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   if (self->email_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->email_];
   if (self->description__ != nil) {
@@ -91,6 +82,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
   }
 }
 
+
+#line 65
 - (NSString *)description {
   NSString *res = @"rpc SendEmailCode{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"email=", self->email_));
@@ -99,25 +92,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 75
-  return ImActorModelApiRpcRequestSendEmailCode_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestSendEmailCode *)other {
-  [super copyAllFieldsTo:other];
-  other->email_ = email_;
-  other->description__ = description__;
+#line 74
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestSendEmailCode_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestSendEmailCode *ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSendEmailCode_init();
+  ImActorModelApiRpcRequestSendEmailCode_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestSendEmailCode *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestSendEmailCode alloc] init], data));
+  return ((ImActorModelApiRpcRequestSendEmailCode *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendEmailCode_init(), data));
+}
+
+void ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(ImActorModelApiRpcRequestSendEmailCode *self, NSString *email, NSString *description_) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->email_ = email;
+  self->description__ = description_;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestSendEmailCode *new_ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(NSString *email, NSString *description_) {
+  ImActorModelApiRpcRequestSendEmailCode *self = [ImActorModelApiRpcRequestSendEmailCode alloc];
+  ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(self, email, description_);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestSendEmailCode_init(ImActorModelApiRpcRequestSendEmailCode *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestSendEmailCode *new_ImActorModelApiRpcRequestSendEmailCode_init() {
+  ImActorModelApiRpcRequestSendEmailCode *self = [ImActorModelApiRpcRequestSendEmailCode alloc];
+  ImActorModelApiRpcRequestSendEmailCode_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendEmailCode)

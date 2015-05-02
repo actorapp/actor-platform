@@ -6,28 +6,30 @@
 #ifndef _ImActorModelModulesUpdatesInternalUsersFounded_H_
 #define _ImActorModelModulesUpdatesInternalUsersFounded_H_
 
-@protocol AMCommandCallback;
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
-@interface ImActorModelModulesUpdatesInternalUsersFounded : ImActorModelModulesUpdatesInternalInternalUpdate {
-}
+@protocol AMCommandCallback;
+@protocol JavaUtilList;
+
+@interface ImActorModelModulesUpdatesInternalUsersFounded : ImActorModelModulesUpdatesInternalInternalUpdate
+
+#pragma mark Public
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                withAMCommandCallback:(id<AMCommandCallback>)commandCallback;
 
-- (id<JavaUtilList>)getUsers;
-
 - (id<AMCommandCallback>)getCommandCallback;
+
+- (id<JavaUtilList>)getUsers;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalUsersFounded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(ImActorModelModulesUpdatesInternalUsersFounded *self, id<JavaUtilList> users, id<AMCommandCallback> commandCallback);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalUsersFounded *new_ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(id<JavaUtilList> users, id<AMCommandCallback> commandCallback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalUsersFounded)
 

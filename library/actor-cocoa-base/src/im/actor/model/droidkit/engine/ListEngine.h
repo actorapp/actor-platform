@@ -6,12 +6,12 @@
 #ifndef _DKListEngine_H_
 #define _DKListEngine_H_
 
+#include "J2ObjC_header.h"
+
 @class BSBserObject;
 @class IOSLongArray;
 @protocol DKListEngineItem;
 @protocol JavaUtilList;
-
-#include "J2ObjC_header.h"
 
 @protocol DKListEngine < NSObject, JavaObject >
 
@@ -39,8 +39,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngine)
 
-#define ImActorModelDroidkitEngineListEngine DKListEngine
-
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngine)
+
+#define ImActorModelDroidkitEngineListEngine DKListEngine
 
 #endif // _DKListEngine_H_

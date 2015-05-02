@@ -6,53 +6,36 @@
 #ifndef _ImActorModelModulesPresence_H_
 #define _ImActorModelModulesPresence_H_
 
-@class AMPeer;
-@class DKActorRef;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesPresenceOwnPresenceActor;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesPresence : ImActorModelModulesBaseModule {
-}
+@class AMPeer;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesPresence : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)run;
+- (void)onAppHidden;
 
 - (void)onAppVisible;
 
-- (void)onAppHidden;
+- (void)onNewSessionCreated;
+
+- (void)run;
 
 - (void)subscribeWithAMPeer:(AMPeer *)peer;
-
-- (void)onNewSessionCreated;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresence)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesPresence *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesPresence *new_ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence)
-
-@interface ImActorModelModulesPresence_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesPresenceOwnPresenceActor *)create;
-
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresence_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence_$1)
 
 #endif // _ImActorModelModulesPresence_H_

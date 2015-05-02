@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointPreCompInfo.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointPreCompInfo.java"
 
 #include "IOSObjectArray.h"
@@ -46,23 +47,26 @@
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    preComp_ =
-#line 12
-    nil;
-    width_ =
-#line 19
-    -1;
-  }
+  OrgBouncycastleMathEcFixedPointPreCompInfo_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcFixedPointPreCompInfo *)other {
-  [super copyAllFieldsTo:other];
-  other->preComp_ = preComp_;
-  other->width_ = width_;
+@end
+
+void OrgBouncycastleMathEcFixedPointPreCompInfo_init(OrgBouncycastleMathEcFixedPointPreCompInfo *self) {
+  (void) NSObject_init(self);
+  self->preComp_ =
+#line 12
+  nil;
+  self->width_ =
+#line 19
+  -1;
 }
 
-@end
+OrgBouncycastleMathEcFixedPointPreCompInfo *new_OrgBouncycastleMathEcFixedPointPreCompInfo_init() {
+  OrgBouncycastleMathEcFixedPointPreCompInfo *self = [OrgBouncycastleMathEcFixedPointPreCompInfo alloc];
+  OrgBouncycastleMathEcFixedPointPreCompInfo_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcFixedPointPreCompInfo)

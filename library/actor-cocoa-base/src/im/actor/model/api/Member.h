@@ -6,26 +6,27 @@
 #ifndef _ImActorModelApiMember_H_
 #define _ImActorModelApiMember_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiMember : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiMember : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date;
 
-- (instancetype)init;
-
-- (jint)getUid;
+- (jlong)getDate;
 
 - (jint)getInviterUid;
 
-- (jlong)getDate;
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -37,8 +38,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiMember)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiMember_init(ImActorModelApiMember *self);
+
+FOUNDATION_EXPORT ImActorModelApiMember *new_ImActorModelApiMember_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMember)
 

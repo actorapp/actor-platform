@@ -6,199 +6,71 @@
 #ifndef _ImActorModelModulesFiles_H_
 #define _ImActorModelModulesFiles_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
 @class AMFileReference;
 @class DKActorRef;
-@class IOSByteArray;
-@class ImActorModelModulesFileDownloadManager;
-@class ImActorModelModulesFileEntityDownloaded;
-@class ImActorModelModulesFileUploadManager;
 @class ImActorModelModulesModules;
-@protocol AMFileSystemReference;
+@protocol AMFileCallback;
 @protocol AMUploadFileCallback;
 @protocol DKKeyValueEngine;
-@protocol DKKeyValueStorage;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/modules/BaseModule.h"
-#include "im/actor/model/modules/utils/BaseKeyValueEngine.h"
-#include "im/actor/model/viewmodel/FileCallback.h"
-#include "java/lang/Runnable.h"
+@interface ImActorModelModulesFiles : ImActorModelModulesBaseModule
 
-@interface ImActorModelModulesFiles : ImActorModelModulesBaseModule {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
-
-- (void)run;
-
-- (id<DKKeyValueEngine>)getDownloadedEngine;
 
 - (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
                         withBoolean:(jboolean)isAutostart
                  withAMFileCallback:(id<AMFileCallback>)callback;
 
-- (void)unbindFileWithLong:(jlong)fileId
-        withAMFileCallback:(id<AMFileCallback>)callback
-               withBoolean:(jboolean)cancel;
-
-- (void)requestStateWithLong:(jlong)fileId
-          withAMFileCallback:(id<AMFileCallback>)callback;
-
-- (void)startDownloadingWithAMFileReference:(AMFileReference *)location;
-
-- (void)cancelDownloadingWithLong:(jlong)fileId;
-
 - (void)bindUploadFileWithLong:(jlong)rid
       withAMUploadFileCallback:(id<AMUploadFileCallback>)uploadFileCallback;
 
-- (void)unbindUploadFileWithLong:(jlong)rid
-        withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
+- (void)cancelDownloadingWithLong:(jlong)fileId;
+
+- (void)cancelUploadWithLong:(jlong)rid;
+
+- (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId;
+
+- (id<DKKeyValueEngine>)getDownloadedEngine;
+
+- (void)pauseUploadWithLong:(jlong)rid;
+
+- (void)requestStateWithLong:(jlong)fileId
+          withAMFileCallback:(id<AMFileCallback>)callback;
 
 - (void)requestUploadWithLong:(jlong)rid
                  withNSString:(NSString *)descriptor
                  withNSString:(NSString *)fileName
                withDKActorRef:(DKActorRef *)requester;
 
-- (void)cancelUploadWithLong:(jlong)rid;
-
 - (void)requestUploadStateWithLong:(jlong)rid
           withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 - (void)resumeUploadWithLong:(jlong)rid;
 
-- (void)pauseUploadWithLong:(jlong)rid;
+- (void)run;
 
-- (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId;
+- (void)startDownloadingWithAMFileReference:(AMFileReference *)location;
+
+- (void)unbindFileWithLong:(jlong)fileId
+        withAMFileCallback:(id<AMFileCallback>)callback
+               withBoolean:(jboolean)cancel;
+
+- (void)unbindUploadFileWithLong:(jlong)rid
+        withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesFiles_initWithImActorModelModulesModules_(ImActorModelModulesFiles *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesFiles *new_ImActorModelModulesFiles_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles)
-
-@interface ImActorModelModulesFiles_$1 : ImActorModelModulesUtilsBaseKeyValueEngine {
-}
-
-- (IOSByteArray *)serializeWithDKKeyValueItem:(ImActorModelModulesFileEntityDownloaded *)value;
-
-- (ImActorModelModulesFileEntityDownloaded *)deserializeWithByteArray:(IOSByteArray *)data;
-
-- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)arg$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$1)
-
-@interface ImActorModelModulesFiles_$2 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesFileDownloadManager *)create;
-
-- (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$2)
-
-@interface ImActorModelModulesFiles_$3 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesFileUploadManager *)create;
-
-- (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$3)
-
-@interface ImActorModelModulesFiles_$4 : NSObject < AMFileCallback > {
-}
-
-- (void)onNotDownloaded;
-
-- (void)onDownloadingWithFloat:(jfloat)progress;
-
-- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
-
-- (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
-                              withAMFileCallback:(id<AMFileCallback>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4)
-
-@interface ImActorModelModulesFiles_$4_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$1)
-
-@interface ImActorModelModulesFiles_$4_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
-                                          withFloat:(jfloat)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$2)
-
-@interface ImActorModelModulesFiles_$4_$3 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
-                          withAMFileSystemReference:(id<AMFileSystemReference>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$3)
 
 #endif // _ImActorModelModulesFiles_H_

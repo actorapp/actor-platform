@@ -6,13 +6,14 @@
 #ifndef _AMEndpoints_H_
 #define _AMEndpoints_H_
 
+#include "J2ObjC_header.h"
+
 @class AMConnectionEndpoint;
 @class IOSObjectArray;
 
-#include "J2ObjC_header.h"
+@interface AMEndpoints : NSObject
 
-@interface AMEndpoints : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMConnectionEndpointArray:(IOSObjectArray *)endpoints;
 
@@ -22,11 +23,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMEndpoints)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMEndpoints_initWithAMConnectionEndpointArray_(AMEndpoints *self, IOSObjectArray *endpoints);
 
-typedef AMEndpoints ImActorModelNetworkEndpoints;
+FOUNDATION_EXPORT AMEndpoints *new_AMEndpoints_initWithAMConnectionEndpointArray_(IOSObjectArray *endpoints) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMEndpoints)
+
+typedef AMEndpoints ImActorModelNetworkEndpoints;
 
 #endif // _AMEndpoints_H_

@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/ConfigurationBuilder.h"
 
-@interface AMBaseConfigurationBuilder : AMConfigurationBuilder {
-}
+@interface AMBaseConfigurationBuilder : AMConfigurationBuilder
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -18,11 +19,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseConfigurationBuilder)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMBaseConfigurationBuilder_init(AMBaseConfigurationBuilder *self);
 
-typedef AMBaseConfigurationBuilder ImActorModelBaseConfigurationBuilder;
+FOUNDATION_EXPORT AMBaseConfigurationBuilder *new_AMBaseConfigurationBuilder_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBaseConfigurationBuilder)
+
+typedef AMBaseConfigurationBuilder ImActorModelBaseConfigurationBuilder;
 
 #endif // _AMBaseConfigurationBuilder_H_

@@ -6,34 +6,32 @@
 #ifndef _BSBser_H_
 #define _BSBser_H_
 
+#include "J2ObjC_header.h"
+
 @class BSBserObject;
 @class BSDataInput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
+@interface BSBser : NSObject
 
-@interface BSBser : NSObject {
-}
-
-+ (id)parseWithBSBserObject:(BSBserObject *)res
-            withBSDataInput:(BSDataInput *)inputStream;
+#pragma mark Public
 
 + (id)parseWithBSBserObject:(BSBserObject *)res
               withByteArray:(IOSByteArray *)data;
+
++ (id)parseWithBSBserObject:(BSBserObject *)res
+            withBSDataInput:(BSDataInput *)inputStream;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBser)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withBSDataInput_(BSBserObject *res, BSDataInput *inputStream);
 
 FOUNDATION_EXPORT id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data);
-CF_EXTERN_C_END
-
-typedef BSBser ImActorModelDroidkitBserBser;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSBser)
+
+typedef BSBser ImActorModelDroidkitBserBser;
 
 #endif // _BSBser_H_

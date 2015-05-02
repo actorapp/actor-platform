@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Pack.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Pack.java"
 
 #include "IOSPrimitiveArray.h"
@@ -196,13 +197,16 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleUtilPack_init(self);
+  return self;
 }
 
 @end
 
+
+#line 6
 jint OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 7
   jint n = LShift32(IOSByteArray_Get(nil_chk(bs), off), 24);
@@ -212,8 +216,10 @@ jint OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(IOSByteArray *
   return n;
 }
 
+
+#line 14
 void OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_withIntArray_(IOSByteArray *bs, jint off, IOSIntArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 15
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(ns))->size_; ++i) {
@@ -222,8 +228,10 @@ void OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_withIntArray_(I
   }
 }
 
+
+#line 21
 IOSByteArray *OrgBouncycastleUtilPack_intToBigEndianWithInt_(jint n) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 22
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:4];
@@ -231,8 +239,10 @@ IOSByteArray *OrgBouncycastleUtilPack_intToBigEndianWithInt_(jint n) {
   return bs;
 }
 
+
+#line 27
 void OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(jint n, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 28
   *IOSByteArray_GetRef(nil_chk(bs), off) = (jbyte) (URShift32(n, 24));
@@ -241,8 +251,10 @@ void OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(jint n
   *IOSByteArray_GetRef(bs, ++off) = (jbyte) (n);
 }
 
+
+#line 34
 IOSByteArray *OrgBouncycastleUtilPack_intToBigEndianWithIntArray_(IOSIntArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 35
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:4 * ((IOSIntArray *) nil_chk(ns))->size_];
@@ -250,8 +262,10 @@ IOSByteArray *OrgBouncycastleUtilPack_intToBigEndianWithIntArray_(IOSIntArray *n
   return bs;
 }
 
+
+#line 40
 void OrgBouncycastleUtilPack_intToBigEndianWithIntArray_withByteArray_withInt_(IOSIntArray *ns, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 41
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(ns))->size_; ++i) {
@@ -260,8 +274,10 @@ void OrgBouncycastleUtilPack_intToBigEndianWithIntArray_withByteArray_withInt_(I
   }
 }
 
+
+#line 47
 jlong OrgBouncycastleUtilPack_bigEndianToLongWithByteArray_withInt_(IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 48
   jint hi = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(bs, off);
@@ -269,8 +285,10 @@ jlong OrgBouncycastleUtilPack_bigEndianToLongWithByteArray_withInt_(IOSByteArray
   return (LShift64((jlong) (hi & (jlong) 0xffffffffLL), 32)) | (jlong) (lo & (jlong) 0xffffffffLL);
 }
 
+
+#line 53
 void OrgBouncycastleUtilPack_bigEndianToLongWithByteArray_withInt_withLongArray_(IOSByteArray *bs, jint off, IOSLongArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 54
   for (jint i = 0; i < ((IOSLongArray *) nil_chk(ns))->size_; ++i) {
@@ -279,8 +297,10 @@ void OrgBouncycastleUtilPack_bigEndianToLongWithByteArray_withInt_withLongArray_
   }
 }
 
+
+#line 60
 IOSByteArray *OrgBouncycastleUtilPack_longToBigEndianWithLong_(jlong n) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 61
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:8];
@@ -288,16 +308,20 @@ IOSByteArray *OrgBouncycastleUtilPack_longToBigEndianWithLong_(jlong n) {
   return bs;
 }
 
+
+#line 66
 void OrgBouncycastleUtilPack_longToBigEndianWithLong_withByteArray_withInt_(jlong n, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 67
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_((jint) (URShift64(n, 32)), bs, off);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_((jint) (n & (jlong) 0xffffffffLL), bs, off + 4);
 }
 
+
+#line 71
 IOSByteArray *OrgBouncycastleUtilPack_longToBigEndianWithLongArray_(IOSLongArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 72
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:8 * ((IOSLongArray *) nil_chk(ns))->size_];
@@ -305,8 +329,10 @@ IOSByteArray *OrgBouncycastleUtilPack_longToBigEndianWithLongArray_(IOSLongArray
   return bs;
 }
 
+
+#line 77
 void OrgBouncycastleUtilPack_longToBigEndianWithLongArray_withByteArray_withInt_(IOSLongArray *ns, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 78
   for (jint i = 0; i < ((IOSLongArray *) nil_chk(ns))->size_; ++i) {
@@ -315,8 +341,10 @@ void OrgBouncycastleUtilPack_longToBigEndianWithLongArray_withByteArray_withInt_
   }
 }
 
+
+#line 84
 jint OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_(IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 85
   jint n = IOSByteArray_Get(nil_chk(bs), off) & (jint) 0xff;
@@ -326,8 +354,10 @@ jint OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_(IOSByteArra
   return n;
 }
 
+
+#line 92
 void OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_withIntArray_(IOSByteArray *bs, jint off, IOSIntArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 93
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(ns))->size_; ++i) {
@@ -336,8 +366,10 @@ void OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_withIntArray
   }
 }
 
+
+#line 99
 void OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_withIntArray_withInt_withInt_(IOSByteArray *bs, jint bOff, IOSIntArray *ns, jint nOff, jint count) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 100
   for (jint i = 0; i < count; ++i) {
@@ -346,8 +378,10 @@ void OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_withIntArray
   }
 }
 
+
+#line 106
 IOSByteArray *OrgBouncycastleUtilPack_intToLittleEndianWithInt_(jint n) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 107
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:4];
@@ -355,8 +389,10 @@ IOSByteArray *OrgBouncycastleUtilPack_intToLittleEndianWithInt_(jint n) {
   return bs;
 }
 
+
+#line 112
 void OrgBouncycastleUtilPack_intToLittleEndianWithInt_withByteArray_withInt_(jint n, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 113
   *IOSByteArray_GetRef(nil_chk(bs), off) = (jbyte) (n);
@@ -365,8 +401,10 @@ void OrgBouncycastleUtilPack_intToLittleEndianWithInt_withByteArray_withInt_(jin
   *IOSByteArray_GetRef(bs, ++off) = (jbyte) (URShift32(n, 24));
 }
 
+
+#line 119
 IOSByteArray *OrgBouncycastleUtilPack_intToLittleEndianWithIntArray_(IOSIntArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 120
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:4 * ((IOSIntArray *) nil_chk(ns))->size_];
@@ -374,8 +412,10 @@ IOSByteArray *OrgBouncycastleUtilPack_intToLittleEndianWithIntArray_(IOSIntArray
   return bs;
 }
 
+
+#line 125
 void OrgBouncycastleUtilPack_intToLittleEndianWithIntArray_withByteArray_withInt_(IOSIntArray *ns, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 126
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(ns))->size_; ++i) {
@@ -384,8 +424,10 @@ void OrgBouncycastleUtilPack_intToLittleEndianWithIntArray_withByteArray_withInt
   }
 }
 
+
+#line 132
 jlong OrgBouncycastleUtilPack_littleEndianToLongWithByteArray_withInt_(IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 133
   jint lo = OrgBouncycastleUtilPack_littleEndianToIntWithByteArray_withInt_(bs, off);
@@ -393,8 +435,10 @@ jlong OrgBouncycastleUtilPack_littleEndianToLongWithByteArray_withInt_(IOSByteAr
   return (LShift64((jlong) (hi & (jlong) 0xffffffffLL), 32)) | (jlong) (lo & (jlong) 0xffffffffLL);
 }
 
+
+#line 138
 void OrgBouncycastleUtilPack_littleEndianToLongWithByteArray_withInt_withLongArray_(IOSByteArray *bs, jint off, IOSLongArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 139
   for (jint i = 0; i < ((IOSLongArray *) nil_chk(ns))->size_; ++i) {
@@ -403,8 +447,10 @@ void OrgBouncycastleUtilPack_littleEndianToLongWithByteArray_withInt_withLongArr
   }
 }
 
+
+#line 145
 IOSByteArray *OrgBouncycastleUtilPack_longToLittleEndianWithLong_(jlong n) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 146
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:8];
@@ -412,16 +458,20 @@ IOSByteArray *OrgBouncycastleUtilPack_longToLittleEndianWithLong_(jlong n) {
   return bs;
 }
 
+
+#line 151
 void OrgBouncycastleUtilPack_longToLittleEndianWithLong_withByteArray_withInt_(jlong n, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 152
   OrgBouncycastleUtilPack_intToLittleEndianWithInt_withByteArray_withInt_((jint) (n & (jlong) 0xffffffffLL), bs, off);
   OrgBouncycastleUtilPack_intToLittleEndianWithInt_withByteArray_withInt_((jint) (URShift64(n, 32)), bs, off + 4);
 }
 
+
+#line 156
 IOSByteArray *OrgBouncycastleUtilPack_longToLittleEndianWithLongArray_(IOSLongArray *ns) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 157
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:8 * ((IOSLongArray *) nil_chk(ns))->size_];
@@ -429,14 +479,20 @@ IOSByteArray *OrgBouncycastleUtilPack_longToLittleEndianWithLongArray_(IOSLongAr
   return bs;
 }
 
+
+#line 162
 void OrgBouncycastleUtilPack_longToLittleEndianWithLongArray_withByteArray_withInt_(IOSLongArray *ns, IOSByteArray *bs, jint off) {
-  OrgBouncycastleUtilPack_init();
+  OrgBouncycastleUtilPack_initialize();
   
 #line 163
   for (jint i = 0; i < ((IOSLongArray *) nil_chk(ns))->size_; ++i) {
     OrgBouncycastleUtilPack_longToLittleEndianWithLong_withByteArray_withInt_(IOSLongArray_Get(ns, i), bs, off);
     off += 8;
   }
+}
+
+void OrgBouncycastleUtilPack_init(OrgBouncycastleUtilPack *self) {
+  (void) NSObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleUtilPack)

@@ -9,11 +9,12 @@
 #ifndef ActorClient_ActorModel_h
 #define ActorClient_ActorModel_h
 
-#import "J2ObjC_source.h"
+#include "J2ObjC_header.h"
 
 // Java Objects
 
 #import "java/lang/Exception.h"
+#import "java/lang/Runnable.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Long.h"
 #import "java/lang/Integer.h"
@@ -40,6 +41,7 @@
 #import "im/actor/model/DispatcherProvider.h"
 #import "im/actor/model/LocaleProvider.h"
 #import "im/actor/model/PhoneBookProvider.h"
+#import "im/actor/model/HttpDownloaderProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -48,6 +50,14 @@
 #import "im/actor/model/network/CreateConnectionCallback.h"
 #import "im/actor/model/network/ConnectionEndpoint.h"
 #import "im/actor/model/network/ConnectionCallback.h"
+#import "im/actor/model/network/connection/AsyncConnection.h"
+#import "im/actor/model/network/connection/AsyncConnectionFactory.h"
+#import "im/actor/model/network/connection/AsyncConnectionInterface.h"
+#import "im/actor/model/network/connection/ManagedConnection.h"
+#import "im/actor/model/network/connection/ManagedConnectionCreateCallback.h"
+#import "im/actor/model/network/connection/ManagedNetworkProvider.h"
+#import "im/actor/model/http/FileDownloadCallback.h"
+#import "im/actor/model/http/FileUploadCallback.h"
 
 #import "im/actor/model/crypto/CryptoKeyPair.h"
 #import "im/actor/model/jvm/JavaRandomProvider.h"

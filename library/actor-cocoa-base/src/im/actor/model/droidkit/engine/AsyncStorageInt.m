@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/AsyncStorageInt.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/AsyncStorageInt.java"
 
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
@@ -29,109 +31,150 @@
  @public
   DKActorRef *storageActor_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt, storageActor_, DKActorRef *)
 
-@interface DKAsyncStorageInt_$1 () {
+static jint DKAsyncStorageInt_NEXT_ID_ = 
+#line 19
+0;
+J2OBJC_STATIC_FIELD_GETTER(DKAsyncStorageInt, NEXT_ID_, jint)
+J2OBJC_STATIC_FIELD_REF_GETTER(DKAsyncStorageInt, NEXT_ID_, jint)
+
+@interface DKAsyncStorageInt_$1 : NSObject < DKActorCreator > {
  @public
   id<DKListStorageDisplayEx> val$storage_;
   id<BSBserCreator> val$creator_;
 }
+
+- (DKAsyncStorageActor *)create;
+
+- (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)capture$0
+                             withBSBserCreator:(id<BSBserCreator>)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$1)
 
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$1, val$storage_, id<DKListStorageDisplayEx>)
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$1, val$creator_, id<BSBserCreator>)
 
-@interface DKAsyncStorageInt_$2 () {
+__attribute__((unused)) static void DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(DKAsyncStorageInt_$1 *self, id<DKListStorageDisplayEx> capture$0, id<BSBserCreator> capture$1);
+
+__attribute__((unused)) static DKAsyncStorageInt_$1 *new_DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(id<DKListStorageDisplayEx> capture$0, id<BSBserCreator> capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$1)
+
+@interface DKAsyncStorageInt_$2 : NSObject < DKAsyncStorageActor_LoadItemCallback > {
  @public
   id val$lock_;
   id<JavaUtilList> val$resultList_;
 }
+
+- (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
+
+- (instancetype)initWithId:(id)capture$0
+          withJavaUtilList:(id<JavaUtilList>)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$2)
 
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$2, val$lock_, id)
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$2, val$resultList_, id<JavaUtilList>)
 
-@interface DKAsyncStorageInt_$3 () {
+__attribute__((unused)) static void DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(DKAsyncStorageInt_$2 *self, id capture$0, id<JavaUtilList> capture$1);
+
+__attribute__((unused)) static DKAsyncStorageInt_$2 *new_DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(id capture$0, id<JavaUtilList> capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$2)
+
+@interface DKAsyncStorageInt_$3 : NSObject < DKAsyncStorageActor_LoadItemCallback > {
  @public
   id val$lock_;
   id<JavaUtilList> val$resultList_;
 }
+
+- (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
+
+- (instancetype)initWithId:(id)capture$0
+          withJavaUtilList:(id<JavaUtilList>)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$3)
 
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$3, val$lock_, id)
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$3, val$resultList_, id<JavaUtilList>)
 
-@interface DKAsyncStorageInt_$4 () {
+__attribute__((unused)) static void DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(DKAsyncStorageInt_$3 *self, id capture$0, id<JavaUtilList> capture$1);
+
+__attribute__((unused)) static DKAsyncStorageInt_$3 *new_DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(id capture$0, id<JavaUtilList> capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$3)
+
+@interface DKAsyncStorageInt_$4 : NSObject < DKAsyncStorageActor_LoadCountCallback > {
  @public
   id val$lock_;
   id<JavaUtilList> val$resultList_;
 }
+
+- (void)onLoadedWithInt:(jint)count;
+
+- (instancetype)initWithId:(id)capture$0
+          withJavaUtilList:(id<JavaUtilList>)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageInt_$4)
 
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$4, val$lock_, id)
 J2OBJC_FIELD_SETTER(DKAsyncStorageInt_$4, val$resultList_, id<JavaUtilList>)
+
+__attribute__((unused)) static void DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(DKAsyncStorageInt_$4 *self, id capture$0, id<JavaUtilList> capture$1);
+
+__attribute__((unused)) static DKAsyncStorageInt_$4 *new_DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(id capture$0, id<JavaUtilList> capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageInt_$4)
 
 
 #line 17
 @implementation DKAsyncStorageInt
 
-jint DKAsyncStorageInt_NEXT_ID_ = 0;
-
 
 #line 23
 - (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)storage
                              withBSBserCreator:(id<BSBserCreator>)creator {
-  if (self = [super init]) {
-    
-#line 24
-    storageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(DKAsyncStorageActor_class_(), [[DKAsyncStorageInt_$1 alloc] initWithDKListStorageDisplayEx:storage withBSBserCreator:creator]))) changeDispatcherWithNSString:
-#line 29
-    @"db"] withNSString:JreStrcat("$I", @"list_engine/", DKAsyncStorageInt_NEXT_ID_++)];
-  }
+  DKAsyncStorageInt_initWithDKListStorageDisplayEx_withBSBserCreator_(self, storage, creator);
   return self;
 }
 
 
 #line 32
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items {
-  
-#line 33
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_AddOrUpdate alloc] initWithJavaUtilList:items]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_AddOrUpdate_initWithJavaUtilList_(items)];
 }
 
-
-#line 36
 - (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items {
-  
-#line 37
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_Replace alloc] initWithJavaUtilList:items]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_Replace_initWithJavaUtilList_(items)];
 }
 
-
-#line 40
 - (void)removeWithLongArray:(IOSLongArray *)keys {
-  
-#line 41
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_Remove alloc] initWithLongArray:keys]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_Remove_initWithLongArray_(keys)];
 }
 
-
-#line 44
 - (void)clear {
-  
-#line 45
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_Clear alloc] init]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_Clear_init()];
 }
 
+
+#line 50
 - (id)getValueWithLong:(jlong)value {
-  
-#line 51
-  id lock = [[NSObject alloc] init];
-  id<JavaUtilList> resultList = [[JavaUtilArrayList alloc] init];
+  id lock = new_NSObject_init();
+  id<JavaUtilList> resultList = new_JavaUtilArrayList_init();
   @synchronized(lock) {
-    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadItem alloc] initWithLong:value withDKAsyncStorageActor_LoadItemCallback:[[DKAsyncStorageInt_$2 alloc] initWithId:lock withJavaUtilList:resultList]]];
+    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_LoadItem_initWithLong_withDKAsyncStorageActor_LoadItemCallback_(value, new_DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(lock, resultList))];
     
 #line 66
     @try {
@@ -155,13 +198,13 @@ jint DKAsyncStorageInt_NEXT_ID_ = 0;
   }
 }
 
+
+#line 80
 - (id)getHeadValue {
-  
-#line 81
-  id lock = [[NSObject alloc] init];
-  id<JavaUtilList> resultList = [[JavaUtilArrayList alloc] init];
+  id lock = new_NSObject_init();
+  id<JavaUtilList> resultList = new_JavaUtilArrayList_init();
   @synchronized(lock) {
-    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadHead alloc] initWithDKAsyncStorageActor_LoadItemCallback:[[DKAsyncStorageInt_$3 alloc] initWithId:lock withJavaUtilList:resultList]]];
+    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_LoadHead_initWithDKAsyncStorageActor_LoadItemCallback_(new_DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(lock, resultList))];
     
 #line 96
     @try {
@@ -185,13 +228,13 @@ jint DKAsyncStorageInt_NEXT_ID_ = 0;
   }
 }
 
+
+#line 110
 - (jint)getCount {
-  
-#line 111
-  id lock = [[NSObject alloc] init];
-  id<JavaUtilList> resultList = [[JavaUtilArrayList alloc] init];
+  id lock = new_NSObject_init();
+  id<JavaUtilList> resultList = new_JavaUtilArrayList_init();
   @synchronized(lock) {
-    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadCount alloc] initWithDKAsyncStorageActor_LoadCountCallback:[[DKAsyncStorageInt_$4 alloc] initWithId:lock withJavaUtilList:resultList]]];
+    [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_LoadCount_initWithDKAsyncStorageActor_LoadCountCallback_(new_DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(lock, resultList))];
     
 #line 124
     @try {
@@ -215,13 +258,13 @@ jint DKAsyncStorageInt_NEXT_ID_ = 0;
   }
 }
 
+
+#line 140
 - (void)loadForwardWithNSString:(NSString *)query
                withJavaLangLong:(JavaLangLong *)afterSortKey
                         withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
-  
-#line 141
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadForward alloc] initWithNSString:query withJavaLangLong:afterSortKey withInt:limit withDKListEngineDisplayLoadCallback:callback]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_LoadForward_initWithNSString_withJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(query, afterSortKey, limit, callback)];
 }
 
 
@@ -230,9 +273,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
                 withJavaLangLong:(JavaLangLong *)beforeSortKey
                          withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
-  
-#line 145
-  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:[[DKAsyncStorageActor_LoadBackward alloc] initWithNSString:query withJavaLangLong:beforeSortKey withInt:limit withDKListEngineDisplayLoadCallback:callback]];
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_LoadBackward_initWithNSString_withJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(query, beforeSortKey, limit, callback)];
 }
 
 
@@ -240,17 +281,29 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
-  
-#line 149
-  @throw [[JavaLangRuntimeException alloc] initWithNSString:@"Unsupported"];
-}
-
-- (void)copyAllFieldsTo:(DKAsyncStorageInt *)other {
-  [super copyAllFieldsTo:other];
-  other->storageActor_ = storageActor_;
+  @throw new_JavaLangRuntimeException_initWithNSString_(@"Unsupported");
 }
 
 @end
+
+
+#line 23
+void DKAsyncStorageInt_initWithDKListStorageDisplayEx_withBSBserCreator_(DKAsyncStorageInt *self, id<DKListStorageDisplayEx> storage, id<BSBserCreator> creator) {
+  (void) NSObject_init(self);
+  
+#line 24
+  self->storageActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(DKAsyncStorageActor_class_(), new_DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(storage, creator)))) changeDispatcherWithNSString:
+#line 29
+  @"db"] withNSString:JreStrcat("$I", @"list_engine/", DKAsyncStorageInt_NEXT_ID_++)];
+}
+
+
+#line 23
+DKAsyncStorageInt *new_DKAsyncStorageInt_initWithDKListStorageDisplayEx_withBSBserCreator_(id<DKListStorageDisplayEx> storage, id<BSBserCreator> creator) {
+  DKAsyncStorageInt *self = [DKAsyncStorageInt alloc];
+  DKAsyncStorageInt_initWithDKListStorageDisplayEx_withBSBserCreator_(self, storage, creator);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt)
 
@@ -259,25 +312,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt)
 
 #line 26
 - (DKAsyncStorageActor *)create {
-  
-#line 27
-  return [[DKAsyncStorageActor alloc] initWithDKListStorageDisplayEx:val$storage_ withBSBserCreator:val$creator_];
+  return new_DKAsyncStorageActor_initWithDKListStorageDisplayEx_withBSBserCreator_(val$storage_, val$creator_);
 }
 
 - (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)capture$0
                              withBSBserCreator:(id<BSBserCreator>)capture$1 {
-  val$storage_ = capture$0;
-  val$creator_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(DKAsyncStorageInt_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$storage_ = val$storage_;
-  other->val$creator_ = val$creator_;
+  DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(self, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(DKAsyncStorageInt_$1 *self, id<DKListStorageDisplayEx> capture$0, id<BSBserCreator> capture$1) {
+  self->val$storage_ = capture$0;
+  self->val$creator_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+DKAsyncStorageInt_$1 *new_DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(id<DKListStorageDisplayEx> capture$0, id<BSBserCreator> capture$1) {
+  DKAsyncStorageInt_$1 *self = [DKAsyncStorageInt_$1 alloc];
+  DKAsyncStorageInt_$1_initWithDKListStorageDisplayEx_withBSBserCreator_(self, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$1)
 
@@ -286,8 +342,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$1)
 
 #line 56
 - (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item {
-  
-#line 57
   @synchronized(val$lock_) {
     if (item != nil) {
       [((id<JavaUtilList>) nil_chk(val$resultList_)) addWithId:item];
@@ -298,26 +352,31 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$1)
 
 - (instancetype)initWithId:(id)capture$0
           withJavaUtilList:(id<JavaUtilList>)capture$1 {
-  val$lock_ = capture$0;
-  val$resultList_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(DKAsyncStorageInt_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$lock_ = val$lock_;
-  other->val$resultList_ = val$resultList_;
+  DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(self, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(DKAsyncStorageInt_$2 *self, id capture$0, id<JavaUtilList> capture$1) {
+  self->val$lock_ = capture$0;
+  self->val$resultList_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+DKAsyncStorageInt_$2 *new_DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(id capture$0, id<JavaUtilList> capture$1) {
+  DKAsyncStorageInt_$2 *self = [DKAsyncStorageInt_$2 alloc];
+  DKAsyncStorageInt_$2_initWithId_withJavaUtilList_(self, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$2)
 
 @implementation DKAsyncStorageInt_$3
 
+
+#line 86
 - (void)onLoadedWithBSBserObject:(BSBserObject<DKListEngineItem> *)item {
-  
-#line 87
   @synchronized(val$lock_) {
     if (item != nil) {
       [((id<JavaUtilList>) nil_chk(val$resultList_)) addWithId:item];
@@ -328,26 +387,31 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$2)
 
 - (instancetype)initWithId:(id)capture$0
           withJavaUtilList:(id<JavaUtilList>)capture$1 {
-  val$lock_ = capture$0;
-  val$resultList_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(DKAsyncStorageInt_$3 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$lock_ = val$lock_;
-  other->val$resultList_ = val$resultList_;
+  DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(self, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(DKAsyncStorageInt_$3 *self, id capture$0, id<JavaUtilList> capture$1) {
+  self->val$lock_ = capture$0;
+  self->val$resultList_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+DKAsyncStorageInt_$3 *new_DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(id capture$0, id<JavaUtilList> capture$1) {
+  DKAsyncStorageInt_$3 *self = [DKAsyncStorageInt_$3 alloc];
+  DKAsyncStorageInt_$3_initWithId_withJavaUtilList_(self, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$3)
 
 @implementation DKAsyncStorageInt_$4
 
+
+#line 116
 - (void)onLoadedWithInt:(jint)count {
-  
-#line 117
   @synchronized(val$lock_) {
     [((id<JavaUtilList>) nil_chk(val$resultList_)) addWithId:JavaLangInteger_valueOfWithInt_(count)];
     [nil_chk(val$lock_) notify];
@@ -356,17 +420,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$3)
 
 - (instancetype)initWithId:(id)capture$0
           withJavaUtilList:(id<JavaUtilList>)capture$1 {
-  val$lock_ = capture$0;
-  val$resultList_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(DKAsyncStorageInt_$4 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$lock_ = val$lock_;
-  other->val$resultList_ = val$resultList_;
+  DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(self, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(DKAsyncStorageInt_$4 *self, id capture$0, id<JavaUtilList> capture$1) {
+  self->val$lock_ = capture$0;
+  self->val$resultList_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+DKAsyncStorageInt_$4 *new_DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(id capture$0, id<JavaUtilList> capture$1) {
+  DKAsyncStorageInt_$4 *self = [DKAsyncStorageInt_$4 alloc];
+  DKAsyncStorageInt_$4_initWithId_withJavaUtilList_(self, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageInt_$4)

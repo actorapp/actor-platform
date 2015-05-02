@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseVoid.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseVoid.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
 
@@ -28,11 +30,10 @@
 
 #line 28
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcResponseVoid_init(self);
+  return self;
 }
 
-
-#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
@@ -41,27 +42,43 @@
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
+
+#line 41
 - (NSString *)description {
-  
-#line 42
   NSString *res = @"response Void{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
+
+#line 48
 - (jint)getHeaderKey {
-  
-#line 49
   return ImActorModelApiRpcResponseVoid_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseVoid_init();
+  ImActorModelApiRpcResponseVoid_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcResponseVoid *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseVoid alloc] init], data));
+  return ((ImActorModelApiRpcResponseVoid *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseVoid_init(), data));
+}
+
+
+#line 28
+void ImActorModelApiRpcResponseVoid_init(ImActorModelApiRpcResponseVoid *self) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+}
+
+
+#line 28
+ImActorModelApiRpcResponseVoid *new_ImActorModelApiRpcResponseVoid_init() {
+  ImActorModelApiRpcResponseVoid *self = [ImActorModelApiRpcResponseVoid alloc];
+  ImActorModelApiRpcResponseVoid_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseVoid)

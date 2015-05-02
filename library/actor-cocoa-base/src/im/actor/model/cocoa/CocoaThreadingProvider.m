@@ -3,19 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/cocoa/CocoaThreadingProvider.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/cocoa/CocoaThreadingProvider.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/cocoa/CocoaThreadingProvider.h"
+#include "im/actor/model/jvm/JavaThreadingProvider.h"
 
 
 #line 8
 @implementation AMCocoaThreadingProvider
 
 - (instancetype)init {
-  return [super init];
+  AMCocoaThreadingProvider_init(self);
+  return self;
 }
 
 @end
+
+void AMCocoaThreadingProvider_init(AMCocoaThreadingProvider *self) {
+  (void) AMJavaThreadingProvider_init(self);
+}
+
+AMCocoaThreadingProvider *new_AMCocoaThreadingProvider_init() {
+  AMCocoaThreadingProvider *self = [AMCocoaThreadingProvider alloc];
+  AMCocoaThreadingProvider_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMCocoaThreadingProvider)

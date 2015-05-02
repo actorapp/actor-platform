@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/ActorEndpoint.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/ActorEndpoint.java"
 
 #include "J2ObjC_source.h"
@@ -17,6 +18,7 @@
   DKActorScope *scope_;
   jboolean isDisconnected__;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKActorEndpoint, path_, NSString *)
@@ -30,68 +32,51 @@ J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
 
 #line 14
 - (instancetype)initWithNSString:(NSString *)path {
-  if (self = [super init]) {
-    
-#line 15
-    self->path_ = path;
-    
-#line 16
-    isDisconnected__ = NO;
-  }
+  DKActorEndpoint_initWithNSString_(self, path);
   return self;
 }
 
-
-#line 19
 - (NSString *)getPath {
-  
-#line 20
   return path_;
 }
 
-
-#line 23
 - (DKMailbox *)getMailbox {
-  
-#line 24
   return mailbox_;
 }
 
-
-#line 27
 - (DKActorScope *)getScope {
-  
-#line 28
   return scope_;
 }
 
-
-#line 31
 - (jboolean)isDisconnected {
-  
-#line 32
   return isDisconnected__;
 }
 
-
-#line 35
 - (void)connectWithDKMailbox:(DKMailbox *)mailbox
             withDKActorScope:(DKActorScope *)scope {
-  
-#line 36
   isDisconnected__ = NO;
   self->mailbox_ = mailbox;
   self->scope_ = scope;
 }
 
-- (void)copyAllFieldsTo:(DKActorEndpoint *)other {
-  [super copyAllFieldsTo:other];
-  other->path_ = path_;
-  other->mailbox_ = mailbox_;
-  other->scope_ = scope_;
-  other->isDisconnected__ = isDisconnected__;
+@end
+
+
+#line 14
+void DKActorEndpoint_initWithNSString_(DKActorEndpoint *self, NSString *path) {
+  (void) NSObject_init(self);
+  
+#line 15
+  self->path_ = path;
+  self->isDisconnected__ = NO;
 }
 
-@end
+
+#line 14
+DKActorEndpoint *new_DKActorEndpoint_initWithNSString_(NSString *path) {
+  DKActorEndpoint *self = [DKActorEndpoint alloc];
+  DKActorEndpoint_initWithNSString_(self, path);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorEndpoint)

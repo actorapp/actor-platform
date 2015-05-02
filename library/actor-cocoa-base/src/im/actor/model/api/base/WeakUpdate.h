@@ -6,31 +6,34 @@
 #ifndef _ImActorModelApiBaseWeakUpdate_H_
 #define _ImActorModelApiBaseWeakUpdate_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/RpcScope.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/RpcScope.h"
-
 #define ImActorModelApiBaseWeakUpdate_HEADER 26
 
-@interface ImActorModelApiBaseWeakUpdate : ImActorModelNetworkParserRpcScope {
-}
+@interface ImActorModelApiBaseWeakUpdate : ImActorModelNetworkParserRpcScope
 
-+ (ImActorModelApiBaseWeakUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithLong:(jlong)date
                      withInt:(jint)updateHeader
                withByteArray:(IOSByteArray *)update;
 
-- (instancetype)init;
++ (ImActorModelApiBaseWeakUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
-- (jint)getUpdateHeader;
+- (jint)getHeaderKey;
 
 - (IOSByteArray *)getUpdate;
+
+- (jint)getUpdateHeader;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,18 +41,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiBaseWeakUpdate)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseWeakUpdate, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseWeakUpdate, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(ImActorModelApiBaseWeakUpdate *self, jlong date, jint updateHeader, IOSByteArray *update);
+
+FOUNDATION_EXPORT ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(jlong date, jint updateHeader, IOSByteArray *update) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiBaseWeakUpdate_init(ImActorModelApiBaseWeakUpdate *self);
+
+FOUNDATION_EXPORT ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiBaseWeakUpdate)
 

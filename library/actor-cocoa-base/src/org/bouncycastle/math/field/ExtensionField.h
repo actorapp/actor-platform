@@ -10,6 +10,7 @@
 #include "org/bouncycastle/math/field/FiniteField.h"
 
 @protocol OrgBouncycastleMathFieldExtensionField < OrgBouncycastleMathFieldFiniteField, NSObject, JavaObject >
+
 - (id<OrgBouncycastleMathFieldFiniteField>)getSubfield;
 
 - (jint)getDegree;

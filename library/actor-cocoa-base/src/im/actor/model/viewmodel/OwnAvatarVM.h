@@ -6,26 +6,28 @@
 #ifndef _AMOwnAvatarVM_H_
 #define _AMOwnAvatarVM_H_
 
-@class AMValueModel;
-
 #include "J2ObjC_header.h"
 
-@interface AMOwnAvatarVM : NSObject {
-}
+@class AMValueModel;
 
-- (AMValueModel *)getUploadState;
+@interface AMOwnAvatarVM : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
+
+- (AMValueModel *)getUploadState;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMOwnAvatarVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMOwnAvatarVM_init(AMOwnAvatarVM *self);
 
-typedef AMOwnAvatarVM ImActorModelViewmodelOwnAvatarVM;
+FOUNDATION_EXPORT AMOwnAvatarVM *new_AMOwnAvatarVM_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMOwnAvatarVM)
+
+typedef AMOwnAvatarVM ImActorModelViewmodelOwnAvatarVM;
 
 #endif // _AMOwnAvatarVM_H_

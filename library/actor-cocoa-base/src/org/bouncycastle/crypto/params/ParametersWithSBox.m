@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithSBox.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithSBox.java"
 
 #include "IOSPrimitiveArray.h"
@@ -15,6 +16,7 @@
   id<OrgBouncycastleCryptoCipherParameters> parameters_;
   IOSByteArray *sBox_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSBox, parameters_, id<OrgBouncycastleCryptoCipherParameters>)
@@ -28,14 +30,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSBox, sBox_, IOSByt
 #line 11
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)sBox {
-  if (self = [super init]) {
-    
-#line 15
-    self->parameters_ = parameters;
-    
-#line 16
-    self->sBox_ = sBox;
-  }
+  OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(self, parameters, sBox);
   return self;
 }
 
@@ -55,12 +50,24 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSBox, sBox_, IOSByt
   return parameters_;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoParamsParametersWithSBox *)other {
-  [super copyAllFieldsTo:other];
-  other->parameters_ = parameters_;
-  other->sBox_ = sBox_;
+@end
+
+
+#line 11
+void OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(OrgBouncycastleCryptoParamsParametersWithSBox *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *sBox) {
+  (void) NSObject_init(self);
+  
+#line 15
+  self->parameters_ = parameters;
+  self->sBox_ = sBox;
 }
 
-@end
+
+#line 11
+OrgBouncycastleCryptoParamsParametersWithSBox *new_OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *sBox) {
+  OrgBouncycastleCryptoParamsParametersWithSBox *self = [OrgBouncycastleCryptoParamsParametersWithSBox alloc];
+  OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(self, parameters, sBox);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoParamsParametersWithSBox)

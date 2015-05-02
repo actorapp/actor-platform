@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileRemoteSource.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileRemoteSource.java"
 
 #include "IOSClass.h"
@@ -12,16 +13,23 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/content/FileRemoteSource.h"
+#include "im/actor/model/entity/content/FileSource.h"
 #include "java/io/IOException.h"
 
 @interface AMFileRemoteSource () {
  @public
   AMFileReference *fileReference_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
+
+__attribute__((unused)) static void AMFileRemoteSource_init(AMFileRemoteSource *self);
+
+__attribute__((unused)) static AMFileRemoteSource *new_AMFileRemoteSource_init() NS_RETURNS_RETAINED;
 
 
 #line 12
@@ -34,23 +42,20 @@ J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
 #line 22
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference {
-  if (self = [super init]) {
-    
-#line 23
-    self->fileReference_ = fileReference;
-  }
+  AMFileRemoteSource_initWithAMFileReference_(self, fileReference);
   return self;
 }
 
 
 #line 26
 - (instancetype)init {
-  return [super init];
+  AMFileRemoteSource_init(self);
+  return self;
 }
 
+
+#line 30
 - (AMFileReference *)getFileReference {
-  
-#line 31
   return fileReference_;
 }
 
@@ -63,8 +68,6 @@ J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
 #line 40
 - (NSString *)getFileName {
-  
-#line 41
   return [((AMFileReference *) nil_chk(fileReference_)) getFileName];
 }
 
@@ -78,26 +81,52 @@ J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
 #line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 52
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileReference_];
 }
 
-- (void)copyAllFieldsTo:(AMFileRemoteSource *)other {
-  [super copyAllFieldsTo:other];
-  other->fileReference_ = fileReference_;
-}
-
 @end
 
+
+#line 14
 AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
-  AMFileRemoteSource_init();
+  AMFileRemoteSource_initialize();
   
 #line 15
-  AMFileRemoteSource *fileLocalSource = [[AMFileRemoteSource alloc] init];
+  AMFileRemoteSource *fileLocalSource = new_AMFileRemoteSource_init();
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
+}
+
+
+#line 22
+void AMFileRemoteSource_initWithAMFileReference_(AMFileRemoteSource *self, AMFileReference *fileReference) {
+  (void) AMFileSource_init(self);
+  
+#line 23
+  self->fileReference_ = fileReference;
+}
+
+
+#line 22
+AMFileRemoteSource *new_AMFileRemoteSource_initWithAMFileReference_(AMFileReference *fileReference) {
+  AMFileRemoteSource *self = [AMFileRemoteSource alloc];
+  AMFileRemoteSource_initWithAMFileReference_(self, fileReference);
+  return self;
+}
+
+
+#line 26
+void AMFileRemoteSource_init(AMFileRemoteSource *self) {
+  (void) AMFileSource_init(self);
+}
+
+
+#line 26
+AMFileRemoteSource *new_AMFileRemoteSource_init() {
+  AMFileRemoteSource *self = [AMFileRemoteSource alloc];
+  AMFileRemoteSource_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileRemoteSource)

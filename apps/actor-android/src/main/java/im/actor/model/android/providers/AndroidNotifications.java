@@ -15,6 +15,7 @@ import java.util.List;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
+import im.actor.model.Messenger;
 import im.actor.model.NotificationProvider;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.Peer;
@@ -44,12 +45,12 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onMessageArriveInApp() {
+    public void onMessageArriveInApp(Messenger messenger) {
         soundPool.play(soundId, 1.0f, 1.0f, 0, 0, 1.0f);
     }
 
     @Override
-    public void onNotification(List<Notification> topNotifications, int messagesCount, int conversationsCount) {
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setAutoCancel(true);
@@ -147,12 +148,12 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onDialogsOpen() {
+    public void onDialogsOpen(Messenger messenger) {
         hideNotifications();
     }
 
     @Override
-    public void onChatOpen(Peer peer) {
+    public void onChatOpen(Messenger messenger, Peer peer) {
         if (visiblePeer != null && visiblePeer.equals(peer)) {
             hideNotifications();
             visiblePeer = null;

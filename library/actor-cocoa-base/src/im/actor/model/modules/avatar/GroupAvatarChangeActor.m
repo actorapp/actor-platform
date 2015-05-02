@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/avatar/GroupAvatarChangeActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/avatar/GroupAvatarChangeActor.java"
 
 #include "IOSClass.h"
@@ -32,12 +33,14 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/viewmodel/AvatarUploadState.h"
 #include "im/actor/model/viewmodel/GroupAvatarVM.h"
 #include "im/actor/model/viewmodel/OwnAvatarVM.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
+#include "java/lang/Runnable.h"
 #include "java/lang/System.h"
 #include "java/util/HashMap.h"
 
@@ -46,6 +49,7 @@
   JavaUtilHashMap *currentTasks_;
   JavaUtilHashMap *tasksMap_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor, currentTasks_, JavaUtilHashMap *)
@@ -56,6 +60,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor, tasksMap_, 
   jint gid_;
   jlong rid_;
 }
+
 @end
 
 @interface ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar () {
@@ -63,6 +68,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor, tasksMap_, 
   jint gid_;
   NSString *descriptor_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar, descriptor_, NSString *)
@@ -71,43 +77,104 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar
  @public
   jint gid_;
 }
+
 @end
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1 () {
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1 : NSObject < AMRpcCallback > {
  @public
   ImActorModelModulesAvatarGroupAvatarChangeActor *this$0_;
   jint val$gid_;
   jlong val$rid_;
 }
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseEditGroupAvatar *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
+                                                                withInt:(jint)capture$0
+                                                               withLong:(jlong)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$1)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1, this$0_, ImActorModelModulesAvatarGroupAvatarChangeActor *)
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 () {
+__attribute__((unused)) static void ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *self, ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1);
+
+__attribute__((unused)) static ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1)
+
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *this$0_;
 }
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1:(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1, this$0_, ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *)
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2 () {
+__attribute__((unused)) static void ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 *self, ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1)
+
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2 : NSObject < AMRpcCallback > {
  @public
   ImActorModelModulesAvatarGroupAvatarChangeActor *this$0_;
   jint val$gid_;
   jlong val$rid_;
 }
+
+- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
+
+- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
+                                                                withInt:(jint)capture$0
+                                                               withLong:(jlong)capture$1;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2, this$0_, ImActorModelModulesAvatarGroupAvatarChangeActor *)
 
-@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 () {
+__attribute__((unused)) static void ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *self, ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1);
+
+__attribute__((unused)) static ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
+
+@interface ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *this$0_;
 }
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2:(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *)outer$;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$0_, ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *)
+
+__attribute__((unused)) static void ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 *self, ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)
 
 
 #line 27
@@ -116,16 +183,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
 
 #line 32
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 33
-  [super initWithImActorModelModulesModules:modules]) {
-    currentTasks_ =
-#line 29
-    [[JavaUtilHashMap alloc] init];
-    tasksMap_ =
-#line 30
-    [[JavaUtilHashMap alloc] init];
-  }
+  ImActorModelModulesAvatarGroupAvatarChangeActor_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
@@ -133,8 +191,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
 #line 36
 - (void)changeAvatarWithInt:(jint)gid
                withNSString:(NSString *)descriptor {
-  
-#line 37
   if ([((JavaUtilHashMap *) nil_chk(currentTasks_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
     [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) cancelUploadWithLong:[((JavaLangLong *) nil_chk([currentTasks_ getWithId:JavaLangInteger_valueOfWithInt_(gid)])) longLongValue]];
     (void) [currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
@@ -144,7 +200,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
   (void) [((JavaUtilHashMap *) nil_chk(tasksMap_)) putWithId:JavaLangLong_valueOfWithLong_(rid) withId:JavaLangInteger_valueOfWithInt_(gid)];
   
 #line 45
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:[[AMAvatarUploadState alloc] initWithNSString:descriptor withBoolean:YES]];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(descriptor, YES)];
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) requestUploadWithLong:rid withNSString:descriptor withNSString:@"avatar.jpg" withDKActorRef:[self self__]];
 }
 
@@ -152,8 +208,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
 #line 49
 - (void)uploadCompletedWithLong:(jlong)rid
             withAMFileReference:(AMFileReference *)fileReference {
-  
-#line 50
   if (![((JavaUtilHashMap *) nil_chk(tasksMap_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(rid)]) {
     return;
   }
@@ -168,17 +222,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
   }
   
 #line 61
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestEditGroupAvatar alloc] initWithImActorModelApiGroupOutPeer:[[ImActorModelApiGroupOutPeer alloc] initWithInt:gid withLong:accessHash] withLong:rid withImActorModelApiFileLocation:[[ImActorModelApiFileLocation alloc] initWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId] withLong:
+  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(new_ImActorModelApiGroupOutPeer_initWithInt_withLong_(gid, accessHash), rid, new_ImActorModelApiFileLocation_initWithLong_withLong_([((AMFileReference *) nil_chk(fileReference)) getFileId],
 #line 62
-  [fileReference getAccessHash]]] withAMRpcCallback:[[ImActorModelModulesAvatarGroupAvatarChangeActor_$1 alloc] initWithImActorModelModulesAvatarGroupAvatarChangeActor:self withInt:gid withLong:rid]];
+  [fileReference getAccessHash])) withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
 }
 
 
 #line 98
 - (void)avatarChangedWithInt:(jint)gid
                     withLong:(jlong)rid {
-  
-#line 99
   if (![((JavaUtilHashMap *) nil_chk(currentTasks_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
     return;
   }
@@ -186,14 +238,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
     return;
   }
   (void) [currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 
 #line 109
 - (void)uploadErrorWithLong:(jlong)rid {
-  
-#line 110
   if (![((JavaUtilHashMap *) nil_chk(tasksMap_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(rid)]) {
     return;
   }
@@ -205,14 +255,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
   (void) [tasksMap_ removeWithId:JavaLangLong_valueOfWithLong_(rid)];
   
 #line 120
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 
 #line 123
 - (void)removeAvatarWithInt:(jint)gid {
-  
-#line 124
   if ([((JavaUtilHashMap *) nil_chk(currentTasks_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
     [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) cancelUploadWithLong:[((JavaLangLong *) nil_chk([currentTasks_ getWithId:JavaLangInteger_valueOfWithInt_(gid)])) longLongValue]];
     (void) [currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
@@ -222,15 +270,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
   (void) [((JavaUtilHashMap *) nil_chk(tasksMap_)) putWithId:JavaLangLong_valueOfWithLong_(rid) withId:JavaLangInteger_valueOfWithInt_(gid)];
   
 #line 132
-  [((AMValueModel *) nil_chk([((AMOwnAvatarVM *) nil_chk([((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getProfile])) getOwnAvatarVM])) getUploadState])) changeWithId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:YES]];
-  [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestRemoveAvatar alloc] init] withAMRpcCallback:[[ImActorModelModulesAvatarGroupAvatarChangeActor_$2 alloc] initWithImActorModelModulesAvatarGroupAvatarChangeActor:self withInt:gid withLong:rid]];
+  [((AMValueModel *) nil_chk([((AMOwnAvatarVM *) nil_chk([((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getProfile])) getOwnAvatarVM])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, YES)];
+  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestRemoveAvatar_init() withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
 }
 
 
 #line 169
 - (void)onReceiveWithId:(id)message {
-  
-#line 170
   if ([message isKindOfClass:[ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar class]]) {
     ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *changeAvatar = (ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *) check_class_cast(message, [ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar class]);
     [self changeAvatarWithInt:[((ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *) nil_chk(changeAvatar)) getGid] withNSString:[changeAvatar getDescriptor]];
@@ -266,13 +312,23 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1, this$
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor *)other {
-  [super copyAllFieldsTo:other];
-  other->currentTasks_ = currentTasks_;
-  other->tasksMap_ = tasksMap_;
+@end
+
+
+#line 32
+void ImActorModelModulesAvatarGroupAvatarChangeActor_initWithImActorModelModulesModules_(ImActorModelModulesAvatarGroupAvatarChangeActor *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, modules);
+  self->currentTasks_ = new_JavaUtilHashMap_init();
+  self->tasksMap_ = new_JavaUtilHashMap_init();
 }
 
-@end
+
+#line 32
+ImActorModelModulesAvatarGroupAvatarChangeActor *new_ImActorModelModulesAvatarGroupAvatarChangeActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor *self = [ImActorModelModulesAvatarGroupAvatarChangeActor alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor)
 
@@ -284,40 +340,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 #line 194
 - (instancetype)initWithInt:(jint)gid
                    withLong:(jlong)rid {
-  if (self = [super init]) {
-    
-#line 195
-    self->gid_ = gid;
-    
-#line 196
-    self->rid_ = rid;
-  }
+  ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(self, gid, rid);
   return self;
 }
 
 
 #line 199
 - (jint)getGid {
-  
-#line 200
   return gid_;
 }
 
-
-#line 203
 - (jlong)getRid {
-  
-#line 204
   return rid_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->gid_ = gid_;
-  other->rid_ = rid_;
+@end
+
+
+#line 194
+void ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged *self, jint gid, jlong rid) {
+  (void) NSObject_init(self);
+  
+#line 195
+  self->gid_ = gid;
+  self->rid_ = rid;
 }
 
-@end
+
+#line 194
+ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged *new_ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(jint gid, jlong rid) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(self, gid, rid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged)
 
@@ -329,40 +384,39 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 #line 212
 - (instancetype)initWithInt:(jint)gid
                withNSString:(NSString *)descriptor {
-  if (self = [super init]) {
-    
-#line 213
-    self->gid_ = gid;
-    
-#line 214
-    self->descriptor_ = descriptor;
-  }
+  ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar_initWithInt_withNSString_(self, gid, descriptor);
   return self;
 }
 
 
 #line 217
 - (jint)getGid {
-  
-#line 218
   return gid_;
 }
 
-
-#line 221
 - (NSString *)getDescriptor {
-  
-#line 222
   return descriptor_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *)other {
-  [super copyAllFieldsTo:other];
-  other->gid_ = gid_;
-  other->descriptor_ = descriptor_;
+@end
+
+
+#line 212
+void ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar_initWithInt_withNSString_(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *self, jint gid, NSString *descriptor) {
+  (void) NSObject_init(self);
+  
+#line 213
+  self->gid_ = gid;
+  self->descriptor_ = descriptor;
 }
 
-@end
+
+#line 212
+ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *new_ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar_initWithInt_withNSString_(jint gid, NSString *descriptor) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar_initWithInt_withNSString_(self, gid, descriptor);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar)
 
@@ -373,28 +427,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 #line 229
 - (instancetype)initWithInt:(jint)gid {
-  if (self = [super init]) {
-    
-#line 230
-    self->gid_ = gid;
-  }
+  ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar_initWithInt_(self, gid);
   return self;
 }
 
 
 #line 233
 - (jint)getGid {
-  
-#line 234
   return gid_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar *)other {
-  [super copyAllFieldsTo:other];
-  other->gid_ = gid_;
+@end
+
+
+#line 229
+void ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar_initWithInt_(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar *self, jint gid) {
+  (void) NSObject_init(self);
+  
+#line 230
+  self->gid_ = gid;
 }
 
-@end
+
+#line 229
+ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar *new_ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar_initWithInt_(jint gid) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar_initWithInt_(self, gid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_RemoveAvatar)
 
@@ -405,23 +465,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseEditGroupAvatar *)response {
   
 #line 67
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseEditGroupAvatar *) nil_chk(response)) getSeq] withByteArray:
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseEditGroupAvatar *) nil_chk(response)) getSeq],
 #line 68
-  [response getState] withInt:ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER withByteArray:
+  [response getState], ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER,
 #line 69
-  [((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) [[ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc] initWithInt:val$gid_ withLong:val$rid_ withInt:[this$0_ myUid] withImActorModelApiAvatar:
+  [new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid],
 #line 70
-  [response getAvatar] withLong:[response getDate]]) toByteArray]]];
+  [response getAvatar], [response getDate]) toByteArray])];
   
 #line 73
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalExecuteAfter alloc] initWithInt:[response getSeq] withJavaLangRunnable:[[ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 alloc] initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1:self]]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_([response getSeq], new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(self))];
 }
 
 
 #line 82
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  
-#line 83
   if (![((JavaUtilHashMap *) nil_chk(this$0_->tasksMap_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(val$rid_)]) {
     return;
   }
@@ -433,26 +491,30 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
   (void) [this$0_->tasksMap_ removeWithId:JavaLangLong_valueOfWithLong_(val$rid_)];
   
 #line 93
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
                                                                 withInt:(jint)capture$0
                                                                withLong:(jlong)capture$1 {
-  this$0_ = outer$;
-  val$gid_ = capture$0;
-  val$rid_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$gid_ = val$gid_;
-  other->val$rid_ = val$rid_;
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, outer$, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *self, ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1) {
+  self->this$0_ = outer$;
+  self->val$gid_ = capture$0;
+  self->val$rid_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_$1 alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, outer$, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_$1)
 
@@ -461,22 +523,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 #line 75
 - (void)run {
-  
-#line 76
-  [((DKActorRef *) nil_chk([this$0_->this$0_ self__])) sendWithId:[[ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged alloc] initWithInt:this$0_->val$gid_ withLong:this$0_->val$rid_]];
+  [((DKActorRef *) nil_chk([this$0_->this$0_ self__])) sendWithId:new_ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(this$0_->val$gid_, this$0_->val$rid_)];
 }
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1:(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 *self, ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(ImActorModelModulesAvatarGroupAvatarChangeActor_$1 *outer$) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1 alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1)
 
@@ -485,25 +551,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 #line 135
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
-  
-#line 136
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelApiBaseSeqUpdate alloc] initWithInt:[((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq] withByteArray:
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq],
 #line 137
-  [response getState] withInt:ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER withByteArray:
+  [response getState], ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER,
 #line 138
-  [((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) [[ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc] initWithInt:val$gid_ withLong:val$rid_ withInt:[this$0_ myUid] withImActorModelApiAvatar:
+  [new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid],
 #line 140
-  nil withLong:JavaLangSystem_currentTimeMillis()]) toByteArray]]];
+  nil, JavaLangSystem_currentTimeMillis()) toByteArray])];
   
 #line 143
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:[[ImActorModelModulesUpdatesInternalExecuteAfter alloc] initWithInt:[response getSeq] withJavaLangRunnable:[[ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 alloc] initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2:self]]];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_([response getSeq], new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(self))];
 }
 
 
 #line 152
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  
-#line 153
   if (![((JavaUtilHashMap *) nil_chk(this$0_->tasksMap_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(val$rid_)]) {
     return;
   }
@@ -515,26 +577,30 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
   (void) [this$0_->tasksMap_ removeWithId:JavaLangLong_valueOfWithLong_(val$rid_)];
   
 #line 163
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:[[AMAvatarUploadState alloc] initWithNSString:nil withBoolean:NO]];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
                                                                 withInt:(jint)capture$0
                                                                withLong:(jlong)capture$1 {
-  this$0_ = outer$;
-  val$gid_ = capture$0;
-  val$rid_ = capture$1;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$gid_ = val$gid_;
-  other->val$rid_ = val$rid_;
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, outer$, capture$0, capture$1);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *self, ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1) {
+  self->this$0_ = outer$;
+  self->val$gid_ = capture$0;
+  self->val$rid_ = capture$1;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(ImActorModelModulesAvatarGroupAvatarChangeActor *outer$, jint capture$0, jlong capture$1) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_$2 alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, outer$, capture$0, capture$1);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_$2)
 
@@ -543,21 +609,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 #line 145
 - (void)run {
-  
-#line 146
-  [((DKActorRef *) nil_chk([this$0_->this$0_ self__])) sendWithId:[[ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged alloc] initWithInt:this$0_->val$gid_ withLong:this$0_->val$rid_]];
+  [((DKActorRef *) nil_chk([this$0_->this$0_ self__])) sendWithId:new_ImActorModelModulesAvatarGroupAvatarChangeActor_AvatarChanged_initWithInt_withLong_(this$0_->val$gid_, this$0_->val$rid_)];
 }
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2:(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 *self, ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 *new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(ImActorModelModulesAvatarGroupAvatarChangeActor_$2 *outer$) {
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 *self = [ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1 alloc];
+  ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1)

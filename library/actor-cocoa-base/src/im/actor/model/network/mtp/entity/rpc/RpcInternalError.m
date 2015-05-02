@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcInternalError.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcInternalError.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcInternalError.h"
 #include "java/io/IOException.h"
 
@@ -17,6 +19,7 @@
   jboolean canTryAgain_;
   jint tryAgainDelay_;
 }
+
 @end
 
 
@@ -26,37 +29,25 @@
 
 #line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 19
-  [super initWithBSDataInput:stream];
+  MTRpcInternalError_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 22
 - (instancetype)initWithBoolean:(jboolean)canTryAgain
                         withInt:(jint)tryAgainDelay {
-  if (self = [super init]) {
-    self->canTryAgain_ = canTryAgain;
-    
-#line 24
-    self->tryAgainDelay_ = tryAgainDelay;
-  }
+  MTRpcInternalError_initWithBoolean_withInt_(self, canTryAgain, tryAgainDelay);
   return self;
 }
 
 
 #line 27
 - (jboolean)isCanTryAgain {
-  
-#line 28
   return canTryAgain_;
 }
 
-
-#line 31
 - (jint)getTryAgainDelay {
-  
-#line 32
   return tryAgainDelay_;
 }
 
@@ -69,8 +60,6 @@
 
 #line 41
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 42
   [((BSDataOutput *) nil_chk(bs)) writeProtoBoolWithBoolean:canTryAgain_];
   [bs writeIntWithInt:tryAgainDelay_];
 }
@@ -82,12 +71,38 @@
   tryAgainDelay_ = [bs readInt];
 }
 
-- (void)copyAllFieldsTo:(MTRpcInternalError *)other {
-  [super copyAllFieldsTo:other];
-  other->canTryAgain_ = canTryAgain_;
-  other->tryAgainDelay_ = tryAgainDelay_;
+@end
+
+
+#line 18
+void MTRpcInternalError_initWithBSDataInput_(MTRpcInternalError *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 18
+MTRpcInternalError *new_MTRpcInternalError_initWithBSDataInput_(BSDataInput *stream) {
+  MTRpcInternalError *self = [MTRpcInternalError alloc];
+  MTRpcInternalError_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 22
+void MTRpcInternalError_initWithBoolean_withInt_(MTRpcInternalError *self, jboolean canTryAgain, jint tryAgainDelay) {
+  (void) MTProtoStruct_init(self);
+  
+#line 23
+  self->canTryAgain_ = canTryAgain;
+  self->tryAgainDelay_ = tryAgainDelay;
+}
+
+
+#line 22
+MTRpcInternalError *new_MTRpcInternalError_initWithBoolean_withInt_(jboolean canTryAgain, jint tryAgainDelay) {
+  MTRpcInternalError *self = [MTRpcInternalError alloc];
+  MTRpcInternalError_initWithBoolean_withInt_(self, canTryAgain, tryAgainDelay);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcInternalError)

@@ -3,13 +3,16 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Profile.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Profile.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
+#include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Profile.h"
 #include "im/actor/model/modules/avatar/OwnAvatarChangeActor.h"
@@ -20,18 +23,32 @@
   DKActorRef *avatarChangeActor_;
   AMOwnAvatarVM *ownAvatarVM_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesProfile, avatarChangeActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesProfile, ownAvatarVM_, AMOwnAvatarVM *)
 
-@interface ImActorModelModulesProfile_$1 () {
+@interface ImActorModelModulesProfile_$1 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesModules *val$modules_;
 }
+
+- (ImActorModelModulesAvatarOwnAvatarChangeActor *)create;
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesProfile_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesProfile_$1, val$modules_, ImActorModelModulesModules *)
+
+__attribute__((unused)) static void ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(ImActorModelModulesProfile_$1 *self, ImActorModelModulesModules *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesProfile_$1 *new_ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesProfile_$1)
 
 
 #line 14
@@ -40,52 +57,43 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesProfile_$1, val$modules_, ImActorModelMod
 
 #line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 19
-  [super initWithImActorModelModulesModules:modules]) {
-    
-#line 20
-    ownAvatarVM_ = [[AMOwnAvatarVM alloc] init];
-    
-#line 21
-    avatarChangeActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesAvatarOwnAvatarChangeActor_class_(), [[ImActorModelModulesProfile_$1 alloc] initWithImActorModelModulesModules:modules]) withNSString:
-#line 26
-    @"actor/avatar/my"];
-  }
+  ImActorModelModulesProfile_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
 #line 29
 - (AMOwnAvatarVM *)getOwnAvatarVM {
-  
-#line 30
   return ownAvatarVM_;
 }
 
-
-#line 33
 - (void)changeAvatarWithNSString:(NSString *)descriptor {
-  
-#line 34
-  [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:[[ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar alloc] initWithNSString:descriptor]];
+  [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:new_ImActorModelModulesAvatarOwnAvatarChangeActor_ChangeAvatar_initWithNSString_(descriptor)];
 }
 
-
-#line 37
 - (void)removeAvatar {
-  
-#line 38
-  [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:[[ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar alloc] init]];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesProfile *)other {
-  [super copyAllFieldsTo:other];
-  other->avatarChangeActor_ = avatarChangeActor_;
-  other->ownAvatarVM_ = ownAvatarVM_;
+  [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:new_ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar_init()];
 }
 
 @end
+
+
+#line 18
+void ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesProfile *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+  self->ownAvatarVM_ = new_AMOwnAvatarVM_init();
+  self->avatarChangeActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesAvatarOwnAvatarChangeActor_class_(), new_ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(modules)) withNSString:
+#line 26
+  @"actor/avatar/my"];
+}
+
+
+#line 18
+ImActorModelModulesProfile *new_ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesProfile *self = [ImActorModelModulesProfile alloc];
+  ImActorModelModulesProfile_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesProfile)
 
@@ -94,21 +102,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesProfile)
 
 #line 23
 - (ImActorModelModulesAvatarOwnAvatarChangeActor *)create {
-  
-#line 24
-  return [[ImActorModelModulesAvatarOwnAvatarChangeActor alloc] initWithImActorModelModulesModules:val$modules_];
+  return new_ImActorModelModulesAvatarOwnAvatarChangeActor_initWithImActorModelModulesModules_(val$modules_);
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0 {
-  val$modules_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesProfile_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$modules_ = val$modules_;
+  ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(self, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(ImActorModelModulesProfile_$1 *self, ImActorModelModulesModules *capture$0) {
+  self->val$modules_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesProfile_$1 *new_ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *capture$0) {
+  ImActorModelModulesProfile_$1 *self = [ImActorModelModulesProfile_$1 alloc];
+  ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesProfile_$1)

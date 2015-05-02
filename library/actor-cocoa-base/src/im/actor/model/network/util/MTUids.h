@@ -6,29 +6,25 @@
 #ifndef _ImActorModelNetworkUtilMTUids_H_
 #define _ImActorModelNetworkUtilMTUids_H_
 
-@class AMAtomicLongCompat;
-
 #include "J2ObjC_header.h"
 
-@interface ImActorModelNetworkUtilMTUids : NSObject {
-}
+@interface ImActorModelNetworkUtilMTUids : NSObject
 
-+ (jlong)nextId;
+#pragma mark Public
 
 - (instancetype)init;
 
++ (jlong)nextId;
+
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelNetworkUtilMTUids_initialized;
 J2OBJC_STATIC_INIT(ImActorModelNetworkUtilMTUids)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jlong ImActorModelNetworkUtilMTUids_nextId();
 
-FOUNDATION_EXPORT AMAtomicLongCompat *ImActorModelNetworkUtilMTUids_NEXT_ID_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkUtilMTUids, NEXT_ID_, AMAtomicLongCompat *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelNetworkUtilMTUids_init(ImActorModelNetworkUtilMTUids *self);
+
+FOUNDATION_EXPORT ImActorModelNetworkUtilMTUids *new_ImActorModelNetworkUtilMTUids_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkUtilMTUids)
 

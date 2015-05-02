@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleMathEcECMultiplier_H_
 #define _OrgBouncycastleMathEcECMultiplier_H_
 
+#include "J2ObjC_header.h"
+
 @class JavaMathBigInteger;
 @class OrgBouncycastleMathEcECPoint;
-
-#include "J2ObjC_header.h"
 
 @protocol OrgBouncycastleMathEcECMultiplier < NSObject, JavaObject >
 

@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
-@interface ImActorModelNetworkParserRequest : ImActorModelNetworkParserRpcScope {
-}
+@interface ImActorModelNetworkParserRequest : ImActorModelNetworkParserRpcScope
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -18,8 +19,7 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserRequest)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelNetworkParserRequest_init(ImActorModelNetworkParserRequest *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserRequest)
 

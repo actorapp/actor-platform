@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1.java"
 
 #include "IOSClass.h"
@@ -42,27 +43,34 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  BCASN1_init(self);
+  return self;
 }
 
 @end
 
+
+#line 11
 BCASN1Primitive *BCASN1_readObjectWithByteArray_(IOSByteArray *sourceData) {
-  BCASN1_init();
+  BCASN1_initialize();
   
 #line 12
   return BCASN1_readObjectWithByteArray_withInt_withInt_(sourceData, 0, ((IOSByteArray *) nil_chk(sourceData))->size_);
 }
 
+
+#line 15
 BCASN1Primitive *BCASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len) {
-  BCASN1_init();
+  BCASN1_initialize();
   
 #line 16
-  return BCASN1_readObjectWithBSDataInput_([[BSDataInput alloc] initWithByteArray:sourceData withInt:offset withInt:len]);
+  return BCASN1_readObjectWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(sourceData, offset, len));
 }
 
+
+#line 19
 BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
-  BCASN1_init();
+  BCASN1_initialize();
   
 #line 20
   jint tag = [((BSDataInput *) nil_chk(dataInput)) readASN1Tag];
@@ -74,20 +82,20 @@ BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
   if ((tag & BCASN1Primitive_TAG_APPLICATION) != 0) {
     
 #line 29
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   
 #line 32
   if ((tag & BCASN1Primitive_TAG_TAGGED) != 0) {
     
 #line 34
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   
 #line 37
   BSDataInput *objDataInput;
   if (length > 0) {
-    objDataInput = [[BSDataInput alloc] initWithByteArray:[dataInput getData] withInt:[dataInput getOffset] withInt:length];
+    objDataInput = new_BSDataInput_initWithByteArray_withInt_withInt_([dataInput getData], [dataInput getOffset], length);
     [dataInput skipWithInt:length];
   }
   else {
@@ -105,14 +113,24 @@ BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
     case BCASN1Primitive_TAG_OBJECT_IDENTIFIER:
     return BCASN1ObjectIdentifier_readObjectIdentifierWithBSDataInput_(objDataInput);
     case BCASN1Primitive_TAG_NULL:
-    return [[BCASN1Null alloc] init];
+    return new_BCASN1Null_init();
     case BCASN1Primitive_TAG_BIT_STRING:
     return BCASN1BitString_readBitStringWithBSDataInput_(objDataInput);
     case BCASN1Primitive_TAG_OCTET_STRING:
     return BCASN1OctetString_readOctetStringWithBSDataInput_(objDataInput);
     default:
-    @throw [[JavaIoIOException alloc] initWithNSString:JreStrcat("$I", @"Unsupported tag number #", tagNumber)];
+    @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I", @"Unsupported tag number #", tagNumber));
   }
+}
+
+void BCASN1_init(BCASN1 *self) {
+  (void) NSObject_init(self);
+}
+
+BCASN1 *new_BCASN1_init() {
+  BCASN1 *self = [BCASN1 alloc];
+  BCASN1_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(BCASN1)

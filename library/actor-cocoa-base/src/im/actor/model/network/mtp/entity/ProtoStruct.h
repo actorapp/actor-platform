@@ -6,38 +6,42 @@
 #ifndef _MTProtoStruct_H_
 #define _MTProtoStruct_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
 
-@interface MTProtoStruct : MTProtoObject {
-}
+@class BSDataInput;
+@class BSDataOutput;
 
-- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
+@interface MTProtoStruct : MTProtoObject
 
-- (instancetype)init;
-
-- (jbyte)getHeader;
-
-- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
+#pragma mark Public
 
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
+
+#pragma mark Protected
+
+- (instancetype)init;
+
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
+
+- (jbyte)getHeader;
 
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
+
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTProtoStruct)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTProtoStruct_initWithBSDataInput_(MTProtoStruct *self, BSDataInput *stream);
 
-typedef MTProtoStruct ImActorModelNetworkMtpEntityProtoStruct;
+FOUNDATION_EXPORT void MTProtoStruct_init(MTProtoStruct *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(MTProtoStruct)
+
+typedef MTProtoStruct ImActorModelNetworkMtpEntityProtoStruct;
 
 #endif // _MTProtoStruct_H_

@@ -6,64 +6,60 @@
 #ifndef _ImActorModelDroidkitBserUtilArrayUtils_H_
 #define _ImActorModelDroidkitBserUtilArrayUtils_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSIntArray;
 @class IOSLongArray;
 @class IOSObjectArray;
 
-#include "J2ObjC_header.h"
+@interface ImActorModelDroidkitBserUtilArrayUtils : NSObject
 
-#define ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE 73
+#pragma mark Public
 
-@interface ImActorModelDroidkitBserUtilArrayUtils : NSObject {
-}
++ (IOSIntArray *)appendIntWithIntArray:(IOSIntArray *)cur
+                               withInt:(jint)val;
 
-+ (jint)idealByteArraySizeWithInt:(jint)need;
++ (jboolean)containsWithIntArray:(IOSIntArray *)array
+                         withInt:(jint)value;
 
-+ (jint)idealBooleanArraySizeWithInt:(jint)need;
++ (jboolean)containsWithNSObjectArray:(IOSObjectArray *)array
+                               withId:(id)value;
 
-+ (jint)idealShortArraySizeWithInt:(jint)need;
-
-+ (jint)idealCharArraySizeWithInt:(jint)need;
-
-+ (jint)idealIntArraySizeWithInt:(jint)need;
-
-+ (jint)idealFloatArraySizeWithInt:(jint)need;
-
-+ (jint)idealObjectArraySizeWithInt:(jint)need;
-
-+ (jint)idealLongArraySizeWithInt:(jint)need;
++ (jboolean)containsAllWithNSObjectArray:(IOSObjectArray *)array
+                       withNSObjectArray:(IOSObjectArray *)check;
 
 + (jboolean)equalsWithByteArray:(IOSByteArray *)array1
                   withByteArray:(IOSByteArray *)array2
                         withInt:(jint)length;
 
-+ (jboolean)containsWithNSObjectArray:(IOSObjectArray *)array
-                               withId:(id)value;
++ (jint)idealBooleanArraySizeWithInt:(jint)need;
+
++ (jint)idealByteArraySizeWithInt:(jint)need;
+
++ (jint)idealCharArraySizeWithInt:(jint)need;
+
++ (jint)idealFloatArraySizeWithInt:(jint)need;
+
++ (jint)idealIntArraySizeWithInt:(jint)need;
+
++ (jint)idealLongArraySizeWithInt:(jint)need;
+
++ (jint)idealObjectArraySizeWithInt:(jint)need;
+
++ (jint)idealShortArraySizeWithInt:(jint)need;
 
 + (jint)indexOfWithNSObjectArray:(IOSObjectArray *)array
                           withId:(id)value;
 
-+ (jboolean)containsAllWithNSObjectArray:(IOSObjectArray *)array
-                       withNSObjectArray:(IOSObjectArray *)check;
-
-+ (jboolean)containsWithIntArray:(IOSIntArray *)array
-                         withInt:(jint)value;
-
-+ (jlong)totalWithLongArray:(IOSLongArray *)array;
-
-+ (IOSIntArray *)appendIntWithIntArray:(IOSIntArray *)cur
-                               withInt:(jint)val;
-
 + (IOSIntArray *)removeIntWithIntArray:(IOSIntArray *)cur
                                withInt:(jint)val;
 
++ (jlong)totalWithLongArray:(IOSLongArray *)array;
+
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitBserUtilArrayUtils_initialized;
 J2OBJC_STATIC_INIT(ImActorModelDroidkitBserUtilArrayUtils)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jint ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(jint need);
 
@@ -96,17 +92,6 @@ FOUNDATION_EXPORT jlong ImActorModelDroidkitBserUtilArrayUtils_totalWithLongArra
 FOUNDATION_EXPORT IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withInt_(IOSIntArray *cur, jint val);
 
 FOUNDATION_EXPORT IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_removeIntWithIntArray_withInt_(IOSIntArray *cur, jint val);
-
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelDroidkitBserUtilArrayUtils_EMPTY_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilArrayUtils, EMPTY_, IOSObjectArray *)
-J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitBserUtilArrayUtils, EMPTY_, IOSObjectArray *)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilArrayUtils, CACHE_SIZE, jint)
-
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelDroidkitBserUtilArrayUtils_sCache_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilArrayUtils, sCache_, IOSObjectArray *)
-J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitBserUtilArrayUtils, sCache_, IOSObjectArray *)
-CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserUtilArrayUtils)
 

@@ -6,32 +6,35 @@
 #ifndef _ImActorModelApiUpdatesUpdateMessageRead_H_
 #define _ImActorModelApiUpdatesUpdateMessageRead_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Update.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Update.h"
-
 #define ImActorModelApiUpdatesUpdateMessageRead_HEADER 19
 
-@interface ImActorModelApiUpdatesUpdateMessageRead : ImActorModelNetworkParserUpdate {
-}
+@interface ImActorModelApiUpdatesUpdateMessageRead : ImActorModelNetworkParserUpdate
 
-+ (ImActorModelApiUpdatesUpdateMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                    withLong:(jlong)startDate
                                    withLong:(jlong)readDate;
 
-- (instancetype)init;
++ (ImActorModelApiUpdatesUpdateMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiPeer *)getPeer;
 
-- (jlong)getStartDate;
-
 - (jlong)getReadDate;
+
+- (jlong)getStartDate;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -39,18 +42,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateMessageRead)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageRead, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageRead *ImActorModelApiUpdatesUpdateMessageRead_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageRead, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageRead_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiUpdatesUpdateMessageRead *self, ImActorModelApiPeer *peer, jlong startDate, jlong readDate);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageRead *new_ImActorModelApiUpdatesUpdateMessageRead_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiPeer *peer, jlong startDate, jlong readDate) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageRead_init(ImActorModelApiUpdatesUpdateMessageRead *self);
+
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageRead *new_ImActorModelApiUpdatesUpdateMessageRead_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateMessageRead)
 

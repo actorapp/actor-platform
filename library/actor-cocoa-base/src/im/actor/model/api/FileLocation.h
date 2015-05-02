@@ -6,23 +6,24 @@
 #ifndef _ImActorModelApiFileLocation_H_
 #define _ImActorModelApiFileLocation_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiFileLocation : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiFileLocation : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash;
 
-- (instancetype)init;
+- (jlong)getAccessHash;
 
 - (jlong)getFileId;
-
-- (jlong)getAccessHash;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -34,8 +35,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiFileLocation)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiFileLocation_initWithLong_withLong_(ImActorModelApiFileLocation *self, jlong fileId, jlong accessHash);
+
+FOUNDATION_EXPORT ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiFileLocation_init(ImActorModelApiFileLocation *self);
+
+FOUNDATION_EXPORT ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiFileLocation)
 

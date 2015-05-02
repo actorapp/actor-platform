@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ListEngineRecord.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ListEngineRecord.java"
 
 #include "IOSPrimitiveArray.h"
@@ -16,6 +17,7 @@
   NSString *query_;
   IOSByteArray *data_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKListEngineRecord, query_, NSString *)
@@ -31,63 +33,48 @@ J2OBJC_FIELD_SETTER(DKListEngineRecord, data_, IOSByteArray *)
                     withLong:(jlong)order
                 withNSString:(NSString *)query
                withByteArray:(IOSByteArray *)data {
-  if (self = [super init]) {
-    
-#line 14
-    self->key_ = key;
-    
-#line 15
-    self->order_ = order;
-    
-#line 16
-    self->query_ = query;
-    
-#line 17
-    self->data_ = data;
-  }
+  DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(self, key, order, query, data);
   return self;
 }
 
 
 #line 20
 - (jlong)getKey {
-  
-#line 21
   return key_;
 }
 
-
-#line 24
 - (jlong)getOrder {
-  
-#line 25
   return order_;
 }
 
-
-#line 28
 - (NSString *)getQuery {
-  
-#line 29
   return query_;
 }
 
-
-#line 32
 - (IOSByteArray *)getData {
-  
-#line 33
   return data_;
 }
 
-- (void)copyAllFieldsTo:(DKListEngineRecord *)other {
-  [super copyAllFieldsTo:other];
-  other->key_ = key_;
-  other->order_ = order_;
-  other->query_ = query_;
-  other->data_ = data_;
+@end
+
+
+#line 13
+void DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(DKListEngineRecord *self, jlong key, jlong order, NSString *query, IOSByteArray *data) {
+  (void) NSObject_init(self);
+  
+#line 14
+  self->key_ = key;
+  self->order_ = order;
+  self->query_ = query;
+  self->data_ = data;
 }
 
-@end
+
+#line 13
+DKListEngineRecord *new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(jlong key, jlong order, NSString *query, IOSByteArray *data) {
+  DKListEngineRecord *self = [DKListEngineRecord alloc];
+  DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(self, key, order, query, data);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKListEngineRecord)
