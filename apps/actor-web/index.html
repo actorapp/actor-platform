@@ -33,13 +33,15 @@
 </head>
 <body ng-cloak layout="row">
 
-<div class="main" layout="row" ng-controller="mainController as main" >
+<div class="main" layout="row" ng-controller="mainController as main">
 
     <md-sidenav md-component-id="left"
                 class="md-sidenav-left"
                 md-is-locked-open="main.$mdMedia('gt-sm')"
                 ng-class="{'login-image': $state.includes('login')}"
                 flex
+                ng-controller="sidebarController as sidebar"
+                md-swipe-left="sidebar.onSwipeLeft()"
                 layout="column"
                 ui-view="sidebar"></md-sidenav>
 

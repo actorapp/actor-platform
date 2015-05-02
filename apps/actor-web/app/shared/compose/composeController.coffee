@@ -1,12 +1,12 @@
 class ComposeController
-  draft: null
-  message: null
+  draft: ''
+  message: ''
   isEnabled: false
 
-  constructor: (@$rootScope, @actorService) ->
+  constructor: (@$rootScope, @$scope, @actorService) ->
     console.log '[AW]ComposeController constructor'
-    @$rootScope.$on 'openConversation', =>
-      console.log '[AW]ComposeController constructor: openConversation fired.'
+    @$scope.$on 'onConversationOpen', =>
+      console.log '[AW]ComposeController constructor: onConversationOpen fired.'
       @enableCompose()
 
   enableCompose: ->
@@ -24,13 +24,13 @@ class ComposeController
 
   sendMessage: ->
     console.log '[AW]ComposeController sendMessage'
-    console.log '[AW]ComposeController sendMessage: @message:', @message
-    console.log '[AW]ComposeController sendMessage: @draft:', @draft
+    # console.log '[AW]ComposeController sendMessage: @message:', @message
+    # console.log '[AW]ComposeController sendMessage: @draft:', @draft
     @actorService.sendMessage @actorService.currentPeer, @message
-    @actorService.saveDraft peer, ''
-    @message = @draft = null
+    @message = @draft = ''
+    @actorService.saveDraft @actorService.currentPeer, @draft
 
-ComposeController.$inject = ['$rootScope', 'actorService']
+ComposeController.$inject = ['$rootScope', '$scope', 'actorService']
 
 angular
   .module 'actorWeb'
