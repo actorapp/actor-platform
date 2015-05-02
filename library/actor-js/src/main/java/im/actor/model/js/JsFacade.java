@@ -133,20 +133,30 @@ public class JsFacade implements Exportable {
     // Dialogs
 
     public void bindDialogs(AngularListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
         messenger.getDialogsList().subscribe(callback);
     }
 
     public void unbindDialogs(AngularListCallback<JsDialog> callback) {
+        if (callback == null) {
+            return;
+        }
         messenger.getDialogsList().unsubscribe(callback);
     }
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
-        Log.d("JsFacade", "Bind chat: " + peer.getPeerType() + " : " + peer.getPeerId());
+        if (callback == null) {
+            return;
+        }
         messenger.getConversationList(peer.convert()).subscribe(callback);
     }
 
     public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
-        Log.d("JsFacade", "UnBind chat: " + peer.getPeerType() + " : " + peer.getPeerId());
+        if (callback == null) {
+            return;
+        }
         messenger.getConversationList(peer.convert()).subscribe(callback);
     }
 
@@ -156,12 +166,17 @@ public class JsFacade implements Exportable {
         return messenger.getUser(uid).get();
     }
 
-    public void bindUser(int uid, AngularValueCallback
-            callback) {
+    public void bindUser(int uid, AngularValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
         messenger.getUser(uid).subscribe(callback);
     }
 
     public void unbindUser(int uid, AngularValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
         messenger.getUser(uid).unsubscribe(callback);
     }
 
@@ -172,10 +187,16 @@ public class JsFacade implements Exportable {
     }
 
     public void bindGroup(int gid, AngularValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
         messenger.getGroup(gid).subscribe(callback);
     }
 
     public void unbindGroup(int gid, AngularValueCallback callback) {
+        if (callback == null) {
+            return;
+        }
         messenger.getGroup(gid).unsubscribe(callback);
     }
 
