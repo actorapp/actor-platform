@@ -2,6 +2,7 @@ package im.actor.server.dashboard.controllers.utils
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
+import com.github.tminglei.slickpg.LTree
 import org.apache.commons.codec.digest.DigestUtils
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
@@ -10,7 +11,7 @@ import play.api.libs.json.Reads._
 import im.actor.server.dashboard.controllers.Lang2UserAndPhone
 import im.actor.server.models
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.{ ACLUtils, PhoneNumber }
+import im.actor.server.util.{ ACLUtils, IdUtils, PhoneNumber }
 
 object JsonConstructors {
 
@@ -36,6 +37,11 @@ object JsonConstructors {
       case Some((user, userPhone)) ⇒ (Some(user), Some(userPhone))
       case None                    ⇒ (None, None)
     }
+  }
+
+  def makeDepartment(name: String, struct: String): models.Department = {
+    val rnd = ThreadLocalRandom.current()
+    models.Department(IdUtils.nextIntId(rnd), name, LTree(struct))
   }
 
 }
