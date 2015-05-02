@@ -11,7 +11,7 @@ class MainController
 
   openSidebar: ->
     console.log '[AW]MainController openSidebar'
-    @$mdSidenav('left').toggle()
+    @$mdSidenav('left').open()
 
 MainController.$inject = ['$mdSidenav', '$mdMedia', 'actorService']
 
