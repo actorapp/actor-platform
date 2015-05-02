@@ -29,8 +29,8 @@ Following requirements are set for sources:
 * **Homebrew package manager**: http://brew.sh/ - Required for installing all required dependencies
 * **j2ObjC v0.9.6.1**: [Download release on GitHub](https://github.com/google/j2objc/releases) - Used for conversion of actor-common to Objective-C
 * **NodeJS package manager**: ```brew install npm``` - Used for Web/Electron apps
-* **Bower**: ```npm install bower``` - Used for Web/Electron apps
-* **Gulp**: ```npm install --global gulp``` - Build system for Web/Electorn app
+* **Bower**: ```npm install -g bower``` - Used for Web/Electron apps
+* **Gulp**: ```npm install -g gulp``` - Build system for Web/Electorn app
 * **JDK**: [Download from Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - Required for building java code
 * **Android SDK**: [Download release](http://developer.android.com/sdk/installing/index.html?pkg=tools) - Used for building Android and Library code
 * **Valid Release Android Key**: Required for building android release app
