@@ -3,42 +3,19 @@ package im.actor.server.dashboard.controllers
 import scala.concurrent.Future
 
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.mvc.{ BodyParsers, Controller }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.dashboard.controllers.utils.JsonConstructors._
 import im.actor.server.dashboard.controllers.utils._
+import im.actor.server.dashboard.controllers.utils.json.UsersJsonImplicits._
 import im.actor.server.{ models, persist }
 
 class Users extends Controller {
 
   protected val db = Db.db
-
-  implicit val userPhoneWrites = new Writes[models.UserPhone] {
-    def writes(phone: models.UserPhone): JsValue = Json.obj(
-      "id" → phone.id,
-      "number" → phone.number
-    )
-  }
-
-  implicit val userWrites = new Writes[models.User] {
-    def writes(user: models.User): JsValue = Json.obj(
-      "id" → user.id,
-      "name" → user.name,
-      "sex" → user.sex.toInt
-    )
-  }
-
-  implicit val userReads: Reads[Lang2UserAndPhone] = (
-    (JsPath \ "name").read[String](length) and
-    (JsPath \ "phone").read[String](length)
-  )(makeUserAndPhone _)
-
-  implicit val userUpdateReads: Reads[Option[String]] = (JsPath \ "name").readNullable[String](length)
 
   def get(id: Int) = AuthAction.async { request ⇒
     db.run {

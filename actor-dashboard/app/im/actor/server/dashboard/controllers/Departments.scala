@@ -2,38 +2,20 @@ package im.actor.server.dashboard.controllers
 
 import scala.concurrent.Future
 
-import com.github.tminglei.slickpg.LTree
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc.{ BodyParsers, Controller }
 import slick.dbio.DBIO
 
 import im.actor.server.dashboard.controllers.utils.DepartmentUtils._
-import im.actor.server.dashboard.controllers.utils.JsonConstructors._
-import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db, NestedDept }
+import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db }
+import im.actor.server.dashboard.controllers.utils.json.DepartmentsJsonImplicits._
 import im.actor.server.{ models, persist }
 
 class Departments extends Controller {
 
   protected val db = Db.db
 
-  implicit val ltreeWrites = new Writes[LTree] {
-    def writes(tree: LTree) = JsNumber(tree.value.mkString.toInt)
-  }
-
-  implicit val departmentWrites: Writes[NestedDept] = (
-    (__ \ "id").write[LTree] and
-    (__ \ "title").write[String] and
-    (__ \ "items").lazyWrite(Writes.traversableWrites[NestedDept](departmentWrites))
-  )(unlift(NestedDept.unapply))
-
-  implicit val departmentReads: Reads[models.Department] = (
-    (JsPath \ "title").read[String](length) and
-    (JsPath \ "struct").read[String](length)
-  )(makeDepartment _)
-
-  implicit val deptUpdateReads: Reads[Option[String]] = (JsPath \ "title").readNullable[String](length)
   //TODO: users, but no phones
   def users(struct: String, page: Int, perPage: Int) = AuthAction.async {
     db.run {
