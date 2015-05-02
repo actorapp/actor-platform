@@ -37,8 +37,8 @@ public class JsMessenger extends Messenger {
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
-        this.angularModule = new AngularModule(this, modules);
-        this.angularFilesModule = new AngularFilesModule(modules);
+        angularFilesModule = new AngularFilesModule(modules);
+        angularModule = new AngularModule(this, angularFilesModule, modules);
     }
 
     public AngularList<JsDialog, Dialog> getDialogsList() {

@@ -75,6 +75,10 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         notifySubscribers();
     }
 
+    public ArrayList<V> getRawItems() {
+        return values;
+    }
+
     @Override
     public void onItemAddedOrUpdated(V item) {
         try {
