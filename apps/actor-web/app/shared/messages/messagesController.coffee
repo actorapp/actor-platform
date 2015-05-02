@@ -1,11 +1,11 @@
 class MessagesController
   list: null
 
-  constructor: (@$rootScope, @$timeout, @actorService) ->
+  constructor: (@$rootScope, @$scope, @$timeout, @actorService) ->
     console.log '[AW]MessagesController constructor'
-    @$rootScope.$on 'openConversation', (event, peer) =>
-      console.log '[AW]MessagesController constructor: openConversation fired.'
-      @bindChat(peer)
+    @$scope.$on 'onConversationOpen', (event, peer) =>
+      console.log '[AW]MessagesController constructor: onConversationOpen fired.'
+      @bindChat peer
 
   bindChat: (peer) ->
     console.log '[AW]MessagesController getMessages'
@@ -20,7 +20,7 @@ class MessagesController
       @$rootScope.$broadcast 'renderMessages'
 
 
-MessagesController.$inject = ['$rootScope', '$timeout', 'actorService']
+MessagesController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
 
 angular
   .module 'actorWeb'

@@ -37,22 +37,19 @@ class ActorService
 
   setLoggedIn: () =>
     console.log '[AW]ActorService setLoggedIn'
-    @isLoggedIn = true
-    @$rootScope.isLoggedIn = true
-    @$sessionStorage.isLoggedIn = true
+    @isLoggedIn = @$rootScope.isLoggedIn = @$sessionStorage.isLoggedIn = true
     @$rootScope.$state.go 'home'
     @$rootScope.$broadcast 'actorLoggedIn'
 
   setLoggedOut: () =>
     console.log '[AW]ActorService setLoggedOut'
-    @isLoggedIn = false
-    @$rootScope.isLoggedIn = false
-    @$sessionStorage.isLoggedIn = false
+    @isLoggedIn = @$rootScope.isLoggedIn = @$sessionStorage.isLoggedIn = false
     @$rootScope.$state.go 'login'
     @$rootScope.$broadcast 'actorLoggedOut'
 
   requestSms: (phone) ->
     console.log '[AW]ActorService requestSms'
+    console.log '[AW]ActorService requestSms: phone:', phone
     @messenger.requestSms phone.toString(), (state) ->
       console.log '[AW]ActorService requestSms: state:', state
     , (tag, message, canTryAgain, state) ->
@@ -73,18 +70,18 @@ class ActorService
       console.log '[AW]ActorService getDialogs: items', items
       callback items
 
-  closeConversation: (peer) ->
+  onConversationClosed: (peer) ->
     console.log '[AW]ActorService closeConversation'
     console.log '[AW]ActorService closeConversation: peer:', peer
     @messenger.onConversationClosed peer
-    @$rootScope.$broadcast 'closeConversation', peer
+    @$rootScope.$broadcast 'onConversationClosed', peer
 
-  openConversation: (peer) ->
+  onConversationOpen: (peer) ->
     console.log '[AW]ActorService openConversation'
     console.log '[AW]ActorService openConversation: peer:', peer
     @setCurrentPeer peer
     @messenger.onConversationOpen peer
-    @$rootScope.$broadcast 'openConversation', peer
+    @$rootScope.$broadcast 'onConversationOpen', peer
 
   bindChat: (peer, callback) ->
     console.log '[AW]ActorService bindChat'
@@ -111,9 +108,9 @@ class ActorService
     # console.log '[AW]ActorService sendMessage: peer:', peer
     @messenger.sendMessage peer, message
 
-  getAuthPhone: () ->
-    console.log '[AW]ActorService getAuthPhone'
-    @messenger.getAuthPhone()
+#  getAuthPhone: () ->
+#    console.log '[AW]ActorService getAuthPhone'
+#    @messenger.getAuthPhone()
 
   loadDraft: (peer) ->
     console.log '[AW]ActorService loadDraft'
