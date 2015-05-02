@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.HashMap;
@@ -12,9 +16,6 @@ import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.MVVMEngine;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class DisplayLists extends BaseModule {
     private static final int LOAD_GAP = 5;
     private static final int LOAD_PAGE = 20;
@@ -22,6 +23,8 @@ public class DisplayLists extends BaseModule {
     private BindedDisplayList<Dialog> dialogGlobalList;
 
     private BindedDisplayList<Contact> contactsGlobalList;
+
+    private HashMap<Peer, BindedDisplayList<Message>> chatMediaGlobalLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
     private HashMap<Peer, BindedDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
@@ -57,6 +60,21 @@ public class DisplayLists extends BaseModule {
         }
 
         return chatsGlobalLists.get(peer);
+    }
+
+    public BindedDisplayList<Message> getMessagesMediaList(Peer peer) {
+        MVVMEngine.checkMainThread();
+
+        if (!chatMediaGlobalLists.containsKey(peer)) {
+            chatMediaGlobalLists.put(peer, buildMediaList(peer, true));
+        }
+
+        return chatMediaGlobalLists.get(peer);
+    }
+
+    public int getMediaCount(Peer peer) {
+        ListEngine<Message> mediaEngine = modules().getMessagesModule().getMediaEngine(peer);
+        return mediaEngine.getCount();
     }
 
     public BindedDisplayList<Dialog> buildNewDialogsList(boolean isGlobalList) {
@@ -134,7 +152,7 @@ public class DisplayLists extends BaseModule {
         return chatList;
     }
 
-    public BindedDisplayList<Message> buildMediaList(final Peer peer) {
+    public BindedDisplayList<Message> buildMediaList(final Peer peer, boolean isGlobalList) {
         MVVMEngine.checkMainThread();
 
         ListEngine<Message> mediaEngine = modules().getMessagesModule().getMediaEngine(peer);
@@ -143,7 +161,7 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Message> mediaList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) mediaEngine,
-                false, LOAD_PAGE, LOAD_GAP, null);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
         mediaList.initTop(false);
         return mediaList;
     }

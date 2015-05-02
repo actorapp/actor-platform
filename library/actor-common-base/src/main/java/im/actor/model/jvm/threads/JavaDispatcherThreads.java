@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm.threads;
 
 import im.actor.model.droidkit.actors.ThreadPriority;
@@ -13,8 +17,6 @@ import static im.actor.model.droidkit.actors.ActorTime.currentTime;
 /**
  * ThreadPoolDispatcher is used for dispatching messages on it's own threads.
  * Class is completely thread-safe.
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class JavaDispatcherThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDispatcher<T, Q> {
 

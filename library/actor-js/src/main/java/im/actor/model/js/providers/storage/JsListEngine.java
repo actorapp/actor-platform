@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.storage;
 
 import im.actor.model.droidkit.bser.Bser;
@@ -14,9 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsListEngine<T extends BserObject & ListEngineItem> implements ListEngine<T> {
 
     private JsListStorage storage;

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages.entity;
 
 import java.util.ArrayList;
@@ -42,9 +46,6 @@ import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.entity.content.VideoContent;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class EntityConverter {
 
     public static MessageState convert(im.actor.model.api.MessageState state) {

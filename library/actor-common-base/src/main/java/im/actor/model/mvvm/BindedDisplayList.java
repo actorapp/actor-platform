@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.mvvm;
 
 import java.util.Collections;
@@ -12,9 +16,6 @@ import im.actor.model.droidkit.engine.ListEngineDisplayLoadCallback;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.log.Log;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
 public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T> {
 
     private static final String TAG = "BindedDisplayList";

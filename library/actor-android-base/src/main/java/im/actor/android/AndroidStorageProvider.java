@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.content.Context;
@@ -11,9 +15,6 @@ import im.actor.model.droidkit.engine.ListStorage;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.storage.BaseAsyncStorageProvider;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
 public class AndroidStorageProvider extends BaseAsyncStorageProvider {
 
     private static final String DB = "ACTOR";

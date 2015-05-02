@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model;
 
 import im.actor.model.droidkit.actors.ActorSystem;
@@ -17,14 +21,14 @@ public interface ThreadingProvider {
      *
      * @return time in ms
      */
-    public long getActorTime();
+    long getActorTime();
 
     /**
      * Current unix-time of system
      *
      * @return time in ms
      */
-    public long getCurrentTime();
+    long getCurrentTime();
 
     /**
      * Synchronized time by NTP. Used for more accurate timing of messages.
@@ -32,14 +36,14 @@ public interface ThreadingProvider {
      *
      * @return time in ms
      */
-    public long getSyncedCurrentTime();
+    long getSyncedCurrentTime();
 
     /**
      * Number of computing cores in environment
      *
      * @return cores count
      */
-    public int getCoresCount();
+    int getCoresCount();
 
     /**
      * Creating compatable AtomicInteger object
@@ -47,7 +51,7 @@ public interface ThreadingProvider {
      * @param value initial value of AtomicInteger
      * @return the AtomicInteger
      */
-    public AtomicIntegerCompat createAtomicInt(int value);
+    AtomicIntegerCompat createAtomicInt(int value);
 
     /**
      * Creating compatable AtomicLong object
@@ -55,7 +59,7 @@ public interface ThreadingProvider {
      * @param value initial value of AtomicLong
      * @return the AtomicLong
      */
-    public AtomicLongCompat createAtomicLong(long value);
+    AtomicLongCompat createAtomicLong(long value);
 
     /**
      * Creating compatable ThreadLocal object
@@ -63,7 +67,7 @@ public interface ThreadingProvider {
      * @param <T> type of container
      * @return the ThreadLocal object
      */
-    public <T> ThreadLocalCompat<T> createThreadLocal();
+    <T> ThreadLocalCompat<T> createThreadLocal();
 
     /**
      * Creating of Actor Dispatcher for dispatching of actor's Envelopes
@@ -74,7 +78,7 @@ public interface ThreadingProvider {
      * @param actorSystem  ActorSystem for dispatcher
      * @return created dispatcher
      */
-    public ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem);
+    ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem);
 
     /**
      * Creating dispatcher with default configuration
@@ -84,5 +88,5 @@ public interface ThreadingProvider {
      * @param system   ActorSystem of dispatcher
      * @return created dispatcher
      */
-    public ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem system);
+    ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem system);
 }

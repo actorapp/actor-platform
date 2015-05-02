@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
@@ -11,9 +15,6 @@ import static im.actor.model.droidkit.bser.WireTypes.TYPE_64BIT;
 import static im.actor.model.droidkit.bser.WireTypes.TYPE_LENGTH_DELIMITED;
 import static im.actor.model.droidkit.bser.WireTypes.TYPE_VARINT;
 
-/**
- * Created by ex3ndr on 17.10.14.
- */
 public final class BserParser {
     public static SparseArray<Object> deserialize(DataInput is) throws IOException {
         SparseArray<Object> hashMap = new SparseArray<Object>();

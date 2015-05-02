@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto;
 
 import im.actor.model.CryptoProvider;
 
-/**
- * Created by ex3ndr on 25.02.15.
- */
 public class CryptoUtils {
 
     final protected static char[] hexArray = "0123456789abcdef".toCharArray();

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates;
 
 import java.util.ArrayList;
@@ -29,9 +33,6 @@ import im.actor.model.modules.utils.RandomUtils;
 
 import static im.actor.model.modules.messages.entity.EntityConverter.convert;
 
-/**
- * Created by ex3ndr on 09.02.15.
- */
 public class MessagesProcessor extends BaseModule {
     public MessagesProcessor(Modules messenger) {
         super(messenger);

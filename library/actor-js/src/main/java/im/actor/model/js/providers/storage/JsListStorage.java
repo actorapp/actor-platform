@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.storage;
 
 import com.google.gwt.storage.client.Storage;
@@ -15,9 +19,6 @@ import java.util.List;
 import static im.actor.model.util.Base64Utils.fromBase64;
 import static im.actor.model.util.Base64Utils.toBase64;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsListStorage implements ListStorage {
 
     private final Storage storage;

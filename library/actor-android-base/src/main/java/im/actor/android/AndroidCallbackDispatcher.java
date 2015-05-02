@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.os.Handler;
@@ -5,9 +9,6 @@ import android.os.HandlerThread;
 
 import im.actor.model.DispatcherProvider;
 
-/**
- * Created by ex3ndr on 24.03.15.
- */
 public class AndroidCallbackDispatcher implements DispatcherProvider {
 
     private Handler handler;

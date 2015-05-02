@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -7,9 +11,6 @@ import im.actor.model.modules.push.PushRegisterActor;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 02.04.15.
- */
 public class Pushes extends BaseModule {
     private ActorRef pushActor;
 

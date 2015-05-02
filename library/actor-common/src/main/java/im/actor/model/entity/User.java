@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity;
 
 import java.io.IOException;
@@ -10,9 +14,6 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class User extends BserObject implements KeyValueItem {
 
     public static User fromBytes(byte[] data) throws IOException {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.viewmodel;
 
 /**
@@ -7,17 +11,17 @@ public interface UploadFileCallback {
     /**
      * On File not uploading
      */
-    public void onNotUploading();
+    void onNotUploading();
 
     /**
      * On File upload in progress
      *
      * @param progress progress value in [0..1]
      */
-    public void onUploading(float progress);
+    void onUploading(float progress);
 
     /**
      * On file uploaded
      */
-    public void onUploaded();
+    void onUploaded();
 }

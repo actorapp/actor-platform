@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js;
 
 import java.util.HashMap;
@@ -24,9 +28,6 @@ import im.actor.model.js.entity.Placeholders;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsMessenger extends Messenger {
 
     private HashMap<String, String> fileUrls;

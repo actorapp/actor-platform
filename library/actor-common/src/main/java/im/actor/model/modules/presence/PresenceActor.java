@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.presence;
 
 import java.util.ArrayList;
@@ -27,9 +31,6 @@ import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 15.02.15.
- */
 @Verified
 public class PresenceActor extends ModuleActor {
 

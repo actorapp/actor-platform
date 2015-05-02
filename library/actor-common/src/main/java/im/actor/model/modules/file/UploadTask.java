@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.file;
 
 import im.actor.model.FileSystemProvider;
@@ -22,9 +26,6 @@ import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.util.CRC32;
 
-/**
- * Created by ex3ndr on 03.03.15.
- */
 public class UploadTask extends ModuleActor {
 
     private static final int SIM_BLOCKS_COUNT = 4;

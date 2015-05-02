@@ -1,15 +1,16 @@
-package im.actor.model.mvvm;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import im.actor.model.droidkit.engine.ListEngineItem;
+package im.actor.model.mvvm;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
+import im.actor.model.droidkit.engine.ListEngineItem;
+
 class DisplayModifications {
 
     public static <T extends ListEngineItem> DisplayList.Modification<T> addOrUpdate(final T item) {

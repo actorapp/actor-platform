@@ -1,8 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
-/**
- * Created by ex3ndr on 17.10.14.
- */
 class WireTypes {
     public static final int TYPE_VARINT = 0;
     public static final int TYPE_32BIT = 5;

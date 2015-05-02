@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.List;
@@ -13,9 +17,6 @@ import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 02.04.15.
- */
 public class Security extends BaseModule {
     public Security(Modules modules) {
         super(modules);
