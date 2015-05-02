@@ -115,6 +115,8 @@ public class Auth extends BaseModule {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
+                modules().getAnalytics().trackCodeRequest(phone);
+                
                 request(new RequestSendAuthCode(phone, apiConfiguration.getAppId(),
                                 apiConfiguration.getAppKey()),
                         new RpcCallback<ResponseSendAuthCode>() {
