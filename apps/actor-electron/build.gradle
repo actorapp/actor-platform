@@ -85,8 +85,8 @@ task buildOSXApp (dependsOn: ['prepareBuild']) {
         }
 
         exec {
-            workingDir "${buildDir}/dist/"
-            commandLine 'zip', '--symlinks', '-r', 'Actor-Mac.zip', "${buildDir}/electron/Actor.app"
+            workingDir "${buildDir}/electron/"
+            commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Mac.zip', "Actor.app"
         }
     }
 }
@@ -103,13 +103,13 @@ task buildLinuxApp (dependsOn: ['prepareBuild']) {
         }
 
         exec {
-            workingDir "${buildDir}/dist/"
-            commandLine 'zip', '--symlinks', '-r', 'Actor-Linux-ia32.zip', "${buildDir}/electron/Actor-linux-ia32"
+            workingDir "${buildDir}/electron/"
+            commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Linux-ia32.zip', "Actor-linux-ia32"
         }
 
         exec {
-            workingDir "${buildDir}/dist/"
-            commandLine 'zip', '--symlinks', '-r', 'Actor-Linux-x64.zip', "${buildDir}/electron/Actor-linux-x64"
+            workingDir "${buildDir}/electron/"
+            commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Linux-x64.zip', "Actor-linux-x64"
         }
     }
 }
@@ -127,12 +127,12 @@ task buildWindowsApp (dependsOn: ['prepareBuild']) {
 
         exec {
             workingDir "${buildDir}/dist/"
-            commandLine 'zip', '--symlinks', '-r', 'Actor-Windows-ia32.zip', "${buildDir}/electron/Actor-windows-ia32"
+            commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Windows-ia32.zip', "Actor-windows-ia32"
         }
 
         exec {
             workingDir "${buildDir}/dist/"
-            commandLine 'zip', '--symlinks', '-r', 'Actor-Windows-x64.zip', "${buildDir}/electron/Actor-windows-x64"
+            commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Windows-x64.zip', "Actor-windows-x64"
         }
     }
 }
