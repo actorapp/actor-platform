@@ -17,10 +17,17 @@ import im.actor.model.AnalyticsProvider;
 public class AndroidMixpanelAnalytics implements AnalyticsProvider {
 
     private MixpanelAPI mixpanel;
-    private String deviceId;
 
     public AndroidMixpanelAnalytics(Context context, String token) {
         this.mixpanel = MixpanelAPI.getInstance(context, token);
+
+        try {
+            JSONObject deviceProperties = new JSONObject();
+            deviceProperties.put("app", "android");
+            mixpanel.registerSuperProperties(deviceProperties);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveDeviceId(String deviceId) {
@@ -51,8 +58,8 @@ public class AndroidMixpanelAnalytics implements AnalyticsProvider {
     @Override
     public void onLoggedInPerformed(String deviceId, int uid, long phoneNumber, String userName) {
         saveDeviceId(deviceId);
-        mixpanel.identify("uid:" + uid);
         mixpanel.alias("uid:" + uid, "device:" + deviceId);
+        mixpanel.identify("uid:" + uid);
         mixpanel.getPeople().identify("uid:" + uid);
         mixpanel.getPeople().set("PhoneNumber", phoneNumber);
         mixpanel.getPeople().set("Name", userName);
