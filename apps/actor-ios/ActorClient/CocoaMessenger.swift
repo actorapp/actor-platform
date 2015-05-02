@@ -20,7 +20,8 @@ get{
         // Providers
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
-        builder.setNetworkProvider(SwiftCocoaNetworkProvider())
+        builder.setNetworkProvider(AMManagedNetworkProvider(AMAsyncConnectionFactory: TcpConnectionFactory()))
+        builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(HttpProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
         builder.setStorageProvider(CocoaStorage(dbPath: dbPath))
         builder.setMainThreadProvider(CocoaMainThreadProvider())
@@ -31,9 +32,12 @@ get{
         builder.setDispatcherProvider(DispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setEnableNetworkLogging(true)
+        builder.setEnableFilesLoggingWithBoolean(true)
         
         // Connection
-        builder.addEndpoint(NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String);
+        var url = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
+        NSLog("url: \(url)")
+        builder.addEndpoint(url);
         
         var deviceKey = NSUUID().UUIDString;
         

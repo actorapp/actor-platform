@@ -6,75 +6,66 @@
 #ifndef _MTManagerActor_H_
 #define _MTManagerActor_H_
 
-@class AMAtomicIntegerCompat;
-@class AMEndpoints;
-@class AMExponentialBackoff;
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+
 @class DKActorRef;
 @class IOSByteArray;
 @class MTMTProto;
-@protocol AMConnection;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/Actor.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/network/ConnectionCallback.h"
-#include "im/actor/model/network/CreateConnectionCallback.h"
+@interface MTManagerActor : DKActor
 
-@interface MTManagerActor : DKActor {
-}
-
-+ (DKActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto;
+#pragma mark Public
 
 - (instancetype)initWithMTMTProto:(MTMTProto *)mtProto;
 
-- (void)preStart;
++ (DKActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto;
 
 - (void)onReceiveWithId:(id)message;
 
+- (void)preStart;
+
 @end
 
-FOUNDATION_EXPORT BOOL MTManagerActor_initialized;
 J2OBJC_STATIC_INIT(MTManagerActor)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT DKActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto);
 
-FOUNDATION_EXPORT NSString *MTManagerActor_TAG_;
-J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, TAG_, NSString *)
+FOUNDATION_EXPORT void MTManagerActor_initWithMTMTProto_(MTManagerActor *self, MTMTProto *mtProto);
 
-FOUNDATION_EXPORT AMAtomicIntegerCompat *MTManagerActor_NEXT_CONNECTION_;
-J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, NEXT_CONNECTION_, AMAtomicIntegerCompat *)
-CF_EXTERN_C_END
-
-typedef MTManagerActor ImActorModelNetworkMtpActorsManagerActor;
+FOUNDATION_EXPORT MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor)
 
-@interface MTManagerActor_OutMessage : NSObject {
-}
+typedef MTManagerActor ImActorModelNetworkMtpActorsManagerActor;
+
+@interface MTManagerActor_OutMessage : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)message
                           withInt:(jint)offset
                           withInt:(jint)len;
 
-- (jint)getOffset;
-
 - (jint)getLen;
 
 - (IOSByteArray *)getMessage;
+
+- (jint)getOffset;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_OutMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTManagerActor_OutMessage_initWithByteArray_withInt_withInt_(MTManagerActor_OutMessage *self, IOSByteArray *message, jint offset, jint len);
+
+FOUNDATION_EXPORT MTManagerActor_OutMessage *new_MTManagerActor_OutMessage_initWithByteArray_withInt_withInt_(IOSByteArray *message, jint offset, jint len) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_OutMessage)
 
-@interface MTManagerActor_InMessage : NSObject {
-}
+@interface MTManagerActor_InMessage : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data
                           withInt:(jint)offset
@@ -82,21 +73,23 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_OutMessage)
 
 - (IOSByteArray *)getData;
 
-- (jint)getOffset;
-
 - (jint)getLen;
+
+- (jint)getOffset;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_InMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTManagerActor_InMessage_initWithByteArray_withInt_withInt_(MTManagerActor_InMessage *self, IOSByteArray *data, jint offset, jint len);
+
+FOUNDATION_EXPORT MTManagerActor_InMessage *new_MTManagerActor_InMessage_initWithByteArray_withInt_withInt_(IOSByteArray *data, jint offset, jint len) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_InMessage)
 
-@interface MTManagerActor_NetworkChanged : NSObject {
-}
+@interface MTManagerActor_NetworkChanged : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -104,124 +97,10 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_InMessage)
 
 J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_NetworkChanged)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTManagerActor_NetworkChanged_init(MTManagerActor_NetworkChanged *self);
+
+FOUNDATION_EXPORT MTManagerActor_NetworkChanged *new_MTManagerActor_NetworkChanged_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_NetworkChanged)
-
-@interface MTManagerActor_PerformConnectionCheck : NSObject {
-}
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_PerformConnectionCheck)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_PerformConnectionCheck)
-
-@interface MTManagerActor_ConnectionDie : NSObject {
-}
-
-- (instancetype)initWithInt:(jint)connectionId;
-
-- (jint)getConnectionId;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_ConnectionDie)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_ConnectionDie)
-
-@interface MTManagerActor_ConnectionCreateFailure : NSObject {
-}
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_ConnectionCreateFailure)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_ConnectionCreateFailure)
-
-@interface MTManagerActor_ConnectionCreated : NSObject {
-}
-
-- (instancetype)initWithInt:(jint)connectionId
-           withAMConnection:(id<AMConnection>)connection;
-
-- (jint)getConnectionId;
-
-- (id<AMConnection>)getConnection;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_ConnectionCreated)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_ConnectionCreated)
-
-@interface MTManagerActor_$1 : NSObject < DKActorCreator > {
-}
-
-- (MTManagerActor *)create;
-
-- (instancetype)initWithMTMTProto:(MTMTProto *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$1)
-
-@interface MTManagerActor_$2 : NSObject < AMConnectionCallback > {
-}
-
-- (void)onConnectionRedirect:(NSString *)host withPort:(jint)port withTimeout:(jint)timeout;
-
-- (void)onMessage:(IOSByteArray *)data withOffset:(jint)offset withLen:(jint)len;
-
-- (void)onConnectionDie;
-
-- (instancetype)initWithMTManagerActor:(MTManagerActor *)outer$
-                               withInt:(jint)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$2)
-
-@interface MTManagerActor_$3 : NSObject < AMCreateConnectionCallback > {
-}
-
-- (void)onConnectionCreated:(id<AMConnection>)connection;
-
-- (void)onConnectionCreateError;
-
-- (instancetype)initWithMTManagerActor:(MTManagerActor *)outer$
-                               withInt:(jint)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$3)
 
 #endif // _MTManagerActor_H_

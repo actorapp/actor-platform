@@ -6,13 +6,16 @@
 #ifndef _AMOutputFile_H_
 #define _AMOutputFile_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol AMOutputFile < NSObject, JavaObject >
 
-- (jboolean)writeWithOffset:(jint)fileOffset withData:(IOSByteArray *)data withDataOffset:(jint)dataOffset withDataLen:(jint)dataLen;
+- (jboolean)writeWithOffset:(jint)fileOffset
+                   withData:(IOSByteArray *)data
+             withDataOffset:(jint)dataOffset
+                withDataLen:(jint)dataLen;
 
 - (jboolean)close;
 
@@ -20,8 +23,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMOutputFile)
 
-#define ImActorModelFilesOutputFile AMOutputFile
-
 J2OBJC_TYPE_LITERAL_HEADER(AMOutputFile)
+
+#define ImActorModelFilesOutputFile AMOutputFile
 
 #endif // _AMOutputFile_H_

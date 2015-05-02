@@ -60,7 +60,7 @@ class AAAvatarView: UIImageView {
         }
     }
     
-    init(frameSize: Int, type: AAAvatarType, placeholderImage: UIImage) {
+    init(frameSize: Int, type: AAAvatarType, placeholderImage: UIImage?) {
         self.frameSize = frameSize
         self.avatarType = type
         self.placeholderImage = placeholderImage

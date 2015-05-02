@@ -6,6 +6,8 @@
 #ifndef _OrgBouncycastleUtilArrays_H_
 #define _OrgBouncycastleUtilArrays_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSBooleanArray;
 @class IOSByteArray;
 @class IOSCharArray;
@@ -14,22 +16,27 @@
 @class IOSObjectArray;
 @class IOSShortArray;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleUtilArrays : NSObject
 
-@interface OrgBouncycastleUtilArrays : NSObject {
-}
+#pragma mark Public
+
++ (IOSByteArray *)appendWithByteArray:(IOSByteArray *)a
+                             withByte:(jbyte)b;
+
++ (IOSIntArray *)appendWithIntArray:(IOSIntArray *)a
+                            withInt:(jint)b;
+
++ (IOSShortArray *)appendWithShortArray:(IOSShortArray *)a
+                              withShort:(jshort)b;
 
 + (jboolean)areEqualWithBooleanArray:(IOSBooleanArray *)a
                     withBooleanArray:(IOSBooleanArray *)b;
 
-+ (jboolean)areEqualWithCharArray:(IOSCharArray *)a
-                    withCharArray:(IOSCharArray *)b;
-
 + (jboolean)areEqualWithByteArray:(IOSByteArray *)a
                     withByteArray:(IOSByteArray *)b;
 
-+ (jboolean)constantTimeAreEqualWithByteArray:(IOSByteArray *)a
-                                withByteArray:(IOSByteArray *)b;
++ (jboolean)areEqualWithCharArray:(IOSCharArray *)a
+                    withCharArray:(IOSCharArray *)b;
 
 + (jboolean)areEqualWithIntArray:(IOSIntArray *)a
                     withIntArray:(IOSIntArray *)b;
@@ -40,50 +47,7 @@
 + (jboolean)areEqualWithNSObjectArray:(IOSObjectArray *)a
                     withNSObjectArray:(IOSObjectArray *)b;
 
-+ (jboolean)containsWithShortArray:(IOSShortArray *)a
-                         withShort:(jshort)n;
-
-+ (jboolean)containsWithIntArray:(IOSIntArray *)a
-                         withInt:(jint)n;
-
-+ (void)fillWithByteArray:(IOSByteArray *)array
-                 withByte:(jbyte)value;
-
-+ (void)fillWithCharArray:(IOSCharArray *)array
-                 withChar:(jchar)value;
-
-+ (void)fillWithLongArray:(IOSLongArray *)array
-                 withLong:(jlong)value;
-
-+ (void)fillWithShortArray:(IOSShortArray *)array
-                 withShort:(jshort)value;
-
-+ (void)fillWithIntArray:(IOSIntArray *)array
-                 withInt:(jint)value;
-
-+ (jint)hashCodeWithByteArray:(IOSByteArray *)data;
-
-+ (jint)hashCodeWithByteArray:(IOSByteArray *)data
-                      withInt:(jint)off
-                      withInt:(jint)len;
-
-+ (jint)hashCodeWithCharArray:(IOSCharArray *)data;
-
-+ (jint)hashCodeWithIntArray2:(IOSObjectArray *)ints;
-
-+ (jint)hashCodeWithIntArray:(IOSIntArray *)data;
-
-+ (jint)hashCodeWithIntArray:(IOSIntArray *)data
-                     withInt:(jint)off
-                     withInt:(jint)len;
-
-+ (jint)hashCodeWithShortArray3:(IOSObjectArray *)shorts;
-
-+ (jint)hashCodeWithShortArray2:(IOSObjectArray *)shorts;
-
-+ (jint)hashCodeWithShortArray:(IOSShortArray *)data;
-
-+ (jint)hashCodeWithNSObjectArray:(IOSObjectArray *)data;
++ (IOSObjectArray *)cloneWithJavaMathBigIntegerArray:(IOSObjectArray *)data;
 
 + (IOSByteArray *)cloneWithByteArray:(IOSByteArray *)data;
 
@@ -103,48 +67,6 @@
 
 + (IOSShortArray *)cloneWithShortArray:(IOSShortArray *)data;
 
-+ (IOSObjectArray *)cloneWithJavaMathBigIntegerArray:(IOSObjectArray *)data;
-
-+ (IOSByteArray *)copyOfWithByteArray:(IOSByteArray *)data
-                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSCharArray *)copyOfWithCharArray:(IOSCharArray *)data
-                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSIntArray *)copyOfWithIntArray:(IOSIntArray *)data
-                            withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSLongArray *)copyOfWithLongArray:(IOSLongArray *)data
-                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSObjectArray *)copyOfWithJavaMathBigIntegerArray:(IOSObjectArray *)data
-                                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSByteArray *)copyOfRangeWithByteArray:(IOSByteArray *)data
-                                   withInt:(jint)from
-                                   withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSIntArray *)copyOfRangeWithIntArray:(IOSIntArray *)data
-                                 withInt:(jint)from
-                                 withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSLongArray *)copyOfRangeWithLongArray:(IOSLongArray *)data
-                                   withInt:(jint)from
-                                   withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSObjectArray *)copyOfRangeWithJavaMathBigIntegerArray:(IOSObjectArray *)data
-                                                   withInt:(jint)from
-                                                   withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
-
-+ (IOSByteArray *)appendWithByteArray:(IOSByteArray *)a
-                             withByte:(jbyte)b;
-
-+ (IOSShortArray *)appendWithShortArray:(IOSShortArray *)a
-                              withShort:(jshort)b;
-
-+ (IOSIntArray *)appendWithIntArray:(IOSIntArray *)a
-                            withInt:(jint)b;
-
 + (IOSByteArray *)concatenateWithByteArray:(IOSByteArray *)a
                              withByteArray:(IOSByteArray *)b;
 
@@ -160,22 +82,99 @@
 + (IOSIntArray *)concatenateWithIntArray:(IOSIntArray *)a
                             withIntArray:(IOSIntArray *)b;
 
++ (jboolean)constantTimeAreEqualWithByteArray:(IOSByteArray *)a
+                                withByteArray:(IOSByteArray *)b;
+
++ (jboolean)containsWithIntArray:(IOSIntArray *)a
+                         withInt:(jint)n;
+
++ (jboolean)containsWithShortArray:(IOSShortArray *)a
+                         withShort:(jshort)n;
+
++ (IOSObjectArray *)copyOfWithJavaMathBigIntegerArray:(IOSObjectArray *)data
+                                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
+
++ (IOSByteArray *)copyOfWithByteArray:(IOSByteArray *)data
+                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
+
++ (IOSCharArray *)copyOfWithCharArray:(IOSCharArray *)data
+                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
+
++ (IOSIntArray *)copyOfWithIntArray:(IOSIntArray *)data
+                            withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
+
++ (IOSLongArray *)copyOfWithLongArray:(IOSLongArray *)data
+                              withInt:(jint)newLength OBJC_METHOD_FAMILY_NONE;
+
++ (IOSObjectArray *)copyOfRangeWithJavaMathBigIntegerArray:(IOSObjectArray *)data
+                                                   withInt:(jint)from
+                                                   withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
+
++ (IOSByteArray *)copyOfRangeWithByteArray:(IOSByteArray *)data
+                                   withInt:(jint)from
+                                   withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
+
++ (IOSIntArray *)copyOfRangeWithIntArray:(IOSIntArray *)data
+                                 withInt:(jint)from
+                                 withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
+
++ (IOSLongArray *)copyOfRangeWithLongArray:(IOSLongArray *)data
+                                   withInt:(jint)from
+                                   withInt:(jint)to OBJC_METHOD_FAMILY_NONE;
+
++ (void)fillWithByteArray:(IOSByteArray *)array
+                 withByte:(jbyte)value;
+
++ (void)fillWithCharArray:(IOSCharArray *)array
+                 withChar:(jchar)value;
+
++ (void)fillWithIntArray:(IOSIntArray *)array
+                 withInt:(jint)value;
+
++ (void)fillWithLongArray:(IOSLongArray *)array
+                 withLong:(jlong)value;
+
++ (void)fillWithShortArray:(IOSShortArray *)array
+                 withShort:(jshort)value;
+
++ (jint)hashCodeWithByteArray:(IOSByteArray *)data;
+
++ (jint)hashCodeWithByteArray:(IOSByteArray *)data
+                      withInt:(jint)off
+                      withInt:(jint)len;
+
++ (jint)hashCodeWithCharArray:(IOSCharArray *)data;
+
++ (jint)hashCodeWithIntArray:(IOSIntArray *)data;
+
++ (jint)hashCodeWithIntArray:(IOSIntArray *)data
+                     withInt:(jint)off
+                     withInt:(jint)len;
+
++ (jint)hashCodeWithIntArray2:(IOSObjectArray *)ints;
+
++ (jint)hashCodeWithNSObjectArray:(IOSObjectArray *)data;
+
++ (jint)hashCodeWithShortArray:(IOSShortArray *)data;
+
++ (jint)hashCodeWithShortArray2:(IOSObjectArray *)shorts;
+
++ (jint)hashCodeWithShortArray3:(IOSObjectArray *)shorts;
+
 + (IOSByteArray *)prependWithByteArray:(IOSByteArray *)a
                               withByte:(jbyte)b;
 
-+ (IOSShortArray *)prependWithShortArray:(IOSShortArray *)a
-                               withShort:(jshort)b;
-
 + (IOSIntArray *)prependWithIntArray:(IOSIntArray *)a
                              withInt:(jint)b;
+
++ (IOSShortArray *)prependWithShortArray:(IOSShortArray *)a
+                               withShort:(jshort)b;
 
 + (IOSByteArray *)reverseWithByteArray:(IOSByteArray *)a;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleUtilArrays)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jboolean OrgBouncycastleUtilArrays_areEqualWithBooleanArray_withBooleanArray_(IOSBooleanArray *a, IOSBooleanArray *b);
 
@@ -282,7 +281,6 @@ FOUNDATION_EXPORT IOSShortArray *OrgBouncycastleUtilArrays_prependWithShortArray
 FOUNDATION_EXPORT IOSIntArray *OrgBouncycastleUtilArrays_prependWithIntArray_withInt_(IOSIntArray *a, jint b);
 
 FOUNDATION_EXPORT IOSByteArray *OrgBouncycastleUtilArrays_reverseWithByteArray_(IOSByteArray *a);
-CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilArrays)
 

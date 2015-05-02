@@ -67,7 +67,7 @@ public class AuthActivity extends BaseFragmentActivity {
         }
     }
 
-    public void executeAuth(final Command<AuthState> command) {
+    public void executeAuth(final Command<AuthState> command, final String action) {
         dismissProgress();
         progressDialog = new ProgressDialog(this);
         progressDialog.setCanceledOnTouchOutside(false);
@@ -78,6 +78,7 @@ public class AuthActivity extends BaseFragmentActivity {
             @Override
             public void onResult(final AuthState res) {
                 dismissProgress();
+                messenger().trackActionSuccess(action);
                 updateState(res);
             }
 
@@ -86,8 +87,10 @@ public class AuthActivity extends BaseFragmentActivity {
                 dismissProgress();
                 boolean canTryAgain = false;
                 String message = getString(R.string.error_unknown);
+                String tag = "UNKNOWN";
                 if (e instanceof RpcException) {
                     RpcException re = (RpcException) e;
+                    tag = re.getTag();
                     if (re instanceof RpcInternalException) {
                         message = getString(R.string.error_unknown);
                         canTryAgain = true;
@@ -108,19 +111,23 @@ public class AuthActivity extends BaseFragmentActivity {
                     }
                 }
 
+                messenger().trackActionError(action, tag, message);
+
                 if (canTryAgain) {
                     new AlertDialog.Builder(AuthActivity.this)
                             .setMessage(message)
                             .setPositiveButton(R.string.dialog_try_again, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    messenger().trackActionTryAgain(action);
                                     dismissAlert();
-                                    execute(command);
+                                    executeAuth(command, action);
                                 }
                             })
                             .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    messenger().trackActionCancel(action);
                                     dismissAlert();
                                     updateState(messenger().getAuthState());
                                 }
@@ -133,6 +140,7 @@ public class AuthActivity extends BaseFragmentActivity {
                             .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    messenger().trackActionCancel(action);
                                     dismissAlert();
                                     updateState(messenger().getAuthState());
                                 }

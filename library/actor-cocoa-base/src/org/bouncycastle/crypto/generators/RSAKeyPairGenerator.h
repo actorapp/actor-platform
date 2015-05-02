@@ -6,36 +6,35 @@
 #ifndef _OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_H_
 #define _OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_H_
 
-@class JavaMathBigInteger;
-@class OrgBouncycastleCryptoAsymmetricCipherKeyPair;
-@class OrgBouncycastleCryptoKeyGenerationParameters;
-@class OrgBouncycastleCryptoParamsRSAKeyGenerationParameters;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/AsymmetricCipherKeyPairGenerator.h"
 
-@interface OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator : NSObject < OrgBouncycastleCryptoAsymmetricCipherKeyPairGenerator > {
-}
+@class JavaMathBigInteger;
+@class OrgBouncycastleCryptoAsymmetricCipherKeyPair;
+@class OrgBouncycastleCryptoKeyGenerationParameters;
+
+@interface OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator : NSObject < OrgBouncycastleCryptoAsymmetricCipherKeyPairGenerator >
+
+#pragma mark Public
+
+- (instancetype)init;
+
+- (OrgBouncycastleCryptoAsymmetricCipherKeyPair *)generateKeyPair;
 
 - (void)init__WithOrgBouncycastleCryptoKeyGenerationParameters:(OrgBouncycastleCryptoKeyGenerationParameters *)param OBJC_METHOD_FAMILY_NONE;
 
-- (OrgBouncycastleCryptoAsymmetricCipherKeyPair *)generateKeyPair;
+#pragma mark Protected
 
 - (JavaMathBigInteger *)chooseRandomPrimeWithInt:(jint)bitlength
                           withJavaMathBigInteger:(JavaMathBigInteger *)e;
 
-- (instancetype)init;
-
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_init(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *self);
 
-FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator, ONE_, JavaMathBigInteger *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *new_OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator)
 

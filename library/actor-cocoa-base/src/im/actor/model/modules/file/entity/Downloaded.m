@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/file/entity/Downloaded.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/file/entity/Downloaded.java"
 
 #include "IOSClass.h"
@@ -21,10 +22,16 @@
   jint fileSize_;
   NSString *descriptor_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileEntityDownloaded, descriptor_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesFileEntityDownloaded_init(ImActorModelModulesFileEntityDownloaded *self);
+
+__attribute__((unused)) static ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_init() NS_RETURNS_RETAINED;
 
 
 #line 14
@@ -39,45 +46,28 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileEntityDownloaded, descriptor_, NSStri
 - (instancetype)initWithLong:(jlong)fileId
                      withInt:(jint)fileSize
                 withNSString:(NSString *)descriptor {
-  if (self = [super init]) {
-    
-#line 25
-    self->fileId_ = fileId;
-    
-#line 26
-    self->fileSize_ = fileSize;
-    
-#line 27
-    self->descriptor_ = descriptor;
-  }
+  ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(self, fileId, fileSize, descriptor);
   return self;
 }
 
 
 #line 30
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesFileEntityDownloaded_init(self);
+  return self;
 }
 
+
+#line 34
 - (jlong)getFileId {
-  
-#line 35
   return fileId_;
 }
 
-
-#line 38
 - (jint)getFileSize {
-  
-#line 39
   return fileSize_;
 }
 
-
-#line 42
 - (NSString *)getDescriptor {
-  
-#line 43
   return descriptor_;
 }
 
@@ -92,8 +82,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileEntityDownloaded, descriptor_, NSStri
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
   [writer writeIntWithInt:2 withInt:fileSize_];
   [writer writeStringWithInt:3 withNSString:descriptor_];
@@ -105,20 +93,46 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileEntityDownloaded, descriptor_, NSStri
   return fileId_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesFileEntityDownloaded *)other {
-  [super copyAllFieldsTo:other];
-  other->fileId_ = fileId_;
-  other->fileSize_ = fileSize_;
-  other->descriptor_ = descriptor_;
-}
-
 @end
 
+
+#line 16
 ImActorModelModulesFileEntityDownloaded *ImActorModelModulesFileEntityDownloaded_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesFileEntityDownloaded_init();
+  ImActorModelModulesFileEntityDownloaded_initialize();
   
 #line 17
-  return ((ImActorModelModulesFileEntityDownloaded *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesFileEntityDownloaded alloc] init], data));
+  return ((ImActorModelModulesFileEntityDownloaded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesFileEntityDownloaded_init(), data));
+}
+
+
+#line 24
+void ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(ImActorModelModulesFileEntityDownloaded *self, jlong fileId, jint fileSize, NSString *descriptor) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->fileId_ = fileId;
+  self->fileSize_ = fileSize;
+  self->descriptor_ = descriptor;
+}
+
+
+#line 24
+ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(jlong fileId, jint fileSize, NSString *descriptor) {
+  ImActorModelModulesFileEntityDownloaded *self = [ImActorModelModulesFileEntityDownloaded alloc];
+  ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(self, fileId, fileSize, descriptor);
+  return self;
+}
+
+void ImActorModelModulesFileEntityDownloaded_init(ImActorModelModulesFileEntityDownloaded *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 30
+ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_init() {
+  ImActorModelModulesFileEntityDownloaded *self = [ImActorModelModulesFileEntityDownloaded alloc];
+  ImActorModelModulesFileEntityDownloaded_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileEntityDownloaded)

@@ -32,28 +32,25 @@ typedef NS_ENUM(NSUInteger, AMContentType) {
   jint value_;
 }
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
+
++ (AMContentTypeEnum *)fromValueWithInt:(jint)value;
 
 - (jint)getValue;
 
-+ (AMContentTypeEnum *)fromValueWithInt:(jint)value;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMContentTypeEnum_values();
 
 + (AMContentTypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMContentTypeEnum *AMContentTypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMContentTypeEnum_initialized;
 J2OBJC_STATIC_INIT(AMContentTypeEnum)
-
-FOUNDATION_EXPORT AMContentTypeEnum *AMContentTypeEnum_fromValueWithInt_(jint value);
 
 FOUNDATION_EXPORT AMContentTypeEnum *AMContentTypeEnum_values_[];
 
@@ -102,8 +99,10 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMContentTypeEnum, SERVICE_AVATAR_REMOVED)
 #define AMContentTypeEnum_UNKNOWN_CONTENT AMContentTypeEnum_values_[AMContentType_UNKNOWN_CONTENT]
 J2OBJC_ENUM_CONSTANT_GETTER(AMContentTypeEnum, UNKNOWN_CONTENT)
 
-typedef AMContentTypeEnum ImActorModelEntityContentTypeEnum;
+FOUNDATION_EXPORT AMContentTypeEnum *AMContentTypeEnum_fromValueWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMContentTypeEnum)
+
+typedef AMContentTypeEnum ImActorModelEntityContentTypeEnum;
 
 #endif // _AMContentType_H_

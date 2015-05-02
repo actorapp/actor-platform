@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MessageAck.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MessageAck.java"
 
 #include "IOSClass.h"
@@ -12,6 +13,7 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/MessageAck.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 #include "java/lang/Long.h"
 #include "java/util/Arrays.h"
@@ -23,41 +25,25 @@
 
 #line 15
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 16
-  [super initWithBSDataInput:stream];
+  MTMessageAck_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 19
 - (instancetype)initWithJavaLangLongArray:(IOSObjectArray *)_messagesIds {
-  if (self = [super init]) {
-    self->messagesIds_ = [IOSLongArray newArrayWithLength:((IOSObjectArray *) nil_chk(_messagesIds))->size_];
-    
-#line 21
-    for (jint i = 0; i < _messagesIds->size_; ++i) {
-      *IOSLongArray_GetRef(self->messagesIds_, i) = [((JavaLangLong *) nil_chk(IOSObjectArray_Get(_messagesIds, i))) longLongValue];
-    }
-  }
+  MTMessageAck_initWithJavaLangLongArray_(self, _messagesIds);
   return self;
 }
 
 
 #line 26
 - (instancetype)initWithLongArray:(IOSLongArray *)messagesIds {
-  if (self = [super init]) {
-    
-#line 27
-    self->messagesIds_ = messagesIds;
-  }
+  MTMessageAck_initWithLongArray_(self, messagesIds);
   return self;
 }
 
-
-#line 31
 - (jbyte)getHeader {
-  
-#line 32
   return MTMessageAck_HEADER;
 }
 
@@ -70,20 +56,66 @@
 
 #line 41
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
-  
-#line 42
   messagesIds_ = [((BSDataInput *) nil_chk(bs)) readProtoLongs];
 }
 
+
+#line 46
 - (NSString *)description {
   return JreStrcat("$$", @"Ack ", JavaUtilArrays_toStringWithLongArray_(messagesIds_));
 }
 
-- (void)copyAllFieldsTo:(MTMessageAck *)other {
-  [super copyAllFieldsTo:other];
-  other->messagesIds_ = messagesIds_;
+@end
+
+
+#line 15
+void MTMessageAck_initWithBSDataInput_(MTMessageAck *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 15
+MTMessageAck *new_MTMessageAck_initWithBSDataInput_(BSDataInput *stream) {
+  MTMessageAck *self = [MTMessageAck alloc];
+  MTMessageAck_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 19
+void MTMessageAck_initWithJavaLangLongArray_(MTMessageAck *self, IOSObjectArray *_messagesIds) {
+  (void) MTProtoStruct_init(self);
+  
+#line 20
+  self->messagesIds_ = [IOSLongArray newArrayWithLength:((IOSObjectArray *) nil_chk(_messagesIds))->size_];
+  for (jint i = 0; i < _messagesIds->size_; ++i) {
+    *IOSLongArray_GetRef(self->messagesIds_, i) = [((JavaLangLong *) nil_chk(IOSObjectArray_Get(_messagesIds, i))) longLongValue];
+  }
+}
+
+
+#line 19
+MTMessageAck *new_MTMessageAck_initWithJavaLangLongArray_(IOSObjectArray *_messagesIds) {
+  MTMessageAck *self = [MTMessageAck alloc];
+  MTMessageAck_initWithJavaLangLongArray_(self, _messagesIds);
+  return self;
+}
+
+
+#line 26
+void MTMessageAck_initWithLongArray_(MTMessageAck *self, IOSLongArray *messagesIds) {
+  (void) MTProtoStruct_init(self);
+  
+#line 27
+  self->messagesIds_ = messagesIds;
+}
+
+
+#line 26
+MTMessageAck *new_MTMessageAck_initWithLongArray_(IOSLongArray *messagesIds) {
+  MTMessageAck *self = [MTMessageAck alloc];
+  MTMessageAck_initWithLongArray_(self, messagesIds);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMessageAck)

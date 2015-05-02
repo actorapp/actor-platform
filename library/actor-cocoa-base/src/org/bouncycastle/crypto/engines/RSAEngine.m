@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/RSAEngine.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/RSAEngine.java"
 
 #include "IOSPrimitiveArray.h"
@@ -17,6 +18,7 @@
  @public
   OrgBouncycastleCryptoEnginesRSACoreEngine *core_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEnginesRSAEngine, core_, OrgBouncycastleCryptoEnginesRSACoreEngine *)
@@ -32,7 +34,7 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   
 #line 24
   if (core_ == nil) {
-    core_ = [[OrgBouncycastleCryptoEnginesRSACoreEngine alloc] init];
+    core_ = new_OrgBouncycastleCryptoEnginesRSACoreEngine_init();
   }
   
 #line 28
@@ -42,16 +44,12 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 #line 38
 - (jint)getInputBlockSize {
-  
-#line 39
   return [((OrgBouncycastleCryptoEnginesRSACoreEngine *) nil_chk(core_)) getInputBlockSize];
 }
 
 
 #line 49
 - (jint)getOutputBlockSize {
-  
-#line 50
   return [((OrgBouncycastleCryptoEnginesRSACoreEngine *) nil_chk(core_)) getOutputBlockSize];
 }
 
@@ -63,7 +61,7 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   
 #line 66
   if (core_ == nil) {
-    @throw [[JavaLangIllegalStateException alloc] initWithNSString:@"RSA engine not initialised"];
+    @throw new_JavaLangIllegalStateException_initWithNSString_(@"RSA engine not initialised");
   }
   
 #line 70
@@ -71,14 +69,20 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 }
 
 - (instancetype)init {
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoEnginesRSAEngine *)other {
-  [super copyAllFieldsTo:other];
-  other->core_ = core_;
+  OrgBouncycastleCryptoEnginesRSAEngine_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleCryptoEnginesRSAEngine_init(OrgBouncycastleCryptoEnginesRSAEngine *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleCryptoEnginesRSAEngine *new_OrgBouncycastleCryptoEnginesRSAEngine_init() {
+  OrgBouncycastleCryptoEnginesRSAEngine *self = [OrgBouncycastleCryptoEnginesRSAEngine alloc];
+  OrgBouncycastleCryptoEnginesRSAEngine_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoEnginesRSAEngine)

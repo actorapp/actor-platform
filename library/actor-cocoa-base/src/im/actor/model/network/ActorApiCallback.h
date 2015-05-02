@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMActorApiCallback)
 
-#define ImActorModelNetworkActorApiCallback AMActorApiCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMActorApiCallback)
+
+#define ImActorModelNetworkActorApiCallback AMActorApiCallback
 
 #endif // _AMActorApiCallback_H_

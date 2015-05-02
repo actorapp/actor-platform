@@ -6,13 +6,13 @@
 #ifndef _AMCryptoProvider_H_
 #define _AMCryptoProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class AMCryptoKeyPair;
 @class IOSByteArray;
 @protocol AMAesCipher;
 @protocol AMRsaCipher;
 @protocol AMRsaEncryptCipher;
-
-#include "J2ObjC_header.h"
 
 @protocol AMCryptoProvider < NSObject, JavaObject >
 
@@ -40,8 +40,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMCryptoProvider)
 
-#define ImActorModelCryptoProvider AMCryptoProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMCryptoProvider)
+
+#define ImActorModelCryptoProvider AMCryptoProvider
 
 #endif // _AMCryptoProvider_H_

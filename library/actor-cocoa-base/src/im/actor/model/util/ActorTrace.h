@@ -6,50 +6,45 @@
 #ifndef _AMActorTrace_H_
 #define _AMActorTrace_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/actors/TraceInterface.h"
+
 @class DKActor;
 @class DKActorRef;
 @class DKEnvelope;
 @class JavaLangException;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/TraceInterface.h"
+@interface AMActorTrace : NSObject < DKTraceInterface >
 
-#define AMActorTrace_PROCESS_THRESHOLD 300
+#pragma mark Public
 
-@interface AMActorTrace : NSObject < DKTraceInterface > {
-}
+- (instancetype)init;
+
+- (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+           withJavaLangException:(JavaLangException *)e;
+
+- (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
+                            withId:(id)message;
+
+- (void)onDropWithDKActorRef:(DKActorRef *)sender
+                      withId:(id)message
+                 withDKActor:(DKActor *)actor;
 
 - (void)onEnvelopeDeliveredWithDKEnvelope:(DKEnvelope *)envelope;
 
 - (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
                                  withLong:(jlong)duration;
 
-- (void)onDropWithDKActorRef:(DKActorRef *)sender
-                      withId:(id)message
-                 withDKActor:(DKActor *)actor;
-
-- (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
-                            withId:(id)message;
-
-- (void)onActorDieWithDKActorRef:(DKActorRef *)ref
-           withJavaLangException:(JavaLangException *)e;
-
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMActorTrace)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void AMActorTrace_init(AMActorTrace *self);
 
-FOUNDATION_EXPORT NSString *AMActorTrace_TAG_;
-J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, TAG_, NSString *)
-
-J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
-CF_EXTERN_C_END
-
-typedef AMActorTrace ImActorModelUtilActorTrace;
+FOUNDATION_EXPORT AMActorTrace *new_AMActorTrace_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMActorTrace)
+
+typedef AMActorTrace ImActorModelUtilActorTrace;
 
 #endif // _AMActorTrace_H_

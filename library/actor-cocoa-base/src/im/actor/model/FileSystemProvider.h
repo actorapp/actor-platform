@@ -6,16 +6,17 @@
 #ifndef _AMFileSystemProvider_H_
 #define _AMFileSystemProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class AMFileReference;
 @protocol AMFileSystemReference;
-
-#include "J2ObjC_header.h"
 
 @protocol AMFileSystemProvider < NSObject, JavaObject >
 
 - (id<AMFileSystemReference>)createTempFile;
 
-- (id<AMFileSystemReference>)commitTempFile:(id<AMFileSystemReference>)sourceFile withReference:(AMFileReference *)fileReference;
+- (id<AMFileSystemReference>)commitTempFile:(id<AMFileSystemReference>)sourceFile
+                              withReference:(AMFileReference *)fileReference;
 
 - (jboolean)isFsPersistent;
 
@@ -25,8 +26,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileSystemProvider)
 
-#define ImActorModelFileSystemProvider AMFileSystemProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMFileSystemProvider)
+
+#define ImActorModelFileSystemProvider AMFileSystemProvider
 
 #endif // _AMFileSystemProvider_H_

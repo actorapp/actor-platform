@@ -48,7 +48,7 @@ public class UploadTask extends ModuleActor {
     private ActorRef manager;
     private boolean isCompleted = false;
 
-    private int blockSize = 8 * 1024;
+    private int blockSize = 32 * 1024;
     private int blocksCount;
     private int nextBlock = 0;
     private int uploaded;
@@ -72,7 +72,7 @@ public class UploadTask extends ModuleActor {
         fileSystemProvider = config().getFileSystemProvider();
         if (fileSystemProvider == null) {
             if (LOG) {
-                Log.d(TAG, "File system is not available");
+                Log.w(TAG, "File system is not available");
             }
             reportError();
             return;
@@ -81,7 +81,7 @@ public class UploadTask extends ModuleActor {
         downloaderProvider = config().getHttpDownloaderProvider();
         if (downloaderProvider == null) {
             if (LOG) {
-                Log.d(TAG, "HTTP support is not available");
+                Log.w(TAG, "HTTP support is not available");
             }
             reportError();
             return;
@@ -99,7 +99,7 @@ public class UploadTask extends ModuleActor {
         destReference = fileSystemProvider.createTempFile();
         if (destReference == null) {
             if (LOG) {
-                Log.d(TAG, "Error during file dest reference creating");
+                Log.w(TAG, "Error during file dest reference creating");
             }
             reportError();
             return;
@@ -108,7 +108,7 @@ public class UploadTask extends ModuleActor {
         inputFile = srcReference.openRead();
         if (inputFile == null) {
             if (LOG) {
-                Log.d(TAG, "Error during file open");
+                Log.w(TAG, "Error during file open");
             }
             reportError();
             return;
@@ -118,7 +118,7 @@ public class UploadTask extends ModuleActor {
         if (outputFile == null) {
             inputFile.close();
             if (LOG) {
-                Log.d(TAG, "Error during dest file open");
+                Log.w(TAG, "Error during dest file open");
             }
             reportError();
             return;
@@ -154,7 +154,7 @@ public class UploadTask extends ModuleActor {
                     @Override
                     public void onError(RpcException e) {
                         if (LOG) {
-                            Log.d(TAG, "Upload config load error");
+                            Log.w(TAG, "Upload config load error");
                         }
                         reportError();
                     }
@@ -196,7 +196,7 @@ public class UploadTask extends ModuleActor {
                 @Override
                 public void onError(RpcException e) {
                     if (LOG) {
-                        Log.d(TAG, "Upload complete error");
+                        Log.w(TAG, "Upload complete error");
                     }
                     reportError();
                 }
@@ -216,14 +216,14 @@ public class UploadTask extends ModuleActor {
 
             if (!inputFile.read(fileOffset, data, 0, size)) {
                 if (LOG) {
-                    Log.d(TAG, "read #" + blockIndex + " error");
+                    Log.w(TAG, "read #" + blockIndex + " error");
                 }
                 reportError();
                 return;
             }
             if (!outputFile.write(fileOffset, data, 0, size)) {
                 if (LOG) {
-                    Log.d(TAG, "write #" + blockIndex + " error");
+                    Log.w(TAG, "write #" + blockIndex + " error");
                 }
                 reportError();
                 return;
@@ -274,6 +274,9 @@ public class UploadTask extends ModuleActor {
                                 self().send(new Runnable() {
                                     @Override
                                     public void run() {
+                                        if (LOG) {
+                                            Log.w(TAG, "Block #" + blockIndex + " upload failure");
+                                        }
                                         reportError();
                                     }
                                 });
@@ -283,12 +286,18 @@ public class UploadTask extends ModuleActor {
 
                     @Override
                     public void onError(RpcException e) {
+                        if (LOG) {
+                            Log.w(TAG, "Get Block #" + blockIndex + " url failure");
+                        }
                         reportError();
                     }
                 });
     }
 
     private void reportError() {
+        if (LOG) {
+            Log.d(TAG, "Reporting error");
+        }
         if (isCompleted) {
             return;
         }

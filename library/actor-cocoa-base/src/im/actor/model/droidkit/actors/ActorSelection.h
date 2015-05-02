@@ -6,29 +6,31 @@
 #ifndef _DKActorSelection_H_
 #define _DKActorSelection_H_
 
-@class DKProps;
-
 #include "J2ObjC_header.h"
 
-@interface DKActorSelection : NSObject {
-}
+@class DKProps;
+
+@interface DKActorSelection : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithDKProps:(DKProps *)props
                    withNSString:(NSString *)path;
 
-- (DKProps *)getProps;
-
 - (NSString *)getPath;
+
+- (DKProps *)getProps;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorSelection)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKActorSelection_initWithDKProps_withNSString_(DKActorSelection *self, DKProps *props, NSString *path);
 
-typedef DKActorSelection ImActorModelDroidkitActorsActorSelection;
+FOUNDATION_EXPORT DKActorSelection *new_DKActorSelection_initWithDKProps_withNSString_(DKProps *props, NSString *path) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorSelection)
+
+typedef DKActorSelection ImActorModelDroidkitActorsActorSelection;
 
 #endif // _DKActorSelection_H_

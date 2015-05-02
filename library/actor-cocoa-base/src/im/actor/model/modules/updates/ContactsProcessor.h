@@ -6,15 +6,15 @@
 #ifndef _ImActorModelModulesUpdatesContactsProcessor_H_
 #define _ImActorModelModulesUpdatesContactsProcessor_H_
 
-@class DKActorRef;
-@class IOSIntArray;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdatesContactsProcessor : ImActorModelModulesBaseModule {
-}
+@class IOSIntArray;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesUpdatesContactsProcessor : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
@@ -26,8 +26,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesContactsProcessor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesContactsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesContactsProcessor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesContactsProcessor *new_ImActorModelModulesUpdatesContactsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesContactsProcessor)
 

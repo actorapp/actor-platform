@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MontgomeryLadderMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MontgomeryLadderMultiplier.java"
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/ECCurve.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/MontgomeryLadderMultiplier.h"
@@ -32,16 +34,27 @@
 #line 18
     jint b = [k testBitWithInt:i] ? 1 : 0;
     jint bp = 1 - b;
-    IOSObjectArray_Set(R, bp, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, bp))) addWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(R, b)]);
-    IOSObjectArray_Set(R, b, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, b))) twice]);
+    (void) IOSObjectArray_Set(R, bp, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, bp))) addWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(R, b)]);
+    (void) IOSObjectArray_Set(R, b, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, b))) twice]);
   }
   return IOSObjectArray_Get(R, 0);
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcMontgomeryLadderMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcMontgomeryLadderMultiplier_init(OrgBouncycastleMathEcMontgomeryLadderMultiplier *self) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+}
+
+OrgBouncycastleMathEcMontgomeryLadderMultiplier *new_OrgBouncycastleMathEcMontgomeryLadderMultiplier_init() {
+  OrgBouncycastleMathEcMontgomeryLadderMultiplier *self = [OrgBouncycastleMathEcMontgomeryLadderMultiplier alloc];
+  OrgBouncycastleMathEcMontgomeryLadderMultiplier_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcMontgomeryLadderMultiplier)

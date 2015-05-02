@@ -6,32 +6,33 @@
 #ifndef _AMFileReference_H_
 #define _AMFileReference_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMFileReference : BSBserObject
 
-@interface AMFileReference : BSBserObject {
-}
-
-+ (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
                 withNSString:(NSString *)fileName;
 
-- (jint)getFileSize;
+- (jboolean)isEqual:(id)o;
 
-- (jlong)getFileId;
++ (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
+- (jlong)getFileId;
+
 - (NSString *)getFileName;
 
-- (jboolean)isEqual:(id)o;
+- (jint)getFileSize;
 
 - (NSUInteger)hash;
 
@@ -43,13 +44,14 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileReference)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMFileReference ImActorModelEntityFileReference;
+FOUNDATION_EXPORT void AMFileReference_initWithLong_withLong_withInt_withNSString_(AMFileReference *self, jlong fileId, jlong accessHash, jint fileSize, NSString *fileName);
+
+FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithLong_withLong_withInt_withNSString_(jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileReference)
+
+typedef AMFileReference ImActorModelEntityFileReference;
 
 #endif // _AMFileReference_H_

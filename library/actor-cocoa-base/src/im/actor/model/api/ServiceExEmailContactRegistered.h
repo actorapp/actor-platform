@@ -6,18 +6,19 @@
 #ifndef _ImActorModelApiServiceExEmailContactRegistered_H_
 #define _ImActorModelApiServiceExEmailContactRegistered_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExEmailContactRegistered : ImActorModelApiServiceEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
 
-- (instancetype)initWithInt:(jint)uid;
+@interface ImActorModelApiServiceExEmailContactRegistered : ImActorModelApiServiceEx
+
+#pragma mark Public
 
 - (instancetype)init;
+
+- (instancetype)initWithInt:(jint)uid;
 
 - (jint)getHeader;
 
@@ -33,8 +34,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExEmailContactRegistered)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExEmailContactRegistered_initWithInt_(ImActorModelApiServiceExEmailContactRegistered *self, jint uid);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExEmailContactRegistered *new_ImActorModelApiServiceExEmailContactRegistered_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiServiceExEmailContactRegistered_init(ImActorModelApiServiceExEmailContactRegistered *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExEmailContactRegistered *new_ImActorModelApiServiceExEmailContactRegistered_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExEmailContactRegistered)
 

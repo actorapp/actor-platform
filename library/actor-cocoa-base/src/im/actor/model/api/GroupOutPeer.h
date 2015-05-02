@@ -6,23 +6,24 @@
 #ifndef _ImActorModelApiGroupOutPeer_H_
 #define _ImActorModelApiGroupOutPeer_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiGroupOutPeer : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiGroupOutPeer : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash;
 
-- (instancetype)init;
+- (jlong)getAccessHash;
 
 - (jint)getGroupId;
-
-- (jlong)getAccessHash;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -34,8 +35,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiGroupOutPeer)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiGroupOutPeer_initWithInt_withLong_(ImActorModelApiGroupOutPeer *self, jint groupId, jlong accessHash);
+
+FOUNDATION_EXPORT ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_initWithInt_withLong_(jint groupId, jlong accessHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiGroupOutPeer_init(ImActorModelApiGroupOutPeer *self);
+
+FOUNDATION_EXPORT ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiGroupOutPeer)
 

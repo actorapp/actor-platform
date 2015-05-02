@@ -6,14 +6,17 @@
 #ifndef _OrgBouncycastleUtilPack_H_
 #define _OrgBouncycastleUtilPack_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSIntArray;
 @class IOSLongArray;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleUtilPack : NSObject
 
-@interface OrgBouncycastleUtilPack : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (jint)bigEndianToIntWithByteArray:(IOSByteArray *)bs
                             withInt:(jint)off;
@@ -21,6 +24,13 @@
 + (void)bigEndianToIntWithByteArray:(IOSByteArray *)bs
                             withInt:(jint)off
                        withIntArray:(IOSIntArray *)ns;
+
++ (jlong)bigEndianToLongWithByteArray:(IOSByteArray *)bs
+                              withInt:(jint)off;
+
++ (void)bigEndianToLongWithByteArray:(IOSByteArray *)bs
+                             withInt:(jint)off
+                       withLongArray:(IOSLongArray *)ns;
 
 + (IOSByteArray *)intToBigEndianWithInt:(jint)n;
 
@@ -34,24 +44,17 @@
                      withByteArray:(IOSByteArray *)bs
                            withInt:(jint)off;
 
-+ (jlong)bigEndianToLongWithByteArray:(IOSByteArray *)bs
++ (IOSByteArray *)intToLittleEndianWithInt:(jint)n;
+
++ (void)intToLittleEndianWithInt:(jint)n
+                   withByteArray:(IOSByteArray *)bs
+                         withInt:(jint)off;
+
++ (IOSByteArray *)intToLittleEndianWithIntArray:(IOSIntArray *)ns;
+
++ (void)intToLittleEndianWithIntArray:(IOSIntArray *)ns
+                        withByteArray:(IOSByteArray *)bs
                               withInt:(jint)off;
-
-+ (void)bigEndianToLongWithByteArray:(IOSByteArray *)bs
-                             withInt:(jint)off
-                       withLongArray:(IOSLongArray *)ns;
-
-+ (IOSByteArray *)longToBigEndianWithLong:(jlong)n;
-
-+ (void)longToBigEndianWithLong:(jlong)n
-                  withByteArray:(IOSByteArray *)bs
-                        withInt:(jint)off;
-
-+ (IOSByteArray *)longToBigEndianWithLongArray:(IOSLongArray *)ns;
-
-+ (void)longToBigEndianWithLongArray:(IOSLongArray *)ns
-                       withByteArray:(IOSByteArray *)bs
-                             withInt:(jint)off;
 
 + (jint)littleEndianToIntWithByteArray:(IOSByteArray *)bs
                                withInt:(jint)off;
@@ -66,24 +69,24 @@
                                withInt:(jint)nOff
                                withInt:(jint)count;
 
-+ (IOSByteArray *)intToLittleEndianWithInt:(jint)n;
-
-+ (void)intToLittleEndianWithInt:(jint)n
-                   withByteArray:(IOSByteArray *)bs
-                         withInt:(jint)off;
-
-+ (IOSByteArray *)intToLittleEndianWithIntArray:(IOSIntArray *)ns;
-
-+ (void)intToLittleEndianWithIntArray:(IOSIntArray *)ns
-                        withByteArray:(IOSByteArray *)bs
-                              withInt:(jint)off;
-
 + (jlong)littleEndianToLongWithByteArray:(IOSByteArray *)bs
                                  withInt:(jint)off;
 
 + (void)littleEndianToLongWithByteArray:(IOSByteArray *)bs
                                 withInt:(jint)off
                           withLongArray:(IOSLongArray *)ns;
+
++ (IOSByteArray *)longToBigEndianWithLong:(jlong)n;
+
++ (void)longToBigEndianWithLong:(jlong)n
+                  withByteArray:(IOSByteArray *)bs
+                        withInt:(jint)off;
+
++ (IOSByteArray *)longToBigEndianWithLongArray:(IOSLongArray *)ns;
+
++ (void)longToBigEndianWithLongArray:(IOSLongArray *)ns
+                       withByteArray:(IOSByteArray *)bs
+                             withInt:(jint)off;
 
 + (IOSByteArray *)longToLittleEndianWithLong:(jlong)n;
 
@@ -97,13 +100,9 @@
                           withByteArray:(IOSByteArray *)bs
                                 withInt:(jint)off;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleUtilPack)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jint OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(IOSByteArray *bs, jint off);
 
@@ -154,7 +153,8 @@ FOUNDATION_EXPORT void OrgBouncycastleUtilPack_longToLittleEndianWithLong_withBy
 FOUNDATION_EXPORT IOSByteArray *OrgBouncycastleUtilPack_longToLittleEndianWithLongArray_(IOSLongArray *ns);
 
 FOUNDATION_EXPORT void OrgBouncycastleUtilPack_longToLittleEndianWithLongArray_withByteArray_withInt_(IOSLongArray *ns, IOSByteArray *bs, jint off);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleUtilPack_init(OrgBouncycastleUtilPack *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleUtilPack)
 

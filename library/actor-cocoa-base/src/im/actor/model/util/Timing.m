@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/Timing.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/Timing.java"
 
 #include "J2ObjC_source.h"
@@ -16,6 +17,7 @@
   jlong sectionStart_;
   NSString *TAG_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMTiming, sectionName_, NSString *)
@@ -28,17 +30,13 @@ J2OBJC_FIELD_SETTER(AMTiming, TAG_, NSString *)
 
 #line 19
 - (instancetype)initWithNSString:(NSString *)tag {
-  if (self = [super init]) {
-    
-#line 20
-    self->TAG_ = tag;
-  }
+  AMTiming_initWithNSString_(self, tag);
   return self;
 }
 
+
+#line 28
 - (void)sectionWithNSString:(NSString *)sectionName {
-  
-#line 29
   [self end];
   self->sectionName_ = sectionName;
   self->sectionStart_ = DKActorTime_currentTime();
@@ -47,21 +45,29 @@ J2OBJC_FIELD_SETTER(AMTiming, TAG_, NSString *)
 
 #line 37
 - (void)end {
-  
-#line 38
   if (self->sectionName_ != nil) {
     AMLog_dWithNSString_withNSString_(TAG_, JreStrcat("$$J$", self->sectionName_, @" loaded in ", (DKActorTime_currentTime() - sectionStart_), @" ms"));
     self->sectionName_ = nil;
   }
 }
 
-- (void)copyAllFieldsTo:(AMTiming *)other {
-  [super copyAllFieldsTo:other];
-  other->sectionName_ = sectionName_;
-  other->sectionStart_ = sectionStart_;
-  other->TAG_ = TAG_;
+@end
+
+
+#line 19
+void AMTiming_initWithNSString_(AMTiming *self, NSString *tag) {
+  (void) NSObject_init(self);
+  
+#line 20
+  self->TAG_ = tag;
 }
 
-@end
+
+#line 19
+AMTiming *new_AMTiming_initWithNSString_(NSString *tag) {
+  AMTiming *self = [AMTiming alloc];
+  AMTiming_initWithNSString_(self, tag);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTiming)

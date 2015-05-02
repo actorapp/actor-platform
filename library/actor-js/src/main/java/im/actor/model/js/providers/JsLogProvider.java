@@ -1,29 +1,40 @@
 package im.actor.model.js.providers;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+
+import java.util.Date;
+
 import im.actor.model.LogProvider;
 
 /**
  * Created by ex3ndr on 21.02.15.
  */
 public class JsLogProvider implements LogProvider {
+
+    private static DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("HH:mm:ss.SSSS");
+
+    private String formatTime() {
+        return dateTimeFormat.format(new Date());
+    }
+
     @Override
     public void w(String tag, String message) {
-        warn("[W]" + tag + ":" + message);
+        warn(formatTime() + "[W] " + tag + ":" + message);
     }
 
     @Override
     public void e(String tag, Throwable throwable) {
-        error("[E]" + tag + ":" + throwable);
+        error(formatTime() + "[E] " + tag + ":" + throwable);
     }
 
     @Override
     public void d(String tag, String message) {
-        log("[D]" + tag + ":" + message);
+        log(formatTime() + "[D] " + tag + ":" + message);
     }
 
     @Override
     public void v(String tag, String message) {
-        info("[V]" + tag + ":" + message);
+        info(formatTime() + "[V] " + tag + ":" + message);
     }
 
     public static native void error(String message) /*-{

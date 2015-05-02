@@ -6,9 +6,9 @@
 #ifndef _AMCommand_H_
 #define _AMCommand_H_
 
-@protocol AMCommandCallback;
-
 #include "J2ObjC_header.h"
+
+@protocol AMCommandCallback;
 
 @protocol AMCommand < NSObject, JavaObject >
 
@@ -18,8 +18,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMCommand)
 
-#define ImActorModelConcurrencyCommand AMCommand
-
 J2OBJC_TYPE_LITERAL_HEADER(AMCommand)
+
+#define ImActorModelConcurrencyCommand AMCommand
 
 #endif // _AMCommand_H_

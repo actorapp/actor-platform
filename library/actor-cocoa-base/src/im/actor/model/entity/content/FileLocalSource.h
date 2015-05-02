@@ -6,42 +6,46 @@
 #ifndef _AMFileLocalSource_H_
 #define _AMFileLocalSource_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/FileSource.h"
 
-@interface AMFileLocalSource : AMFileSource {
-}
+@class BSBserValues;
+@class BSBserWriter;
 
-+ (AMFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
+@interface AMFileLocalSource : AMFileSource
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)fileName
                          withInt:(jint)size
                     withNSString:(NSString *)fileDescriptor;
 
+- (NSString *)getFileDescriptor;
+
 - (NSString *)getFileName;
 
 - (jint)getSize;
-
-- (NSString *)getFileDescriptor;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
++ (AMFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileLocalSource)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMFileLocalSource *AMFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader);
-CF_EXTERN_C_END
 
-typedef AMFileLocalSource ImActorModelEntityContentFileLocalSource;
+FOUNDATION_EXPORT void AMFileLocalSource_initWithNSString_withInt_withNSString_(AMFileLocalSource *self, NSString *fileName, jint size, NSString *fileDescriptor);
+
+FOUNDATION_EXPORT AMFileLocalSource *new_AMFileLocalSource_initWithNSString_withInt_withNSString_(NSString *fileName, jint size, NSString *fileDescriptor) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileLocalSource)
+
+typedef AMFileLocalSource ImActorModelEntityContentFileLocalSource;
 
 #endif // _AMFileLocalSource_H_

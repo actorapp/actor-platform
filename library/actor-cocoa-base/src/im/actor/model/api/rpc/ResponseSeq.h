@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcResponseSeq_H_
 #define _ImActorModelApiRpcResponseSeq_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseSeq_HEADER 72
 
-@interface ImActorModelApiRpcResponseSeq : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseSeq : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (jint)getSeq;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseSeq)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseSeq, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseSeq *ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseSeq, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(ImActorModelApiRpcResponseSeq *self, jint seq, IOSByteArray *state);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseSeq_init(ImActorModelApiRpcResponseSeq *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseSeq)
 

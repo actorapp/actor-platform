@@ -6,13 +6,13 @@
 #ifndef _OrgBouncycastleMathEcGLVMultiplier_H_
 #define _OrgBouncycastleMathEcGLVMultiplier_H_
 
+#include "J2ObjC_header.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
+
 @class JavaMathBigInteger;
 @class OrgBouncycastleMathEcECCurve;
 @class OrgBouncycastleMathEcECPoint;
 @protocol OrgBouncycastleMathEcEndoGLVEndomorphism;
-
-#include "J2ObjC_header.h"
-#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 
 @interface OrgBouncycastleMathEcGLVMultiplier : OrgBouncycastleMathEcAbstractECMultiplier {
  @public
@@ -20,8 +20,12 @@
   id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism_;
 }
 
+#pragma mark Public
+
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
         withOrgBouncycastleMathEcEndoGLVEndomorphism:(id<OrgBouncycastleMathEcEndoGLVEndomorphism>)glvEndomorphism;
+
+#pragma mark Protected
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k;
@@ -33,8 +37,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcGLVMultiplier)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcGLVMultiplier, curve_, OrgBouncycastleMathEcECCurve *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcGLVMultiplier, glvEndomorphism_, id<OrgBouncycastleMathEcEndoGLVEndomorphism>)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcGLVMultiplier_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVEndomorphism_(OrgBouncycastleMathEcGLVMultiplier *self, OrgBouncycastleMathEcECCurve *curve, id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcGLVMultiplier *new_OrgBouncycastleMathEcGLVMultiplier_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVEndomorphism_(OrgBouncycastleMathEcECCurve *curve, id<OrgBouncycastleMathEcEndoGLVEndomorphism> glvEndomorphism) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcGLVMultiplier)
 

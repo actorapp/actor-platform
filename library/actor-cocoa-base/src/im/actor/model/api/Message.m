@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Message.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Message.java"
 
 #include "IOSClass.h"
@@ -27,58 +28,63 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 16
+#line 19
 @implementation ImActorModelApiMessage
 
 
-#line 17
+#line 20
 + (ImActorModelApiMessage *)fromBytesWithByteArray:(IOSByteArray *)src {
   return ImActorModelApiMessage_fromBytesWithByteArray_(src);
 }
 
 
-#line 30
+#line 33
 - (IOSByteArray *)buildContainer {
-  
-#line 31
-  BSDataOutput *res = [[BSDataOutput alloc] init];
-  BSBserWriter *writer = [[BSBserWriter alloc] initWithBSDataOutput:res];
+  BSDataOutput *res = new_BSDataOutput_init();
+  BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(res);
   [writer writeIntWithInt:1 withInt:[self getHeader]];
   [writer writeBytesWithInt:2 withByteArray:[self toByteArray]];
   return [res toByteArray];
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiMessage_init(self);
+  return self;
 }
 
 @end
 
+
+#line 20
 ImActorModelApiMessage *ImActorModelApiMessage_fromBytesWithByteArray_(IOSByteArray *src) {
-  ImActorModelApiMessage_init();
+  ImActorModelApiMessage_initialize();
   
-#line 18
-  BSBserValues *values = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:src withInt:0 withInt:((IOSByteArray *) nil_chk(src))->size_])];
+#line 21
+  BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     
-#line 22
-    return ((ImActorModelApiTextMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiTextMessage alloc] init], content));
+#line 25
+    return ((ImActorModelApiTextMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiTextMessage_init(), content));
     case 2:
     
-#line 23
-    return ((ImActorModelApiServiceMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiServiceMessage alloc] init], content));
+#line 26
+    return ((ImActorModelApiServiceMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceMessage_init(), content));
     case 3:
     
-#line 24
-    return ((ImActorModelApiDocumentMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiDocumentMessage alloc] init], content));
+#line 27
+    return ((ImActorModelApiDocumentMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentMessage_init(), content));
     default:
     
-#line 25
-    return [[ImActorModelApiMessageUnsupported alloc] initWithInt:key withByteArray:content];
+#line 28
+    return new_ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(key, content);
   }
+}
+
+void ImActorModelApiMessage_init(ImActorModelApiMessage *self) {
+  (void) BSBserObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiMessage)

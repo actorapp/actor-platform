@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleCryptoParamsParametersWithSalt_H_
 #define _OrgBouncycastleCryptoParamsParametersWithSalt_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsParametersWithSalt : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@class IOSByteArray;
+
+@interface OrgBouncycastleCryptoParamsParametersWithSalt : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)salt;
@@ -22,16 +23,21 @@
                                                       withInt:(jint)saltOff
                                                       withInt:(jint)saltLen;
 
-- (IOSByteArray *)getSalt;
-
 - (id<OrgBouncycastleCryptoCipherParameters>)getParameters;
+
+- (IOSByteArray *)getSalt;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsParametersWithSalt)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(OrgBouncycastleCryptoParamsParametersWithSalt *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsParametersWithSalt *new_OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(OrgBouncycastleCryptoParamsParametersWithSalt *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt, jint saltOff, jint saltLen);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsParametersWithSalt *new_OrgBouncycastleCryptoParamsParametersWithSalt_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *salt, jint saltOff, jint saltLen) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsParametersWithSalt)
 

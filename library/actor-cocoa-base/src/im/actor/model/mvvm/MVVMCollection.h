@@ -6,119 +6,40 @@
 #ifndef _AMMVVMCollection_H_
 #define _AMMVVMCollection_H_
 
+#include "J2ObjC_header.h"
+
 @class AMBaseValueModel;
-@class AMMVVMCollection_ProxyKeyValueEngine;
 @class IOSByteArray;
-@class IOSLongArray;
-@class JavaUtilHashMap;
+@protocol DKKeyValueEngine;
 @protocol DKKeyValueItem;
 @protocol DKKeyValueStorage;
-@protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
-#include "java/lang/Runnable.h"
+@interface AMMVVMCollection : NSObject
 
-@interface AMMVVMCollection : NSObject {
-}
-
-- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)collectionStorage;
-
-- (id<DKKeyValueEngine>)getEngine;
+#pragma mark Public
 
 - (id)getWithLong:(jlong)id_;
 
+- (id<DKKeyValueEngine>)getEngine;
+
+#pragma mark Protected
+
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)collectionStorage;
+
 - (id)createNewWithDKKeyValueItem:(id<DKKeyValueItem>)raw;
 
-- (IOSByteArray *)serializeWithDKKeyValueItem:(id<DKKeyValueItem>)raw;
-
 - (id)deserializeWithByteArray:(IOSByteArray *)raw;
+
+- (IOSByteArray *)serializeWithDKKeyValueItem:(id<DKKeyValueItem>)raw;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef AMMVVMCollection ImActorModelMvvmMVVMCollection;
+FOUNDATION_EXPORT void AMMVVMCollection_initWithDKKeyValueStorage_(AMMVVMCollection *self, id<DKKeyValueStorage> collectionStorage);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection)
 
-@interface AMMVVMCollection_ProxyKeyValueEngine : NSObject < DKKeyValueEngine > {
-}
-
-- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
-
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
-
-- (void)removeItemWithLong:(jlong)id_;
-
-- (void)removeItemsWithLongArray:(IOSLongArray *)ids;
-
-- (void)clear;
-
-- (id)getValueWithLong:(jlong)id_;
-
-- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_ProxyKeyValueEngine)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_ProxyKeyValueEngine)
-
-@interface AMMVVMCollection_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$
-                        withJavaUtilList:(id<JavaUtilList>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$1)
-
-@interface AMMVVMCollection_$2 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$
-                           withLongArray:(IOSLongArray *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$2)
-
-@interface AMMVVMCollection_$3 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMMVVMCollection:(AMMVVMCollection *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMMVVMCollection_$3)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$3)
+typedef AMMVVMCollection ImActorModelMvvmMVVMCollection;
 
 #endif // _AMMVVMCollection_H_

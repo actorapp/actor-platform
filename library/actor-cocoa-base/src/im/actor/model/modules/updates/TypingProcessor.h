@@ -6,32 +6,33 @@
 #ifndef _ImActorModelModulesUpdatesTypingProcessor_H_
 #define _ImActorModelModulesUpdatesTypingProcessor_H_
 
-@class DKActorRef;
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
 @class ImActorModelApiPeer;
 @class ImActorModelApiTypingTypeEnum;
 @class ImActorModelModulesModules;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/modules/BaseModule.h"
+@interface ImActorModelModulesUpdatesTypingProcessor : ImActorModelModulesBaseModule
 
-@interface ImActorModelModulesUpdatesTypingProcessor : ImActorModelModulesBaseModule {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+
+- (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
+                                 withInt:(jint)uid;
 
 - (void)onTypingWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                 withInt:(jint)uid
       withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
-- (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                 withInt:(jint)uid;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesTypingProcessor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesTypingProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesTypingProcessor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesTypingProcessor *new_ImActorModelModulesUpdatesTypingProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesTypingProcessor)
 

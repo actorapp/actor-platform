@@ -6,21 +6,21 @@
 #ifndef _AMStorageProvider_H_
 #define _AMStorageProvider_H_
 
+#include "J2ObjC_header.h"
+
 @class AMPeer;
 @protocol DKKeyValueStorage;
 @protocol DKListEngine;
 @protocol DKListStorage;
 @protocol DKPreferencesStorage;
 
-#include "J2ObjC_header.h"
-
 @protocol AMStorageProvider < NSObject, JavaObject >
 
 - (id<DKPreferencesStorage>)createPreferencesStorage;
 
-- (id<DKKeyValueStorage>)createKeyValue:(NSString *)name;
+- (id<DKKeyValueStorage>)createKeyValueWithName:(NSString *)name;
 
-- (id<DKListStorage>)createList:(NSString *)name;
+- (id<DKListStorage>)createListWithName:(NSString *)name;
 
 - (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage;
 
@@ -35,8 +35,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMStorageProvider)
 
-#define ImActorModelStorageProvider AMStorageProvider
-
 J2OBJC_TYPE_LITERAL_HEADER(AMStorageProvider)
+
+#define ImActorModelStorageProvider AMStorageProvider
 
 #endif // _AMStorageProvider_H_

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/MD5Digest.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/MD5Digest.java"
 
 #include "IOSPrimitiveArray.h"
@@ -12,12 +13,23 @@
 #include "org/bouncycastle/crypto/digests/MD5Digest.h"
 #include "org/bouncycastle/util/Memoable.h"
 
-__attribute__((unused)) static void OrgBouncycastleCryptoDigestsMD5Digest_unpackWordWithInt_withByteArray_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint word, IOSByteArray *outArg, jint outOff);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_rotateLeftWithInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint x, jint n);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_FWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_GWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_HWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_KWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
+#define OrgBouncycastleCryptoDigestsMD5Digest_DIGEST_LENGTH 16
+#define OrgBouncycastleCryptoDigestsMD5Digest_S11 7
+#define OrgBouncycastleCryptoDigestsMD5Digest_S12 12
+#define OrgBouncycastleCryptoDigestsMD5Digest_S13 17
+#define OrgBouncycastleCryptoDigestsMD5Digest_S14 22
+#define OrgBouncycastleCryptoDigestsMD5Digest_S21 5
+#define OrgBouncycastleCryptoDigestsMD5Digest_S22 9
+#define OrgBouncycastleCryptoDigestsMD5Digest_S23 14
+#define OrgBouncycastleCryptoDigestsMD5Digest_S24 20
+#define OrgBouncycastleCryptoDigestsMD5Digest_S31 4
+#define OrgBouncycastleCryptoDigestsMD5Digest_S32 11
+#define OrgBouncycastleCryptoDigestsMD5Digest_S33 16
+#define OrgBouncycastleCryptoDigestsMD5Digest_S34 23
+#define OrgBouncycastleCryptoDigestsMD5Digest_S41 6
+#define OrgBouncycastleCryptoDigestsMD5Digest_S42 10
+#define OrgBouncycastleCryptoDigestsMD5Digest_S43 15
+#define OrgBouncycastleCryptoDigestsMD5Digest_S44 21
 
 @interface OrgBouncycastleCryptoDigestsMD5Digest () {
  @public
@@ -50,9 +62,56 @@ __attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_KWithI
 - (jint)KWithInt:(jint)u
          withInt:(jint)v
          withInt:(jint)w;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsMD5Digest, X_, IOSIntArray *)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, DIGEST_LENGTH, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S11, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S12, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S13, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S14, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S21, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S22, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S23, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S24, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S31, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S32, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S33, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S34, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S41, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S42, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S43, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S44, jint)
+
+__attribute__((unused)) static void OrgBouncycastleCryptoDigestsMD5Digest_unpackWordWithInt_withByteArray_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint word, IOSByteArray *outArg, jint outOff);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_rotateLeftWithInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint x, jint n);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_FWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_GWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_HWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsMD5Digest_KWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w);
 
 
 #line 9
@@ -61,28 +120,14 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsMD5Digest, X_, IOSIntArray *)
 
 #line 22
 - (instancetype)init {
-  if (self = [super init]) {
-    X_ = [IOSIntArray newArrayWithLength:
-#line 16
-    16];
-    
-#line 24
-    [self reset];
-  }
+  OrgBouncycastleCryptoDigestsMD5Digest_init(self);
   return self;
 }
 
 
 #line 31
 - (instancetype)initWithOrgBouncycastleCryptoDigestsMD5Digest:(OrgBouncycastleCryptoDigestsMD5Digest *)t {
-  if (self = [super initWithOrgBouncycastleCryptoDigestsGeneralDigest:t]) {
-    X_ = [IOSIntArray newArrayWithLength:
-#line 16
-    16];
-    
-#line 35
-    [self copyInWithOrgBouncycastleCryptoDigestsMD5Digest:t];
-  }
+  OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(self, t);
   return self;
 }
 
@@ -141,6 +186,8 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsMD5Digest, X_, IOSIntArray *)
 
 #line 74
 - (void)processLengthWithLong:(jlong)bitLength {
+  
+#line 77
   if (xOff_ > 14) {
     
 #line 79
@@ -152,6 +199,8 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsMD5Digest, X_, IOSIntArray *)
   *IOSIntArray_GetRef(X_, 15) = (jint) (URShift64(bitLength, 32));
 }
 
+
+#line 86
 - (void)unpackWordWithInt:(jint)word
             withByteArray:(IOSByteArray *)outArg
                   withInt:(jint)outOff {
@@ -342,7 +391,7 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsMD5Digest, X_, IOSIntArray *)
 - (id<OrgBouncycastleUtilMemoable>)copy__ {
   
 #line 314
-  return [[OrgBouncycastleCryptoDigestsMD5Digest alloc] initWithOrgBouncycastleCryptoDigestsMD5Digest:self];
+  return new_OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(self);
 }
 
 
@@ -356,18 +405,52 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsMD5Digest, X_, IOSIntArray *)
   [self copyInWithOrgBouncycastleCryptoDigestsMD5Digest:d];
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoDigestsMD5Digest *)other {
-  [super copyAllFieldsTo:other];
-  other->H1_ = H1_;
-  other->H2_ = H2_;
-  other->H3_ = H3_;
-  other->H4_ = H4_;
-  other->X_ = X_;
-  other->xOff_ = xOff_;
-}
-
 @end
 
+
+#line 22
+void OrgBouncycastleCryptoDigestsMD5Digest_init(OrgBouncycastleCryptoDigestsMD5Digest *self) {
+  (void) OrgBouncycastleCryptoDigestsGeneralDigest_init(self);
+  self->X_ = [IOSIntArray newArrayWithLength:
+#line 16
+  16];
+  
+#line 24
+  [self reset];
+}
+
+
+#line 22
+OrgBouncycastleCryptoDigestsMD5Digest *new_OrgBouncycastleCryptoDigestsMD5Digest_init() {
+  OrgBouncycastleCryptoDigestsMD5Digest *self = [OrgBouncycastleCryptoDigestsMD5Digest alloc];
+  OrgBouncycastleCryptoDigestsMD5Digest_init(self);
+  return self;
+}
+
+
+#line 31
+void OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(OrgBouncycastleCryptoDigestsMD5Digest *self, OrgBouncycastleCryptoDigestsMD5Digest *t) {
+  (void) OrgBouncycastleCryptoDigestsGeneralDigest_initWithOrgBouncycastleCryptoDigestsGeneralDigest_(self,
+#line 33
+  t);
+  self->X_ = [IOSIntArray newArrayWithLength:
+#line 16
+  16];
+  
+#line 35
+  [self copyInWithOrgBouncycastleCryptoDigestsMD5Digest:t];
+}
+
+
+#line 31
+OrgBouncycastleCryptoDigestsMD5Digest *new_OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(OrgBouncycastleCryptoDigestsMD5Digest *t) {
+  OrgBouncycastleCryptoDigestsMD5Digest *self = [OrgBouncycastleCryptoDigestsMD5Digest alloc];
+  OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(self, t);
+  return self;
+}
+
+
+#line 86
 void OrgBouncycastleCryptoDigestsMD5Digest_unpackWordWithInt_withByteArray_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint word, IOSByteArray *outArg, jint outOff) {
   
 #line 91
@@ -377,30 +460,40 @@ void OrgBouncycastleCryptoDigestsMD5Digest_unpackWordWithInt_withByteArray_withI
   *IOSByteArray_GetRef(outArg, outOff + 3) = (jbyte) (URShift32(word, 24));
 }
 
+
+#line 168
 jint OrgBouncycastleCryptoDigestsMD5Digest_rotateLeftWithInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint x, jint n) {
   
 #line 172
   return (LShift32(x, n)) | (URShift32(x, (32 - n)));
 }
 
+
+#line 178
 jint OrgBouncycastleCryptoDigestsMD5Digest_FWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w) {
   
 #line 183
   return (u & v) | (~u & w);
 }
 
+
+#line 186
 jint OrgBouncycastleCryptoDigestsMD5Digest_GWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w) {
   
 #line 191
   return (u & w) | (v & ~w);
 }
 
+
+#line 194
 jint OrgBouncycastleCryptoDigestsMD5Digest_HWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w) {
   
 #line 199
   return u ^ v ^ w;
 }
 
+
+#line 202
 jint OrgBouncycastleCryptoDigestsMD5Digest_KWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsMD5Digest *self, jint u, jint v, jint w) {
   
 #line 207

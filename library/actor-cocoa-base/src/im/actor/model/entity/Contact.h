@@ -6,73 +6,58 @@
 #ifndef _AMContact_H_
 #define _AMContact_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+
 @class AMAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@protocol BSBserCreator;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserCreator.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/ListEngineItem.h"
+@interface AMContact : BSBserObject < DKListEngineItem >
 
-@interface AMContact : BSBserObject < DKListEngineItem > {
-}
-
-+ (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)sortKey
                withAMAvatar:(AMAvatar *)avatar
                withNSString:(NSString *)name;
 
-- (jint)getUid;
++ (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatar *)getAvatar;
 
+- (jlong)getEngineId;
+
+- (NSString *)getEngineSearch;
+
+- (jlong)getEngineSort;
+
 - (NSString *)getName;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
-- (jlong)getEngineSort;
-
-- (NSString *)getEngineSearch;
-
 @end
 
-FOUNDATION_EXPORT BOOL AMContact_initialized;
 J2OBJC_STATIC_INIT(AMContact)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT id<BSBserCreator> AMContact_CREATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMContact, CREATOR_, id<BSBserCreator>)
-CF_EXTERN_C_END
 
-typedef AMContact ImActorModelEntityContact;
+FOUNDATION_EXPORT AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT void AMContact_initWithInt_withLong_withAMAvatar_withNSString_(AMContact *self, jint uid, jlong sortKey, AMAvatar *avatar, NSString *name);
+
+FOUNDATION_EXPORT AMContact *new_AMContact_initWithInt_withLong_withAMAvatar_withNSString_(jint uid, jlong sortKey, AMAvatar *avatar, NSString *name) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMContact)
 
-@interface AMContact_$1 : NSObject < BSBserCreator > {
-}
-
-- (AMContact *)createInstance;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMContact_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMContact_$1)
+typedef AMContact ImActorModelEntityContact;
 
 #endif // _AMContact_H_

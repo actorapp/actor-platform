@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupAvatar.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupAvatar.java"
 
 #include "IOSClass.h"
@@ -15,6 +16,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestEditGroupAvatar () {
@@ -23,6 +25,7 @@
   jlong rid_;
   ImActorModelApiFileLocation *fileLocation_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, groupPeer_, ImActorModelApiGroupOutPeer *)
@@ -43,72 +46,55 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                     withImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation {
-  if (self = [super init]) {
-    
-#line 32
-    self->groupPeer_ = groupPeer;
-    
-#line 33
-    self->rid_ = rid;
-    
-#line 34
-    self->fileLocation_ = fileLocation;
-  }
+  ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(self, groupPeer, rid, fileLocation);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestEditGroupAvatar_init(self);
+  return self;
 }
 
+
+#line 41
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
-  
-#line 42
   return self->groupPeer_;
 }
 
-
-#line 45
 - (jlong)getRid {
-  
-#line 46
   return self->rid_;
 }
 
-
-#line 49
 - (ImActorModelApiFileLocation *)getFileLocation {
-  
-#line 50
   return self->fileLocation_;
 }
 
 
 #line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiGroupOutPeer alloc] init]];
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
-  self->fileLocation_ = [values getObjWithInt:3 withBSBserObject:[[ImActorModelApiFileLocation alloc] init]];
+  self->fileLocation_ = [values getObjWithInt:3 withBSBserObject:new_ImActorModelApiFileLocation_init()];
 }
 
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   if (self->groupPeer_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->groupPeer_];
   [writer writeLongWithInt:4 withLong:self->rid_];
   if (self->fileLocation_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeObjectWithInt:3 withBSBserObject:self->fileLocation_];
 }
 
+
+#line 74
 - (NSString *)description {
   NSString *res = @"rpc EditGroupAvatar{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -118,26 +104,52 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 85
-  return ImActorModelApiRpcRequestEditGroupAvatar_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestEditGroupAvatar *)other {
-  [super copyAllFieldsTo:other];
-  other->groupPeer_ = groupPeer_;
-  other->rid_ = rid_;
-  other->fileLocation_ = fileLocation_;
+#line 84
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestEditGroupAvatar_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestEditGroupAvatar *ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestEditGroupAvatar_init();
+  ImActorModelApiRpcRequestEditGroupAvatar_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestEditGroupAvatar alloc] init], data));
+  return ((ImActorModelApiRpcRequestEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditGroupAvatar_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiRpcRequestEditGroupAvatar *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 32
+  self->groupPeer_ = groupPeer;
+  self->rid_ = rid;
+  self->fileLocation_ = fileLocation;
+}
+
+
+#line 31
+ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) {
+  ImActorModelApiRpcRequestEditGroupAvatar *self = [ImActorModelApiRpcRequestEditGroupAvatar alloc];
+  ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(self, groupPeer, rid, fileLocation);
+  return self;
+}
+
+void ImActorModelApiRpcRequestEditGroupAvatar_init(ImActorModelApiRpcRequestEditGroupAvatar *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 37
+ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_init() {
+  ImActorModelApiRpcRequestEditGroupAvatar *self = [ImActorModelApiRpcRequestEditGroupAvatar alloc];
+  ImActorModelApiRpcRequestEditGroupAvatar_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditGroupAvatar)

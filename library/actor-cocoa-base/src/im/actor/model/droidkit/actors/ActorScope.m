@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorScope.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorScope.java"
 
 #include "J2ObjC_source.h"
@@ -27,6 +28,7 @@
   DKActorRef *sender_;
   DKActorEndpoint *endpoint_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKActorScope, path_, NSString *)
@@ -51,141 +53,81 @@ J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
                          withNSString:(NSString *)path
                           withDKProps:(DKProps *)props
                   withDKActorEndpoint:(DKActorEndpoint *)endpoint {
-  if (self = [super init]) {
-    
-#line 33
-    self->actorSystem_ = actorSystem;
-    
-#line 34
-    self->mailbox_ = mailbox;
-    
-#line 35
-    self->actorRef_ = [[DKActorRef alloc] initWithDKActorEndpoint:endpoint withDKActorSystem:actorSystem withDKActorDispatcher:dispatcher withNSString:path];
-    
-#line 36
-    self->dispatcher_ = dispatcher;
-    
-#line 37
-    self->path_ = path;
-    
-#line 38
-    self->props_ = props;
-    
-#line 39
-    self->endpoint_ = endpoint;
-  }
+  DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(self, actorSystem, mailbox, dispatcher, path, props, endpoint);
   return self;
 }
 
 
 #line 42
 - (DKActorEndpoint *)getEndpoint {
-  
-#line 43
   return endpoint_;
 }
 
-
-#line 46
 - (DKActorDispatcher *)getDispatcher {
-  
-#line 47
   return dispatcher_;
 }
 
-
-#line 50
 - (NSString *)getPath {
-  
-#line 51
   return path_;
 }
 
-
-#line 54
 - (DKProps *)getProps {
-  
-#line 55
   return props_;
 }
 
-
-#line 58
 - (DKActorRef *)getActorRef {
-  
-#line 59
   return actorRef_;
 }
 
-
-#line 62
 - (DKMailbox *)getMailbox {
-  
-#line 63
   return mailbox_;
 }
 
-
-#line 66
 - (DKActor *)getActor {
-  
-#line 67
   return actor_;
 }
 
-
-#line 70
 - (DKActorSystem *)getActorSystem {
-  
-#line 71
   return actorSystem_;
 }
 
-
-#line 74
 - (DKActorRef *)getSender {
-  
-#line 75
   return sender_;
 }
 
-
-#line 78
 - (void)setSenderWithDKActorRef:(DKActorRef *)sender {
-  
-#line 79
   self->sender_ = sender;
 }
 
-
-#line 82
 - (void)onActorCreatedWithDKActor:(DKActor *)actor {
-  
-#line 83
   self->actor_ = actor;
 }
 
-
-#line 86
 - (void)onActorDie {
-  
-#line 87
   self->actor_ = nil;
 }
 
-- (void)copyAllFieldsTo:(DKActorScope *)other {
-  [super copyAllFieldsTo:other];
-  other->path_ = path_;
-  other->props_ = props_;
-  other->actorRef_ = actorRef_;
-  other->mailbox_ = mailbox_;
-  other->dispatcher_ = dispatcher_;
-  other->actorSystem_ = actorSystem_;
-  other->actor_ = actor_;
-  other->sender_ = sender_;
-  other->endpoint_ = endpoint_;
+@end
+
+
+#line 31
+void DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorScope *self, DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) {
+  (void) NSObject_init(self);
+  self->actorSystem_ = actorSystem;
+  self->mailbox_ = mailbox;
+  self->actorRef_ = new_DKActorRef_initWithDKActorEndpoint_withDKActorSystem_withDKActorDispatcher_withNSString_(endpoint, actorSystem, dispatcher, path);
+  self->dispatcher_ = dispatcher;
+  self->path_ = path;
+  self->props_ = props;
+  self->endpoint_ = endpoint;
 }
 
-@end
+
+#line 31
+DKActorScope *new_DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) {
+  DKActorScope *self = [DKActorScope alloc];
+  DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(self, actorSystem, mailbox, dispatcher, path, props, endpoint);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorScope)

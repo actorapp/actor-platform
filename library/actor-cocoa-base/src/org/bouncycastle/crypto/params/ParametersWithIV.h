@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleCryptoParamsParametersWithIV_H_
 #define _OrgBouncycastleCryptoParamsParametersWithIV_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsParametersWithIV : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@class IOSByteArray;
+
+@interface OrgBouncycastleCryptoParamsParametersWithIV : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)iv;
@@ -30,8 +31,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsParametersWithIV)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsParametersWithIV_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(OrgBouncycastleCryptoParamsParametersWithIV *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *iv);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsParametersWithIV *new_OrgBouncycastleCryptoParamsParametersWithIV_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *iv) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsParametersWithIV_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(OrgBouncycastleCryptoParamsParametersWithIV *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *iv, jint ivOff, jint ivLen);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsParametersWithIV *new_OrgBouncycastleCryptoParamsParametersWithIV_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_withInt_withInt_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *iv, jint ivOff, jint ivLen) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsParametersWithIV)
 

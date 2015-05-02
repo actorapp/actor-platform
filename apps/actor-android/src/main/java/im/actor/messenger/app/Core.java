@@ -10,6 +10,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.splunk.mint.Mint;
 
 import im.actor.android.AndroidConfigurationBuilder;
+import im.actor.android.AndroidMixpanelAnalytics;
 import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
 import im.actor.messenger.BuildConfig;
@@ -112,6 +113,8 @@ public class Core {
         builder.addEndpoint(BuildConfig.API_URL);
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
+        builder.setEnableFilesLogging(true);
+        builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(),"b2b7a96c3f1e131cf170029f97b2c7c2"));
 
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,

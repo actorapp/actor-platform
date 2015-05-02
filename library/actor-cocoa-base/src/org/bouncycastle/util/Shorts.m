@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Shorts.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Shorts.java"
 
 #include "J2ObjC_source.h"
@@ -18,16 +19,27 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleUtilShorts_init(self);
+  return self;
 }
 
 @end
 
+
+#line 5
 JavaLangShort *OrgBouncycastleUtilShorts_valueOfWithShort_(jshort value) {
-  OrgBouncycastleUtilShorts_init();
-  
-#line 7
+  OrgBouncycastleUtilShorts_initialize();
   return JavaLangShort_valueOfWithShort_(value);
+}
+
+void OrgBouncycastleUtilShorts_init(OrgBouncycastleUtilShorts *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleUtilShorts *new_OrgBouncycastleUtilShorts_init() {
+  OrgBouncycastleUtilShorts *self = [OrgBouncycastleUtilShorts alloc];
+  OrgBouncycastleUtilShorts_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleUtilShorts)

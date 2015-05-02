@@ -5,6 +5,8 @@ import android.os.Bundle;
 import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 
+import static im.actor.messenger.app.Core.messenger;
+
 /**
  * Created by ex3ndr on 12.01.15.
  */
@@ -17,5 +19,11 @@ public class PickCountryActivity extends BaseFragmentActivity {
         if (savedInstanceState == null) {
             showFragment(new PickCountryFragment(), false, false);
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        messenger().trackAuthCountryClosed();
     }
 }

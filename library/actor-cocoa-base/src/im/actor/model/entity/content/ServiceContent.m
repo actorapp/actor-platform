@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceContent.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceContent.java"
 
 #include "IOSClass.h"
@@ -20,6 +21,7 @@
  @public
   NSString *compatText_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
@@ -35,23 +37,20 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
 #line 20
 - (instancetype)initWithNSString:(NSString *)compatText {
-  if (self = [super init]) {
-    
-#line 21
-    self->compatText_ = compatText;
-  }
+  AMServiceContent_initWithNSString_(self, compatText);
   return self;
 }
 
 
 #line 24
 - (instancetype)init {
-  return [super init];
+  AMServiceContent_init(self);
+  return self;
 }
 
+
+#line 28
 - (NSString *)getCompatText {
-  
-#line 29
   return compatText_;
 }
 
@@ -64,8 +63,6 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
 #line 38
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 39
   [super parseWithBSBserValues:values];
   compatText_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
@@ -77,18 +74,46 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
 }
 
-- (void)copyAllFieldsTo:(AMServiceContent *)other {
-  [super copyAllFieldsTo:other];
-  other->compatText_ = compatText_;
-}
-
 @end
 
+
+#line 14
 AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceContent_init();
+  AMServiceContent_initialize();
   
 #line 15
-  return ((AMServiceContent *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceContent alloc] init], data));
+  return ((AMServiceContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceContent_init(), data));
+}
+
+
+#line 20
+void AMServiceContent_initWithNSString_(AMServiceContent *self, NSString *compatText) {
+  (void) AMAbsContent_init(self);
+  
+#line 21
+  self->compatText_ = compatText;
+}
+
+
+#line 20
+AMServiceContent *new_AMServiceContent_initWithNSString_(NSString *compatText) {
+  AMServiceContent *self = [AMServiceContent alloc];
+  AMServiceContent_initWithNSString_(self, compatText);
+  return self;
+}
+
+
+#line 24
+void AMServiceContent_init(AMServiceContent *self) {
+  (void) AMAbsContent_init(self);
+}
+
+
+#line 24
+AMServiceContent *new_AMServiceContent_init() {
+  AMServiceContent *self = [AMServiceContent alloc];
+  AMServiceContent_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceContent)

@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcResponseGetAuthSessions_H_
 #define _ImActorModelApiRpcResponseGetAuthSessions_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseGetAuthSessions_HEADER 81
 
-@interface ImActorModelApiRpcResponseGetAuthSessions : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseGetAuthSessions : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)userAuths;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (id<JavaUtilList>)getUserAuths;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetAuthSessions)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetAuthSessions, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAuthSessions *ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetAuthSessions, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(ImActorModelApiRpcResponseGetAuthSessions *self, id<JavaUtilList> userAuths);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAuthSessions *new_ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(id<JavaUtilList> userAuths) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetAuthSessions_init(ImActorModelApiRpcResponseGetAuthSessions *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAuthSessions *new_ImActorModelApiRpcResponseGetAuthSessions_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetAuthSessions)
 

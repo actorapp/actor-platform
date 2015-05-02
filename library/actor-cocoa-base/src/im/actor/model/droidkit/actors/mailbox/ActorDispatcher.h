@@ -6,6 +6,8 @@
 #ifndef _DKActorDispatcher_H_
 #define _DKActorDispatcher_H_
 
+#include "J2ObjC_header.h"
+
 @class DKAbstractDispatcher;
 @class DKActorEndpoint;
 @class DKActorRef;
@@ -13,22 +15,24 @@
 @class DKActorSystem;
 @class DKEnvelope;
 @class DKProps;
-@class JavaUtilHashMap;
 
-#include "J2ObjC_header.h"
+@interface DKActorDispatcher : NSObject
 
-@interface DKActorDispatcher : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)name
                withDKActorSystem:(DKActorSystem *)actorSystem;
 
-- (void)initDispatcherWithDKAbstractDispatcher:(DKAbstractDispatcher *)dispatcher OBJC_METHOD_FAMILY_NONE;
+- (void)cancelSendWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                               withId:(id)message
+                       withDKActorRef:(DKActorRef *)sender;
+
+- (NSString *)getName;
+
+- (void)killGracefullyWithDKActorScope:(DKActorScope *)scope;
 
 - (DKActorRef *)referenceActorWithNSString:(NSString *)path
                                withDKProps:(DKProps *)props;
-
-- (void)killGracefullyWithDKActorScope:(DKActorScope *)scope;
 
 - (void)sendMessageWithDKActorEndpoint:(DKActorEndpoint *)endpoint
                                 withId:(id)message
@@ -40,11 +44,9 @@
                                   withLong:(jlong)time
                             withDKActorRef:(DKActorRef *)sender;
 
-- (void)cancelSendWithDKActorEndpoint:(DKActorEndpoint *)endpoint
-                               withId:(id)message
-                       withDKActorRef:(DKActorRef *)sender;
+#pragma mark Protected
 
-- (NSString *)getName;
+- (void)initDispatcherWithDKAbstractDispatcher:(DKAbstractDispatcher *)dispatcher OBJC_METHOD_FAMILY_NONE;
 
 - (void)processEnvelopeWithDKEnvelope:(DKEnvelope *)envelope;
 
@@ -52,11 +54,10 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorDispatcher)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef DKActorDispatcher ImActorModelDroidkitActorsMailboxActorDispatcher;
+FOUNDATION_EXPORT void DKActorDispatcher_initWithNSString_withDKActorSystem_(DKActorDispatcher *self, NSString *name, DKActorSystem *actorSystem);
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorDispatcher)
+
+typedef DKActorDispatcher ImActorModelDroidkitActorsMailboxActorDispatcher;
 
 #endif // _DKActorDispatcher_H_

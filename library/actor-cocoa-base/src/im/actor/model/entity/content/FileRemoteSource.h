@@ -6,41 +6,45 @@
 #ifndef _AMFileRemoteSource_H_
 #define _AMFileRemoteSource_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/entity/content/FileSource.h"
+
 @class AMFileReference;
 @class BSBserValues;
 @class BSBserWriter;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/entity/content/FileSource.h"
+@interface AMFileRemoteSource : AMFileSource
 
-@interface AMFileRemoteSource : AMFileSource {
-}
-
-+ (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
+#pragma mark Public
 
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference;
+
+- (NSString *)getFileName;
 
 - (AMFileReference *)getFileReference;
 
 - (jint)getSize;
 
-- (NSString *)getFileName;
-
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+#pragma mark Protected
+
++ (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileRemoteSource)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader);
-CF_EXTERN_C_END
 
-typedef AMFileRemoteSource ImActorModelEntityContentFileRemoteSource;
+FOUNDATION_EXPORT void AMFileRemoteSource_initWithAMFileReference_(AMFileRemoteSource *self, AMFileReference *fileReference);
+
+FOUNDATION_EXPORT AMFileRemoteSource *new_AMFileRemoteSource_initWithAMFileReference_(AMFileReference *fileReference) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileRemoteSource)
+
+typedef AMFileRemoteSource ImActorModelEntityContentFileRemoteSource;
 
 #endif // _AMFileRemoteSource_H_

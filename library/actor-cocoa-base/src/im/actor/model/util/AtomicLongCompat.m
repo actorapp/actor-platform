@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/AtomicLongCompat.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/AtomicLongCompat.java"
 
 #include "J2ObjC_source.h"
@@ -16,9 +17,14 @@
 @implementation AMAtomicLongCompat
 
 - (instancetype)init {
-  return [super init];
+  AMAtomicLongCompat_init(self);
+  return self;
 }
 
 @end
+
+void AMAtomicLongCompat_init(AMAtomicLongCompat *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAtomicLongCompat)

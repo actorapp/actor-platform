@@ -6,14 +6,14 @@
 #ifndef _OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_H_
 #define _OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_H_
 
+#include "J2ObjC_header.h"
+#include "org/bouncycastle/math/ec/endo/GLVEndomorphism.h"
+
 @class IOSObjectArray;
 @class JavaMathBigInteger;
 @class OrgBouncycastleMathEcECCurve;
 @class OrgBouncycastleMathEcEndoGLVTypeBParameters;
 @protocol OrgBouncycastleMathEcECPointMap;
-
-#include "J2ObjC_header.h"
-#include "org/bouncycastle/math/ec/endo/GLVEndomorphism.h"
 
 @interface OrgBouncycastleMathEcEndoGLVTypeBEndomorphism : NSObject < OrgBouncycastleMathEcEndoGLVEndomorphism > {
  @public
@@ -21,6 +21,8 @@
   OrgBouncycastleMathEcEndoGLVTypeBParameters *parameters_;
   id<OrgBouncycastleMathEcECPointMap> pointMap_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)curve
      withOrgBouncycastleMathEcEndoGLVTypeBParameters:(OrgBouncycastleMathEcEndoGLVTypeBParameters *)parameters;
@@ -30,6 +32,8 @@
 - (id<OrgBouncycastleMathEcECPointMap>)getPointMap;
 
 - (jboolean)hasEfficientPointMap;
+
+#pragma mark Protected
 
 - (JavaMathBigInteger *)calculateBWithJavaMathBigInteger:(JavaMathBigInteger *)k
                                   withJavaMathBigInteger:(JavaMathBigInteger *)g
@@ -43,8 +47,9 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism, curve_, OrgBo
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism, parameters_, OrgBouncycastleMathEcEndoGLVTypeBParameters *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism, pointMap_, id<OrgBouncycastleMathEcECPointMap>)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVTypeBParameters_(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism *self, OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcEndoGLVTypeBParameters *parameters);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcEndoGLVTypeBEndomorphism *new_OrgBouncycastleMathEcEndoGLVTypeBEndomorphism_initWithOrgBouncycastleMathEcECCurve_withOrgBouncycastleMathEcEndoGLVTypeBParameters_(OrgBouncycastleMathEcECCurve *curve, OrgBouncycastleMathEcEndoGLVTypeBParameters *parameters) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcEndoGLVTypeBEndomorphism)
 

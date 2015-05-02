@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcRequestDeleteChat_H_
 #define _ImActorModelApiRpcRequestDeleteChat_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestDeleteChat_HEADER 100
 
-@interface ImActorModelApiRpcRequestDeleteChat : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestDeleteChat : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestDeleteChat)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDeleteChat, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteChat *ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDeleteChat, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestDeleteChat *self, ImActorModelApiOutPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestDeleteChat_init(ImActorModelApiRpcRequestDeleteChat *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestDeleteChat)
 

@@ -16,8 +16,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKDispatch)
 
-#define ImActorModelDroidkitActorsDispatchDispatch DKDispatch
-
 J2OBJC_TYPE_LITERAL_HEADER(DKDispatch)
+
+#define ImActorModelDroidkitActorsDispatchDispatch DKDispatch
 
 #endif // _DKDispatch_H_

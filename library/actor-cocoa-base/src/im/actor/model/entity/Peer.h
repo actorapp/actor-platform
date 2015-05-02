@@ -6,35 +6,34 @@
 #ifndef _AMPeer_H_
 #define _AMPeer_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMPeerTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface AMPeer : BSBserObject
 
-@interface AMPeer : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
+                               withInt:(jint)peerId;
+
+- (jboolean)isEqual:(id)o;
 
 + (AMPeer *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 + (AMPeer *)fromUniqueIdWithLong:(jlong)uid;
 
-+ (AMPeer *)userWithInt:(jint)uid;
-
-+ (AMPeer *)groupWithInt:(jint)gid;
-
-- (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
-                               withInt:(jint)peerId;
-
-- (jlong)getUnuqueId;
+- (jint)getPeerId;
 
 - (AMPeerTypeEnum *)getPeerType;
 
-- (jint)getPeerId;
+- (jlong)getUnuqueId;
 
-- (jboolean)isEqual:(id)o;
++ (AMPeer *)groupWithInt:(jint)gid;
 
 - (NSUInteger)hash;
 
@@ -44,11 +43,11 @@
 
 - (NSString *)description;
 
++ (AMPeer *)userWithInt:(jint)uid;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMPeer)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data);
 
@@ -57,10 +56,13 @@ FOUNDATION_EXPORT AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid);
 FOUNDATION_EXPORT AMPeer *AMPeer_userWithInt_(jint uid);
 
 FOUNDATION_EXPORT AMPeer *AMPeer_groupWithInt_(jint gid);
-CF_EXTERN_C_END
 
-typedef AMPeer ImActorModelEntityPeer;
+FOUNDATION_EXPORT void AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeer *self, AMPeerTypeEnum *peerType, jint peerId);
+
+FOUNDATION_EXPORT AMPeer *new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum *peerType, jint peerId) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPeer)
+
+typedef AMPeer ImActorModelEntityPeer;
 
 #endif // _AMPeer_H_

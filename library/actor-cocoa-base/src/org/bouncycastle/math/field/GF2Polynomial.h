@@ -6,25 +6,29 @@
 #ifndef _OrgBouncycastleMathFieldGF2Polynomial_H_
 #define _OrgBouncycastleMathFieldGF2Polynomial_H_
 
-@class IOSIntArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/field/Polynomial.h"
+
+@class IOSIntArray;
 
 @interface OrgBouncycastleMathFieldGF2Polynomial : NSObject < OrgBouncycastleMathFieldPolynomial > {
  @public
   IOSIntArray *exponents_;
 }
 
-- (instancetype)initWithIntArray:(IOSIntArray *)exponents;
+#pragma mark Public
+
+- (jboolean)isEqual:(id)obj;
 
 - (jint)getDegree;
 
 - (IOSIntArray *)getExponentsPresent;
 
-- (jboolean)isEqual:(id)obj;
-
 - (NSUInteger)hash;
+
+#pragma mark Package-Private
+
+- (instancetype)initWithIntArray:(IOSIntArray *)exponents;
 
 @end
 
@@ -32,8 +36,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathFieldGF2Polynomial)
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathFieldGF2Polynomial, exponents_, IOSIntArray *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(OrgBouncycastleMathFieldGF2Polynomial *self, IOSIntArray *exponents);
+
+FOUNDATION_EXPORT OrgBouncycastleMathFieldGF2Polynomial *new_OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(IOSIntArray *exponents) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathFieldGF2Polynomial)
 

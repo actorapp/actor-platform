@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupAvatarChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupAvatarChanged.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateGroupAvatarChanged () {
@@ -24,6 +26,7 @@
   ImActorModelApiAvatar *avatar_;
   jlong date_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImActorModelApiAvatar *)
@@ -45,67 +48,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
                     withInt:(jint)uid
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 34
-    self->groupId_ = groupId;
-    
-#line 35
-    self->rid_ = rid;
-    
-#line 36
-    self->uid_ = uid;
-    
-#line 37
-    self->avatar_ = avatar;
-    
-#line 38
-    self->date_ = date;
-  }
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(self, groupId, rid, uid, avatar, date);
   return self;
 }
 
 
 #line 41
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(self);
+  return self;
 }
 
+
+#line 45
 - (jint)getGroupId {
-  
-#line 46
   return self->groupId_;
 }
 
-
-#line 49
 - (jlong)getRid {
-  
-#line 50
   return self->rid_;
 }
 
-
-#line 53
 - (jint)getUid {
-  
-#line 54
   return self->uid_;
 }
 
-
-#line 57
 - (ImActorModelApiAvatar *)getAvatar {
-  
-#line 58
   return self->avatar_;
 }
 
-
-#line 61
 - (jlong)getDate {
-  
-#line 62
   return self->date_;
 }
 
@@ -115,15 +87,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
   self->uid_ = [values getIntWithInt:2];
-  self->avatar_ = [values optObjWithInt:3 withBSBserObject:[[ImActorModelApiAvatar alloc] init]];
+  self->avatar_ = [values optObjWithInt:3 withBSBserObject:new_ImActorModelApiAvatar_init()];
   self->date_ = [values getLongWithInt:4];
 }
 
 
 #line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 76
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
@@ -133,6 +103,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
+
+#line 86
 - (NSString *)description {
   NSString *res = @"update GroupAvatarChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -144,28 +116,56 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 99
-  return ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupAvatarChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->groupId_ = groupId_;
-  other->rid_ = rid_;
-  other->uid_ = uid_;
-  other->avatar_ = avatar_;
-  other->date_ = date_;
+#line 98
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateGroupAvatarChanged *ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged_init();
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(), data));
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self, jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 34
+  self->groupId_ = groupId;
+  self->rid_ = rid;
+  self->uid_ = uid;
+  self->avatar_ = avatar;
+  self->date_ = date;
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date) {
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged *self = [ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc];
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(self, groupId, rid, uid, avatar, date);
+  return self;
+}
+
+
+#line 41
+void ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 41
+ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_init() {
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged *self = [ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc];
+  ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupAvatarChanged)

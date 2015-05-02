@@ -6,26 +6,28 @@
 #ifndef _ImActorModelApiParserRpcParser_H_
 #define _ImActorModelApiParserRpcParser_H_
 
-@class IOSByteArray;
-@class ImActorModelNetworkParserRpcScope;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/BaseParser.h"
 
-@interface ImActorModelApiParserRpcParser : ImActorModelNetworkParserBaseParser {
-}
+@class IOSByteArray;
+@class ImActorModelNetworkParserRpcScope;
+
+@interface ImActorModelApiParserRpcParser : ImActorModelNetworkParserBaseParser
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (ImActorModelNetworkParserRpcScope *)readWithInt:(jint)type
                                      withByteArray:(IOSByteArray *)payload;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiParserRpcParser)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiParserRpcParser_init(ImActorModelApiParserRpcParser *self);
+
+FOUNDATION_EXPORT ImActorModelApiParserRpcParser *new_ImActorModelApiParserRpcParser_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiParserRpcParser)
 

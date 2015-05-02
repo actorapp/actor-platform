@@ -8,21 +8,18 @@
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMessagesPoisonPill : NSObject {
-}
+@interface ImActorModelDroidkitActorsMessagesPoisonPill : NSObject
+
+#pragma mark Public
 
 - (NSString *)description;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsMessagesPoisonPill_initialized;
 J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsMessagesPoisonPill)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT ImActorModelDroidkitActorsMessagesPoisonPill *ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMessagesPoisonPill, INSTANCE_, ImActorModelDroidkitActorsMessagesPoisonPill *)
-CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMessagesPoisonPill)
 

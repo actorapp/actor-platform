@@ -6,13 +6,14 @@
 #ifndef _BSIncorrectTypeException_H_
 #define _BSIncorrectTypeException_H_
 
-@class JavaLangThrowable;
-
 #include "J2ObjC_header.h"
 #include "java/lang/RuntimeException.h"
 
-@interface BSIncorrectTypeException : JavaLangRuntimeException {
-}
+@class JavaLangThrowable;
+
+@interface BSIncorrectTypeException : JavaLangRuntimeException
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -27,11 +28,24 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BSIncorrectTypeException)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSIncorrectTypeException_init(BSIncorrectTypeException *self);
 
-typedef BSIncorrectTypeException ImActorModelDroidkitBserIncorrectTypeException;
+FOUNDATION_EXPORT BSIncorrectTypeException *new_BSIncorrectTypeException_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSIncorrectTypeException_initWithNSString_(BSIncorrectTypeException *self, NSString *detailMessage);
+
+FOUNDATION_EXPORT BSIncorrectTypeException *new_BSIncorrectTypeException_initWithNSString_(NSString *detailMessage) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSIncorrectTypeException_initWithNSString_withJavaLangThrowable_(BSIncorrectTypeException *self, NSString *detailMessage, JavaLangThrowable *throwable);
+
+FOUNDATION_EXPORT BSIncorrectTypeException *new_BSIncorrectTypeException_initWithNSString_withJavaLangThrowable_(NSString *detailMessage, JavaLangThrowable *throwable) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSIncorrectTypeException_initWithJavaLangThrowable_(BSIncorrectTypeException *self, JavaLangThrowable *throwable);
+
+FOUNDATION_EXPORT BSIncorrectTypeException *new_BSIncorrectTypeException_initWithJavaLangThrowable_(JavaLangThrowable *throwable) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSIncorrectTypeException)
+
+typedef BSIncorrectTypeException ImActorModelDroidkitBserIncorrectTypeException;
 
 #endif // _BSIncorrectTypeException_H_

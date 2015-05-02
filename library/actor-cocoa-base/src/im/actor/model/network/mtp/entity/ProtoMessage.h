@@ -6,15 +6,18 @@
 #ifndef _MTProtoMessage_H_
 #define _MTProtoMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/mtp/entity/ProtoObject.h"
+
 @class BSDataInput;
 @class BSDataOutput;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/mtp/entity/ProtoObject.h"
+@interface MTProtoMessage : MTProtoObject
 
-@interface MTProtoMessage : MTProtoObject {
-}
+#pragma mark Public
+
+- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
 - (instancetype)initWithLong:(jlong)messageId
                withByteArray:(IOSByteArray *)payload;
@@ -23,23 +26,26 @@
 
 - (IOSByteArray *)getPayload;
 
-- (instancetype)initWithBSDataInput:(BSDataInput *)stream;
-
-- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
-
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs;
 
 - (NSString *)description;
+
+- (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTProtoMessage)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void MTProtoMessage_initWithLong_withByteArray_(MTProtoMessage *self, jlong messageId, IOSByteArray *payload);
 
-typedef MTProtoMessage ImActorModelNetworkMtpEntityProtoMessage;
+FOUNDATION_EXPORT MTProtoMessage *new_MTProtoMessage_initWithLong_withByteArray_(jlong messageId, IOSByteArray *payload) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTProtoMessage_initWithBSDataInput_(MTProtoMessage *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTProtoMessage *new_MTProtoMessage_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTProtoMessage)
+
+typedef MTProtoMessage ImActorModelNetworkMtpEntityProtoMessage;
 
 #endif // _MTProtoMessage_H_

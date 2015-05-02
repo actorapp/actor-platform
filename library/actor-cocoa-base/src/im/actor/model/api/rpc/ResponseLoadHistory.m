@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseLoadHistory.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseLoadHistory.java"
 
 #include "IOSClass.h"
@@ -15,6 +16,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -24,6 +26,7 @@
   id<JavaUtilList> history_;
   id<JavaUtilList> users_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, history_, id<JavaUtilList>)
@@ -43,48 +46,38 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
 #line 30
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)history
                     withJavaUtilList:(id<JavaUtilList>)users {
-  if (self = [super init]) {
-    
-#line 31
-    self->history_ = history;
-    
-#line 32
-    self->users_ = users;
-  }
+  ImActorModelApiRpcResponseLoadHistory_initWithJavaUtilList_withJavaUtilList_(self, history, users);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcResponseLoadHistory_init(self);
+  return self;
 }
 
+
+#line 39
 - (id<JavaUtilList>)getHistory {
-  
-#line 40
   return self->history_;
 }
 
-
-#line 43
 - (id<JavaUtilList>)getUsers {
-  
-#line 44
   return self->users_;
 }
 
 
 #line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  id<JavaUtilList> _history = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _history = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_history addWithId:[[ImActorModelApiHistoryMessage alloc] init]];
+    [_history addWithId:new_ImActorModelApiHistoryMessage_init()];
   }
   self->history_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_history];
-  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
-    [_users addWithId:[[ImActorModelApiUser alloc] init]];
+    [_users addWithId:new_ImActorModelApiUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_users];
 }
@@ -92,37 +85,63 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadHistory, users_, id<JavaUtilLi
 
 #line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 63
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->history_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->users_];
 }
 
+
+#line 68
 - (NSString *)description {
   NSString *res = @"tuple LoadHistory{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 76
-  return ImActorModelApiRpcResponseLoadHistory_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcResponseLoadHistory *)other {
-  [super copyAllFieldsTo:other];
-  other->history_ = history_;
-  other->users_ = users_;
+#line 75
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcResponseLoadHistory_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcResponseLoadHistory *ImActorModelApiRpcResponseLoadHistory_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseLoadHistory_init();
+  ImActorModelApiRpcResponseLoadHistory_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcResponseLoadHistory *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseLoadHistory alloc] init], data));
+  return ((ImActorModelApiRpcResponseLoadHistory *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseLoadHistory_init(), data));
+}
+
+void ImActorModelApiRpcResponseLoadHistory_initWithJavaUtilList_withJavaUtilList_(ImActorModelApiRpcResponseLoadHistory *self, id<JavaUtilList> history, id<JavaUtilList> users) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+  
+#line 31
+  self->history_ = history;
+  self->users_ = users;
+}
+
+
+#line 30
+ImActorModelApiRpcResponseLoadHistory *new_ImActorModelApiRpcResponseLoadHistory_initWithJavaUtilList_withJavaUtilList_(id<JavaUtilList> history, id<JavaUtilList> users) {
+  ImActorModelApiRpcResponseLoadHistory *self = [ImActorModelApiRpcResponseLoadHistory alloc];
+  ImActorModelApiRpcResponseLoadHistory_initWithJavaUtilList_withJavaUtilList_(self, history, users);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcResponseLoadHistory_init(ImActorModelApiRpcResponseLoadHistory *self) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcResponseLoadHistory *new_ImActorModelApiRpcResponseLoadHistory_init() {
+  ImActorModelApiRpcResponseLoadHistory *self = [ImActorModelApiRpcResponseLoadHistory alloc];
+  ImActorModelApiRpcResponseLoadHistory_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseLoadHistory)

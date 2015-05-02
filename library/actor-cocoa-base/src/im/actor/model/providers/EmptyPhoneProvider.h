@@ -6,24 +6,24 @@
 #ifndef _ImActorModelProvidersEmptyPhoneProvider_H_
 #define _ImActorModelProvidersEmptyPhoneProvider_H_
 
-@protocol AMPhoneBookProvider_Callback;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/PhoneBookProvider.h"
 
-@interface ImActorModelProvidersEmptyPhoneProvider : NSObject < AMPhoneBookProvider > {
-}
+@interface ImActorModelProvidersEmptyPhoneProvider : NSObject < AMPhoneBookProvider >
 
-- (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback;
+#pragma mark Public
 
 - (instancetype)init;
+
+- (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelProvidersEmptyPhoneProvider)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelProvidersEmptyPhoneProvider_init(ImActorModelProvidersEmptyPhoneProvider *self);
+
+FOUNDATION_EXPORT ImActorModelProvidersEmptyPhoneProvider *new_ImActorModelProvidersEmptyPhoneProvider_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelProvidersEmptyPhoneProvider)
 

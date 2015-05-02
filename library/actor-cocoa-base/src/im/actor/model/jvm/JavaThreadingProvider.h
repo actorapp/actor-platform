@@ -6,6 +6,9 @@
 #ifndef _AMJavaThreadingProvider_H_
 #define _AMJavaThreadingProvider_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/ThreadingProvider.h"
+
 @class AMAtomicIntegerCompat;
 @class AMAtomicLongCompat;
 @class AMThreadLocalCompat;
@@ -13,46 +16,45 @@
 @class DKActorSystem;
 @class DKThreadPriorityEnum;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/ThreadingProvider.h"
+@interface AMJavaThreadingProvider : NSObject < AMThreadingProvider >
 
-@interface AMJavaThreadingProvider : NSObject < AMThreadingProvider > {
-}
+#pragma mark Public
 
 - (instancetype)init;
-
-- (jlong)getActorTime;
-
-- (jlong)getCurrentTime;
-
-- (jlong)getSyncedCurrentTime;
-
-- (jint)getCoresCount;
 
 - (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value;
 
 - (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value;
 
-- (AMThreadLocalCompat *)createThreadLocal;
+- (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
+                                  withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
+                                         withDKActorSystem:(DKActorSystem *)actorSystem;
 
 - (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
                                             withInt:(jint)threadsCount
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                   withDKActorSystem:(DKActorSystem *)actorSystem;
 
-- (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
-                                  withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                         withDKActorSystem:(DKActorSystem *)actorSystem;
+- (AMThreadLocalCompat *)createThreadLocal;
+
+- (jlong)getActorTime;
+
+- (jint)getCoresCount;
+
+- (jlong)getCurrentTime;
+
+- (jlong)getSyncedCurrentTime;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMJavaThreadingProvider)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMJavaThreadingProvider_init(AMJavaThreadingProvider *self);
 
-typedef AMJavaThreadingProvider ImActorModelJvmJavaThreadingProvider;
+FOUNDATION_EXPORT AMJavaThreadingProvider *new_AMJavaThreadingProvider_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMJavaThreadingProvider)
+
+typedef AMJavaThreadingProvider ImActorModelJvmJavaThreadingProvider;
 
 #endif // _AMJavaThreadingProvider_H_

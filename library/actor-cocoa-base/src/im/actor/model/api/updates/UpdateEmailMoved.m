@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailMoved.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateEmailMoved.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateEmailMoved () {
@@ -20,6 +22,7 @@
   jint emailId_;
   jint uid_;
 }
+
 @end
 
 
@@ -36,34 +39,24 @@
 #line 30
 - (instancetype)initWithInt:(jint)emailId
                     withInt:(jint)uid {
-  if (self = [super init]) {
-    
-#line 31
-    self->emailId_ = emailId;
-    
-#line 32
-    self->uid_ = uid;
-  }
+  ImActorModelApiUpdatesUpdateEmailMoved_initWithInt_withInt_(self, emailId, uid);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateEmailMoved_init(self);
+  return self;
 }
 
+
+#line 39
 - (jint)getEmailId {
-  
-#line 40
   return self->emailId_;
 }
 
-
-#line 43
 - (jint)getUid {
-  
-#line 44
   return self->uid_;
 }
 
@@ -77,12 +70,12 @@
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   [writer writeIntWithInt:2 withInt:self->uid_];
 }
 
+
+#line 60
 - (NSString *)description {
   NSString *res = @"update EmailMoved{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"emailId=", self->emailId_));
@@ -91,25 +84,51 @@
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 70
-  return ImActorModelApiUpdatesUpdateEmailMoved_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateEmailMoved *)other {
-  [super copyAllFieldsTo:other];
-  other->emailId_ = emailId_;
-  other->uid_ = uid_;
+#line 69
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateEmailMoved_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateEmailMoved *ImActorModelApiUpdatesUpdateEmailMoved_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateEmailMoved_init();
+  ImActorModelApiUpdatesUpdateEmailMoved_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateEmailMoved *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateEmailMoved alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateEmailMoved *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateEmailMoved_init(), data));
+}
+
+void ImActorModelApiUpdatesUpdateEmailMoved_initWithInt_withInt_(ImActorModelApiUpdatesUpdateEmailMoved *self, jint emailId, jint uid) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 31
+  self->emailId_ = emailId;
+  self->uid_ = uid;
+}
+
+
+#line 30
+ImActorModelApiUpdatesUpdateEmailMoved *new_ImActorModelApiUpdatesUpdateEmailMoved_initWithInt_withInt_(jint emailId, jint uid) {
+  ImActorModelApiUpdatesUpdateEmailMoved *self = [ImActorModelApiUpdatesUpdateEmailMoved alloc];
+  ImActorModelApiUpdatesUpdateEmailMoved_initWithInt_withInt_(self, emailId, uid);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiUpdatesUpdateEmailMoved_init(ImActorModelApiUpdatesUpdateEmailMoved *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 35
+ImActorModelApiUpdatesUpdateEmailMoved *new_ImActorModelApiUpdatesUpdateEmailMoved_init() {
+  ImActorModelApiUpdatesUpdateEmailMoved *self = [ImActorModelApiUpdatesUpdateEmailMoved alloc];
+  ImActorModelApiUpdatesUpdateEmailMoved_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateEmailMoved)

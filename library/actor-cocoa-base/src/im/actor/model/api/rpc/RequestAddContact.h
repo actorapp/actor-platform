@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiRpcRequestAddContact_H_
 #define _ImActorModelApiRpcRequestAddContact_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestAddContact_HEADER 114
 
-@interface ImActorModelApiRpcRequestAddContact : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestAddContact : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestAddContact *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash;
 
-- (instancetype)init;
-
-- (jint)getUid;
++ (ImActorModelApiRpcRequestAddContact *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
+
+- (jint)getHeaderKey;
+
+- (jint)getUid;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestAddContact)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestAddContact, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestAddContact *ImActorModelApiRpcRequestAddContact_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestAddContact, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestAddContact_initWithInt_withLong_(ImActorModelApiRpcRequestAddContact *self, jint uid, jlong accessHash);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestAddContact *new_ImActorModelApiRpcRequestAddContact_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestAddContact_init(ImActorModelApiRpcRequestAddContact *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestAddContact *new_ImActorModelApiRpcRequestAddContact_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestAddContact)
 

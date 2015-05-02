@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupTitleChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupTitleChanged.java"
 
 #include "IOSClass.h"
@@ -13,6 +14,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiUpdatesUpdateGroupTitleChanged () {
@@ -23,6 +25,7 @@
   NSString *title_;
   jlong date_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSString *)
@@ -44,67 +47,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
                     withInt:(jint)uid
                withNSString:(NSString *)title
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 34
-    self->groupId_ = groupId;
-    
-#line 35
-    self->rid_ = rid;
-    
-#line 36
-    self->uid_ = uid;
-    
-#line 37
-    self->title_ = title;
-    
-#line 38
-    self->date_ = date;
-  }
+  ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
   return self;
 }
 
 
 #line 41
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiUpdatesUpdateGroupTitleChanged_init(self);
+  return self;
 }
 
+
+#line 45
 - (jint)getGroupId {
-  
-#line 46
   return self->groupId_;
 }
 
-
-#line 49
 - (jlong)getRid {
-  
-#line 50
   return self->rid_;
 }
 
-
-#line 53
 - (jint)getUid {
-  
-#line 54
   return self->uid_;
 }
 
-
-#line 57
 - (NSString *)getTitle {
-  
-#line 58
   return self->title_;
 }
 
-
-#line 61
 - (jlong)getDate {
-  
-#line 62
   return self->date_;
 }
 
@@ -121,18 +93,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 
 #line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 76
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->uid_];
   if (self->title_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeStringWithInt:3 withNSString:self->title_];
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
+
+#line 87
 - (NSString *)description {
   NSString *res = @"update GroupTitleChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -144,28 +116,56 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 100
-  return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiUpdatesUpdateGroupTitleChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->groupId_ = groupId_;
-  other->rid_ = rid_;
-  other->uid_ = uid_;
-  other->title_ = title_;
-  other->date_ = date_;
+#line 99
+- (jint)getHeaderKey {
+  return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_init();
+  ImActorModelApiUpdatesUpdateGroupTitleChanged_initialize();
   
 #line 24
-  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiUpdatesUpdateGroupTitleChanged alloc] init], data));
+  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init(), data));
+}
+
+
+#line 33
+void ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(ImActorModelApiUpdatesUpdateGroupTitleChanged *self, jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+  
+#line 34
+  self->groupId_ = groupId;
+  self->rid_ = rid;
+  self->uid_ = uid;
+  self->title_ = title;
+  self->date_ = date;
+}
+
+
+#line 33
+ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
+  ImActorModelApiUpdatesUpdateGroupTitleChanged *self = [ImActorModelApiUpdatesUpdateGroupTitleChanged alloc];
+  ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
+  return self;
+}
+
+
+#line 41
+void ImActorModelApiUpdatesUpdateGroupTitleChanged_init(ImActorModelApiUpdatesUpdateGroupTitleChanged *self) {
+  (void) ImActorModelNetworkParserUpdate_init(self);
+}
+
+
+#line 41
+ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init() {
+  ImActorModelApiUpdatesUpdateGroupTitleChanged *self = [ImActorModelApiUpdatesUpdateGroupTitleChanged alloc];
+  ImActorModelApiUpdatesUpdateGroupTitleChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupTitleChanged)

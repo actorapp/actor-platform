@@ -6,40 +6,48 @@
 #ifndef _MTRequestResend_H_
 #define _MTRequestResend_H_
 
-@class BSDataInput;
-@class BSDataOutput;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 
+@class BSDataInput;
+@class BSDataOutput;
+
 #define MTRequestResend_HEADER 9
 
-@interface MTRequestResend : MTProtoStruct {
-}
+@interface MTRequestResend : MTProtoStruct
 
-- (instancetype)initWithLong:(jlong)messageId;
+#pragma mark Public
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream;
 
+- (instancetype)initWithLong:(jlong)messageId;
+
 - (jlong)getMessageId;
+
+#pragma mark Protected
 
 - (jbyte)getHeader;
 
-- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
-
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs;
+
+- (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTRequestResend)
 
-CF_EXTERN_C_BEGIN
-
 J2OBJC_STATIC_FIELD_GETTER(MTRequestResend, HEADER, jbyte)
-CF_EXTERN_C_END
 
-typedef MTRequestResend ImActorModelNetworkMtpEntityRequestResend;
+FOUNDATION_EXPORT void MTRequestResend_initWithLong_(MTRequestResend *self, jlong messageId);
+
+FOUNDATION_EXPORT MTRequestResend *new_MTRequestResend_initWithLong_(jlong messageId) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void MTRequestResend_initWithBSDataInput_(MTRequestResend *self, BSDataInput *stream);
+
+FOUNDATION_EXPORT MTRequestResend *new_MTRequestResend_initWithBSDataInput_(BSDataInput *stream) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTRequestResend)
+
+typedef MTRequestResend ImActorModelNetworkMtpEntityRequestResend;
 
 #endif // _MTRequestResend_H_

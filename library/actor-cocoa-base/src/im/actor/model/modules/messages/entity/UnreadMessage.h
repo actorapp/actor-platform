@@ -6,25 +6,27 @@
 #ifndef _ImActorModelModulesMessagesEntityUnreadMessage_H_
 #define _ImActorModelModulesMessagesEntityUnreadMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityUnreadMessage : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityUnreadMessage : BSBserObject {
-}
+#pragma mark Public
 
-+ (ImActorModelModulesMessagesEntityUnreadMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)init;
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-                      withLong:(jlong)sortDate
-                   withBoolean:(jboolean)isEncrypted;
+                      withLong:(jlong)sortDate;
 
-- (instancetype)init;
+- (jboolean)isEqual:(id)o;
+
++ (ImActorModelModulesMessagesEntityUnreadMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMPeer *)getPeer;
 
@@ -32,24 +34,25 @@
 
 - (jlong)getSortDate;
 
-- (jboolean)isEncrypted;
+- (NSUInteger)hash;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jboolean)isEqual:(id)o;
-
-- (NSUInteger)hash;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityUnreadMessage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityUnreadMessage *ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesEntityUnreadMessage *self, AMPeer *peer, jlong rid, jlong sortDate);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortDate) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityUnreadMessage_init(ImActorModelModulesMessagesEntityUnreadMessage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityUnreadMessage)
 

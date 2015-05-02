@@ -16,8 +16,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserCreator)
 
-#define ImActorModelDroidkitBserBserCreator BSBserCreator
-
 J2OBJC_TYPE_LITERAL_HEADER(BSBserCreator)
+
+#define ImActorModelDroidkitBserBserCreator BSBserCreator
 
 #endif // _BSBserCreator_H_

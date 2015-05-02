@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/DoubleAddMultiplier.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/DoubleAddMultiplier.java"
 
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 #include "org/bouncycastle/math/ec/DoubleAddMultiplier.h"
 #include "org/bouncycastle/math/ec/ECCurve.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
@@ -31,7 +33,7 @@
 #line 17
     jint b = [k testBitWithInt:i] ? 1 : 0;
     jint bp = 1 - b;
-    IOSObjectArray_Set(R, bp, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, bp))) twicePlusWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(R, b)]);
+    (void) IOSObjectArray_Set(R, bp, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, bp))) twicePlusWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(R, b)]);
   }
   
 #line 22
@@ -39,9 +41,20 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  OrgBouncycastleMathEcDoubleAddMultiplier_init(self);
+  return self;
 }
 
 @end
+
+void OrgBouncycastleMathEcDoubleAddMultiplier_init(OrgBouncycastleMathEcDoubleAddMultiplier *self) {
+  (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
+}
+
+OrgBouncycastleMathEcDoubleAddMultiplier *new_OrgBouncycastleMathEcDoubleAddMultiplier_init() {
+  OrgBouncycastleMathEcDoubleAddMultiplier *self = [OrgBouncycastleMathEcDoubleAddMultiplier alloc];
+  OrgBouncycastleMathEcDoubleAddMultiplier_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcDoubleAddMultiplier)

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadDialogs.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadDialogs.java"
 
 #include "IOSClass.h"
@@ -13,13 +14,15 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestLoadDialogs () {
  @public
-  jlong startDate_;
+  jlong minDate_;
   jint limit_;
 }
+
 @end
 
 
@@ -34,82 +37,98 @@
 
 
 #line 30
-- (instancetype)initWithLong:(jlong)startDate
+- (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit {
-  if (self = [super init]) {
-    
-#line 31
-    self->startDate_ = startDate;
-    
-#line 32
-    self->limit_ = limit;
-  }
+  ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
-}
-
-- (jlong)getStartDate {
-  
-#line 40
-  return self->startDate_;
+  ImActorModelApiRpcRequestLoadDialogs_init(self);
+  return self;
 }
 
 
-#line 43
+#line 39
+- (jlong)getMinDate {
+  return self->minDate_;
+}
+
 - (jint)getLimit {
-  
-#line 44
   return self->limit_;
 }
 
 
 #line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->startDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
+  self->minDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->limit_ = [values getIntWithInt:2];
 }
 
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->startDate_];
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->minDate_];
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
 
+
+#line 60
 - (NSString *)description {
   NSString *res = @"rpc LoadDialogs{";
-  res = JreStrcat("$$", res, JreStrcat("$J", @"startDate=", self->startDate_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @"minDate=", self->minDate_));
   res = JreStrcat("$$", res, JreStrcat("$I", @", limit=", self->limit_));
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 70
-  return ImActorModelApiRpcRequestLoadDialogs_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestLoadDialogs *)other {
-  [super copyAllFieldsTo:other];
-  other->startDate_ = startDate_;
-  other->limit_ = limit_;
+#line 69
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestLoadDialogs_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestLoadDialogs_init();
+  ImActorModelApiRpcRequestLoadDialogs_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestLoadDialogs alloc] init], data));
+  return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLoadDialogs_init(), data));
+}
+
+void ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(ImActorModelApiRpcRequestLoadDialogs *self, jlong minDate, jint limit) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->minDate_ = minDate;
+  self->limit_ = limit;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) {
+  ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
+  ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestLoadDialogs_init(ImActorModelApiRpcRequestLoadDialogs *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_init() {
+  ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
+  ImActorModelApiRpcRequestLoadDialogs_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestLoadDialogs)

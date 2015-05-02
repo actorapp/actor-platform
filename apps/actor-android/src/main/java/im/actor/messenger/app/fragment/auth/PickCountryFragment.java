@@ -12,13 +12,15 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.messenger.app.view.ViewHolder;
 import im.actor.messenger.app.util.country.Country;
 import im.actor.messenger.app.util.country.CountryDb;
+import im.actor.messenger.app.view.ViewHolder;
 
-import java.util.ArrayList;
+import static im.actor.messenger.app.Core.messenger;
 
 public class PickCountryFragment extends BaseFragment {
 
@@ -35,6 +37,7 @@ public class PickCountryFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (adapter != null) {
                     final Country country = adapter.getItem(position);
+                    messenger().trackAuthCountryPicked(country.shortName);
                     getActivity().setResult(Activity.RESULT_OK, new Intent()
                             .putExtra("country_id", country.fullNameRes)
                             .putExtra("country_code", country.phoneCode)

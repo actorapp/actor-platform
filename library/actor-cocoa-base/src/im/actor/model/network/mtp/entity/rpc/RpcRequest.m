@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcRequest.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcRequest.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcRequest.h"
 #include "java/io/IOException.h"
 
@@ -20,37 +22,25 @@
 
 #line 17
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 18
-  [super initWithBSDataInput:stream];
+  MTRpcRequest_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 21
 - (instancetype)initWithInt:(jint)requestType
               withByteArray:(IOSByteArray *)payload {
-  if (self = [super init]) {
-    self->requestType_ = requestType;
-    
-#line 23
-    self->payload_ = payload;
-  }
+  MTRpcRequest_initWithInt_withByteArray_(self, requestType, payload);
   return self;
 }
 
 
 #line 26
 - (jint)getRequestType {
-  
-#line 27
   return requestType_;
 }
 
-
-#line 30
 - (IOSByteArray *)getPayload {
-  
-#line 31
   return payload_;
 }
 
@@ -63,8 +53,6 @@
 
 #line 40
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 41
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:requestType_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
@@ -76,18 +64,44 @@
   payload_ = [bs readProtoBytes];
 }
 
+
+#line 52
 - (NSString *)description {
-  
-#line 53
   return JreStrcat("$IC", @"RpcRequest[", requestType_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTRpcRequest *)other {
-  [super copyAllFieldsTo:other];
-  other->requestType_ = requestType_;
-  other->payload_ = payload_;
+@end
+
+
+#line 17
+void MTRpcRequest_initWithBSDataInput_(MTRpcRequest *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 17
+MTRpcRequest *new_MTRpcRequest_initWithBSDataInput_(BSDataInput *stream) {
+  MTRpcRequest *self = [MTRpcRequest alloc];
+  MTRpcRequest_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 21
+void MTRpcRequest_initWithInt_withByteArray_(MTRpcRequest *self, jint requestType, IOSByteArray *payload) {
+  (void) MTProtoStruct_init(self);
+  
+#line 22
+  self->requestType_ = requestType;
+  self->payload_ = payload;
+}
+
+
+#line 21
+MTRpcRequest *new_MTRpcRequest_initWithInt_withByteArray_(jint requestType, IOSByteArray *payload) {
+  MTRpcRequest *self = [MTRpcRequest alloc];
+  MTRpcRequest_initWithInt_withByteArray_(self, requestType, payload);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcRequest)

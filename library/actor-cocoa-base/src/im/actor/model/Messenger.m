@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/Messenger.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/Messenger.java"
 
 #include "IOSClass.h"
@@ -68,88 +69,31 @@
 
 #line 52
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
-  if (self = [super init]) {
-    
-#line 57
-    AMLog_setLogWithAMLogProvider_([((AMConfiguration *) nil_chk(configuration)) getLog]);
-    
-#line 59
-    DKEnvironment_setThreadingProviderWithAMThreadingProvider_([configuration getThreadingProvider]);
-    
-#line 60
-    DKEnvironment_setDispatcherProviderWithAMDispatcherProvider_([configuration getDispatcherProvider]);
-    
-#line 64
-    AMTiming *timing = [[AMTiming alloc] initWithNSString:@"MESSENGER_INIT"];
-    
-#line 67
-    [timing sectionWithNSString:@"Crypto"];
-    
-#line 68
-    AMCryptoUtils_init__WithAMCryptoProvider_([configuration getCryptoProvider]);
-    
-#line 71
-    [timing sectionWithNSString:@"MVVM"];
-    
-#line 72
-    AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
-    
-#line 75
-    [timing sectionWithNSString:@"Actors"];
-    
-#line 76
-    [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithDKTraceInterface:[[AMActorTrace alloc] init]];
-    
-#line 77
-    [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
-    
-#line 79
-    [timing sectionWithNSString:@"Modules:Create"];
-    
-#line 80
-    self->modules_ = [[ImActorModelModulesModules alloc] initWithAMConfiguration:configuration];
-    
-#line 82
-    [timing sectionWithNSString:@"Modules:Run"];
-    
-#line 83
-    [self->modules_ run];
-    
-#line 85
-    [timing end];
-  }
+  AMMessenger_initWithAMConfiguration_(self, configuration);
   return self;
 }
 
 
 #line 97
 - (AMAuthStateEnum *)getAuthState {
-  
-#line 98
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getAuthState];
 }
 
 
 #line 106
 - (jboolean)isLoggedIn {
-  
-#line 107
   return [self getAuthState] == AMAuthStateEnum_get_LOGGED_IN();
 }
 
 
 #line 116
 - (id<AMCommand>)requestSmsWithLong:(jlong)phone {
-  
-#line 117
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestSmsWithLong:phone];
 }
 
 
 #line 126
 - (id<AMCommand>)sendCodeWithInt:(jint)code {
-  
-#line 127
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) sendCodeWithInt:code];
 }
 
@@ -158,48 +102,36 @@
 - (id<AMCommand>)signUpWithNSString:(NSString *)name
                        withNSString:(NSString *)avatarPath
                         withBoolean:(jboolean)isSilent {
-  
-#line 139
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) signUpWithNSString:name withNSString:avatarPath withBoolean:isSilent];
 }
 
 
 #line 148
 - (jlong)getAuthPhone {
-  
-#line 149
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getPhone];
 }
 
 
 #line 155
 - (void)resetAuth {
-  
-#line 156
   [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) resetAuth];
 }
 
 
 #line 168
 - (AMAppStateVM *)getAppState {
-  
-#line 169
   return [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAppStateModule])) getAppStateVM];
 }
 
 
 #line 177
 - (jint)myUid {
-  
-#line 178
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) myUid];
 }
 
 
 #line 191
 - (AMMVVMCollection *)getUsers {
-  
-#line 192
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule] == nil) {
     return nil;
   }
@@ -209,8 +141,6 @@
 
 #line 203
 - (AMMVVMCollection *)getGroups {
-  
-#line 204
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule] == nil) {
     return nil;
   }
@@ -220,8 +150,6 @@
 
 #line 216
 - (AMValueModel *)getTypingWithInt:(jint)uid {
-  
-#line 217
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule] == nil) {
     return nil;
   }
@@ -231,8 +159,6 @@
 
 #line 229
 - (AMValueModel *)getGroupTypingWithInt:(jint)gid {
-  
-#line 230
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule] == nil) {
     return nil;
   }
@@ -242,64 +168,46 @@
 
 #line 242
 - (AMOwnAvatarVM *)getOwnAvatarVM {
-  
-#line 243
   return [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getProfile])) getOwnAvatarVM];
 }
 
 
 #line 253
 - (AMGroupAvatarVM *)getGroupAvatarVMWithInt:(jint)gid {
-  
-#line 254
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) getAvatarVMWithInt:gid];
 }
 
 
 #line 265
 - (void)onAppVisible {
-  
-#line 266
-  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
-    [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) onAppVisible];
-    [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onAppVisible];
-  }
+  [((ImActorModelModulesModules *) nil_chk(modules_)) onAppVisible];
 }
 
 
-#line 275
+#line 272
 - (void)onAppHidden {
-  
-#line 276
-  if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
-    [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) onAppHidden];
-    [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onAppHidden];
-  }
+  [((ImActorModelModulesModules *) nil_chk(modules_)) onAppHidden];
 }
 
 
-#line 285
+#line 279
 - (void)onDialogsOpen {
-  
-#line 286
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications] != nil) {
     [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onDialogsOpen];
   }
 }
 
 
-#line 294
+#line 288
 - (void)onDialogsClosed {
-  
-#line 295
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getNotifications] != nil) {
     [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onDialogsClosed];
   }
 }
 
+
+#line 299
 - (void)onConversationOpen:(AMPeer *)peer {
-  
-#line 306
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
     [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) subscribeWithAMPeer:peer];
     [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onConversationOpenWithAMPeer:peer];
@@ -307,64 +215,63 @@
   }
 }
 
+
+#line 312
 - (void)onConversationClosed:(AMPeer *)peer {
-  
-#line 319
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
     [((ImActorModelModulesNotifications *) nil_chk([modules_ getNotifications])) onConversationCloseWithAMPeer:peer];
   }
 }
 
+
+#line 323
 - (void)onProfileOpen:(jint)uid {
-  
-#line 330
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getPresenceModule] != nil) {
     [((ImActorModelModulesPresence *) nil_chk([modules_ getPresenceModule])) subscribeWithAMPeer:AMPeer_userWithInt_(uid)];
   }
 }
 
+
+#line 334
 - (void)onProfileClosed:(jint)uid {
 }
 
+
+#line 344
 - (void)onTyping:(AMPeer *)peer {
-  
-#line 351
   [((ImActorModelModulesTyping *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getTypingModule])) onTypingWithAMPeer:peer];
 }
 
 
-#line 362
+#line 356
 - (void)onPhoneBookChanged {
-  
-#line 363
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule] != nil) {
     [((ImActorModelModulesContacts *) nil_chk([modules_ getContactsModule])) onPhoneBookChanged];
   }
 }
 
 
-#line 371
+#line 365
 - (void)onNetworkChanged {
 }
 
 
-#line 380
+#line 374
 - (void)onPushReceivedWithInt:(jint)seq {
-  
-#line 381
   if ([((ImActorModelModulesModules *) nil_chk(modules_)) getUpdatesModule] != nil) {
     [((ImActorModelModulesUpdates *) nil_chk([modules_ getUpdatesModule])) onPushReceivedWithInt:seq];
   }
 }
 
-- (void)sendMessage:(AMPeer *)peer withText:(NSString *)text {
-  
-#line 397
+
+#line 390
+- (void)sendMessage:(AMPeer *)peer
+           withText:(NSString *)text {
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text];
 }
 
 
-#line 410
+#line 404
 - (void)sendPhotoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
                     withInt:(jint)w
@@ -372,12 +279,12 @@
             withAMFastThumb:(AMFastThumb *)fastThumb
   withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
   
-#line 413
+#line 407
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendPhotoWithAMPeer:peer withNSString:fileName withInt:w withInt:h withAMFastThumb:fastThumb withAMFileSystemReference:fileSystemReference];
 }
 
 
-#line 427
+#line 421
 - (void)sendVideoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
                     withInt:(jint)w
@@ -386,458 +293,414 @@
             withAMFastThumb:(AMFastThumb *)fastThumb
   withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
   
-#line 429
+#line 423
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendVideoWithAMPeer:peer withNSString:fileName withInt:w withInt:h withInt:duration withAMFastThumb:fastThumb withAMFileSystemReference:fileSystemReference];
 }
 
 
-#line 440
+#line 434
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
      withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference {
-  
-#line 441
   [self sendDocumentWithAMPeer:peer withNSString:fileName withNSString:mimeType withAMFileSystemReference:fileSystemReference withAMFastThumb:nil];
 }
 
 
-#line 453
+#line 447
 - (void)sendDocumentWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
      withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference
                withAMFastThumb:(AMFastThumb *)fastThumb {
   
-#line 455
+#line 449
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendDocumentWithAMPeer:peer withNSString:fileName withNSString:mimeType withAMFastThumb:fastThumb withAMFileSystemReference:fileSystemReference];
 }
 
 
-#line 458
+#line 452
 - (id<DKListEngine>)getMediaWithAMPeer:(AMPeer *)peer {
-  
-#line 459
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) getMediaEngineWithAMPeer:peer];
 }
 
 
-#line 468
+#line 462
 - (void)deleteMessagesWithAMPeer:(AMPeer *)peer
                    withLongArray:(IOSLongArray *)rids {
-  
-#line 469
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) deleteMessagesWithAMPeer:peer withLongArray:rids];
 }
 
 
-#line 478
+#line 472
 - (id<AMCommand>)deleteChatWithAMPeer:(AMPeer *)peer {
-  
-#line 479
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) deleteChatWithAMPeer:peer];
 }
 
 
-#line 488
+#line 482
 - (id<AMCommand>)clearChatWithAMPeer:(AMPeer *)peer {
-  
-#line 489
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) clearChatWithAMPeer:peer];
 }
 
-- (void)saveDraft:(AMPeer *)peer withText:(NSString *)draft {
-  
-#line 499
+
+#line 492
+- (void)saveDraft:(AMPeer *)peer
+         withText:(NSString *)draft {
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) saveDraftWithAMPeer:peer withNSString:draft];
 }
 
+
+#line 502
 - (NSString *)loadDraft:(AMPeer *)peer {
-  
-#line 509
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadDraftWithAMPeer:peer];
 }
 
 
-#line 523
+#line 517
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName {
-  
-#line 524
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editMyNameWithNSString:newName];
 }
 
 
-#line 532
+#line 526
 - (void)changeAvatarWithNSString:(NSString *)descriptor {
-  
-#line 533
   [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getProfile])) changeAvatarWithNSString:descriptor];
 }
 
 
-#line 539
+#line 533
 - (void)removeAvatar {
-  
-#line 540
   [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getProfile])) removeAvatar];
 }
 
 
-#line 550
+#line 544
 - (id<AMCommand>)editNameWithInt:(jint)uid
                     withNSString:(NSString *)name {
-  
-#line 551
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editNameWithInt:uid withNSString:name];
 }
 
 
-#line 561
+#line 555
 - (id<AMCommand>)editGroupTitleWithInt:(jint)gid
                           withNSString:(NSString *)title {
-  
-#line 562
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) editTitleWithInt:gid withNSString:title];
 }
 
 
-#line 571
+#line 565
 - (void)changeGroupAvatarWithInt:(jint)gid
                     withNSString:(NSString *)descriptor {
-  
-#line 572
   [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) changeAvatarWithInt:gid withNSString:descriptor];
 }
 
 
-#line 580
+#line 574
 - (void)removeGroupAvatarWithInt:(jint)gid {
-  
-#line 581
   [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) removeAvatarWithInt:gid];
 }
 
 
-#line 597
+#line 591
 - (id<AMCommand>)createGroupWithNSString:(NSString *)title
                             withNSString:(NSString *)avatarDescriptor
                             withIntArray:(IOSIntArray *)uids {
-  
-#line 598
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) createGroupWithNSString:title withNSString:avatarDescriptor withIntArray:uids];
 }
 
 
-#line 608
+#line 602
 - (id<AMCommand>)leaveGroupWithInt:(jint)gid {
-  
-#line 609
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) leaveGroupWithInt:gid];
 }
 
 
-#line 619
+#line 613
 - (id<AMCommand>)addMemberToGroupWithInt:(jint)gid
                                  withInt:(jint)uid {
-  
-#line 620
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) addMemberToGroupWithInt:gid withInt:uid];
 }
 
 
-#line 630
+#line 624
 - (id<AMCommand>)kickMemberWithInt:(jint)gid
                            withInt:(jint)uid {
-  
-#line 631
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) kickMemberWithInt:gid withInt:uid];
 }
 
 
-#line 644
+#line 638
 - (id<AMCommand>)removeContactWithInt:(jint)uid {
-  
-#line 645
   return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) removeContactWithInt:uid];
 }
 
 
-#line 654
+#line 648
 - (id<AMCommand>)addContactWithInt:(jint)uid {
-  
-#line 655
   return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) addContactWithInt:uid];
 }
 
 
-#line 664
+#line 658
 - (id<AMCommand>)findUsersWithNSString:(NSString *)query {
-  
-#line 665
   return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) findUsersWithNSString:query];
 }
 
 
-#line 677
+#line 671
 - (AMFileVM *)bindFileWithAMFileReference:(AMFileReference *)fileReference
                               withBoolean:(jboolean)isAutoStart
                      withAMFileVMCallback:(id<AMFileVMCallback>)callback {
-  
-#line 678
-  return [[AMFileVM alloc] initWithAMFileReference:fileReference withBoolean:isAutoStart withImActorModelModulesModules:modules_ withAMFileVMCallback:callback];
+  return new_AMFileVM_initWithAMFileReference_withBoolean_withImActorModelModulesModules_withAMFileVMCallback_(fileReference, isAutoStart, modules_, callback);
 }
 
 
-#line 688
+#line 682
 - (AMUploadFileVM *)bindUploadWithLong:(jlong)rid
             withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)callback {
-  
-#line 689
-  return [[AMUploadFileVM alloc] initWithLong:rid withAMUploadFileVMCallback:callback withImActorModelModulesModules:modules_];
+  return new_AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withImActorModelModulesModules_(rid, callback, modules_);
 }
 
-- (void)bindRawFileWith:(AMFileReference *)fileReference withAutoStart:(jboolean)isAutoStart withCallback:(id<AMFileCallback>)callback {
-  
-#line 700
+
+#line 693
+- (void)bindRawFileWith:(AMFileReference *)fileReference
+          withAutoStart:(jboolean)isAutoStart
+           withCallback:(id<AMFileCallback>)callback {
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindFileWithAMFileReference:fileReference withBoolean:isAutoStart withAMFileCallback:callback];
 }
 
-- (void)unbindRawFile:(jlong)fileId withAutoCancel:(jboolean)isAutoCancel withCallback:(id<AMFileCallback>)callback {
-  
-#line 711
+
+#line 704
+- (void)unbindRawFile:(jlong)fileId
+       withAutoCancel:(jboolean)isAutoCancel
+         withCallback:(id<AMFileCallback>)callback {
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindFileWithLong:fileId withAMFileCallback:callback withBoolean:isAutoCancel];
 }
 
-- (void)bindRawUploadFile:(jlong)rid withCallback:(id<AMUploadFileCallback>)callback {
-  
-#line 721
+
+#line 714
+- (void)bindRawUploadFile:(jlong)rid
+             withCallback:(id<AMUploadFileCallback>)callback {
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) bindUploadFileWithLong:rid withAMUploadFileCallback:callback];
 }
 
-- (void)unbindRawUploadFile:(jlong)rid withCallback:(id<AMUploadFileCallback>)callback {
-  
-#line 731
+
+#line 724
+- (void)unbindRawUploadFile:(jlong)rid
+               withCallback:(id<AMUploadFileCallback>)callback {
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindUploadFileWithLong:rid withAMUploadFileCallback:callback];
 }
 
 
-#line 740
+#line 734
 - (void)requestStateWithLong:(jlong)fileId
           withAMFileCallback:(id<AMFileCallback>)callback {
-  
-#line 741
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) requestStateWithLong:fileId withAMFileCallback:callback];
 }
 
 
-#line 750
+#line 744
 - (void)requestUploadStateWithLong:(jlong)rid
           withAMUploadFileCallback:(id<AMUploadFileCallback>)callback {
-  
-#line 751
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) requestUploadStateWithLong:rid withAMUploadFileCallback:callback];
 }
 
 
-#line 759
+#line 753
 - (void)cancelDownloadingWithLong:(jlong)fileId {
-  
-#line 760
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) cancelDownloadingWithLong:fileId];
 }
 
 
-#line 768
+#line 762
 - (void)startDownloadingWithAMFileReference:(AMFileReference *)location {
-  
-#line 769
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) startDownloadingWithAMFileReference:location];
 }
 
 
-#line 777
+#line 771
 - (void)resumeUploadWithLong:(jlong)rid {
-  
-#line 778
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) resumeUploadWithLong:rid];
 }
 
 
-#line 786
+#line 780
 - (void)pauseUploadWithLong:(jlong)rid {
-  
-#line 787
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) pauseUploadWithLong:rid];
 }
 
 
-#line 797
+#line 791
 - (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId {
-  
-#line 798
   return [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) getDownloadedDescriptorWithLong:fileId];
 }
 
 
-#line 810
+#line 804
 - (jboolean)isConversationTonesEnabled {
-  
-#line 811
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isConversationTonesEnabled];
 }
 
 
-#line 819
+#line 813
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val {
-  
-#line 820
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeConversationTonesEnabledWithBoolean:val];
 }
 
 
-#line 828
+#line 822
 - (jboolean)isNotificationSoundEnabled {
-  
-#line 829
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isNotificationSoundEnabled];
 }
 
 
-#line 837
+#line 831
 - (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val {
-  
-#line 838
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationSoundEnabledWithBoolean:val];
 }
 
 
-#line 846
+#line 840
 - (jboolean)isNotificationVibrationEnabled {
-  
-#line 847
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isVibrationEnabled];
 }
 
 
-#line 855
+#line 849
 - (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val {
-  
-#line 856
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationVibrationEnabledWithBoolean:val];
 }
 
 
-#line 864
+#line 858
 - (jboolean)isShowNotificationsText {
-  
-#line 865
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isShowNotificationsText];
 }
 
 
-#line 873
+#line 867
 - (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val {
-  
-#line 874
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeShowNotificationTextEnabledWithBoolean:val];
 }
 
 
-#line 882
+#line 876
 - (jboolean)isSendByEnterEnabled {
-  
-#line 883
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isSendByEnterEnabled];
 }
 
 
-#line 891
+#line 885
 - (void)changeSendByEnterWithBoolean:(jboolean)val {
-  
-#line 892
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeSendByEnterWithBoolean:val];
 }
 
 
-#line 901
+#line 895
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer {
-  
-#line 902
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isNotificationsEnabledWithAMPeer:peer];
 }
 
 
-#line 911
+#line 905
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val {
-  
-#line 912
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationsEnabledWithAMPeer:peer withBoolean:val];
 }
 
 
-#line 924
+#line 918
 - (id<AMCommand>)loadSessions {
-  
-#line 925
   return [((ImActorModelModulesSecurity *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSecurity])) loadSessions];
 }
 
 
-#line 933
+#line 927
 - (id<AMCommand>)terminateAllSessions {
-  
-#line 934
   return [((ImActorModelModulesSecurity *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSecurity])) terminateAllSessions];
 }
 
 
-#line 943
+#line 937
 - (id<AMCommand>)terminateSessionWithInt:(jint)id_ {
-  
-#line 944
   return [((ImActorModelModulesSecurity *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSecurity])) terminateSessionWithInt:id_];
 }
 
 
-#line 956
+#line 950
 - (AMI18nEngine *)getFormatter {
-  
-#line 957
   return [((ImActorModelModulesModules *) nil_chk(modules_)) getI18nEngine];
 }
 
 
-#line 966
+#line 960
 - (void)registerGooglePushWithLong:(jlong)projectId
                       withNSString:(NSString *)token {
-  
-#line 967
   [((ImActorModelModulesPushes *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPushes])) registerGooglePushWithLong:projectId withNSString:token];
 }
 
 
-#line 976
+#line 970
 - (void)registerApplePushWithInt:(jint)apnsId
                     withNSString:(NSString *)token {
-  
-#line 977
   [((ImActorModelModulesPushes *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPushes])) registerApplePushWithInt:apnsId withNSString:token];
 }
 
 
-#line 985
+#line 979
 - (id<DKPreferencesStorage>)getPreferences {
-  
-#line 986
   return [((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences];
 }
 
-- (void)copyAllFieldsTo:(AMMessenger *)other {
-  [super copyAllFieldsTo:other];
-  other->modules_ = modules_;
+@end
+
+
+#line 52
+void AMMessenger_initWithAMConfiguration_(AMMessenger *self, AMConfiguration *configuration) {
+  (void) NSObject_init(self);
+  
+#line 57
+  AMLog_setLogWithAMLogProvider_([((AMConfiguration *) nil_chk(configuration)) getLog]);
+  
+#line 59
+  DKEnvironment_setThreadingProviderWithAMThreadingProvider_([configuration getThreadingProvider]);
+  DKEnvironment_setDispatcherProviderWithAMDispatcherProvider_([configuration getDispatcherProvider]);
+  
+#line 64
+  AMTiming *timing = new_AMTiming_initWithNSString_(@"MESSENGER_INIT");
+  
+#line 67
+  [timing sectionWithNSString:@"Crypto"];
+  AMCryptoUtils_init__WithAMCryptoProvider_([configuration getCryptoProvider]);
+  
+#line 71
+  [timing sectionWithNSString:@"MVVM"];
+  AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
+  
+#line 75
+  [timing sectionWithNSString:@"Actors"];
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithDKTraceInterface:new_AMActorTrace_init()];
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
+  
+#line 79
+  [timing sectionWithNSString:@"Modules:Create"];
+  self->modules_ = new_ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(self, configuration);
+  
+#line 82
+  [timing sectionWithNSString:@"Modules:Run"];
+  [self->modules_ run];
+  
+#line 85
+  [timing end];
 }
 
-@end
+
+#line 52
+AMMessenger *new_AMMessenger_initWithAMConfiguration_(AMConfiguration *configuration) {
+  AMMessenger *self = [AMMessenger alloc];
+  AMMessenger_initWithAMConfiguration_(self, configuration);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessenger)

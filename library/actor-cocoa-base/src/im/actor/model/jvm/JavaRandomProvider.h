@@ -6,38 +6,39 @@
 #ifndef _AMJavaRandomProvider_H_
 #define _AMJavaRandomProvider_H_
 
-@class IOSByteArray;
-@class JavaMathBigInteger;
-@class JavaSecuritySecureRandom;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 
-@interface AMJavaRandomProvider : NSObject < BCRandomProvider > {
-}
+@class IOSByteArray;
+@class JavaMathBigInteger;
 
-- (IOSByteArray *)randomBytesWithInt:(jint)length;
+@interface AMJavaRandomProvider : NSObject < BCRandomProvider >
 
-- (jint)randomIntWithInt:(jint)maxValue;
+#pragma mark Public
 
-- (void)nextBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)init;
 
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits;
 
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits
                                           withInt:(jint)certanity;
 
-- (instancetype)init;
+- (void)nextBytesWithByteArray:(IOSByteArray *)data;
+
+- (IOSByteArray *)randomBytesWithInt:(jint)length;
+
+- (jint)randomIntWithInt:(jint)maxValue;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMJavaRandomProvider)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMJavaRandomProvider_init(AMJavaRandomProvider *self);
 
-typedef AMJavaRandomProvider ImActorModelJvmJavaRandomProvider;
+FOUNDATION_EXPORT AMJavaRandomProvider *new_AMJavaRandomProvider_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMJavaRandomProvider)
+
+typedef AMJavaRandomProvider ImActorModelJvmJavaRandomProvider;
 
 #endif // _AMJavaRandomProvider_H_

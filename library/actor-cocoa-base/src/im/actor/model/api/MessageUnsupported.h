@@ -6,15 +6,16 @@
 #ifndef _ImActorModelApiMessageUnsupported_H_
 #define _ImActorModelApiMessageUnsupported_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/api/Message.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/api/Message.h"
+@interface ImActorModelApiMessageUnsupported : ImActorModelApiMessage
 
-@interface ImActorModelApiMessageUnsupported : ImActorModelApiMessage {
-}
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content;
@@ -29,8 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiMessageUnsupported)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(ImActorModelApiMessageUnsupported *self, jint key, IOSByteArray *content);
+
+FOUNDATION_EXPORT ImActorModelApiMessageUnsupported *new_ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMessageUnsupported)
 

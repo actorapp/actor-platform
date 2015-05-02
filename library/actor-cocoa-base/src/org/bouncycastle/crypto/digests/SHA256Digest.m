@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/SHA256Digest.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/SHA256Digest.java"
 
 #include "IOSPrimitiveArray.h"
@@ -13,12 +14,7 @@
 #include "org/bouncycastle/util/Memoable.h"
 #include "org/bouncycastle/util/Pack.h"
 
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_ChWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x, jint y, jint z);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_MajWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x, jint y, jint z);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Sum0WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Sum1WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Theta0WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
-__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Theta1WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
+#define OrgBouncycastleCryptoDigestsSHA256Digest_DIGEST_LENGTH 32
 
 @interface OrgBouncycastleCryptoDigestsSHA256Digest () {
  @public
@@ -44,51 +40,50 @@ __attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_The
 - (jint)Theta0WithInt:(jint)x;
 
 - (jint)Theta1WithInt:(jint)x;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsSHA256Digest, X_, IOSIntArray *)
 
-BOOL OrgBouncycastleCryptoDigestsSHA256Digest_initialized = NO;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA256Digest, DIGEST_LENGTH, jint)
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_ChWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x, jint y, jint z);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_MajWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x, jint y, jint z);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Sum0WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Sum1WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Theta0WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
+
+__attribute__((unused)) static jint OrgBouncycastleCryptoDigestsSHA256Digest_Theta1WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x);
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleCryptoDigestsSHA256Digest)
+
+IOSIntArray *OrgBouncycastleCryptoDigestsSHA256Digest_K_;
 
 
 #line 19
 @implementation OrgBouncycastleCryptoDigestsSHA256Digest
 
-IOSIntArray * OrgBouncycastleCryptoDigestsSHA256Digest_K_;
-
 
 #line 32
 - (instancetype)init {
-  if (self = [super init]) {
-    X_ = [IOSIntArray newArrayWithLength:
-#line 26
-    64];
-    
-#line 33
-    [self reset];
-  }
+  OrgBouncycastleCryptoDigestsSHA256Digest_init(self);
   return self;
 }
 
 
 #line 40
 - (instancetype)initWithOrgBouncycastleCryptoDigestsSHA256Digest:(OrgBouncycastleCryptoDigestsSHA256Digest *)t {
-  if (self =
-#line 41
-  [super initWithOrgBouncycastleCryptoDigestsGeneralDigest:t]) {
-    X_ = [IOSIntArray newArrayWithLength:
-#line 26
-    64];
-    [self copyInWithOrgBouncycastleCryptoDigestsSHA256Digest:t];
-  }
+  OrgBouncycastleCryptoDigestsSHA256Digest_initWithOrgBouncycastleCryptoDigestsSHA256Digest_(self, t);
   return self;
 }
 
 
 #line 46
 - (void)copyInWithOrgBouncycastleCryptoDigestsSHA256Digest:(OrgBouncycastleCryptoDigestsSHA256Digest *)t {
-  
-#line 47
   [super copyInWithOrgBouncycastleCryptoDigestsGeneralDigest:t];
   
 #line 49
@@ -109,64 +104,20 @@ IOSIntArray * OrgBouncycastleCryptoDigestsSHA256Digest_K_;
 
 #line 62
 - (instancetype)initWithByteArray:(IOSByteArray *)encodedState {
-  if (self =
-#line 63
-  [super initWithByteArray:encodedState]) {
-    X_ = [IOSIntArray newArrayWithLength:
-#line 26
-    64];
-    H1_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 16);
-    
-#line 66
-    H2_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 20);
-    
-#line 67
-    H3_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 24);
-    
-#line 68
-    H4_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 28);
-    
-#line 69
-    H5_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 32);
-    
-#line 70
-    H6_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 36);
-    
-#line 71
-    H7_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 40);
-    
-#line 72
-    H8_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 44);
-    
-#line 74
-    xOff_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 48);
-    
-#line 75
-    for (jint i = 0; i != xOff_; i++) {
-      *IOSIntArray_GetRef(X_, i) = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 52 + (i * 4));
-    }
-  }
+  OrgBouncycastleCryptoDigestsSHA256Digest_initWithByteArray_(self, encodedState);
   return self;
 }
 
 
 #line 81
 - (NSString *)getAlgorithmName {
-  
-#line 82
   return @"SHA-256";
 }
 
-
-#line 85
 - (jint)getDigestSize {
-  
-#line 86
   return OrgBouncycastleCryptoDigestsSHA256Digest_DIGEST_LENGTH;
 }
 
-
-#line 89
 - (void)processWordWithByteArray:(IOSByteArray *)inArg
                          withInt:(jint)inOff {
   
@@ -374,16 +325,10 @@ IOSIntArray * OrgBouncycastleCryptoDigestsSHA256Digest_K_;
 
 #line 299
 - (id<OrgBouncycastleUtilMemoable>)copy__ {
-  
-#line 300
-  return [[OrgBouncycastleCryptoDigestsSHA256Digest alloc] initWithOrgBouncycastleCryptoDigestsSHA256Digest:self];
+  return new_OrgBouncycastleCryptoDigestsSHA256Digest_initWithOrgBouncycastleCryptoDigestsSHA256Digest_(self);
 }
 
-
-#line 303
 - (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other {
-  
-#line 304
   OrgBouncycastleCryptoDigestsSHA256Digest *d = (OrgBouncycastleCryptoDigestsSHA256Digest *) check_class_cast(other, [OrgBouncycastleCryptoDigestsSHA256Digest class]);
   
 #line 306
@@ -393,8 +338,6 @@ IOSIntArray * OrgBouncycastleCryptoDigestsSHA256Digest_K_;
 
 #line 309
 - (IOSByteArray *)getEncodedState {
-  
-#line 310
   IOSByteArray *state = [IOSByteArray newArrayWithLength:52 + xOff_ * 4];
   
 #line 312
@@ -418,20 +361,6 @@ IOSIntArray * OrgBouncycastleCryptoDigestsSHA256Digest_K_;
   
 #line 328
   return state;
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoDigestsSHA256Digest *)other {
-  [super copyAllFieldsTo:other];
-  other->H1_ = H1_;
-  other->H2_ = H2_;
-  other->H3_ = H3_;
-  other->H4_ = H4_;
-  other->H5_ = H5_;
-  other->H6_ = H6_;
-  other->H7_ = H7_;
-  other->H8_ = H8_;
-  other->X_ = X_;
-  other->xOff_ = xOff_;
 }
 
 + (void)initialize {
@@ -459,36 +388,121 @@ IOSIntArray * OrgBouncycastleCryptoDigestsSHA256Digest_K_;
 
 @end
 
+
+#line 32
+void OrgBouncycastleCryptoDigestsSHA256Digest_init(OrgBouncycastleCryptoDigestsSHA256Digest *self) {
+  (void) OrgBouncycastleCryptoDigestsGeneralDigest_init(self);
+  self->X_ = [IOSIntArray newArrayWithLength:
+#line 26
+  64];
+  
+#line 33
+  [self reset];
+}
+
+
+#line 32
+OrgBouncycastleCryptoDigestsSHA256Digest *new_OrgBouncycastleCryptoDigestsSHA256Digest_init() {
+  OrgBouncycastleCryptoDigestsSHA256Digest *self = [OrgBouncycastleCryptoDigestsSHA256Digest alloc];
+  OrgBouncycastleCryptoDigestsSHA256Digest_init(self);
+  return self;
+}
+
+
+#line 40
+void OrgBouncycastleCryptoDigestsSHA256Digest_initWithOrgBouncycastleCryptoDigestsSHA256Digest_(OrgBouncycastleCryptoDigestsSHA256Digest *self, OrgBouncycastleCryptoDigestsSHA256Digest *t) {
+  (void) OrgBouncycastleCryptoDigestsGeneralDigest_initWithOrgBouncycastleCryptoDigestsGeneralDigest_(self, t);
+  self->X_ = [IOSIntArray newArrayWithLength:
+#line 26
+  64];
+  
+#line 43
+  [self copyInWithOrgBouncycastleCryptoDigestsSHA256Digest:t];
+}
+
+
+#line 40
+OrgBouncycastleCryptoDigestsSHA256Digest *new_OrgBouncycastleCryptoDigestsSHA256Digest_initWithOrgBouncycastleCryptoDigestsSHA256Digest_(OrgBouncycastleCryptoDigestsSHA256Digest *t) {
+  OrgBouncycastleCryptoDigestsSHA256Digest *self = [OrgBouncycastleCryptoDigestsSHA256Digest alloc];
+  OrgBouncycastleCryptoDigestsSHA256Digest_initWithOrgBouncycastleCryptoDigestsSHA256Digest_(self, t);
+  return self;
+}
+
+
+#line 62
+void OrgBouncycastleCryptoDigestsSHA256Digest_initWithByteArray_(OrgBouncycastleCryptoDigestsSHA256Digest *self, IOSByteArray *encodedState) {
+  (void) OrgBouncycastleCryptoDigestsGeneralDigest_initWithByteArray_(self, encodedState);
+  self->X_ = [IOSIntArray newArrayWithLength:
+#line 26
+  64];
+  
+#line 65
+  self->H1_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 16);
+  self->H2_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 20);
+  self->H3_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 24);
+  self->H4_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 28);
+  self->H5_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 32);
+  self->H6_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 36);
+  self->H7_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 40);
+  self->H8_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 44);
+  
+#line 74
+  self->xOff_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 48);
+  for (jint i = 0; i != self->xOff_; i++) {
+    *IOSIntArray_GetRef(self->X_, i) = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 52 + (i * 4));
+  }
+}
+
+
+#line 62
+OrgBouncycastleCryptoDigestsSHA256Digest *new_OrgBouncycastleCryptoDigestsSHA256Digest_initWithByteArray_(IOSByteArray *encodedState) {
+  OrgBouncycastleCryptoDigestsSHA256Digest *self = [OrgBouncycastleCryptoDigestsSHA256Digest alloc];
+  OrgBouncycastleCryptoDigestsSHA256Digest_initWithByteArray_(self, encodedState);
+  return self;
+}
+
+
+#line 250
 jint OrgBouncycastleCryptoDigestsSHA256Digest_ChWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x, jint y, jint z) {
   
 #line 254
   return (x & y) ^ ((~x) & z);
 }
 
+
+#line 257
 jint OrgBouncycastleCryptoDigestsSHA256Digest_MajWithInt_withInt_withInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x, jint y, jint z) {
   
 #line 261
   return (x & y) ^ (x & z) ^ (y & z);
 }
 
+
+#line 264
 jint OrgBouncycastleCryptoDigestsSHA256Digest_Sum0WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x) {
   
 #line 266
   return ((URShift32(x, 2)) | (LShift32(x, 30))) ^ ((URShift32(x, 13)) | (LShift32(x, 19))) ^ ((URShift32(x, 22)) | (LShift32(x, 10)));
 }
 
+
+#line 269
 jint OrgBouncycastleCryptoDigestsSHA256Digest_Sum1WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x) {
   
 #line 271
   return ((URShift32(x, 6)) | (LShift32(x, 26))) ^ ((URShift32(x, 11)) | (LShift32(x, 21))) ^ ((URShift32(x, 25)) | (LShift32(x, 7)));
 }
 
+
+#line 274
 jint OrgBouncycastleCryptoDigestsSHA256Digest_Theta0WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x) {
   
 #line 276
   return ((URShift32(x, 7)) | (LShift32(x, 25))) ^ ((URShift32(x, 18)) | (LShift32(x, 14))) ^ (URShift32(x, 3));
 }
 
+
+#line 279
 jint OrgBouncycastleCryptoDigestsSHA256Digest_Theta1WithInt_(OrgBouncycastleCryptoDigestsSHA256Digest *self, jint x) {
   
 #line 281

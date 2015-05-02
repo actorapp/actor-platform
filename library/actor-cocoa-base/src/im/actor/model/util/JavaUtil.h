@@ -8,25 +8,27 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMJavaUtil : NSObject {
-}
+@interface AMJavaUtil : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (jboolean)equalsEWithId:(id)a
                    withId:(id)b;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMJavaUtil)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b);
-CF_EXTERN_C_END
 
-typedef AMJavaUtil ImActorModelUtilJavaUtil;
+FOUNDATION_EXPORT void AMJavaUtil_init(AMJavaUtil *self);
+
+FOUNDATION_EXPORT AMJavaUtil *new_AMJavaUtil_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMJavaUtil)
+
+typedef AMJavaUtil ImActorModelUtilJavaUtil;
 
 #endif // _AMJavaUtil_H_

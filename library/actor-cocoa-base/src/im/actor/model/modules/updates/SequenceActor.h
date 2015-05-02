@@ -6,53 +6,34 @@
 #ifndef _ImActorModelModulesUpdatesSequenceActor_H_
 #define _ImActorModelModulesUpdatesSequenceActor_H_
 
-@class AMRpcException;
-@class IOSByteArray;
-@class ImActorModelApiParserUpdatesParser;
-@class ImActorModelApiRpcResponseGetDifference;
-@class ImActorModelApiRpcResponseSeq;
-@class ImActorModelModulesModules;
-@class ImActorModelModulesUpdatesUpdateProcessor;
-@class JavaUtilArrayList;
-@class JavaUtilHashMap;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-#define ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP 2000
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesUpdatesSequenceActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesUpdatesSequenceActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSequenceActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesSequenceActor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesSequenceActor *self, ImActorModelModulesModules *modules);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesUpdatesSequenceActor_TAG_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, TAG_, NSString *)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, INVALIDATE_GAP, jint)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesUpdatesSequenceActor_KEY_SEQ_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, KEY_SEQ_, NSString *)
-
-FOUNDATION_EXPORT NSString *ImActorModelModulesUpdatesSequenceActor_KEY_STATE_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, KEY_STATE_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesUpdatesSequenceActor *new_ImActorModelModulesUpdatesSequenceActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor)
 
-@interface ImActorModelModulesUpdatesSequenceActor_ForceInvalidate : NSObject {
-}
+@interface ImActorModelModulesUpdatesSequenceActor_ForceInvalidate : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -60,13 +41,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSequenceActor_ForceInvalidate)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init(ImActorModelModulesUpdatesSequenceActor_ForceInvalidate *self);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesSequenceActor_ForceInvalidate *new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_ForceInvalidate)
 
-@interface ImActorModelModulesUpdatesSequenceActor_Invalidate : NSObject {
-}
+@interface ImActorModelModulesUpdatesSequenceActor_Invalidate : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -74,13 +57,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_ForceInvalida
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSequenceActor_Invalidate)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesSequenceActor_Invalidate_init(ImActorModelModulesUpdatesSequenceActor_Invalidate *self);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesSequenceActor_Invalidate *new_ImActorModelModulesUpdatesSequenceActor_Invalidate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_Invalidate)
 
-@interface ImActorModelModulesUpdatesSequenceActor_PushSeq : NSObject {
-}
+@interface ImActorModelModulesUpdatesSequenceActor_PushSeq : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)seq;
 
@@ -88,45 +73,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_Invalidate)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSequenceActor_PushSeq)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesSequenceActor_PushSeq_initWithInt_(ImActorModelModulesUpdatesSequenceActor_PushSeq *self, jint seq);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesSequenceActor_PushSeq *new_ImActorModelModulesUpdatesSequenceActor_PushSeq_initWithInt_(jint seq) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_PushSeq)
-
-@interface ImActorModelModulesUpdatesSequenceActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesUpdatesSequenceActor:(ImActorModelModulesUpdatesSequenceActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSequenceActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_$1)
-
-@interface ImActorModelModulesUpdatesSequenceActor_$2 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetDifference *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesUpdatesSequenceActor:(ImActorModelModulesUpdatesSequenceActor *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesSequenceActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_$2)
 
 #endif // _ImActorModelModulesUpdatesSequenceActor_H_

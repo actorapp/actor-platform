@@ -6,11 +6,11 @@
 #ifndef _DKKeyValueStorage_H_
 #define _DKKeyValueStorage_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSLongArray;
 @protocol JavaUtilList;
-
-#include "J2ObjC_header.h"
 
 @protocol DKKeyValueStorage < NSObject, JavaObject >
 
@@ -31,8 +31,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKKeyValueStorage)
 
-#define ImActorModelDroidkitEngineKeyValueStorage DKKeyValueStorage
-
 J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueStorage)
+
+#define ImActorModelDroidkitEngineKeyValueStorage DKKeyValueStorage
 
 #endif // _DKKeyValueStorage_H_

@@ -6,69 +6,55 @@
 #ifndef _AMGroupVM_H_
 #define _AMGroupVM_H_
 
-@class AMGroup;
-@class AMValueModel;
-@class JavaUtilArrayList;
-@protocol AMModelChangedListener;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/mvvm/BaseValueModel.h"
-#include "java/lang/Runnable.h"
 
-@interface AMGroupVM : AMBaseValueModel {
-}
+@class AMGroup;
+@class AMValueModel;
+@protocol AMModelChangedListener;
+
+@interface AMGroupVM : AMBaseValueModel
+
+#pragma mark Public
 
 - (instancetype)initWithAMGroup:(AMGroup *)rawObj;
 
-- (jint)getId;
+- (AMValueModel *)getAvatar;
+
+- (jint)getCreatorId;
 
 - (jlong)getHash;
 
-- (jlong)getCreatorId;
+- (jint)getId;
+
+- (AMValueModel *)getMembers;
 
 - (jint)getMembersCount;
 
 - (AMValueModel *)getName;
 
-- (AMValueModel *)getAvatar;
-
-- (AMValueModel *)isMember;
-
-- (AMValueModel *)getMembers;
-
 - (AMValueModel *)getPresence;
 
-- (void)updateValuesWithId:(AMGroup *)rawObj;
+- (AMValueModel *)isMember;
 
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
 
 - (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
 
+#pragma mark Protected
+
+- (void)updateValuesWithId:(AMGroup *)rawObj;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMGroupVM_initWithAMGroup_(AMGroupVM *self, AMGroup *rawObj);
 
-typedef AMGroupVM ImActorModelViewmodelGroupVM;
+FOUNDATION_EXPORT AMGroupVM *new_AMGroupVM_initWithAMGroup_(AMGroup *rawObj) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM)
 
-@interface AMGroupVM_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMGroupVM:(AMGroupVM *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMGroupVM_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM_$1)
+typedef AMGroupVM ImActorModelViewmodelGroupVM;
 
 #endif // _AMGroupVM_H_

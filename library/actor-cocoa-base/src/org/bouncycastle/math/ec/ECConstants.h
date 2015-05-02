@@ -6,19 +6,17 @@
 #ifndef _OrgBouncycastleMathEcECConstants_H_
 #define _OrgBouncycastleMathEcECConstants_H_
 
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
+
+@class JavaMathBigInteger;
 
 @protocol OrgBouncycastleMathEcECConstants < NSObject, JavaObject >
 
 @end
 
 @interface OrgBouncycastleMathEcECConstants : NSObject
-
 @end
 
-FOUNDATION_EXPORT BOOL OrgBouncycastleMathEcECConstants_initialized;
 J2OBJC_STATIC_INIT(OrgBouncycastleMathEcECConstants)
 
 FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathEcECConstants_ZERO_;

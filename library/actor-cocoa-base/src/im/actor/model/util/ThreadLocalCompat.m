@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/ThreadLocalCompat.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/ThreadLocalCompat.java"
 
 #include "J2ObjC_source.h"
@@ -16,9 +17,14 @@
 @implementation AMThreadLocalCompat
 
 - (instancetype)init {
-  return [super init];
+  AMThreadLocalCompat_init(self);
+  return self;
 }
 
 @end
+
+void AMThreadLocalCompat_init(AMThreadLocalCompat *self) {
+  (void) NSObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMThreadLocalCompat)

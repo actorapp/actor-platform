@@ -3,14 +3,33 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/RunnableActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/RunnableActor.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/droidkit/actors/RunnableActor.h"
+
+@interface DKRunnableActor_$1 : NSObject < DKActorCreator >
+
+- (DKRunnableActor *)create;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(DKRunnableActor_$1)
+
+__attribute__((unused)) static void DKRunnableActor_$1_init(DKRunnableActor_$1 *self);
+
+__attribute__((unused)) static DKRunnableActor_$1 *new_DKRunnableActor_$1_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKRunnableActor_$1)
 
 
 #line 6
@@ -23,18 +42,31 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  DKRunnableActor_init(self);
+  return self;
 }
 
 @end
 
+
+#line 7
 DKActorRef *DKRunnableActor_buildActorWithNSString_(NSString *path) {
-  DKRunnableActor_init();
+  DKRunnableActor_initialize();
   
 #line 8
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(DKRunnableActor_class_(), [[DKRunnableActor_$1 alloc] init]) withNSString:
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(DKRunnableActor_class_(), new_DKRunnableActor_$1_init()) withNSString:
 #line 13
   path];
+}
+
+void DKRunnableActor_init(DKRunnableActor *self) {
+  (void) DKActor_init(self);
+}
+
+DKRunnableActor *new_DKRunnableActor_init() {
+  DKRunnableActor *self = [DKRunnableActor alloc];
+  DKRunnableActor_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKRunnableActor)
@@ -44,15 +76,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKRunnableActor)
 
 #line 10
 - (DKRunnableActor *)create {
-  
-#line 11
-  return [[DKRunnableActor alloc] init];
+  return new_DKRunnableActor_init();
 }
 
 - (instancetype)init {
-  return [super init];
+  DKRunnableActor_$1_init(self);
+  return self;
 }
 
 @end
+
+void DKRunnableActor_$1_init(DKRunnableActor_$1 *self) {
+  (void) NSObject_init(self);
+}
+
+DKRunnableActor_$1 *new_DKRunnableActor_$1_init() {
+  DKRunnableActor_$1 *self = [DKRunnableActor_$1 alloc];
+  DKRunnableActor_$1_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKRunnableActor_$1)

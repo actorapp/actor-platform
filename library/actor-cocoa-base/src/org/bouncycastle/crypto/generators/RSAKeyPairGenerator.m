@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/generators/RSAKeyPairGenerator.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/generators/RSAKeyPairGenerator.java"
 
 #include "J2ObjC_source.h"
@@ -21,31 +22,27 @@
  @public
   OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *param_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator, param_, OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *)
 
-BOOL OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_initialized = NO;
+static JavaMathBigInteger *OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator, ONE_, JavaMathBigInteger *)
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator)
 
 
 #line 17
 @implementation OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator
 
-JavaMathBigInteger * OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
-
 
 #line 23
 - (void)init__WithOrgBouncycastleCryptoKeyGenerationParameters:(OrgBouncycastleCryptoKeyGenerationParameters *)param {
-  
-#line 24
   self->param_ = (OrgBouncycastleCryptoParamsRSAKeyGenerationParameters *) check_class_cast(param, [OrgBouncycastleCryptoParamsRSAKeyGenerationParameters class]);
 }
 
-
-#line 27
 - (OrgBouncycastleCryptoAsymmetricCipherKeyPair *)generateKeyPair {
-  
-#line 28
   JavaMathBigInteger *p, *q, *n, *d, *e, *pSub1, *qSub1, *phi;
   
 #line 33
@@ -123,19 +120,17 @@ JavaMathBigInteger * OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
   qInv = [q modInverseWithJavaMathBigInteger:p];
   
 #line 114
-  return [[OrgBouncycastleCryptoAsymmetricCipherKeyPair alloc] initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter:
+  return new_OrgBouncycastleCryptoAsymmetricCipherKeyPair_initWithOrgBouncycastleCryptoParamsAsymmetricKeyParameter_withOrgBouncycastleCryptoParamsAsymmetricKeyParameter_(new_OrgBouncycastleCryptoParamsRSAKeyParameters_initWithBoolean_withJavaMathBigInteger_withJavaMathBigInteger_(
 #line 115
-  [[OrgBouncycastleCryptoParamsRSAKeyParameters alloc] initWithBoolean:NO withJavaMathBigInteger:n withJavaMathBigInteger:e] withOrgBouncycastleCryptoParamsAsymmetricKeyParameter:
+  NO, n, e), new_OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(
 #line 116
-  [[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters alloc] initWithJavaMathBigInteger:n withJavaMathBigInteger:e withJavaMathBigInteger:d withJavaMathBigInteger:p withJavaMathBigInteger:q withJavaMathBigInteger:dP withJavaMathBigInteger:dQ withJavaMathBigInteger:qInv]];
+  n, e, d, p, q, dP, dQ, qInv));
 }
 
 
 #line 126
 - (JavaMathBigInteger *)chooseRandomPrimeWithInt:(jint)bitlength
                           withJavaMathBigInteger:(JavaMathBigInteger *)e {
-  
-#line 127
   jint iteration = 0;
   for (; ; ) {
     iteration++;
@@ -165,12 +160,8 @@ JavaMathBigInteger * OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
 }
 
 - (instancetype)init {
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *)other {
-  [super copyAllFieldsTo:other];
-  other->param_ = param_;
+  OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_init(self);
+  return self;
 }
 
 + (void)initialize {
@@ -183,5 +174,15 @@ JavaMathBigInteger * OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_ONE_;
 }
 
 @end
+
+void OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_init(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *self) {
+  (void) NSObject_init(self);
+}
+
+OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *new_OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_init() {
+  OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator *self = [OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator alloc];
+  OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleCryptoGeneratorsRSAKeyPairGenerator)

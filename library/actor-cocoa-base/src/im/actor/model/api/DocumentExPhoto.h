@@ -6,25 +6,26 @@
 #ifndef _ImActorModelApiDocumentExPhoto_H_
 #define _ImActorModelApiDocumentExPhoto_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/DocumentEx.h"
 
-@interface ImActorModelApiDocumentExPhoto : ImActorModelApiDocumentEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiDocumentExPhoto : ImActorModelApiDocumentEx
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h;
 
-- (instancetype)init;
+- (jint)getH;
 
 - (jint)getHeader;
 
 - (jint)getW;
-
-- (jint)getH;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -36,8 +37,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentExPhoto)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiDocumentExPhoto_initWithInt_withInt_(ImActorModelApiDocumentExPhoto *self, jint w, jint h);
+
+FOUNDATION_EXPORT ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_initWithInt_withInt_(jint w, jint h) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiDocumentExPhoto_init(ImActorModelApiDocumentExPhoto *self);
+
+FOUNDATION_EXPORT ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentExPhoto)
 

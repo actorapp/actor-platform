@@ -6,9 +6,9 @@
 #ifndef _OrgBouncycastleMathFieldPolynomial_H_
 #define _OrgBouncycastleMathFieldPolynomial_H_
 
-@class IOSIntArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSIntArray;
 
 @protocol OrgBouncycastleMathFieldPolynomial < NSObject, JavaObject >
 

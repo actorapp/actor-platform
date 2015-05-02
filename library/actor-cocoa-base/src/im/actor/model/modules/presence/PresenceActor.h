@@ -6,27 +6,20 @@
 #ifndef _ImActorModelModulesPresencePresenceActor_H_
 #define _ImActorModelModulesPresencePresenceActor_H_
 
-@class AMPeer;
-@class DKActorRef;
-@class DKEnvelope;
-@class DKMailboxesQueue;
-@class ImActorModelModulesModules;
-@class JavaUtilHashSet;
-
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/droidkit/actors/MailboxCreator.h"
-#include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-#define ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT 300000
+@class AMPeer;
+@class DKActorRef;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesPresencePresenceActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesPresencePresenceActor : ImActorModelModulesUtilsModuleActor
 
-+ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+
++ (DKActorRef *)getWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -34,23 +27,23 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT DKActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresencePresenceActor, ONLINE_TIMEOUT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesPresencePresenceActor *self, ImActorModelModulesModules *messenger);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor *new_ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor)
 
-@interface ImActorModelModulesPresencePresenceActor_UserOnline : NSObject {
-}
+@interface ImActorModelModulesPresencePresenceActor_UserOnline : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid;
 
-- (jint)getUid;
-
 - (jboolean)isEqual:(id)o;
+
+- (jint)getUid;
 
 - (NSUInteger)hash;
 
@@ -58,19 +51,21 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_UserOnline)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(ImActorModelModulesPresencePresenceActor_UserOnline *self, jint uid);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserOnline *new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOnline)
 
-@interface ImActorModelModulesPresencePresenceActor_UserOffline : NSObject {
-}
+@interface ImActorModelModulesPresencePresenceActor_UserOffline : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid;
 
-- (jint)getUid;
-
 - (jboolean)isEqual:(id)o;
+
+- (jint)getUid;
 
 - (NSUInteger)hash;
 
@@ -78,22 +73,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOnline)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_UserOffline)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(ImActorModelModulesPresencePresenceActor_UserOffline *self, jint uid);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserOffline *new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOffline)
 
-@interface ImActorModelModulesPresencePresenceActor_UserLastSeen : NSObject {
-}
+@interface ImActorModelModulesPresencePresenceActor_UserLastSeen : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date;
 
-- (jint)getUid;
+- (jboolean)isEqual:(id)o;
 
 - (jlong)getDate;
 
-- (jboolean)isEqual:(id)o;
+- (jint)getUid;
 
 - (NSUInteger)hash;
 
@@ -101,22 +98,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOffline)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_UserLastSeen)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(ImActorModelModulesPresencePresenceActor_UserLastSeen *self, jint uid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserLastSeen *new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(jint uid, jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserLastSeen)
 
-@interface ImActorModelModulesPresencePresenceActor_GroupOnline : NSObject {
-}
+@interface ImActorModelModulesPresencePresenceActor_GroupOnline : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)count;
 
-- (jint)getGid;
+- (jboolean)isEqual:(id)o;
 
 - (jint)getCount;
 
-- (jboolean)isEqual:(id)o;
+- (jint)getGid;
 
 - (NSUInteger)hash;
 
@@ -124,13 +123,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserLastSeen
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_GroupOnline)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(ImActorModelModulesPresencePresenceActor_GroupOnline *self, jint gid, jint count);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_GroupOnline *new_ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(jint gid, jint count) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_GroupOnline)
 
-@interface ImActorModelModulesPresencePresenceActor_Subscribe : NSObject {
-}
+@interface ImActorModelModulesPresencePresenceActor_Subscribe : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer;
 
@@ -140,13 +141,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_GroupOnline)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_Subscribe)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(ImActorModelModulesPresencePresenceActor_Subscribe *self, AMPeer *peer);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_Subscribe *new_ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(AMPeer *peer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_Subscribe)
 
-@interface ImActorModelModulesPresencePresenceActor_SessionCreated : NSObject {
-}
+@interface ImActorModelModulesPresencePresenceActor_SessionCreated : NSObject
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -154,58 +157,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_Subscribe)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_SessionCreated)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_SessionCreated_init(ImActorModelModulesPresencePresenceActor_SessionCreated *self);
+
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_SessionCreated *new_ImActorModelModulesPresencePresenceActor_SessionCreated_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_SessionCreated)
-
-@interface ImActorModelModulesPresencePresenceActor_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesPresencePresenceActor *)create;
-
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$1)
-
-@interface ImActorModelModulesPresencePresenceActor_$2 : NSObject < DKMailboxCreator > {
-}
-
-- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_$2)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$2)
-
-@interface ImActorModelModulesPresencePresenceActor_$2_$1 : DKMailbox {
-}
-
-- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
-                           withDKEnvelope:(DKEnvelope *)b;
-
-- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_$2_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$2_$1)
 
 #endif // _ImActorModelModulesPresencePresenceActor_H_

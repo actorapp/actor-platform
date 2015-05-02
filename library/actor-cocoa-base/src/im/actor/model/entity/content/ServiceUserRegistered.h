@@ -6,29 +6,31 @@
 #ifndef _AMServiceUserRegistered_H_
 #define _AMServiceUserRegistered_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface AMServiceUserRegistered : AMServiceContent {
-}
+@class IOSByteArray;
 
-+ (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
+@interface AMServiceUserRegistered : AMServiceContent
+
+#pragma mark Public
 
 - (instancetype)init;
+
++ (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceUserRegistered)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceUserRegistered ImActorModelEntityContentServiceUserRegistered;
+FOUNDATION_EXPORT void AMServiceUserRegistered_init(AMServiceUserRegistered *self);
+
+FOUNDATION_EXPORT AMServiceUserRegistered *new_AMServiceUserRegistered_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceUserRegistered)
+
+typedef AMServiceUserRegistered ImActorModelEntityContentServiceUserRegistered;
 
 #endif // _AMServiceUserRegistered_H_

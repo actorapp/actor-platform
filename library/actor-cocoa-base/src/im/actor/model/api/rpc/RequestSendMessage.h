@@ -6,33 +6,36 @@
 #ifndef _ImActorModelApiRpcRequestSendMessage_H_
 #define _ImActorModelApiRpcRequestSendMessage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiMessage;
 @class ImActorModelApiOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestSendMessage_HEADER 92
 
-@interface ImActorModelApiRpcRequestSendMessage : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestSendMessage : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestSendMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)rid
                     withImActorModelApiMessage:(ImActorModelApiMessage *)message;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestSendMessage *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
+
+- (ImActorModelApiMessage *)getMessage;
 
 - (ImActorModelApiOutPeer *)getPeer;
 
 - (jlong)getRid;
-
-- (ImActorModelApiMessage *)getMessage;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -40,18 +43,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSendMessage)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSendMessage, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestSendMessage *ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSendMessage, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(ImActorModelApiRpcRequestSendMessage *self, ImActorModelApiOutPeer *peer, jlong rid, ImActorModelApiMessage *message);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSendMessage *new_ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(ImActorModelApiOutPeer *peer, jlong rid, ImActorModelApiMessage *message) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSendMessage_init(ImActorModelApiRpcRequestSendMessage *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSendMessage *new_ImActorModelApiRpcRequestSendMessage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSendMessage)
 
