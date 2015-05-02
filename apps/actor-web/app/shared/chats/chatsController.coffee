@@ -1,13 +1,13 @@
 class ChatsController
   list: undefined
 
-  constructor: (@$rootScope, @$scope, @$timeout, @actorService) ->
+  constructor: (@$rootScope, @$scope, @$timeout, @$mdSidenav, @actorService) ->
     console.log '[AW]ChatsController constructor'
     if @actorService.isLoggedIn
       console.log '[AW]ChatsController constructor: bindChats() if @actorService.isLoggedIn.'
       @bindDialogs()
-    @$scope.$on 'actorReady', =>
-      console.log '[AW]ChatsController constructor: actorReady fired.'
+    @$scope.$on 'actorLoggedIn', =>
+      console.log '[AW]ChatsController constructor: actorLoggedIn fired.'
       @bindDialogs()
 
   bindDialogs: ->
@@ -34,7 +34,8 @@ class ChatsController
 
     @actorService.bindChat peer
     @actorService.onConversationOpen peer
-
+    # Close sidebar
+    @$mdSidenav('left').close()
 
 #  getUnreadMessages: (peer) ->
 #    console.log '[AW]ChatsController getUnreadMessages'
@@ -43,7 +44,13 @@ class ChatsController
 
 
 
-ChatsController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
+ChatsController.$inject = [
+    '$rootScope'
+    '$scope'
+    '$timeout'
+    '$mdSidenav'
+    'actorService'
+  ]
 
 angular
   .module 'actorWeb'
