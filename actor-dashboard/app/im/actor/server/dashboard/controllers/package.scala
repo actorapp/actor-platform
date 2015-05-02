@@ -6,6 +6,6 @@ import im.actor.server.models
 
 package object controllers {
 
-  type Lang2UserAndPhone = Option[Lang] ⇒ (Option[models.User], Option[models.UserPhone])
+  type Lang2CompleteUser = Option[Lang] ⇒ Option[(models.User, String, models.UserPhone)]
 
 }

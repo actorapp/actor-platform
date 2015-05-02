@@ -30,22 +30,21 @@ class Users extends Controller {
   }
 
   def create = AuthAction.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[Lang2UserAndPhone].map { userAndPhone ⇒
+    request.body.validate[Lang2CompleteUser].map { userAndPhone ⇒
       db.run {
         userAndPhone(request.acceptLanguages.headOption) match {
-          case (Some(user), Some(phone)) ⇒
+          case Some((user, struct, phone)) ⇒
             for {
-              _ ← persist.User.create(user)
-              _ ← persist.UserPhone.create(phone)
-            } yield Created(Json.toJson(Map("id" → user.id)))
-          ///are those possible?
-          case (Some(user), _) ⇒
-            for {
-              _ ← persist.User.create(user)
-            } yield Created(Json.toJson(Map("id" → user.id)))
-          ///are those possible?
-          case (_, Some(phone)) ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "No user name provided"))))
-          case _                ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "No name and phone provided"))))
+              dept ← persist.Department.find(struct).headOption
+              result ← dept.map { d ⇒
+                for {
+                  _ ← persist.User.create(user)
+                  _ ← persist.UserPhone.create(phone)
+                  _ ← persist.UserDepartment.create(user.id, d.id)
+                } yield Created(Json.toJson(Map("id" → user.id)))
+              } getOrElse DBIO.successful(BadRequest(Json.toJson(Map("message" → "No user was created"))))
+            } yield result
+          case _ ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "No name and phone provided"))))
         }
       }
     } getOrElse Future(BadRequest)
