@@ -10,8 +10,9 @@ import im.actor.model.network.connection.AsyncConnectionFactory;
 import im.actor.model.network.connection.AsyncConnectionInterface;
 
 public class WebSocketConnectionFactory implements AsyncConnectionFactory {
+
     @Override
-    public AsyncConnection createConnection(ConnectionEndpoint endpoint, AsyncConnectionInterface connectionInterface) {
+    public AsyncConnection createConnection(int connectionId, ConnectionEndpoint endpoint, AsyncConnectionInterface connectionInterface) {
         return new WebSocketConnection(endpoint, connectionInterface);
     }
 }
