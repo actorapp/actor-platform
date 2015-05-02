@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm;
 
 import java.io.IOException;
@@ -7,9 +11,6 @@ import java.util.Properties;
 
 import im.actor.model.LocaleProvider;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class JavaLocale implements LocaleProvider {
 
     private HashMap<String, String> items;

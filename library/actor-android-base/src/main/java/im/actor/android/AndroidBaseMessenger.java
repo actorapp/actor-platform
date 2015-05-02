@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.content.Context;
@@ -17,9 +21,6 @@ import im.actor.model.Configuration;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.FastThumb;
 
-/**
- * Created by ex3ndr on 23.03.15.
- */
 public class AndroidBaseMessenger extends BaseMessenger {
     private Context context;
     private final Random random = new Random();

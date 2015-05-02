@@ -1,9 +1,18 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp.entity;
 
-import im.actor.model.network.mtp.entity.rpc.*;
-import im.actor.model.droidkit.bser.DataInput;
-
 import java.io.IOException;
+
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.network.mtp.entity.rpc.Push;
+import im.actor.model.network.mtp.entity.rpc.RpcError;
+import im.actor.model.network.mtp.entity.rpc.RpcFloodWait;
+import im.actor.model.network.mtp.entity.rpc.RpcInternalError;
+import im.actor.model.network.mtp.entity.rpc.RpcOk;
+import im.actor.model.network.mtp.entity.rpc.RpcRequest;
 
 public class ProtoSerializer {
     public static ProtoStruct readMessagePayload(byte[] bs) throws IOException {

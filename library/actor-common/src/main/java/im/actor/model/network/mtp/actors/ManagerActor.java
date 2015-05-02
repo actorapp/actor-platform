@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp.actors;
 
 import java.io.IOException;
@@ -22,9 +26,6 @@ import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.ExponentialBackoff;
 
-/**
- * Created by ex3ndr on 02.09.14.
- */
 public class ManagerActor extends Actor {
 
     private static final String TAG = "Manager";

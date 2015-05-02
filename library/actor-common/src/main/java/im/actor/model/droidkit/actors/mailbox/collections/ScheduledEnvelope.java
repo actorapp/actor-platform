@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox.collections;
 
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 
-/**
- * Created by ex3ndr on 28.10.14.
- */
 public class ScheduledEnvelope {
     private long key;
     private long time;

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.asn1;
 
 import java.io.IOException;
@@ -7,9 +11,6 @@ import java.util.List;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 
-/**
- * Created by ex3ndr on 09.03.15.
- */
 public class ASN1Sequence extends ASN1Primitive {
 
     public static ASN1Sequence readSequence(DataInput dataInput) throws IOException {

@@ -1,15 +1,16 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity.content;
+
+import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.Avatar;
 
-import java.io.IOException;
-
-/**
- * Created by ex3ndr on 14.02.15.
- */
 public class ServiceGroupAvatarChanged extends ServiceContent {
 
     public static ServiceGroupAvatarChanged fromBytes(byte[] data) throws IOException {

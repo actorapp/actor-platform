@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.contacts;
 
 import java.util.ArrayList;
@@ -23,9 +27,6 @@ import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 25.02.15.
- */
 public class BookImportActor extends ModuleActor {
 
     private static final String TAG = "ContactsImport";

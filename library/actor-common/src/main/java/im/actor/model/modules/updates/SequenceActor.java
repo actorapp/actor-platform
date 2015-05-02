@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates;
 
 
@@ -24,9 +28,6 @@ import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.parser.Update;
 
-/**
- * Created by ex3ndr on 09.02.15.
- */
 public class SequenceActor extends ModuleActor {
 
     private static final String TAG = "Updates";

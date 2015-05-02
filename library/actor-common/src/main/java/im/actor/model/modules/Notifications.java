@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -10,9 +14,6 @@ import im.actor.model.modules.notifications.NotificationsActor;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 01.03.15.
- */
 public class Notifications extends BaseModule {
     private ActorRef notificationsActor;
     private SyncKeyValue notificationsStorage;

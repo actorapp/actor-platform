@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox;
 
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue;
@@ -6,8 +10,6 @@ import im.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;
 
 /**
  * Queue of multiple mailboxes for MailboxesDispatcher
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class MailboxesQueue extends AbstractDispatchQueue<Envelope> {
 

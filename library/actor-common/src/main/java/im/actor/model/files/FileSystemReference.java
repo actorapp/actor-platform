@@ -1,17 +1,18 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.files;
 
-/**
- * Created by ex3ndr on 26.02.15.
- */
 public interface FileSystemReference {
 
-    public String getDescriptor();
+    String getDescriptor();
 
-    public boolean isExist();
+    boolean isExist();
 
-    public int getSize();
+    int getSize();
 
-    public OutputFile openWrite(int size);
+    OutputFile openWrite(int size);
 
-    public InputFile openRead();
+    InputFile openRead();
 }

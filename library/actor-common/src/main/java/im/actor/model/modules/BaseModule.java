@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import im.actor.model.CryptoProvider;
@@ -13,9 +17,6 @@ import im.actor.model.network.parser.Response;
 import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 public class BaseModule {
 
     public static final String STORAGE_DIALOGS = "dialogs";

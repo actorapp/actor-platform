@@ -1,7 +1,8 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates.internal;
 
-/**
- * Created by ex3ndr on 13.02.15.
- */
 public class InternalUpdate {
 }

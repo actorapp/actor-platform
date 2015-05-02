@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
@@ -8,9 +12,6 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-/**
- * Created by ex3ndr on 17.02.15.
- */
 public class PendingMessagesStorage extends BserObject {
 
     public static PendingMessagesStorage fromBytes(byte[] data) throws IOException {

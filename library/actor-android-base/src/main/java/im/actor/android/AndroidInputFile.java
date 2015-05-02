@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import java.io.FileNotFoundException;
@@ -6,9 +10,6 @@ import java.io.RandomAccessFile;
 
 import im.actor.model.files.InputFile;
 
-/**
- * Created by ex3ndr on 03.03.15.
- */
 public class AndroidInputFile implements InputFile {
 
     private RandomAccessFile randomAccessFile;

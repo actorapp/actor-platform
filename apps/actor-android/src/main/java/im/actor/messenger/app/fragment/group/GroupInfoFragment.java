@@ -38,9 +38,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.GroupMember;
-import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
@@ -161,8 +159,7 @@ public class GroupInfoFragment extends BaseFragment {
         }
 
         Peer peer = Peer.group(groupInfo.getId());
-        ListEngine<Message> media = messenger().getMedia(peer);
-        int mediaCount = media.getCount();//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        int mediaCount = messenger().getMediaCount(peer);
         if (mediaCount == 0) {
             header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
         } else {

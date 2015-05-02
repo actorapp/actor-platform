@@ -1,13 +1,15 @@
-package im.actor.model.droidkit.actors;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
+package im.actor.model.droidkit.actors;
 
 import java.util.HashMap;
 
+import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
+
 /**
  * Entry point for Actor Model, creates all actors and dispatchers
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class ActorSystem {
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.content.BroadcastReceiver;
@@ -10,9 +14,6 @@ import im.actor.android.time.SntpClient;
 import im.actor.model.jvm.JavaThreadingProvider;
 import im.actor.model.log.Log;
 
-/**
- * Created by ex3ndr on 02.04.15.
- */
 public class AndroidThreadingProvider extends JavaThreadingProvider {
 
     private static final String PROPS = "time_sync.ini";

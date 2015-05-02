@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js;
 
 import org.timepedia.exporter.client.Export;
@@ -21,10 +25,6 @@ import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
-
-/**
- * Created by ex3ndr on 21.02.15.
- */
 
 @ExportPackage("actor")
 @Export("ActorApp")

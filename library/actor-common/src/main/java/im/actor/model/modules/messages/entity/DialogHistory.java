@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages.entity;
 
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
 
-/**
- * Created by ex3ndr on 11.02.15.
- */
 public class DialogHistory {
     private final Peer peer;
     private final int unreadCount;

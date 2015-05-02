@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 import im.actor.model.droidkit.actors.mailbox.Mailbox;
@@ -5,8 +9,6 @@ import im.actor.model.droidkit.actors.messages.DeadLetter;
 
 /**
  * Actor object
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class Actor {
 

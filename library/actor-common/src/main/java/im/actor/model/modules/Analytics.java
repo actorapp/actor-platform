@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.HashMap;
@@ -5,9 +9,6 @@ import java.util.HashMap;
 import im.actor.model.AnalyticsProvider;
 import im.actor.model.entity.Peer;
 
-/**
- * Created by ex3ndr on 30.04.15.
- */
 public class Analytics extends BaseModule {
 
     private static final String EVENT_APP_VISIBLE = "App Visible";

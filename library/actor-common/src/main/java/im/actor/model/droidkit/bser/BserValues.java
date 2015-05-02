@@ -1,7 +1,10 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +13,6 @@ import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.convertInt;
 import static im.actor.model.droidkit.bser.Utils.convertString;
 
-/**
- * Created by ex3ndr on 17.10.14.
- */
 public class BserValues {
 
     private SparseArray<Object> fields;

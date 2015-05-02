@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity;
 
 import java.io.IOException;
@@ -9,9 +13,6 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.ListEngineItem;
 
-/**
- * Created by ex3ndr on 05.04.15.
- */
 public class SearchEntity extends BserObject implements ListEngineItem {
 
     public static SearchEntity fromBytes(byte[] data) throws IOException {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox;
 
 import java.util.HashMap;
@@ -16,8 +20,6 @@ import im.actor.model.droidkit.actors.messages.StartActor;
 
 /**
  * Abstract Actor Dispatcher, used for dispatching messages for actors
- *
- * @author Stepan Ex3NDR Korshakov (steve@actor.im)
  */
 public abstract class ActorDispatcher {
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.storage;
 
 import com.google.gwt.storage.client.Storage;
@@ -7,9 +11,6 @@ import im.actor.model.droidkit.engine.PreferencesStorage;
 import static im.actor.model.util.Base64Utils.fromBase64;
 import static im.actor.model.util.Base64Utils.toBase64;
 
-/**
- * Created by ex3ndr on 10.02.15.
- */
 public class JsPreferencesStorage implements PreferencesStorage {
     private Storage storage;
 

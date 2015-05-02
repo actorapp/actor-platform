@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.connection;
 
 import java.io.IOException;
@@ -15,9 +19,6 @@ import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.util.CRC32;
 
-/**
- * Created by ex3ndr on 29.04.15.
- */
 public class ManagedConnection implements Connection {
 
     public static final int CONNECTION_TIMEOUT = 5 * 1000;

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.ArrayList;
@@ -18,9 +22,6 @@ import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class Auth extends BaseModule {
 
     private static final String KEY_DEVICE_HASH = "device_hash";
