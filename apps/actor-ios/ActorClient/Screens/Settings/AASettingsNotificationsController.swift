@@ -1,9 +1,5 @@
 //
-//  AASettingsNotificationsController.swift
-//  ActorClient
-//
-//  Created by Danil Gontovnik on 4/7/15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import UIKit
