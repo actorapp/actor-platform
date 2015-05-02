@@ -3,6 +3,7 @@ package im.actor.server.dashboard
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
+import com.github.tminglei.slickpg.LTree
 import play.api.http.HeaderNames
 import play.api.libs.iteratee.Input
 import play.api.libs.json.{ JsArray, JsValue, Json }
@@ -150,38 +151,41 @@ class UsersSpec extends BasicDashboardSpec {
     def createUser() = {
       val user = genUser()
       val phone = genPhone(user.id, 75552223312L)
+      val dept = "1.1"
 
-      //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
-      val request = authorizedPOST.
-        withHeaders(
-          HeaderNames.CONTENT_TYPE → "application/json",
-          HeaderNames.ACCEPT_LANGUAGE → "RU"
-        )
-      val body = Json.toJson(Map("name" → user.name, "phone" → phone.number.toString)).toString()
-      val result = new TestController().create()(request).feed(Input.El(body.getBytes)).flatMap(_.run)
-      status(result) shouldEqual 201
+      val department = models.Department(1, "main dept", LTree(dept))
+      whenReady(database.run(persist.Department.create(department))) { _ ⇒
+        //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+        val request = authorizedPOST.
+          withHeaders(
+            HeaderNames.CONTENT_TYPE → "application/json",
+            HeaderNames.ACCEPT_LANGUAGE → "RU"
+          )
+        val body = Json.toJson(Map("name" → user.name, "phone" → phone.number.toString, "dept" → dept)).toString()
+        val result = new TestController().create()(request).feed(Input.El(body.getBytes)).flatMap(_.run)
+        status(result) shouldEqual 201
 
-      val userId = (contentAsJson(result) \ "id").as[Int]
+        val userId = (contentAsJson(result) \ "id").as[Int]
 
-      whenReady(database.run {
-        for {
-          user ← persist.User.find(userId).headOption
-          phone ← persist.UserPhone.findByUserId(userId)
-        } yield (user, phone)
-      }) { up ⇒
-        val (uptUser, phones) = up
-        uptUser shouldBe defined
-        uptUser.map { u ⇒
-          u.name shouldEqual user.name
-          u.sex shouldEqual user.sex
-          u.state shouldEqual user.state
-          u.countryCode shouldEqual "RU" //from Accept language header
-          u.deletedAt shouldEqual user.deletedAt
-
-        } getOrElse fail
-        phones should have length 1
-        phones.map {
-          _.number shouldEqual phone.number
+        whenReady(database.run {
+          for {
+            user ← persist.User.find(userId).headOption
+            phone ← persist.UserPhone.findByUserId(userId)
+          } yield (user, phone)
+        }) { up ⇒
+          val (uptUser, phones) = up
+          uptUser shouldBe defined
+          uptUser.map { u ⇒
+            u.name shouldEqual user.name
+            u.sex shouldEqual user.sex
+            u.state shouldEqual user.state
+            u.countryCode shouldEqual "RU" //from Accept language header
+            u.deletedAt shouldEqual user.deletedAt
+          } getOrElse fail
+          phones should have length 1
+          phones.map {
+            _.number shouldEqual phone.number
+          }
         }
       }
     }
