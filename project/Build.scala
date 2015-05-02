@@ -191,6 +191,8 @@ object Build extends sbt.Build {
     id = "actor-dashboard",
     base = file("actor-dashboard"),
     settings = defaultSettings ++ Seq(
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
+      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
       libraryDependencies ++= Dependencies.dashboard
     )
   )
