@@ -4,9 +4,9 @@ class ActorRun
     $rootScope.$state = $state
     $rootScope.$stateParams = $stateParams
 
-    $rootScope.isLoggedIn = null
-    $rootScope.$on '$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->
-      actorService.checkAccess(event, toState, toParams, fromState, fromParams)
+    # $rootScope.isLoggedIn = null
+    # $rootScope.$on '$stateChangeStart', (event, toState, toParams, fromState, fromParams) ->
+      # actorService.checkAccess(event, toState, toParams, fromState, fromParams)
 
 ActorRun.$inject = ['$rootScope', '$state', '$stateParams', 'actorService']
 
