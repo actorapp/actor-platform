@@ -6,18 +6,19 @@
 #ifndef _ImActorModelApiServiceExUserKicked_H_
 #define _ImActorModelApiServiceExUserKicked_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
 
-@interface ImActorModelApiServiceExUserKicked : ImActorModelApiServiceEx {
-}
+@class BSBserValues;
+@class BSBserWriter;
 
-- (instancetype)initWithInt:(jint)kickedUid;
+@interface ImActorModelApiServiceExUserKicked : ImActorModelApiServiceEx
+
+#pragma mark Public
 
 - (instancetype)init;
+
+- (instancetype)initWithInt:(jint)kickedUid;
 
 - (jint)getHeader;
 
@@ -33,8 +34,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExUserKicked)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiServiceExUserKicked_initWithInt_(ImActorModelApiServiceExUserKicked *self, jint kickedUid);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initWithInt_(jint kickedUid) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiServiceExUserKicked_init(ImActorModelApiServiceExUserKicked *self);
+
+FOUNDATION_EXPORT ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExUserKicked)
 

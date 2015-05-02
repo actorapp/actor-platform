@@ -6,22 +6,15 @@
 #ifndef _OrgBouncycastleCryptoEnginesRSACoreEngine_H_
 #define _OrgBouncycastleCryptoEnginesRSACoreEngine_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class JavaMathBigInteger;
 @class OrgBouncycastleCryptoParamsParametersWithRandom;
-@class OrgBouncycastleCryptoParamsRSAKeyParameters;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleCryptoEnginesRSACoreEngine : NSObject
 
-@interface OrgBouncycastleCryptoEnginesRSACoreEngine : NSObject {
-}
-
-- (void)init__WithBoolean:(jboolean)forEncryption
-withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParamsParametersWithRandom *)param OBJC_METHOD_FAMILY_NONE;
-
-- (jint)getInputBlockSize;
-
-- (jint)getOutputBlockSize;
+#pragma mark Public
 
 - (JavaMathBigInteger *)convertInputWithByteArray:(IOSByteArray *)inArg
                                           withInt:(jint)inOff
@@ -29,7 +22,16 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 - (IOSByteArray *)convertOutputWithJavaMathBigInteger:(JavaMathBigInteger *)result;
 
+- (jint)getInputBlockSize;
+
+- (jint)getOutputBlockSize;
+
+- (void)init__WithBoolean:(jboolean)forEncryption
+withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParamsParametersWithRandom *)param OBJC_METHOD_FAMILY_NONE;
+
 - (JavaMathBigInteger *)processBlockWithJavaMathBigInteger:(JavaMathBigInteger *)input;
+
+#pragma mark Package-Private
 
 - (instancetype)init;
 
@@ -37,8 +39,9 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoEnginesRSACoreEngine)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoEnginesRSACoreEngine_init(OrgBouncycastleCryptoEnginesRSACoreEngine *self);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoEnginesRSACoreEngine *new_OrgBouncycastleCryptoEnginesRSACoreEngine_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoEnginesRSACoreEngine)
 

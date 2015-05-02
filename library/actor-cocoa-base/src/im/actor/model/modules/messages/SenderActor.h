@@ -6,30 +6,18 @@
 #ifndef _ImActorModelModulesMessagesSenderActor_H_
 #define _ImActorModelModulesMessagesSenderActor_H_
 
-@class AMAbsContent;
-@class AMFastThumb;
-@class AMFileReference;
-@class AMPeer;
-@class AMRpcException;
-@class ImActorModelApiPeer;
-@class ImActorModelApiRpcResponseSeqDate;
-@class ImActorModelModulesMessagesEntityPendingMessage;
-@class ImActorModelModulesMessagesEntityPendingMessagesStorage;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-@interface ImActorModelModulesMessagesSenderActor : ImActorModelModulesUtilsModuleActor {
-}
+@class AMFastThumb;
+@class AMPeer;
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesMessagesSenderActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
-
-- (void)preStart;
-
-- (void)doSendTextWithAMPeer:(AMPeer *)peer
-                withNSString:(NSString *)text;
 
 - (void)doSendDocumentWithAMPeer:(AMPeer *)peer
                     withNSString:(NSString *)fileName
@@ -46,6 +34,9 @@
                       withInt:(jint)w
                       withInt:(jint)h;
 
+- (void)doSendTextWithAMPeer:(AMPeer *)peer
+                withNSString:(NSString *)text;
+
 - (void)doSendVideoWithAMPeer:(AMPeer *)peer
                  withNSString:(NSString *)fileName
                       withInt:(jint)w
@@ -57,20 +48,21 @@
 
 - (void)onReceiveWithId:(id)message;
 
+- (void)preStart;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesSenderActor *self, ImActorModelModulesModules *messenger);
 
-FOUNDATION_EXPORT NSString *ImActorModelModulesMessagesSenderActor_PREFERENCES_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesSenderActor, PREFERENCES_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor *new_ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor)
 
-@interface ImActorModelModulesMessagesSenderActor_SendDocument : NSObject {
-}
+@interface ImActorModelModulesMessagesSenderActor_SendDocument : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
@@ -79,29 +71,31 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor)
                   withNSString:(NSString *)descriptor
                withAMFastThumb:(AMFastThumb *)fastThumb;
 
+- (NSString *)getDescriptor;
+
 - (AMFastThumb *)getFastThumb;
 
-- (jint)getFileSize;
-
 - (NSString *)getFileName;
+
+- (jint)getFileSize;
 
 - (NSString *)getMimeType;
 
 - (AMPeer *)getPeer;
 
-- (NSString *)getDescriptor;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendDocument)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSString_withNSString_withInt_withNSString_withAMFastThumb_(ImActorModelModulesMessagesSenderActor_SendDocument *self, AMPeer *peer, NSString *fileName, NSString *mimeType, jint fileSize, NSString *descriptor, AMFastThumb *fastThumb);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendDocument *new_ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSString_withNSString_withInt_withNSString_withAMFastThumb_(AMPeer *peer, NSString *fileName, NSString *mimeType, jint fileSize, NSString *descriptor, AMFastThumb *fastThumb) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendDocument)
 
-@interface ImActorModelModulesMessagesSenderActor_SendPhoto : NSObject {
-}
+@interface ImActorModelModulesMessagesSenderActor_SendPhoto : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                withAMFastThumb:(AMFastThumb *)fastThumb
@@ -111,31 +105,33 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendDocument)
                        withInt:(jint)w
                        withInt:(jint)h;
 
-- (AMPeer *)getPeer;
+- (NSString *)getDescriptor;
 
 - (AMFastThumb *)getFastThumb;
-
-- (NSString *)getDescriptor;
 
 - (NSString *)getFileName;
 
 - (jint)getFileSize;
 
-- (jint)getW;
-
 - (jint)getH;
+
+- (AMPeer *)getPeer;
+
+- (jint)getW;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendPhoto)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendPhoto_initWithAMPeer_withAMFastThumb_withNSString_withNSString_withInt_withInt_withInt_(ImActorModelModulesMessagesSenderActor_SendPhoto *self, AMPeer *peer, AMFastThumb *fastThumb, NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendPhoto *new_ImActorModelModulesMessagesSenderActor_SendPhoto_initWithAMPeer_withAMFastThumb_withNSString_withNSString_withInt_withInt_withInt_(AMPeer *peer, AMFastThumb *fastThumb, NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendPhoto)
 
-@interface ImActorModelModulesMessagesSenderActor_SendVideo : NSObject {
-}
+@interface ImActorModelModulesMessagesSenderActor_SendVideo : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
@@ -146,33 +142,35 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendPhoto)
                   withNSString:(NSString *)descriptor
                        withInt:(jint)fileSize;
 
-- (AMPeer *)getPeer;
-
-- (NSString *)getFileName;
-
-- (jint)getW;
-
-- (jint)getH;
+- (NSString *)getDescriptor;
 
 - (jint)getDuration;
 
 - (AMFastThumb *)getFastThumb;
 
-- (NSString *)getDescriptor;
+- (NSString *)getFileName;
 
 - (jint)getFileSize;
+
+- (jint)getH;
+
+- (AMPeer *)getPeer;
+
+- (jint)getW;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendVideo)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendVideo_initWithAMPeer_withNSString_withInt_withInt_withInt_withAMFastThumb_withNSString_withInt_(ImActorModelModulesMessagesSenderActor_SendVideo *self, AMPeer *peer, NSString *fileName, jint w, jint h, jint duration, AMFastThumb *fastThumb, NSString *descriptor, jint fileSize);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendVideo *new_ImActorModelModulesMessagesSenderActor_SendVideo_initWithAMPeer_withNSString_withInt_withInt_withInt_withAMFastThumb_withNSString_withInt_(AMPeer *peer, NSString *fileName, jint w, jint h, jint duration, AMFastThumb *fastThumb, NSString *descriptor, jint fileSize) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 
-@interface ImActorModelModulesMessagesSenderActor_SendText : NSObject {
-}
+@interface ImActorModelModulesMessagesSenderActor_SendText : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)text;
@@ -185,13 +183,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendText)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(AMPeer *peer, NSString *text) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendText)
 
-@interface ImActorModelModulesMessagesSenderActor_MessageSent : NSObject {
-}
+@interface ImActorModelModulesMessagesSenderActor_MessageSent : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid;
@@ -204,13 +204,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendText)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_MessageSent)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(ImActorModelModulesMessagesSenderActor_MessageSent *self, AMPeer *peer, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_MessageSent *new_ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_MessageSent)
 
-@interface ImActorModelModulesMessagesSenderActor_MessageError : NSObject {
-}
+@interface ImActorModelModulesMessagesSenderActor_MessageError : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid;
@@ -223,30 +225,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_MessageSent)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_MessageError)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(ImActorModelModulesMessagesSenderActor_MessageError *self, AMPeer *peer, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_MessageError *new_ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_MessageError)
-
-@interface ImActorModelModulesMessagesSenderActor_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesMessagesSenderActor:(ImActorModelModulesMessagesSenderActor *)outer$
-                                                    withAMPeer:(AMPeer *)capture$0
-                                                      withLong:(jlong)capture$1
-                                       withImActorModelApiPeer:(ImActorModelApiPeer *)capture$2;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
 
 #endif // _ImActorModelModulesMessagesSenderActor_H_

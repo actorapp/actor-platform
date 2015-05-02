@@ -8,8 +8,9 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMApiConfiguration : NSObject {
-}
+@interface AMApiConfiguration : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)appTitle
                          withInt:(jint)appId
@@ -17,25 +18,26 @@
                     withNSString:(NSString *)deviceTitle
                     withNSString:(NSString *)deviceString;
 
-- (NSString *)getAppTitle;
-
 - (jint)getAppId;
 
 - (NSString *)getAppKey;
 
-- (NSString *)getDeviceTitle;
+- (NSString *)getAppTitle;
 
 - (NSString *)getDeviceString;
+
+- (NSString *)getDeviceTitle;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMApiConfiguration)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(AMApiConfiguration *self, NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString);
 
-typedef AMApiConfiguration ImActorModelApiConfiguration;
+FOUNDATION_EXPORT AMApiConfiguration *new_AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMApiConfiguration)
+
+typedef AMApiConfiguration ImActorModelApiConfiguration;
 
 #endif // _AMApiConfiguration_H_

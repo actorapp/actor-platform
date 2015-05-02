@@ -6,15 +6,17 @@
 #ifndef _OrgBouncycastleMathEcZTauElement_H_
 #define _OrgBouncycastleMathEcZTauElement_H_
 
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
+
+@class JavaMathBigInteger;
 
 @interface OrgBouncycastleMathEcZTauElement : NSObject {
  @public
   JavaMathBigInteger *u_;
   JavaMathBigInteger *v_;
 }
+
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)u
                     withJavaMathBigInteger:(JavaMathBigInteger *)v;
@@ -26,8 +28,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcZTauElement)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcZTauElement, u_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcZTauElement, v_, JavaMathBigInteger *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcZTauElement *self, JavaMathBigInteger *u, JavaMathBigInteger *v);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcZTauElement *new_OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *u, JavaMathBigInteger *v) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcZTauElement)
 

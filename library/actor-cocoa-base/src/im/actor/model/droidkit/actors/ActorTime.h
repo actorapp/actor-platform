@@ -8,24 +8,26 @@
 
 #include "J2ObjC_header.h"
 
-@interface DKActorTime : NSObject {
-}
+@interface DKActorTime : NSObject
 
-+ (jlong)currentTime;
+#pragma mark Public
 
 - (instancetype)init;
+
++ (jlong)currentTime;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorTime)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT jlong DKActorTime_currentTime();
-CF_EXTERN_C_END
 
-typedef DKActorTime ImActorModelDroidkitActorsActorTime;
+FOUNDATION_EXPORT void DKActorTime_init(DKActorTime *self);
+
+FOUNDATION_EXPORT DKActorTime *new_DKActorTime_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorTime)
+
+typedef DKActorTime ImActorModelDroidkitActorsActorTime;
 
 #endif // _DKActorTime_H_

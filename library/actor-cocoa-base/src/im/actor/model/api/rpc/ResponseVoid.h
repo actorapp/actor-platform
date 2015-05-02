@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiRpcResponseVoid_H_
 #define _ImActorModelApiRpcResponseVoid_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseVoid_HEADER 50
 
-@interface ImActorModelApiRpcResponseVoid : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseVoid : ImActorModelNetworkParserResponse
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiRpcResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseVoid)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseVoid, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseVoid, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseVoid_init(ImActorModelApiRpcResponseVoid *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseVoid *new_ImActorModelApiRpcResponseVoid_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseVoid)
 

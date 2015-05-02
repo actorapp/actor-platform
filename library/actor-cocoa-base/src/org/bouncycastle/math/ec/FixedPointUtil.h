@@ -6,15 +6,18 @@
 #ifndef _OrgBouncycastleMathEcFixedPointUtil_H_
 #define _OrgBouncycastleMathEcFixedPointUtil_H_
 
+#include "J2ObjC_header.h"
+
 @class OrgBouncycastleMathEcECCurve;
 @class OrgBouncycastleMathEcECPoint;
 @class OrgBouncycastleMathEcFixedPointPreCompInfo;
 @protocol OrgBouncycastleMathEcPreCompInfo;
 
-#include "J2ObjC_header.h"
+@interface OrgBouncycastleMathEcFixedPointUtil : NSObject
 
-@interface OrgBouncycastleMathEcFixedPointUtil : NSObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (jint)getCombSizeWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c;
 
@@ -23,13 +26,12 @@
 + (OrgBouncycastleMathEcFixedPointPreCompInfo *)precomputeWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                                                    withInt:(jint)minWidth;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcFixedPointUtil)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT NSString *OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcFixedPointUtil, PRECOMP_NAME_, NSString *)
 
 FOUNDATION_EXPORT jint OrgBouncycastleMathEcFixedPointUtil_getCombSizeWithOrgBouncycastleMathEcECCurve_(OrgBouncycastleMathEcECCurve *c);
 
@@ -37,9 +39,9 @@ FOUNDATION_EXPORT OrgBouncycastleMathEcFixedPointPreCompInfo *OrgBouncycastleMat
 
 FOUNDATION_EXPORT OrgBouncycastleMathEcFixedPointPreCompInfo *OrgBouncycastleMathEcFixedPointUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_(OrgBouncycastleMathEcECPoint *p, jint minWidth);
 
-FOUNDATION_EXPORT NSString *OrgBouncycastleMathEcFixedPointUtil_PRECOMP_NAME_;
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcFixedPointUtil, PRECOMP_NAME_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcFixedPointUtil_init(OrgBouncycastleMathEcFixedPointUtil *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcFixedPointUtil *new_OrgBouncycastleMathEcFixedPointUtil_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcFixedPointUtil)
 

@@ -6,18 +6,19 @@
 #ifndef _AMContactRecord_H_
 #define _AMContactRecord_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@interface AMContactRecord : BSBserObject < DKKeyValueItem > {
-}
+@class BSBserValues;
+@class BSBserWriter;
+@class IOSByteArray;
 
-+ (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data;
+@interface AMContactRecord : BSBserObject < DKKeyValueItem >
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
@@ -25,31 +26,27 @@
                withNSString:(NSString *)recordData
                withNSString:(NSString *)recordTitle;
 
-- (instancetype)init;
-
-- (jint)getId;
++ (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
-- (jint)getRecordType;
+- (jlong)getEngineId;
+
+- (jint)getId;
 
 - (NSString *)getRecordData;
 
 - (NSString *)getRecordTitle;
 
+- (jint)getRecordType;
+
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-- (jlong)getEngineId;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMContactRecord)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT jint AMContactRecord_TYPE_PHONE_;
 J2OBJC_STATIC_FIELD_GETTER(AMContactRecord, TYPE_PHONE_, jint)
@@ -58,10 +55,19 @@ J2OBJC_STATIC_FIELD_REF_GETTER(AMContactRecord, TYPE_PHONE_, jint)
 FOUNDATION_EXPORT jint AMContactRecord_TYPE_EMAIL_;
 J2OBJC_STATIC_FIELD_GETTER(AMContactRecord, TYPE_EMAIL_, jint)
 J2OBJC_STATIC_FIELD_REF_GETTER(AMContactRecord, TYPE_EMAIL_, jint)
-CF_EXTERN_C_END
 
-typedef AMContactRecord ImActorModelEntityContactRecord;
+FOUNDATION_EXPORT AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMContactRecord *self, jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle);
+
+FOUNDATION_EXPORT AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMContactRecord_init(AMContactRecord *self);
+
+FOUNDATION_EXPORT AMContactRecord *new_AMContactRecord_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMContactRecord)
+
+typedef AMContactRecord ImActorModelEntityContactRecord;
 
 #endif // _AMContactRecord_H_

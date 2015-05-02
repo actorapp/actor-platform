@@ -6,22 +6,31 @@
 #ifndef _ImActorModelModulesUpdatesGroupsProcessor_H_
 #define _ImActorModelModulesUpdatesGroupsProcessor_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
 @class AMAvatar;
-@class AMGroup;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/modules/BaseModule.h"
+@interface ImActorModelModulesUpdatesGroupsProcessor : ImActorModelModulesBaseModule
 
-@interface ImActorModelModulesUpdatesGroupsProcessor : ImActorModelModulesBaseModule {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                               withBoolean:(jboolean)forced;
+
+- (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids;
+
+- (void)onAvatarChangedWithInt:(jint)groupId
+                      withLong:(jlong)rid
+                       withInt:(jint)uid
+                  withAMAvatar:(AMAvatar *)avatar
+                      withLong:(jlong)date
+                   withBoolean:(jboolean)isSilent;
 
 - (void)onGroupInviteWithInt:(jint)groupId
                     withLong:(jlong)rid
@@ -29,9 +38,20 @@
                     withLong:(jlong)date
                  withBoolean:(jboolean)isSilent;
 
-- (void)onUserLeaveWithInt:(jint)groupId
+- (void)onMembersUpdatedWithInt:(jint)groupId
+               withJavaUtilList:(id<JavaUtilList>)members;
+
+- (void)onTitleChangedWithInt:(jint)groupId
+                     withLong:(jlong)rid
+                      withInt:(jint)uid
+                 withNSString:(NSString *)title
+                     withLong:(jlong)date
+                  withBoolean:(jboolean)isSilent;
+
+- (void)onUserAddedWithInt:(jint)groupId
                   withLong:(jlong)rid
                    withInt:(jint)uid
+                   withInt:(jint)adder
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent;
 
@@ -42,38 +62,19 @@
                    withLong:(jlong)date
                 withBoolean:(jboolean)isSilent;
 
-- (void)onUserAddedWithInt:(jint)groupId
+- (void)onUserLeaveWithInt:(jint)groupId
                   withLong:(jlong)rid
                    withInt:(jint)uid
-                   withInt:(jint)adder
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent;
-
-- (void)onTitleChangedWithInt:(jint)groupId
-                     withLong:(jlong)rid
-                      withInt:(jint)uid
-                 withNSString:(NSString *)title
-                     withLong:(jlong)date
-                  withBoolean:(jboolean)isSilent;
-
-- (void)onAvatarChangedWithInt:(jint)groupId
-                      withLong:(jlong)rid
-                       withInt:(jint)uid
-                  withAMAvatar:(AMAvatar *)avatar
-                      withLong:(jlong)date
-                   withBoolean:(jboolean)isSilent;
-
-- (void)onMembersUpdatedWithInt:(jint)groupId
-               withJavaUtilList:(id<JavaUtilList>)members;
-
-- (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesGroupsProcessor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesGroupsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesGroupsProcessor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesGroupsProcessor *new_ImActorModelModulesUpdatesGroupsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesGroupsProcessor)
 

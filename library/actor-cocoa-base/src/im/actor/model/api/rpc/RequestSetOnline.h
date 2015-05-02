@@ -6,28 +6,31 @@
 #ifndef _ImActorModelApiRpcRequestSetOnline_H_
 #define _ImActorModelApiRpcRequestSetOnline_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestSetOnline_HEADER 29
 
-@interface ImActorModelApiRpcRequestSetOnline : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestSetOnline : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithBoolean:(jboolean)isOnline
                        withLong:(jlong)timeout;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (jboolean)isOnline;
+- (jint)getHeaderKey;
 
 - (jlong)getTimeout;
+
+- (jboolean)isOnline;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -35,18 +38,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSetOnline)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSetOnline, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestSetOnline *ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSetOnline, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(ImActorModelApiRpcRequestSetOnline *self, jboolean isOnline, jlong timeout);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(jboolean isOnline, jlong timeout) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSetOnline_init(ImActorModelApiRpcRequestSetOnline *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSetOnline)
 

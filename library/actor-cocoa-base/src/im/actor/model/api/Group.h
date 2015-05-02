@@ -6,16 +6,19 @@
 #ifndef _ImActorModelApiGroup_H_
 #define _ImActorModelApiGroup_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiAvatar;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelApiGroup : BSBserObject
 
-@interface ImActorModelApiGroup : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
@@ -26,23 +29,21 @@
            withJavaUtilList:(id<JavaUtilList>)members
                    withLong:(jlong)createDate;
 
-- (instancetype)init;
-
-- (jint)getId;
-
 - (jlong)getAccessHash;
-
-- (NSString *)getTitle;
 
 - (ImActorModelApiAvatar *)getAvatar;
 
-- (jboolean)isMember;
+- (jlong)getCreateDate;
 
 - (jint)getCreatorUid;
 
+- (jint)getId;
+
 - (id<JavaUtilList>)getMembers;
 
-- (jlong)getCreateDate;
+- (NSString *)getTitle;
+
+- (jboolean)isMember;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -54,8 +55,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiGroup)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(ImActorModelApiGroup *self, jint id_, jlong accessHash, NSString *title, ImActorModelApiAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate);
+
+FOUNDATION_EXPORT ImActorModelApiGroup *new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(jint id_, jlong accessHash, NSString *title, ImActorModelApiAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiGroup_init(ImActorModelApiGroup *self);
+
+FOUNDATION_EXPORT ImActorModelApiGroup *new_ImActorModelApiGroup_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiGroup)
 

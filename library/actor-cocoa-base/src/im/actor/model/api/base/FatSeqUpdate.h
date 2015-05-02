@@ -6,20 +6,21 @@
 #ifndef _ImActorModelApiBaseFatSeqUpdate_H_
 #define _ImActorModelApiBaseFatSeqUpdate_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/RpcScope.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/RpcScope.h"
-
 #define ImActorModelApiBaseFatSeqUpdate_HEADER 73
 
-@interface ImActorModelApiBaseFatSeqUpdate : ImActorModelNetworkParserRpcScope {
-}
+@interface ImActorModelApiBaseFatSeqUpdate : ImActorModelNetworkParserRpcScope
 
-+ (ImActorModelApiBaseFatSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
@@ -30,23 +31,25 @@
            withJavaUtilList:(id<JavaUtilList>)phones
            withJavaUtilList:(id<JavaUtilList>)emails;
 
-- (instancetype)init;
++ (ImActorModelApiBaseFatSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (id<JavaUtilList>)getEmails;
+
+- (id<JavaUtilList>)getGroups;
+
+- (jint)getHeaderKey;
+
+- (id<JavaUtilList>)getPhones;
 
 - (jint)getSeq;
 
 - (IOSByteArray *)getState;
 
-- (jint)getUpdateHeader;
-
 - (IOSByteArray *)getUpdate;
 
+- (jint)getUpdateHeader;
+
 - (id<JavaUtilList>)getUsers;
-
-- (id<JavaUtilList>)getGroups;
-
-- (id<JavaUtilList>)getPhones;
-
-- (id<JavaUtilList>)getEmails;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -54,18 +57,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiBaseFatSeqUpdate)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseFatSeqUpdate, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiBaseFatSeqUpdate, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiBaseFatSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails);
+
+FOUNDATION_EXPORT ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiBaseFatSeqUpdate_init(ImActorModelApiBaseFatSeqUpdate *self);
+
+FOUNDATION_EXPORT ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiBaseFatSeqUpdate)
 

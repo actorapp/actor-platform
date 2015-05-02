@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/DeleteStorage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/DeleteStorage.java"
 
 #include "IOSClass.h"
@@ -25,6 +26,7 @@
  @public
   JavaUtilHashMap *pendingDeletions_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDeletions_, JavaUtilHashMap *)
@@ -40,8 +42,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 
 #line 25
 - (JavaUtilHashMap *)getPendingDeletions {
-  
-#line 26
   return pendingDeletions_;
 }
 
@@ -50,9 +50,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [((JavaUtilHashMap *) nil_chk(pendingDeletions_)) clear];
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
-  id<JavaUtilList> tmp = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> tmp = new_JavaUtilArrayList_init();
   for (jint i = 0; i < count; i++) {
-    [tmp addWithId:[[ImActorModelModulesMessagesEntityDelete alloc] init]];
+    [tmp addWithId:new_ImActorModelModulesMessagesEntityDelete_init()];
   }
   for (ImActorModelModulesMessagesEntityDelete * __strong d in nil_chk([values getRepeatedObjWithInt:1 withJavaUtilList:tmp])) {
     (void) [pendingDeletions_ putWithId:[((ImActorModelModulesMessagesEntityDelete *) nil_chk(d)) getPeer] withId:d];
@@ -62,32 +62,34 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 
 #line 43
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 44
-  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:[[JavaUtilArrayList alloc] initWithJavaUtilCollection:[((JavaUtilHashMap *) nil_chk(pendingDeletions_)) values]]];
+  [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:new_JavaUtilArrayList_initWithJavaUtilCollection_([((JavaUtilHashMap *) nil_chk(pendingDeletions_)) values])];
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    pendingDeletions_ =
-#line 23
-    [[JavaUtilHashMap alloc] init];
-  }
+  ImActorModelModulesMessagesEntityDeleteStorage_init(self);
   return self;
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityDeleteStorage *)other {
-  [super copyAllFieldsTo:other];
-  other->pendingDeletions_ = pendingDeletions_;
 }
 
 @end
 
+
+#line 19
 ImActorModelModulesMessagesEntityDeleteStorage *ImActorModelModulesMessagesEntityDeleteStorage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityDeleteStorage_init();
+  ImActorModelModulesMessagesEntityDeleteStorage_initialize();
   
 #line 20
-  return ((ImActorModelModulesMessagesEntityDeleteStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityDeleteStorage alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityDeleteStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityDeleteStorage_init(), data));
+}
+
+void ImActorModelModulesMessagesEntityDeleteStorage_init(ImActorModelModulesMessagesEntityDeleteStorage *self) {
+  (void) BSBserObject_init(self);
+  self->pendingDeletions_ = new_JavaUtilHashMap_init();
+}
+
+ImActorModelModulesMessagesEntityDeleteStorage *new_ImActorModelModulesMessagesEntityDeleteStorage_init() {
+  ImActorModelModulesMessagesEntityDeleteStorage *self = [ImActorModelModulesMessagesEntityDeleteStorage alloc];
+  ImActorModelModulesMessagesEntityDeleteStorage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityDeleteStorage)

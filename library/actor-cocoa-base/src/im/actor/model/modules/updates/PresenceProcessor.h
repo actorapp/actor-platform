@@ -6,33 +6,34 @@
 #ifndef _ImActorModelModulesUpdatesPresenceProcessor_H_
 #define _ImActorModelModulesUpdatesPresenceProcessor_H_
 
-@class DKActorRef;
-@class ImActorModelModulesModules;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@interface ImActorModelModulesUpdatesPresenceProcessor : ImActorModelModulesBaseModule {
-}
+@class ImActorModelModulesModules;
+
+@interface ImActorModelModulesUpdatesPresenceProcessor : ImActorModelModulesBaseModule
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)onUserOnlineWithInt:(jint)uid;
-
-- (void)onUserOfflineWithInt:(jint)uid;
+- (void)onGroupOnlineWithInt:(jint)gid
+                     withInt:(jint)count;
 
 - (void)onUserLastSeenWithInt:(jint)uid
                      withLong:(jlong)date;
 
-- (void)onGroupOnlineWithInt:(jint)gid
-                     withInt:(jint)count;
+- (void)onUserOfflineWithInt:(jint)uid;
+
+- (void)onUserOnlineWithInt:(jint)uid;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesPresenceProcessor)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesPresenceProcessor *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesPresenceProcessor *new_ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesPresenceProcessor)
 

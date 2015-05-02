@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/JavaUtil.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/JavaUtil.java"
 
 #include "J2ObjC_source.h"
@@ -20,13 +21,16 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  AMJavaUtil_init(self);
+  return self;
 }
 
 @end
 
+
+#line 15
 jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {
-  AMJavaUtil_init();
+  AMJavaUtil_initialize();
   
 #line 16
   if (a == nil && b == nil) {
@@ -39,6 +43,16 @@ jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {
     return NO;
   }
   return [nil_chk(a) isEqual:b];
+}
+
+void AMJavaUtil_init(AMJavaUtil *self) {
+  (void) NSObject_init(self);
+}
+
+AMJavaUtil *new_AMJavaUtil_init() {
+  AMJavaUtil *self = [AMJavaUtil alloc];
+  AMJavaUtil_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMJavaUtil)

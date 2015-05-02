@@ -3,44 +3,64 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/PoisonPill.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/PoisonPill.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
 
 @interface ImActorModelDroidkitActorsMessagesPoisonPill ()
+
 - (instancetype)init;
+
 @end
 
-BOOL ImActorModelDroidkitActorsMessagesPoisonPill_initialized = NO;
+__attribute__((unused)) static void ImActorModelDroidkitActorsMessagesPoisonPill_init(ImActorModelDroidkitActorsMessagesPoisonPill *self);
+
+__attribute__((unused)) static ImActorModelDroidkitActorsMessagesPoisonPill *new_ImActorModelDroidkitActorsMessagesPoisonPill_init() NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitActorsMessagesPoisonPill)
+
+ImActorModelDroidkitActorsMessagesPoisonPill *ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_;
 
 
 #line 8
 @implementation ImActorModelDroidkitActorsMessagesPoisonPill
 
-ImActorModelDroidkitActorsMessagesPoisonPill * ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_;
-
 
 #line 11
 - (instancetype)init {
-  return [super init];
+  ImActorModelDroidkitActorsMessagesPoisonPill_init(self);
+  return self;
 }
 
+
+#line 15
 - (NSString *)description {
-  
-#line 16
   return @"PoisonPill";
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesPoisonPill class]) {
-    ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_ =
-#line 9
-    [[ImActorModelDroidkitActorsMessagesPoisonPill alloc] init];
+    ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_ = new_ImActorModelDroidkitActorsMessagesPoisonPill_init();
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesPoisonPill)
   }
 }
 
 @end
+
+
+#line 11
+void ImActorModelDroidkitActorsMessagesPoisonPill_init(ImActorModelDroidkitActorsMessagesPoisonPill *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 11
+ImActorModelDroidkitActorsMessagesPoisonPill *new_ImActorModelDroidkitActorsMessagesPoisonPill_init() {
+  ImActorModelDroidkitActorsMessagesPoisonPill *self = [ImActorModelDroidkitActorsMessagesPoisonPill alloc];
+  ImActorModelDroidkitActorsMessagesPoisonPill_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMessagesPoisonPill)

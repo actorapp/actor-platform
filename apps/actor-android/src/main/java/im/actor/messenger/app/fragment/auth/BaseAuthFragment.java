@@ -2,8 +2,8 @@ package im.actor.messenger.app.fragment.auth;
 
 import android.widget.EditText;
 
-import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.Command;
 
@@ -24,8 +24,8 @@ public abstract class BaseAuthFragment extends BaseFragment {
         ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
-    protected void executeAuth(Command<AuthState> command) {
-        ((AuthActivity) getActivity()).executeAuth(command);
+    protected void executeAuth(Command<AuthState> command, String action) {
+        ((AuthActivity) getActivity()).executeAuth(command, action);
     }
 
     protected void updateState() {

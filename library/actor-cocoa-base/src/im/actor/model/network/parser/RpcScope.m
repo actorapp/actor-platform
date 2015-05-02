@@ -3,9 +3,11 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/RpcScope.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/RpcScope.java"
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/network/parser/HeaderBserObject.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
 
@@ -13,9 +15,14 @@
 @implementation ImActorModelNetworkParserRpcScope
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelNetworkParserRpcScope_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelNetworkParserRpcScope_init(ImActorModelNetworkParserRpcScope *self) {
+  (void) ImActorModelNetworkParserHeaderBserObject_init(self);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserRpcScope)

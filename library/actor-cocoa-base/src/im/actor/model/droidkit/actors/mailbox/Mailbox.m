@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/Mailbox.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/Mailbox.java"
 
 #include "IOSClass.h"
@@ -20,18 +21,33 @@
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *envelopes_;
   id<ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator> comparator_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(DKMailbox, envelopes_, ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)
 J2OBJC_FIELD_SETTER(DKMailbox, comparator_, id<ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator>)
 
-@interface DKMailbox_$1 () {
+@interface DKMailbox_$1 : NSObject < ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator > {
  @public
   DKMailbox *this$0_;
 }
+
+- (jboolean)equalsWithDKEnvelope:(DKEnvelope *)a
+                  withDKEnvelope:(DKEnvelope *)b;
+
+- (instancetype)initWithDKMailbox:(DKMailbox *)outer$;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(DKMailbox_$1)
+
 J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
+
+__attribute__((unused)) static void DKMailbox_$1_initWithDKMailbox_(DKMailbox_$1 *self, DKMailbox *outer$);
+
+__attribute__((unused)) static DKMailbox_$1 *new_DKMailbox_$1_initWithDKMailbox_(DKMailbox *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKMailbox_$1)
 
 
 #line 10
@@ -40,14 +56,7 @@ J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
 
 #line 25
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
-  if (self = [super init]) {
-    comparator_ =
-#line 13
-    [[DKMailbox_$1 alloc] initWithDKMailbox:self];
-    
-#line 26
-    self->envelopes_ = [[ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection alloc] initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot:[((DKMailboxesQueue *) nil_chk(queue)) getEnvelopeRoot]];
-  }
+  DKMailbox_initWithDKMailboxesQueue_(self, queue);
   return self;
 }
 
@@ -56,7 +65,7 @@ J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
 - (void)scheduleWithDKEnvelope:(DKEnvelope *)envelope
                       withLong:(jlong)time {
   if ([((DKEnvelope *) nil_chk(envelope)) getMailbox] != self) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"envelope.mailbox != this mailbox"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"envelope.mailbox != this mailbox");
   }
   
 #line 41
@@ -67,10 +76,8 @@ J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
 #line 50
 - (void)scheduleOnceWithDKEnvelope:(DKEnvelope *)envelope
                           withLong:(jlong)time {
-  
-#line 51
   if ([((DKEnvelope *) nil_chk(envelope)) getMailbox] != self) {
-    @throw [[JavaLangRuntimeException alloc] initWithNSString:@"envelope.mailbox != this mailbox"];
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"envelope.mailbox != this mailbox");
   }
   
 #line 55
@@ -80,24 +87,18 @@ J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
 
 #line 63
 - (void)unscheduleWithDKEnvelope:(DKEnvelope *)envelope {
-  
-#line 64
   [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(envelopes_)) removeEnvelopeWithDKEnvelope:envelope withImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_EnvelopeComparator:comparator_];
 }
 
 
 #line 72
 - (IOSObjectArray *)allEnvelopes {
-  
-#line 73
   return [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(envelopes_)) allEnvelopes];
 }
 
 
 #line 79
 - (void)clear {
-  
-#line 80
   [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(envelopes_)) clear];
 }
 
@@ -105,26 +106,34 @@ J2OBJC_FIELD_SETTER(DKMailbox_$1, this$0_, DKMailbox *)
 #line 91
 - (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
                            withDKEnvelope:(DKEnvelope *)b {
-  
-#line 92
   return [nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) getClass] == [nil_chk([((DKEnvelope *) nil_chk(b)) getMessage]) getClass];
 }
 
 
 #line 95
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)getEnvelopes {
-  
-#line 96
   return envelopes_;
 }
 
-- (void)copyAllFieldsTo:(DKMailbox *)other {
-  [super copyAllFieldsTo:other];
-  other->envelopes_ = envelopes_;
-  other->comparator_ = comparator_;
+@end
+
+
+#line 25
+void DKMailbox_initWithDKMailboxesQueue_(DKMailbox *self, DKMailboxesQueue *queue) {
+  (void) NSObject_init(self);
+  self->comparator_ = new_DKMailbox_$1_initWithDKMailbox_(self);
+  
+#line 26
+  self->envelopes_ = new_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_initWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_([((DKMailboxesQueue *) nil_chk(queue)) getEnvelopeRoot]);
 }
 
-@end
+
+#line 25
+DKMailbox *new_DKMailbox_initWithDKMailboxesQueue_(DKMailboxesQueue *queue) {
+  DKMailbox *self = [DKMailbox alloc];
+  DKMailbox_initWithDKMailboxesQueue_(self, queue);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailbox)
 
@@ -134,21 +143,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailbox)
 #line 15
 - (jboolean)equalsWithDKEnvelope:(DKEnvelope *)a
                   withDKEnvelope:(DKEnvelope *)b {
-  
-#line 16
   return [this$0_ isEqualEnvelopeWithDKEnvelope:a withDKEnvelope:b];
 }
 
 - (instancetype)initWithDKMailbox:(DKMailbox *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(DKMailbox_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  DKMailbox_$1_initWithDKMailbox_(self, outer$);
+  return self;
 }
 
 @end
+
+void DKMailbox_$1_initWithDKMailbox_(DKMailbox_$1 *self, DKMailbox *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+DKMailbox_$1 *new_DKMailbox_$1_initWithDKMailbox_(DKMailbox *outer$) {
+  DKMailbox_$1 *self = [DKMailbox_$1 alloc];
+  DKMailbox_$1_initWithDKMailbox_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKMailbox_$1)

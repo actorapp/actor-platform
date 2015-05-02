@@ -3,12 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorTime.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorTime.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 
+
+#line 8
 @implementation DKActorTime
 
 
@@ -18,16 +21,29 @@
 }
 
 - (instancetype)init {
-  return [super init];
+  DKActorTime_init(self);
+  return self;
 }
 
 @end
 
+
+#line 14
 jlong DKActorTime_currentTime() {
-  DKActorTime_init();
+  DKActorTime_initialize();
   
 #line 15
   return DKEnvironment_getActorTime();
+}
+
+void DKActorTime_init(DKActorTime *self) {
+  (void) NSObject_init(self);
+}
+
+DKActorTime *new_DKActorTime_init() {
+  DKActorTime *self = [DKActorTime alloc];
+  DKActorTime_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKActorTime)

@@ -119,7 +119,7 @@ public class SignInFragment extends BaseAuthFragment {
                 return;
             }
 
-            executeAuth(messenger().sendCode(code));
+            executeAuth(messenger().sendCode(code), "Send Code");
         }
     }
 

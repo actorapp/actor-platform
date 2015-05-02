@@ -6,17 +6,20 @@
 #ifndef _AMAbsContent_H_
 #define _AMAbsContent_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "java/lang/Enum.h"
+
 @class AMAbsContent_ContentTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "java/lang/Enum.h"
+@interface AMAbsContent : BSBserObject
 
-@interface AMAbsContent : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (AMAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data;
 
@@ -24,26 +27,25 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
-+ (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val;
+#pragma mark Protected
 
 - (AMAbsContent_ContentTypeEnum *)getContentType;
 
-- (instancetype)init;
++ (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAbsContent)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val);
-CF_EXTERN_C_END
 
-typedef AMAbsContent ImActorModelEntityContentAbsContent;
+FOUNDATION_EXPORT void AMAbsContent_init(AMAbsContent *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAbsContent)
+
+typedef AMAbsContent ImActorModelEntityContentAbsContent;
 
 typedef NS_ENUM(NSUInteger, AMAbsContent_ContentType) {
   AMAbsContent_ContentType_TEXT = 0,
@@ -65,23 +67,22 @@ typedef NS_ENUM(NSUInteger, AMAbsContent_ContentType) {
   jint value_;
 }
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
+
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMAbsContent_ContentTypeEnum_values();
 
 + (AMAbsContent_ContentTypeEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMAbsContent_ContentTypeEnum_initialized;
 J2OBJC_STATIC_INIT(AMAbsContent_ContentTypeEnum)
 
 FOUNDATION_EXPORT AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[];

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ScaleXPointMap.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ScaleXPointMap.java"
 
 #include "J2ObjC_source.h"
@@ -17,27 +18,31 @@
 
 #line 7
 - (instancetype)initWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_ {
-  if (self = [super init]) {
-    
-#line 9
-    self->scale__ = scale_;
-  }
+  OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_(self, scale_);
   return self;
 }
 
-
-#line 12
 - (OrgBouncycastleMathEcECPoint *)mapWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p {
   
 #line 14
   return [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) scaleXWithOrgBouncycastleMathEcECFieldElement:scale__];
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcScaleXPointMap *)other {
-  [super copyAllFieldsTo:other];
-  other->scale__ = scale__;
+@end
+
+
+#line 7
+void OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcScaleXPointMap *self, OrgBouncycastleMathEcECFieldElement *scale_) {
+  (void) NSObject_init(self);
+  self->scale__ = scale_;
 }
 
-@end
+
+#line 7
+OrgBouncycastleMathEcScaleXPointMap *new_OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement *scale_) {
+  OrgBouncycastleMathEcScaleXPointMap *self = [OrgBouncycastleMathEcScaleXPointMap alloc];
+  OrgBouncycastleMathEcScaleXPointMap_initWithOrgBouncycastleMathEcECFieldElement_(self, scale_);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcScaleXPointMap)

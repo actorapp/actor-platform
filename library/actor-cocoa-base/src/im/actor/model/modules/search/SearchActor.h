@@ -6,38 +6,36 @@
 #ifndef _ImActorModelModulesSearchSearchActor_H_
 #define _ImActorModelModulesSearchSearchActor_H_
 
-@class IOSIntArray;
-@class ImActorModelModulesModules;
-@protocol DKListEngine;
-@protocol JavaUtilList;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
-#define ImActorModelModulesSearchSearchActor_CONTACTS_PREFIX 4294967296LL
+@class IOSIntArray;
+@class ImActorModelModulesModules;
+@protocol JavaUtilList;
 
-@interface ImActorModelModulesSearchSearchActor : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesSearchSearchActor : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)preStart;
-
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSearchSearchActor)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_(ImActorModelModulesSearchSearchActor *self, ImActorModelModulesModules *modules);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSearchSearchActor, CONTACTS_PREFIX, jlong)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesSearchSearchActor *new_ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor)
 
-@interface ImActorModelModulesSearchSearchActor_OnDialogsUpdated : NSObject {
-}
+@interface ImActorModelModulesSearchSearchActor_OnDialogsUpdated : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)dialogs;
 
@@ -47,13 +45,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSearchSearchActor_OnDialogsUpdated)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesSearchSearchActor_OnDialogsUpdated_initWithJavaUtilList_(ImActorModelModulesSearchSearchActor_OnDialogsUpdated *self, id<JavaUtilList> dialogs);
+
+FOUNDATION_EXPORT ImActorModelModulesSearchSearchActor_OnDialogsUpdated *new_ImActorModelModulesSearchSearchActor_OnDialogsUpdated_initWithJavaUtilList_(id<JavaUtilList> dialogs) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor_OnDialogsUpdated)
 
-@interface ImActorModelModulesSearchSearchActor_OnContactsUpdated : NSObject {
-}
+@interface ImActorModelModulesSearchSearchActor_OnContactsUpdated : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithIntArray:(IOSIntArray *)contactsList;
 
@@ -63,8 +63,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor_OnDialogsUpdated
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSearchSearchActor_OnContactsUpdated)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(ImActorModelModulesSearchSearchActor_OnContactsUpdated *self, IOSIntArray *contactsList);
+
+FOUNDATION_EXPORT ImActorModelModulesSearchSearchActor_OnContactsUpdated *new_ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(IOSIntArray *contactsList) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor_OnContactsUpdated)
 

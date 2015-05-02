@@ -6,36 +6,38 @@
 #ifndef _DKActorEndpoint_H_
 #define _DKActorEndpoint_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActorScope;
 @class DKMailbox;
 
-#include "J2ObjC_header.h"
+@interface DKActorEndpoint : NSObject
 
-@interface DKActorEndpoint : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)path;
 
-- (NSString *)getPath;
+- (void)connectWithDKMailbox:(DKMailbox *)mailbox
+            withDKActorScope:(DKActorScope *)scope;
 
 - (DKMailbox *)getMailbox;
+
+- (NSString *)getPath;
 
 - (DKActorScope *)getScope;
 
 - (jboolean)isDisconnected;
 
-- (void)connectWithDKMailbox:(DKMailbox *)mailbox
-            withDKActorScope:(DKActorScope *)scope;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKActorEndpoint)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKActorEndpoint_initWithNSString_(DKActorEndpoint *self, NSString *path);
 
-typedef DKActorEndpoint ImActorModelDroidkitActorsMailboxActorEndpoint;
+FOUNDATION_EXPORT DKActorEndpoint *new_DKActorEndpoint_initWithNSString_(NSString *path) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKActorEndpoint)
+
+typedef DKActorEndpoint ImActorModelDroidkitActorsMailboxActorEndpoint;
 
 #endif // _DKActorEndpoint_H_

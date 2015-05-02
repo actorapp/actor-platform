@@ -6,27 +6,30 @@
 #ifndef _ImActorModelApiRpcRequestRemoveGroupAvatar_H_
 #define _ImActorModelApiRpcRequestRemoveGroupAvatar_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiGroupOutPeer;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestRemoveGroupAvatar_HEADER 101
 
-@interface ImActorModelApiRpcRequestRemoveGroupAvatar : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestRemoveGroupAvatar : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestRemoveGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestRemoveGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer;
+
+- (jint)getHeaderKey;
 
 - (jlong)getRid;
 
@@ -36,18 +39,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRemoveGroupAvatar)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveGroupAvatar *ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiRpcRequestRemoveGroupAvatar *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveGroupAvatar *new_ImActorModelApiRpcRequestRemoveGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveGroupAvatar_init(ImActorModelApiRpcRequestRemoveGroupAvatar *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveGroupAvatar *new_ImActorModelApiRpcRequestRemoveGroupAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRemoveGroupAvatar)
 

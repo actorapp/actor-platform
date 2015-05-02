@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/ArrayUtils.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/util/ArrayUtils.java"
 
 #include "IOSObjectArray.h"
@@ -12,22 +13,39 @@
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/System.h"
 
-@interface ImActorModelDroidkitBserUtilArrayUtils () {
-}
+#define ImActorModelDroidkitBserUtilArrayUtils_CACHE_SIZE 73
+
+@interface ImActorModelDroidkitBserUtilArrayUtils ()
+
 - (instancetype)init;
+
 @end
 
-BOOL ImActorModelDroidkitBserUtilArrayUtils_initialized = NO;
+static IOSObjectArray *ImActorModelDroidkitBserUtilArrayUtils_EMPTY_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilArrayUtils, EMPTY_, IOSObjectArray *)
+J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitBserUtilArrayUtils, EMPTY_, IOSObjectArray *)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilArrayUtils, CACHE_SIZE, jint)
+
+static IOSObjectArray *ImActorModelDroidkitBserUtilArrayUtils_sCache_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilArrayUtils, sCache_, IOSObjectArray *)
+J2OBJC_STATIC_FIELD_SETTER(ImActorModelDroidkitBserUtilArrayUtils, sCache_, IOSObjectArray *)
+
+__attribute__((unused)) static void ImActorModelDroidkitBserUtilArrayUtils_init(ImActorModelDroidkitBserUtilArrayUtils *self);
+
+__attribute__((unused)) static ImActorModelDroidkitBserUtilArrayUtils *new_ImActorModelDroidkitBserUtilArrayUtils_init() NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitBserUtilArrayUtils)
 
 
 #line 27
 @implementation ImActorModelDroidkitBserUtilArrayUtils
 
-IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_EMPTY_;
-IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
 
+#line 32
 - (instancetype)init {
-  return [super init];
+  ImActorModelDroidkitBserUtilArrayUtils_init(self);
+  return self;
 }
 
 
@@ -136,8 +154,24 @@ IOSObjectArray * ImActorModelDroidkitBserUtilArrayUtils_sCache_;
 
 @end
 
+
+#line 32
+void ImActorModelDroidkitBserUtilArrayUtils_init(ImActorModelDroidkitBserUtilArrayUtils *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 32
+ImActorModelDroidkitBserUtilArrayUtils *new_ImActorModelDroidkitBserUtilArrayUtils_init() {
+  ImActorModelDroidkitBserUtilArrayUtils *self = [ImActorModelDroidkitBserUtilArrayUtils alloc];
+  ImActorModelDroidkitBserUtilArrayUtils_init(self);
+  return self;
+}
+
+
+#line 34
 jint ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 35
   for (jint i = 4; i < 32; i++)
@@ -150,61 +184,77 @@ jint ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(jint need
   return need;
 }
 
+
+#line 42
 jint ImActorModelDroidkitBserUtilArrayUtils_idealBooleanArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 43
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need);
 }
 
+
+#line 46
 jint ImActorModelDroidkitBserUtilArrayUtils_idealShortArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 47
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 2) / 2;
 }
 
+
+#line 50
 jint ImActorModelDroidkitBserUtilArrayUtils_idealCharArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 51
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 2) / 2;
 }
 
+
+#line 54
 jint ImActorModelDroidkitBserUtilArrayUtils_idealIntArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 55
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 4) / 4;
 }
 
+
+#line 58
 jint ImActorModelDroidkitBserUtilArrayUtils_idealFloatArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 59
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 4) / 4;
 }
 
+
+#line 62
 jint ImActorModelDroidkitBserUtilArrayUtils_idealObjectArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 63
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 4) / 4;
 }
 
+
+#line 66
 jint ImActorModelDroidkitBserUtilArrayUtils_idealLongArraySizeWithInt_(jint need) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 67
   return ImActorModelDroidkitBserUtilArrayUtils_idealByteArraySizeWithInt_(need * 8) / 8;
 }
 
+
+#line 78
 jboolean ImActorModelDroidkitBserUtilArrayUtils_equalsWithByteArray_withByteArray_withInt_(IOSByteArray *array1, IOSByteArray *array2, jint length) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 79
   if (length < 0) {
-    @throw [[JavaLangIllegalArgumentException alloc] init];
+    @throw new_JavaLangIllegalArgumentException_init();
   }
   
 #line 83
@@ -222,15 +272,19 @@ jboolean ImActorModelDroidkitBserUtilArrayUtils_equalsWithByteArray_withByteArra
   return YES;
 }
 
+
+#line 105
 jboolean ImActorModelDroidkitBserUtilArrayUtils_containsWithNSObjectArray_withId_(IOSObjectArray *array, id value) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 106
   return ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(array, value) != -1;
 }
 
+
+#line 113
 jint ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(IOSObjectArray *array, id value) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 114
   for (jint i = 0; i < ((IOSObjectArray *) nil_chk(array))->size_; i++) {
@@ -246,8 +300,10 @@ jint ImActorModelDroidkitBserUtilArrayUtils_indexOfWithNSObjectArray_withId_(IOS
   return -1;
 }
 
+
+#line 127
 jboolean ImActorModelDroidkitBserUtilArrayUtils_containsAllWithNSObjectArray_withNSObjectArray_(IOSObjectArray *array, IOSObjectArray *check) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   {
     IOSObjectArray *a__ =
 #line 128
@@ -268,8 +324,10 @@ jboolean ImActorModelDroidkitBserUtilArrayUtils_containsAllWithNSObjectArray_wit
   return YES;
 }
 
+
+#line 136
 jboolean ImActorModelDroidkitBserUtilArrayUtils_containsWithIntArray_withInt_(IOSIntArray *array, jint value) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   {
     IOSIntArray *a__ =
 #line 137
@@ -290,8 +348,10 @@ jboolean ImActorModelDroidkitBserUtilArrayUtils_containsWithIntArray_withInt_(IO
   return NO;
 }
 
+
+#line 145
 jlong ImActorModelDroidkitBserUtilArrayUtils_totalWithLongArray_(IOSLongArray *array) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 146
   jlong total = 0;
@@ -313,8 +373,10 @@ jlong ImActorModelDroidkitBserUtilArrayUtils_totalWithLongArray_(IOSLongArray *a
   return total;
 }
 
+
+#line 153
 IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withInt_(IOSIntArray *cur, jint val) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 154
   if (cur == nil) {
@@ -332,8 +394,10 @@ IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_appendIntWithIntArray_withIn
   return ret;
 }
 
+
+#line 169
 IOSIntArray *ImActorModelDroidkitBserUtilArrayUtils_removeIntWithIntArray_withInt_(IOSIntArray *cur, jint val) {
-  ImActorModelDroidkitBserUtilArrayUtils_init();
+  ImActorModelDroidkitBserUtilArrayUtils_initialize();
   
 #line 170
   if (cur == nil) {

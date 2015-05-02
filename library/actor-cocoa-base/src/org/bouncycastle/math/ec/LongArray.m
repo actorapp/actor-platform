@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/LongArray.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/LongArray.java"
 
 #include "IOSObjectArray.h"
@@ -18,45 +19,6 @@
 #include "org/bouncycastle/math/ec/ECConstants.h"
 #include "org/bouncycastle/math/ec/LongArray.h"
 #include "org/bouncycastle/util/Arrays.h"
-
-__attribute__((unused)) static jint OrgBouncycastleMathEcLongArray_degreeFromWithInt_(OrgBouncycastleMathEcLongArray *self, jint limit);
-__attribute__((unused)) static jint OrgBouncycastleMathEcLongArray_bitLengthWithLong_(jlong w);
-__attribute__((unused)) static IOSLongArray *OrgBouncycastleMathEcLongArray_resizedIntsWithInt_(OrgBouncycastleMathEcLongArray *self, jint newLen);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, jint count, jint shift);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint shift);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addShiftedByBitsSafeWithOrgBouncycastleMathEcLongArray_withInt_withInt_(OrgBouncycastleMathEcLongArray *self, OrgBouncycastleMathEcLongArray *other, jint otherDegree, jint bits);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_addShiftedUpWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count, jint shift);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_addShiftedDownWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count, jint shift);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, IOSLongArray *z, jint zOff, jint count);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addBothWithLongArray_withInt_withLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y1, jint y1Off, IOSLongArray *y2, jint y2Off, jint count);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_distributeWithLongArray_withInt_withInt_withInt_withInt_(IOSLongArray *x, jint src, jint dst1, jint dst2, jint count);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_flipWordWithLongArray_withInt_withInt_withLong_(IOSLongArray *buf, jint off, jint bit, jlong word);
-__attribute__((unused)) static jboolean OrgBouncycastleMathEcLongArray_testBitWithLongArray_withInt_withInt_(IOSLongArray *buf, jint off, jint n);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_flipBitWithLongArray_withInt_withInt_(IOSLongArray *buf, jint off, jint n);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_multiplyWordWithLong_withLongArray_withInt_withLongArray_withInt_(jlong a, IOSLongArray *b, jint bLen, IOSLongArray *c, jint cOff);
-__attribute__((unused)) static OrgBouncycastleMathEcLongArray *OrgBouncycastleMathEcLongArray_reduceResultWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint m, IOSIntArray *ks);
-__attribute__((unused)) static jint OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceBitWiseWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bitlength, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceBitWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bit, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceWordWiseWithLongArray_withInt_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint toBit, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceWordWithLongArray_withInt_withInt_withLong_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bit, jlong word, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceVectorWiseWithLongArray_withInt_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint words, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_flipVectorWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint yLen, jint bits);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_squareInPlaceWithLongArray_withInt_withInt_withIntArray_(IOSLongArray *x, jint xLen, jint m, IOSIntArray *ks);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleaveWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint width);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave3WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave3WithLong_(jlong x);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(jint x);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave5WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave5WithLong_(jlong x);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(jint x);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave7WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave7WithLong_(jlong x);
-__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave2_nWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint rounds);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave2_nWithLong_withInt_(jlong x, jint rounds);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(jint x);
-__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave2_32to64WithInt_(jint x);
 
 @interface OrgBouncycastleMathEcLongArray () {
  @public
@@ -251,153 +213,138 @@ __attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave2_
 + (jlong)interleave4_16to64WithInt:(jint)x;
 
 + (jlong)interleave2_32to64WithInt:(jint)x;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcLongArray, m_ints_, IOSLongArray *)
 
-BOOL OrgBouncycastleMathEcLongArray_initialized = NO;
+static IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE2_TABLE_, IOSIntArray *)
+
+static IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE3_TABLE_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE3_TABLE_, IOSIntArray *)
+
+static IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE4_TABLE_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE4_TABLE_, IOSIntArray *)
+
+static IOSIntArray *OrgBouncycastleMathEcLongArray_INTERLEAVE5_TABLE_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE5_TABLE_, IOSIntArray *)
+
+static IOSLongArray *OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_;
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, INTERLEAVE7_TABLE_, IOSLongArray *)
+
+static NSString *OrgBouncycastleMathEcLongArray_ZEROES_ = 
+#line 271
+@"0000000000000000000000000000000000000000000000000000000000000000";
+J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcLongArray, ZEROES_, NSString *)
+
+__attribute__((unused)) static jint OrgBouncycastleMathEcLongArray_degreeFromWithInt_(OrgBouncycastleMathEcLongArray *self, jint limit);
+
+__attribute__((unused)) static jint OrgBouncycastleMathEcLongArray_bitLengthWithLong_(jlong w);
+
+__attribute__((unused)) static IOSLongArray *OrgBouncycastleMathEcLongArray_resizedIntsWithInt_(OrgBouncycastleMathEcLongArray *self, jint newLen);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, jint count, jint shift);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint shift);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addShiftedByBitsSafeWithOrgBouncycastleMathEcLongArray_withInt_withInt_(OrgBouncycastleMathEcLongArray *self, OrgBouncycastleMathEcLongArray *other, jint otherDegree, jint bits);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_addShiftedUpWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count, jint shift);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_addShiftedDownWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count, jint shift);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, IOSLongArray *z, jint zOff, jint count);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_addBothWithLongArray_withInt_withLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y1, jint y1Off, IOSLongArray *y2, jint y2Off, jint count);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_distributeWithLongArray_withInt_withInt_withInt_withInt_(IOSLongArray *x, jint src, jint dst1, jint dst2, jint count);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_flipWordWithLongArray_withInt_withInt_withLong_(IOSLongArray *buf, jint off, jint bit, jlong word);
+
+__attribute__((unused)) static jboolean OrgBouncycastleMathEcLongArray_testBitWithLongArray_withInt_withInt_(IOSLongArray *buf, jint off, jint n);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_flipBitWithLongArray_withInt_withInt_(IOSLongArray *buf, jint off, jint n);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_multiplyWordWithLong_withLongArray_withInt_withLongArray_withInt_(jlong a, IOSLongArray *b, jint bLen, IOSLongArray *c, jint cOff);
+
+__attribute__((unused)) static OrgBouncycastleMathEcLongArray *OrgBouncycastleMathEcLongArray_reduceResultWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static jint OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceBitWiseWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bitlength, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceBitWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bit, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceWordWiseWithLongArray_withInt_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint toBit, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceWordWithLongArray_withInt_withInt_withLong_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bit, jlong word, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_reduceVectorWiseWithLongArray_withInt_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint words, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_flipVectorWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint yLen, jint bits);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_squareInPlaceWithLongArray_withInt_withInt_withIntArray_(IOSLongArray *x, jint xLen, jint m, IOSIntArray *ks);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleaveWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint width);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave3WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave3WithLong_(jlong x);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(jint x);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave5WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave5WithLong_(jlong x);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(jint x);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave7WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave7WithLong_(jlong x);
+
+__attribute__((unused)) static void OrgBouncycastleMathEcLongArray_interleave2_nWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint rounds);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave2_nWithLong_withInt_(jlong x, jint rounds);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(jint x);
+
+__attribute__((unused)) static jlong OrgBouncycastleMathEcLongArray_interleave2_32to64WithInt_(jint x);
+
+J2OBJC_INITIALIZED_DEFN(OrgBouncycastleMathEcLongArray)
+
+IOSByteArray *OrgBouncycastleMathEcLongArray_bitLengths_;
 
 
 #line 7
 @implementation OrgBouncycastleMathEcLongArray
 
-IOSIntArray * OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_;
-IOSIntArray * OrgBouncycastleMathEcLongArray_INTERLEAVE3_TABLE_;
-IOSIntArray * OrgBouncycastleMathEcLongArray_INTERLEAVE4_TABLE_;
-IOSIntArray * OrgBouncycastleMathEcLongArray_INTERLEAVE5_TABLE_;
-IOSLongArray * OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_;
-NSString * OrgBouncycastleMathEcLongArray_ZEROES_ = 
-#line 271
-@"0000000000000000000000000000000000000000000000000000000000000000";
-IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
-
 
 #line 297
 - (instancetype)initWithInt:(jint)intLen {
-  if (self = [super init]) {
-    
-#line 299
-    m_ints_ = [IOSLongArray newArrayWithLength:intLen];
-  }
+  OrgBouncycastleMathEcLongArray_initWithInt_(self, intLen);
   return self;
 }
 
-
-#line 302
 - (instancetype)initWithLongArray:(IOSLongArray *)ints {
-  if (self = [super init]) {
-    
-#line 304
-    m_ints_ = ints;
-  }
+  OrgBouncycastleMathEcLongArray_initWithLongArray_(self, ints);
   return self;
 }
 
-
-#line 307
 - (instancetype)initWithLongArray:(IOSLongArray *)ints
                           withInt:(jint)off
                           withInt:(jint)len {
-  if (self = [super init]) {
-    
-#line 309
-    if (off == 0 && len == ((IOSLongArray *) nil_chk(ints))->size_) {
-      
-#line 311
-      m_ints_ = ints;
-    }
-    else {
-      
-#line 315
-      m_ints_ = [IOSLongArray newArrayWithLength:len];
-      JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(ints, off, m_ints_, 0, len);
-    }
-  }
+  OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(self, ints, off, len);
   return self;
 }
 
 
 #line 320
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)bigInt {
-  if (self = [super init]) {
-    
-#line 322
-    if (bigInt == nil || [bigInt signum] < 0) {
-      
-#line 324
-      @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:@"invalid F2m field value"];
-    }
-    if ([((JavaMathBigInteger *) nil_chk(bigInt)) signum] == 0) {
-      
-#line 329
-      m_ints_ = [IOSLongArray newArrayWithLongs:(jlong[]){ 0LL } count:1];
-      return self;
-    }
-    
-#line 333
-    IOSByteArray *barr = [bigInt toByteArray];
-    
-#line 334
-    jint barrLen = ((IOSByteArray *) nil_chk(barr))->size_;
-    
-#line 335
-    jint barrStart = 0;
-    
-#line 336
-    if (IOSByteArray_Get(barr, 0) == 0) {
-      
-#line 340
-      barrLen--;
-      barrStart = 1;
-    }
-    
-#line 343
-    jint intLen = (barrLen + 7) / 8;
-    
-#line 344
-    m_ints_ = [IOSLongArray newArrayWithLength:intLen];
-    
-#line 346
-    jint iarrJ = intLen - 1;
-    
-#line 347
-    jint rem = barrLen % 8 + barrStart;
-    
-#line 348
-    jlong temp = 0;
-    
-#line 349
-    jint barrI = barrStart;
-    
-#line 350
-    if (barrStart < rem) {
-      
-#line 352
-      for (; barrI < rem; barrI++) {
-        
-#line 354
-        LShiftAssignLong(&temp, 8);
-        jint barrBarrI = IOSByteArray_Get(barr, barrI) & (jint) 0xFF;
-        temp |= barrBarrI;
-      }
-      *IOSLongArray_GetRef(m_ints_, iarrJ--) = temp;
-    }
-    
-#line 361
-    for (; iarrJ >= 0; iarrJ--) {
-      
-#line 363
-      temp = 0;
-      for (jint i = 0; i < 8; i++) {
-        
-#line 366
-        LShiftAssignLong(&temp, 8);
-        jint barrBarrI = IOSByteArray_Get(barr, barrI++) & (jint) 0xFF;
-        temp |= barrBarrI;
-      }
-      *IOSLongArray_GetRef(m_ints_, iarrJ) = temp;
-    }
-  }
+  OrgBouncycastleMathEcLongArray_initWithJavaMathBigInteger_(self, bigInt);
   return self;
 }
 
@@ -582,7 +529,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
       *IOSByteArray_GetRef(barr, barrI++) = (jbyte) (URShift64(mi, (8 * j)));
     }
   }
-  return [[JavaMathBigInteger alloc] initWithInt:1 withByteArray:barr];
+  return new_JavaMathBigInteger_initWithInt_withByteArray_(1, barr);
 }
 
 
@@ -613,14 +560,14 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   if (((IOSLongArray *) nil_chk(m_ints_))->size_ == 0) {
     
 #line 616
-    return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:[IOSLongArray newArrayWithLongs:(jlong[]){ 1LL } count:1]];
+    return new_OrgBouncycastleMathEcLongArray_initWithLongArray_([IOSLongArray newArrayWithLongs:(jlong[]){ 1LL } count:1]);
   }
   
 #line 619
   jint resultLen = JavaLangMath_maxWithInt_withInt_(1, [self getUsedLength]);
   IOSLongArray *ints = OrgBouncycastleMathEcLongArray_resizedIntsWithInt_(self, resultLen);
   *IOSLongArray_GetRef(nil_chk(ints), 0) ^= 1LL;
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:ints];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_(ints);
 }
 
 
@@ -1248,7 +1195,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
 #line 1339
   IOSLongArray *buf = OrgBouncycastleUtilArrays_cloneWithLongArray_(m_ints_);
   jint rLen = OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(buf, 0, ((IOSLongArray *) nil_chk(buf))->size_, m, ks);
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:buf withInt:0 withInt:rLen];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(buf, 0, rLen);
 }
 
 
@@ -1310,7 +1257,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
     OrgBouncycastleMathEcLongArray_multiplyWordWithLong_withLongArray_withInt_withLongArray_withInt_(a0, B->m_ints_, bLen, c0, 0);
     
 #line 1395
-    return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:c0 withInt:0 withInt:cLen];
+    return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(c0, 0, cLen);
   }
   
 #line 1401
@@ -1385,7 +1332,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   }
   
 #line 1475
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:c withInt:0 withInt:cLen];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(c, 0, cLen);
 }
 
 
@@ -1516,7 +1463,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   }
   
 #line 1676
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:r withInt:0 withInt:OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(r, 0, r->size_, m, ks)];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(r, 0, OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(r, 0, r->size_, m, ks));
 }
 
 
@@ -1547,7 +1494,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   }
   
 #line 1697
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:r withInt:0 withInt:len];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(r, 0, len);
 }
 
 
@@ -1578,7 +1525,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   }
   
 #line 1719
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:r withInt:0 withInt:r->size_];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(r, 0, r->size_);
 }
 
 
@@ -1695,7 +1642,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   if (uzDegree == 0) {
     
 #line 2057
-    @throw [[JavaLangIllegalStateException alloc] init];
+    @throw new_JavaLangIllegalStateException_init();
   }
   if (uzDegree == 1) {
     
@@ -1710,13 +1657,13 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   jint t = URShift32((m + 63), 6);
   
 #line 2070
-  OrgBouncycastleMathEcLongArray *vz = [[OrgBouncycastleMathEcLongArray alloc] initWithInt:t];
+  OrgBouncycastleMathEcLongArray *vz = new_OrgBouncycastleMathEcLongArray_initWithInt_(t);
   OrgBouncycastleMathEcLongArray_reduceBitWithLongArray_withInt_withInt_withInt_withIntArray_(vz->m_ints_, 0, m, m, ks);
   
 #line 2074
-  OrgBouncycastleMathEcLongArray *g1z = [[OrgBouncycastleMathEcLongArray alloc] initWithInt:t];
+  OrgBouncycastleMathEcLongArray *g1z = new_OrgBouncycastleMathEcLongArray_initWithInt_(t);
   *IOSLongArray_GetRef(nil_chk(g1z->m_ints_), 0) = 1LL;
-  OrgBouncycastleMathEcLongArray *g2z = [[OrgBouncycastleMathEcLongArray alloc] initWithInt:t];
+  OrgBouncycastleMathEcLongArray *g2z = new_OrgBouncycastleMathEcLongArray_initWithInt_(t);
   
 #line 2078
   IOSIntArray *uvDeg = [IOSIntArray newArrayWithInts:(jint[]){ uzDegree, m + 1 } count:2];
@@ -1783,6 +1730,8 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   }
 }
 
+
+#line 2129
 - (jboolean)isEqual:(id)o {
   
 #line 2131
@@ -1810,6 +1759,8 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   return YES;
 }
 
+
+#line 2151
 - (NSUInteger)hash {
   
 #line 2153
@@ -1832,9 +1783,11 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
 - (id)clone {
   
 #line 2168
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:OrgBouncycastleUtilArrays_cloneWithLongArray_(m_ints_)];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_(OrgBouncycastleUtilArrays_cloneWithLongArray_(m_ints_));
 }
 
+
+#line 2171
 - (NSString *)description {
   
 #line 2173
@@ -1846,7 +1799,7 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
   }
   
 #line 2179
-  JavaLangStringBuffer *sb = [[JavaLangStringBuffer alloc] initWithNSString:JavaLangLong_toBinaryStringWithLong_(IOSLongArray_Get(nil_chk(m_ints_), --i))];
+  JavaLangStringBuffer *sb = new_JavaLangStringBuffer_initWithNSString_(JavaLangLong_toBinaryStringWithLong_(IOSLongArray_Get(nil_chk(m_ints_), --i)));
   while (--i >= 0) {
     
 #line 2182
@@ -1864,11 +1817,6 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
     (void) [sb appendWithNSString:s];
   }
   return [sb description];
-}
-
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcLongArray *)other {
-  [super copyAllFieldsTo:other];
-  other->m_ints_ = m_ints_;
 }
 
 + (void)initialize {
@@ -2365,6 +2313,136 @@ IOSByteArray * OrgBouncycastleMathEcLongArray_bitLengths_;
 
 @end
 
+
+#line 297
+void OrgBouncycastleMathEcLongArray_initWithInt_(OrgBouncycastleMathEcLongArray *self, jint intLen) {
+  (void) NSObject_init(self);
+  self->m_ints_ = [IOSLongArray newArrayWithLength:intLen];
+}
+
+
+#line 297
+OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithInt_(jint intLen) {
+  OrgBouncycastleMathEcLongArray *self = [OrgBouncycastleMathEcLongArray alloc];
+  OrgBouncycastleMathEcLongArray_initWithInt_(self, intLen);
+  return self;
+}
+
+
+#line 302
+void OrgBouncycastleMathEcLongArray_initWithLongArray_(OrgBouncycastleMathEcLongArray *self, IOSLongArray *ints) {
+  (void) NSObject_init(self);
+  self->m_ints_ = ints;
+}
+
+
+#line 302
+OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithLongArray_(IOSLongArray *ints) {
+  OrgBouncycastleMathEcLongArray *self = [OrgBouncycastleMathEcLongArray alloc];
+  OrgBouncycastleMathEcLongArray_initWithLongArray_(self, ints);
+  return self;
+}
+
+
+#line 307
+void OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(OrgBouncycastleMathEcLongArray *self, IOSLongArray *ints, jint off, jint len) {
+  (void) NSObject_init(self);
+  if (off == 0 && len == ((IOSLongArray *) nil_chk(ints))->size_) {
+    
+#line 311
+    self->m_ints_ = ints;
+  }
+  else {
+    
+#line 315
+    self->m_ints_ = [IOSLongArray newArrayWithLength:len];
+    JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(ints, off, self->m_ints_, 0, len);
+  }
+}
+
+
+#line 307
+OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(IOSLongArray *ints, jint off, jint len) {
+  OrgBouncycastleMathEcLongArray *self = [OrgBouncycastleMathEcLongArray alloc];
+  OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(self, ints, off, len);
+  return self;
+}
+
+
+#line 320
+void OrgBouncycastleMathEcLongArray_initWithJavaMathBigInteger_(OrgBouncycastleMathEcLongArray *self, JavaMathBigInteger *bigInt) {
+  (void) NSObject_init(self);
+  if (bigInt == nil || [bigInt signum] < 0) {
+    
+#line 324
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"invalid F2m field value");
+  }
+  
+#line 327
+  if ([((JavaMathBigInteger *) nil_chk(bigInt)) signum] == 0) {
+    
+#line 329
+    self->m_ints_ = [IOSLongArray newArrayWithLongs:(jlong[]){ 0LL } count:1];
+    return;
+  }
+  
+#line 333
+  IOSByteArray *barr = [bigInt toByteArray];
+  jint barrLen = ((IOSByteArray *) nil_chk(barr))->size_;
+  jint barrStart = 0;
+  if (IOSByteArray_Get(barr, 0) == 0) {
+    
+#line 340
+    barrLen--;
+    barrStart = 1;
+  }
+  jint intLen = (barrLen + 7) / 8;
+  self->m_ints_ = [IOSLongArray newArrayWithLength:intLen];
+  
+#line 346
+  jint iarrJ = intLen - 1;
+  jint rem = barrLen % 8 + barrStart;
+  jlong temp = 0;
+  jint barrI = barrStart;
+  if (barrStart < rem) {
+    
+#line 352
+    for (; barrI < rem; barrI++) {
+      
+#line 354
+      LShiftAssignLong(&temp, 8);
+      jint barrBarrI = IOSByteArray_Get(barr, barrI) & (jint) 0xFF;
+      temp |= barrBarrI;
+    }
+    *IOSLongArray_GetRef(self->m_ints_, iarrJ--) = temp;
+  }
+  
+#line 361
+  for (; iarrJ >= 0; iarrJ--) {
+    
+#line 363
+    temp = 0;
+    for (jint i = 0; i < 8; i++) {
+      
+#line 366
+      LShiftAssignLong(&temp, 8);
+      jint barrBarrI = IOSByteArray_Get(barr, barrI++) & (jint) 0xFF;
+      temp |= barrBarrI;
+    }
+    *IOSLongArray_GetRef(self->m_ints_, iarrJ) = temp;
+  }
+}
+
+
+#line 320
+OrgBouncycastleMathEcLongArray *new_OrgBouncycastleMathEcLongArray_initWithJavaMathBigInteger_(JavaMathBigInteger *bigInt) {
+  OrgBouncycastleMathEcLongArray *self = [OrgBouncycastleMathEcLongArray alloc];
+  OrgBouncycastleMathEcLongArray_initWithJavaMathBigInteger_(self, bigInt);
+  return self;
+}
+
+
+#line 457
 jint OrgBouncycastleMathEcLongArray_degreeFromWithInt_(OrgBouncycastleMathEcLongArray *self, jint limit) {
   
 #line 459
@@ -2386,10 +2464,10 @@ jint OrgBouncycastleMathEcLongArray_degreeFromWithInt_(OrgBouncycastleMathEcLong
   return (LShift32(i, 6)) + OrgBouncycastleMathEcLongArray_bitLengthWithLong_(w);
 }
 
+
+#line 498
 jint OrgBouncycastleMathEcLongArray_bitLengthWithLong_(jlong w) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 500
+  OrgBouncycastleMathEcLongArray_initialize();
   jint u = (jint) (URShift64(w, 32)), b;
   if (u == 0) {
     
@@ -2422,6 +2500,8 @@ jint OrgBouncycastleMathEcLongArray_bitLengthWithLong_(jlong w) {
   return b + k;
 }
 
+
+#line 526
 IOSLongArray *OrgBouncycastleMathEcLongArray_resizedIntsWithInt_(OrgBouncycastleMathEcLongArray *self, jint newLen) {
   
 #line 528
@@ -2430,10 +2510,10 @@ IOSLongArray *OrgBouncycastleMathEcLongArray_resizedIntsWithInt_(OrgBouncycastle
   return newInts;
 }
 
+
+#line 586
 jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, jint count, jint shift) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 588
+  OrgBouncycastleMathEcLongArray_initialize();
   jint shiftInv = 64 - shift;
   jlong prev = 0;
   for (jint i = 0; i < count; ++i) {
@@ -2446,10 +2526,10 @@ jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withInt_withIn
   return prev;
 }
 
+
+#line 599
 jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint shift) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 601
+  OrgBouncycastleMathEcLongArray_initialize();
   jint shiftInv = 64 - shift;
   jlong prev = 0;
   for (jint i = 0; i < count; ++i) {
@@ -2462,6 +2542,8 @@ jlong OrgBouncycastleMathEcLongArray_shiftUpWithLongArray_withInt_withLongArray_
   return prev;
 }
 
+
+#line 652
 void OrgBouncycastleMathEcLongArray_addShiftedByBitsSafeWithOrgBouncycastleMathEcLongArray_withInt_withInt_(OrgBouncycastleMathEcLongArray *self, OrgBouncycastleMathEcLongArray *other, jint otherDegree, jint bits) {
   
 #line 654
@@ -2488,10 +2570,10 @@ void OrgBouncycastleMathEcLongArray_addShiftedByBitsSafeWithOrgBouncycastleMathE
   }
 }
 
+
+#line 672
 jlong OrgBouncycastleMathEcLongArray_addShiftedUpWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count, jint shift) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 674
+  OrgBouncycastleMathEcLongArray_initialize();
   jint shiftInv = 64 - shift;
   jlong prev = 0;
   for (jint i = 0; i < count; ++i) {
@@ -2504,10 +2586,10 @@ jlong OrgBouncycastleMathEcLongArray_addShiftedUpWithLongArray_withInt_withLongA
   return prev;
 }
 
+
+#line 685
 jlong OrgBouncycastleMathEcLongArray_addShiftedDownWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count, jint shift) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 687
+  OrgBouncycastleMathEcLongArray_initialize();
   jint shiftInv = 64 - shift;
   jlong prev = 0;
   jint i = count;
@@ -2521,10 +2603,10 @@ jlong OrgBouncycastleMathEcLongArray_addShiftedDownWithLongArray_withInt_withLon
   return prev;
 }
 
+
+#line 716
 void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 718
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 720
@@ -2532,10 +2614,10 @@ void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withI
   }
 }
 
+
+#line 724
 void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, IOSLongArray *z, jint zOff, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 726
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 728
@@ -2543,10 +2625,10 @@ void OrgBouncycastleMathEcLongArray_addWithLongArray_withInt_withLongArray_withI
   }
 }
 
+
+#line 732
 void OrgBouncycastleMathEcLongArray_addBothWithLongArray_withInt_withLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y1, jint y1Off, IOSLongArray *y2, jint y2Off, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 734
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 736
@@ -2554,10 +2636,10 @@ void OrgBouncycastleMathEcLongArray_addBothWithLongArray_withInt_withLongArray_w
   }
 }
 
+
+#line 740
 void OrgBouncycastleMathEcLongArray_distributeWithLongArray_withInt_withInt_withInt_withInt_(IOSLongArray *x, jint src, jint dst1, jint dst2, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 742
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 744
@@ -2567,10 +2649,10 @@ void OrgBouncycastleMathEcLongArray_distributeWithLongArray_withInt_withInt_with
   }
 }
 
+
+#line 755
 void OrgBouncycastleMathEcLongArray_flipWordWithLongArray_withInt_withInt_withLong_(IOSLongArray *buf, jint off, jint bit, jlong word) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 757
+  OrgBouncycastleMathEcLongArray_initialize();
   jint n = off + (URShift32(bit, 6));
   jint shift = bit & (jint) 0x3F;
   if (shift == 0) {
@@ -2591,8 +2673,10 @@ void OrgBouncycastleMathEcLongArray_flipWordWithLongArray_withInt_withInt_withLo
   }
 }
 
+
+#line 795
 jboolean OrgBouncycastleMathEcLongArray_testBitWithLongArray_withInt_withInt_(IOSLongArray *buf, jint off, jint n) {
-  OrgBouncycastleMathEcLongArray_init();
+  OrgBouncycastleMathEcLongArray_initialize();
   
 #line 798
   jint theInt = URShift32(n, 6);
@@ -2603,8 +2687,10 @@ jboolean OrgBouncycastleMathEcLongArray_testBitWithLongArray_withInt_withInt_(IO
   return (IOSLongArray_Get(nil_chk(buf), off + theInt) & tester) != 0;
 }
 
+
+#line 805
 void OrgBouncycastleMathEcLongArray_flipBitWithLongArray_withInt_withInt_(IOSLongArray *buf, jint off, jint n) {
-  OrgBouncycastleMathEcLongArray_init();
+  OrgBouncycastleMathEcLongArray_initialize();
   
 #line 808
   jint theInt = URShift32(n, 6);
@@ -2615,10 +2701,10 @@ void OrgBouncycastleMathEcLongArray_flipBitWithLongArray_withInt_withInt_(IOSLon
   *IOSLongArray_GetRef(nil_chk(buf), off + theInt) ^= flipper;
 }
 
+
+#line 835
 void OrgBouncycastleMathEcLongArray_multiplyWordWithLong_withLongArray_withInt_withLongArray_withInt_(jlong a, IOSLongArray *b, jint bLen, IOSLongArray *c, jint cOff) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 837
+  OrgBouncycastleMathEcLongArray_initialize();
   if ((a & 1LL) != 0LL) {
     
 #line 839
@@ -2642,18 +2728,18 @@ void OrgBouncycastleMathEcLongArray_multiplyWordWithLong_withLongArray_withInt_w
   }
 }
 
+
+#line 1489
 OrgBouncycastleMathEcLongArray *OrgBouncycastleMathEcLongArray_reduceResultWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1491
+  OrgBouncycastleMathEcLongArray_initialize();
   jint rLen = OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(buf, off, len, m, ks);
-  return [[OrgBouncycastleMathEcLongArray alloc] initWithLongArray:buf withInt:off withInt:rLen];
+  return new_OrgBouncycastleMathEcLongArray_initWithLongArray_withInt_withInt_(buf, off, rLen);
 }
 
+
+#line 1522
 jint OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1524
+  OrgBouncycastleMathEcLongArray_initialize();
   jint mLen = URShift32((m + 63), 6);
   if (len < mLen) {
     
@@ -2707,10 +2793,10 @@ jint OrgBouncycastleMathEcLongArray_reduceInPlaceWithLongArray_withInt_withInt_w
   return mLen;
 }
 
+
+#line 1566
 void OrgBouncycastleMathEcLongArray_reduceBitWiseWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bitlength, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1568
+  OrgBouncycastleMathEcLongArray_initialize();
   while (--bitlength >= m) {
     
 #line 1570
@@ -2722,10 +2808,10 @@ void OrgBouncycastleMathEcLongArray_reduceBitWiseWithLongArray_withInt_withInt_w
   }
 }
 
+
+#line 1577
 void OrgBouncycastleMathEcLongArray_reduceBitWithLongArray_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bit, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1579
+  OrgBouncycastleMathEcLongArray_initialize();
   OrgBouncycastleMathEcLongArray_flipBitWithLongArray_withInt_withInt_(buf, off, bit);
   jint n = bit - m;
   jint j = ((IOSIntArray *) nil_chk(ks))->size_;
@@ -2737,10 +2823,10 @@ void OrgBouncycastleMathEcLongArray_reduceBitWithLongArray_withInt_withInt_withI
   OrgBouncycastleMathEcLongArray_flipBitWithLongArray_withInt_withInt_(buf, off, n);
 }
 
+
+#line 1589
 void OrgBouncycastleMathEcLongArray_reduceWordWiseWithLongArray_withInt_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint toBit, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1591
+  OrgBouncycastleMathEcLongArray_initialize();
   jint toPos = URShift32(toBit, 6);
   
 #line 1593
@@ -2769,10 +2855,10 @@ void OrgBouncycastleMathEcLongArray_reduceWordWiseWithLongArray_withInt_withInt_
   }
 }
 
+
+#line 1614
 void OrgBouncycastleMathEcLongArray_reduceWordWithLongArray_withInt_withInt_withLong_withInt_withIntArray_(IOSLongArray *buf, jint off, jint bit, jlong word, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1616
+  OrgBouncycastleMathEcLongArray_initialize();
   jint offset = bit - m;
   jint j = ((IOSIntArray *) nil_chk(ks))->size_;
   while (--j >= 0) {
@@ -2783,8 +2869,10 @@ void OrgBouncycastleMathEcLongArray_reduceWordWithLongArray_withInt_withInt_with
   OrgBouncycastleMathEcLongArray_flipWordWithLongArray_withInt_withInt_withLong_(buf, off, offset, word);
 }
 
+
+#line 1625
 void OrgBouncycastleMathEcLongArray_reduceVectorWiseWithLongArray_withInt_withInt_withInt_withInt_withIntArray_(IOSLongArray *buf, jint off, jint len, jint words, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
+  OrgBouncycastleMathEcLongArray_initialize();
   
 #line 1632
   jint baseBit = (LShift32(words, 6)) - m;
@@ -2797,10 +2885,10 @@ void OrgBouncycastleMathEcLongArray_reduceVectorWiseWithLongArray_withInt_withIn
   OrgBouncycastleMathEcLongArray_flipVectorWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(buf, off, buf, off + words, len - words, baseBit);
 }
 
+
+#line 1641
 void OrgBouncycastleMathEcLongArray_flipVectorWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *y, jint yOff, jint yLen, jint bits) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1643
+  OrgBouncycastleMathEcLongArray_initialize();
   xOff += URShift32(bits, 6);
   bits &= (jint) 0x3F;
   
@@ -2818,10 +2906,10 @@ void OrgBouncycastleMathEcLongArray_flipVectorWithLongArray_withInt_withLongArra
   }
 }
 
+
+#line 1722
 void OrgBouncycastleMathEcLongArray_squareInPlaceWithLongArray_withInt_withInt_withIntArray_(IOSLongArray *x, jint xLen, jint m, IOSIntArray *ks) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1724
+  OrgBouncycastleMathEcLongArray_initialize();
   jint pos = LShift32(xLen, 1);
   while (--xLen >= 0) {
     
@@ -2832,10 +2920,10 @@ void OrgBouncycastleMathEcLongArray_squareInPlaceWithLongArray_withInt_withInt_w
   }
 }
 
+
+#line 1733
 void OrgBouncycastleMathEcLongArray_interleaveWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint width) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1735
+  OrgBouncycastleMathEcLongArray_initialize();
   switch (width) {
     
 #line 1737
@@ -2854,10 +2942,10 @@ void OrgBouncycastleMathEcLongArray_interleaveWithLongArray_withInt_withLongArra
   }
 }
 
+
+#line 1752
 void OrgBouncycastleMathEcLongArray_interleave3WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1754
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 1756
@@ -2865,34 +2953,32 @@ void OrgBouncycastleMathEcLongArray_interleave3WithLongArray_withInt_withLongArr
   }
 }
 
+
+#line 1760
 jlong OrgBouncycastleMathEcLongArray_interleave3WithLong_(jlong x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1762
+  OrgBouncycastleMathEcLongArray_initialize();
   jlong z = x & (LShift64(1LL, 63));
-  return (z | OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(
+  return z | OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(
 #line 1764
   (jint) x & (jint) 0x1FFFFF) | LShift64(OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(
 #line 1765
-  (jint) (URShift64(x, 21)) & (jint) 0x1FFFFF), 1)) | (LShift64(OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(
+  (jint) (URShift64(x, 21)) & (jint) 0x1FFFFF), 1) | LShift64(OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(
 #line 1766
-  (jint) (URShift64(x, 42)) & (jint) 0x1FFFFF), 2));
+  (jint) (URShift64(x, 42)) & (jint) 0x1FFFFF), 2);
 }
 
+
+#line 1784
 jlong OrgBouncycastleMathEcLongArray_interleave3_21to63WithInt_(jint x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1786
+  OrgBouncycastleMathEcLongArray_initialize();
   jint r00 = IOSIntArray_Get(nil_chk(OrgBouncycastleMathEcLongArray_INTERLEAVE3_TABLE_), x & (jint) 0x7F);
   jint r21 = IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE3_TABLE_, (URShift32(x, 7)) & (jint) 0x7F);
   jint r42 = IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE3_TABLE_, URShift32(x, 14));
-  return ((LShift64((r42 & (jlong) 0xFFFFFFFFLL), 42)) | (LShift64((r21 & (jlong) 0xFFFFFFFFLL), 21))) | (r00 & (jlong) 0xFFFFFFFFLL);
+  return (LShift64((r42 & (jlong) 0xFFFFFFFFLL), 42)) | (LShift64((r21 & (jlong) 0xFFFFFFFFLL), 21)) | (r00 & (jlong) 0xFFFFFFFFLL);
 }
 
 void OrgBouncycastleMathEcLongArray_interleave5WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1794
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 1796
@@ -2900,34 +2986,32 @@ void OrgBouncycastleMathEcLongArray_interleave5WithLongArray_withInt_withLongArr
   }
 }
 
+
+#line 1800
 jlong OrgBouncycastleMathEcLongArray_interleave5WithLong_(jlong x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1802
-  return (((OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_((jint) x & (jint) 0x1FFF) | (LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
+  OrgBouncycastleMathEcLongArray_initialize();
+  return OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_((jint) x & (jint) 0x1FFF) | (LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
 #line 1803
-  (jint) (URShift64(x, 13)) & (jint) 0x1FFF), 1))) | (LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
+  (jint) (URShift64(x, 13)) & (jint) 0x1FFF), 1)) | LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
 #line 1804
-  (jint) (URShift64(x, 26)) & (jint) 0x1FFF), 2))) | (LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
+  (jint) (URShift64(x, 26)) & (jint) 0x1FFF), 2) | LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
 #line 1805
-  (jint) (URShift64(x, 39)) & (jint) 0x1FFF), 3))) | (LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
+  (jint) (URShift64(x, 39)) & (jint) 0x1FFF), 3) | LShift64(OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(
 #line 1806
-  (jint) (URShift64(x, 52)) & (jint) 0x1FFF), 4));
+  (jint) (URShift64(x, 52)) & (jint) 0x1FFF), 4);
 }
 
+
+#line 1824
 jlong OrgBouncycastleMathEcLongArray_interleave3_13to65WithInt_(jint x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1826
+  OrgBouncycastleMathEcLongArray_initialize();
   jint r00 = IOSIntArray_Get(nil_chk(OrgBouncycastleMathEcLongArray_INTERLEAVE5_TABLE_), x & (jint) 0x7F);
   jint r35 = IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE5_TABLE_, URShift32(x, 7));
   return (LShift64((r35 & (jlong) 0xFFFFFFFFLL), 35)) | (r00 & (jlong) 0xFFFFFFFFLL);
 }
 
 void OrgBouncycastleMathEcLongArray_interleave7WithLongArray_withInt_withLongArray_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1833
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 1835
@@ -2935,32 +3019,32 @@ void OrgBouncycastleMathEcLongArray_interleave7WithLongArray_withInt_withLongArr
   }
 }
 
+
+#line 1839
 jlong OrgBouncycastleMathEcLongArray_interleave7WithLong_(jlong x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1841
+  OrgBouncycastleMathEcLongArray_initialize();
   jlong z = x & (LShift64(1LL, 63));
-  return (((((z | IOSLongArray_Get(nil_chk(
+  return z | IOSLongArray_Get(nil_chk(
 #line 1843
   OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_), (jint) x & (jint) 0x1FF) | LShift64(IOSLongArray_Get(
 #line 1844
-  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 9)) & (jint) 0x1FF), 1)) | (LShift64(IOSLongArray_Get(
+  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 9)) & (jint) 0x1FF), 1) | LShift64(IOSLongArray_Get(
 #line 1845
-  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 18)) & (jint) 0x1FF), 2))) | (LShift64(IOSLongArray_Get(
+  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 18)) & (jint) 0x1FF), 2) | LShift64(IOSLongArray_Get(
 #line 1846
-  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 27)) & (jint) 0x1FF), 3))) | (LShift64(IOSLongArray_Get(
+  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 27)) & (jint) 0x1FF), 3) | LShift64(IOSLongArray_Get(
 #line 1847
-  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 36)) & (jint) 0x1FF), 4))) | (LShift64(IOSLongArray_Get(
+  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 36)) & (jint) 0x1FF), 4) | LShift64(IOSLongArray_Get(
 #line 1848
-  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 45)) & (jint) 0x1FF), 5))) | (LShift64(IOSLongArray_Get(
+  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 45)) & (jint) 0x1FF), 5) | LShift64(IOSLongArray_Get(
 #line 1849
-  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 54)) & (jint) 0x1FF), 6));
+  OrgBouncycastleMathEcLongArray_INTERLEAVE7_TABLE_, (jint) (URShift64(x, 54)) & (jint) 0x1FF), 6);
 }
 
+
+#line 1866
 void OrgBouncycastleMathEcLongArray_interleave2_nWithLongArray_withInt_withLongArray_withInt_withInt_withInt_(IOSLongArray *x, jint xOff, IOSLongArray *z, jint zOff, jint count, jint rounds) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1868
+  OrgBouncycastleMathEcLongArray_initialize();
   for (jint i = 0; i < count; ++i) {
     
 #line 1870
@@ -2968,21 +3052,21 @@ void OrgBouncycastleMathEcLongArray_interleave2_nWithLongArray_withInt_withLongA
   }
 }
 
+
+#line 1874
 jlong OrgBouncycastleMathEcLongArray_interleave2_nWithLong_withInt_(jlong x, jint rounds) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1876
+  OrgBouncycastleMathEcLongArray_initialize();
   while (rounds > 1) {
     
 #line 1878
     rounds -= 2;
-    x = ((OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_((jint) x & (jint) 0xFFFF) | (LShift64(OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(
+    x = OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_((jint) x & (jint) 0xFFFF) | (LShift64(OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(
 #line 1880
-    (jint) (URShift64(x, 16)) & (jint) 0xFFFF), 1))) | (LShift64(OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(
+    (jint) (URShift64(x, 16)) & (jint) 0xFFFF), 1)) | LShift64(OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(
 #line 1881
-    (jint) (URShift64(x, 32)) & (jint) 0xFFFF), 2))) | (LShift64(OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(
+    (jint) (URShift64(x, 32)) & (jint) 0xFFFF), 2) | LShift64(OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(
 #line 1882
-    (jint) (URShift64(x, 48)) & (jint) 0xFFFF), 3));
+    (jint) (URShift64(x, 48)) & (jint) 0xFFFF), 3);
   }
   if (rounds > 0) {
     
@@ -2992,19 +3076,17 @@ jlong OrgBouncycastleMathEcLongArray_interleave2_nWithLong_withInt_(jlong x, jin
   return x;
 }
 
+
+#line 1891
 jlong OrgBouncycastleMathEcLongArray_interleave4_16to64WithInt_(jint x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1893
+  OrgBouncycastleMathEcLongArray_initialize();
   jint r00 = IOSIntArray_Get(nil_chk(OrgBouncycastleMathEcLongArray_INTERLEAVE4_TABLE_), x & (jint) 0xFF);
   jint r32 = IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE4_TABLE_, URShift32(x, 8));
   return (LShift64((r32 & (jlong) 0xFFFFFFFFLL), 32)) | (r00 & (jlong) 0xFFFFFFFFLL);
 }
 
 jlong OrgBouncycastleMathEcLongArray_interleave2_32to64WithInt_(jint x) {
-  OrgBouncycastleMathEcLongArray_init();
-  
-#line 1900
+  OrgBouncycastleMathEcLongArray_initialize();
   jint r00 = IOSIntArray_Get(nil_chk(OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_), x & (jint) 0xFF) | (LShift32(IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_, (URShift32(x, 8)) & (jint) 0xFF), 16));
   jint r32 = IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_, (URShift32(x, 16)) & (jint) 0xFF) | (LShift32(IOSIntArray_Get(OrgBouncycastleMathEcLongArray_INTERLEAVE2_TABLE_, URShift32(x, 24)), 16));
   return (LShift64((r32 & (jlong) 0xFFFFFFFFLL), 32)) | (r00 & (jlong) 0xFFFFFFFFLL);

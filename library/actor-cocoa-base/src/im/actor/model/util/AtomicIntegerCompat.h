@@ -8,31 +8,31 @@
 
 #include "J2ObjC_header.h"
 
-@interface AMAtomicIntegerCompat : NSObject {
-}
+@interface AMAtomicIntegerCompat : NSObject
 
-- (jint)get;
+#pragma mark Public
 
-- (jint)incrementAndGet;
-
-- (jint)getAndIncrement;
+- (instancetype)init;
 
 - (void)compareAndSetWithInt:(jint)exp
                      withInt:(jint)v;
 
-- (void)setWithInt:(jint)v;
+- (jint)get;
 
-- (instancetype)init;
+- (jint)getAndIncrement;
+
+- (jint)incrementAndGet;
+
+- (void)setWithInt:(jint)v;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAtomicIntegerCompat)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-typedef AMAtomicIntegerCompat ImActorModelUtilAtomicIntegerCompat;
+FOUNDATION_EXPORT void AMAtomicIntegerCompat_init(AMAtomicIntegerCompat *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAtomicIntegerCompat)
+
+typedef AMAtomicIntegerCompat ImActorModelUtilAtomicIntegerCompat;
 
 #endif // _AMAtomicIntegerCompat_H_

@@ -6,47 +6,39 @@
 #ifndef _OrgBouncycastleMathEcECFieldElement_H_
 #define _OrgBouncycastleMathEcECFieldElement_H_
 
-@class IOSByteArray;
-@class IOSIntArray;
-@class IOSObjectArray;
-@class JavaMathBigInteger;
-@class OrgBouncycastleMathEcLongArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/ECConstants.h"
 
-@interface OrgBouncycastleMathEcECFieldElement : NSObject < OrgBouncycastleMathEcECConstants > {
-}
+@class IOSByteArray;
+@class JavaMathBigInteger;
 
-- (JavaMathBigInteger *)toBigInteger;
+@interface OrgBouncycastleMathEcECFieldElement : NSObject < OrgBouncycastleMathEcECConstants >
 
-- (NSString *)getFieldName;
+#pragma mark Public
 
-- (jint)getFieldSize;
+- (instancetype)init;
 
 - (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
 - (OrgBouncycastleMathEcECFieldElement *)addOne;
 
-- (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
-
-- (OrgBouncycastleMathEcECFieldElement *)multiplyWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+- (jint)bitLength;
 
 - (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
-- (OrgBouncycastleMathEcECFieldElement *)negate;
+- (IOSByteArray *)getEncoded;
 
-- (OrgBouncycastleMathEcECFieldElement *)square;
+- (NSString *)getFieldName;
+
+- (jint)getFieldSize;
 
 - (OrgBouncycastleMathEcECFieldElement *)invert;
-
-- (OrgBouncycastleMathEcECFieldElement *)sqrt;
-
-- (jint)bitLength;
 
 - (jboolean)isOne;
 
 - (jboolean)isZero;
+
+- (OrgBouncycastleMathEcECFieldElement *)multiplyWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
 - (OrgBouncycastleMathEcECFieldElement *)multiplyMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b
                                                              withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
@@ -56,26 +48,31 @@
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
+- (OrgBouncycastleMathEcECFieldElement *)negate;
+
+- (OrgBouncycastleMathEcECFieldElement *)sqrt;
+
+- (OrgBouncycastleMathEcECFieldElement *)square;
+
 - (OrgBouncycastleMathEcECFieldElement *)squareMinusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                            withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
 - (OrgBouncycastleMathEcECFieldElement *)squarePlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
+- (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+
 - (jboolean)testBitZero;
 
+- (JavaMathBigInteger *)toBigInteger;
+
 - (NSString *)description;
-
-- (IOSByteArray *)getEncoded;
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECFieldElement)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_init(OrgBouncycastleMathEcECFieldElement *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement)
 
@@ -84,16 +81,18 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement)
   JavaMathBigInteger *q_, *r_, *x_;
 }
 
-+ (JavaMathBigInteger *)calculateResidueWithJavaMathBigInteger:(JavaMathBigInteger *)p;
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
                     withJavaMathBigInteger:(JavaMathBigInteger *)x;
 
-- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
-                    withJavaMathBigInteger:(JavaMathBigInteger *)r
-                    withJavaMathBigInteger:(JavaMathBigInteger *)x;
+- (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
-- (JavaMathBigInteger *)toBigInteger;
+- (OrgBouncycastleMathEcECFieldElement *)addOne;
+
+- (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+
+- (jboolean)isEqual:(id)other;
 
 - (NSString *)getFieldName;
 
@@ -101,11 +100,9 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement)
 
 - (JavaMathBigInteger *)getQ;
 
-- (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+- (NSUInteger)hash;
 
-- (OrgBouncycastleMathEcECFieldElement *)addOne;
-
-- (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+- (OrgBouncycastleMathEcECFieldElement *)invert;
 
 - (OrgBouncycastleMathEcECFieldElement *)multiplyWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
@@ -117,9 +114,9 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement)
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
-- (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
-
 - (OrgBouncycastleMathEcECFieldElement *)negate;
+
+- (OrgBouncycastleMathEcECFieldElement *)sqrt;
 
 - (OrgBouncycastleMathEcECFieldElement *)square;
 
@@ -129,9 +126,11 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement)
 - (OrgBouncycastleMathEcECFieldElement *)squarePlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
-- (OrgBouncycastleMathEcECFieldElement *)invert;
+- (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
-- (OrgBouncycastleMathEcECFieldElement *)sqrt;
+- (JavaMathBigInteger *)toBigInteger;
+
+#pragma mark Protected
 
 - (JavaMathBigInteger *)modAddWithJavaMathBigInteger:(JavaMathBigInteger *)x1
                               withJavaMathBigInteger:(JavaMathBigInteger *)x2;
@@ -152,9 +151,13 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement)
 - (JavaMathBigInteger *)modSubtractWithJavaMathBigInteger:(JavaMathBigInteger *)x1
                                    withJavaMathBigInteger:(JavaMathBigInteger *)x2;
 
-- (jboolean)isEqual:(id)other;
+#pragma mark Package-Private
 
-- (NSUInteger)hash;
+- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)q
+                    withJavaMathBigInteger:(JavaMathBigInteger *)r
+                    withJavaMathBigInteger:(JavaMathBigInteger *)x;
+
++ (JavaMathBigInteger *)calculateResidueWithJavaMathBigInteger:(JavaMathBigInteger *)p;
 
 @end
 
@@ -164,19 +167,29 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECFieldElement_Fp, q_, JavaMathBigInteg
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECFieldElement_Fp, r_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcECFieldElement_Fp, x_, JavaMathBigInteger *)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT JavaMathBigInteger *OrgBouncycastleMathEcECFieldElement_Fp_calculateResidueWithJavaMathBigInteger_(JavaMathBigInteger *p);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECFieldElement_Fp *self, JavaMathBigInteger *q, JavaMathBigInteger *x);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECFieldElement_Fp *new_OrgBouncycastleMathEcECFieldElement_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *q, JavaMathBigInteger *x) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcECFieldElement_Fp *self, JavaMathBigInteger *q, JavaMathBigInteger *r, JavaMathBigInteger *x);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECFieldElement_Fp *new_OrgBouncycastleMathEcECFieldElement_Fp_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *q, JavaMathBigInteger *r, JavaMathBigInteger *x) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement_Fp)
 
 #define OrgBouncycastleMathEcECFieldElement_F2m_GNB 1
-#define OrgBouncycastleMathEcECFieldElement_F2m_PPB 3
 #define OrgBouncycastleMathEcECFieldElement_F2m_TPB 2
+#define OrgBouncycastleMathEcECFieldElement_F2m_PPB 3
 
-@interface OrgBouncycastleMathEcECFieldElement_F2m : OrgBouncycastleMathEcECFieldElement {
-}
+@interface OrgBouncycastleMathEcECFieldElement_F2m : OrgBouncycastleMathEcECFieldElement
+
+#pragma mark Public
+
+- (instancetype)initWithInt:(jint)m
+                    withInt:(jint)k
+     withJavaMathBigInteger:(JavaMathBigInteger *)x;
 
 - (instancetype)initWithInt:(jint)m
                     withInt:(jint)k1
@@ -184,32 +197,40 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement_Fp)
                     withInt:(jint)k3
      withJavaMathBigInteger:(JavaMathBigInteger *)x;
 
-- (instancetype)initWithInt:(jint)m
-                    withInt:(jint)k
-     withJavaMathBigInteger:(JavaMathBigInteger *)x;
+- (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+
+- (OrgBouncycastleMathEcECFieldElement *)addOne;
 
 - (jint)bitLength;
 
-- (jboolean)isOne;
++ (void)checkFieldElementsWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)a
+                          withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
-- (jboolean)isZero;
+- (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
-- (jboolean)testBitZero;
-
-- (JavaMathBigInteger *)toBigInteger;
+- (jboolean)isEqual:(id)anObject;
 
 - (NSString *)getFieldName;
 
 - (jint)getFieldSize;
 
-+ (void)checkFieldElementsWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)a
-                          withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+- (jint)getK1;
 
-- (OrgBouncycastleMathEcECFieldElement *)addWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+- (jint)getK2;
 
-- (OrgBouncycastleMathEcECFieldElement *)addOne;
+- (jint)getK3;
 
-- (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
+- (jint)getM;
+
+- (jint)getRepresentation;
+
+- (NSUInteger)hash;
+
+- (OrgBouncycastleMathEcECFieldElement *)invert;
+
+- (jboolean)isOne;
+
+- (jboolean)isZero;
 
 - (OrgBouncycastleMathEcECFieldElement *)multiplyWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
@@ -221,9 +242,9 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement_Fp)
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                             withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
-- (OrgBouncycastleMathEcECFieldElement *)divideWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
-
 - (OrgBouncycastleMathEcECFieldElement *)negate;
+
+- (OrgBouncycastleMathEcECFieldElement *)sqrt;
 
 - (OrgBouncycastleMathEcECFieldElement *)square;
 
@@ -233,38 +254,31 @@ J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement_Fp)
 - (OrgBouncycastleMathEcECFieldElement *)squarePlusProductWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)x
                                                           withOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)y;
 
-- (OrgBouncycastleMathEcECFieldElement *)invert;
+- (OrgBouncycastleMathEcECFieldElement *)subtractWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)b;
 
-- (OrgBouncycastleMathEcECFieldElement *)sqrt;
+- (jboolean)testBitZero;
 
-- (jint)getRepresentation;
-
-- (jint)getM;
-
-- (jint)getK1;
-
-- (jint)getK2;
-
-- (jint)getK3;
-
-- (jboolean)isEqual:(id)anObject;
-
-- (NSUInteger)hash;
+- (JavaMathBigInteger *)toBigInteger;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcECFieldElement_F2m)
-
-CF_EXTERN_C_BEGIN
-
-FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b);
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECFieldElement_F2m, GNB, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECFieldElement_F2m, TPB, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathEcECFieldElement_F2m, PPB, jint)
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_F2m_initWithInt_withInt_withInt_withInt_withJavaMathBigInteger_(OrgBouncycastleMathEcECFieldElement_F2m *self, jint m, jint k1, jint k2, jint k3, JavaMathBigInteger *x);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECFieldElement_F2m *new_OrgBouncycastleMathEcECFieldElement_F2m_initWithInt_withInt_withInt_withInt_withJavaMathBigInteger_(jint m, jint k1, jint k2, jint k3, JavaMathBigInteger *x) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_F2m_initWithInt_withInt_withJavaMathBigInteger_(OrgBouncycastleMathEcECFieldElement_F2m *self, jint m, jint k, JavaMathBigInteger *x);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcECFieldElement_F2m *new_OrgBouncycastleMathEcECFieldElement_F2m_initWithInt_withInt_withJavaMathBigInteger_(jint m, jint k, JavaMathBigInteger *x) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcECFieldElement_F2m_checkFieldElementsWithOrgBouncycastleMathEcECFieldElement_withOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement *a, OrgBouncycastleMathEcECFieldElement *b);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcECFieldElement_F2m)
 

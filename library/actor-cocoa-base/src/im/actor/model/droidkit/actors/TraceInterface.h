@@ -6,12 +6,12 @@
 #ifndef _DKTraceInterface_H_
 #define _DKTraceInterface_H_
 
+#include "J2ObjC_header.h"
+
 @class DKActor;
 @class DKActorRef;
 @class DKEnvelope;
 @class JavaLangException;
-
-#include "J2ObjC_header.h"
 
 @protocol DKTraceInterface < NSObject, JavaObject >
 
@@ -34,8 +34,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKTraceInterface)
 
-#define ImActorModelDroidkitActorsTraceInterface DKTraceInterface
-
 J2OBJC_TYPE_LITERAL_HEADER(DKTraceInterface)
+
+#define ImActorModelDroidkitActorsTraceInterface DKTraceInterface
 
 #endif // _DKTraceInterface_H_

@@ -6,23 +6,16 @@
 #ifndef _ImActorModelModulesFileDownloadTask_H_
 #define _ImActorModelModulesFileDownloadTask_H_
 
-@class AMFileReference;
-@class AMRpcException;
-@class DKActorRef;
-@class ImActorModelApiRpcResponseGetFile;
-@class ImActorModelModulesModules;
-@protocol AMFileSystemProvider;
-@protocol AMFileSystemReference;
-@protocol AMOutputFile;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/network/RpcCallback.h"
 
-#define ImActorModelModulesFileDownloadTask_SIM_BLOCKS_COUNT 4
+@class AMFileReference;
+@class DKActorRef;
+@class ImActorModelModulesModules;
 
-@interface ImActorModelModulesFileDownloadTask : ImActorModelModulesUtilsModuleActor {
-}
+@interface ImActorModelModulesFileDownloadTask : ImActorModelModulesUtilsModuleActor
+
+#pragma mark Public
 
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference
                          withDKActorRef:(DKActorRef *)manager
@@ -34,31 +27,10 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileDownloadTask)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelModulesFileDownloadTask_initWithAMFileReference_withDKActorRef_withImActorModelModulesModules_(ImActorModelModulesFileDownloadTask *self, AMFileReference *fileReference, DKActorRef *manager, ImActorModelModulesModules *messenger);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesFileDownloadTask, SIM_BLOCKS_COUNT, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelModulesFileDownloadTask *new_ImActorModelModulesFileDownloadTask_initWithAMFileReference_withDKActorRef_withImActorModelModulesModules_(AMFileReference *fileReference, DKActorRef *manager, ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadTask)
-
-@interface ImActorModelModulesFileDownloadTask_$1 : NSObject < AMRpcCallback > {
-}
-
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFile *)response;
-
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
-
-- (instancetype)initWithImActorModelModulesFileDownloadTask:(ImActorModelModulesFileDownloadTask *)outer$
-                                                    withInt:(jint)capture$0
-                                                    withInt:(jint)capture$1;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileDownloadTask_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadTask_$1)
 
 #endif // _ImActorModelModulesFileDownloadTask_H_

@@ -8,21 +8,18 @@
 
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitActorsMessagesStartActor : NSObject {
-}
+@interface ImActorModelDroidkitActorsMessagesStartActor : NSObject
+
+#pragma mark Public
 
 - (NSString *)description;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitActorsMessagesStartActor_initialized;
 J2OBJC_STATIC_INIT(ImActorModelDroidkitActorsMessagesStartActor)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT ImActorModelDroidkitActorsMessagesStartActor *ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitActorsMessagesStartActor, INSTANCE_, ImActorModelDroidkitActorsMessagesStartActor *)
-CF_EXTERN_C_END
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitActorsMessagesStartActor)
 

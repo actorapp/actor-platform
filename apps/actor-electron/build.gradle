@@ -1,0 +1,69 @@
+task cleanBuildSources(type: Delete) {
+    delete "${buildDir}/web/"
+}
+
+task copySources(type: Copy) {
+    from fileTree("${projectDir}/../actor-web/")
+
+    into "${buildDir}/web/"
+}
+
+task npmInstall(type: Exec) {
+    workingDir "${buildDir}/web/"
+    args 'install'
+    executable 'npm'
+}
+
+task bowerInstall(type: Exec, dependsOn: ['npmInstall']) {
+    workingDir "${buildDir}/web/"
+    args 'install'
+    executable 'bower'
+}
+
+task gulpBuild(type: Exec, dependsOn: ['bowerInstall']) {
+    workingDir "${buildDir}/web/"
+    args 'build'
+    executable 'gulp'
+}
+
+task buildWeb (dependsOn: ['gulpBuild']) {
+
+}
+
+task copyAppBootstrap {
+    doLast {
+        Properties properties = new Properties()
+        properties.load(project.file('local.properties').newDataInputStream())
+
+        delete {
+            "${buildDir}/electron"
+        }
+
+        exec {
+            commandLine 'mkdir', "${buildDir}/electron"
+        }
+
+        exec {
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron.app", "${buildDir}/electron/Actor.app"
+        }
+    }
+}
+
+task buildAsar (type: Exec, dependsOn: ['buildWeb']) {
+    commandLine 'asar', 'pack', "${buildDir}/web", "${buildDir}/electron/app.asar"
+}
+
+task buildOSXApp (dependsOn: ['buildAsar']) {
+    copy {
+        from "${buildDir}/electron/app.asar"
+        into "${buildDir}/electron/Actor.app/Contents/Resources/"
+    }
+}
+
+task buildApps (dependsOn: 'buildOSXApp') {
+
+}
+
+task build(dependsOn: ['buildApps']) {
+
+}

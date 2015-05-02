@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcFloodWait.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcFloodWait.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/rpc/RpcFloodWait.h"
 #include "java/io/IOException.h"
 
@@ -16,6 +18,7 @@
  @public
   jint delay_;
 }
+
 @end
 
 
@@ -25,25 +28,20 @@
 
 #line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 19
-  [super initWithBSDataInput:stream];
+  MTRpcFloodWait_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 22
 - (instancetype)initWithInt:(jint)delay {
-  if (self = [super init]) {
-    self->delay_ = delay;
-  }
+  MTRpcFloodWait_initWithInt_(self, delay);
   return self;
 }
 
 
 #line 26
 - (jint)getDelay {
-  
-#line 27
   return delay_;
 }
 
@@ -56,8 +54,6 @@
 
 #line 36
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 37
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:delay_];
 }
 
@@ -67,11 +63,37 @@
   delay_ = [((BSDataInput *) nil_chk(bs)) readInt];
 }
 
-- (void)copyAllFieldsTo:(MTRpcFloodWait *)other {
-  [super copyAllFieldsTo:other];
-  other->delay_ = delay_;
+@end
+
+
+#line 18
+void MTRpcFloodWait_initWithBSDataInput_(MTRpcFloodWait *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 18
+MTRpcFloodWait *new_MTRpcFloodWait_initWithBSDataInput_(BSDataInput *stream) {
+  MTRpcFloodWait *self = [MTRpcFloodWait alloc];
+  MTRpcFloodWait_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 22
+void MTRpcFloodWait_initWithInt_(MTRpcFloodWait *self, jint delay) {
+  (void) MTProtoStruct_init(self);
+  
+#line 23
+  self->delay_ = delay;
+}
+
+
+#line 22
+MTRpcFloodWait *new_MTRpcFloodWait_initWithInt_(jint delay) {
+  MTRpcFloodWait *self = [MTRpcFloodWait alloc];
+  MTRpcFloodWait_initWithInt_(self, delay);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTRpcFloodWait)

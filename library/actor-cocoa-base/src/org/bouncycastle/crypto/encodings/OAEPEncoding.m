@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/encodings/OAEPEncoding.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/encodings/OAEPEncoding.java"
 
 #include "IOSClass.h"
@@ -16,9 +17,6 @@
 #include "org/bouncycastle/crypto/digests/SHA1Digest.h"
 #include "org/bouncycastle/crypto/encodings/OAEPEncoding.h"
 #include "org/bouncycastle/crypto/params/ParametersWithRandom.h"
-
-__attribute__((unused)) static void OrgBouncycastleCryptoEncodingsOAEPEncoding_ItoOSPWithInt_withByteArray_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, jint i, IOSByteArray *sp);
-__attribute__((unused)) static IOSByteArray *OrgBouncycastleCryptoEncodingsOAEPEncoding_maskGeneratorFunction1WithByteArray_withInt_withInt_withInt_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, IOSByteArray *Z, jint zOff, jint zLen, jint length);
 
 @interface OrgBouncycastleCryptoEncodingsOAEPEncoding () {
  @public
@@ -36,12 +34,17 @@ __attribute__((unused)) static IOSByteArray *OrgBouncycastleCryptoEncodingsOAEPE
                                               withInt:(jint)zOff
                                               withInt:(jint)zLen
                                               withInt:(jint)length;
+
 @end
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEncodingsOAEPEncoding, defHash_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEncodingsOAEPEncoding, mgf1Hash_, id<OrgBouncycastleCryptoDigest>)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEncodingsOAEPEncoding, engine_, id<OrgBouncycastleCryptoAsymmetricBlockCipher>)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEncodingsOAEPEncoding, random_, id<BCRandomProvider>)
+
+__attribute__((unused)) static void OrgBouncycastleCryptoEncodingsOAEPEncoding_ItoOSPWithInt_withByteArray_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, jint i, IOSByteArray *sp);
+
+__attribute__((unused)) static IOSByteArray *OrgBouncycastleCryptoEncodingsOAEPEncoding_maskGeneratorFunction1WithByteArray_withInt_withInt_withInt_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, IOSByteArray *Z, jint zOff, jint zLen, jint length);
 
 
 #line 13
@@ -50,70 +53,20 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEncodingsOAEPEncoding, random_, id<BCRa
 
 #line 22
 - (instancetype)initWithOrgBouncycastleCryptoAsymmetricBlockCipher:(id<OrgBouncycastleCryptoAsymmetricBlockCipher>)cipher {
-  return
-#line 24
-  [self initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:cipher withOrgBouncycastleCryptoDigest:[[OrgBouncycastleCryptoDigestsSHA1Digest alloc] init] withByteArray:nil];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_(self, cipher);
+  return self;
 }
 
-
-#line 27
 - (instancetype)initWithOrgBouncycastleCryptoAsymmetricBlockCipher:(id<OrgBouncycastleCryptoAsymmetricBlockCipher>)cipher
                                    withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)hash_ {
-  return
-#line 30
-  [self initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:cipher withOrgBouncycastleCryptoDigest:hash_ withByteArray:nil];
-}
-
-
-#line 33
-- (instancetype)initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:(id<OrgBouncycastleCryptoAsymmetricBlockCipher>)cipher
-                                                                             withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)hash_
-                                                                                               withByteArray:(IOSByteArray *)encodingParams {
-  return
-#line 37
-  [self initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:cipher withOrgBouncycastleCryptoDigest:hash_ withOrgBouncycastleCryptoDigest:hash_ withByteArray:encodingParams];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_(self, cipher, hash_);
+  return self;
 }
 
 - (instancetype)initWithOrgBouncycastleCryptoAsymmetricBlockCipher:(id<OrgBouncycastleCryptoAsymmetricBlockCipher>)cipher
                                    withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)hash_
                                                      withByteArray:(IOSByteArray *)encodingParams {
-  return [self initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:
-#line 34
-cipher withOrgBouncycastleCryptoDigest:
-#line 35
-hash_ withByteArray:
-#line 36
-encodingParams];
-}
-
-
-#line 40
-- (instancetype)initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:(id<OrgBouncycastleCryptoAsymmetricBlockCipher>)cipher
-                                                                             withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)hash_
-                                                                             withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)mgf1Hash
-                                                                                               withByteArray:(IOSByteArray *)encodingParams {
-  if (self = [super init]) {
-    
-#line 45
-    self->engine_ = cipher;
-    
-#line 46
-    self->mgf1Hash_ = mgf1Hash;
-    
-#line 47
-    self->defHash_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoDigest>) nil_chk(hash_)) getDigestSize]];
-    
-#line 49
-    [hash_ reset];
-    
-#line 51
-    if (encodingParams != nil) {
-      [hash_ updateWithByteArray:encodingParams withInt:0 withInt:encodingParams->size_];
-    }
-    
-#line 55
-    [hash_ doFinalWithByteArray:defHash_ withInt:0];
-  }
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withByteArray_(self, cipher, hash_, encodingParams);
   return self;
 }
 
@@ -121,27 +74,16 @@ encodingParams];
                                    withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)hash_
                                    withOrgBouncycastleCryptoDigest:(id<OrgBouncycastleCryptoDigest>)mgf1Hash
                                                      withByteArray:(IOSByteArray *)encodingParams {
-  return [self initOrgBouncycastleCryptoEncodingsOAEPEncodingWithOrgBouncycastleCryptoAsymmetricBlockCipher:
-#line 41
-cipher withOrgBouncycastleCryptoDigest:
-#line 42
-hash_ withOrgBouncycastleCryptoDigest:
-#line 43
-mgf1Hash withByteArray:
-#line 44
-encodingParams];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withOrgBouncycastleCryptoDigest_withByteArray_(self, cipher, hash_, mgf1Hash, encodingParams);
+  return self;
 }
 
 
 #line 58
 - (id<OrgBouncycastleCryptoAsymmetricBlockCipher>)getUnderlyingCipher {
-  
-#line 59
   return engine_;
 }
 
-
-#line 62
 - (void)init__WithBoolean:(jboolean)forEncryption
 withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParamsParametersWithRandom *)param {
   
@@ -158,8 +100,6 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 #line 72
 - (jint)getInputBlockSize {
-  
-#line 73
   jint baseBlockSize = [((id<OrgBouncycastleCryptoAsymmetricBlockCipher>) nil_chk(engine_)) getInputBlockSize];
   
 #line 75
@@ -176,8 +116,6 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
 
 #line 82
 - (jint)getOutputBlockSize {
-  
-#line 83
   jint baseBlockSize = [((id<OrgBouncycastleCryptoAsymmetricBlockCipher>) nil_chk(engine_)) getOutputBlockSize];
   
 #line 85
@@ -282,7 +220,7 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   
 #line 189
   if (((IOSByteArray *) nil_chk(block))->size_ < (2 * ((IOSByteArray *) nil_chk(defHash_))->size_) + 1) {
-    @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:@"data too short"];
+    @throw new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(@"data too short");
   }
   
 #line 196
@@ -315,7 +253,7 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   
 #line 224
   if (defHashWrong) {
-    @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:@"data hash wrong"];
+    @throw new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(@"data hash wrong");
   }
   
 #line 231
@@ -330,7 +268,7 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   
 #line 239
   if (start >= (block->size_ - 1) || IOSByteArray_Get(block, start) != 1) {
-    @throw [[OrgBouncycastleCryptoInvalidCipherTextException alloc] initWithNSString:JreStrcat("$I", @"data start wrong ", start)];
+    @throw new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(JreStrcat("$I", @"data start wrong ", start));
   }
   
 #line 243
@@ -362,17 +300,86 @@ withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParams
   return OrgBouncycastleCryptoEncodingsOAEPEncoding_maskGeneratorFunction1WithByteArray_withInt_withInt_withInt_(self, Z, zOff, zLen, length);
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleCryptoEncodingsOAEPEncoding *)other {
-  [super copyAllFieldsTo:other];
-  other->defHash_ = defHash_;
-  other->mgf1Hash_ = mgf1Hash_;
-  other->engine_ = engine_;
-  other->random_ = random_;
-  other->forEncryption_ = forEncryption_;
-}
-
 @end
 
+
+#line 22
+void OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher) {
+  (void) OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withByteArray_(self,
+#line 24
+  cipher, new_OrgBouncycastleCryptoDigestsSHA1Digest_init(), nil);
+}
+
+
+#line 22
+OrgBouncycastleCryptoEncodingsOAEPEncoding *new_OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_(id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher) {
+  OrgBouncycastleCryptoEncodingsOAEPEncoding *self = [OrgBouncycastleCryptoEncodingsOAEPEncoding alloc];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_(self, cipher);
+  return self;
+}
+
+
+#line 27
+void OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher, id<OrgBouncycastleCryptoDigest> hash_) {
+  (void) OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withByteArray_(self,
+#line 30
+  cipher, hash_, nil);
+}
+
+
+#line 27
+OrgBouncycastleCryptoEncodingsOAEPEncoding *new_OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_(id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher, id<OrgBouncycastleCryptoDigest> hash_) {
+  OrgBouncycastleCryptoEncodingsOAEPEncoding *self = [OrgBouncycastleCryptoEncodingsOAEPEncoding alloc];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_(self, cipher, hash_);
+  return self;
+}
+
+void OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withByteArray_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher, id<OrgBouncycastleCryptoDigest> hash_, IOSByteArray *encodingParams) {
+  (void) OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withOrgBouncycastleCryptoDigest_withByteArray_(self,
+#line 37
+  cipher, hash_, hash_, encodingParams);
+}
+
+
+#line 33
+OrgBouncycastleCryptoEncodingsOAEPEncoding *new_OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withByteArray_(id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher, id<OrgBouncycastleCryptoDigest> hash_, IOSByteArray *encodingParams) {
+  OrgBouncycastleCryptoEncodingsOAEPEncoding *self = [OrgBouncycastleCryptoEncodingsOAEPEncoding alloc];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withByteArray_(self, cipher, hash_, encodingParams);
+  return self;
+}
+
+
+#line 40
+void OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withOrgBouncycastleCryptoDigest_withByteArray_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher, id<OrgBouncycastleCryptoDigest> hash_, id<OrgBouncycastleCryptoDigest> mgf1Hash, IOSByteArray *encodingParams) {
+  (void) NSObject_init(self);
+  
+#line 45
+  self->engine_ = cipher;
+  self->mgf1Hash_ = mgf1Hash;
+  self->defHash_ = [IOSByteArray newArrayWithLength:[((id<OrgBouncycastleCryptoDigest>) nil_chk(hash_)) getDigestSize]];
+  
+#line 49
+  [hash_ reset];
+  
+#line 51
+  if (encodingParams != nil) {
+    [hash_ updateWithByteArray:encodingParams withInt:0 withInt:encodingParams->size_];
+  }
+  
+#line 55
+  [hash_ doFinalWithByteArray:self->defHash_ withInt:0];
+}
+
+
+#line 40
+OrgBouncycastleCryptoEncodingsOAEPEncoding *new_OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withOrgBouncycastleCryptoDigest_withByteArray_(id<OrgBouncycastleCryptoAsymmetricBlockCipher> cipher, id<OrgBouncycastleCryptoDigest> hash_, id<OrgBouncycastleCryptoDigest> mgf1Hash, IOSByteArray *encodingParams) {
+  OrgBouncycastleCryptoEncodingsOAEPEncoding *self = [OrgBouncycastleCryptoEncodingsOAEPEncoding alloc];
+  OrgBouncycastleCryptoEncodingsOAEPEncoding_initWithOrgBouncycastleCryptoAsymmetricBlockCipher_withOrgBouncycastleCryptoDigest_withOrgBouncycastleCryptoDigest_withByteArray_(self, cipher, hash_, mgf1Hash, encodingParams);
+  return self;
+}
+
+
+#line 258
 void OrgBouncycastleCryptoEncodingsOAEPEncoding_ItoOSPWithInt_withByteArray_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, jint i, IOSByteArray *sp) {
   
 #line 261
@@ -382,6 +389,8 @@ void OrgBouncycastleCryptoEncodingsOAEPEncoding_ItoOSPWithInt_withByteArray_(Org
   *IOSByteArray_GetRef(sp, 3) = (jbyte) (URShift32(i, 0));
 }
 
+
+#line 270
 IOSByteArray *OrgBouncycastleCryptoEncodingsOAEPEncoding_maskGeneratorFunction1WithByteArray_withInt_withInt_withInt_(OrgBouncycastleCryptoEncodingsOAEPEncoding *self, IOSByteArray *Z, jint zOff, jint zLen, jint length) {
   
 #line 275

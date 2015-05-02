@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileSource.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileSource.java"
 
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserParser.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -37,8 +39,6 @@
 
 #line 39
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 40
   if ([self isKindOfClass:[AMFileLocalSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:1];
   }
@@ -50,21 +50,24 @@
   else {
     
 #line 45
-    @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
+    @throw new_JavaIoIOException_initWithNSString_(@"Invalid source type");
   }
 }
 
 - (instancetype)init {
-  return [super init];
+  AMFileSource_init(self);
+  return self;
 }
 
 @end
 
+
+#line 16
 AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMFileSource_init();
+  AMFileSource_initialize();
   
 #line 17
-  BSBserValues *reader = [[BSBserValues alloc] initWithImActorModelDroidkitBserUtilSparseArray:BSBserParser_deserializeWithBSDataInput_([[BSDataInput alloc] initWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_])];
+  BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
   jint type = [reader getIntWithInt:1];
   switch (type) {
     case 1:
@@ -72,8 +75,12 @@ AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
     case 2:
     return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
     default:
-    @throw [[JavaIoIOException alloc] initWithNSString:@"Invalid source type"];
+    @throw new_JavaIoIOException_initWithNSString_(@"Invalid source type");
   }
+}
+
+void AMFileSource_init(AMFileSource *self) {
+  (void) BSBserObject_init(self);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileSource)

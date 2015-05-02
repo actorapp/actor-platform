@@ -6,48 +6,49 @@
 #ifndef _AMBaseMessenger_H_
 #define _AMBaseMessenger_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/Messenger.h"
+
 @class AMBindedDisplayList;
 @class AMConfiguration;
 @class AMConversationVM;
 @class AMPeer;
-@class ImActorModelModulesDisplayLists;
 @protocol AMConversationVMCallback;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/Messenger.h"
+@interface AMBaseMessenger : AMMessenger
 
-@interface AMBaseMessenger : AMMessenger {
-}
+#pragma mark Public
 
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
+
+- (AMBindedDisplayList *)buildContactDisplayList;
 
 - (AMConversationVM *)buildConversationVMWithAMPeer:(AMPeer *)peer
                             withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback;
 
-- (AMBindedDisplayList *)getDialogsGlobalList;
-
-- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
 
 - (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer;
 
-- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
+- (AMBindedDisplayList *)buildSearchList;
 
 - (AMBindedDisplayList *)getContactsGlobalList;
 
-- (AMBindedDisplayList *)buildContactDisplayList;
+- (AMBindedDisplayList *)getDialogsGlobalList;
 
-- (AMBindedDisplayList *)buildSearchList;
+- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseMessenger)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration);
 
-typedef AMBaseMessenger ImActorModelBaseMessenger;
+FOUNDATION_EXPORT AMBaseMessenger *new_AMBaseMessenger_initWithAMConfiguration_(AMConfiguration *configuration) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBaseMessenger)
+
+typedef AMBaseMessenger ImActorModelBaseMessenger;
 
 #endif // _AMBaseMessenger_H_

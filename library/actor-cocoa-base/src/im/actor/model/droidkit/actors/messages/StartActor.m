@@ -3,44 +3,64 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/StartActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/StartActor.java"
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/StartActor.h"
 
 @interface ImActorModelDroidkitActorsMessagesStartActor ()
+
 - (instancetype)init;
+
 @end
 
-BOOL ImActorModelDroidkitActorsMessagesStartActor_initialized = NO;
+__attribute__((unused)) static void ImActorModelDroidkitActorsMessagesStartActor_init(ImActorModelDroidkitActorsMessagesStartActor *self);
+
+__attribute__((unused)) static ImActorModelDroidkitActorsMessagesStartActor *new_ImActorModelDroidkitActorsMessagesStartActor_init() NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitActorsMessagesStartActor)
+
+ImActorModelDroidkitActorsMessagesStartActor *ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_;
 
 
 #line 8
 @implementation ImActorModelDroidkitActorsMessagesStartActor
 
-ImActorModelDroidkitActorsMessagesStartActor * ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_;
-
 
 #line 11
 - (instancetype)init {
-  return [super init];
+  ImActorModelDroidkitActorsMessagesStartActor_init(self);
+  return self;
 }
 
+
+#line 15
 - (NSString *)description {
-  
-#line 16
   return @"StartActor";
 }
 
 + (void)initialize {
   if (self == [ImActorModelDroidkitActorsMessagesStartActor class]) {
-    ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_ =
-#line 9
-    [[ImActorModelDroidkitActorsMessagesStartActor alloc] init];
+    ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_ = new_ImActorModelDroidkitActorsMessagesStartActor_init();
     J2OBJC_SET_INITIALIZED(ImActorModelDroidkitActorsMessagesStartActor)
   }
 }
 
 @end
+
+
+#line 11
+void ImActorModelDroidkitActorsMessagesStartActor_init(ImActorModelDroidkitActorsMessagesStartActor *self) {
+  (void) NSObject_init(self);
+}
+
+
+#line 11
+ImActorModelDroidkitActorsMessagesStartActor *new_ImActorModelDroidkitActorsMessagesStartActor_init() {
+  ImActorModelDroidkitActorsMessagesStartActor *self = [ImActorModelDroidkitActorsMessagesStartActor alloc];
+  ImActorModelDroidkitActorsMessagesStartActor_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMessagesStartActor)

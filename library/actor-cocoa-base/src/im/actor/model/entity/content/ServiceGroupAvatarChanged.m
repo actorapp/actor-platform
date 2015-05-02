@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupAvatarChanged.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupAvatarChanged.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "java/io/IOException.h"
 
@@ -21,10 +23,16 @@
  @public
   AMAvatar *newAvatar_;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(AMServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
+
+__attribute__((unused)) static void AMServiceGroupAvatarChanged_init(AMServiceGroupAvatarChanged *self);
+
+__attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_init() NS_RETURNS_RETAINED;
 
 
 #line 13
@@ -37,25 +45,18 @@ J2OBJC_FIELD_SETTER(AMServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
 
 #line 21
 - (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar {
-  if (self =
-#line 22
-  [super initWithNSString:@"Group avatar changed"]) {
-    
-#line 23
-    self->newAvatar_ = newAvatar;
-  }
+  AMServiceGroupAvatarChanged_initWithAMAvatar_(self, newAvatar);
+  return self;
+}
+
+- (instancetype)init {
+  AMServiceGroupAvatarChanged_init(self);
   return self;
 }
 
 
-#line 26
-- (instancetype)init {
-  return [super init];
-}
-
+#line 30
 - (AMAvatar *)getNewAvatar {
-  
-#line 31
   return newAvatar_;
 }
 
@@ -68,8 +69,6 @@ J2OBJC_FIELD_SETTER(AMServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
 
 #line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  
-#line 41
   [super parseWithBSBserValues:values];
   IOSByteArray *data = [((BSBserValues *) nil_chk(values)) optBytesWithInt:10];
   if (data != nil) {
@@ -86,18 +85,44 @@ J2OBJC_FIELD_SETTER(AMServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
   }
 }
 
-- (void)copyAllFieldsTo:(AMServiceGroupAvatarChanged *)other {
-  [super copyAllFieldsTo:other];
-  other->newAvatar_ = newAvatar_;
-}
-
 @end
 
+
+#line 15
 AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceGroupAvatarChanged_init();
+  AMServiceGroupAvatarChanged_initialize();
   
 #line 16
-  return ((AMServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_([[AMServiceGroupAvatarChanged alloc] init], data));
+  return ((AMServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupAvatarChanged_init(), data));
+}
+
+
+#line 21
+void AMServiceGroupAvatarChanged_initWithAMAvatar_(AMServiceGroupAvatarChanged *self, AMAvatar *newAvatar) {
+  (void) AMServiceContent_initWithNSString_(self, @"Group avatar changed");
+  self->newAvatar_ = newAvatar;
+}
+
+
+#line 21
+AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithAMAvatar_(AMAvatar *newAvatar) {
+  AMServiceGroupAvatarChanged *self = [AMServiceGroupAvatarChanged alloc];
+  AMServiceGroupAvatarChanged_initWithAMAvatar_(self, newAvatar);
+  return self;
+}
+
+
+#line 26
+void AMServiceGroupAvatarChanged_init(AMServiceGroupAvatarChanged *self) {
+  (void) AMServiceContent_init(self);
+}
+
+
+#line 26
+AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_init() {
+  AMServiceGroupAvatarChanged *self = [AMServiceGroupAvatarChanged alloc];
+  AMServiceGroupAvatarChanged_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMServiceGroupAvatarChanged)

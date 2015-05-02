@@ -6,14 +6,15 @@
 #ifndef _OrgBouncycastleMathRawMont256_H_
 #define _OrgBouncycastleMathRawMont256_H_
 
-@class IOSIntArray;
-
 #include "J2ObjC_header.h"
 
-#define OrgBouncycastleMathRawMont256_M 4294967295LL
+@class IOSIntArray;
 
-@interface OrgBouncycastleMathRawMont256 : NSObject {
-}
+@interface OrgBouncycastleMathRawMont256 : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (jint)inverse32WithInt:(jint)x;
 
@@ -35,13 +36,9 @@
 + (void)reduceXFWithIntArray:(IOSIntArray *)z
                 withIntArray:(IOSIntArray *)m;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathRawMont256)
-
-CF_EXTERN_C_BEGIN
 
 FOUNDATION_EXPORT jint OrgBouncycastleMathRawMont256_inverse32WithInt_(jint x);
 
@@ -53,8 +50,7 @@ FOUNDATION_EXPORT void OrgBouncycastleMathRawMont256_reduceWithIntArray_withIntA
 
 FOUNDATION_EXPORT void OrgBouncycastleMathRawMont256_reduceXFWithIntArray_withIntArray_(IOSIntArray *z, IOSIntArray *m);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawMont256, M, jlong)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathRawMont256_init(OrgBouncycastleMathRawMont256 *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathRawMont256)
 

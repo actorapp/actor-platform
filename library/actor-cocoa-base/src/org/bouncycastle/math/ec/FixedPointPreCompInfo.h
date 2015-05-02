@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleMathEcFixedPointPreCompInfo_H_
 #define _OrgBouncycastleMathEcFixedPointPreCompInfo_H_
 
-@class IOSObjectArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/ec/PreCompInfo.h"
+
+@class IOSObjectArray;
 
 @interface OrgBouncycastleMathEcFixedPointPreCompInfo : NSObject < OrgBouncycastleMathEcPreCompInfo > {
  @public
@@ -17,15 +17,17 @@
   jint width_;
 }
 
-- (IOSObjectArray *)getPreComp;
+#pragma mark Public
 
-- (void)setPreCompWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preComp;
+- (instancetype)init;
+
+- (IOSObjectArray *)getPreComp;
 
 - (jint)getWidth;
 
-- (void)setWidthWithInt:(jint)width;
+- (void)setPreCompWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preComp;
 
-- (instancetype)init;
+- (void)setWidthWithInt:(jint)width;
 
 @end
 
@@ -33,8 +35,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcFixedPointPreCompInfo)
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathEcFixedPointPreCompInfo, preComp_, IOSObjectArray *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcFixedPointPreCompInfo_init(OrgBouncycastleMathEcFixedPointPreCompInfo *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcFixedPointPreCompInfo *new_OrgBouncycastleMathEcFixedPointPreCompInfo_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcFixedPointPreCompInfo)
 

@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Files.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Files.java"
 
 #include "IOSClass.h"
@@ -10,6 +11,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/StorageProvider.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
@@ -23,9 +25,11 @@
 #include "im/actor/model/modules/file/DownloadManager.h"
 #include "im/actor/model/modules/file/UploadManager.h"
 #include "im/actor/model/modules/file/entity/Downloaded.h"
+#include "im/actor/model/modules/utils/BaseKeyValueEngine.h"
 #include "im/actor/model/viewmodel/FileCallback.h"
 #include "im/actor/model/viewmodel/UploadFileCallback.h"
 #include "java/io/IOException.h"
+#include "java/lang/Runnable.h"
 
 @interface ImActorModelModulesFiles () {
  @public
@@ -33,64 +37,168 @@
   DKActorRef *downloadManager_;
   DKActorRef *uploadManager_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadedEngine_, id<DKKeyValueEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, downloadManager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles, uploadManager_, DKActorRef *)
 
-@interface ImActorModelModulesFiles_$2 () {
+@interface ImActorModelModulesFiles_$1 : ImActorModelModulesUtilsBaseKeyValueEngine
+
+- (IOSByteArray *)serializeWithDKKeyValueItem:(ImActorModelModulesFileEntityDownloaded *)value;
+
+- (ImActorModelModulesFileEntityDownloaded *)deserializeWithByteArray:(IOSByteArray *)data;
+
+- (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)arg$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$1)
+
+__attribute__((unused)) static void ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(ImActorModelModulesFiles_$1 *self, id<DKKeyValueStorage> arg$0);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$1 *new_ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(id<DKKeyValueStorage> arg$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$1)
+
+@interface ImActorModelModulesFiles_$2 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesFiles *this$0_;
 }
+
+- (ImActorModelModulesFileDownloadManager *)create;
+
+- (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$2)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$2, this$0_, ImActorModelModulesFiles *)
 
-@interface ImActorModelModulesFiles_$3 () {
+__attribute__((unused)) static void ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(ImActorModelModulesFiles_$2 *self, ImActorModelModulesFiles *outer$);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$2 *new_ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(ImActorModelModulesFiles *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$2)
+
+@interface ImActorModelModulesFiles_$3 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesFiles *this$0_;
 }
+
+- (ImActorModelModulesFileUploadManager *)create;
+
+- (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$3)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$3, this$0_, ImActorModelModulesFiles *)
 
-@interface ImActorModelModulesFiles_$4 () {
+__attribute__((unused)) static void ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(ImActorModelModulesFiles_$3 *self, ImActorModelModulesFiles *outer$);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$3 *new_ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(ImActorModelModulesFiles *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$3)
+
+@interface ImActorModelModulesFiles_$4 : NSObject < AMFileCallback > {
  @public
   ImActorModelModulesFiles *this$0_;
   id<AMFileCallback> val$callback_;
 }
+
+- (void)onNotDownloaded;
+
+- (void)onDownloadingWithFloat:(jfloat)progress;
+
+- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
+
+- (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
+                              withAMFileCallback:(id<AMFileCallback>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4, this$0_, ImActorModelModulesFiles *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4, val$callback_, id<AMFileCallback>)
 
-@interface ImActorModelModulesFiles_$4_$1 () {
+__attribute__((unused)) static void ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(ImActorModelModulesFiles_$4 *self, ImActorModelModulesFiles *outer$, id<AMFileCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$4 *new_ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(ImActorModelModulesFiles *outer$, id<AMFileCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4)
+
+@interface ImActorModelModulesFiles_$4_$1 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesFiles_$4 *this$0_;
 }
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4_$1)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$1, this$0_, ImActorModelModulesFiles_$4 *)
 
-@interface ImActorModelModulesFiles_$4_$2 () {
+__attribute__((unused)) static void ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(ImActorModelModulesFiles_$4_$1 *self, ImActorModelModulesFiles_$4 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$4_$1 *new_ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(ImActorModelModulesFiles_$4 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$1)
+
+@interface ImActorModelModulesFiles_$4_$2 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesFiles_$4 *this$0_;
   jfloat val$progress_;
 }
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
+                                          withFloat:(jfloat)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4_$2)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$2, this$0_, ImActorModelModulesFiles_$4 *)
 
-@interface ImActorModelModulesFiles_$4_$3 () {
+__attribute__((unused)) static void ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(ImActorModelModulesFiles_$4_$2 *self, ImActorModelModulesFiles_$4 *outer$, jfloat capture$0);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$4_$2 *new_ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(ImActorModelModulesFiles_$4 *outer$, jfloat capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$2)
+
+@interface ImActorModelModulesFiles_$4_$3 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesFiles_$4 *this$0_;
   id<AMFileSystemReference> val$reference_;
 }
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
+                          withAMFileSystemReference:(id<AMFileSystemReference>)capture$0;
+
 @end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFiles_$4_$3)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, this$0_, ImActorModelModulesFiles_$4 *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSystemReference>)
+
+__attribute__((unused)) static void ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(ImActorModelModulesFiles_$4_$3 *self, ImActorModelModulesFiles_$4 *outer$, id<AMFileSystemReference> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesFiles_$4_$3 *new_ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(ImActorModelModulesFiles_$4 *outer$, id<AMFileSystemReference> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$3)
 
 
 #line 23
@@ -99,27 +207,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSys
 
 #line 29
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  if (self =
-#line 30
-  [super initWithImActorModelModulesModules:modules]) {
-    
-#line 32
-    downloadedEngine_ = [[ImActorModelModulesFiles_$1 alloc] initWithDKKeyValueStorage:
-#line 33
-    [((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValue:ImActorModelModulesBaseModule_get_STORAGE_DOWNLOADS_()]];
-  }
+  ImActorModelModulesFiles_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
 #line 51
 - (void)run {
-  
-#line 52
-  downloadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadManager_class_(), [[ImActorModelModulesFiles_$2 alloc] initWithImActorModelModulesFiles:self]) withNSString:
+  downloadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadManager_class_(), new_ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(self)) withNSString:
 #line 57
   @"actor/download/manager"];
-  uploadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadManager_class_(), [[ImActorModelModulesFiles_$3 alloc] initWithImActorModelModulesFiles:self]) withNSString:
+  uploadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadManager_class_(), new_ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(self)) withNSString:
 #line 63
   @"actor/upload/manager"];
 }
@@ -127,19 +225,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSys
 
 #line 66
 - (id<DKKeyValueEngine>)getDownloadedEngine {
-  
-#line 67
   return downloadedEngine_;
 }
 
-
-#line 70
 - (void)bindFileWithAMFileReference:(AMFileReference *)fileReference
                         withBoolean:(jboolean)isAutostart
                  withAMFileCallback:(id<AMFileCallback>)callback {
-  
-#line 71
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_BindDownload alloc] initWithAMFileReference:fileReference withBoolean:isAutostart withAMFileCallback:callback]];
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_BindDownload_initWithAMFileReference_withBoolean_withAMFileCallback_(fileReference, isAutostart, callback)];
 }
 
 
@@ -147,50 +239,38 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSys
 - (void)unbindFileWithLong:(jlong)fileId
         withAMFileCallback:(id<AMFileCallback>)callback
                withBoolean:(jboolean)cancel {
-  
-#line 75
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_UnbindDownload alloc] initWithLong:fileId withBoolean:cancel withAMFileCallback:callback]];
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_UnbindDownload_initWithLong_withBoolean_withAMFileCallback_(fileId, cancel, callback)];
 }
 
 
 #line 78
 - (void)requestStateWithLong:(jlong)fileId
           withAMFileCallback:(id<AMFileCallback>)callback {
-  
-#line 79
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_RequestState alloc] initWithLong:fileId withAMFileCallback:[[ImActorModelModulesFiles_$4 alloc] initWithImActorModelModulesFiles:self withAMFileCallback:callback]]];
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_RequestState_initWithLong_withAMFileCallback_(fileId, new_ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(self, callback))];
 }
 
 
 #line 112
 - (void)startDownloadingWithAMFileReference:(AMFileReference *)location {
-  
-#line 113
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_StartDownload alloc] initWithAMFileReference:location]];
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_StartDownload_initWithAMFileReference_(location)];
 }
 
-
-#line 116
 - (void)cancelDownloadingWithLong:(jlong)fileId {
-  
-#line 117
-  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:[[ImActorModelModulesFileDownloadManager_CancelDownload alloc] initWithLong:fileId]];
+  [((DKActorRef *) nil_chk(downloadManager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_CancelDownload_initWithLong_(fileId)];
 }
 
+
+#line 122
 - (void)bindUploadFileWithLong:(jlong)rid
       withAMUploadFileCallback:(id<AMUploadFileCallback>)uploadFileCallback {
-  
-#line 123
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_BindUpload alloc] initWithLong:rid withAMUploadFileCallback:uploadFileCallback]];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_BindUpload_initWithLong_withAMUploadFileCallback_(rid, uploadFileCallback)];
 }
 
 
 #line 126
 - (void)unbindUploadFileWithLong:(jlong)rid
         withAMUploadFileCallback:(id<AMUploadFileCallback>)callback {
-  
-#line 127
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_UnbindUpload alloc] initWithLong:rid withAMUploadFileCallback:callback]];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_UnbindUpload_initWithLong_withAMUploadFileCallback_(rid, callback)];
 }
 
 
@@ -199,49 +279,31 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSys
                  withNSString:(NSString *)descriptor
                  withNSString:(NSString *)fileName
                withDKActorRef:(DKActorRef *)requester {
-  
-#line 131
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_StartUpload alloc] initWithLong:rid withNSString:descriptor withNSString:fileName] withDKActorRef:requester];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_StartUpload_initWithLong_withNSString_withNSString_(rid, descriptor, fileName) withDKActorRef:requester];
 }
 
 
 #line 134
 - (void)cancelUploadWithLong:(jlong)rid {
-  
-#line 135
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_StopUpload alloc] initWithLong:rid]];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_StopUpload_initWithLong_(rid)];
 }
 
-
-#line 138
 - (void)requestUploadStateWithLong:(jlong)rid
           withAMUploadFileCallback:(id<AMUploadFileCallback>)callback {
-  
-#line 139
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_RequestState alloc] initWithLong:rid withAMUploadFileCallback:callback]];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_RequestState_initWithLong_withAMUploadFileCallback_(rid, callback)];
 }
 
 
 #line 142
 - (void)resumeUploadWithLong:(jlong)rid {
-  
-#line 143
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_ResumeUpload alloc] initWithLong:rid]];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_ResumeUpload_initWithLong_(rid)];
 }
 
-
-#line 146
 - (void)pauseUploadWithLong:(jlong)rid {
-  
-#line 147
-  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:[[ImActorModelModulesFileUploadManager_PauseUpload alloc] initWithLong:rid]];
+  [((DKActorRef *) nil_chk(uploadManager_)) sendWithId:new_ImActorModelModulesFileUploadManager_PauseUpload_initWithLong_(rid)];
 }
 
-
-#line 150
 - (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId {
-  
-#line 151
   ImActorModelModulesFileEntityDownloaded *downloaded = [((id<DKKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithLong:fileId];
   if (downloaded == nil) {
     return nil;
@@ -253,14 +315,26 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFiles_$4_$3, val$reference_, id<AMFileSys
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles *)other {
-  [super copyAllFieldsTo:other];
-  other->downloadedEngine_ = downloadedEngine_;
-  other->downloadManager_ = downloadManager_;
-  other->uploadManager_ = uploadManager_;
+@end
+
+
+#line 29
+void ImActorModelModulesFiles_initWithImActorModelModulesModules_(ImActorModelModulesFiles *self, ImActorModelModulesModules *modules) {
+  (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+  
+#line 32
+  self->downloadedEngine_ = new_ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(
+#line 33
+  [((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getStorageProvider])) createKeyValueWithName:ImActorModelModulesBaseModule_get_STORAGE_DOWNLOADS_()]);
 }
 
-@end
+
+#line 29
+ImActorModelModulesFiles *new_ImActorModelModulesFiles_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+  ImActorModelModulesFiles *self = [ImActorModelModulesFiles alloc];
+  ImActorModelModulesFiles_initWithImActorModelModulesModules_(self, modules);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
 
@@ -269,8 +343,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
 
 #line 35
 - (IOSByteArray *)serializeWithDKKeyValueItem:(ImActorModelModulesFileEntityDownloaded *)value {
-  
-#line 36
   return [((ImActorModelModulesFileEntityDownloaded *) nil_chk(value)) toByteArray];
 }
 
@@ -289,10 +361,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles)
 }
 
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)arg$0 {
-  return [super initWithDKKeyValueStorage:arg$0];
+  ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(self, arg$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(ImActorModelModulesFiles_$1 *self, id<DKKeyValueStorage> arg$0) {
+  (void) ImActorModelModulesUtilsBaseKeyValueEngine_initWithDKKeyValueStorage_(self, arg$0);
+}
+
+ImActorModelModulesFiles_$1 *new_ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(id<DKKeyValueStorage> arg$0) {
+  ImActorModelModulesFiles_$1 *self = [ImActorModelModulesFiles_$1 alloc];
+  ImActorModelModulesFiles_$1_initWithDKKeyValueStorage_(self, arg$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$1)
 
@@ -301,22 +384,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$1)
 
 #line 54
 - (ImActorModelModulesFileDownloadManager *)create {
-  
-#line 55
-  return [[ImActorModelModulesFileDownloadManager alloc] initWithImActorModelModulesModules:[this$0_ modules]];
+  return new_ImActorModelModulesFileDownloadManager_initWithImActorModelModulesModules_([this$0_ modules]);
 }
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(ImActorModelModulesFiles_$2 *self, ImActorModelModulesFiles *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFiles_$2 *new_ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(ImActorModelModulesFiles *outer$) {
+  ImActorModelModulesFiles_$2 *self = [ImActorModelModulesFiles_$2 alloc];
+  ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$2)
 
@@ -325,22 +412,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$2)
 
 #line 60
 - (ImActorModelModulesFileUploadManager *)create {
-  
-#line 61
-  return [[ImActorModelModulesFileUploadManager alloc] initWithImActorModelModulesModules:[this$0_ modules]];
+  return new_ImActorModelModulesFileUploadManager_initWithImActorModelModulesModules_([this$0_ modules]);
 }
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles_$3 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(ImActorModelModulesFiles_$3 *self, ImActorModelModulesFiles *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFiles_$3 *new_ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(ImActorModelModulesFiles *outer$) {
+  ImActorModelModulesFiles_$3 *self = [ImActorModelModulesFiles_$3 alloc];
+  ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$3)
 
@@ -349,39 +440,40 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$3)
 
 #line 81
 - (void)onNotDownloaded {
-  [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesFiles_$4_$1 alloc] initWithImActorModelModulesFiles_$4:self]];
+  [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(self)];
 }
 
 
 #line 91
 - (void)onDownloadingWithFloat:(jfloat)progress {
-  
-#line 92
-  [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesFiles_$4_$2 alloc] initWithImActorModelModulesFiles_$4:self withFloat:progress]];
+  [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(self, progress)];
 }
 
 
 #line 101
 - (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
-  
-#line 102
-  [this$0_ runOnUiThreadWithJavaLangRunnable:[[ImActorModelModulesFiles_$4_$3 alloc] initWithImActorModelModulesFiles_$4:self withAMFileSystemReference:reference]];
+  [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(self, reference)];
 }
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
                               withAMFileCallback:(id<AMFileCallback>)capture$0 {
-  this$0_ = outer$;
-  val$callback_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles_$4 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$callback_ = val$callback_;
+  ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(ImActorModelModulesFiles_$4 *self, ImActorModelModulesFiles *outer$, id<AMFileCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFiles_$4 *new_ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(ImActorModelModulesFiles *outer$, id<AMFileCallback> capture$0) {
+  ImActorModelModulesFiles_$4 *self = [ImActorModelModulesFiles_$4 alloc];
+  ImActorModelModulesFiles_$4_initWithImActorModelModulesFiles_withAMFileCallback_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4)
 
@@ -390,22 +482,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4)
 
 #line 84
 - (void)run {
-  
-#line 85
   [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onNotDownloaded];
 }
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$ {
-  this$0_ = outer$;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles_$4_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
+  ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(self, outer$);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(ImActorModelModulesFiles_$4_$1 *self, ImActorModelModulesFiles_$4 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFiles_$4_$1 *new_ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(ImActorModelModulesFiles_$4 *outer$) {
+  ImActorModelModulesFiles_$4_$1 *self = [ImActorModelModulesFiles_$4_$1 alloc];
+  ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(self, outer$);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$1)
 
@@ -414,25 +510,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$1)
 
 #line 94
 - (void)run {
-  
-#line 95
   [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onDownloadingWithFloat:val$progress_];
 }
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
                                           withFloat:(jfloat)capture$0 {
-  this$0_ = outer$;
-  val$progress_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles_$4_$2 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$progress_ = val$progress_;
+  ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(ImActorModelModulesFiles_$4_$2 *self, ImActorModelModulesFiles_$4 *outer$, jfloat capture$0) {
+  self->this$0_ = outer$;
+  self->val$progress_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFiles_$4_$2 *new_ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(ImActorModelModulesFiles_$4 *outer$, jfloat capture$0) {
+  ImActorModelModulesFiles_$4_$2 *self = [ImActorModelModulesFiles_$4_$2 alloc];
+  ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$2)
 
@@ -441,24 +540,27 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$2)
 
 #line 104
 - (void)run {
-  
-#line 105
   [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onDownloadedWithAMFileSystemReference:val$reference_];
 }
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
                           withAMFileSystemReference:(id<AMFileSystemReference>)capture$0 {
-  this$0_ = outer$;
-  val$reference_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesFiles_$4_$3 *)other {
-  [super copyAllFieldsTo:other];
-  other->this$0_ = this$0_;
-  other->val$reference_ = val$reference_;
+  ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(self, outer$, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(ImActorModelModulesFiles_$4_$3 *self, ImActorModelModulesFiles_$4 *outer$, id<AMFileSystemReference> capture$0) {
+  self->this$0_ = outer$;
+  self->val$reference_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFiles_$4_$3 *new_ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(ImActorModelModulesFiles_$4 *outer$, id<AMFileSystemReference> capture$0) {
+  ImActorModelModulesFiles_$4_$3 *self = [ImActorModelModulesFiles_$4_$3 alloc];
+  ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(self, outer$, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$3)

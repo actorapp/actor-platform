@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessage.java"
 
 #include "IOSClass.h"
@@ -24,11 +25,17 @@
   AMAbsContent *content_;
   jboolean isError__;
 }
+
 - (instancetype)init;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, AMAbsContent *)
+
+__attribute__((unused)) static void ImActorModelModulesMessagesEntityPendingMessage_init(ImActorModelModulesMessagesEntityPendingMessage *self);
+
+__attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_init() NS_RETURNS_RETAINED;
 
 
 #line 15
@@ -43,53 +50,32 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, A
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
               withAMAbsContent:(AMAbsContent *)content {
-  if (self = [super init]) {
-    
-#line 27
-    self->peer_ = peer;
-    
-#line 28
-    self->rid_ = rid;
-    
-#line 29
-    self->content_ = content;
-  }
+  ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(self, peer, rid, content);
   return self;
 }
 
 
 #line 32
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesEntityPendingMessage_init(self);
+  return self;
 }
 
+
+#line 36
 - (AMPeer *)getPeer {
-  
-#line 37
   return peer_;
 }
 
-
-#line 40
 - (AMAbsContent *)getContent {
-  
-#line 41
   return content_;
 }
 
-
-#line 44
 - (jlong)getRid {
-  
-#line 45
   return rid_;
 }
 
-
-#line 48
 - (jboolean)isError {
-  
-#line 49
   return isError__;
 }
 
@@ -105,29 +91,52 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessage, content_, A
 
 #line 61
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
   [writer writeBytesWithInt:3 withByteArray:[((AMAbsContent *) nil_chk(content_)) toByteArray]];
   [writer writeBoolWithInt:4 withBoolean:isError__];
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityPendingMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rid_ = rid_;
-  other->content_ = content_;
-  other->isError__ = isError__;
-}
-
 @end
 
+
+#line 17
 ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityPendingMessage_init();
+  ImActorModelModulesMessagesEntityPendingMessage_initialize();
   
 #line 18
-  return ((ImActorModelModulesMessagesEntityPendingMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityPendingMessage alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityPendingMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityPendingMessage_init(), data));
+}
+
+
+#line 26
+void ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesEntityPendingMessage *self, AMPeer *peer, jlong rid, AMAbsContent *content) {
+  (void) BSBserObject_init(self);
+  
+#line 27
+  self->peer_ = peer;
+  self->rid_ = rid;
+  self->content_ = content;
+}
+
+
+#line 26
+ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(AMPeer *peer, jlong rid, AMAbsContent *content) {
+  ImActorModelModulesMessagesEntityPendingMessage *self = [ImActorModelModulesMessagesEntityPendingMessage alloc];
+  ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(self, peer, rid, content);
+  return self;
+}
+
+void ImActorModelModulesMessagesEntityPendingMessage_init(ImActorModelModulesMessagesEntityPendingMessage *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 32
+ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_init() {
+  ImActorModelModulesMessagesEntityPendingMessage *self = [ImActorModelModulesMessagesEntityPendingMessage alloc];
+  ImActorModelModulesMessagesEntityPendingMessage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityPendingMessage)

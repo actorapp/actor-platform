@@ -6,20 +6,21 @@
 #ifndef _ImActorModelApiRpcResponseGetDifference_H_
 #define _ImActorModelApiRpcResponseGetDifference_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseGetDifference_HEADER 12
 
-@interface ImActorModelApiRpcResponseGetDifference : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseGetDifference : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
@@ -30,21 +31,23 @@
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (id<JavaUtilList>)getEmails;
+
+- (id<JavaUtilList>)getGroups;
+
+- (jint)getHeaderKey;
+
+- (id<JavaUtilList>)getPhones;
 
 - (jint)getSeq;
 
 - (IOSByteArray *)getState;
 
-- (id<JavaUtilList>)getUsers;
-
-- (id<JavaUtilList>)getGroups;
-
-- (id<JavaUtilList>)getPhones;
-
-- (id<JavaUtilList>)getEmails;
-
 - (id<JavaUtilList>)getUpdates;
+
+- (id<JavaUtilList>)getUsers;
 
 - (jboolean)needMore;
 
@@ -54,18 +57,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetDifference)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetDifference, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetDifference, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetDifference_init(ImActorModelApiRpcResponseGetDifference *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetDifference)
 

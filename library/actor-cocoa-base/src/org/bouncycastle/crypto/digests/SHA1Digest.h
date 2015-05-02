@@ -6,67 +6,62 @@
 #ifndef _OrgBouncycastleCryptoDigestsSHA1Digest_H_
 #define _OrgBouncycastleCryptoDigestsSHA1Digest_H_
 
-@class IOSByteArray;
-@class IOSIntArray;
-@protocol OrgBouncycastleUtilMemoable;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/digests/EncodableDigest.h"
 #include "org/bouncycastle/crypto/digests/GeneralDigest.h"
 
-#define OrgBouncycastleCryptoDigestsSHA1Digest_DIGEST_LENGTH 20
-#define OrgBouncycastleCryptoDigestsSHA1Digest_Y1 1518500249
-#define OrgBouncycastleCryptoDigestsSHA1Digest_Y2 1859775393
-#define OrgBouncycastleCryptoDigestsSHA1Digest_Y3 -1894007588
-#define OrgBouncycastleCryptoDigestsSHA1Digest_Y4 -899497514
+@class IOSByteArray;
+@protocol OrgBouncycastleUtilMemoable;
 
-@interface OrgBouncycastleCryptoDigestsSHA1Digest : OrgBouncycastleCryptoDigestsGeneralDigest < OrgBouncycastleCryptoDigestsEncodableDigest > {
-}
+@interface OrgBouncycastleCryptoDigestsSHA1Digest : OrgBouncycastleCryptoDigestsGeneralDigest < OrgBouncycastleCryptoDigestsEncodableDigest >
+
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithByteArray:(IOSByteArray *)encodedState;
+
 - (instancetype)initWithOrgBouncycastleCryptoDigestsSHA1Digest:(OrgBouncycastleCryptoDigestsSHA1Digest *)t;
 
-- (instancetype)initWithByteArray:(IOSByteArray *)encodedState;
+- (id<OrgBouncycastleUtilMemoable>)copy__ OBJC_METHOD_FAMILY_NONE;
+
+- (jint)doFinalWithByteArray:(IOSByteArray *)outArg
+                     withInt:(jint)outOff;
 
 - (NSString *)getAlgorithmName;
 
 - (jint)getDigestSize;
 
-- (void)processWordWithByteArray:(IOSByteArray *)inArg
-                         withInt:(jint)inOff;
-
-- (void)processLengthWithLong:(jlong)bitLength;
-
-- (jint)doFinalWithByteArray:(IOSByteArray *)outArg
-                     withInt:(jint)outOff;
+- (IOSByteArray *)getEncodedState;
 
 - (void)reset;
 
-- (void)processBlock;
-
-- (id<OrgBouncycastleUtilMemoable>)copy__ OBJC_METHOD_FAMILY_NONE;
-
 - (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other;
 
-- (IOSByteArray *)getEncodedState;
+#pragma mark Protected
+
+- (void)processBlock;
+
+- (void)processLengthWithLong:(jlong)bitLength;
+
+- (void)processWordWithByteArray:(IOSByteArray *)inArg
+                         withInt:(jint)inOff;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoDigestsSHA1Digest)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsSHA1Digest_init(OrgBouncycastleCryptoDigestsSHA1Digest *self);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA1Digest, DIGEST_LENGTH, jint)
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsSHA1Digest *new_OrgBouncycastleCryptoDigestsSHA1Digest_init() NS_RETURNS_RETAINED;
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA1Digest, Y1, jint)
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsSHA1Digest_initWithOrgBouncycastleCryptoDigestsSHA1Digest_(OrgBouncycastleCryptoDigestsSHA1Digest *self, OrgBouncycastleCryptoDigestsSHA1Digest *t);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA1Digest, Y2, jint)
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsSHA1Digest *new_OrgBouncycastleCryptoDigestsSHA1Digest_initWithOrgBouncycastleCryptoDigestsSHA1Digest_(OrgBouncycastleCryptoDigestsSHA1Digest *t) NS_RETURNS_RETAINED;
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA1Digest, Y3, jint)
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsSHA1Digest_initWithByteArray_(OrgBouncycastleCryptoDigestsSHA1Digest *self, IOSByteArray *encodedState);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA1Digest, Y4, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsSHA1Digest *new_OrgBouncycastleCryptoDigestsSHA1Digest_initWithByteArray_(IOSByteArray *encodedState) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoDigestsSHA1Digest)
 

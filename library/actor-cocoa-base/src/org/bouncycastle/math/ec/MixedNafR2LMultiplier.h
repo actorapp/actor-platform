@@ -6,35 +6,44 @@
 #ifndef _OrgBouncycastleMathEcMixedNafR2LMultiplier_H_
 #define _OrgBouncycastleMathEcMixedNafR2LMultiplier_H_
 
+#include "J2ObjC_header.h"
+#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
+
 @class JavaMathBigInteger;
 @class OrgBouncycastleMathEcECCurve;
 @class OrgBouncycastleMathEcECPoint;
-
-#include "J2ObjC_header.h"
-#include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
 
 @interface OrgBouncycastleMathEcMixedNafR2LMultiplier : OrgBouncycastleMathEcAbstractECMultiplier {
  @public
   jint additionCoord_, doublingCoord_;
 }
 
+#pragma mark Public
+
 - (instancetype)init;
 
 - (instancetype)initWithInt:(jint)additionCoord
                     withInt:(jint)doublingCoord;
 
-- (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
-                                                            withJavaMathBigInteger:(JavaMathBigInteger *)k;
+#pragma mark Protected
 
 - (OrgBouncycastleMathEcECCurve *)configureCurveWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c
                                                                          withInt:(jint)coord;
+
+- (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
+                                                            withJavaMathBigInteger:(JavaMathBigInteger *)k;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathEcMixedNafR2LMultiplier)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathEcMixedNafR2LMultiplier_init(OrgBouncycastleMathEcMixedNafR2LMultiplier *self);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcMixedNafR2LMultiplier *new_OrgBouncycastleMathEcMixedNafR2LMultiplier_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(OrgBouncycastleMathEcMixedNafR2LMultiplier *self, jint additionCoord, jint doublingCoord);
+
+FOUNDATION_EXPORT OrgBouncycastleMathEcMixedNafR2LMultiplier *new_OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(jint additionCoord, jint doublingCoord) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathEcMixedNafR2LMultiplier)
 

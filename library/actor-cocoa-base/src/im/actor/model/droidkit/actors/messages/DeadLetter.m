@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/DeadLetter.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/DeadLetter.java"
 
 #include "J2ObjC_source.h"
@@ -12,6 +13,7 @@
  @public
   id message_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
@@ -23,31 +25,39 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
 
 #line 9
 - (instancetype)initWithId:(id)message {
-  if (self = [super init]) {
-    
-#line 10
-    self->message_ = message;
-  }
+  ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(self, message);
   return self;
 }
 
 
 #line 13
 - (id)getMessage {
-  
-#line 14
   return message_;
 }
 
+
+#line 18
 - (NSString *)description {
   return JreStrcat("$@C", @"DeadLetter(", message_, ')');
 }
 
-- (void)copyAllFieldsTo:(ImActorModelDroidkitActorsMessagesDeadLetter *)other {
-  [super copyAllFieldsTo:other];
-  other->message_ = message_;
+@end
+
+
+#line 9
+void ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(ImActorModelDroidkitActorsMessagesDeadLetter *self, id message) {
+  (void) NSObject_init(self);
+  
+#line 10
+  self->message_ = message;
 }
 
-@end
+
+#line 9
+ImActorModelDroidkitActorsMessagesDeadLetter *new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(id message) {
+  ImActorModelDroidkitActorsMessagesDeadLetter *self = [ImActorModelDroidkitActorsMessagesDeadLetter alloc];
+  ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(self, message);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitActorsMessagesDeadLetter)

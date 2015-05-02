@@ -6,21 +6,22 @@
 #ifndef _ImActorModelModulesMessagesEntityDelete_H_
 #define _ImActorModelModulesMessagesEntityDelete_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityDelete : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityDelete : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
               withJavaUtilList:(id<JavaUtilList>)rids;
-
-- (instancetype)init;
 
 - (AMPeer *)getPeer;
 
@@ -34,8 +35,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityDelete)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityDelete_initWithAMPeer_withJavaUtilList_(ImActorModelModulesMessagesEntityDelete *self, AMPeer *peer, id<JavaUtilList> rids);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityDelete *new_ImActorModelModulesMessagesEntityDelete_initWithAMPeer_withJavaUtilList_(AMPeer *peer, id<JavaUtilList> rids) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityDelete_init(ImActorModelModulesMessagesEntityDelete *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityDelete *new_ImActorModelModulesMessagesEntityDelete_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityDelete)
 

@@ -6,42 +6,43 @@
 #ifndef _ImActorModelModulesMessagesEntityPlainCursorsStorage_H_
 #define _ImActorModelModulesMessagesEntityPlainCursorsStorage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelModulesMessagesEntityPlainCursor;
-@class JavaUtilHashMap;
 @protocol JavaUtilCollection;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesMessagesEntityPlainCursorsStorage : BSBserObject
 
-@interface ImActorModelModulesMessagesEntityPlainCursorsStorage : BSBserObject {
-}
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelModulesMessagesEntityPlainCursorsStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelModulesMessagesEntityPlainCursor *)getCursorWithAMPeer:(AMPeer *)peer;
-
-- (void)putCursorWithImActorModelModulesMessagesEntityPlainCursor:(ImActorModelModulesMessagesEntityPlainCursor *)cursor;
-
 - (id<JavaUtilCollection>)getAllCursors;
+
+- (ImActorModelModulesMessagesEntityPlainCursor *)getCursorWithAMPeer:(AMPeer *)peer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+- (void)putCursorWithImActorModelModulesMessagesEntityPlainCursor:(ImActorModelModulesMessagesEntityPlainCursor *)cursor;
 
-- (instancetype)init;
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityPlainCursorsStorage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPlainCursorsStorage *ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityPlainCursorsStorage_init(ImActorModelModulesMessagesEntityPlainCursorsStorage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesEntityPlainCursorsStorage *new_ImActorModelModulesMessagesEntityPlainCursorsStorage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesEntityPlainCursorsStorage)
 

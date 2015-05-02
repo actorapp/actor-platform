@@ -6,20 +6,21 @@
 #ifndef _ImActorModelModulesNotificationsEntityPendingStorage_H_
 #define _ImActorModelModulesNotificationsEntityPendingStorage_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+@interface ImActorModelModulesNotificationsEntityPendingStorage : BSBserObject
 
-@interface ImActorModelModulesNotificationsEntityPendingStorage : BSBserObject {
-}
-
-+ (ImActorModelModulesNotificationsEntityPendingStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)init;
+
++ (ImActorModelModulesNotificationsEntityPendingStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (id<JavaUtilList>)getNotifications;
 
@@ -31,10 +32,11 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsEntityPendingStorage)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT ImActorModelModulesNotificationsEntityPendingStorage *ImActorModelModulesNotificationsEntityPendingStorage_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsEntityPendingStorage_init(ImActorModelModulesNotificationsEntityPendingStorage *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsEntityPendingStorage *new_ImActorModelModulesNotificationsEntityPendingStorage_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsEntityPendingStorage)
 

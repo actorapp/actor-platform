@@ -6,21 +6,24 @@
 #ifndef _ImActorModelApiRpcRequestUnregisterPush_H_
 #define _ImActorModelApiRpcRequestUnregisterPush_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestUnregisterPush_HEADER 52
 
-@interface ImActorModelApiRpcRequestUnregisterPush : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestUnregisterPush : ImActorModelNetworkParserRequest
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (ImActorModelApiRpcRequestUnregisterPush *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)init;
+- (jint)getHeaderKey;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -28,18 +31,17 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestUnregisterPush)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestUnregisterPush, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestUnregisterPush *ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestUnregisterPush, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestUnregisterPush_init(ImActorModelApiRpcRequestUnregisterPush *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestUnregisterPush *new_ImActorModelApiRpcRequestUnregisterPush_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestUnregisterPush)
 

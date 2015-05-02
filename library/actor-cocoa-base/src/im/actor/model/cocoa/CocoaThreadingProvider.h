@@ -9,8 +9,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/jvm/JavaThreadingProvider.h"
 
-@interface AMCocoaThreadingProvider : AMJavaThreadingProvider {
-}
+@interface AMCocoaThreadingProvider : AMJavaThreadingProvider
+
+#pragma mark Public
 
 - (instancetype)init;
 
@@ -18,11 +19,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMCocoaThreadingProvider)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMCocoaThreadingProvider_init(AMCocoaThreadingProvider *self);
 
-typedef AMCocoaThreadingProvider ImActorModelCocoaCocoaThreadingProvider;
+FOUNDATION_EXPORT AMCocoaThreadingProvider *new_AMCocoaThreadingProvider_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMCocoaThreadingProvider)
+
+typedef AMCocoaThreadingProvider ImActorModelCocoaCocoaThreadingProvider;
 
 #endif // _AMCocoaThreadingProvider_H_

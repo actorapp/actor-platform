@@ -6,22 +6,23 @@
 #ifndef _BCPKS8RsaPrivateKey_H_
 #define _BCPKS8RsaPrivateKey_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class JavaMathBigInteger;
 
-#include "J2ObjC_header.h"
+@interface BCPKS8RsaPrivateKey : NSObject
 
-@interface BCPKS8RsaPrivateKey : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)exponent;
 
 - (instancetype)initWithByteArray:(IOSByteArray *)encoded;
 
-- (JavaMathBigInteger *)getModulus;
-
 - (JavaMathBigInteger *)getExponent;
+
+- (JavaMathBigInteger *)getModulus;
 
 - (IOSByteArray *)serialize;
 
@@ -29,14 +30,16 @@
 
 J2OBJC_EMPTY_STATIC_INIT(BCPKS8RsaPrivateKey)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void BCPKS8RsaPrivateKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(BCPKS8RsaPrivateKey *self, JavaMathBigInteger *modulus, JavaMathBigInteger *exponent);
 
-FOUNDATION_EXPORT NSString *BCPKS8RsaPrivateKey_ALGO_;
-J2OBJC_STATIC_FIELD_GETTER(BCPKS8RsaPrivateKey, ALGO_, NSString *)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT BCPKS8RsaPrivateKey *new_BCPKS8RsaPrivateKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *exponent) NS_RETURNS_RETAINED;
 
-typedef BCPKS8RsaPrivateKey ImActorModelCryptoEncodingPKS8RsaPrivateKey;
+FOUNDATION_EXPORT void BCPKS8RsaPrivateKey_initWithByteArray_(BCPKS8RsaPrivateKey *self, IOSByteArray *encoded);
+
+FOUNDATION_EXPORT BCPKS8RsaPrivateKey *new_BCPKS8RsaPrivateKey_initWithByteArray_(IOSByteArray *encoded) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BCPKS8RsaPrivateKey)
+
+typedef BCPKS8RsaPrivateKey ImActorModelCryptoEncodingPKS8RsaPrivateKey;
 
 #endif // _BCPKS8RsaPrivateKey_H_

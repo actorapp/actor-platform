@@ -6,46 +6,52 @@
 #ifndef _OrgBouncycastleCryptoDigestsSHA512Digest_H_
 #define _OrgBouncycastleCryptoDigestsSHA512Digest_H_
 
-@class IOSByteArray;
-@protocol OrgBouncycastleUtilMemoable;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/digests/LongDigest.h"
 
-#define OrgBouncycastleCryptoDigestsSHA512Digest_DIGEST_LENGTH 64
+@class IOSByteArray;
+@protocol OrgBouncycastleUtilMemoable;
 
-@interface OrgBouncycastleCryptoDigestsSHA512Digest : OrgBouncycastleCryptoDigestsLongDigest {
-}
+@interface OrgBouncycastleCryptoDigestsSHA512Digest : OrgBouncycastleCryptoDigestsLongDigest
+
+#pragma mark Public
 
 - (instancetype)init;
 
+- (instancetype)initWithByteArray:(IOSByteArray *)encodedState;
+
 - (instancetype)initWithOrgBouncycastleCryptoDigestsSHA512Digest:(OrgBouncycastleCryptoDigestsSHA512Digest *)t;
 
-- (instancetype)initWithByteArray:(IOSByteArray *)encodedState;
+- (id<OrgBouncycastleUtilMemoable>)copy__ OBJC_METHOD_FAMILY_NONE;
+
+- (jint)doFinalWithByteArray:(IOSByteArray *)outArg
+                     withInt:(jint)outOff;
 
 - (NSString *)getAlgorithmName;
 
 - (jint)getDigestSize;
 
-- (jint)doFinalWithByteArray:(IOSByteArray *)outArg
-                     withInt:(jint)outOff;
+- (IOSByteArray *)getEncodedState;
 
 - (void)reset;
 
-- (id<OrgBouncycastleUtilMemoable>)copy__ OBJC_METHOD_FAMILY_NONE;
-
 - (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other;
-
-- (IOSByteArray *)getEncodedState;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoDigestsSHA512Digest)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsSHA512Digest_init(OrgBouncycastleCryptoDigestsSHA512Digest *self);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsSHA512Digest, DIGEST_LENGTH, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsSHA512Digest *new_OrgBouncycastleCryptoDigestsSHA512Digest_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(OrgBouncycastleCryptoDigestsSHA512Digest *self, OrgBouncycastleCryptoDigestsSHA512Digest *t);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsSHA512Digest *new_OrgBouncycastleCryptoDigestsSHA512Digest_initWithOrgBouncycastleCryptoDigestsSHA512Digest_(OrgBouncycastleCryptoDigestsSHA512Digest *t) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsSHA512Digest_initWithByteArray_(OrgBouncycastleCryptoDigestsSHA512Digest *self, IOSByteArray *encodedState);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsSHA512Digest *new_OrgBouncycastleCryptoDigestsSHA512Digest_initWithByteArray_(IOSByteArray *encodedState) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoDigestsSHA512Digest)
 

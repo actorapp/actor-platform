@@ -2,18 +2,15 @@ package im.actor.model.js.angular;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import im.actor.model.Messenger;
-import im.actor.model.droidkit.bser.BserObject;
-import im.actor.model.droidkit.engine.ListEngineItem;
-import im.actor.model.i18n.I18nEngine;
-import im.actor.model.js.JsMessenger;
-import im.actor.model.js.entity.JsEntityConverter;
-import im.actor.model.js.providers.JsLogProvider;
-import im.actor.model.js.providers.storage.JsListEngine;
-import im.actor.model.js.providers.storage.JsListEngineCallback;
-import im.actor.model.log.Log;
 
 import java.util.ArrayList;
+
+import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.droidkit.engine.ListEngineItem;
+import im.actor.model.js.JsMessenger;
+import im.actor.model.js.entity.JsEntityConverter;
+import im.actor.model.js.providers.storage.JsListEngine;
+import im.actor.model.js.providers.storage.JsListEngineCallback;
 
 /**
  * Created by ex3ndr on 27.03.15.
@@ -62,6 +59,16 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
 
     public void unsubscribe(AngularListCallback<T> callback) {
         callbacks.remove(callback);
+    }
+
+    public void forceReconvert() {
+        clear(jsValues);
+
+        for (int i = 0; i < values.size(); i++) {
+            jsValues.push(entityConverter.convert(values.get(i), messenger));
+        }
+
+        notifySubscribers();
     }
 
     @Override

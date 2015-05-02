@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Dialog.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Dialog.java"
 
 #include "IOSClass.h"
@@ -12,6 +13,7 @@
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/MessageState.h"
 #include "im/actor/model/api/Peer.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -27,6 +29,7 @@
   ImActorModelApiMessage *message_;
   ImActorModelApiMessageStateEnum *state_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiDialog, peer_, ImActorModelApiPeer *)
@@ -47,107 +50,55 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
                                    withLong:(jlong)date
                  withImActorModelApiMessage:(ImActorModelApiMessage *)message
         withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
-  if (self = [super init]) {
-    
-#line 31
-    self->peer_ = peer;
-    
-#line 32
-    self->unreadCount_ = unreadCount;
-    
-#line 33
-    self->sortDate_ = sortDate;
-    
-#line 34
-    self->senderUid_ = senderUid;
-    
-#line 35
-    self->rid_ = rid;
-    
-#line 36
-    self->date_ = date;
-    
-#line 37
-    self->message_ = message;
-    
-#line 38
-    self->state_ = state;
-  }
+  ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
   return self;
 }
 
 
 #line 41
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiDialog_init(self);
+  return self;
 }
 
+
+#line 45
 - (ImActorModelApiPeer *)getPeer {
-  
-#line 46
   return self->peer_;
 }
 
-
-#line 49
 - (jint)getUnreadCount {
-  
-#line 50
   return self->unreadCount_;
 }
 
-
-#line 53
 - (jlong)getSortDate {
-  
-#line 54
   return self->sortDate_;
 }
 
-
-#line 57
 - (jint)getSenderUid {
-  
-#line 58
   return self->senderUid_;
 }
 
-
-#line 61
 - (jlong)getRid {
-  
-#line 62
   return self->rid_;
 }
 
-
-#line 65
 - (jlong)getDate {
-  
-#line 66
   return self->date_;
 }
 
-
-#line 69
 - (ImActorModelApiMessage *)getMessage {
-  
-#line 70
   return self->message_;
 }
 
-
-#line 73
 - (ImActorModelApiMessageStateEnum *)getState {
-  
-#line 74
   return self->state_;
 }
 
 
 #line 78
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiPeer alloc] init]];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
   self->unreadCount_ = [values getIntWithInt:3];
   self->sortDate_ = [values getLongWithInt:4];
   self->senderUid_ = [values getIntWithInt:5];
@@ -163,10 +114,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 
 #line 93
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 94
   if (self->peer_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeIntWithInt:3 withInt:self->unreadCount_];
@@ -175,7 +124,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   [writer writeLongWithInt:6 withLong:self->rid_];
   [writer writeLongWithInt:7 withLong:self->date_];
   if (self->message_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   
 #line 107
@@ -186,8 +135,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 }
 
 - (NSString *)description {
-  
-#line 115
   NSString *res = @"struct Dialog{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
   res = JreStrcat("$$", res, JreStrcat("$I", @", unreadCount=", self->unreadCount_));
@@ -200,18 +147,44 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiDialog *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->unreadCount_ = unreadCount_;
-  other->sortDate_ = sortDate_;
-  other->senderUid_ = senderUid_;
-  other->rid_ = rid_;
-  other->date_ = date_;
-  other->message_ = message_;
-  other->state_ = state_;
+@end
+
+
+#line 30
+void ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiDialog *self, ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
+  (void) BSBserObject_init(self);
+  
+#line 31
+  self->peer_ = peer;
+  self->unreadCount_ = unreadCount;
+  self->sortDate_ = sortDate;
+  self->senderUid_ = senderUid;
+  self->rid_ = rid;
+  self->date_ = date;
+  self->message_ = message;
+  self->state_ = state;
 }
 
-@end
+
+#line 30
+ImActorModelApiDialog *new_ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
+  ImActorModelApiDialog *self = [ImActorModelApiDialog alloc];
+  ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
+  return self;
+}
+
+
+#line 41
+void ImActorModelApiDialog_init(ImActorModelApiDialog *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 41
+ImActorModelApiDialog *new_ImActorModelApiDialog_init() {
+  ImActorModelApiDialog *self = [ImActorModelApiDialog alloc];
+  ImActorModelApiDialog_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDialog)

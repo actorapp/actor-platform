@@ -6,25 +6,29 @@
 #ifndef _OrgBouncycastleMathFieldPrimeField_H_
 #define _OrgBouncycastleMathFieldPrimeField_H_
 
-@class JavaMathBigInteger;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/math/field/FiniteField.h"
+
+@class JavaMathBigInteger;
 
 @interface OrgBouncycastleMathFieldPrimeField : NSObject < OrgBouncycastleMathFieldFiniteField > {
  @public
   JavaMathBigInteger *characteristic_;
 }
 
-- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)characteristic;
+#pragma mark Public
+
+- (jboolean)isEqual:(id)obj;
 
 - (JavaMathBigInteger *)getCharacteristic;
 
 - (jint)getDimension;
 
-- (jboolean)isEqual:(id)obj;
-
 - (NSUInteger)hash;
+
+#pragma mark Package-Private
+
+- (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)characteristic;
 
 @end
 
@@ -32,8 +36,9 @@ J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathFieldPrimeField)
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleMathFieldPrimeField, characteristic_, JavaMathBigInteger *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(OrgBouncycastleMathFieldPrimeField *self, JavaMathBigInteger *characteristic);
+
+FOUNDATION_EXPORT OrgBouncycastleMathFieldPrimeField *new_OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(JavaMathBigInteger *characteristic) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathFieldPrimeField)
 

@@ -6,9 +6,9 @@
 #ifndef _AMCreateConnectionCallback_H_
 #define _AMCreateConnectionCallback_H_
 
-@protocol AMConnection;
-
 #include "J2ObjC_header.h"
+
+@protocol AMConnection;
 
 @protocol AMCreateConnectionCallback < NSObject, JavaObject >
 
@@ -20,8 +20,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMCreateConnectionCallback)
 
-#define ImActorModelNetworkCreateConnectionCallback AMCreateConnectionCallback
-
 J2OBJC_TYPE_LITERAL_HEADER(AMCreateConnectionCallback)
+
+#define ImActorModelNetworkCreateConnectionCallback AMCreateConnectionCallback
 
 #endif // _AMCreateConnectionCallback_H_

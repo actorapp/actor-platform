@@ -6,24 +6,38 @@
 #ifndef _ImActorModelDroidkitBserUtilSparseArray_H_
 #define _ImActorModelDroidkitBserUtilSparseArray_H_
 
-@class IOSIntArray;
-@class IOSObjectArray;
-
 #include "J2ObjC_header.h"
 
-@interface ImActorModelDroidkitBserUtilSparseArray : NSObject < NSCopying > {
-}
+@interface ImActorModelDroidkitBserUtilSparseArray : NSObject < NSCopying >
+
+#pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithInt:(jint)initialCapacity;
+
+- (void)appendWithInt:(jint)key
+               withId:(id)value;
+
+- (void)clear;
+
+- (jboolean)containsKeyWithInt:(jint)key;
+
+- (void)delete__WithInt:(jint)key;
 
 - (id)getWithInt:(jint)key;
 
 - (id)getWithInt:(jint)key
           withId:(id)valueIfKeyNotFound;
 
-- (void)delete__WithInt:(jint)key;
+- (jint)indexOfKeyWithInt:(jint)key;
+
+- (jint)indexOfValueWithId:(id)value;
+
+- (jint)keyAtWithInt:(jint)index;
+
+- (void)putWithInt:(jint)key
+            withId:(id)value;
 
 - (void)removeWithInt:(jint)key;
 
@@ -32,41 +46,26 @@
 - (void)removeAtRangeWithInt:(jint)index
                      withInt:(jint)size;
 
-- (void)putWithInt:(jint)key
-            withId:(id)value;
-
-- (jint)size;
-
-- (jint)keyAtWithInt:(jint)index;
-
-- (id)valueAtWithInt:(jint)index;
-
 - (void)setValueAtWithInt:(jint)index
                    withId:(id)value;
 
-- (jint)indexOfKeyWithInt:(jint)key;
-
-- (jboolean)containsKeyWithInt:(jint)key;
-
-- (jint)indexOfValueWithId:(id)value;
-
-- (void)clear;
-
-- (void)appendWithInt:(jint)key
-               withId:(id)value;
+- (jint)size;
 
 - (NSString *)description;
 
+- (id)valueAtWithInt:(jint)index;
+
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelDroidkitBserUtilSparseArray_initialized;
 J2OBJC_STATIC_INIT(ImActorModelDroidkitBserUtilSparseArray)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void ImActorModelDroidkitBserUtilSparseArray_init(ImActorModelDroidkitBserUtilSparseArray *self);
 
-FOUNDATION_EXPORT id ImActorModelDroidkitBserUtilSparseArray_DELETED_;
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitBserUtilSparseArray, DELETED_, id)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT ImActorModelDroidkitBserUtilSparseArray *new_ImActorModelDroidkitBserUtilSparseArray_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelDroidkitBserUtilSparseArray_initWithInt_(ImActorModelDroidkitBserUtilSparseArray *self, jint initialCapacity);
+
+FOUNDATION_EXPORT ImActorModelDroidkitBserUtilSparseArray *new_ImActorModelDroidkitBserUtilSparseArray_initWithInt_(jint initialCapacity) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitBserUtilSparseArray)
 

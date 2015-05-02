@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/ActorTrace.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/ActorTrace.java"
 
 #include "J2ObjC_source.h"
@@ -14,15 +15,18 @@
 #include "im/actor/model/util/ActorTrace.h"
 #include "java/lang/Exception.h"
 
-@interface AMActorTrace () {
-}
-@end
+#define AMActorTrace_PROCESS_THRESHOLD 300
+
+static NSString *AMActorTrace_TAG_ = 
+#line 14
+@"ACTOR_SYSTEM";
+J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, TAG_, NSString *)
+
+J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 
 
 #line 12
 @implementation AMActorTrace
-
-NSString * AMActorTrace_TAG_ = @"ACTOR_SYSTEM";
 
 
 #line 19
@@ -33,20 +37,14 @@ NSString * AMActorTrace_TAG_ = @"ACTOR_SYSTEM";
 #line 24
 - (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
                                  withLong:(jlong)duration {
-  
-#line 25
   if (duration > AMActorTrace_PROCESS_THRESHOLD) {
     AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$$$@C", @"Too long ", [((DKActorScope *) nil_chk([((DKEnvelope *) nil_chk(envelope)) getScope])) getPath], @" {", [envelope getMessage], '}'));
   }
 }
 
-
-#line 31
 - (void)onDropWithDKActorRef:(DKActorRef *)sender
                       withId:(id)message
                  withDKActor:(DKActor *)actor {
-  
-#line 32
   AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Drop: ", message));
 }
 
@@ -54,25 +52,30 @@ NSString * AMActorTrace_TAG_ = @"ACTOR_SYSTEM";
 #line 36
 - (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
                             withId:(id)message {
-  
-#line 37
   AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Dead Letter: ", message));
 }
 
-
-#line 41
 - (void)onActorDieWithDKActorRef:(DKActorRef *)ref
            withJavaLangException:(JavaLangException *)e {
-  
-#line 42
   AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Die: ", e));
   [((JavaLangException *) nil_chk(e)) printStackTrace];
 }
 
 - (instancetype)init {
-  return [super init];
+  AMActorTrace_init(self);
+  return self;
 }
 
 @end
+
+void AMActorTrace_init(AMActorTrace *self) {
+  (void) NSObject_init(self);
+}
+
+AMActorTrace *new_AMActorTrace_init() {
+  AMActorTrace *self = [AMActorTrace alloc];
+  AMActorTrace_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMActorTrace)

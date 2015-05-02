@@ -6,16 +6,22 @@
 #ifndef _DKObjectCache_H_
 #define _DKObjectCache_H_
 
+#include "J2ObjC_header.h"
+
 @class JavaUtilHashMap;
 @class JavaUtilHashSet;
-
-#include "J2ObjC_header.h"
 
 @interface DKObjectCache : NSObject {
  @public
   JavaUtilHashMap *memoryCache_;
   JavaUtilHashSet *removedItems_;
 }
+
+#pragma mark Public
+
+- (void)clear;
+
+- (id)lookupWithId:(id)key;
 
 - (void)onObjectLoadedWithId:(id)key
                       withId:(id)value;
@@ -25,13 +31,11 @@
 
 - (void)removeObjectWithId:(id)key;
 
-- (id)lookupWithId:(id)key;
-
-- (void)clear;
-
 - (void)startLock;
 
 - (void)stopLock;
+
+#pragma mark Package-Private
 
 - (instancetype)init;
 
@@ -42,11 +46,12 @@ J2OBJC_EMPTY_STATIC_INIT(DKObjectCache)
 J2OBJC_FIELD_SETTER(DKObjectCache, memoryCache_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(DKObjectCache, removedItems_, JavaUtilHashSet *)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKObjectCache_init(DKObjectCache *self);
 
-typedef DKObjectCache ImActorModelDroidkitEngineObjectCache;
+FOUNDATION_EXPORT DKObjectCache *new_DKObjectCache_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKObjectCache)
+
+typedef DKObjectCache ImActorModelDroidkitEngineObjectCache;
 
 #endif // _DKObjectCache_H_

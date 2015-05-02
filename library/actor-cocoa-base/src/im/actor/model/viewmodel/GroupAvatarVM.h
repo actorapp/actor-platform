@@ -6,12 +6,13 @@
 #ifndef _AMGroupAvatarVM_H_
 #define _AMGroupAvatarVM_H_
 
-@class AMValueModel;
-
 #include "J2ObjC_header.h"
 
-@interface AMGroupAvatarVM : NSObject {
-}
+@class AMValueModel;
+
+@interface AMGroupAvatarVM : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid;
 
@@ -21,11 +22,12 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupAvatarVM)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMGroupAvatarVM_initWithInt_(AMGroupAvatarVM *self, jint gid);
 
-typedef AMGroupAvatarVM ImActorModelViewmodelGroupAvatarVM;
+FOUNDATION_EXPORT AMGroupAvatarVM *new_AMGroupAvatarVM_initWithInt_(jint gid) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroupAvatarVM)
+
+typedef AMGroupAvatarVM ImActorModelViewmodelGroupAvatarVM;
 
 #endif // _AMGroupAvatarVM_H_

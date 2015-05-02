@@ -3,10 +3,12 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExEmailContactRegistered.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExEmailContactRegistered.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExEmailContactRegistered.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -16,6 +18,7 @@
  @public
   jint uid_;
 }
+
 @end
 
 
@@ -25,31 +28,24 @@
 
 #line 23
 - (instancetype)initWithInt:(jint)uid {
-  if (self = [super init]) {
-    
-#line 24
-    self->uid_ = uid;
-  }
+  ImActorModelApiServiceExEmailContactRegistered_initWithInt_(self, uid);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceExEmailContactRegistered_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getHeader {
-  
-#line 32
   return 7;
 }
 
-
-#line 35
 - (jint)getUid {
-  
-#line 36
   return self->uid_;
 }
 
@@ -62,11 +58,11 @@
 
 #line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 46
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 
+
+#line 50
 - (NSString *)description {
   NSString *res = @"struct ServiceExEmailContactRegistered{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -74,11 +70,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiServiceExEmailContactRegistered *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
+@end
+
+
+#line 23
+void ImActorModelApiServiceExEmailContactRegistered_initWithInt_(ImActorModelApiServiceExEmailContactRegistered *self, jint uid) {
+  (void) ImActorModelApiServiceEx_init(self);
+  
+#line 24
+  self->uid_ = uid;
 }
 
-@end
+
+#line 23
+ImActorModelApiServiceExEmailContactRegistered *new_ImActorModelApiServiceExEmailContactRegistered_initWithInt_(jint uid) {
+  ImActorModelApiServiceExEmailContactRegistered *self = [ImActorModelApiServiceExEmailContactRegistered alloc];
+  ImActorModelApiServiceExEmailContactRegistered_initWithInt_(self, uid);
+  return self;
+}
+
+
+#line 27
+void ImActorModelApiServiceExEmailContactRegistered_init(ImActorModelApiServiceExEmailContactRegistered *self) {
+  (void) ImActorModelApiServiceEx_init(self);
+}
+
+
+#line 27
+ImActorModelApiServiceExEmailContactRegistered *new_ImActorModelApiServiceExEmailContactRegistered_init() {
+  ImActorModelApiServiceExEmailContactRegistered *self = [ImActorModelApiServiceExEmailContactRegistered alloc];
+  ImActorModelApiServiceExEmailContactRegistered_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExEmailContactRegistered)

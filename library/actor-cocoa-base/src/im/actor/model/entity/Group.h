@@ -6,6 +6,10 @@
 #ifndef _AMGroup_H_
 #define _AMGroup_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/engine/KeyValueItem.h"
+
 @class AMAvatar;
 @class AMPeer;
 @class BSBserValues;
@@ -13,14 +17,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/KeyValueItem.h"
+@interface AMGroup : BSBserObject < DKKeyValueItem >
 
-@interface AMGroup : BSBserObject < DKKeyValueItem > {
-}
-
-+ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
@@ -30,54 +29,57 @@
                     withInt:(jint)adminId
                 withBoolean:(jboolean)isMember;
 
-- (AMPeer *)peer;
-
-- (jint)getGroupId;
-
-- (jlong)getAccessHash;
-
-- (NSString *)getTitle;
-
-- (AMAvatar *)getAvatar;
-
-- (id<JavaUtilList>)getMembers;
-
-- (jint)getAdminId;
-
-- (jboolean)isMember;
-
-- (AMGroup *)changeMemberWithBoolean:(jboolean)isMember;
-
-- (AMGroup *)clearMembers;
-
-- (AMGroup *)removeMemberWithInt:(jint)uid;
-
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
                      withLong:(jlong)inviteDate
                   withBoolean:(jboolean)isAdmin;
 
-- (AMGroup *)editTitleWithNSString:(NSString *)title;
+- (AMGroup *)changeMemberWithBoolean:(jboolean)isMember;
+
+- (AMGroup *)clearMembers;
 
 - (AMGroup *)editAvatarWithAMAvatar:(AMAvatar *)avatar;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
+- (AMGroup *)editTitleWithNSString:(NSString *)title;
 
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
++ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getAccessHash;
+
+- (jint)getAdminId;
+
+- (AMAvatar *)getAvatar;
 
 - (jlong)getEngineId;
+
+- (jint)getGroupId;
+
+- (id<JavaUtilList>)getMembers;
+
+- (NSString *)getTitle;
+
+- (jboolean)isMember;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (AMPeer *)peer;
+
+- (AMGroup *)removeMemberWithInt:(jint)uid;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroup)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMGroup ImActorModelEntityGroup;
+FOUNDATION_EXPORT void AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(AMGroup *self, jint groupId, jlong accessHash, NSString *title, AMAvatar *avatar, id<JavaUtilList> members, jint adminId, jboolean isMember);
+
+FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(jint groupId, jlong accessHash, NSString *title, AMAvatar *avatar, id<JavaUtilList> members, jint adminId, jboolean isMember) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroup)
+
+typedef AMGroup ImActorModelEntityGroup;
 
 #endif // _AMGroup_H_

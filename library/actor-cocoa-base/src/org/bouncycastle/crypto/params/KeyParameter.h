@@ -6,13 +6,14 @@
 #ifndef _OrgBouncycastleCryptoParamsKeyParameter_H_
 #define _OrgBouncycastleCryptoParamsKeyParameter_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
 
-@interface OrgBouncycastleCryptoParamsKeyParameter : NSObject < OrgBouncycastleCryptoCipherParameters > {
-}
+@class IOSByteArray;
+
+@interface OrgBouncycastleCryptoParamsKeyParameter : NSObject < OrgBouncycastleCryptoCipherParameters >
+
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)key;
 
@@ -26,8 +27,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoParamsKeyParameter)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(OrgBouncycastleCryptoParamsKeyParameter *self, IOSByteArray *key);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsKeyParameter *new_OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_(IOSByteArray *key) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(OrgBouncycastleCryptoParamsKeyParameter *self, IOSByteArray *key, jint keyOff, jint keyLen);
+
+FOUNDATION_EXPORT OrgBouncycastleCryptoParamsKeyParameter *new_OrgBouncycastleCryptoParamsKeyParameter_initWithByteArray_withInt_withInt_(IOSByteArray *key, jint keyOff, jint keyLen) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoParamsKeyParameter)
 

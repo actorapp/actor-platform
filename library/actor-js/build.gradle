@@ -47,9 +47,29 @@ task copyWebAppSources(type: Copy, dependsOn: ['cleanWebAppSources']) {
     into "${projectDir}/src/main/webapp/"
 }
 
+task npmInstall(type: Exec, dependsOn: ['copyWebAppSources']) {
+    workingDir "${projectDir}/src/main/webapp/"
+    commandLine 'npm', 'install'
+}
+
+task bowerInstall(type: Exec, dependsOn: ['npmInstall']) {
+    workingDir "${projectDir}/src/main/webapp/"
+    commandLine 'bower', 'install'
+}
+
+task gulpBuild(type: Exec, dependsOn: ['bowerInstall']) {
+    workingDir "${projectDir}/src/main/webapp/"
+    commandLine 'gulp', 'build'
+}
+
+task buildWebApp(dependsOn: ['gulpBuild']) {
+
+}
+
 tasks.compileJava.dependsOn(copyGenResources)
 tasks.compileJava.dependsOn(copyGenSources)
-tasks.compileJava.dependsOn(copyWebAppSources)
+tasks.compileJava.dependsOn(buildWebApp)
+
 tasks.clean.dependsOn(cleanGenSources)
 tasks.clean.dependsOn(cleanGenResources)
 tasks.clean.dependsOn(cleanWebAppSources)
@@ -82,6 +102,9 @@ gwt {
 //        disableClassMetadata = true;
 //        disableCastChecking = true;
     }
+
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
 }
 
 task explodedWar(type: Copy) {

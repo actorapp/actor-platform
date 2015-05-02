@@ -6,21 +6,22 @@
 #ifndef _ImActorModelApiRpcResponseCreateGroup_H_
 #define _ImActorModelApiRpcResponseCreateGroup_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @class ImActorModelApiGroupOutPeer;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseCreateGroup_HEADER 66
 
-@interface ImActorModelApiRpcResponseCreateGroup : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseCreateGroup : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                             withInt:(jint)seq
@@ -28,9 +29,13 @@
                                    withJavaUtilList:(id<JavaUtilList>)users
                                            withLong:(jlong)date;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jlong)getDate;
 
 - (ImActorModelApiGroupOutPeer *)getGroupPeer;
+
+- (jint)getHeaderKey;
 
 - (jint)getSeq;
 
@@ -38,26 +43,27 @@
 
 - (id<JavaUtilList>)getUsers;
 
-- (jlong)getDate;
-
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseCreateGroup)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseCreateGroup, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseCreateGroup *ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseCreateGroup, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(ImActorModelApiRpcResponseCreateGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseCreateGroup *new_ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseCreateGroup_init(ImActorModelApiRpcResponseCreateGroup *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseCreateGroup *new_ImActorModelApiRpcResponseCreateGroup_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseCreateGroup)
 

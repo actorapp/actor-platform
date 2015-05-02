@@ -6,32 +6,36 @@
 #ifndef _AMServiceGroupUserLeave_H_
 #define _AMServiceGroupUserLeave_H_
 
-@class AMAbsContent_ContentTypeEnum;
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@interface AMServiceGroupUserLeave : AMServiceContent {
-}
+@class AMAbsContent_ContentTypeEnum;
+@class IOSByteArray;
+
+@interface AMServiceGroupUserLeave : AMServiceContent
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
+#pragma mark Protected
 
-- (instancetype)init;
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserLeave)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
-CF_EXTERN_C_END
 
-typedef AMServiceGroupUserLeave ImActorModelEntityContentServiceGroupUserLeave;
+FOUNDATION_EXPORT void AMServiceGroupUserLeave_init(AMServiceGroupUserLeave *self);
+
+FOUNDATION_EXPORT AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserLeave)
+
+typedef AMServiceGroupUserLeave ImActorModelEntityContentServiceGroupUserLeave;
 
 #endif // _AMServiceGroupUserLeave_H_

@@ -6,12 +6,15 @@
 #ifndef _OrgBouncycastleMathRawNat384_H_
 #define _OrgBouncycastleMathRawNat384_H_
 
-@class IOSIntArray;
-
 #include "J2ObjC_header.h"
 
-@interface OrgBouncycastleMathRawNat384 : NSObject {
-}
+@class IOSIntArray;
+
+@interface OrgBouncycastleMathRawNat384 : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 + (void)mulWithIntArray:(IOSIntArray *)x
            withIntArray:(IOSIntArray *)y
@@ -20,18 +23,15 @@
 + (void)squareWithIntArray:(IOSIntArray *)x
               withIntArray:(IOSIntArray *)zz;
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleMathRawNat384)
 
-CF_EXTERN_C_BEGIN
-
 FOUNDATION_EXPORT void OrgBouncycastleMathRawNat384_mulWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *zz);
 
 FOUNDATION_EXPORT void OrgBouncycastleMathRawNat384_squareWithIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *zz);
-CF_EXTERN_C_END
+
+FOUNDATION_EXPORT void OrgBouncycastleMathRawNat384_init(OrgBouncycastleMathRawNat384 *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleMathRawNat384)
 

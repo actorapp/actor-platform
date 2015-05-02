@@ -3,12 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/UnsentMessage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/UnsentMessage.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/UnsentMessage.h"
 #include "java/io/IOException.h"
 
@@ -17,6 +19,7 @@
   jlong messageId_;
   jint len_;
 }
+
 @end
 
 
@@ -27,38 +30,24 @@
 #line 18
 - (instancetype)initWithLong:(jlong)messageId
                      withInt:(jint)len {
-  if (self = [super init]) {
-    
-#line 19
-    self->messageId_ = messageId;
-    
-#line 20
-    self->len_ = len;
-  }
+  MTUnsentMessage_initWithLong_withInt_(self, messageId, len);
   return self;
 }
 
 
 #line 23
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 24
-  [super initWithBSDataInput:stream];
+  MTUnsentMessage_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 27
 - (jlong)getMessageId {
-  
-#line 28
   return messageId_;
 }
 
-
-#line 31
 - (jint)getLen {
-  
-#line 32
   return len_;
 }
 
@@ -71,8 +60,6 @@
 
 #line 41
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 42
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeIntWithInt:len_];
 }
@@ -84,18 +71,44 @@
   len_ = [bs readInt];
 }
 
+
+#line 53
 - (NSString *)description {
-  
-#line 54
   return JreStrcat("$JC", @"UnsentMessage[", messageId_, ']');
 }
 
-- (void)copyAllFieldsTo:(MTUnsentMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->messageId_ = messageId_;
-  other->len_ = len_;
+@end
+
+
+#line 18
+void MTUnsentMessage_initWithLong_withInt_(MTUnsentMessage *self, jlong messageId, jint len) {
+  (void) MTProtoStruct_init(self);
+  
+#line 19
+  self->messageId_ = messageId;
+  self->len_ = len;
 }
 
-@end
+
+#line 18
+MTUnsentMessage *new_MTUnsentMessage_initWithLong_withInt_(jlong messageId, jint len) {
+  MTUnsentMessage *self = [MTUnsentMessage alloc];
+  MTUnsentMessage_initWithLong_withInt_(self, messageId, len);
+  return self;
+}
+
+
+#line 23
+void MTUnsentMessage_initWithBSDataInput_(MTUnsentMessage *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
+}
+
+
+#line 23
+MTUnsentMessage *new_MTUnsentMessage_initWithBSDataInput_(BSDataInput *stream) {
+  MTUnsentMessage *self = [MTUnsentMessage alloc];
+  MTUnsentMessage_initWithBSDataInput_(self, stream);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTUnsentMessage)

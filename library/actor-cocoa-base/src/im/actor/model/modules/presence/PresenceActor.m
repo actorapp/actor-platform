@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/presence/PresenceActor.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/presence/PresenceActor.java"
 
 #include "IOSClass.h"
@@ -12,8 +13,10 @@
 #include "im/actor/model/api/rpc/RequestSubscribeToGroupOnline.h"
 #include "im/actor/model/api/rpc/RequestSubscribeToOnline.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
+#include "im/actor/model/droidkit/actors/MailboxCreator.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
 #include "im/actor/model/droidkit/actors/mailbox/Mailbox.h"
@@ -34,12 +37,7 @@
 #include "java/util/HashSet.h"
 #include "java/util/List.h"
 
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid);
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid);
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date);
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count);
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelModulesPresencePresenceActor *self, AMPeer *peer);
-__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelModulesPresencePresenceActor *self);
+#define ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT 300000
 
 @interface ImActorModelModulesPresencePresenceActor () {
  @public
@@ -60,21 +58,38 @@ __attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onN
 - (void)subscribeWithAMPeer:(AMPeer *)peer;
 
 - (void)onNewSessionCreated;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, uids_, JavaUtilHashSet *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, gids_, JavaUtilHashSet *)
 
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesPresencePresenceActor, ONLINE_TIMEOUT, jint)
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid);
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid);
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date);
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count);
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelModulesPresencePresenceActor *self, AMPeer *peer);
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelModulesPresencePresenceActor *self);
+
 @interface ImActorModelModulesPresencePresenceActor_UserOnline () {
  @public
   jint uid_;
 }
+
 @end
 
 @interface ImActorModelModulesPresencePresenceActor_UserOffline () {
  @public
   jint uid_;
 }
+
 @end
 
 @interface ImActorModelModulesPresencePresenceActor_UserLastSeen () {
@@ -82,6 +97,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, gids_, JavaUtilHas
   jint uid_;
   jlong date_;
 }
+
 @end
 
 @interface ImActorModelModulesPresencePresenceActor_GroupOnline () {
@@ -89,23 +105,71 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor, gids_, JavaUtilHas
   jint gid_;
   jint count_;
 }
+
 @end
 
 @interface ImActorModelModulesPresencePresenceActor_Subscribe () {
  @public
   AMPeer *peer_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_Subscribe, peer_, AMPeer *)
 
-@interface ImActorModelModulesPresencePresenceActor_$1 () {
+@interface ImActorModelModulesPresencePresenceActor_$1 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesModules *val$messenger_;
 }
+
+- (ImActorModelModulesPresencePresenceActor *)create;
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0;
+
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_$1)
+
 J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_, ImActorModelModulesModules *)
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(ImActorModelModulesPresencePresenceActor_$1 *self, ImActorModelModulesModules *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesPresencePresenceActor_$1 *new_ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$1)
+
+@interface ImActorModelModulesPresencePresenceActor_$2 : NSObject < DKMailboxCreator >
+
+- (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue;
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_$2)
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_$2_init(ImActorModelModulesPresencePresenceActor_$2 *self);
+
+__attribute__((unused)) static ImActorModelModulesPresencePresenceActor_$2 *new_ImActorModelModulesPresencePresenceActor_$2_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$2)
+
+@interface ImActorModelModulesPresencePresenceActor_$2_$1 : DKMailbox
+
+- (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
+                           withDKEnvelope:(DKEnvelope *)b;
+
+- (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_$2_$1)
+
+__attribute__((unused)) static void ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(ImActorModelModulesPresencePresenceActor_$2_$1 *self, DKMailboxesQueue *arg$0);
+
+__attribute__((unused)) static ImActorModelModulesPresencePresenceActor_$2_$1 *new_ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(DKMailboxesQueue *arg$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_$2_$1)
 
 
 #line 34
@@ -118,21 +182,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
 
 #line 63
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
-  if (self =
-#line 64
-  [super initWithImActorModelModulesModules:messenger]) {
-    uids_ =
-#line 60
-    [[JavaUtilHashSet alloc] init];
-    gids_ =
-#line 61
-    [[JavaUtilHashSet alloc] init];
-  }
+  ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 68
 - (void)onUserOnlineWithInt:(jint)uid {
   ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(self, uid);
 }
@@ -172,8 +225,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
 
 #line 170
 - (void)onReceiveWithId:(id)message {
-  
-#line 171
   if ([message isKindOfClass:[ImActorModelModulesPresencePresenceActor_UserOnline class]]) {
     ImActorModelModulesPresencePresenceActor_UserOnline *online = (ImActorModelModulesPresencePresenceActor_UserOnline *) check_class_cast(message, [ImActorModelModulesPresencePresenceActor_UserOnline class]);
     ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(self, [((ImActorModelModulesPresencePresenceActor_UserOnline *) nil_chk(online)) getUid]);
@@ -213,65 +264,75 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPresencePresenceActor_$1, val$messenger_,
   }
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor *)other {
-  [super copyAllFieldsTo:other];
-  other->uids_ = uids_;
-  other->gids_ = gids_;
-}
-
 @end
 
+
+#line 36
 DKActorRef *ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
-  ImActorModelModulesPresencePresenceActor_init();
+  ImActorModelModulesPresencePresenceActor_initialize();
   
 #line 37
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesPresencePresenceActor_class_(), [[ImActorModelModulesPresencePresenceActor_$1 alloc] initWithImActorModelModulesModules:messenger],
-#line 42
-  [[ImActorModelModulesPresencePresenceActor_$2 alloc] init]) withNSString:
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(ImActorModelModulesPresencePresenceActor_class_(), new_ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(messenger), new_ImActorModelModulesPresencePresenceActor_$2_init()) withNSString:
 #line 55
   @"actor/presence/users"];
 }
 
+
+#line 63
+void ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesPresencePresenceActor *self, ImActorModelModulesModules *messenger) {
+  (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
+  self->uids_ = new_JavaUtilHashSet_init();
+  self->gids_ = new_JavaUtilHashSet_init();
+}
+
+
+#line 63
+ImActorModelModulesPresencePresenceActor *new_ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
+  ImActorModelModulesPresencePresenceActor *self = [ImActorModelModulesPresencePresenceActor alloc];
+  ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(self, messenger);
+  return self;
+}
+
+
+#line 68
 void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
-  
-#line 69
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:[[AMUserPresence alloc] initWithAMUserPresence_StateEnum:AMUserPresence_StateEnum_get_ONLINE()]];
+    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_ONLINE())];
   }
-  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[[ImActorModelModulesPresencePresenceActor_UserOffline alloc] initWithInt:uid] withLong:ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT];
+  [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(uid) withLong:ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT];
 }
 
+
+#line 77
 void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
-  
-#line 78
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:[[AMUserPresence alloc] initWithAMUserPresence_StateEnum:AMUserPresence_StateEnum_get_OFFLINE()]];
+    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_OFFLINE())];
   }
 }
 
+
+#line 85
 void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date) {
-  
-#line 86
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:[[AMUserPresence alloc] initWithAMUserPresence_StateEnum:AMUserPresence_StateEnum_get_OFFLINE() withLong:date]];
+    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum_get_OFFLINE(), date)];
   }
 }
 
+
+#line 93
 void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count) {
-  
-#line 94
   AMGroupVM *vm = [self getGroupVMWithInt:gid];
   if (vm != nil) {
     [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:JavaLangInteger_valueOfWithInt_(count)];
   }
 }
 
+
+#line 101
 void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelModulesPresencePresenceActor *self, AMPeer *peer) {
-  
-#line 102
   if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
     
 #line 104
@@ -287,9 +348,9 @@ void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelM
     
 #line 114
     [self->uids_ addWithId:JavaLangInteger_valueOfWithInt_([((AMUser *) nil_chk(user)) getUid])];
-    id<JavaUtilList> peers = [[JavaUtilArrayList alloc] init];
-    [peers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:[user getUid] withLong:[user getAccessHash]]];
-    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSubscribeToOnline alloc] initWithJavaUtilList:peers]];
+    id<JavaUtilList> peers = new_JavaUtilArrayList_init();
+    [peers addWithId:new_ImActorModelApiUserOutPeer_initWithInt_withLong_([user getUid], [user getAccessHash])];
+    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(peers)];
   }
   else
 #line 118
@@ -308,16 +369,18 @@ void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelM
     
 #line 130
     [self->gids_ addWithId:JavaLangInteger_valueOfWithInt_([peer getPeerId])];
-    id<JavaUtilList> peers = [[JavaUtilArrayList alloc] init];
-    [peers addWithId:[[ImActorModelApiGroupOutPeer alloc] initWithInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]]];
-    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSubscribeToGroupOnline alloc] initWithJavaUtilList:peers]];
+    id<JavaUtilList> peers = new_JavaUtilArrayList_init();
+    [peers addWithId:new_ImActorModelApiGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
+    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(peers)];
   }
 }
 
+
+#line 138
 void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelModulesPresencePresenceActor *self) {
   
 #line 141
-  id<JavaUtilList> userPeers = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> userPeers = new_JavaUtilArrayList_init();
   for (JavaLangInteger *boxed__ in nil_chk(self->uids_)) {
     jint uid = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
     
@@ -326,14 +389,14 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
     if (user == nil) {
       continue;
     }
-    [userPeers addWithId:[[ImActorModelApiUserOutPeer alloc] initWithInt:uid withLong:[((AMUser *) nil_chk(user)) getAccessHash]]];
+    [userPeers addWithId:new_ImActorModelApiUserOutPeer_initWithInt_withLong_(uid, [((AMUser *) nil_chk(user)) getAccessHash])];
   }
   if ([userPeers size] > 0) {
-    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSubscribeToOnline alloc] initWithJavaUtilList:userPeers]];
+    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(userPeers)];
   }
   
 #line 154
-  id<JavaUtilList> groupPeers = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> groupPeers = new_JavaUtilArrayList_init();
   for (JavaLangInteger *boxed__ in nil_chk(self->gids_)) {
     jint gid = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
     
@@ -342,10 +405,10 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
     if (group == nil) {
       continue;
     }
-    [groupPeers addWithId:[[ImActorModelApiGroupOutPeer alloc] initWithInt:[((AMGroup *) nil_chk(group)) getGroupId] withLong:[group getAccessHash]]];
+    [groupPeers addWithId:new_ImActorModelApiGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
   }
   if ([groupPeers size] > 0) {
-    [self requestWithImActorModelNetworkParserRequest:[[ImActorModelApiRpcRequestSubscribeToGroupOnline alloc] initWithJavaUtilList:groupPeers]];
+    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(groupPeers)];
   }
 }
 
@@ -358,22 +421,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor)
 
 #line 195
 - (instancetype)initWithInt:(jint)uid {
-  if (self = [super init]) {
-    
-#line 196
-    self->uid_ = uid;
-  }
+  ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(self, uid);
   return self;
 }
 
 
 #line 199
 - (jint)getUid {
-  
-#line 200
   return uid_;
 }
 
+
+#line 204
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -388,18 +447,30 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor)
   return YES;
 }
 
+
+#line 216
 - (NSUInteger)hash {
-  
-#line 217
   return uid_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_UserOnline *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
+@end
+
+
+#line 195
+void ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(ImActorModelModulesPresencePresenceActor_UserOnline *self, jint uid) {
+  (void) NSObject_init(self);
+  
+#line 196
+  self->uid_ = uid;
 }
 
-@end
+
+#line 195
+ImActorModelModulesPresencePresenceActor_UserOnline *new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(jint uid) {
+  ImActorModelModulesPresencePresenceActor_UserOnline *self = [ImActorModelModulesPresencePresenceActor_UserOnline alloc];
+  ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(self, uid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOnline)
 
@@ -410,22 +481,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOn
 
 #line 224
 - (instancetype)initWithInt:(jint)uid {
-  if (self = [super init]) {
-    
-#line 225
-    self->uid_ = uid;
-  }
+  ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(self, uid);
   return self;
 }
 
 
 #line 228
 - (jint)getUid {
-  
-#line 229
   return uid_;
 }
 
+
+#line 233
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -440,18 +507,30 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOn
   return YES;
 }
 
+
+#line 245
 - (NSUInteger)hash {
-  
-#line 246
   return uid_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_UserOffline *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
+@end
+
+
+#line 224
+void ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(ImActorModelModulesPresencePresenceActor_UserOffline *self, jint uid) {
+  (void) NSObject_init(self);
+  
+#line 225
+  self->uid_ = uid;
 }
 
-@end
+
+#line 224
+ImActorModelModulesPresencePresenceActor_UserOffline *new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(jint uid) {
+  ImActorModelModulesPresencePresenceActor_UserOffline *self = [ImActorModelModulesPresencePresenceActor_UserOffline alloc];
+  ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(self, uid);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOffline)
 
@@ -463,33 +542,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOf
 #line 254
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 255
-    self->uid_ = uid;
-    
-#line 256
-    self->date_ = date;
-  }
+  ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(self, uid, date);
   return self;
 }
 
 
 #line 259
 - (jint)getUid {
-  
-#line 260
   return uid_;
 }
 
-
-#line 263
 - (jlong)getDate {
-  
-#line 264
   return date_;
 }
 
+
+#line 268
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -505,21 +573,33 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserOf
   return YES;
 }
 
+
+#line 281
 - (NSUInteger)hash {
-  
-#line 282
   jint result = uid_;
   result = 31 * result + (jint) (date_ ^ (URShift64(date_, 32)));
   return result;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_UserLastSeen *)other {
-  [super copyAllFieldsTo:other];
-  other->uid_ = uid_;
-  other->date_ = date_;
+@end
+
+
+#line 254
+void ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(ImActorModelModulesPresencePresenceActor_UserLastSeen *self, jint uid, jlong date) {
+  (void) NSObject_init(self);
+  
+#line 255
+  self->uid_ = uid;
+  self->date_ = date;
 }
 
-@end
+
+#line 254
+ImActorModelModulesPresencePresenceActor_UserLastSeen *new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(jint uid, jlong date) {
+  ImActorModelModulesPresencePresenceActor_UserLastSeen *self = [ImActorModelModulesPresencePresenceActor_UserLastSeen alloc];
+  ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(self, uid, date);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserLastSeen)
 
@@ -531,33 +611,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserLa
 #line 292
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)count {
-  if (self = [super init]) {
-    
-#line 293
-    self->gid_ = gid;
-    
-#line 294
-    self->count_ = count;
-  }
+  ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(self, gid, count);
   return self;
 }
 
 
 #line 297
 - (jint)getGid {
-  
-#line 298
   return gid_;
 }
 
-
-#line 301
 - (jint)getCount {
-  
-#line 302
   return count_;
 }
 
+
+#line 306
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -573,21 +642,33 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_UserLa
   return YES;
 }
 
+
+#line 319
 - (NSUInteger)hash {
-  
-#line 320
   jint result = gid_;
   result = 31 * result + count_;
   return result;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_GroupOnline *)other {
-  [super copyAllFieldsTo:other];
-  other->gid_ = gid_;
-  other->count_ = count_;
+@end
+
+
+#line 292
+void ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(ImActorModelModulesPresencePresenceActor_GroupOnline *self, jint gid, jint count) {
+  (void) NSObject_init(self);
+  
+#line 293
+  self->gid_ = gid;
+  self->count_ = count;
 }
 
-@end
+
+#line 292
+ImActorModelModulesPresencePresenceActor_GroupOnline *new_ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(jint gid, jint count) {
+  ImActorModelModulesPresencePresenceActor_GroupOnline *self = [ImActorModelModulesPresencePresenceActor_GroupOnline alloc];
+  ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(self, gid, count);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_GroupOnline)
 
@@ -598,28 +679,34 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_GroupO
 
 #line 329
 - (instancetype)initWithAMPeer:(AMPeer *)peer {
-  if (self = [super init]) {
-    
-#line 330
-    self->peer_ = peer;
-  }
+  ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(self, peer);
   return self;
 }
 
 
 #line 333
 - (AMPeer *)getPeer {
-  
-#line 334
   return peer_;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_Subscribe *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
+@end
+
+
+#line 329
+void ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(ImActorModelModulesPresencePresenceActor_Subscribe *self, AMPeer *peer) {
+  (void) NSObject_init(self);
+  
+#line 330
+  self->peer_ = peer;
 }
 
-@end
+
+#line 329
+ImActorModelModulesPresencePresenceActor_Subscribe *new_ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(AMPeer *peer) {
+  ImActorModelModulesPresencePresenceActor_Subscribe *self = [ImActorModelModulesPresencePresenceActor_Subscribe alloc];
+  ImActorModelModulesPresencePresenceActor_Subscribe_initWithAMPeer_(self, peer);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_Subscribe)
 
@@ -628,10 +715,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_Subscr
 @implementation ImActorModelModulesPresencePresenceActor_SessionCreated
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesPresencePresenceActor_SessionCreated_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresencePresenceActor_SessionCreated_init(ImActorModelModulesPresencePresenceActor_SessionCreated *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresencePresenceActor_SessionCreated *new_ImActorModelModulesPresencePresenceActor_SessionCreated_init() {
+  ImActorModelModulesPresencePresenceActor_SessionCreated *self = [ImActorModelModulesPresencePresenceActor_SessionCreated alloc];
+  ImActorModelModulesPresencePresenceActor_SessionCreated_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_SessionCreated)
 
@@ -640,22 +738,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_Sessio
 
 #line 39
 - (ImActorModelModulesPresencePresenceActor *)create {
-  
-#line 40
-  return [[ImActorModelModulesPresencePresenceActor alloc] initWithImActorModelModulesModules:val$messenger_];
+  return new_ImActorModelModulesPresencePresenceActor_initWithImActorModelModulesModules_(val$messenger_);
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)capture$0 {
-  val$messenger_ = capture$0;
-  return [super init];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesPresencePresenceActor_$1 *)other {
-  [super copyAllFieldsTo:other];
-  other->val$messenger_ = val$messenger_;
+  ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(self, capture$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(ImActorModelModulesPresencePresenceActor_$1 *self, ImActorModelModulesModules *capture$0) {
+  self->val$messenger_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresencePresenceActor_$1 *new_ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *capture$0) {
+  ImActorModelModulesPresencePresenceActor_$1 *self = [ImActorModelModulesPresencePresenceActor_$1 alloc];
+  ImActorModelModulesPresencePresenceActor_$1_initWithImActorModelModulesModules_(self, capture$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$1)
 
@@ -664,16 +766,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$1)
 
 #line 44
 - (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
-  
-#line 45
-  return [[ImActorModelModulesPresencePresenceActor_$2_$1 alloc] initWithDKMailboxesQueue:queue];
+  return new_ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(queue);
 }
 
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesPresencePresenceActor_$2_init(self);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresencePresenceActor_$2_init(ImActorModelModulesPresencePresenceActor_$2 *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPresencePresenceActor_$2 *new_ImActorModelModulesPresencePresenceActor_$2_init() {
+  ImActorModelModulesPresencePresenceActor_$2 *self = [ImActorModelModulesPresencePresenceActor_$2 alloc];
+  ImActorModelModulesPresencePresenceActor_$2_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$2)
 
@@ -683,8 +794,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$2)
 #line 47
 - (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
                            withDKEnvelope:(DKEnvelope *)b {
-  
-#line 48
   if ([nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) isEqual:[((DKEnvelope *) nil_chk(b)) getMessage]]) {
     return YES;
   }
@@ -692,9 +801,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$2)
 }
 
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0 {
-  return [super initWithDKMailboxesQueue:arg$0];
+  ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(self, arg$0);
+  return self;
 }
 
 @end
+
+void ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(ImActorModelModulesPresencePresenceActor_$2_$1 *self, DKMailboxesQueue *arg$0) {
+  (void) DKMailbox_initWithDKMailboxesQueue_(self, arg$0);
+}
+
+ImActorModelModulesPresencePresenceActor_$2_$1 *new_ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(DKMailboxesQueue *arg$0) {
+  ImActorModelModulesPresencePresenceActor_$2_$1 *self = [ImActorModelModulesPresencePresenceActor_$2_$1 alloc];
+  ImActorModelModulesPresencePresenceActor_$2_$1_initWithDKMailboxesQueue_(self, arg$0);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresencePresenceActor_$2_$1)

@@ -6,57 +6,40 @@
 #ifndef _AMValueModel_H_
 #define _AMValueModel_H_
 
-@class JavaUtilArrayList;
+#include "J2ObjC_header.h"
+
 @protocol AMValueChangedListener;
 
-#include "J2ObjC_header.h"
-#include "java/lang/Runnable.h"
+@interface AMValueModel : NSObject
 
-@interface AMValueModel : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithNSString:(NSString *)name
                           withId:(id)defaultValue;
 
-- (id)get;
-
 - (jboolean)changeWithId:(id)value;
+
+- (id)get;
 
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
 
 - (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
                                 withBoolean:(jboolean)notify;
 
-- (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
-
 - (NSString *)description;
+
+- (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMValueModel)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void AMValueModel_initWithNSString_withId_(AMValueModel *self, NSString *name, id defaultValue);
 
-typedef AMValueModel ImActorModelMvvmValueModel;
+FOUNDATION_EXPORT AMValueModel *new_AMValueModel_initWithNSString_withId_(NSString *name, id defaultValue) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMValueModel)
 
-@interface AMValueModel_$1 : NSObject < JavaLangRunnable > {
-}
-
-- (void)run;
-
-- (instancetype)initWithAMValueModel:(AMValueModel *)outer$
-                              withId:(id)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMValueModel_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(AMValueModel_$1)
+typedef AMValueModel ImActorModelMvvmValueModel;
 
 #endif // _AMValueModel_H_

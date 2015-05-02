@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessage.java"
 
 #include "IOSClass.h"
@@ -21,8 +22,8 @@
   AMPeer *peer_;
   jlong rid_;
   jlong sortDate_;
-  jboolean isEncrypted__;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPeer *)
@@ -36,122 +37,116 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 25
+#line 24
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
-                      withLong:(jlong)sortDate
-                   withBoolean:(jboolean)isEncrypted {
-  if (self = [super init]) {
-    
-#line 26
-    self->peer_ = peer;
-    
-#line 27
-    self->rid_ = rid;
-    
-#line 28
-    self->sortDate_ = sortDate;
-    
-#line 29
-    self->isEncrypted__ = isEncrypted;
-  }
+                      withLong:(jlong)sortDate {
+  ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortDate);
   return self;
 }
 
 
-#line 32
+#line 30
 - (instancetype)init {
-  return [super init];
+  ImActorModelModulesMessagesEntityUnreadMessage_init(self);
+  return self;
 }
 
+
+#line 34
 - (AMPeer *)getPeer {
-  
-#line 37
   return peer_;
 }
 
-
-#line 40
 - (jlong)getRid {
-  
-#line 41
   return rid_;
 }
 
-
-#line 44
 - (jlong)getSortDate {
-  
-#line 45
   return sortDate_;
 }
 
 
-#line 48
-- (jboolean)isEncrypted {
-  
-#line 49
-  return isEncrypted__;
-}
-
-
-#line 53
+#line 47
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
   sortDate_ = [values getLongWithInt:3];
-  isEncrypted__ = [values getBoolWithInt:5];
+}
+
+
+#line 54
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
+  [writer writeLongWithInt:2 withLong:rid_];
+  [writer writeLongWithInt:3 withLong:sortDate_];
 }
 
 
 #line 61
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 62
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
-  [writer writeLongWithInt:2 withLong:rid_];
-  [writer writeLongWithInt:3 withLong:sortDate_];
-  [writer writeBoolWithInt:5 withBoolean:isEncrypted__];
-}
-
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 73
+#line 65
   ImActorModelModulesMessagesEntityUnreadMessage *that = (ImActorModelModulesMessagesEntityUnreadMessage *) check_class_cast(o, [ImActorModelModulesMessagesEntityUnreadMessage class]);
   
-#line 75
+#line 67
   if (rid_ != ((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(that))->rid_) return NO;
   if (![((AMPeer *) nil_chk(peer_)) isEqual:that->peer_]) return NO;
   
-#line 78
+#line 70
   return YES;
 }
 
+
+#line 74
 - (NSUInteger)hash {
-  
-#line 83
   jint result = ((jint) [((AMPeer *) nil_chk(peer_)) hash]);
   result = 31 * result + (jint) (rid_ ^ (URShift64(rid_, 32)));
   return result;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelModulesMessagesEntityUnreadMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->rid_ = rid_;
-  other->sortDate_ = sortDate_;
-  other->isEncrypted__ = isEncrypted__;
-}
-
 @end
 
+
+#line 16
 ImActorModelModulesMessagesEntityUnreadMessage *ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesMessagesEntityUnreadMessage_init();
+  ImActorModelModulesMessagesEntityUnreadMessage_initialize();
   
 #line 17
-  return ((ImActorModelModulesMessagesEntityUnreadMessage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesMessagesEntityUnreadMessage alloc] init], data));
+  return ((ImActorModelModulesMessagesEntityUnreadMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityUnreadMessage_init(), data));
+}
+
+
+#line 24
+void ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesEntityUnreadMessage *self, AMPeer *peer, jlong rid, jlong sortDate) {
+  (void) BSBserObject_init(self);
+  
+#line 25
+  self->peer_ = peer;
+  self->rid_ = rid;
+  self->sortDate_ = sortDate;
+}
+
+
+#line 24
+ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortDate) {
+  ImActorModelModulesMessagesEntityUnreadMessage *self = [ImActorModelModulesMessagesEntityUnreadMessage alloc];
+  ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortDate);
+  return self;
+}
+
+void ImActorModelModulesMessagesEntityUnreadMessage_init(ImActorModelModulesMessagesEntityUnreadMessage *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 30
+ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_init() {
+  ImActorModelModulesMessagesEntityUnreadMessage *self = [ImActorModelModulesMessagesEntityUnreadMessage alloc];
+  ImActorModelModulesMessagesEntityUnreadMessage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesEntityUnreadMessage)

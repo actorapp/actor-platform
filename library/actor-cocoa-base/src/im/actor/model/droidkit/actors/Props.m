@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/Props.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/Props.java"
 
 #include "IOSClass.h"
@@ -24,11 +25,13 @@
   id<DKMailboxCreator> mailboxCreator_;
   NSString *dispatcher_;
 }
+
 - (instancetype)initWithIOSClass:(IOSClass *)aClass
                withNSObjectArray:(IOSObjectArray *)args
                     withNSString:(NSString *)dispatcher
               withDKActorCreator:(id<DKActorCreator>)creator
             withDKMailboxCreator:(id<DKMailboxCreator>)mailboxCreator;
+
 @end
 
 J2OBJC_FIELD_SETTER(DKProps, aClass_, IOSClass *)
@@ -36,6 +39,10 @@ J2OBJC_FIELD_SETTER(DKProps, args_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(DKProps, creator_, id<DKActorCreator>)
 J2OBJC_FIELD_SETTER(DKProps, mailboxCreator_, id<DKMailboxCreator>)
 J2OBJC_FIELD_SETTER(DKProps, dispatcher_, NSString *)
+
+__attribute__((unused)) static void DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(DKProps *self, IOSClass *aClass, IOSObjectArray *args, NSString *dispatcher, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator);
+
+__attribute__((unused)) static DKProps *new_DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(IOSClass *aClass, IOSObjectArray *args, NSString *dispatcher, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator) NS_RETURNS_RETAINED;
 
 
 #line 13
@@ -48,61 +55,39 @@ J2OBJC_FIELD_SETTER(DKProps, dispatcher_, NSString *)
                     withNSString:(NSString *)dispatcher
               withDKActorCreator:(id<DKActorCreator>)creator
             withDKMailboxCreator:(id<DKMailboxCreator>)mailboxCreator {
-  if (self = [super init]) {
-    
-#line 24
-    self->aClass_ = aClass;
-    
-#line 25
-    self->args_ = args;
-    
-#line 26
-    self->creator_ = creator;
-    
-#line 27
-    self->mailboxCreator_ = mailboxCreator;
-    
-#line 28
-    self->dispatcher_ = dispatcher;
-  }
+  DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(self, aClass, args, dispatcher, creator, mailboxCreator);
   return self;
 }
 
 
 #line 37
 - (id)create {
-  
-#line 38
   return [((id<DKActorCreator>) nil_chk(creator_)) create];
 }
 
 
 #line 47
 - (DKMailbox *)createMailboxWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
-  
-#line 48
   if (mailboxCreator_ != nil) {
     return [mailboxCreator_ createMailboxWithDKMailboxesQueue:queue];
   }
   else {
     
 #line 51
-    return [[DKMailbox alloc] initWithDKMailboxesQueue:queue];
+    return new_DKMailbox_initWithDKMailboxesQueue_(queue);
   }
 }
 
+
+#line 60
 - (NSString *)getDispatcher {
-  
-#line 61
   return dispatcher_;
 }
 
 
 #line 70
 - (DKProps *)changeDispatcherWithNSString:(NSString *)dispatcher {
-  
-#line 71
-  return [[DKProps alloc] initWithIOSClass:aClass_ withNSObjectArray:args_ withNSString:dispatcher withDKActorCreator:creator_ withDKMailboxCreator:mailboxCreator_];
+  return new_DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(aClass_, args_, dispatcher, creator_, mailboxCreator_);
 }
 
 
@@ -120,29 +105,43 @@ J2OBJC_FIELD_SETTER(DKProps, dispatcher_, NSString *)
   return DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(clazz, creator, mailboxCreator);
 }
 
-- (void)copyAllFieldsTo:(DKProps *)other {
-  [super copyAllFieldsTo:other];
-  other->aClass_ = aClass_;
-  other->args_ = args_;
-  other->creator_ = creator_;
-  other->mailboxCreator_ = mailboxCreator_;
-  other->dispatcher_ = dispatcher_;
-}
-
 @end
 
-DKProps *DKProps_createWithIOSClass_withDKActorCreator_(IOSClass *clazz, id<DKActorCreator> creator) {
-  DKProps_init();
-  
-#line 83
-  return [[DKProps alloc] initWithIOSClass:clazz withNSObjectArray:nil withNSString:nil withDKActorCreator:creator withDKMailboxCreator:nil];
+
+#line 22
+void DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(DKProps *self, IOSClass *aClass, IOSObjectArray *args, NSString *dispatcher, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator) {
+  (void) NSObject_init(self);
+  self->aClass_ = aClass;
+  self->args_ = args;
+  self->creator_ = creator;
+  self->mailboxCreator_ = mailboxCreator;
+  self->dispatcher_ = dispatcher;
 }
 
+
+#line 22
+DKProps *new_DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(IOSClass *aClass, IOSObjectArray *args, NSString *dispatcher, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator) {
+  DKProps *self = [DKProps alloc];
+  DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(self, aClass, args, dispatcher, creator, mailboxCreator);
+  return self;
+}
+
+
+#line 82
+DKProps *DKProps_createWithIOSClass_withDKActorCreator_(IOSClass *clazz, id<DKActorCreator> creator) {
+  DKProps_initialize();
+  
+#line 83
+  return new_DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(clazz, nil, nil, creator, nil);
+}
+
+
+#line 94
 DKProps *DKProps_createWithIOSClass_withDKActorCreator_withDKMailboxCreator_(IOSClass *clazz, id<DKActorCreator> creator, id<DKMailboxCreator> mailboxCreator) {
-  DKProps_init();
+  DKProps_initialize();
   
 #line 95
-  return [[DKProps alloc] initWithIOSClass:clazz withNSObjectArray:nil withNSString:nil withDKActorCreator:creator withDKMailboxCreator:mailboxCreator];
+  return new_DKProps_initWithIOSClass_withNSObjectArray_withNSString_withDKActorCreator_withDKMailboxCreator_(clazz, nil, nil, creator, mailboxCreator);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKProps)

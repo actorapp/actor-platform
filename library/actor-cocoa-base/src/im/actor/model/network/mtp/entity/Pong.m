@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Pong.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Pong.java"
 
 #include "IOSClass.h"
@@ -10,12 +11,14 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/Pong.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
 @interface MTPong () {
  @public
   jlong randomId_;
 }
+
 @end
 
 
@@ -25,25 +28,20 @@
 
 #line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 15
-  [super initWithBSDataInput:stream];
+  MTPong_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 18
 - (instancetype)initWithLong:(jlong)randomId {
-  if (self = [super init]) {
-    self->randomId_ = randomId;
-  }
+  MTPong_initWithLong_(self, randomId);
   return self;
 }
 
 
 #line 22
 - (jlong)getRandomId {
-  
-#line 23
   return randomId_;
 }
 
@@ -56,8 +54,6 @@
 
 #line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 33
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
@@ -67,17 +63,43 @@
   randomId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
 
+
+#line 42
 - (NSString *)description {
-  
-#line 43
   return JreStrcat("$JC", @"Pong{", randomId_, '}');
 }
 
-- (void)copyAllFieldsTo:(MTPong *)other {
-  [super copyAllFieldsTo:other];
-  other->randomId_ = randomId_;
+@end
+
+
+#line 14
+void MTPong_initWithBSDataInput_(MTPong *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 14
+MTPong *new_MTPong_initWithBSDataInput_(BSDataInput *stream) {
+  MTPong *self = [MTPong alloc];
+  MTPong_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 18
+void MTPong_initWithLong_(MTPong *self, jlong randomId) {
+  (void) MTProtoStruct_init(self);
+  
+#line 19
+  self->randomId_ = randomId;
+}
+
+
+#line 18
+MTPong *new_MTPong_initWithLong_(jlong randomId) {
+  MTPong *self = [MTPong alloc];
+  MTPong_initWithLong_(self, randomId);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTPong)

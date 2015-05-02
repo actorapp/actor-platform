@@ -6,53 +6,36 @@
 #ifndef _ImActorModelModulesSearchModule_H_
 #define _ImActorModelModulesSearchModule_H_
 
-@class DKActorRef;
+#include "J2ObjC_header.h"
+#include "im/actor/model/modules/BaseModule.h"
+
 @class IOSObjectArray;
 @class ImActorModelModulesModules;
-@class ImActorModelModulesSearchSearchActor;
 @protocol DKListEngine;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/actors/ActorCreator.h"
-#include "im/actor/model/modules/BaseModule.h"
+@interface ImActorModelModulesSearchModule : ImActorModelModulesBaseModule
 
-@interface ImActorModelModulesSearchModule : ImActorModelModulesBaseModule {
-}
+#pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)run;
-
 - (id<DKListEngine>)getSearchList;
+
+- (void)onContactsChangedWithJavaLangIntegerArray:(IOSObjectArray *)contacts;
 
 - (void)onDialogsChangedWithJavaUtilList:(id<JavaUtilList>)dialogs;
 
-- (void)onContactsChangedWithJavaLangIntegerArray:(IOSObjectArray *)contacts;
+- (void)run;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSearchModule)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesSearchModule *self, ImActorModelModulesModules *modules);
+
+FOUNDATION_EXPORT ImActorModelModulesSearchModule *new_ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchModule)
-
-@interface ImActorModelModulesSearchModule_$1 : NSObject < DKActorCreator > {
-}
-
-- (ImActorModelModulesSearchSearchActor *)create;
-
-- (instancetype)initWithImActorModelModulesSearchModule:(ImActorModelModulesSearchModule *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSearchModule_$1)
-
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchModule_$1)
 
 #endif // _ImActorModelModulesSearchModule_H_

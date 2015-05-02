@@ -6,24 +6,27 @@
 #ifndef _ImActorModelApiRpcRequestSubscribeToOnline_H_
 #define _ImActorModelApiRpcRequestSubscribeToOnline_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Request.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Request.h"
-
 #define ImActorModelApiRpcRequestSubscribeToOnline_HEADER 32
 
-@interface ImActorModelApiRpcRequestSubscribeToOnline : ImActorModelNetworkParserRequest {
-}
+@interface ImActorModelApiRpcRequestSubscribeToOnline : ImActorModelNetworkParserRequest
 
-+ (ImActorModelApiRpcRequestSubscribeToOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users;
 
-- (instancetype)init;
++ (ImActorModelApiRpcRequestSubscribeToOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (id<JavaUtilList>)getUsers;
 
@@ -33,18 +36,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSubscribeToOnline)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSubscribeToOnline, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToOnline *ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSubscribeToOnline, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToOnline *self, id<JavaUtilList> users);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToOnline *new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(id<JavaUtilList> users) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeToOnline_init(ImActorModelApiRpcRequestSubscribeToOnline *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToOnline *new_ImActorModelApiRpcRequestSubscribeToOnline_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSubscribeToOnline)
 

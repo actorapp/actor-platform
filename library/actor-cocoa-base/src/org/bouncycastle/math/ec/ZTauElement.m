@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZTauElement.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZTauElement.java"
 
 #include "J2ObjC_source.h"
@@ -17,23 +18,26 @@
 #line 32
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)u
                     withJavaMathBigInteger:(JavaMathBigInteger *)v {
-  if (self = [super init]) {
-    
-#line 34
-    self->u_ = u;
-    
-#line 35
-    self->v_ = v;
-  }
+  OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, u, v);
   return self;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcZTauElement *)other {
-  [super copyAllFieldsTo:other];
-  other->u_ = u_;
-  other->v_ = v_;
+@end
+
+
+#line 32
+void OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcZTauElement *self, JavaMathBigInteger *u, JavaMathBigInteger *v) {
+  (void) NSObject_init(self);
+  self->u_ = u;
+  self->v_ = v;
 }
 
-@end
+
+#line 32
+OrgBouncycastleMathEcZTauElement *new_OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *u, JavaMathBigInteger *v) {
+  OrgBouncycastleMathEcZTauElement *self = [OrgBouncycastleMathEcZTauElement alloc];
+  OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, u, v);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcZTauElement)

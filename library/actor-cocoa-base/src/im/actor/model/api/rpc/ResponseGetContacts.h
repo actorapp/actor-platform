@@ -6,25 +6,28 @@
 #ifndef _ImActorModelApiRpcResponseGetContacts_H_
 #define _ImActorModelApiRpcResponseGetContacts_H_
 
+#include "J2ObjC_header.h"
+#include "im/actor/model/network/parser/Response.h"
+
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#include "J2ObjC_header.h"
-#include "im/actor/model/network/parser/Response.h"
-
 #define ImActorModelApiRpcResponseGetContacts_HEADER 88
 
-@interface ImActorModelApiRpcResponseGetContacts : ImActorModelNetworkParserResponse {
-}
+@interface ImActorModelApiRpcResponseGetContacts : ImActorModelNetworkParserResponse
 
-+ (ImActorModelApiRpcResponseGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                          withBoolean:(jboolean)isNotChanged;
 
-- (instancetype)init;
++ (ImActorModelApiRpcResponseGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (jint)getHeaderKey;
 
 - (id<JavaUtilList>)getUsers;
 
@@ -36,18 +39,21 @@
 
 - (NSString *)description;
 
-- (jint)getHeaderKey;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetContacts)
 
-CF_EXTERN_C_BEGIN
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetContacts, HEADER, jint)
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseGetContacts *ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetContacts, HEADER, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetContacts_initWithJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetContacts *self, id<JavaUtilList> users, jboolean isNotChanged);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetContacts *new_ImActorModelApiRpcResponseGetContacts_initWithJavaUtilList_withBoolean_(id<JavaUtilList> users, jboolean isNotChanged) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetContacts_init(ImActorModelApiRpcResponseGetContacts *self);
+
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetContacts *new_ImActorModelApiRpcResponseGetContacts_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetContacts)
 

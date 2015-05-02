@@ -6,98 +6,53 @@
 #ifndef _OrgBouncycastleCryptoDigestsMD5Digest_H_
 #define _OrgBouncycastleCryptoDigestsMD5Digest_H_
 
-@class IOSByteArray;
-@class IOSIntArray;
-@protocol OrgBouncycastleUtilMemoable;
-
 #include "J2ObjC_header.h"
 #include "org/bouncycastle/crypto/digests/GeneralDigest.h"
 
-#define OrgBouncycastleCryptoDigestsMD5Digest_DIGEST_LENGTH 16
-#define OrgBouncycastleCryptoDigestsMD5Digest_S11 7
-#define OrgBouncycastleCryptoDigestsMD5Digest_S12 12
-#define OrgBouncycastleCryptoDigestsMD5Digest_S13 17
-#define OrgBouncycastleCryptoDigestsMD5Digest_S14 22
-#define OrgBouncycastleCryptoDigestsMD5Digest_S21 5
-#define OrgBouncycastleCryptoDigestsMD5Digest_S22 9
-#define OrgBouncycastleCryptoDigestsMD5Digest_S23 14
-#define OrgBouncycastleCryptoDigestsMD5Digest_S24 20
-#define OrgBouncycastleCryptoDigestsMD5Digest_S31 4
-#define OrgBouncycastleCryptoDigestsMD5Digest_S32 11
-#define OrgBouncycastleCryptoDigestsMD5Digest_S33 16
-#define OrgBouncycastleCryptoDigestsMD5Digest_S34 23
-#define OrgBouncycastleCryptoDigestsMD5Digest_S41 6
-#define OrgBouncycastleCryptoDigestsMD5Digest_S42 10
-#define OrgBouncycastleCryptoDigestsMD5Digest_S43 15
-#define OrgBouncycastleCryptoDigestsMD5Digest_S44 21
+@class IOSByteArray;
+@protocol OrgBouncycastleUtilMemoable;
 
-@interface OrgBouncycastleCryptoDigestsMD5Digest : OrgBouncycastleCryptoDigestsGeneralDigest {
-}
+@interface OrgBouncycastleCryptoDigestsMD5Digest : OrgBouncycastleCryptoDigestsGeneralDigest
+
+#pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithOrgBouncycastleCryptoDigestsMD5Digest:(OrgBouncycastleCryptoDigestsMD5Digest *)t;
 
-- (NSString *)getAlgorithmName;
-
-- (jint)getDigestSize;
-
-- (void)processWordWithByteArray:(IOSByteArray *)inArg
-                         withInt:(jint)inOff;
-
-- (void)processLengthWithLong:(jlong)bitLength;
+- (id<OrgBouncycastleUtilMemoable>)copy__ OBJC_METHOD_FAMILY_NONE;
 
 - (jint)doFinalWithByteArray:(IOSByteArray *)outArg
                      withInt:(jint)outOff;
 
+- (NSString *)getAlgorithmName;
+
+- (jint)getDigestSize;
+
 - (void)reset;
+
+- (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other;
+
+#pragma mark Protected
 
 - (void)processBlock;
 
-- (id<OrgBouncycastleUtilMemoable>)copy__ OBJC_METHOD_FAMILY_NONE;
+- (void)processLengthWithLong:(jlong)bitLength;
 
-- (void)resetWithOrgBouncycastleUtilMemoable:(id<OrgBouncycastleUtilMemoable>)other;
+- (void)processWordWithByteArray:(IOSByteArray *)inArg
+                         withInt:(jint)inOff;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(OrgBouncycastleCryptoDigestsMD5Digest)
 
-CF_EXTERN_C_BEGIN
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsMD5Digest_init(OrgBouncycastleCryptoDigestsMD5Digest *self);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, DIGEST_LENGTH, jint)
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsMD5Digest *new_OrgBouncycastleCryptoDigestsMD5Digest_init() NS_RETURNS_RETAINED;
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S11, jint)
+FOUNDATION_EXPORT void OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(OrgBouncycastleCryptoDigestsMD5Digest *self, OrgBouncycastleCryptoDigestsMD5Digest *t);
 
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S12, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S13, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S14, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S21, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S22, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S23, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S24, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S31, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S32, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S33, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S34, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S41, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S42, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S43, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsMD5Digest, S44, jint)
-CF_EXTERN_C_END
+FOUNDATION_EXPORT OrgBouncycastleCryptoDigestsMD5Digest *new_OrgBouncycastleCryptoDigestsMD5Digest_initWithOrgBouncycastleCryptoDigestsMD5Digest_(OrgBouncycastleCryptoDigestsMD5Digest *t) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(OrgBouncycastleCryptoDigestsMD5Digest)
 

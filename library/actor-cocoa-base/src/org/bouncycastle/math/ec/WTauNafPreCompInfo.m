@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WTauNafPreCompInfo.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WTauNafPreCompInfo.java"
 
 #include "IOSObjectArray.h"
@@ -30,19 +31,23 @@
 }
 
 - (instancetype)init {
-  if (self = [super init]) {
-    preComp_ =
-#line 15
-    nil;
-  }
+  OrgBouncycastleMathEcWTauNafPreCompInfo_init(self);
   return self;
 }
 
-- (void)copyAllFieldsTo:(OrgBouncycastleMathEcWTauNafPreCompInfo *)other {
-  [super copyAllFieldsTo:other];
-  other->preComp_ = preComp_;
+@end
+
+void OrgBouncycastleMathEcWTauNafPreCompInfo_init(OrgBouncycastleMathEcWTauNafPreCompInfo *self) {
+  (void) NSObject_init(self);
+  self->preComp_ =
+#line 15
+  nil;
 }
 
-@end
+OrgBouncycastleMathEcWTauNafPreCompInfo *new_OrgBouncycastleMathEcWTauNafPreCompInfo_init() {
+  OrgBouncycastleMathEcWTauNafPreCompInfo *self = [OrgBouncycastleMathEcWTauNafPreCompInfo alloc];
+  OrgBouncycastleMathEcWTauNafPreCompInfo_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(OrgBouncycastleMathEcWTauNafPreCompInfo)

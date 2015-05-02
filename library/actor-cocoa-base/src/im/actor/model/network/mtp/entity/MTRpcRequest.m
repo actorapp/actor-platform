@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcRequest.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcRequest.java"
 
 #include "IOSClass.h"
@@ -11,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/network/mtp/entity/MTRpcRequest.h"
+#include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
 
@@ -20,25 +22,20 @@
 
 #line 14
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
-  return
-#line 15
-  [super initWithBSDataInput:stream];
+  MTMTRpcRequest_initWithBSDataInput_(self, stream);
+  return self;
 }
 
 
 #line 18
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
-  if (self = [super init]) {
-    self->payload_ = payload;
-  }
+  MTMTRpcRequest_initWithByteArray_(self, payload);
   return self;
 }
 
 
 #line 22
 - (IOSByteArray *)getPayload {
-  
-#line 23
   return payload_;
 }
 
@@ -51,8 +48,6 @@
 
 #line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
-  
-#line 33
   [((BSDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
@@ -62,17 +57,43 @@
   payload_ = [((BSDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
+
+#line 42
 - (NSString *)description {
-  
-#line 43
   return @"RequestBox";
 }
 
-- (void)copyAllFieldsTo:(MTMTRpcRequest *)other {
-  [super copyAllFieldsTo:other];
-  other->payload_ = payload_;
+@end
+
+
+#line 14
+void MTMTRpcRequest_initWithBSDataInput_(MTMTRpcRequest *self, BSDataInput *stream) {
+  (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-@end
+
+#line 14
+MTMTRpcRequest *new_MTMTRpcRequest_initWithBSDataInput_(BSDataInput *stream) {
+  MTMTRpcRequest *self = [MTMTRpcRequest alloc];
+  MTMTRpcRequest_initWithBSDataInput_(self, stream);
+  return self;
+}
+
+
+#line 18
+void MTMTRpcRequest_initWithByteArray_(MTMTRpcRequest *self, IOSByteArray *payload) {
+  (void) MTProtoStruct_init(self);
+  
+#line 19
+  self->payload_ = payload;
+}
+
+
+#line 18
+MTMTRpcRequest *new_MTMTRpcRequest_initWithByteArray_(IOSByteArray *payload) {
+  MTMTRpcRequest *self = [MTMTRpcRequest alloc];
+  MTMTRpcRequest_initWithByteArray_(self, payload);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTMTRpcRequest)

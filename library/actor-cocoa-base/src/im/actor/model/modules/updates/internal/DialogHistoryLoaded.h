@@ -6,13 +6,14 @@
 #ifndef _ImActorModelModulesUpdatesInternalDialogHistoryLoaded_H_
 #define _ImActorModelModulesUpdatesInternalDialogHistoryLoaded_H_
 
-@class ImActorModelApiRpcResponseLoadDialogs;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
-@interface ImActorModelModulesUpdatesInternalDialogHistoryLoaded : ImActorModelModulesUpdatesInternalInternalUpdate {
-}
+@class ImActorModelApiRpcResponseLoadDialogs;
+
+@interface ImActorModelModulesUpdatesInternalDialogHistoryLoaded : ImActorModelModulesUpdatesInternalInternalUpdate
+
+#pragma mark Public
 
 - (instancetype)initWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogs;
 
@@ -22,8 +23,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalDialogHistoryLoaded)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(ImActorModelModulesUpdatesInternalDialogHistoryLoaded *self, ImActorModelApiRpcResponseLoadDialogs *dialogs);
+
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalDialogHistoryLoaded *new_ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(ImActorModelApiRpcResponseLoadDialogs *dialogs) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded)
 

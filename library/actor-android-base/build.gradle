@@ -30,6 +30,9 @@ dependencies {
     // Network
     compile 'com.squareup.okhttp:okhttp:2.3.0'
 
+    // Analytics
+    compile "com.mixpanel.android:mixpanel-android:4.5.3"
+
     // Android support
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:support-v13:21.0.3'

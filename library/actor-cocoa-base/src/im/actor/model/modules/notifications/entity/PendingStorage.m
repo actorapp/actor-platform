@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/entity/PendingStorage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/entity/PendingStorage.java"
 
 #include "IOSClass.h"
@@ -22,6 +23,7 @@
  @public
   id<JavaUtilList> notifications_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifications_, id<JavaUtilList>)
@@ -37,19 +39,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
 
 #line 23
 - (instancetype)init {
-  if (self = [super init]) {
-    
-#line 24
-    notifications_ = [[JavaUtilArrayList alloc] init];
-  }
+  ImActorModelModulesNotificationsEntityPendingStorage_init(self);
   return self;
 }
 
 
 #line 27
 - (id<JavaUtilList>)getNotifications {
-  
-#line 28
   return notifications_;
 }
 
@@ -58,9 +54,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
   if (count > 0) {
-    JavaUtilArrayList *stubs = [[JavaUtilArrayList alloc] init];
+    JavaUtilArrayList *stubs = new_JavaUtilArrayList_init();
     for (jint i = 0; i < count; i++) {
-      [stubs addWithId:[[ImActorModelModulesNotificationsEntityPendingNotification alloc] init]];
+      [stubs addWithId:new_ImActorModelModulesNotificationsEntityPendingNotification_init()];
     }
     
 #line 40
@@ -69,23 +65,35 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 46
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:notifications_];
-}
-
-- (void)copyAllFieldsTo:(ImActorModelModulesNotificationsEntityPendingStorage *)other {
-  [super copyAllFieldsTo:other];
-  other->notifications_ = notifications_;
 }
 
 @end
 
+
+#line 17
 ImActorModelModulesNotificationsEntityPendingStorage *ImActorModelModulesNotificationsEntityPendingStorage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelModulesNotificationsEntityPendingStorage_init();
+  ImActorModelModulesNotificationsEntityPendingStorage_initialize();
   
 #line 18
-  return ((ImActorModelModulesNotificationsEntityPendingStorage *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelModulesNotificationsEntityPendingStorage alloc] init], data));
+  return ((ImActorModelModulesNotificationsEntityPendingStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesNotificationsEntityPendingStorage_init(), data));
+}
+
+
+#line 23
+void ImActorModelModulesNotificationsEntityPendingStorage_init(ImActorModelModulesNotificationsEntityPendingStorage *self) {
+  (void) BSBserObject_init(self);
+  
+#line 24
+  self->notifications_ = new_JavaUtilArrayList_init();
+}
+
+
+#line 23
+ImActorModelModulesNotificationsEntityPendingStorage *new_ImActorModelModulesNotificationsEntityPendingStorage_init() {
+  ImActorModelModulesNotificationsEntityPendingStorage *self = [ImActorModelModulesNotificationsEntityPendingStorage alloc];
+  ImActorModelModulesNotificationsEntityPendingStorage_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsEntityPendingStorage)

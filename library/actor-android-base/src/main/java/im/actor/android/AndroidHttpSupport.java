@@ -12,11 +12,14 @@ import java.io.IOException;
 import im.actor.model.HttpDownloaderProvider;
 import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.http.FileUploadCallback;
+import im.actor.model.log.Log;
 
 /**
  * Created by ex3ndr on 23.04.15.
  */
 public class AndroidHttpSupport implements HttpDownloaderProvider {
+
+    private static final String TAG = "AndroidHTTP";
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -24,19 +27,23 @@ public class AndroidHttpSupport implements HttpDownloaderProvider {
 
     @Override
     public void downloadPart(String url, int startOffset, int size, int totalSize, final FileDownloadCallback callback) {
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Content-Range", "bytes " + startOffset + "-" + (startOffset + size) + "/" + totalSize)
+                .addHeader("Range", "bytes=" + startOffset + "-" + (startOffset + size))
                 .build();
+        Log.d(TAG, "Downloading part: " + request.toString());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                Log.d(TAG, "Downloading part error: " + request.toString());
+                e.printStackTrace();
                 callback.onDownloadFailure();
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
-                if (response.code() == 200) {
+                Log.d(TAG, "Downloading part response: " + request.toString() + " -> " + response.toString());
+                if (response.code() == 206) {
                     callback.onDownloaded(response.body().bytes());
                 } else {
                     callback.onDownloadFailure();
@@ -47,22 +54,26 @@ public class AndroidHttpSupport implements HttpDownloaderProvider {
 
     @Override
     public void uploadPart(String url, byte[] contents, final FileUploadCallback callback) {
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(url)
                 .method("PUT", RequestBody.create(MEDIA_TYPE, contents))
                 .build();
+        Log.d(TAG, "Uploading part: " + request.toString());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                Log.d(TAG, "Uploading part error: " + request.toString());
+                e.printStackTrace();
                 callback.onUploadFailure();
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
+                Log.d(TAG, "Upload part response: " + request.toString() + " -> " + response.toString());
                 if (response.code() == 200) {
-                    callback.onUploadFailure();
-                } else {
                     callback.onUploaded();
+                } else {
+                    callback.onUploadFailure();
                 }
             }
         });

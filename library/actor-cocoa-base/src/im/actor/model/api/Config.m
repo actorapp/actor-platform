@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Config.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Config.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Config.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
@@ -16,6 +18,7 @@
  @public
   jint maxGroupSize_;
 }
+
 @end
 
 
@@ -25,23 +28,20 @@
 
 #line 23
 - (instancetype)initWithInt:(jint)maxGroupSize {
-  if (self = [super init]) {
-    
-#line 24
-    self->maxGroupSize_ = maxGroupSize;
-  }
+  ImActorModelApiConfig_initWithInt_(self, maxGroupSize);
   return self;
 }
 
 
 #line 27
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiConfig_init(self);
+  return self;
 }
 
+
+#line 31
 - (jint)getMaxGroupSize {
-  
-#line 32
   return self->maxGroupSize_;
 }
 
@@ -54,11 +54,11 @@
 
 #line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 42
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->maxGroupSize_];
 }
 
+
+#line 46
 - (NSString *)description {
   NSString *res = @"struct Config{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"maxGroupSize=", self->maxGroupSize_));
@@ -66,11 +66,37 @@
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiConfig *)other {
-  [super copyAllFieldsTo:other];
-  other->maxGroupSize_ = maxGroupSize_;
+@end
+
+
+#line 23
+void ImActorModelApiConfig_initWithInt_(ImActorModelApiConfig *self, jint maxGroupSize) {
+  (void) BSBserObject_init(self);
+  
+#line 24
+  self->maxGroupSize_ = maxGroupSize;
 }
 
-@end
+
+#line 23
+ImActorModelApiConfig *new_ImActorModelApiConfig_initWithInt_(jint maxGroupSize) {
+  ImActorModelApiConfig *self = [ImActorModelApiConfig alloc];
+  ImActorModelApiConfig_initWithInt_(self, maxGroupSize);
+  return self;
+}
+
+
+#line 27
+void ImActorModelApiConfig_init(ImActorModelApiConfig *self) {
+  (void) BSBserObject_init(self);
+}
+
+
+#line 27
+ImActorModelApiConfig *new_ImActorModelApiConfig_init() {
+  ImActorModelApiConfig *self = [ImActorModelApiConfig alloc];
+  ImActorModelApiConfig_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiConfig)

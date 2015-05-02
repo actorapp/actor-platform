@@ -3,26 +3,33 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Sex.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Sex.java"
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Sex.h"
 #include "java/io/IOException.h"
+#include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
 @interface ImActorModelApiSexEnum () {
  @public
   jint value_;
 }
+
 @end
 
-#line 8
+__attribute__((unused)) static void ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(ImActorModelApiSexEnum *self, jint value, NSString *__name, jint __ordinal);
 
-BOOL ImActorModelApiSexEnum_initialized = NO;
+__attribute__((unused)) static ImActorModelApiSexEnum *new_ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+
+J2OBJC_INITIALIZED_DEFN(ImActorModelApiSexEnum)
 
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[4];
 
+
+#line 8
 @implementation ImActorModelApiSexEnum
 
 
@@ -30,32 +37,25 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_values_[4];
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  if (self = [super initWithNSString:__name withInt:__ordinal]) {
-    
-#line 18
-    self->value_ = value;
-  }
+  ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
 
 #line 21
 - (jint)getValue {
-  
-#line 22
   return value_;
 }
 
-
-#line 25
 + (ImActorModelApiSexEnum *)parseWithInt:(jint)value {
   return ImActorModelApiSexEnum_parseWithInt_(value);
 }
 
 IOSObjectArray *ImActorModelApiSexEnum_values() {
-  ImActorModelApiSexEnum_init();
+  ImActorModelApiSexEnum_initialize();
   return [IOSObjectArray arrayWithObjects:ImActorModelApiSexEnum_values_ count:4 type:ImActorModelApiSexEnum_class_()];
 }
+
 + (IOSObjectArray *)values {
   return ImActorModelApiSexEnum_values();
 }
@@ -65,7 +65,7 @@ IOSObjectArray *ImActorModelApiSexEnum_values() {
 }
 
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelApiSexEnum_init();
+  ImActorModelApiSexEnum_initialize();
   for (int i = 0; i < 4; i++) {
     ImActorModelApiSexEnum *e = ImActorModelApiSexEnum_values_[i];
     if ([name isEqual:[e name]]) {
@@ -82,26 +82,45 @@ ImActorModelApiSexEnum *ImActorModelApiSexEnum_valueOfWithNSString_(NSString *na
 
 + (void)initialize {
   if (self == [ImActorModelApiSexEnum class]) {
-    ImActorModelApiSexEnum_UNKNOWN = [[ImActorModelApiSexEnum alloc] initWithInt:
+    ImActorModelApiSexEnum_UNKNOWN = new_ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(
 #line 10
-    1 withNSString:@"UNKNOWN" withInt:0];
-    ImActorModelApiSexEnum_MALE = [[ImActorModelApiSexEnum alloc] initWithInt:
+    1, @"UNKNOWN", 0);
+    ImActorModelApiSexEnum_MALE = new_ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(
 #line 11
-    2 withNSString:@"MALE" withInt:1];
-    ImActorModelApiSexEnum_FEMALE = [[ImActorModelApiSexEnum alloc] initWithInt:
+    2, @"MALE", 1);
+    ImActorModelApiSexEnum_FEMALE = new_ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(
 #line 12
-    3 withNSString:@"FEMALE" withInt:2];
-    ImActorModelApiSexEnum_UNSUPPORTED_VALUE = [[ImActorModelApiSexEnum alloc] initWithInt:
+    3, @"FEMALE", 2);
+    ImActorModelApiSexEnum_UNSUPPORTED_VALUE = new_ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(
 #line 13
-    -1 withNSString:@"UNSUPPORTED_VALUE" withInt:3];
+    -1, @"UNSUPPORTED_VALUE", 3);
     J2OBJC_SET_INITIALIZED(ImActorModelApiSexEnum)
   }
 }
 
 @end
 
+
+#line 17
+void ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(ImActorModelApiSexEnum *self, jint value, NSString *__name, jint __ordinal) {
+  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  
+#line 18
+  self->value_ = value;
+}
+
+
+#line 17
+ImActorModelApiSexEnum *new_ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  ImActorModelApiSexEnum *self = [ImActorModelApiSexEnum alloc];
+  ImActorModelApiSexEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  return self;
+}
+
+
+#line 25
 ImActorModelApiSexEnum *ImActorModelApiSexEnum_parseWithInt_(jint value) {
-  ImActorModelApiSexEnum_init();
+  ImActorModelApiSexEnum_initialize();
   
 #line 26
   switch (value) {

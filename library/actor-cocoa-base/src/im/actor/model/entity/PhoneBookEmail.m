@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookEmail.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookEmail.java"
 
 #include "J2ObjC_source.h"
@@ -13,6 +14,7 @@
   jlong id__;
   NSString *email_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(AMPhoneBookEmail, email_, NSString *)
@@ -25,39 +27,38 @@ J2OBJC_FIELD_SETTER(AMPhoneBookEmail, email_, NSString *)
 #line 10
 - (instancetype)initWithLong:(jlong)id_
                 withNSString:(NSString *)email {
-  if (self = [super init]) {
-    
-#line 11
-    self->id__ = id_;
-    
-#line 12
-    self->email_ = email;
-  }
+  AMPhoneBookEmail_initWithLong_withNSString_(self, id_, email);
   return self;
 }
 
 
 #line 15
 - (jlong)getId {
-  
-#line 16
   return id__;
 }
 
-
-#line 19
 - (NSString *)getEmail {
-  
-#line 20
   return email_;
 }
 
-- (void)copyAllFieldsTo:(AMPhoneBookEmail *)other {
-  [super copyAllFieldsTo:other];
-  other->id__ = id__;
-  other->email_ = email_;
+@end
+
+
+#line 10
+void AMPhoneBookEmail_initWithLong_withNSString_(AMPhoneBookEmail *self, jlong id_, NSString *email) {
+  (void) NSObject_init(self);
+  
+#line 11
+  self->id__ = id_;
+  self->email_ = email;
 }
 
-@end
+
+#line 10
+AMPhoneBookEmail *new_AMPhoneBookEmail_initWithLong_withNSString_(jlong id_, NSString *email) {
+  AMPhoneBookEmail *self = [AMPhoneBookEmail alloc];
+  AMPhoneBookEmail_initWithLong_withNSString_(self, id_, email);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMPhoneBookEmail)

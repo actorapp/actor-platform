@@ -6,17 +6,20 @@
 #ifndef _DKListEngineRecord_H_
 #define _DKListEngineRecord_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
 
-@interface DKListEngineRecord : NSObject {
-}
+@class IOSByteArray;
+
+@interface DKListEngineRecord : NSObject
+
+#pragma mark Public
 
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)order
                 withNSString:(NSString *)query
                withByteArray:(IOSByteArray *)data;
+
+- (IOSByteArray *)getData;
 
 - (jlong)getKey;
 
@@ -24,17 +27,16 @@
 
 - (NSString *)getQuery;
 
-- (IOSByteArray *)getData;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngineRecord)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(DKListEngineRecord *self, jlong key, jlong order, NSString *query, IOSByteArray *data);
 
-typedef DKListEngineRecord ImActorModelDroidkitEngineListEngineRecord;
+FOUNDATION_EXPORT DKListEngineRecord *new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(jlong key, jlong order, NSString *query, IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngineRecord)
+
+typedef DKListEngineRecord ImActorModelDroidkitEngineListEngineRecord;
 
 #endif // _DKListEngineRecord_H_

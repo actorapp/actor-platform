@@ -6,29 +6,37 @@
 #ifndef _DKPreferencesStorage_H_
 #define _DKPreferencesStorage_H_
 
-@class IOSByteArray;
-
 #include "J2ObjC_header.h"
+
+@class IOSByteArray;
 
 @protocol DKPreferencesStorage < NSObject, JavaObject >
 
-- (void)putLong:(NSString *)key withValue:(jlong)v;
+- (void)putLong:(NSString *)key
+      withValue:(jlong)v;
 
-- (jlong)getLong:(NSString *)key withDefault:(jlong)def;
+- (jlong)getLong:(NSString *)key
+     withDefault:(jlong)def;
 
-- (void)putInt:(NSString *)key withValue:(jint)v;
+- (void)putInt:(NSString *)key
+     withValue:(jint)v;
 
-- (jint)getInt:(NSString *)key withDefault:(jint)def;
+- (jint)getInt:(NSString *)key
+   withDefault:(jint)def;
 
-- (void)putBool:(NSString *)key withValue:(jboolean)v;
+- (void)putBool:(NSString *)key
+      withValue:(jboolean)v;
 
-- (jboolean)getBool:(NSString *)key withDefault:(jboolean)def;
+- (jboolean)getBool:(NSString *)key
+        withDefault:(jboolean)def;
 
-- (void)putBytes:(NSString *)key withValue:(IOSByteArray*)v;
+- (void)putBytes:(NSString *)key
+       withValue:(IOSByteArray *)v;
 
 - (IOSByteArray *)getBytes:(NSString *)key;
 
-- (void)putString:(NSString *)key withValue:(NSString*)v;
+- (void)putString:(NSString *)key
+        withValue:(NSString *)v;
 
 - (NSString *)getString:(NSString *)key;
 
@@ -36,8 +44,8 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKPreferencesStorage)
 
-#define ImActorModelDroidkitEnginePreferencesStorage DKPreferencesStorage
-
 J2OBJC_TYPE_LITERAL_HEADER(DKPreferencesStorage)
+
+#define ImActorModelDroidkitEnginePreferencesStorage DKPreferencesStorage
 
 #endif // _DKPreferencesStorage_H_

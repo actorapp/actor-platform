@@ -6,10 +6,10 @@
 #ifndef _OrgBouncycastleCryptoPaddingsBlockCipherPadding_H_
 #define _OrgBouncycastleCryptoPaddingsBlockCipherPadding_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @protocol BCRandomProvider;
-
-#include "J2ObjC_header.h"
 
 @protocol OrgBouncycastleCryptoPaddingsBlockCipherPadding < NSObject, JavaObject >
 

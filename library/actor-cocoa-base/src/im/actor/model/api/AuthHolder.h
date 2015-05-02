@@ -15,31 +15,27 @@ typedef NS_ENUM(NSUInteger, ImActorModelApiAuthHolder) {
   ImActorModelApiAuthHolder_UNSUPPORTED_VALUE = 2,
 };
 
-@interface ImActorModelApiAuthHolderEnum : JavaLangEnum < NSCopying > {
-}
+@interface ImActorModelApiAuthHolderEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
 
 - (jint)getValue;
 
 + (ImActorModelApiAuthHolderEnum *)parseWithInt:(jint)value;
 
+#pragma mark Package-Private
+
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiAuthHolderEnum_values();
 
 + (ImActorModelApiAuthHolderEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL ImActorModelApiAuthHolderEnum_initialized;
 J2OBJC_STATIC_INIT(ImActorModelApiAuthHolderEnum)
-
-FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value);
 
 FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[];
 
@@ -51,6 +47,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiAuthHolderEnum, OTHERDEVICE)
 
 #define ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE ImActorModelApiAuthHolderEnum_values_[ImActorModelApiAuthHolder_UNSUPPORTED_VALUE]
 J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiAuthHolderEnum, UNSUPPORTED_VALUE)
+
+FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAuthHolderEnum)
 

@@ -6,19 +6,20 @@
 #ifndef _ImActorModelApiEmailToImport_H_
 #define _ImActorModelApiEmailToImport_H_
 
-@class BSBserValues;
-@class BSBserWriter;
-
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelApiEmailToImport : BSBserObject {
-}
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelApiEmailToImport : BSBserObject
+
+#pragma mark Public
+
+- (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)name;
-
-- (instancetype)init;
 
 - (NSString *)getEmail;
 
@@ -34,8 +35,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiEmailToImport)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void ImActorModelApiEmailToImport_initWithNSString_withNSString_(ImActorModelApiEmailToImport *self, NSString *email, NSString *name);
+
+FOUNDATION_EXPORT ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelApiEmailToImport_init(ImActorModelApiEmailToImport *self);
+
+FOUNDATION_EXPORT ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiEmailToImport)
 

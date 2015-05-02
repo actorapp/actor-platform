@@ -15,31 +15,27 @@ typedef NS_ENUM(NSUInteger, AMSex) {
   AMSex_FEMALE = 2,
 };
 
-@interface AMSexEnum : JavaLangEnum < NSCopying > {
-}
+@interface AMSexEnum : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal;
+#pragma mark Public
+
++ (AMSexEnum *)fromValueWithInt:(jint)value;
 
 - (jint)getValue;
 
-+ (AMSexEnum *)fromValueWithInt:(jint)value;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *AMSexEnum_values();
 
 + (AMSexEnum *)valueOfWithNSString:(NSString *)name;
-
 FOUNDATION_EXPORT AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name);
+
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-FOUNDATION_EXPORT BOOL AMSexEnum_initialized;
 J2OBJC_STATIC_INIT(AMSexEnum)
-
-FOUNDATION_EXPORT AMSexEnum *AMSexEnum_fromValueWithInt_(jint value);
 
 FOUNDATION_EXPORT AMSexEnum *AMSexEnum_values_[];
 
@@ -52,8 +48,10 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMSexEnum, MALE)
 #define AMSexEnum_FEMALE AMSexEnum_values_[AMSex_FEMALE]
 J2OBJC_ENUM_CONSTANT_GETTER(AMSexEnum, FEMALE)
 
-typedef AMSexEnum ImActorModelEntitySexEnum;
+FOUNDATION_EXPORT AMSexEnum *AMSexEnum_fromValueWithInt_(jint value);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMSexEnum)
+
+typedef AMSexEnum ImActorModelEntitySexEnum;
 
 #endif // _AMSex_H_

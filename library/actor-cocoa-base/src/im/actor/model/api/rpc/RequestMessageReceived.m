@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestMessageReceived.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestMessageReceived.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiRpcRequestMessageReceived () {
@@ -21,6 +23,7 @@
   ImActorModelApiOutPeer *peer_;
   jlong date_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorModelApiOutPeer *)
@@ -39,56 +42,46 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorMode
 #line 30
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)date {
-  if (self = [super init]) {
-    
-#line 31
-    self->peer_ = peer;
-    
-#line 32
-    self->date_ = date;
-  }
+  ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
   return self;
 }
 
 
 #line 35
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcRequestMessageReceived_init(self);
+  return self;
 }
 
+
+#line 39
 - (ImActorModelApiOutPeer *)getPeer {
-  
-#line 40
   return self->peer_;
 }
 
-
-#line 43
 - (jlong)getDate {
-  
-#line 44
   return self->date_;
 }
 
 
 #line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:[[ImActorModelApiOutPeer alloc] init]];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
   self->date_ = [values getLongWithInt:3];
 }
 
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   if (self->peer_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
+
+#line 63
 - (NSString *)description {
   NSString *res = @"rpc MessageReceived{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -97,25 +90,51 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorMode
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 73
-  return ImActorModelApiRpcRequestMessageReceived_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcRequestMessageReceived *)other {
-  [super copyAllFieldsTo:other];
-  other->peer_ = peer_;
-  other->date_ = date_;
+#line 72
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcRequestMessageReceived_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcRequestMessageReceived *ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestMessageReceived_init();
+  ImActorModelApiRpcRequestMessageReceived_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcRequestMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcRequestMessageReceived alloc] init], data));
+  return ((ImActorModelApiRpcRequestMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestMessageReceived_init(), data));
+}
+
+void ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiRpcRequestMessageReceived *self, ImActorModelApiOutPeer *peer, jlong date) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+  
+#line 31
+  self->peer_ = peer;
+  self->date_ = date;
+}
+
+
+#line 30
+ImActorModelApiRpcRequestMessageReceived *new_ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiOutPeer *peer, jlong date) {
+  ImActorModelApiRpcRequestMessageReceived *self = [ImActorModelApiRpcRequestMessageReceived alloc];
+  ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
+  return self;
+}
+
+
+#line 35
+void ImActorModelApiRpcRequestMessageReceived_init(ImActorModelApiRpcRequestMessageReceived *self) {
+  (void) ImActorModelNetworkParserRequest_init(self);
+}
+
+
+#line 35
+ImActorModelApiRpcRequestMessageReceived *new_ImActorModelApiRpcRequestMessageReceived_init() {
+  ImActorModelApiRpcRequestMessageReceived *self = [ImActorModelApiRpcRequestMessageReceived alloc];
+  ImActorModelApiRpcRequestMessageReceived_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestMessageReceived)

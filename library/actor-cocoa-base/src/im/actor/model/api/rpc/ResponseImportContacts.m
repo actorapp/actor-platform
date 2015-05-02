@@ -3,6 +3,7 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseImportContacts.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseImportContacts.java"
 
 #include "IOSClass.h"
@@ -14,6 +15,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -24,6 +26,7 @@
   jint seq_;
   IOSByteArray *state_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, users_, id<JavaUtilList>)
@@ -44,54 +47,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                              withInt:(jint)seq
                        withByteArray:(IOSByteArray *)state {
-  if (self = [super init]) {
-    
-#line 32
-    self->users_ = users;
-    
-#line 33
-    self->seq_ = seq;
-    
-#line 34
-    self->state_ = state;
-  }
+  ImActorModelApiRpcResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(self, users, seq, state);
   return self;
 }
 
 
 #line 37
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiRpcResponseImportContacts_init(self);
+  return self;
 }
 
+
+#line 41
 - (id<JavaUtilList>)getUsers {
-  
-#line 42
   return self->users_;
 }
 
-
-#line 45
 - (jint)getSeq {
-  
-#line 46
   return self->seq_;
 }
 
-
-#line 49
 - (IOSByteArray *)getState {
-  
-#line 50
   return self->state_;
 }
 
 
 #line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  id<JavaUtilList> _users = [[JavaUtilArrayList alloc] init];
+  id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:[[ImActorModelApiUser alloc] init]];
+    [_users addWithId:new_ImActorModelApiUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
   self->seq_ = [values getIntWithInt:2];
@@ -101,42 +87,68 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseImportContacts, state_, IOSByteArr
 
 #line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 66
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
   [writer writeIntWithInt:2 withInt:self->seq_];
   if (self->state_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:3 withByteArray:self->state_];
 }
 
+
+#line 75
 - (NSString *)description {
   NSString *res = @"tuple ImportContacts{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-- (jint)getHeaderKey {
-  
-#line 83
-  return ImActorModelApiRpcResponseImportContacts_HEADER;
-}
 
-- (void)copyAllFieldsTo:(ImActorModelApiRpcResponseImportContacts *)other {
-  [super copyAllFieldsTo:other];
-  other->users_ = users_;
-  other->seq_ = seq_;
-  other->state_ = state_;
+#line 82
+- (jint)getHeaderKey {
+  return ImActorModelApiRpcResponseImportContacts_HEADER;
 }
 
 @end
 
+
+#line 23
 ImActorModelApiRpcResponseImportContacts *ImActorModelApiRpcResponseImportContacts_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseImportContacts_init();
+  ImActorModelApiRpcResponseImportContacts_initialize();
   
 #line 24
-  return ((ImActorModelApiRpcResponseImportContacts *) BSBser_parseWithBSBserObject_withByteArray_([[ImActorModelApiRpcResponseImportContacts alloc] init], data));
+  return ((ImActorModelApiRpcResponseImportContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseImportContacts_init(), data));
+}
+
+
+#line 31
+void ImActorModelApiRpcResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(ImActorModelApiRpcResponseImportContacts *self, id<JavaUtilList> users, jint seq, IOSByteArray *state) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+  
+#line 32
+  self->users_ = users;
+  self->seq_ = seq;
+  self->state_ = state;
+}
+
+
+#line 31
+ImActorModelApiRpcResponseImportContacts *new_ImActorModelApiRpcResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(id<JavaUtilList> users, jint seq, IOSByteArray *state) {
+  ImActorModelApiRpcResponseImportContacts *self = [ImActorModelApiRpcResponseImportContacts alloc];
+  ImActorModelApiRpcResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(self, users, seq, state);
+  return self;
+}
+
+void ImActorModelApiRpcResponseImportContacts_init(ImActorModelApiRpcResponseImportContacts *self) {
+  (void) ImActorModelNetworkParserResponse_init(self);
+}
+
+
+#line 37
+ImActorModelApiRpcResponseImportContacts *new_ImActorModelApiRpcResponseImportContacts_init() {
+  ImActorModelApiRpcResponseImportContacts *self = [ImActorModelApiRpcResponseImportContacts alloc];
+  ImActorModelApiRpcResponseImportContacts_init(self);
+  return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseImportContacts)

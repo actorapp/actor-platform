@@ -6,13 +6,14 @@
 #ifndef _BSDataInput_H_
 #define _BSDataInput_H_
 
+#include "J2ObjC_header.h"
+
 @class IOSByteArray;
 @class IOSLongArray;
 
-#include "J2ObjC_header.h"
+@interface BSDataInput : NSObject
 
-@interface BSDataInput : NSObject {
-}
+#pragma mark Public
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data;
 
@@ -24,35 +25,11 @@
 
 - (jint)getMaxOffset;
 
-- (jboolean)isEOF;
-
 - (jint)getOffset;
 
 - (jint)getRemaining;
 
-- (void)skipWithInt:(jint)size;
-
-- (jint)readByte;
-
-- (jint)readInt;
-
-- (jlong)readLong;
-
-- (jlong)readUInt;
-
-- (IOSByteArray *)readBytesWithInt:(jint)count;
-
-- (jint)readVarInt32;
-
-- (jlong)readVarInt;
-
-- (IOSByteArray *)readProtoBytes;
-
-- (IOSLongArray *)readProtoLongs;
-
-- (NSString *)readProtoString;
-
-- (jboolean)readProtoBool;
+- (jboolean)isEOF;
 
 - (jint)readASN1Length;
 
@@ -60,15 +37,44 @@
 
 - (jint)readASN1TagNumberWithInt:(jint)tag;
 
+- (jint)readByte;
+
+- (IOSByteArray *)readBytesWithInt:(jint)count;
+
+- (jint)readInt;
+
+- (jlong)readLong;
+
+- (jboolean)readProtoBool;
+
+- (IOSByteArray *)readProtoBytes;
+
+- (IOSLongArray *)readProtoLongs;
+
+- (NSString *)readProtoString;
+
+- (jlong)readUInt;
+
+- (jlong)readVarInt;
+
+- (jint)readVarInt32;
+
+- (void)skipWithInt:(jint)size;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSDataInput)
 
-CF_EXTERN_C_BEGIN
-CF_EXTERN_C_END
+FOUNDATION_EXPORT void BSDataInput_initWithByteArray_(BSDataInput *self, IOSByteArray *data);
 
-typedef BSDataInput ImActorModelDroidkitBserDataInput;
+FOUNDATION_EXPORT BSDataInput *new_BSDataInput_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void BSDataInput_initWithByteArray_withInt_withInt_(BSDataInput *self, IOSByteArray *data, jint offset, jint len);
+
+FOUNDATION_EXPORT BSDataInput *new_BSDataInput_initWithByteArray_withInt_withInt_(IOSByteArray *data, jint offset, jint len) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(BSDataInput)
+
+typedef BSDataInput ImActorModelDroidkitBserDataInput;
 
 #endif // _BSDataInput_H_

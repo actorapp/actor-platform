@@ -6,9 +6,9 @@
 #ifndef _OrgBouncycastleMathEcEndoECEndomorphism_H_
 #define _OrgBouncycastleMathEcEndoECEndomorphism_H_
 
-@protocol OrgBouncycastleMathEcECPointMap;
-
 #include "J2ObjC_header.h"
+
+@protocol OrgBouncycastleMathEcECPointMap;
 
 @protocol OrgBouncycastleMathEcEndoECEndomorphism < NSObject, JavaObject >
 

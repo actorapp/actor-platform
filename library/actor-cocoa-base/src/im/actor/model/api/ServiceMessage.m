@@ -3,11 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceMessage.java
 //
 
+
 #line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceMessage.java"
 
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -19,6 +21,7 @@
   NSString *text_;
   ImActorModelApiServiceEx *ext_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, text_, NSString *)
@@ -32,42 +35,28 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 #line 24
 - (instancetype)initWithNSString:(NSString *)text
     withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext {
-  if (self = [super init]) {
-    
-#line 25
-    self->text_ = text;
-    
-#line 26
-    self->ext_ = ext;
-  }
+  ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(self, text, ext);
   return self;
 }
 
 
 #line 29
 - (instancetype)init {
-  return [super init];
+  ImActorModelApiServiceMessage_init(self);
+  return self;
 }
 
+
+#line 33
 - (jint)getHeader {
-  
-#line 34
   return 2;
 }
 
-
-#line 37
 - (NSString *)getText {
-  
-#line 38
   return self->text_;
 }
 
-
-#line 41
 - (ImActorModelApiServiceEx *)getExt {
-  
-#line 42
   return self->ext_;
 }
 
@@ -76,25 +65,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
-    self->ext_ = ImActorModelApiServiceEx_fromBytesWithInt_withByteArray_([values getIntWithInt:2], [values getBytesWithInt:3]);
+    self->ext_ = ImActorModelApiServiceEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
   }
 }
 
 
 #line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  
-#line 55
   if (self->text_ == nil) {
-    @throw [[JavaIoIOException alloc] init];
+    @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
   if (self->ext_ != nil) {
-    [writer writeIntWithInt:2 withInt:[self->ext_ getHeader]];
-    [writer writeBytesWithInt:3 withByteArray:[self->ext_ toByteArray]];
+    [writer writeBytesWithInt:3 withByteArray:[self->ext_ buildContainer]];
   }
 }
 
+
+#line 65
 - (NSString *)description {
   NSString *res = @"struct ServiceMessage{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
@@ -103,12 +91,38 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
   return res;
 }
 
-- (void)copyAllFieldsTo:(ImActorModelApiServiceMessage *)other {
-  [super copyAllFieldsTo:other];
-  other->text_ = text_;
-  other->ext_ = ext_;
+@end
+
+
+#line 24
+void ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(ImActorModelApiServiceMessage *self, NSString *text, ImActorModelApiServiceEx *ext) {
+  (void) ImActorModelApiMessage_init(self);
+  
+#line 25
+  self->text_ = text;
+  self->ext_ = ext;
 }
 
-@end
+
+#line 24
+ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(NSString *text, ImActorModelApiServiceEx *ext) {
+  ImActorModelApiServiceMessage *self = [ImActorModelApiServiceMessage alloc];
+  ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(self, text, ext);
+  return self;
+}
+
+
+#line 29
+void ImActorModelApiServiceMessage_init(ImActorModelApiServiceMessage *self) {
+  (void) ImActorModelApiMessage_init(self);
+}
+
+
+#line 29
+ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_init() {
+  ImActorModelApiServiceMessage *self = [ImActorModelApiServiceMessage alloc];
+  ImActorModelApiServiceMessage_init(self);
+  return self;
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceMessage)
