@@ -52,7 +52,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
                     // Message
                     date,
                     senderName, showSender,
-                    (fileUrl == null ? "" : "avatar# ") + messageText, highlightContent,
+                    messageText, highlightContent,
                     Enums.convert(src.getStatus()),
                     src.getUnreadCount());
         }
