@@ -120,18 +120,21 @@ class DepartmentsSpec extends BasicDashboardSpec {
       val root = depts(0)
       (root \ "title").as[String] shouldEqual Depts.root.name
       (root \ "id").as[Int] shouldEqual LTree(Depts.root.struct).value.mkString.toInt
+      (root \ "internal-id").as[String] shouldEqual LTree(Depts.root.struct).toString
       val rootItems = (root \ "items").as[JsArray]
       rootItems.value should have length 1
 
       val main = rootItems(0)
       (main \ "title").as[String] shouldEqual Depts.main.name
       (main \ "id").as[Int] shouldEqual LTree(Depts.main.struct).value.mkString.toInt
+      (main \ "internal-id").as[String] shouldEqual LTree(Depts.main.struct).toString
       val mainItems = (main \ "items").as[JsArray]
       mainItems.value should have length 1
 
       val subDept = mainItems(0)
       (subDept \ "title").as[String] shouldEqual Depts.subDept.name
       (subDept \ "id").as[Int] shouldEqual LTree(Depts.subDept.struct).value.mkString.toInt
+      (subDept \ "internal-id").as[String] shouldEqual LTree(Depts.subDept.struct).toString
       val subDeptItems = (subDept \ "items").as[JsArray]
       subDeptItems.value shouldBe empty
     }
