@@ -138,17 +138,35 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
     @Override
     public void onFileLoaded(long fileId) {
-        boolean founded = false;
-        for (Dialog dialog : getDialogsList().getRawItems()) {
-            Avatar avatar = dialog.getDialogAvatar();
-            if (avatar != null && avatar.getSmallImage() != null &&
-                    avatar.getSmallImage().getFileReference().getFileId() == fileId) {
-                founded = true;
-                break;
+        if (dialogsList != null) {
+            boolean founded = false;
+            for (Dialog dialog : dialogsList.getRawItems()) {
+                Avatar avatar = dialog.getDialogAvatar();
+                if (avatar != null && avatar.getSmallImage() != null &&
+                        avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+                    founded = true;
+                    break;
+                }
+            }
+            if (founded) {
+                dialogsList.forceReconvert();
             }
         }
-        if (founded) {
-            getDialogsList().forceReconvert();
+
+        for (AngularList<JsMessage, Message> messageList : messagesList.values()) {
+            boolean founded = false;
+            for (Message dialog : messageList.getRawItems()) {
+                UserVM user = modules().getUsersModule().getUsersCollection().get(dialog.getSenderId());
+                Avatar avatar = user.getAvatar().get();
+                if (avatar != null && avatar.getSmallImage() != null &&
+                        avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+                    founded = true;
+                    break;
+                }
+            }
+            if (founded) {
+                messageList.forceReconvert();
+            }
         }
     }
 }
