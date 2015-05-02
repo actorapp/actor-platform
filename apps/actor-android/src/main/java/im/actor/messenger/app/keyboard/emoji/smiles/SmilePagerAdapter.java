@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.keyboard.emoji.smiles.SmilesPack;
@@ -32,7 +35,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -40,20 +43,24 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
         View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.emoji_smiles_page, null);
         ViewGroup emojicontainer = (ViewGroup) itemView.findViewById(R.id.emojiPackContainer);
 
-        long[] emojiPack = new long[0];
+        ArrayList<Long> emojiPack = new ArrayList<Long>();
         switch (position) {
             case 0:
-                emojiPack = SmilesPack.STANDART;
+                emojiPack = SmilesPack.getRecent();
                 break;
             case 1:
-                emojiPack = SmilesPack.NATURE;
+                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.STANDART));
                 break;
             case 2:
-                emojiPack = SmilesPack.TRANSPORT;
+                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.NATURE));
                 break;
             case 3:
-                emojiPack = SmilesPack.UNSORTED;
+                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.TRANSPORT));
                 break;
+            case 4:
+                emojiPack = new ArrayList<Long>(Arrays.asList(SmilesPack.UNSORTED));
+                break;
+
         }
 
         int emojisMaxRowCount = 8;
@@ -62,7 +69,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
         if (Screen.getWidth() / emojiSize < emojisMaxRowCount) {
             emojisMaxRowCount = Screen.getWidth() / emojiSize;
         }
-        SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), core().getSmileProcessor(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
+        final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), core().getSmileProcessor(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         emojicontainer.addView(smilesPackView, params);
@@ -73,7 +80,13 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
                 emojiKeyboard.onEmojiClicked(smile);
             }
         });
+        SmilesPack.setOnRecentChangeListener(new OnRecentChangeListener(){
 
+            @Override
+            public void onRecentChange() {
+                smilesPackView.update();
+            }
+        });
         container.addView(itemView, 0);
         return itemView;
     }
@@ -93,15 +106,37 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
 
         ImageButton tabView = new ImageButton(context);
         //if(position==0){
-        tabView.setImageResource(R.drawable.ic_emoji);
-        tabView.setPadding(24, 0, 24, 0);
-        //} else{
-                /*tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        int icon;
+        switch (position) {
+            case 0:
+                icon = R.drawable.ic_smiles_recent;
+                break;
+            case 1:
+                icon = R.drawable.ic_smiles_smile;
+                break;
+            case 2:
+                icon = R.drawable.ic_smiles_bell;//R.drawable.ic_smiles_flower;
+                break;
+            /*case 3:
+                icon = R.drawable.ic_smiles_bell;
+                break;*/
+            case  3://4:
+                icon = R.drawable.ic_smiles_car;
+                break;
+            case 4://5:
+                icon = R.drawable.ic_smiles_grid;
+                break;
+            default:
+                icon = R.drawable.ic_smiles_smile;
+        }
+        tabView.setImageResource(icon);
+        /*//} else{
+                *//*tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 tabView.setAdjustViewBounds(true);
                 //tabView.setCropToPadding(false);
                 StickersPack pack = Stickers.getPacks()[position - 1];
-                tabView.setImageURI(Uri.parse(Stickers.getFile(pack.getId(), pack.getLogoStickerId())));*/
-        //}
+                tabView.setImageURI(Uri.parse(Stickers.getFile(pack.getId(), pack.getLogoStickerId())));*//*
+        //}*/
         return tabView;
     }
 

@@ -93,9 +93,6 @@ public class EmojiKeyboard extends BaseKeyboard
     }
 
 
-
-
-
     public void setOnStickerClickListener(OnStickerClickListener listener) {
         this.onStickerClickListener = listener;
     }
@@ -135,7 +132,6 @@ public class EmojiKeyboard extends BaseKeyboard
         @Override
         public int getCount() {
             return 1 + Stickers.getPacks().length;
-            // todo count stickers packs?
         }
 
         @Override
@@ -194,7 +190,7 @@ public class EmojiKeyboard extends BaseKeyboard
         emojiPagerIndicator.setIndicatorHeight(Screen.dp(2));
         emojiPagerIndicator.setDividerColor(0x00000000);
         emojiPagerIndicator.setUnderlineHeight(0);
-        emojiPagerIndicator.setTabPaddingLeftRight(0);
+        emojiPagerIndicator.setTabLayoutParams(new LinearLayout.LayoutParams(Screen.dp(48), Screen.dp(48)));
 
         backspace.setOnTouchListener(new RepeatListener(500, 100, new OnClickListener() {
             @Override
