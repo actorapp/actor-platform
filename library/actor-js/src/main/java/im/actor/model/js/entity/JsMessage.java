@@ -8,9 +8,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.js.JsMessenger;
+import im.actor.model.util.Base64Utils;
 
 /**
  * Created by ex3ndr on 27.03.15.
@@ -32,6 +34,14 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentText.create(((TextContent) value.getContent()).getText());
             } else if (value.getContent() instanceof ServiceContent) {
                 content = JsContentService.create(modules.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
+            } else if (value.getContent() instanceof PhotoContent) {
+                PhotoContent photo = (PhotoContent) value.getContent();
+                String thumb = null;
+                if (photo.getFastThumb() != null) {
+                    String thumbBase64 = Base64Utils.toBase64(photo.getFastThumb().getImage());
+                    thumb = "data:image/jpg;base64," + thumbBase64;
+                }
+                content = JsContentPhoto.create(photo.getW(), photo.getH(), thumb, null);
             } else {
                 content = JsContentUnsupported.create();
             }
