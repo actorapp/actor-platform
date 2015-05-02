@@ -1,9 +1,5 @@
 //
-//  AAAvatarView.swift
-//  ActorApp
-//
-//  Created by Danil Gontovnik on 4/13/15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -19,7 +15,6 @@ class AAAvatarView: UIImageView {
     // MARK: Private vars
     
     private let cacheSize = 10;
-    private let loadingPool = SThreadPool()
     private var avatarCache = Dictionary<Int, SwiftlyLRU<Int64, UIImage>>()
     
     // MARK: -
