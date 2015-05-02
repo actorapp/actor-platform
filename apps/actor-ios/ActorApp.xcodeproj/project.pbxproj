@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -43,8 +43,6 @@
 		060323301ADF078200C73C0F /* NavigtionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */; };
 		060323621AE0667400C73C0F /* AAAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323611AE0667400C73C0F /* AAAuthController.swift */; };
 		060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323651AE07D1000C73C0F /* MainSplitViewController.swift */; };
-		06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D051ABF85FD002091CC /* AASerializationHelpers.m */; };
-		06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06047D071ABF8611002091CC /* CocoaTcpConnection.m */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
 		062774371AC070F700A4A8B3 /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774361AC070F700A4A8B3 /* SearchSource.swift */; };
 		062774391AC073D700A4A8B3 /* ContactsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774381AC073D700A4A8B3 /* ContactsSource.swift */; };
@@ -71,8 +69,8 @@
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
 		06A16C251ACA9F5700EA96BD /* ABActionShit.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A16C241ACA9F5700EA96BD /* ABActionShit.m */; };
-		06A5B0E51AEE8A47003E134A /* PhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */; };
-		06A5B8D41AEE9CB2003E134A /* HttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */; };
+		06A5B0E51AEE8A47003E134A /* iOSPhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */; };
+		06A5B8D41AEE9CB2003E134A /* CocoaHttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */; };
 		06A907D11AB7AE8200E087EA /* notification.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 06A907D01AB7AE8200E087EA /* notification.aiff */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
@@ -704,7 +702,7 @@
 		06C97C981AF40D0800E16F19 /* Pack.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C97A2B1AF40D0800E16F19 /* Pack.m */; };
 		06C97C991AF40D0800E16F19 /* Shorts.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C97A2D1AF40D0800E16F19 /* Shorts.m */; };
 		06C97C9A1AF40D0800E16F19 /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C97A2F1AF40D0800E16F19 /* Strings.m */; };
-		06C97C9D1AF4225000E16F19 /* TcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C97C9C1AF4225000E16F19 /* TcpConnection.swift */; };
+		06C97C9D1AF4225000E16F19 /* CocoaTcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C97C9C1AF4225000E16F19 /* CocoaTcpConnection.swift */; };
 		06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */; };
 		06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */; };
 		06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */; };
@@ -716,17 +714,13 @@
 		06D1D7861ACAE31000AC22ED /* AppText.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06D1D7821ACAE31000AC22ED /* AppText.properties */; };
 		06D1D7871ACAE31000AC22ED /* Months_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06D1D7831ACAE31000AC22ED /* Months_Ru.properties */; };
 		06D1D7881ACAE31000AC22ED /* Months.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06D1D7841ACAE31000AC22ED /* Months.properties */; };
-		06D1EEC81ACAEC8A00AC22ED /* DispatcherProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */; };
+		06D1EEC81ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC71ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift */; };
 		06D1EECA1ACB381100AC22ED /* CocoaCryptoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */; };
 		06D8D8BE1AB430EE00A80E40 /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */; };
 		06D8D8C01AB431D800A80E40 /* FMDBKeyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8BF1AB431D800A80E40 /* FMDBKeyValue.swift */; };
 		06D8D8C21AB4390600A80E40 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8C11AB4390600A80E40 /* Conversions.swift */; };
 		06D8D8C41AB43BA100A80E40 /* CocoaStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */; };
 		06E281DE1AAEDDB00070EE18 /* DialogsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */; };
-		06E484291AB78D7400AA272F /* SThreadPoolTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484241AB78D7300AA272F /* SThreadPoolTask.m */; };
-		06E4842A1AB78D7400AA272F /* SThreadPoolQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484251AB78D7300AA272F /* SThreadPoolQueue.m */; };
-		06E4842B1AB78D7400AA272F /* SThreadPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484281AB78D7400AA272F /* SThreadPool.m */; };
-		06E4842F1AB7920200AA272F /* SQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4842D1AB7920100AA272F /* SQueue.m */; };
 		06E484311AB7933100AA272F /* LruCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06E484301AB7933100AA272F /* LruCache.swift */; };
 		06ED29861AB2373800719875 /* CocoaFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ED29851AB2373800719875 /* CocoaFileSystem.swift */; };
 		06F6B7101AB0CE9600A7DB91 /* Resouces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */; };
@@ -793,10 +787,6 @@
 		0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigtionExtensions.swift; sourceTree = "<group>"; };
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
-		06047D041ABF85E9002091CC /* AASerializationHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AASerializationHelpers.h; sourceTree = "<group>"; };
-		06047D051ABF85FD002091CC /* AASerializationHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AASerializationHelpers.m; sourceTree = "<group>"; };
-		06047D071ABF8611002091CC /* CocoaTcpConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CocoaTcpConnection.m; sourceTree = "<group>"; };
-		06047D091ABF8621002091CC /* CocoaTcpConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CocoaTcpConnection.h; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
 		062774361AC070F700A4A8B3 /* SearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSource.swift; sourceTree = "<group>"; };
 		062774381AC073D700A4A8B3 /* ContactsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsSource.swift; sourceTree = "<group>"; };
@@ -829,8 +819,8 @@
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
 		06A16C231ACA9F5700EA96BD /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABActionShit.h; sourceTree = "<group>"; };
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
-		06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneBookProvider.swift; sourceTree = "<group>"; };
-		06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpProvider.swift; sourceTree = "<group>"; };
+		06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
+		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaHttpProvider.swift; sourceTree = "<group>"; };
 		06A907D01AB7AE8200E087EA /* notification.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = notification.aiff; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineListController.swift; sourceTree = "<group>"; };
@@ -2081,7 +2071,7 @@
 		06C97A2D1AF40D0800E16F19 /* Shorts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shorts.m; sourceTree = "<group>"; };
 		06C97A2E1AF40D0800E16F19 /* Strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		06C97A2F1AF40D0800E16F19 /* Strings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Strings.m; sourceTree = "<group>"; };
-		06C97C9C1AF4225000E16F19 /* TcpConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TcpConnection.swift; sourceTree = "<group>"; };
+		06C97C9C1AF4225000E16F19 /* CocoaTcpConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaTcpConnection.swift; sourceTree = "<group>"; };
 		06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev1.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev1.xcconfig"; sourceTree = "<group>"; };
 		06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev2.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev2.xcconfig"; sourceTree = "<group>"; };
@@ -2093,21 +2083,13 @@
 		06D1D7821ACAE31000AC22ED /* AppText.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = AppText.properties; path = "../../../../../../library/actor-common/src/main/resources/AppText.properties"; sourceTree = "<group>"; };
 		06D1D7831ACAE31000AC22ED /* Months_Ru.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = Months_Ru.properties; path = "../../../../../../library/actor-common/src/main/resources/Months_Ru.properties"; sourceTree = "<group>"; };
 		06D1D7841ACAE31000AC22ED /* Months.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = Months.properties; path = "../../../../../../library/actor-common/src/main/resources/Months.properties"; sourceTree = "<group>"; };
-		06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatcherProvider.swift; sourceTree = "<group>"; };
+		06D1EEC71ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaDispatcherProvider.swift; sourceTree = "<group>"; };
 		06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaCryptoProvider.swift; sourceTree = "<group>"; };
 		06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBExtensions.swift; sourceTree = "<group>"; };
 		06D8D8BF1AB431D800A80E40 /* FMDBKeyValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBKeyValue.swift; sourceTree = "<group>"; };
 		06D8D8C11AB4390600A80E40 /* Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
 		06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaStorage.swift; sourceTree = "<group>"; };
 		06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DialogsViewController.swift; path = ../DialogsViewController.swift; sourceTree = "<group>"; };
-		06E484231AB78D7300AA272F /* SThreadPoolTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SThreadPoolTask.h; sourceTree = "<group>"; };
-		06E484241AB78D7300AA272F /* SThreadPoolTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPoolTask.m; sourceTree = "<group>"; };
-		06E484251AB78D7300AA272F /* SThreadPoolQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPoolQueue.m; sourceTree = "<group>"; };
-		06E484261AB78D7300AA272F /* SThreadPoolQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SThreadPoolQueue.h; sourceTree = "<group>"; };
-		06E484271AB78D7300AA272F /* SThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SThreadPool.h; sourceTree = "<group>"; };
-		06E484281AB78D7400AA272F /* SThreadPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SThreadPool.m; sourceTree = "<group>"; };
-		06E4842D1AB7920100AA272F /* SQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQueue.m; sourceTree = "<group>"; };
-		06E4842E1AB7920200AA272F /* SQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQueue.h; sourceTree = "<group>"; };
 		06E484301AB7933100AA272F /* LruCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LruCache.swift; sourceTree = "<group>"; };
 		06ED29851AB2373800719875 /* CocoaFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaFileSystem.swift; sourceTree = "<group>"; };
 		06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resouces.swift; sourceTree = "<group>"; };
@@ -2338,17 +2320,6 @@
 			name = iPad;
 			sourceTree = "<group>";
 		};
-		06047D031ABF85CD002091CC /* network */ = {
-			isa = PBXGroup;
-			children = (
-				06047D041ABF85E9002091CC /* AASerializationHelpers.h */,
-				06047D051ABF85FD002091CC /* AASerializationHelpers.m */,
-				06047D071ABF8611002091CC /* CocoaTcpConnection.m */,
-				06047D091ABF8621002091CC /* CocoaTcpConnection.h */,
-			);
-			name = network;
-			sourceTree = "<group>";
-		};
 		0612BC901AE48FDB001EE387 /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -2362,18 +2333,17 @@
 		0649DCE91AE6472200070F7D /* Providers */ = {
 			isa = PBXGroup;
 			children = (
-				06047D031ABF85CD002091CC /* network */,
 				256388CB1A99C7B500A5E0E3 /* storage */,
 				06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */,
 				06ED29851AB2373800719875 /* CocoaFileSystem.swift */,
 				06FCF1771AB60BFC00422FEC /* CocoaMainThreadProvider.swift */,
-				063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */,
-				06D1EEC71ACAEC8A00AC22ED /* DispatcherProvider.swift */,
+				06D1EEC71ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift */,
 				06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */,
 				06FCF1751AB60B0F00422FEC /* CocoaLogProvider.swift */,
-				06A5B0E41AEE8A47003E134A /* PhoneBookProvider.swift */,
-				06A5B8D31AEE9CB2003E134A /* HttpProvider.swift */,
-				06C97C9C1AF4225000E16F19 /* TcpConnection.swift */,
+				06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */,
+				06C97C9C1AF4225000E16F19 /* CocoaTcpConnection.swift */,
+				063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */,
+				06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */,
 			);
 			name = Providers;
 			sourceTree = "<group>";
@@ -4342,14 +4312,6 @@
 				06FA65631AB19DE000BE0A41 /* Imaging.swift */,
 				064903781AB38C6200FA7B1C /* Strings.swift */,
 				06E484301AB7933100AA272F /* LruCache.swift */,
-				06E4842D1AB7920100AA272F /* SQueue.m */,
-				06E4842E1AB7920200AA272F /* SQueue.h */,
-				06E484231AB78D7300AA272F /* SThreadPoolTask.h */,
-				06E484241AB78D7300AA272F /* SThreadPoolTask.m */,
-				06E484251AB78D7300AA272F /* SThreadPoolQueue.m */,
-				06E484261AB78D7300AA272F /* SThreadPoolQueue.h */,
-				06E484271AB78D7300AA272F /* SThreadPool.h */,
-				06E484281AB78D7400AA272F /* SThreadPool.m */,
 				050B225C1ACBE5B900A0E904 /* ColorExtension.swift */,
 				051542E61ACD18050062E3E3 /* Utils.swift */,
 				0699D4CC1ADCA18E0005AB9B /* UIAppearance+Swift.h */,
@@ -4572,7 +4534,7 @@
 				};
 			};
 			buildConfigurationList = 2537F8281A966B9D004A02E9 /* Build configuration list for PBXProject "ActorApp" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -4674,7 +4636,6 @@
 				06C97A7A1AF40D0800E16F19 /* RequestRemoveContact.m in Sources */,
 				06C97BFE1AF40D0800E16F19 /* RpcFloodWait.m in Sources */,
 				065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */,
-				06E4842F1AB7920200AA272F /* SQueue.m in Sources */,
 				06C97AAE1AF40D0800E16F19 /* TextMessageExUnsupported.m in Sources */,
 				06C97A3D1AF40D0800E16F19 /* DifferenceUpdate.m in Sources */,
 				06C97A391AF40D0800E16F19 /* SeqUpdateTooLong.m in Sources */,
@@ -4711,7 +4672,6 @@
 				06C97C871AF40D0800E16F19 /* Polynomial.m in Sources */,
 				06C97BDC1AF40D0800E16F19 /* ApiBroker.m in Sources */,
 				06C97B321AF40D0800E16F19 /* ListEngineDisplayLoadCallback.m in Sources */,
-				06047D061ABF85FD002091CC /* AASerializationHelpers.m in Sources */,
 				06C97C8A1AF40D0800E16F19 /* Mod.m in Sources */,
 				06C97BE61AF40D0800E16F19 /* ConnectionEndpoint.m in Sources */,
 				06C97BD41AF40D0800E16F19 /* MVVMCollection.m in Sources */,
@@ -4880,11 +4840,10 @@
 				0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */,
 				06C97A4F1AF40D0800E16F19 /* MessageUnsupported.m in Sources */,
 				0539C7321ADBBA1F00898269 /* AAAvatarView.swift in Sources */,
-				06E4842A1AB78D7400AA272F /* SThreadPoolQueue.m in Sources */,
 				06C97B6F1AF40D0800E16F19 /* JavaAtomicLong.m in Sources */,
 				06C97BBD1AF40D0800E16F19 /* LoggedIn.m in Sources */,
 				06C97B601AF40D0800E16F19 /* SearchEntity.m in Sources */,
-				06C97C9D1AF4225000E16F19 /* TcpConnection.swift in Sources */,
+				06C97C9D1AF4225000E16F19 /* CocoaTcpConnection.swift in Sources */,
 				062774391AC073D700A4A8B3 /* ContactsSource.swift in Sources */,
 				06C97ACA1AF40D0800E16F19 /* UpdateUserAvatarChanged.m in Sources */,
 				06C97A441AF40D0800E16F19 /* Email.m in Sources */,
@@ -4946,7 +4905,7 @@
 				06C97A6A1AF40D0800E16F19 /* RequestGetFileUploadPartUrl.m in Sources */,
 				06C97AC91AF40D0800E16F19 /* UpdateTyping.m in Sources */,
 				06C97B511AF40D0800E16F19 /* Dialog.m in Sources */,
-				06A5B8D41AEE9CB2003E134A /* HttpProvider.swift in Sources */,
+				06A5B8D41AEE9CB2003E134A /* CocoaHttpProvider.swift in Sources */,
 				06C97A931AF40D0800E16F19 /* ResponseGetContacts.m in Sources */,
 				050B226F1ACC010200A0E904 /* AAAuthRegisterController.swift in Sources */,
 				065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */,
@@ -4987,7 +4946,6 @@
 				06C97B5A1AF40D0800E16F19 /* Peer.m in Sources */,
 				06C97A5A1AF40D0800E16F19 /* RequestChangePhoneTitle.m in Sources */,
 				06C97B911AF40D0800E16F19 /* DeleteStorage.m in Sources */,
-				06E4842B1AB78D7400AA272F /* SThreadPool.m in Sources */,
 				06C97A6C1AF40D0800E16F19 /* RequestGetFileUrl.m in Sources */,
 				06C97B0B1AF40D0800E16F19 /* Envelope.m in Sources */,
 				06C97AA41AF40D0800E16F19 /* ServiceExEmailContactRegistered.m in Sources */,
@@ -5073,7 +5031,6 @@
 				06C97A331AF40D0800E16F19 /* AuthHolder.m in Sources */,
 				06C97BDB1AF40D0800E16F19 /* ActorApiCallback.m in Sources */,
 				06C97C951AF40D0800E16F19 /* IPAddress.m in Sources */,
-				06E484291AB78D7400AA272F /* SThreadPoolTask.m in Sources */,
 				06C97B901AF40D0800E16F19 /* Delete.m in Sources */,
 				06BFDB511AB1AD3800F16E43 /* DialogCell.swift in Sources */,
 				06C97C671AF40D0800E16F19 /* ECEndomorphism.m in Sources */,
@@ -5232,7 +5189,7 @@
 				06C97C351AF40D0800E16F19 /* AsymmetricCipherKeyPairGenerator.m in Sources */,
 				06C97AE11AF40D0800E16F19 /* ConfigurationBuilder.m in Sources */,
 				06C97B821AF40D0800E16F19 /* DownloadManager.m in Sources */,
-				06D1EEC81ACAEC8A00AC22ED /* DispatcherProvider.swift in Sources */,
+				06D1EEC81ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift in Sources */,
 				06C97C401AF40D0800E16F19 /* MD5Digest.m in Sources */,
 				06C97B811AF40D0800E16F19 /* DisplayLists.m in Sources */,
 				06C97A7B1AF40D0800E16F19 /* RequestRemoveGroupAvatar.m in Sources */,
@@ -5306,7 +5263,6 @@
 				06C97C461AF40D0800E16F19 /* RSACoreEngine.m in Sources */,
 				06C97B3E1AF40D0800E16F19 /* AbsContent.m in Sources */,
 				06C97C0E1AF40D0800E16F19 /* RpcInternalException.m in Sources */,
-				06047D081ABF8611002091CC /* CocoaTcpConnection.m in Sources */,
 				06C97BCD1AF40D0800E16F19 /* AsyncVM.m in Sources */,
 				06C97B581AF40D0800E16F19 /* MessageState.m in Sources */,
 				06C97B621AF40D0800E16F19 /* User.m in Sources */,
@@ -5366,7 +5322,7 @@
 				06C97A711AF40D0800E16F19 /* RequestKickUser.m in Sources */,
 				06C97BE51AF40D0800E16F19 /* ConnectionCallback.m in Sources */,
 				06C97AC31AF40D0800E16F19 /* UpdateMessageReadByMe.m in Sources */,
-				06A5B0E51AEE8A47003E134A /* PhoneBookProvider.swift in Sources */,
+				06A5B0E51AEE8A47003E134A /* iOSPhoneBookProvider.swift in Sources */,
 				06C97B4E1AF40D0800E16F19 /* VideoContent.m in Sources */,
 				06C97A311AF40D0800E16F19 /* MainThread.m in Sources */,
 				06C97AC81AF40D0800E16F19 /* UpdatePhoneTitleChanged.m in Sources */,

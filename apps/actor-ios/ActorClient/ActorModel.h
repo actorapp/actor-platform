@@ -1,9 +1,5 @@
 //
-//  ActorModel.h
-//  ActorClient
-//
-//  Created by Антон Буков on 05.03.15.
-//  Copyright (c) 2015 Anton Bukov. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 #ifndef ActorClient_ActorModel_h
