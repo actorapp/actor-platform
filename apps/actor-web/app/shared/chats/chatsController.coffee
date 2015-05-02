@@ -3,6 +3,7 @@ class ChatsController
 
   constructor: (@$rootScope, @$scope, @$timeout, @$mdSidenav, @actorService) ->
     console.log '[AW]ChatsController constructor'
+    console.log '[AW]ChatsController constructor: @isLoggedIn', @actorService.isLoggedIn
     if @actorService.isLoggedIn
       console.log '[AW]ChatsController constructor: bindChats() if @actorService.isLoggedIn.'
       @bindDialogs()
@@ -11,7 +12,7 @@ class ChatsController
       @bindDialogs()
 
   bindDialogs: ->
-    console.log '[AW]ChatsController getChats'
+    console.log '[AW]ChatsController bindDialogs'
     @actorService.bindDialogs (items) => @renderConversations items
 
   renderConversations: (list) ->
