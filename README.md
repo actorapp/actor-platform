@@ -35,3 +35,4 @@ Following requirements are set for sources:
 * **Android SDK**: [Download release](http://developer.android.com/sdk/installing/index.html?pkg=tools) - Used for building Android and Library code
 * **Valid Release Android Key**: Required for building android release app
 * **Valid iOS Provision and Certificate**: Required for building iOS release app
+* **Atom Electron Release distribution**: Required for building desktop apps
