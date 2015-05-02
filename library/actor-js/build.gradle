@@ -119,3 +119,14 @@ task buildPackage(type: Zip, dependsOn: ['war']) {
     exclude "WEB-INF/**"
     exclude "META-INF/**"
 }
+
+task clearWebPackage(type: Delete) {
+    delete "${projectDir}/../../apps/actor-web/ActorMessenger"
+}
+
+task installPackageToWeb(type: Copy, dependsOn: ['buildPackage', 'clearWebPackage']) {
+    from "$buildDir/exploded"
+    include "ActorMessenger/**"
+
+    into "${projectDir}/../../apps/actor-web/ActorMessenger"
+}
