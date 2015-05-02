@@ -11,7 +11,7 @@ class ManagerTable(tag: Tag) extends Table[models.Manager](tag, "managers") {
   def domain = column[String]("domain")
   def authToken = column[String]("auth_token")
   def email = column[String]("email")
-  def emailUnique = index("email_idx", email, unique = true) //way to keep email unique
+  def emailUnique = index("manager_email_idx", email, unique = true) //way to keep email unique
 
   def * = (id, name, lastName, domain, authToken, email) <> (models.Manager.tupled, models.Manager.unapply)
 }

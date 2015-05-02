@@ -6,4 +6,4 @@ CREATE TABLE managers (
   auth_token varchar(256) not null,
   email varchar(256) not null
 );
-CREATE UNIQUE INDEX idx_managers_email ON managers (email);
+CREATE UNIQUE INDEX manager_email_idx ON managers (email);
