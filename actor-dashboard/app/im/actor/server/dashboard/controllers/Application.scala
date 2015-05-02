@@ -46,7 +46,7 @@ class Application extends Controller {
     }.getOrElse(Future(BadRequest))
   }
 
-  def logout(email: String) = AuthAction(BodyParsers.parse.json) { request ⇒
+  def logout(email: String) = AuthAction { request ⇒
     nextAuthToken(email)
     Ok
   }

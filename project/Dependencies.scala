@@ -30,6 +30,7 @@ object Dependencies {
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "1.3.0-SNAPSHOT"
+    val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % "0.9.0-SNAPSHOT"
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
 
@@ -109,7 +110,7 @@ object Dependencies {
 
   val push = shared ++ Seq(akkaContrib, gcmServer, pushy)
 
-  val persist = shared ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(postgresJdbc, slick, slickJoda, slickPg, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaContrib
 
@@ -118,8 +119,8 @@ object Dependencies {
   val social = shared :+ akkaContrib
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
-
-  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)
+  
+  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream,

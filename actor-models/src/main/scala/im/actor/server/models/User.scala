@@ -1,7 +1,5 @@
 package im.actor.server.models
 
-import scala.language.postfixOps
-
 import org.joda.time.DateTime
 
 sealed trait UserState {
