@@ -3,25 +3,16 @@ package im.actor.server.dashboard.controllers
 import scala.concurrent.Future
 
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.mvc.{ Action, BodyParsers, Controller }
 import slick.dbio._
 
 import im.actor.server.dashboard.controllers.utils.AuthAction
 import im.actor.server.dashboard.controllers.utils.Db._
-import im.actor.server.dashboard.controllers.utils.JsonConstructors._
+import im.actor.server.dashboard.controllers.utils.json.ApplicationJsonImplicits._
 import im.actor.server.persist
 
 class Application extends Controller {
-
-  case class LoginForm(email: String, passphrase: String)
-
-  implicit val loginFormReads: Reads[LoginForm] = (
-    (JsPath \ "email").read[String](email) and
-    (JsPath \ "passphrase").read[String](length)
-  )(LoginForm)
 
   def forbidden(message: String) = Forbidden(Json.toJson(Map("message" → message))) //TODO: find better way to pass json body
 
@@ -47,7 +38,7 @@ class Application extends Controller {
   }
 
   def logout(email: String) = AuthAction { request ⇒
-    nextAuthToken(email)
+    //    nextAuthToken(email)
     Ok
   }
 

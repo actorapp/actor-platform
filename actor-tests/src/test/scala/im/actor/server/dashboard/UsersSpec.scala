@@ -3,25 +3,17 @@ package im.actor.server.dashboard
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ BeforeAndAfterAll, FlatSpec, Matchers }
 import play.api.http.HeaderNames
 import play.api.libs.iteratee.Input
 import play.api.libs.json.{ JsArray, JsValue, Json }
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import slick.driver.PostgresDriver
 
 import im.actor.server.dashboard.controllers.Users
 import im.actor.server.util.{ ACLUtils, IdUtils }
-import im.actor.server.{ SqlSpecHelpers, models, persist }
+import im.actor.server.{ models, persist }
 
-class UsersSpec
-  extends FlatSpec
-  with SqlSpecHelpers
-  with ScalaFutures
-  with Matchers
-  with BeforeAndAfterAll {
+class UsersSpec extends BasicDashboardSpec {
 
   behavior of "Users controller"
 
@@ -41,7 +33,6 @@ class UsersSpec
 
   "create user" should "create new user with given name and phone" in s.createUser()
 
-  val (ds, database: PostgresDriver.backend.DatabaseDef) = migrateAndInitDb()
   val rnd = ThreadLocalRandom.current()
 
   object s {
@@ -51,12 +42,12 @@ class UsersSpec
     }
 
     val token = "secret"
-    val email = "hs@gmail.com"
 
-    val authorizedGET = FakeRequest(GET, s"/users?auth-token=$token")
-    val authorizedDELETE = FakeRequest(DELETE, s"/users?auth-token=$token")
-    val authorizedPUT = FakeRequest(PUT, s"/users?auth-token=$token")
-    val authorizedPOST = FakeRequest(POST, s"/users?auth-token=$token")
+    def authorized(method: String) = FakeRequest(method, s"/users?auth-token=$token")
+    val authorizedGET = authorized(GET)
+    val authorizedDELETE = authorized(DELETE)
+    val authorizedPUT = authorized(PUT)
+    val authorizedPOST = authorized(POST)
 
     def notAuthorized() = {
       val result = new TestController().get(22)(FakeRequest())
@@ -64,7 +55,7 @@ class UsersSpec
     }
 
     def notFound() = {
-      whenReady(database.run(persist.Manager.create(models.Manager(1, "Homer", "Simpson", "sm.actor.im", token, email)))) { _ ⇒
+      whenReady(database.run(persist.Manager.create(models.Manager(1, "Homer", "Simpson", "sm.actor.im", token, "hs@gmail.com")))) { _ ⇒
         val result = new TestController().get(22)(authorizedGET)
         status(result) shouldEqual 404
         (contentAsJson(result) \ "message").as[String] shouldEqual "No such user found"
@@ -199,12 +190,5 @@ class UsersSpec
   def genUser(): models.User = models.User(IdUtils.nextIntId(rnd), ACLUtils.nextAccessSalt(rnd), "Henry Ford", "US", models.NoSex, models.UserState.Registered)
 
   def genPhone(userId: Int, phone: Long) = models.UserPhone(IdUtils.nextIntId(rnd), userId, ACLUtils.nextAccessSalt(rnd), phone, "Mobile phone")
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    database.ioExecutionContext
-    database.close()
-    ds.close()
-  }
 
 }
