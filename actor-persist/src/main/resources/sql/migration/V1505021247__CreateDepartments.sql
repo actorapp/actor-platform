@@ -1,3 +1,4 @@
+CREATE extension IF NOT EXISTS ltree;
 CREATE TABLE departments (
     id int NOT NULL PRIMARY KEY,
     name varchar(255) NOT NULL,
