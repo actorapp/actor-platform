@@ -21,6 +21,7 @@ import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
+import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
@@ -252,8 +253,22 @@ public class JsFacade implements Exportable {
         });
     }
 
+    // Typing
+
     public void onTyping(JsPeer peer) {
         messenger.onTyping(peer.convert());
+    }
+
+    public JsTyping getTyping(JsPeer peer) {
+        return messenger.getTyping(peer.convert()).get();
+    }
+
+    public void bindTyping(JsPeer peer, AngularValueCallback callback) {
+        messenger.getTyping(peer.convert()).subscribe(callback);
+    }
+
+    public void unbindTyping(JsPeer peer, AngularValueCallback callback) {
+        messenger.getTyping(peer.convert()).unsubscribe(callback);
     }
 
     public void onProfileOpen(int uid) {
