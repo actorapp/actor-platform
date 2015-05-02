@@ -35,11 +35,16 @@ public class JsDialog extends JavaScriptObject implements Exportable {
 
             String date = messenger.getFormatter().formatShortDate(src.getDate());
 
+            String fileUrl = null;
+            if (src.getDialogAvatar() != null && src.getDialogAvatar().getSmallImage() != null) {
+                fileUrl = messenger.getFileUrl(src.getDialogAvatar().getSmallImage().getFileReference());
+            }
+
             boolean highlightContent = src.getMessageType() != ContentType.TEXT;
             String messageText = messenger.getFormatter().formatContentDialogText(src.getSenderId(),
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
-            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), null,
+            JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), fileUrl,
                     Placeholders.getPlaceholder(src.getPeer().getPeerId()));
 
             return JsDialog.create(
@@ -47,7 +52,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
                     // Message
                     date,
                     senderName, showSender,
-                    messageText, highlightContent,
+                    (fileUrl == null ? "" : "avatar# ") + messageText, highlightContent,
                     Enums.convert(src.getStatus()),
                     src.getUnreadCount());
         }
