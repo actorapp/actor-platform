@@ -6,6 +6,7 @@ package im.actor.model.js.angular;
 
 import java.util.HashMap;
 
+import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -27,17 +28,20 @@ import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
-public class AngularModule extends BaseModule {
+public class AngularModule extends BaseModule implements AngularFileLoadedListener {
     private JsMessenger messenger;
     private AngularList<JsDialog, Dialog> dialogsList;
+    private AngularFilesModule filesModule;
     private HashMap<Peer, AngularList<JsMessage, Message>> messagesList = new HashMap<Peer, AngularList<JsMessage, Message>>();
     private HashMap<Integer, AngularValue<JsUser>> users = new HashMap<Integer, AngularValue<JsUser>>();
     private HashMap<Integer, AngularValue<JsGroup>> groups = new HashMap<Integer, AngularValue<JsGroup>>();
     private HashMap<Peer, AngularValue<JsTyping>> typing = new HashMap<Peer, AngularValue<JsTyping>>();
 
-    public AngularModule(JsMessenger messenger, Modules modules) {
+    public AngularModule(JsMessenger messenger, AngularFilesModule filesModule, Modules modules) {
         super(modules);
+        this.filesModule = filesModule;
         this.messenger = messenger;
+        this.filesModule.registerListener(this);
     }
 
     public AngularList<JsDialog, Dialog> getDialogsList() {
@@ -130,5 +134,21 @@ public class AngularModule extends BaseModule {
             }
         }
         return typing.get(peer);
+    }
+
+    @Override
+    public void onFileLoaded(long fileId) {
+        boolean founded = false;
+        for (Dialog dialog : getDialogsList().getRawItems()) {
+            Avatar avatar = dialog.getDialogAvatar();
+            if (avatar != null && avatar.getSmallImage() != null &&
+                    avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+                founded = true;
+                break;
+            }
+        }
+        if (founded) {
+            getDialogsList().forceReconvert();
+        }
     }
 }
