@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.api;
 
 import java.io.IOException;
@@ -36,9 +40,6 @@ import im.actor.model.network.parser.RpcScope;
 import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.util.ExponentialBackoff;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class ApiBroker extends Actor {
 
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,

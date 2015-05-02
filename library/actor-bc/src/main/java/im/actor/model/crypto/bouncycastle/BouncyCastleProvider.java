@@ -1,6 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.bouncycastle;
 
-import im.actor.model.log.Log;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
@@ -19,10 +22,8 @@ import im.actor.model.crypto.RsaCipher;
 import im.actor.model.crypto.RsaEncryptCipher;
 import im.actor.model.crypto.encoding.PKS8RsaPrivateKey;
 import im.actor.model.crypto.encoding.X509RsaPublicKey;
+import im.actor.model.log.Log;
 
-/**
- * Created by ex3ndr on 27.02.15.
- */
 public class BouncyCastleProvider implements CryptoProvider {
 
     // We expect that public exponent = 3 will be good

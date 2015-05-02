@@ -1,19 +1,20 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.mvvm;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
 public class DisplayList<T> {
 
     private static int NEXT_ID = 0;

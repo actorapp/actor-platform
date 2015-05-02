@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.List;
@@ -12,9 +16,6 @@ import im.actor.model.modules.search.SearchActor;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 05.04.15.
- */
 public class SearchModule extends BaseModule {
 
     private ListEngine<SearchEntity> searchList;

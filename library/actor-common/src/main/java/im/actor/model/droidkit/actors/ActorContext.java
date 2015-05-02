@@ -1,10 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 /**
  * <p>INTERNAL API</p>
  * Context of actor
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class ActorContext {
     private final ActorScope actorScope;

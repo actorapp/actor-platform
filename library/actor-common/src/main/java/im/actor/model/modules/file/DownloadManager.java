@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.file;
 
 import java.util.ArrayList;
@@ -18,9 +22,6 @@ import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.viewmodel.FileCallback;
 
-/**
- * Created by ex3ndr on 26.02.15.
- */
 public class DownloadManager extends ModuleActor {
 
     private static final String TAG = "DownloadManager";

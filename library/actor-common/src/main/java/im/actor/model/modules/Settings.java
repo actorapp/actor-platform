@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -8,9 +12,6 @@ import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.modules.settings.SettingsSyncActor;
 
-/**
- * Created by ex3ndr on 03.03.15.
- */
 public class Settings extends BaseModule {
 
     private static final String KEY_NOTIFICATION_TONES = "app.tones_enabled";

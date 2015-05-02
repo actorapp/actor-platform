@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox;
 
 import im.actor.model.droidkit.actors.ActorScope;
 
-/**
- * Created by ex3ndr on 14.09.14.
- */
 public class ActorEndpoint {
     private String path;
     private Mailbox mailbox;

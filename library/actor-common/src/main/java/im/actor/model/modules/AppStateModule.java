@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -8,9 +12,6 @@ import im.actor.model.viewmodel.AppStateVM;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 28.03.15.
- */
 public class AppStateModule extends BaseModule {
     private AppStateVM appStateVM;
     private ActorRef listStatesActor;

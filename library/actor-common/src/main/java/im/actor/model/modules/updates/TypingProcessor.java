@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates;
 
 import im.actor.model.annotation.Verified;
@@ -9,9 +13,6 @@ import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.typing.TypingActor;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 @Verified
 public class TypingProcessor extends BaseModule {
     private ActorRef typingActor;

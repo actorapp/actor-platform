@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages;
 
 import java.io.IOException;
@@ -36,9 +40,6 @@ import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 17.02.15.
- */
 public class SenderActor extends ModuleActor {
 
     private static final String PREFERENCES = "sender_pending";

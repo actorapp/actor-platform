@@ -1,9 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model;
 
 import java.util.HashMap;
 
 /**
- * Created by ex3ndr on 30.04.15.
+ * Analytics event provider
  */
 public interface AnalyticsProvider {
 

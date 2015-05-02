@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.connection;
 
 import im.actor.model.network.ConnectionEndpoint;
 
-/**
- * Created by ex3ndr on 29.04.15.
- */
 public abstract class AsyncConnection {
     private AsyncConnectionInterface connection;
     private ConnectionEndpoint endpoint;

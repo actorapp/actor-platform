@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.storage;
 
 import im.actor.model.StorageProvider;
@@ -11,9 +15,6 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
 
-/**
- * Created by ex3ndr on 15.03.15.
- */
 public abstract class BaseAsyncStorageProvider implements StorageProvider {
 
     @Override

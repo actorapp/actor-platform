@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.engine;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
 public interface ListEngineItem {
-    public long getEngineId();
+    long getEngineId();
 
-    public long getEngineSort();
+    long getEngineSort();
 
-    public String getEngineSearch();
+    String getEngineSearch();
 }

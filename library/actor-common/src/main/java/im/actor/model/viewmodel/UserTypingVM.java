@@ -1,9 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.viewmodel;
 
 import im.actor.model.mvvm.ValueModel;
 
 /**
- * Created by ex3ndr on 19.02.15.
+ * User's typing ViewModel
  */
 public class UserTypingVM {
     private int uid;

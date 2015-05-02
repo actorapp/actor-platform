@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.utils;
 
 import com.google.gwt.storage.client.Storage;
 
 import java.util.Random;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class IdentityUtils {
     public native static String getClientName()/*-{ return navigator.userAgent; }-*/;
 

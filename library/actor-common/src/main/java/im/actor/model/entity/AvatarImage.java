@@ -1,16 +1,17 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity;
 
+
+import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-import java.io.IOException;
-
-/**
- * Created by ex3ndr on 09.02.15.
- */
 public class AvatarImage extends BserObject {
 
     public static AvatarImage fromBytes(byte[] data) throws IOException {
