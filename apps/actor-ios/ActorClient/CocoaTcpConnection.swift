@@ -1,20 +1,16 @@
 //
-//  TcpConnection.swift
-//  ActorApp
-//
-//  Created by Stepan Korshakov on 02.05.15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation
 
-class TcpConnectionFactory: NSObject, AMAsyncConnectionFactory {
+class CocoaTcpConnectionFactory: NSObject, AMAsyncConnectionFactory {
     func createConnectionWithInt(connectionId: jint, withAMConnectionEndpoint endpoint: AMConnectionEndpoint!, withAMAsyncConnectionInterface connectionInterface: AMAsyncConnectionInterface!) -> AMAsyncConnection! {
-        return TcpConnection(connectionId: Int(connectionId), AMConnectionEndpoint: endpoint, withAMAsyncConnectionInterface: connectionInterface)
+        return CocoaTcpConnection(connectionId: Int(connectionId), AMConnectionEndpoint: endpoint, withAMAsyncConnectionInterface: connectionInterface)
     }
 }
 
-class TcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
+class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
 
     let READ_HEADER = 1
     let READ_BODY = 2

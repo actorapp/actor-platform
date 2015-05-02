@@ -1,9 +1,5 @@
 //
-//  ContactsViewController.swift
-//  ActorClient
-//
-//  Created by Stepan Korshakov on 10.03.15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import UIKit

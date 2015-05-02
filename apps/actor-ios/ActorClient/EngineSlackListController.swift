@@ -1,9 +1,5 @@
 //
-//  EngineSlackListController.swift
-//  ActorClient
-//
-//  Created by Stepan Korshakov on 11.03.15.
-//  Copyright (c) 2015 Anton Bukov. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation

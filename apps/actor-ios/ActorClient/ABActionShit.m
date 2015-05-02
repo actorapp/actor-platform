@@ -1,9 +1,5 @@
 //
-//  ABActionShit.m
-//  Actor
-//
-//  Created by Антон Буков on 03.12.14.
-//  Copyright (c) 2015 Actor. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 #import "ABActionShit.h"
