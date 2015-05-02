@@ -14,6 +14,8 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import java.util.ArrayList;
+
 import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
 
 /**
@@ -22,10 +24,11 @@ import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
  */
 public class SmilesPackView extends View {
 
+    private int smileysInRow;
     private int rowCount;
     private int countInRow;
     private SmileProcessor processor;
-    private long[] smileyIds;
+    private ArrayList<Long> smileyIds;
     private int[] smileysSections;
     private int[] smileysX;
     private int[] smileysY;
@@ -39,9 +42,12 @@ public class SmilesPackView extends View {
     private float touchX, touchY;
 
     public SmilesPackView(Context context, SmileProcessor processor,
-                          long[] smileyIds, int smileysInRow, int smileySize, int smileyPadding) {
+                          ArrayList<Long> smileyIds, int smileysInRow, int smileySize, int smileyPadding) {
         super(context);
-        this.rowCount = (int) Math.ceil((float) smileyIds.length / smileysInRow);
+
+
+        this.smileysInRow = smileysInRow;
+        this.rowCount = (int) Math.ceil((float) smileyIds.size() / smileysInRow);
         this.processor = processor;
         this.smileyIds = smileyIds;
         this.countInRow = smileysInRow;
@@ -49,19 +55,30 @@ public class SmilesPackView extends View {
         this.smileyPadding = smileyPadding;
         this.smileySrcSize = processor.getRectSize();
 
-        smileysSections = new int[smileyIds.length];
-        smileysX = new int[smileyIds.length];
-        smileysY = new int[smileyIds.length];
-        for (int i = 0; i < smileyIds.length; i++) {
-            smileysSections[i] = processor.getSectionIndex(smileyIds[i]);
-            smileysX[i] = processor.getSectionX(smileyIds[i]);
-            smileysY[i] = processor.getSectionY(smileyIds[i]);
+        init();
+
+    }
+
+    private void init() {
+
+        smileysSections = new int[smileyIds.size()];
+        smileysX = new int[smileyIds.size()];
+        smileysY = new int[smileyIds.size()];
+        for (int i = 0; i < smileyIds.size(); i++) {
+            smileysSections[i] = processor.getSectionIndex(smileyIds.get(i));
+            smileysX[i] = processor.getSectionX(smileyIds.get(i));
+            smileysY[i] = processor.getSectionY(smileyIds.get(i));
         }
 
         this.paint.setAntiAlias(true);
         this.paint.setFlags(Paint.FILTER_BITMAP_FLAG);
     }
 
+
+    public void update(){
+        this.rowCount = (int) Math.ceil((float) smileyIds.size() / smileysInRow);
+        super.invalidate();
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -91,11 +108,11 @@ public class SmilesPackView extends View {
                         int row = (int) (touchY / smileySize);
                         int col = (int) ((touchX - offsetLeft) / smileySize);
                         int index = row * countInRow + col;
-                        if (index >= 0 && index < smileyIds.length) {
+                        if (index >= 0 && index < smileyIds.size()) {
                             if (onSmileClickListener != null) {
                                 playSoundEffect(SoundEffectConstants.CLICK);
 
-                                long smileId = smileyIds[index];
+                                long smileId = smileyIds.get(index);
                                 String smile =  null;
                                 char a = (char) (smileId & 0xFFFFFFFF);
                                 char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
@@ -122,7 +139,7 @@ public class SmilesPackView extends View {
     protected void onDraw(Canvas canvas) {
         if (processor.isLoaded()) {
             int offsetLeft = (getWidth() - countInRow * smileySize) / 2;
-            for (int i = 0; i < smileyIds.length; i++) {
+            for (int i = 0; i < smileyIds.size(); i++) {
                 int row = i / countInRow;
                 int col = i % countInRow;
                 rect.set(col * smileySize + smileyPadding + offsetLeft, row * smileySize + smileyPadding, (col + 1) * smileySize - smileyPadding + offsetLeft,
