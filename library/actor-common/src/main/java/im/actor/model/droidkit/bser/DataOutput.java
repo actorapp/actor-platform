@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
 
-/**
- * Created by ex3ndr on 07.02.15.
- */
 public class DataOutput {
     private byte[] data = new byte[16];
     private int offset;

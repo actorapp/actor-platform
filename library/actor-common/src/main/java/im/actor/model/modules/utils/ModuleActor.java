@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.utils;
 
 import im.actor.model.Configuration;
@@ -21,9 +25,6 @@ import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class ModuleActor extends Actor {
 
     protected static final long CURSOR_RECEIVED = 0;

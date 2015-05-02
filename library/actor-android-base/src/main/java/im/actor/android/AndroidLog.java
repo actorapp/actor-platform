@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.util.Log;
 
 import im.actor.model.LogProvider;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 public class AndroidLog implements LogProvider {
     @Override
     public void w(String tag, String message) {

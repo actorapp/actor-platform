@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import im.actor.model.Configuration;
@@ -10,9 +14,6 @@ import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
 import im.actor.model.util.Timing;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 public class Modules {
     private final Configuration configuration;
     private final I18nEngine i18nEngine;

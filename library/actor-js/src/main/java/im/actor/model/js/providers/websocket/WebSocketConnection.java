@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.websocket;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -10,9 +14,6 @@ import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.connection.AsyncConnection;
 import im.actor.model.network.connection.AsyncConnectionInterface;
 
-/**
- * Created by ex3ndr on 29.04.15.
- */
 public class WebSocketConnection extends AsyncConnection {
 
     private JavaScriptObject jsWebSocket;

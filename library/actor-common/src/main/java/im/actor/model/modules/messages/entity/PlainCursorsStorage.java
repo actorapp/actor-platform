@@ -1,9 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages.entity;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
@@ -11,9 +14,6 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.Peer;
 
-/**
- * Created by ex3ndr on 17.02.15.
- */
 public class PlainCursorsStorage extends BserObject {
 
     public static PlainCursorsStorage fromBytes(byte[] data) throws IOException {

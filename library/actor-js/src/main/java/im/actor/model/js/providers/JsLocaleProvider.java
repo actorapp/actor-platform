@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
 
 import com.google.gwt.core.client.GWT;
@@ -7,9 +11,6 @@ import java.util.HashMap;
 import im.actor.model.js.providers.locale.LocaleBundle;
 import im.actor.model.LocaleProvider;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class JsLocaleProvider implements LocaleProvider {
     private HashMap<String, String> locale = new HashMap<String, String>();
 

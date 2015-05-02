@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 import im.actor.model.DispatcherProvider;
@@ -7,9 +11,6 @@ import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.util.ThreadLocalCompat;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 public class Environment {
     private static volatile ThreadingProvider threadingProvider;
     private static volatile DispatcherProvider dispatcherProvider;

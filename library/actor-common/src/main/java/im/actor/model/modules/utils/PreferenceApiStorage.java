@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.utils;
 
 import im.actor.model.network.AuthKeyStorage;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class PreferenceApiStorage implements AuthKeyStorage {
 
     private PreferencesStorage preferencesStorage;

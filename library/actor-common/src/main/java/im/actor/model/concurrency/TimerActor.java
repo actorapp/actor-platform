@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.concurrency;
 
 import im.actor.model.droidkit.actors.Actor;
 
-/**
- * Created by ex3ndr on 01.05.15.
- */
 public class TimerActor extends Actor {
 
     @Override

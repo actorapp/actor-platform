@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.bouncycastle;
 
 import org.bouncycastle.crypto.BufferedBlockCipher;
@@ -12,9 +16,6 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 
 import im.actor.model.crypto.AesCipher;
 
-/**
- * Created by ex3ndr on 07.03.15.
- */
 public class BcAesCipher implements AesCipher {
 
     private byte[] key;

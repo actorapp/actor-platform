@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.io.IOException;
@@ -18,9 +22,6 @@ import im.actor.model.network.RpcInternalException;
 import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 08.02.15.
- */
 public class Users extends BaseModule {
     private KeyValueEngine<User> users;
     private MVVMCollection<User, UserVM> collection;

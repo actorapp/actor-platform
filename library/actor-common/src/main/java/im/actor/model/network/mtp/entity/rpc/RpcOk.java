@@ -1,10 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp.entity.rpc;
 
-import im.actor.model.network.mtp.entity.ProtoStruct;
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
-
-import java.io.IOException;
+import im.actor.model.network.mtp.entity.ProtoStruct;
 
 public class RpcOk extends ProtoStruct {
 

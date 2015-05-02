@@ -1,4 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox.collections;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.droidkit.actors.Environment;
@@ -6,11 +16,6 @@ import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 import im.actor.model.util.ThreadLocalCompat;
 
-import java.util.*;
-
-/**
- * Created by ex3ndr on 28.10.14.
- */
 public class EnvelopeRoot {
 
     private static final long MULTIPLE = 10000L;

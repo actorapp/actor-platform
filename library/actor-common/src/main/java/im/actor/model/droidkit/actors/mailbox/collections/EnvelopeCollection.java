@@ -1,17 +1,18 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox.collections;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.ThreadLocalCompat;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
-/**
- * Created by ex3ndr on 28.10.14.
- */
 public class EnvelopeCollection {
 
     private static final AtomicIntegerCompat NEXT_ID = Environment.createAtomicInt(1);

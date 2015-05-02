@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.notifications;
 
 import java.io.IOException;
@@ -14,9 +18,6 @@ import im.actor.model.modules.notifications.entity.PendingNotification;
 import im.actor.model.modules.notifications.entity.PendingStorage;
 import im.actor.model.modules.utils.ModuleActor;
 
-/**
- * Created by ex3ndr on 01.03.15.
- */
 public class NotificationsActor extends ModuleActor {
 
     private static final String PREFERENCES_STORAGE = "notifications_pending";

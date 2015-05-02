@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.log;
 
 import im.actor.model.LogProvider;
 
-/**
- * Created by ex3ndr on 06.02.15.
- */
 public class Log {
 
     private static LogProvider log;

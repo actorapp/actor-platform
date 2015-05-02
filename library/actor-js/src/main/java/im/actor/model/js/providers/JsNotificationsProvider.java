@@ -1,17 +1,17 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
+
+import java.util.List;
 
 import im.actor.model.Messenger;
 import im.actor.model.NotificationProvider;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.js.JsMessenger;
 
-import java.util.List;
-
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsNotificationsProvider implements NotificationProvider {
     @Override
     public void onMessageArriveInApp(Messenger messenger) {

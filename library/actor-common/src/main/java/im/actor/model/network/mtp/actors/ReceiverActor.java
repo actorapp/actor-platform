@@ -1,17 +1,33 @@
-package im.actor.model.network.mtp.actors;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import im.actor.model.droidkit.actors.*;
-import im.actor.model.log.Log;
-import im.actor.model.network.mtp.MTProto;
-import im.actor.model.network.mtp.entity.*;
-import im.actor.model.network.util.MTUids;
+package im.actor.model.network.mtp.actors;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by ex3ndr on 03.09.14.
- */
+import im.actor.model.droidkit.actors.Actor;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorSelection;
+import im.actor.model.droidkit.actors.ActorSystem;
+import im.actor.model.droidkit.actors.Props;
+import im.actor.model.log.Log;
+import im.actor.model.network.mtp.MTProto;
+import im.actor.model.network.mtp.entity.Container;
+import im.actor.model.network.mtp.entity.MTPush;
+import im.actor.model.network.mtp.entity.MTRpcResponse;
+import im.actor.model.network.mtp.entity.MessageAck;
+import im.actor.model.network.mtp.entity.NewSessionCreated;
+import im.actor.model.network.mtp.entity.ProtoMessage;
+import im.actor.model.network.mtp.entity.ProtoSerializer;
+import im.actor.model.network.mtp.entity.ProtoStruct;
+import im.actor.model.network.mtp.entity.RequestResend;
+import im.actor.model.network.mtp.entity.UnsentMessage;
+import im.actor.model.network.mtp.entity.UnsentResponse;
+import im.actor.model.network.util.MTUids;
+
 public class ReceiverActor extends Actor {
 
     private static final String TAG = "ProtoReceiver";

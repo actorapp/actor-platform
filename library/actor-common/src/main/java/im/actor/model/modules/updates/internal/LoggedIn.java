@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates.internal;
 
 import im.actor.model.api.rpc.ResponseAuth;
 
-/**
- * Created by ex3ndr on 19.02.15.
- */
 public class LoggedIn extends InternalUpdate {
     private ResponseAuth auth;
     private Runnable runnable;

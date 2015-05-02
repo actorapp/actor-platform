@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.ArrayList;
@@ -41,9 +45,6 @@ import im.actor.model.network.RpcInternalException;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 09.02.15.
- */
 public class Messages extends BaseModule {
 
     private ListEngine<Dialog> dialogs;

@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
 
-/**
- * Created by ex3ndr on 17.10.14.
- */
 public final class Bser {
     public static <T extends BserObject> T parse(T res, DataInput inputStream) throws IOException {
         BserValues reader = new BserValues(BserParser.deserialize(inputStream));

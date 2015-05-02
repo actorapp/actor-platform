@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model;
 
 import im.actor.model.entity.Contact;
@@ -11,7 +15,7 @@ import im.actor.model.viewmodel.ConversationVM;
 import im.actor.model.viewmodel.ConversationVMCallback;
 
 /**
- * Created by ex3ndr on 27.03.15.
+ * Base messenger for asynchronous environments
  */
 public class BaseMessenger extends Messenger {
 
@@ -41,8 +45,12 @@ public class BaseMessenger extends Messenger {
         return displayLists.buildNewChatList(peer, false);
     }
 
-    public BindedDisplayList<Message> buildMediaList(Peer peer){
-        return displayLists.buildMediaList(peer);
+    public BindedDisplayList<Message> getMediaGlobalList(Peer peer) {
+        return displayLists.getMessagesMediaList(peer);
+    }
+
+    public int getMediaCount(Peer peer) {
+        return displayLists.getMediaCount(peer);
     }
 
     public BindedDisplayList<Contact> getContactsGlobalList() {

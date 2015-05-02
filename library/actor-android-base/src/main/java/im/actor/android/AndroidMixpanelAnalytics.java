@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.content.Context;
@@ -11,9 +15,6 @@ import java.util.HashMap;
 
 import im.actor.model.AnalyticsProvider;
 
-/**
- * Created by ex3ndr on 30.04.15.
- */
 public class AndroidMixpanelAnalytics implements AnalyticsProvider {
 
     private MixpanelAPI mixpanel;

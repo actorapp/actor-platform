@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model;
 
 import java.util.List;
@@ -7,11 +11,9 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
-import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
-import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
@@ -452,10 +454,6 @@ public class Messenger {
     public void sendDocument(Peer peer, String fileName, String mimeType, FileSystemReference fileSystemReference,
                              FastThumb fastThumb) {
         modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileSystemReference);
-    }
-
-    public ListEngine<Message> getMedia(Peer peer) {
-        return modules.getMessagesModule().getMediaEngine(peer);
     }
 
     /**
@@ -947,60 +945,86 @@ public class Messenger {
     //         User Tracking
     //////////////////////////////////////
 
-    // Auth Phone Screen
-
+    /**
+     * Track phone number authentication screen
+     */
     public void trackAuthPhoneOpen() {
         modules.getAnalytics().trackAuthPhoneOpen();
     }
 
+    /**
+     * Track pick country open
+     */
     public void trackAuthCountryOpen() {
         modules.getAnalytics().trackAuthCountryOpen();
     }
 
+    /**
+     * Track pick country closed
+     */
     public void trackAuthCountryClosed() {
         modules.getAnalytics().trackAuthCountryClosed();
     }
 
+    /**
+     * Track country picked
+     */
     public void trackAuthCountryPicked(String country) {
         modules.getAnalytics().trackAuthCountryPicked(country);
     }
 
+    /**
+     * Track auth phone typing
+     */
     public void trackAuthPhoneType(String newValue) {
         modules.getAnalytics().trackAuthPhoneType(newValue);
     }
 
+    /**
+     * Tack opening why screen
+     */
     public void trackAuthPhoneInfoOpen() {
         modules.getAnalytics().trackAuthPhoneInfoOpen();
     }
 
+    /**
+     * Track request code tap
+     */
     public void trackCodeRequest() {
         modules.getAnalytics().trackCodeRequest();
     }
 
-    // Auth Code Screen
-
-    public void trackAuthCodeOpen() {
-
-    }
-
-    public void trackAuthSignUpOpen() {
-
-    }
-
-    // Track actions
-
+    /**
+     * Track sync action error
+     *
+     * @param action  action key
+     * @param tag     error tag
+     * @param message error message that shown to user
+     */
     public void trackActionError(String action, String tag, String message) {
         modules.getAnalytics().trackActionError(action, tag, message);
     }
 
+    /**
+     * Track sync action success
+     * @param action action key
+     */
     public void trackActionSuccess(String action) {
         modules.getAnalytics().trackActionSuccess(action);
     }
 
+    /**
+     * Track sync action try again
+     * @param action action key
+     */
     public void trackActionTryAgain(String action) {
         modules.getAnalytics().trackActionTryAgain(action);
     }
 
+    /**
+     * Track sync action cancel
+     * @param action action key
+     */
     public void trackActionCancel(String action) {
         modules.getAnalytics().trackActionCancel(action);
     }

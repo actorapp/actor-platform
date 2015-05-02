@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.engine;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
-/**
- * Created by ex3ndr on 21.09.14.
- */
 class ObjectCache<K, V> {
     protected final HashMap<K, V> memoryCache = new HashMap<K, V>();
     protected final HashSet<K> removedItems = new HashSet<K>();
