@@ -15,6 +15,9 @@ object UserDepartment {
 
   val userDepartments = TableQuery[UserDepartmentTable]
 
+  def create(userId: Int, departmentId: Int) =
+    userDepartments += models.UserDepartment(userId, departmentId)
+
   def userIdsByDepartmentId(deptId: Int) =
     userDepartments.filter { _.departmentId === deptId }.map { _.userId }.result
 
