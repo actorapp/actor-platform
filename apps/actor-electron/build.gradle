@@ -126,12 +126,12 @@ task buildWindowsApp (dependsOn: ['prepareBuild']) {
         }
 
         exec {
-            workingDir "${buildDir}/dist/"
+            workingDir "${buildDir}/electron/"
             commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Windows-ia32.zip', "Actor-windows-ia32"
         }
 
         exec {
-            workingDir "${buildDir}/dist/"
+            workingDir "${buildDir}/electron/"
             commandLine 'zip', '--symlinks', '-r', '../dist/Actor-Windows-x64.zip', "Actor-windows-x64"
         }
     }
