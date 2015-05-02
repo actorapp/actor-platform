@@ -4,8 +4,6 @@
 
 package im.actor.model.js.angular;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 import java.util.ArrayList;
 
 /**
@@ -18,6 +16,10 @@ public class AngularValue<T> {
 
     public AngularValue(T value) {
         this.value = value;
+    }
+
+    public AngularValue() {
+
     }
 
     public T get() {

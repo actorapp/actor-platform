@@ -23,6 +23,7 @@ import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsPeerInfo;
+import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.entity.Placeholders;
 import im.actor.model.viewmodel.GroupVM;
@@ -54,6 +55,10 @@ public class JsMessenger extends Messenger {
 
     public AngularValue<JsGroup> getGroup(int gid) {
         return angularModule.getGroup(gid);
+    }
+
+    public AngularValue<JsTyping> getTyping(Peer peer) {
+        return angularModule.getTyping(peer);
     }
 
     public JsPeerInfo buildPeerInfo(Peer peer) {

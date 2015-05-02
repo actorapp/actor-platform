@@ -9,34 +9,35 @@ import java.util.HashMap;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
+import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.providers.storage.JsListEngine;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.ModelChangedListener;
+import im.actor.model.mvvm.ValueChangedListener;
+import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class AngularModule extends BaseModule {
     private JsMessenger messenger;
     private AngularList<JsDialog, Dialog> dialogsList;
     private HashMap<Peer, AngularList<JsMessage, Message>> messagesList = new HashMap<Peer, AngularList<JsMessage, Message>>();
-    private HashMap<Integer, AngularValue<JsUser>> users;
-    private HashMap<Integer, AngularValue<JsGroup>> groups;
+    private HashMap<Integer, AngularValue<JsUser>> users = new HashMap<Integer, AngularValue<JsUser>>();
+    private HashMap<Integer, AngularValue<JsGroup>> groups = new HashMap<Integer, AngularValue<JsGroup>>();
+    private HashMap<Peer, AngularValue<JsTyping>> typing = new HashMap<Peer, AngularValue<JsTyping>>();
 
     public AngularModule(JsMessenger messenger, Modules modules) {
         super(modules);
         this.messenger = messenger;
-
-        users = new HashMap<Integer, AngularValue<JsUser>>();
-        groups = new HashMap<Integer, AngularValue<JsGroup>>();
     }
 
     public AngularList<JsDialog, Dialog> getDialogsList() {
@@ -84,5 +85,50 @@ public class AngularModule extends BaseModule {
             groups.put(gid, value);
         }
         return groups.get(gid);
+    }
+
+    public AngularValue<JsTyping> getTyping(final Peer peer) {
+        if (!typing.containsKey(peer)) {
+            if (peer.getPeerType() == PeerType.PRIVATE) {
+                UserTypingVM userTypingVM = modules().getTypingModule().getTyping(peer.getPeerId());
+
+                final AngularValue<JsTyping> value = new AngularValue<>();
+                userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                        String typingValue = null;
+                        if (val) {
+                            typingValue = messenger.getFormatter().formatTyping("");
+                        }
+                        value.changeValue(JsTyping.create(typingValue));
+                    }
+                });
+                typing.put(peer, value);
+            } else if (peer.getPeerType() == PeerType.GROUP) {
+                GroupTypingVM groupTypingVM = modules().getTypingModule().getGroupTyping(peer.getPeerId());
+                final AngularValue<JsTyping> value = new AngularValue<>();
+                groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
+                    @Override
+                    public void onChanged(int[] val, ValueModel<int[]> valueModel) {
+                        String typingValue = null;
+                        if (val.length == 1) {
+                            typingValue = messenger.getFormatter().formatTyping(modules()
+                                    .getUsersModule()
+                                    .getUsersCollection()
+                                    .get(peer.getPeerId())
+                                    .getName()
+                                    .get());
+                        } else if (val.length > 1) {
+                            typingValue = messenger.getFormatter().formatTyping(val.length);
+                        }
+                        value.changeValue(JsTyping.create(typingValue));
+                    }
+                });
+                typing.put(peer, value);
+            } else {
+                throw new RuntimeException();
+            }
+        }
+        return typing.get(peer);
     }
 }
