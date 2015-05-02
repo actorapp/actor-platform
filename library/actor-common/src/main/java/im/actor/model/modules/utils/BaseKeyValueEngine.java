@@ -75,10 +75,11 @@ public abstract class BaseKeyValueEngine<T extends KeyValueItem> implements KeyV
         byte[] data = storage.getValue(id);
         if (data != null) {
             T res = deserialize(data);
-            cache.put(res.getEngineId(), res);
-            return res;
-        } else {
-            return null;
+            if (res != null) {
+                cache.put(res.getEngineId(), res);
+                return res;
+            }
         }
+        return null;
     }
 }
