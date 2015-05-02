@@ -263,7 +263,7 @@ public class Messenger {
      * MUST be called on app became visible
      */
     public void onAppVisible() {
-       modules.onAppVisible();
+        modules.onAppVisible();
     }
 
     /**
@@ -277,6 +277,7 @@ public class Messenger {
      * MUST be called on dialogs open
      */
     public void onDialogsOpen() {
+        modules.getAnalytics().onDialogsOpen();
         if (modules.getNotifications() != null) {
             modules.getNotifications().onDialogsOpen();
         }
@@ -286,6 +287,7 @@ public class Messenger {
      * MUST be called on dialogs closed
      */
     public void onDialogsClosed() {
+        modules.getAnalytics().onDialogsClosed();
         if (modules.getNotifications() != null) {
             modules.getNotifications().onDialogsClosed();
         }
@@ -297,6 +299,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     public void onConversationOpen(Peer peer) {
+        modules.getAnalytics().onChatOpen(peer);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(peer);
             modules.getNotifications().onConversationOpen(peer);
@@ -310,6 +313,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     public void onConversationClosed(Peer peer) {
+        modules.getAnalytics().onChatClosed(peer);
         if (modules.getPresenceModule() != null) {
             modules.getNotifications().onConversationClose(peer);
         }
@@ -321,6 +325,7 @@ public class Messenger {
      * @param uid user's Id
      */
     public void onProfileOpen(int uid) {
+        modules.getAnalytics().onProfileOpen(uid);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(Peer.user(uid));
         }
@@ -332,7 +337,7 @@ public class Messenger {
      * @param uid user's Id
      */
     public void onProfileClosed(int uid) {
-
+        modules.getAnalytics().onProfileClosed(uid);
     }
 
     /**
@@ -936,6 +941,68 @@ public class Messenger {
      */
     public Command<Boolean> terminateSession(int id) {
         return modules.getSecurity().terminateSession(id);
+    }
+
+    //////////////////////////////////////
+    //         User Tracking
+    //////////////////////////////////////
+
+    // Auth Phone Screen
+
+    public void trackAuthPhoneOpen() {
+        modules.getAnalytics().trackAuthPhoneOpen();
+    }
+
+    public void trackAuthCountryOpen() {
+        modules.getAnalytics().trackAuthCountryOpen();
+    }
+
+    public void trackAuthCountryClosed() {
+        modules.getAnalytics().trackAuthCountryClosed();
+    }
+
+    public void trackAuthCountryPicked(String country) {
+        modules.getAnalytics().trackAuthCountryPicked(country);
+    }
+
+    public void trackAuthPhoneType(String newValue) {
+        modules.getAnalytics().trackAuthPhoneType(newValue);
+    }
+
+    public void trackAuthPhoneInfoOpen() {
+        modules.getAnalytics().trackAuthPhoneInfoOpen();
+    }
+
+    public void trackCodeRequest() {
+        modules.getAnalytics().trackCodeRequest();
+    }
+
+    // Auth Code Screen
+
+    public void trackAuthCodeOpen() {
+
+    }
+
+    public void trackAuthSignUpOpen() {
+
+    }
+
+    // Track actions
+
+    public void trackActionError(String action, String tag, String message) {
+        modules.getAnalytics().trackActionError(action, tag, message);
+    }
+
+    public void trackActionSuccess(String action) {
+        modules.getAnalytics().trackActionSuccess(action);
+    }
+
+    public void trackActionTryAgain(String action) {
+        modules.getAnalytics().trackActionTryAgain(action);
+    }
+
+    public void trackActionCancel(String action) {
+        modules.getAnalytics().trackActionCancel(action);
     }
 
     //////////////////////////////////////
