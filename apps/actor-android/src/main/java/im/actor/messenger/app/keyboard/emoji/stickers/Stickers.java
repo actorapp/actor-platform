@@ -1,6 +1,7 @@
 package im.actor.messenger.app.keyboard.emoji.stickers;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,23 +14,23 @@ import im.actor.messenger.app.util.io.IOUtils;
  * Created by Jesus Christ. Amen.
  */
 public class Stickers {
-    public final static StickersPack animalPack = new StickersPack("0", "2", new String[]{
-            "2",    // panda
-            "1",    // doge
-            "3",    // bear
-            "4",    // koala
-            "5",    // grumpy
-            "6",    // dove
-            "0",    // chicken
-            "7",    // monkey
-            "8",    // elephant
-            "9",    // rat
-            "10",   // frog
-            "11",   // pig
-            "12"    // goat
+    public final static StickersPack animalPack = new StickersPack("animals", "panda", new String[]{
+            "panda",
+            "doge",
+            "bear",
+            "koala",
+            "grumpy",
+            "dove",
+            "chicken",
+            "monkey",
+            "elephant",
+            "rat",
+            "frog",
+            "ping",
+            "goat"
 
     });
-    private static StickersPack stewiePack = new StickersPack("1", "ass", new String[]{
+    private static StickersPack steewiePack = new StickersPack("steewie", "ass", new String[]{
             "1",
             "2",
             "happy",
@@ -44,22 +45,42 @@ public class Stickers {
             "ass",
             "brian"
     });
+    private static StickersPack giraffePack = new StickersPack("giraffe", "flirt", new String[]{
+            "approve",
+            "cry",
+            "earl",
+            "flirt",
+            "fly",
+            "happy",
+            "hugs",
+            "ill",
+            "kiss",
+            "laugh",
+            "love",
+            "malicious",
+            "sad",
+            "steep",
+            "sleep",
+            "wrath"
+    });
 
     public final static StickersPack[] getPacks() {
-        return new StickersPack[]{animalPack, stewiePack};
+        // todo extrnal sticker packs??
+        return new StickersPack[]{animalPack, steewiePack, giraffePack};
     }
 
     public static String getFile(String packId, String stickerId) {
+        long timer = System.currentTimeMillis();
         Context context = AppContext.getContext();
-        File sourceFile = context.getFileStreamPath("sticker_"+packId+"_" + stickerId + ".png");
+        File sourceFile = context.getFileStreamPath("sticker_" + packId + "_" + stickerId + ".png");
         try {
-            InputStream fileIS = AppContext.getContext().getAssets().open("stickers_pack_" + packId + "/sticker_" + stickerId + ".png");
+            InputStream fileIS = AppContext.getContext().getAssets().open("stickers_" + packId + "/" + stickerId + ".png");
             IOUtils.copy(fileIS, sourceFile);
             fileIS.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Log.d("Sticker saving", "Starting time: " + (System.currentTimeMillis() - timer));
         return sourceFile.getAbsolutePath();
     }
 }

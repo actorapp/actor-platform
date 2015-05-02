@@ -1,11 +1,15 @@
 package im.actor.messenger.app.keyboard.emoji.smiles;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by Jesus Christ. Amen.
  */
 public class SmilesPack {
-    public static final long[] STANDART = new long[]
-            {0xD83DDE0AL,
+    public static final Long[] STANDART = new Long[]
+            {
+                    0xD83DDE0AL,
                     0xD83DDE03L,
                     0xD83DDE09L,
                     0xD83DDE06L,
@@ -81,7 +85,7 @@ public class SmilesPack {
                     0xD83DDC42L,
             };
 
-    public static final long[] TRANSPORT = new long[]
+    public static final Long[] TRANSPORT = new Long[]
             {
                     0xD83DDCA1L,
                     0xD83DDCA3L,
@@ -214,7 +218,7 @@ public class SmilesPack {
                     0xD83CDDFAD83CDDF8L
             };
 
-    public static final long[] NATURE = new long[]
+    public static final Long[] NATURE = new Long[]
             {
                     0xD83DDC28L,
                     0xD83DDC0EL,
@@ -343,7 +347,7 @@ public class SmilesPack {
                     0xD83CDF84L,
             };
 
-    public static final long[] UNSORTED = new long[]
+    public static final Long[] UNSORTED = new Long[]
             {
                     0xD83CDF5AL,
                     0xD83CDF5BL,
@@ -548,7 +552,7 @@ public class SmilesPack {
 
             };
 
-    public static final long[] ALL_SMILEYS = new long[]{0xD83DDE0AL,
+    public static final Long[] ALL_SMILEYS = new Long[]{0xD83DDE0AL,
             0xD83DDE03L,
             0xD83DDE09L,
             0xD83DDE06L,
@@ -1076,4 +1080,30 @@ public class SmilesPack {
             0xD83CDDF0D83CDDF7L,
             0xD83CDDF7D83CDDFAL,
             0xD83CDDFAD83CDDF8L,};
+
+    public static final Long[] RECENT_DEFAULT = new Long[]{
+            0xD83DDE37L,
+            0xD83DDE21L,
+            0xD83DDE33L,
+            0xD83DDE0DL,
+            0xD83DDE0AL,
+
+
+
+    };
+    private static ArrayList<Long> recent = new ArrayList<Long>();
+
+
+    private static OnRecentChangeListener onRecentChangeListener;
+
+    public static void setOnRecentChangeListener(OnRecentChangeListener onRecentChangeListener) {
+        SmilesPack.onRecentChangeListener = onRecentChangeListener;
+    }
+
+    public static ArrayList<Long> getRecent() {
+        if(recent.isEmpty()){
+            recent.addAll(Arrays.asList(RECENT_DEFAULT));
+        }
+        return recent;
+    }
 }
