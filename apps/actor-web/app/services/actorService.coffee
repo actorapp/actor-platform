@@ -12,46 +12,49 @@ class ActorService
 
   initActor: ->
     console.log '[AW]ActorService initActor'
-    @messenger = new actor.ActorApp
+    window.messenger = @messenger = new actor.ActorApp
     @isLoggedIn = @messenger.isLoggedIn()
     console.log '[AW]ActorService initActor: @isLoggedIn:', @isLoggedIn
-    @setLoggedIn() if @isLoggedIn
+    if @isLoggedIn then @setLoggedIn() else @setLoggedOut()
 
   # isLoggedIn: ->
   #   @messenger.isLoggedIn()
 
-  checkAccess: (event, toState, toParams, fromState, fromParams) ->
-    console.log '[AW]ActorService checkAccess'
-    if toState.data != undefined
-      if toState.data.noLogin != undefined && toState.data.noLogin
-        console.log '[AW]ActorService checkAccess: before login'
-        return
-    else
-      if @$sessionStorage.isLoggedIn
-        console.log '[AW]ActorService checkAccess: authenticated'
-        @$rootScope.isLoggedIn = @$sessionStorage.isLoggedIn
-      else
-        console.log '[AW]ActorService checkAccess: redirect to login'
-        event.preventDefault()
-        @$rootScope.$state.go('login')
+  # checkAccess: (event, toState, toParams, fromState, fromParams) ->
+  #   console.log '[AW]ActorService checkAccess'
+  #   if toState.data != undefined
+  #     if toState.data.noLogin != undefined && toState.data.noLogin
+  #       console.log '[AW]ActorService checkAccess: before login'
+  #       return
+  #   else
+  #     if @isLoggedIn
+  #       console.log '[AW]ActorService checkAccess: authenticated'
+  #       @$rootScope.isLoggedIn = @$sessionStorage.isLoggedIn
+  #     else
+  #       console.log '[AW]ActorService checkAccess: redirect to login'
+  #       event.preventDefault()
+  #       @$rootScope.$state.go 'login'
 
   setLoggedIn: () =>
     console.log '[AW]ActorService setLoggedIn'
-    @isLoggedIn = @$rootScope.isLoggedIn = @$sessionStorage.isLoggedIn = true
     @$rootScope.$state.go 'home'
     @$rootScope.$broadcast 'actorLoggedIn'
 
   setLoggedOut: () =>
     console.log '[AW]ActorService setLoggedOut'
-    @isLoggedIn = @$rootScope.isLoggedIn = @$sessionStorage.isLoggedIn = false
+    localStorage.clear()
+    @isLoggedIn = false
     @$rootScope.$state.go 'login'
     @$rootScope.$broadcast 'actorLoggedOut'
 
   requestSms: (phone) ->
     console.log '[AW]ActorService requestSms'
     console.log '[AW]ActorService requestSms: phone:', phone
-    @messenger.requestSms phone.toString(), (state) ->
+    @messenger.requestSms phone.toString(), (state) =>
       console.log '[AW]ActorService requestSms: state:', state
+      if state == 'code'
+        console.log '[AW]ActorService requestSms: state: code'
+        @$rootScope.$broadcast 'actorAuthCode'
     , (tag, message, canTryAgain, state) ->
       console.log '[AW]ActorService requestSms: error'
 
@@ -59,15 +62,18 @@ class ActorService
     console.log '[AW]ActorService sendCode'
     @messenger.sendCode code, (state) =>
       console.log '[AW]ActorService sendCode: state:', state
-      @setLoggedIn() if state == 'logged_in'
-    , (tag, message, canTryAgain, state) ->
+      if state == 'logged_in'
+        @setLoggedIn()
+      if state == 'signup'
+        @$rootScope.$broadcast 'actorSignUp'
+    , (tag, message, canTryAgain, state) =>
       console.log '[AW]ActorService sendCode: error'
-
+      console.log '[AW]ActorService sendCode: tag, message, canTryAgain, state:', tag, message, canTryAgain, state
 
   bindDialogs: (callback) ->
-    console.log '[AW]ActorService getDialogs'
+    console.log '[AW]ActorService bindDialogs'
     @messenger.bindDialogs (items) ->
-      console.log '[AW]ActorService getDialogs: items', items
+      console.log '[AW]ActorService bindDialogs: items', items
       callback items
 
   onConversationClosed: (peer) ->
