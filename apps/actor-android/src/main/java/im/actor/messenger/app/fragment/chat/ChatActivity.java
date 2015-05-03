@@ -38,11 +38,9 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
-import im.actor.messenger.app.keyboard.BaseKeyboard;
 import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.keyboard.KeyboardStatusListener;
 import im.actor.messenger.app.keyboard.emoji.stickers.OnStickerClickListener;
-import im.actor.messenger.app.keyboard.emoji.stickers.Stickers;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
@@ -58,6 +56,7 @@ import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.app.Core.getStickerProcessor;
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
@@ -316,7 +315,7 @@ public class ChatActivity extends BaseActivity {
         emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
             @Override
             public void onStickerClick(String packId, String stickerId) {
-                messenger().sendPhoto(peer, Stickers.getFile(packId, stickerId));
+                messenger().sendPhoto(peer, getStickerProcessor().getStickerPath(packId, stickerId));
             }
         });
 
