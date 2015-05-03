@@ -56,7 +56,6 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setFileSystemProvider(provider);
-        configuration.setEnableFilesLogging(true);
         configuration.setHttpDownloaderProvider(new JsHttpProvider());
 
         configuration.addEndpoint("wss://mtproto-api.actor.im:10443/");
