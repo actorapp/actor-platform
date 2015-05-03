@@ -28,6 +28,7 @@ class ActorService
     @isLoggedIn = false
     @$rootScope.$state.go 'login'
     @$rootScope.$broadcast 'actorLoggedOut'
+    location.reload()
   setCurrentPeer: (peer) ->
     console.log '[AW]ActorService setCurrentPeer'
     console.log '[AW]ActorService setCurrentPeer: peer:', peer
