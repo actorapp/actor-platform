@@ -71,7 +71,7 @@ class SessionSpec extends BaseSessionSpec {
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333334L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
-      expectNewSession(authId, sessionId, messageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, messageId)
 
       expectRpcResult() should matchPattern {
@@ -89,7 +89,7 @@ class SessionSpec extends BaseSessionSpec {
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
-      expectNewSession(authId, sessionId, firstMessageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
       val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
@@ -135,7 +135,7 @@ class SessionSpec extends BaseSessionSpec {
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
-      expectNewSession(authId, sessionId, firstMessageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
       val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
@@ -180,7 +180,7 @@ class SessionSpec extends BaseSessionSpec {
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
-      expectNewSession(authId, sessionId, firstMessageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
       val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
@@ -225,7 +225,7 @@ class SessionSpec extends BaseSessionSpec {
       val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
-      expectNewSession(authId, sessionId, firstMessageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
       val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash

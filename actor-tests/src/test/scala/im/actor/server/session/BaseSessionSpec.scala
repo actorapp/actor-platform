@@ -109,15 +109,32 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
   }
 
   protected def expectNewSession(authId: Long, sessionId: Long, messageId: Long)(implicit probe: TestProbe, sessionRegion: SessionRegion): NewSession = {
-    val mb = expectMessageBox(authId, sessionId)
-    sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
+    expectMessageBoxPF(authId, sessionId) {
+      case mb @ MessageBox(_, NewSession(sid, mid)) if sid == sessionId && mid == messageId ⇒
+        sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
 
-    mb.body shouldBe a[NewSession]
+        val ns = mb.body.asInstanceOf[NewSession]
+        ns should ===(NewSession(sessionId, messageId))
+        ns
+    }
+  }
 
-    val ns = mb.body.asInstanceOf[NewSession]
-    ns should ===(NewSession(sessionId, messageId))
+  protected def ignoreNewSession(authId: Long, sessionId: Long)(implicit probe: TestProbe): Unit = {
+    probe.ignoreMsg {
+      case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒
+        MessageBoxCodec.decode(body).require.value.body.isInstanceOf[NewSession]
+      case _ ⇒ false
+    }
+  }
 
-    ns
+  protected def expectMessageBoxPF[T](authId: Long, sessionId: Long, hint: String = "")(pf: PartialFunction[MessageBox, T])(implicit probe: TestProbe): T = {
+    probe.expectMsgPF() {
+      case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒
+        val mb = MessageBoxCodec.decode(body).require.value
+
+        assert(pf.isDefinedAt(mb), s"expected: ${hint} but got ${mb}")
+        pf(mb)
+    }
   }
 
   protected def expectMessageBox(authId: Long, sessionId: Long)(implicit probe: TestProbe): MessageBox = {
