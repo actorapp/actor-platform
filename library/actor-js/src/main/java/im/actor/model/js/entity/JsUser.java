@@ -28,8 +28,8 @@ public class JsUser extends JavaScriptObject {
                 presenceString);
     }
 
-    public static native JsUser create(int uid, String name, String avatar, String placeholder, boolean isContact, String presence)/*-{
-        return {id: id, name: name, isContact: isContact, presence: presence};
+    public static native JsUser create(int id, String name, String avatar, String placeholder, boolean isContact, String presence)/*-{
+        return {id: id, name: name, avatar: avatar, placeholder: placeholder, isContact: isContact, presence: presence};
     }-*/;
 
     protected JsUser() {

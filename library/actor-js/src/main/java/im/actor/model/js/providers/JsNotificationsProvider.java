@@ -4,18 +4,28 @@
 
 package im.actor.model.js.providers;
 
+import com.google.gwt.media.client.Audio;
+
 import java.util.List;
 
 import im.actor.model.Messenger;
 import im.actor.model.NotificationProvider;
+import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.js.JsMessenger;
+import im.actor.model.js.providers.notification.JsNotification;
+import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.UserVM;
 
 public class JsNotificationsProvider implements NotificationProvider {
+
+    private JsNotification currentNotification;
+
     @Override
     public void onMessageArriveInApp(Messenger messenger) {
-
+        playSound();
     }
 
     @Override
@@ -27,20 +37,46 @@ public class JsNotificationsProvider implements NotificationProvider {
                 notification.getContentDescription().getRelatedUser());
 
         String peerTitle;
+        Avatar peerAvatar;
         if (notification.getPeer().getPeerType() == PeerType.PRIVATE) {
-            peerTitle = messenger.getUsers().get(notification.getPeer().getPeerId()).getName().get();
+            UserVM userVM = messenger.getUsers().get(notification.getPeer().getPeerId());
+            peerTitle = userVM.getName().get();
+            peerAvatar = userVM.getAvatar().get();
         } else {
-            peerTitle = messenger.getGroups().get(notification.getPeer().getPeerId()).getName().get();
+            GroupVM groupVM = messenger.getGroups().get(notification.getPeer().getPeerId());
+            peerTitle = groupVM.getName().get();
+            peerAvatar = groupVM.getAvatar().get();
 
             contentMessage = messenger.getUsers().get(notification.getPeer().getPeerId()).getName().get() + ": " + contentMessage;
         }
 
-        showNotification(peerTitle, contentMessage);
+        String peerAvatarUrl = null;
+        if (peerAvatar != null && peerAvatar.getSmallImage() != null) {
+            peerAvatarUrl = ((JsMessenger) messenger).getFileUrl(peerAvatar.getSmallImage().getFileReference());
+        }
+
+        if (currentNotification != null) {
+            currentNotification.close();
+            currentNotification = null;
+        }
+
+        if (!JsNotification.isSupported()) {
+            return;
+        }
+        if (!JsNotification.isGranted()) {
+            return;
+        }
+        currentNotification = JsNotification.create(peerTitle, contentMessage, peerAvatarUrl);
+
+        playSound();
     }
 
     @Override
     public void onDialogsOpen(Messenger messenger) {
-
+//        if (currentNotification != null) {
+//            currentNotification.close();
+//            currentNotification = null;
+//        }
     }
 
     @Override
@@ -48,17 +84,11 @@ public class JsNotificationsProvider implements NotificationProvider {
 
     }
 
-    native void showNotification(String title, String message)/*-{
-        if (!Notification) {
-            return;
+    private void playSound() {
+        Audio audio = Audio.createIfSupported();
+        if (audio != null) {
+            audio.setSrc("assets/sound/notification.mp3");
+            audio.play();
         }
-        if (Notification.permission !== "granted") {
-            Notification.requestPermission();
-            return;
-        }
-
-        var notification = new Notification(title, {
-            body: message
-        });
-    }-*/;
+    }
 }
