@@ -18,10 +18,8 @@ package im.actor.messenger.app.keyboard.emoji;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -30,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,14 +41,13 @@ import im.actor.messenger.app.keyboard.emoji.smiles.OnSmileClickListener;
 import im.actor.messenger.app.keyboard.emoji.smiles.RepeatListener;
 import im.actor.messenger.app.keyboard.emoji.smiles.SmilePagerAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.OnStickerClickListener;
-import im.actor.messenger.app.keyboard.emoji.stickers.SitckersPagerAdapter;
-import im.actor.messenger.app.keyboard.emoji.stickers.Stickers;
 import im.actor.messenger.app.keyboard.emoji.stickers.StickersFullpackAdapter;
 import im.actor.messenger.app.keyboard.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 
-import static im.actor.messenger.app.Core.core;
+import static im.actor.messenger.app.Core.getSmileProcessor;
+import static im.actor.messenger.app.Core.getStickerProcessor;
 
 
 public class EmojiKeyboard extends BaseKeyboard
@@ -74,7 +70,7 @@ public class EmojiKeyboard extends BaseKeyboard
         if (selectionEnd < 0) {
             selectionEnd = messageBody.getText().length();
         }
-        CharSequence appendString = core().getSmileProcessor().processEmojiMutable(smile,
+        CharSequence appendString = getSmileProcessor().processEmojiMutable(smile,
                 SmileProcessor.CONFIGURATION_BUBBLES);
 
         messageBody.getText().insert(selectionEnd, appendString);
@@ -131,7 +127,7 @@ public class EmojiKeyboard extends BaseKeyboard
     class EmojiPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
         @Override
         public int getCount() {
-            return 1 + Stickers.getPacks().length;
+            return 1 + getStickerProcessor().getPacks().size();
         }
 
         @Override
@@ -160,15 +156,18 @@ public class EmojiKeyboard extends BaseKeyboard
         @Override
         public View getTab(int position, Context context) {
 
-            SimpleDraweeView tabView = new SimpleDraweeView(context);
+            final SimpleDraweeView tabView = new SimpleDraweeView(context);
             tabView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             tabView.setBackgroundResource(R.drawable.clickable_background);
             if (position == 0) {
                 tabView.setImageResource(R.drawable.ic_emoji);
                 tabView.setPadding(0, 0, 0, 0);
             } else {
-                StickersPack pack = Stickers.getPacks()[position - 1];
-                tabView.setImageURI(Uri.parse("file://" + Stickers.getFile(pack.getId(), pack.getLogoStickerId())));
+                StickersPack pack = getStickerProcessor().getPacks().get(position - 1);
+                String packId = pack.getId();
+                final String packLogoId = pack.getLogoStickerId();
+                getStickerProcessor().bindSticker(tabView, packId, packLogoId);
+
                 tabView.setPadding(Screen.dp(5), Screen.dp(5), Screen.dp(5), Screen.dp(5));
             }
             return tabView;
@@ -207,7 +206,7 @@ public class EmojiKeyboard extends BaseKeyboard
         return emojiPagerView;
     }
 
-    private View createStickersPagerView(int packId) {
+    private View createStickersPagerView(int packIndex) {
         /*View stickerPagerView = LayoutInflater.from(activity).inflate(R.layout.sticker_container_page, null);
         ViewPager stickerPager = (ViewPager) stickerPagerView.findViewById(R.id.sticker_pager);
 
@@ -217,7 +216,7 @@ public class EmojiKeyboard extends BaseKeyboard
         return stickerPagerView;*/
         RecyclerView recyclerView = new RecyclerView(activity);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, OrientationHelper.VERTICAL));
-        recyclerView.setAdapter(new StickersFullpackAdapter(activity, this, Stickers.getPacks()[packId], 0));
+        recyclerView.setAdapter(new StickersFullpackAdapter(activity, this, getStickerProcessor().getPacks().get(packIndex), 0));
         return recyclerView;
     }
 

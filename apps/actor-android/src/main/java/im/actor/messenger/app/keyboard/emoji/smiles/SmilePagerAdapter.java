@@ -21,6 +21,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 
 import static im.actor.messenger.app.Core.core;
+import static im.actor.messenger.app.Core.getSmileProcessor;
 
 /**
 * Created by Jesus Christ. Amen.
@@ -69,11 +70,19 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
         if (Screen.getWidth() / emojiSize < emojisMaxRowCount) {
             emojisMaxRowCount = Screen.getWidth() / emojiSize;
         }
-        final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), core().getSmileProcessor(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
+        final SmilesPackView smilesPackView = new SmilesPackView(container.getContext(), getSmileProcessor(), emojiPack, emojisMaxRowCount, emojiSize, emojiPadding);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         emojicontainer.addView(smilesPackView, params);
-
+        if(!getSmileProcessor().isLoaded()){
+            getSmileProcessor().registerListener(new SmilesListener() {
+                @Override
+                public void onEmojiUpdated(boolean completed) {
+                    smilesPackView.update();
+                    getSmileProcessor().unregisterListener(this);
+                }
+            });
+        }
         smilesPackView.setOnSmileClickListener(new OnSmileClickListener() {
             @Override
             public void onEmojiClicked(String smile) {
