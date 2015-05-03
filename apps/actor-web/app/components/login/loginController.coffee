@@ -24,6 +24,12 @@ class LoginController
     console.log '[AW]LoginController signUp'
     console.log '[AW]LoginController signUp: name', name
 
+  wrongNumber: ->
+    console.log '[AW]LoginController wrongNumber'
+    @isCodeRequested = false
+    @isSignUp = false
+
+
 LoginController.$inject = ['$rootScope', '$scope', 'actorService']
 
 angular
