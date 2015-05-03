@@ -38,6 +38,10 @@ public class JsMessenger extends Messenger {
         angularModule = new AngularModule(this, angularFilesModule, modules);
     }
 
+    public void onMessageShown(Peer peer, Long sortKey) {
+        modules.getMessagesModule().onInMessageShown(peer, sortKey);
+    }
+
     public AngularList<JsDialog, Dialog> getDialogsList() {
         return angularModule.getDialogsList();
     }
