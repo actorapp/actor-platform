@@ -40,7 +40,7 @@ class SessionResendSpec extends BaseSessionSpec(
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
-      expectNewSession(authId, sessionId, messageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, messageId)
 
       expectRpcResult(sendAckAt = None) should matchPattern {
@@ -71,10 +71,11 @@ class SessionResendSpec extends BaseSessionSpec(
 
       {
         implicit val probe = TestProbe()
+        ignoreNewSession(authId, sessionId)
+
         val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
-        expectNewSession(authId, sessionId, messageId)
         expectMessageAck(authId, sessionId, messageId)
 
         expectRpcResult(sendAckAt = None) should matchPattern {
@@ -87,6 +88,7 @@ class SessionResendSpec extends BaseSessionSpec(
 
       {
         implicit val probe = TestProbe()
+        ignoreNewSession(authId, sessionId)
 
         val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
@@ -116,7 +118,7 @@ class SessionResendSpec extends BaseSessionSpec(
       val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
-      expectNewSession(authId, sessionId, messageId)
+      ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, messageId)
 
       expectRpcResult(sendAckAt = None) should matchPattern {
