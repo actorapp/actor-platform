@@ -172,6 +172,12 @@ public class JsFacade implements Exportable {
         messenger.getConversationList(peer.convert()).subscribe(callback);
     }
 
+    public void onMessageShown(JsPeer peer, String sortKey, boolean isOut) {
+        if (!isOut) {
+            messenger.onMessageShown(peer.convert(), Long.parseLong(sortKey));
+        }
+    }
+
     public void deleteChat(JsPeer peer, final JsClosure success, final JsClosure error) {
         messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
             @Override
