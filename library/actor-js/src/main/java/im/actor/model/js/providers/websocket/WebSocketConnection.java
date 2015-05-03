@@ -9,7 +9,6 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint8Array;
 
-import im.actor.model.log.Log;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.connection.AsyncConnection;
 import im.actor.model.network.connection.AsyncConnectionInterface;
@@ -35,7 +34,6 @@ public class WebSocketConnection extends AsyncConnection {
         } else {
             throw new RuntimeException();
         }
-        Log.d("WS", "Connecting to " + url);
         this.jsWebSocket = createJSWebSocket(url, this);
     }
 
@@ -70,13 +68,11 @@ public class WebSocketConnection extends AsyncConnection {
     }
 
     private void onRawConnected() {
-        Log.d("WS", "Connected");
         isClosed = false;
         onConnected();
     }
 
     private void onRawClosed() {
-        Log.d("WS", "Closed");
         isClosed = true;
         onClosed();
     }
