@@ -17,9 +17,6 @@ object SessionMessage {
   case class HandleMessageBox(messageBoxBytes: Array[Byte]) extends SessionMessage
 
   @SerialVersionUID(1L)
-  case class SendProtoMessage(message: ProtoMessage) extends SessionMessage
-
-  @SerialVersionUID(1L)
   case class UserAuthorized(userId: Int) extends SessionMessage
 
   sealed trait SubscribeCommand extends SessionMessage

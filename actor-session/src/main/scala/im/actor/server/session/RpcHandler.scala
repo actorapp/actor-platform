@@ -9,7 +9,7 @@ import akka.stream.actor._
 import scodec.bits._
 
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.mtproto.protocol.{ MessageAck, ProtoMessage, RpcResponseBox }
+import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
 
 private[session] object RpcHandler {
   def props(rpcApiService: ActorRef) = Props(classOf[RpcHandler], rpcApiService)
@@ -40,9 +40,6 @@ private[session] class RpcHandler(rpcApiService: ActorRef) extends ActorSubscrib
       requestQueue += (messageId → requestBytes)
       assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
-      log.debug("Publishing acknowledge for messageId: {}", messageId)
-      enqueueProtoMessage(MessageAck(Vector(messageId)))
-
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
   }
@@ -51,7 +48,8 @@ private[session] class RpcHandler(rpcApiService: ActorRef) extends ActorSubscrib
     override def inFlightInternally: Int = requestQueue.size
   }
 
-  // publisher-related
+  // Publisher-related
+
   private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
 
   def publisher: Receive = {

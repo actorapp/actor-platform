@@ -10,7 +10,7 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.WeakUpdatesManager
-import im.actor.server.session.Session
+import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ models, persist }
@@ -38,6 +38,7 @@ class AuthServiceSpec extends BaseServiceSuite {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val rpcApiService = system.actorOf(RpcApiService.props())
+    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
     implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
 
     implicit val ec = system.dispatcher

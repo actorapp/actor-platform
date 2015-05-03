@@ -12,6 +12,10 @@ trait RpcRequestMessage extends ProtoMessageWithHeader
 trait RpcResponseMessage extends ProtoMessageWithHeader
 trait UpdateMessage extends ProtoMessageWithHeader
 
+sealed trait IncomingProtoMessage
+
+sealed trait OutgoingProtoMessage
+
 @SerialVersionUID(1L)
 case class MessageAck(messageIds: Vector[Long]) extends ProtoMessage {
   val header = MessageAck.header
@@ -19,6 +23,12 @@ case class MessageAck(messageIds: Vector[Long]) extends ProtoMessage {
 
 object MessageAck {
   val header = 0x06
+
+  def incoming(messageIds: Seq[Long]): MessageAck with IncomingProtoMessage =
+    new MessageAck(messageIds.toVector) with IncomingProtoMessage
+
+  def outgoing(messageIds: Seq[Long]): MessageAck with OutgoingProtoMessage =
+    new MessageAck(messageIds.toVector) with OutgoingProtoMessage
 }
 
 @SerialVersionUID(1L)
@@ -31,7 +41,7 @@ object Container {
 }
 
 @SerialVersionUID(1L)
-case class NewSession(sessionId: Long, messageId: Long) extends ProtoMessage {
+case class NewSession(sessionId: Long, messageId: Long) extends ProtoMessage with OutgoingProtoMessage {
   val header = NewSession.header
 }
 
@@ -76,7 +86,7 @@ object RpcRequestBox {
 }
 
 @SerialVersionUID(1L)
-case class RpcResponseBox(messageId: Long, bodyBytes: BitVector) extends ProtoMessage {
+case class RpcResponseBox(messageId: Long, bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage {
   val header = RpcResponseBox.header
 }
 
@@ -103,7 +113,7 @@ object UnsentResponse {
 }
 
 @SerialVersionUID(1L)
-case class UpdateBox(bodyBytes: BitVector) extends ProtoMessage {
+case class UpdateBox(bodyBytes: BitVector) extends ProtoMessage with OutgoingProtoMessage {
   val header = UpdateBox.header
 }
 
