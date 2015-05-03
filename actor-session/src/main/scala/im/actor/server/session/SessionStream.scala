@@ -62,7 +62,8 @@ private[session] object SessionStream {
       val reSendSubscriber = builder.add(Sink(ActorSubscriber[ProtoMessage](reSender)))
       val reSendPublisher = builder.add(Source(ActorPublisher[MTPackage](reSender)))
 
-      val mergeProto = builder.add(MergePreferred[ProtoMessage](4))
+      val mergeProto = builder.add(MergePreferred[ProtoMessage](3))
+      val mergeProtoPriority = builder.add(MergePreferred[ProtoMessage](1))
 
       val logging = akka.event.Logging(context.system, s"SessionStream-${authId}-${sessionId}")
 
@@ -70,15 +71,14 @@ private[session] object SessionStream {
 
       // @format: OFF
 
-                   outProtoMessages     ~> mergeProto.preferred
-                   outRequestResend     ~> mergeProto ~> reSendSubscriber
-      rpc       ~> rpcRequestSubscriber
-                   rpcResponsePublisher ~> mergeProto
-      subscribe ~> updatesSubscriber
-                   updatesPublisher     ~> mergeProto
-                   incomingAck          ~> mergeProto
-
-      unmatched ~> log
+      incomingAck      ~> mergeProtoPriority.preferred
+      outProtoMessages ~> mergeProtoPriority   ~> mergeProto.preferred
+                          outRequestResend     ~> mergeProto ~> reSendSubscriber
+      rpc              ~> rpcRequestSubscriber
+                          rpcResponsePublisher ~> mergeProto
+      subscribe        ~> updatesSubscriber
+                          updatesPublisher     ~> mergeProto
+      unmatched        ~> log
 
       // @format: ON
 
