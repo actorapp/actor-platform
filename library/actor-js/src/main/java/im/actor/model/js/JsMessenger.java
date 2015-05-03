@@ -42,6 +42,14 @@ public class JsMessenger extends Messenger {
         modules.getMessagesModule().onInMessageShown(peer, sortKey);
     }
 
+    public void loadMoreDialogs() {
+        modules.getMessagesModule().loadMoreDialogs();
+    }
+
+    public void loadMoreHistory(Peer peer) {
+        modules.getMessagesModule().loadMoreHistory(peer);
+    }
+
     public AngularList<JsDialog, Dialog> getDialogsList() {
         return angularModule.getDialogsList();
     }
