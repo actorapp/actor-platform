@@ -8,15 +8,15 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FileLocalSource;
+import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.js.JsMessenger;
 import im.actor.model.util.Base64Utils;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsMessage extends JavaScriptObject {
 
     public static final JsEntityConverter<Message, JsMessage> CONVERTER = new JsEntityConverter<Message, JsMessage>() {
@@ -34,14 +34,37 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentText.create(((TextContent) value.getContent()).getText());
             } else if (value.getContent() instanceof ServiceContent) {
                 content = JsContentService.create(modules.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
-            } else if (value.getContent() instanceof PhotoContent) {
-                PhotoContent photo = (PhotoContent) value.getContent();
+            } else if (value.getContent() instanceof DocumentContent) {
+                DocumentContent doc = (DocumentContent) value.getContent();
+
+                String fileName = doc.getName();
+                String fileExtension = doc.getExt();
+                String fileSize = modules.getFormatter().formatFileSize(doc.getSource().getSize());
+                String fileUrl = null;
+
+                if (doc.getSource() instanceof FileRemoteSource) {
+                    fileUrl = modules.getFileUrl(((FileRemoteSource) doc.getSource()).getFileReference());
+                }
+
+                boolean isUploading = doc.getSource() instanceof FileLocalSource;
+
                 String thumb = null;
-                if (photo.getFastThumb() != null) {
-                    String thumbBase64 = Base64Utils.toBase64(photo.getFastThumb().getImage());
+                if (doc.getFastThumb() != null) {
+                    String thumbBase64 = Base64Utils.toBase64(doc.getFastThumb().getImage());
                     thumb = "data:image/jpg;base64," + thumbBase64;
                 }
-                content = JsContentPhoto.create(photo.getW(), photo.getH(), thumb, null);
+
+                if (value.getContent() instanceof PhotoContent && thumb != null) {
+                    PhotoContent photoContent = (PhotoContent) value.getContent();
+                    content = JsContentPhoto.create(
+                            fileName, fileExtension, fileSize,
+                            photoContent.getW(), photoContent.getH(), thumb,
+                            fileUrl, isUploading);
+                } else {
+                    content = JsContentDocument.create(fileName, fileExtension, fileSize,
+                            thumb, fileUrl, isUploading);
+                }
+
             } else {
                 content = JsContentUnsupported.create();
             }
