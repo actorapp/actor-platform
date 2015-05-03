@@ -11,6 +11,8 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.js.JsMessenger;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
@@ -155,13 +157,22 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
         for (AngularList<JsMessage, Message> messageList : messagesList.values()) {
             boolean founded = false;
-            for (Message dialog : messageList.getRawItems()) {
-                UserVM user = modules().getUsersModule().getUsersCollection().get(dialog.getSenderId());
+            for (Message message : messageList.getRawItems()) {
+                UserVM user = modules().getUsersModule().getUsersCollection().get(message.getSenderId());
                 Avatar avatar = user.getAvatar().get();
                 if (avatar != null && avatar.getSmallImage() != null &&
                         avatar.getSmallImage().getFileReference().getFileId() == fileId) {
                     founded = true;
                     break;
+                }
+                if (message.getContent() instanceof DocumentContent) {
+                    DocumentContent doc = (DocumentContent) message.getContent();
+                    if (doc.getSource() instanceof FileRemoteSource) {
+                        if (((FileRemoteSource) doc.getSource()).getFileReference().getFileId() == fileId) {
+                            founded = true;
+                            break;
+                        }
+                    }
                 }
             }
             if (founded) {
