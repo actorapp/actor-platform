@@ -36,6 +36,7 @@ class ActorService
   bindChat: (peer, callback) ->
     console.log '[AW]ActorService bindChat'
     console.log '[AW]ActorService bindChat: peer:', peer
+    @setCurrentPeer peer
     @messenger.bindChat peer, callback
   bindDialogs: (callback) ->
     console.log '[AW]ActorService bindDialogs'

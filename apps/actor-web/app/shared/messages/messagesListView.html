@@ -17,8 +17,8 @@
               <span flex>{{ message.sender.title }}</span>
               <time class="messages__list__item__body__timestamp">{{ message.date }}</time>
             </h3>
-            <p ng-if="message.content.content == 'text'">{{  message.content.text }}</p>
-            <p class="unsupported" ng-if="message.content.content == 'unsupported'">Unsupported content</p>
+            <p ng-if="message.content.content == 'text'">{{ message.content.text }}</p>
+            <p class="unsupported" ng-if="message.content.content == 'unsupported'">Unsupported content: {{ message.content.text }}</p>
         </div>
 
       </md-list-item>
