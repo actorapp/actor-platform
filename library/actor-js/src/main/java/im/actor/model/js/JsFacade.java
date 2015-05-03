@@ -339,4 +339,12 @@ public class JsFacade implements Exportable {
     public void onProfileClosed(int uid) {
         messenger.onProfileClosed(uid);
     }
+
+    public void onDialogsEnd() {
+        messenger.loadMoreDialogs();
+    }
+
+    public void onChatEnd(JsPeer peer) {
+        messenger.loadMoreHistory(peer.convert());
+    }
 }
