@@ -1,14 +1,19 @@
 package im.actor.server.session
 
+import java.util.concurrent.TimeUnit
+
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 import akka.actor._
+import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.pipe
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
+import com.typesafe.config.Config
 import scodec.DecodeResult
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -20,6 +25,16 @@ import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.presences.PresenceManagerRegion
 import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
 import im.actor.server.{ models, persist }
+
+case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
+object SessionConfig {
+  def fromConfig(config: Config): SessionConfig = {
+    SessionConfig(
+      idleTimeout = config.getDuration("idle-timeout", TimeUnit.SECONDS).seconds,
+      reSendConfig = ReSenderConfig.fromConfig(config.getConfig("resend"))
+    )
+  }
+}
 
 object Session {
 
@@ -45,15 +60,19 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(rpcApiService: ActorRef)(implicit
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                                     weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-                                     presenceManagerRegion: PresenceManagerRegion,
-                                     db:                    Database,
-                                     materializer:          FlowMaterializer): Props =
+  def props(rpcApiService: ActorRef)(
+    implicit
+    config:                SessionConfig,
+    seqUpdManagerRegion:   SeqUpdatesManagerRegion,
+    weakUpdManagerRegion:  WeakUpdatesManagerRegion,
+    presenceManagerRegion: PresenceManagerRegion,
+    db:                    Database,
+    materializer:          FlowMaterializer
+  ): Props =
     Props(
       classOf[Session],
       rpcApiService,
+      config,
       seqUpdManagerRegion,
       weakUpdManagerRegion,
       presenceManagerRegion,
@@ -62,12 +81,15 @@ object Session {
     )
 }
 
-class Session(rpcApiService: ActorRef)(implicit
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                                       weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-                                       presenceManagerRegion: PresenceManagerRegion,
-                                       db:                    Database,
-                                       materializer:          FlowMaterializer)
+class Session(rpcApiService: ActorRef)(
+  implicit
+  config:                SessionConfig,
+  seqUpdManagerRegion:   SeqUpdatesManagerRegion,
+  weakUpdManagerRegion:  WeakUpdatesManagerRegion,
+  presenceManagerRegion: PresenceManagerRegion,
+  db:                    Database,
+  materializer:          FlowMaterializer
+)
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 
   import SessionMessage._
@@ -76,6 +98,8 @@ class Session(rpcApiService: ActorRef)(implicit
 
   private[this] var optUserId: Option[Int] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
+
+  context.setReceiveTimeout(config.idleTimeout)
 
   def receive = waitingForEnvelope
 
@@ -121,22 +145,21 @@ class Session(rpcApiService: ActorRef)(implicit
     case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) ⇒
       val client = sender()
 
-      recordClient(client)
-
       withValidMessageBox(client, messageBoxBytes) { mb ⇒
-        sendProtoMessage(authId, sessionId)(client, NewSession(sessionId, mb.messageId))
-
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
         val rpcHandler = context.actorOf(RpcHandler.props(rpcApiService), "rpcHandler")
         val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
+        val reSender = context.actorOf(ReSender.props(authId, sessionId)(config.reSendConfig), "reSender")
 
-        val graph = SessionStream.graph(authId, sessionId, rpcApiService, rpcHandler, updatesHandler)
+        sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
+
+        val graph = SessionStream.graph(authId, sessionId, mb.messageId, rpcApiService, rpcHandler, updatesHandler, reSender)
 
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
           import FlowGraph.Implicits._
 
           val source = b.add(Source(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
-          val sink = b.add(Sink.foreach[ProtoMessage](m ⇒ self ! SendProtoMessage(m)))
+          val sink = b.add(Sink.foreach[MTPackage](m ⇒ clients foreach (_ ! m)))
 
           source ~> g.inlet
           g.outlet ~> sink
@@ -145,35 +168,28 @@ class Session(rpcApiService: ActorRef)(implicit
         flow.run()
 
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
+        recordClient(client, reSender)
 
-        context.become(resolved(authId, sessionId, sessionMessagePublisher))
+        context.become(resolved(authId, sessionId, sessionMessagePublisher, reSender))
       }
-    case Terminated(client) ⇒
-      clients -= client
-    case unmatched ⇒ handleUnmatched(unmatched)
+    case internal ⇒ handleInternal(internal)
   }
 
-  def resolved(authId: Long, sessionId: Long, publisher: ActorRef): Receive = {
+  def resolved(authId: Long, sessionId: Long, publisher: ActorRef, reSender: ActorRef): Receive = {
     case env @ Envelope(eauthId, esessionId, msg) ⇒
       val client = sender()
-
-      recordClient(client)
 
       if (authId != eauthId || sessionId != esessionId) // Should never happen
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
-        handleSessionMessage(authId, sessionId, client, msg, publisher)
-    case SendProtoMessage(protoMessage) ⇒
-      log.debug("Sending proto message {}", protoMessage)
-      sendProtoMessage(authId, sessionId, protoMessage)
-    case Terminated(client) ⇒
-      clients -= client
-    case unmatched ⇒ handleUnmatched(unmatched)
+        handleSessionMessage(authId, sessionId, client, msg, publisher, reSender)
+    case internal ⇒ handleInternal(internal)
   }
 
-  private def recordClient(client: ActorRef): Unit = {
+  private def recordClient(client: ActorRef, reSender: ActorRef): Unit = {
     if (!clients.contains(client)) {
       clients += client
+      reSender ! ReSenderMessage.NewClient(client)
       context watch client
     }
   }
@@ -183,14 +199,16 @@ class Session(rpcApiService: ActorRef)(implicit
     sessionId: Long,
     client:    ActorRef,
     message:   SessionMessage,
-    publisher: ActorRef
+    publisher: ActorRef,
+    reSender:  ActorRef
   ): Unit = {
     log.debug("Session message {}", message)
     message match {
       case HandleMessageBox(messageBoxBytes) ⇒
-        withValidMessageBox(client, messageBoxBytes)(mb ⇒ publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId)))
-      case SendProtoMessage(protoMessage) ⇒
-        sendProtoMessage(authId, sessionId, protoMessage)
+        withValidMessageBox(client, messageBoxBytes) { mb ⇒
+          publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
+        }
+        recordClient(client, reSender)
       case cmd: SubscribeCommand ⇒
         publisher ! cmd
       case UserAuthorized(userId) ⇒
@@ -201,10 +219,6 @@ class Session(rpcApiService: ActorRef)(implicit
         // TODO: handle errors
         persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId)
     }
-  }
-
-  private def sendProtoMessage(authId: Long, sessionId: Long, message: ProtoMessage): Unit = {
-    clients foreach (_.tell(packProtoMessage(authId, sessionId, message), self))
   }
 
   private def withValidMessageBox(client: ActorRef, messageBoxBytes: Array[Byte])(f: MessageBox ⇒ Unit): Unit =
@@ -222,19 +236,14 @@ class Session(rpcApiService: ActorRef)(implicit
       case _                          ⇒ None
     }
 
-  private def boxProtoMessage(message: ProtoMessage): MessageBox = {
-    MessageBox(nextMessageId(), message)
-  }
+  private def handleInternal(message: Any) =
+    message match {
+      case ReceiveTimeout ⇒
+        context.parent ! Passivate(stopMessage = PoisonPill)
+      case Terminated(client) ⇒
+        clients -= client
+      case unmatched ⇒
+        log.error("Received unmatched message {}", message)
+    }
 
-  private def packProtoMessage(authId: Long, sessionId: Long, message: ProtoMessage): MTPackage = {
-    val bytes = MessageBoxCodec.encode(boxProtoMessage(message)).require
-    MTPackage(authId, sessionId, bytes)
-  }
-
-  private def sendProtoMessage(authId: Long, sessionId: Long)(client: ActorRef, message: ProtoMessage): Unit = {
-    client ! packProtoMessage(authId, sessionId, message)
-  }
-
-  private def handleUnmatched(message: Any) =
-    log.error("Received unmatched message {}", message)
 }

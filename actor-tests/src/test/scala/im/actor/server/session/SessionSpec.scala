@@ -4,11 +4,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Random
 
-import akka.actor._
-import akka.stream.ActorFlowMaterializer
 import akka.testkit.TestProbe
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{ FlatSpecLike, Matchers }
 import scodec.bits._
 
 import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignOut, RequestSignUp, ResponseAuth, ResponseSendAuthCode }
@@ -16,24 +12,14 @@ import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.UserOutPeer
-import im.actor.api.rpc.sequence.{ RequestSubscribeToOnline, WeakUpdate, SeqUpdate }
-import im.actor.api.rpc.weak.{ UpdateUserOffline, UpdateUserOnline }
-import im.actor.api.rpc.{ Update, RpcResult, RpcOk, Request, AuthorizedClientData }
-import im.actor.server.api.ActorSpecHelpers
-import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
-import im.actor.server.presences.PresenceManager
-import im.actor.server.sms.DummyActivationContext
-import im.actor.server.social.SocialManager
-import im.actor.server.{ persist, SqlSpecHelpers }
-import im.actor.server.api.rpc.service.auth.AuthServiceImpl
-import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
-import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
+import im.actor.api.rpc.sequence.RequestSubscribeToOnline
+import im.actor.api.rpc.weak.UpdateUserOffline
+import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
-import im.actor.util.testing._
+import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 
-class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
+class SessionSpec extends BaseSessionSpec {
   behavior of "Session actor"
 
   it should "send Drop on message on wrong message box" in sessions().e1
@@ -44,32 +30,11 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
   it should "subscribe to weak updates" in sessions().e6
   it should "subscribe to presences" in sessions().e7
 
-  implicit val materializer = ActorFlowMaterializer()
-  implicit val (ds, db) = migrateAndInitDb()
-  implicit val ec = system.dispatcher
-
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  val rpcApiService = system.actorOf(RpcApiService.props())
-  implicit val sessionRegion = Session.startRegion(
-    Some(
-      Session.props(rpcApiService)
-    )
-  )
-
-  val authService = new AuthServiceImpl(new DummyActivationContext)
-  val sequenceService = new SequenceServiceImpl
-
-  rpcApiService ! RpcApiService.AttachService(authService)
-  rpcApiService ! RpcApiService.AttachService(sequenceService)
-
   case class sessions() {
 
     import SessionMessage._
 
-    val probe = TestProbe()
+    implicit val probe = TestProbe()
 
     def e1() = {
       val authId = createAuthId()
@@ -95,6 +60,7 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
       expectNewSession(authId, sessionId, messageId)
       probe.receiveOne(1.second)
       probe.receiveOne(1.second)
+      probe.expectNoMsg()
     }
 
     def e3() = {
@@ -309,83 +275,5 @@ class SessionSpec extends ActorSuite with FlatSpecLike with ScalaFutures with Ma
 
       ub.updateHeader should ===(UpdateUserOffline.header)
     }
-
-    private def createAuthId(): Long = {
-      val authId = Random.nextLong()
-      Await.result(db.run(persist.AuthId.create(authId, None, None)), 1.second)
-      authId
-    }
-
-    private def expectSeqUpdate(authId: Long, sessionId: Long): SeqUpdate = {
-      UpdateBoxCodec.decode(expectMessageBox(authId, sessionId).body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[SeqUpdate]
-    }
-
-    private def expectWeakUpdate(authId: Long, sessionId: Long): WeakUpdate = {
-      UpdateBoxCodec.decode(expectMessageBox(authId, sessionId).body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[WeakUpdate]
-    }
-
-    private def expectRpcResult(): RpcResult = {
-      Option(probe.receiveOne(5.seconds)) match {
-        case Some(MTPackage(authId, sessionId, mbBytes)) ⇒
-          MessageBoxCodec.decode(mbBytes).require.value.body match {
-            case RpcResponseBox(messageId, rpcResultBytes) ⇒
-              RpcResultCodec.decode(rpcResultBytes).require.value
-            case msg ⇒ throw new Exception(s"Expected RpcResponseBox but got $msg")
-          }
-        case Some(msg) ⇒ throw new Exception(s"Expected MTPackage but got $msg")
-        case None      ⇒ throw new Exception("No rpc response")
-      }
-    }
-
-    private def expectMessageAck(authId: Long, sessionId: Long, messageId: Long): MessageAck = {
-      val mb = expectMessageBox(authId, sessionId)
-      mb.body shouldBe a[MessageAck]
-
-      val ack = mb.body.asInstanceOf[MessageAck]
-      ack.messageIds should ===(Vector(messageId))
-      ack
-    }
-
-    private def expectNewSession(authId: Long, sessionId: Long, messageId: Long): NewSession = {
-      val mb = expectMessageBox(authId, sessionId)
-      mb.body shouldBe a[NewSession]
-
-      val ns = mb.body.asInstanceOf[NewSession]
-      ns should ===(NewSession(sessionId, messageId))
-
-      ns
-    }
-
-    private def expectMessageBox(authId: Long, sessionId: Long): MessageBox = {
-      val packageBody = probe.expectMsgPF() {
-        case MTPackage(aid, sid, body) if aid == authId && sid == sessionId ⇒ body
-      }
-
-      MessageBoxCodec.decode(packageBody).require.value
-    }
-
-    private def sendMessageBox(authId: Long, sessionId: Long, session: ActorRef, messageId: Long, body: ProtoMessage) =
-      sendEnvelope(authId, sessionId, session, HandleMessageBox(MessageBoxCodec.encode(MessageBox(messageId, body)).require.toByteArray))
-
-    private def sendEnvelope(authId: Long, sessionId: Long, session: ActorRef, msg: SessionMessage) = {
-      session.tell(
-        Envelope(
-          authId,
-          sessionId,
-          msg
-        ),
-        probe.ref
-      )
-    }
-  }
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    closeDb()
-  }
-
-  private def closeDb(): Unit = {
-    db.close()
-    ds.close()
   }
 }

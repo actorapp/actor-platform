@@ -27,7 +27,7 @@ import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
-import im.actor.server.session.Session
+import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
 
@@ -40,6 +40,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
   val smsConfig = serverConfig.getConfig("sms")
+  implicit val sessionConfig = SessionConfig.fromConfig(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
