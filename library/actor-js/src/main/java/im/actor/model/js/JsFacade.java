@@ -23,9 +23,9 @@ import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
+import im.actor.model.js.providers.JsFileSystemProvider;
+import im.actor.model.js.providers.JsHttpProvider;
 import im.actor.model.js.providers.fs.JsFile;
-import im.actor.model.js.providers.fs.JsFileLoadedClosure;
-import im.actor.model.js.providers.fs.JsFileReader;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
@@ -41,14 +41,19 @@ public class JsFacade implements Exportable {
     private static final String APP_KEY = "??";
 
     private JsMessenger messenger;
+    private JsFileSystemProvider provider;
 
     @Export
     public JsFacade() {
         String clientName = IdentityUtils.getClientName();
         String uniqueId = IdentityUtils.getUniqueId();
+        provider = new JsFileSystemProvider();
 
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
+        configuration.setFileSystemProvider(provider);
+        configuration.setEnableFilesLogging(true);
+        configuration.setHttpDownloaderProvider(new JsHttpProvider());
 
         configuration.addEndpoint("wss://mtproto-api.actor.im:10443/");
 
@@ -303,20 +308,8 @@ public class JsFacade implements Exportable {
         messenger.onProfileClosed(uid);
     }
 
-    // Uploading files
-    JsFileReader reader;
-    JsFileLoadedClosure loadedClosure;
-
     public void sendFile(JsPeer peer, JsFile file) {
-        Log.d(TAG, "send file: " + file.getSize() + ", slice: " + file.slice(0, 10));
-        reader = JsFileReader.create();
-        loadedClosure = new JsFileLoadedClosure() {
-            @Override
-            public void onLoaded() {
-                Log.d(TAG, "Slice loaded");
-            }
-        };
-        reader.setOnLoaded(loadedClosure);
-        reader.readAsArrayBuffer(file.slice(0, 10));
+        String descriptor = provider.registerUploadFile(file);
+        messenger.sendDocument(peer.convert(), "sample.txt", "application/octet-stream", provider.fileFromDescriptor(descriptor));
     }
 }

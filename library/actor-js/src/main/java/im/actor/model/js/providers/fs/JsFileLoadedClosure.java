@@ -4,6 +4,8 @@
 
 package im.actor.model.js.providers.fs;
 
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
+
 public interface JsFileLoadedClosure {
-    void onLoaded();
+    void onLoaded(ArrayBuffer message);
 }

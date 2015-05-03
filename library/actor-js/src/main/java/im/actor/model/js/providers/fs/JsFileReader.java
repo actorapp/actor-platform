@@ -17,9 +17,11 @@ public class JsFileReader extends JavaScriptObject {
     }
 
     public native final void setOnLoaded(JsFileLoadedClosure closure)/*-{
-        this.addEventListener("loadend", function() {
-            console.log("loadend");
-            closure.@im.actor.model.js.providers.fs.JsFileLoadedClosure::onLoaded()();
+        this.addEventListener("loadend", function(evt) {
+            if (evt.target.readyState == FileReader.DONE) {
+                console.log(evt.target.result);
+                closure.@im.actor.model.js.providers.fs.JsFileLoadedClosure::onLoaded(*)(evt.target.result);
+            }
         });
     }-*/;
 
