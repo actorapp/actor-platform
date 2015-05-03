@@ -15,8 +15,8 @@ class ChatsController
     @actorService.bindDialogs (items) => @renderDialogs items
 
   renderDialogs: (dialogs) ->
-    console.log '[AW]MessagesController renderDialogs'
-    console.log '[AW]MessagesController renderDialogs: dialogs:', dialogs
+    console.log '[AW]ChatsController renderDialogs'
+    console.log '[AW]ChatsController renderDialogs: dialogs:', dialogs
     @$timeout =>
 #      list.forEach (item) ->
 #        console.log item
