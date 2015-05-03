@@ -5,7 +5,6 @@ class ChatsController
     console.log '[AW]ChatsController constructor'
     console.log '[AW]ChatsController constructor: @isLoggedIn', @actorService.isLoggedIn
     if @actorService.isLoggedIn
-      console.log '[AW]ChatsController constructor: bindChats() if @actorService.isLoggedIn.'
       @bindDialogs()
     @$scope.$on 'actorLoggedIn', =>
       console.log '[AW]ChatsController constructor: actorLoggedIn fired.'
@@ -13,21 +12,21 @@ class ChatsController
 
   bindDialogs: ->
     console.log '[AW]ChatsController bindDialogs'
-    @actorService.bindDialogs (items) => @renderConversations items
+    @actorService.bindDialogs (items) => @renderDialogs items
 
-  renderConversations: (list) ->
-    console.log '[AW]MessagesController renderConversations'
-    console.log '[AW]MessagesController renderConversations: list:', list
+  renderDialogs: (dialogs) ->
+    console.log '[AW]MessagesController renderDialogs'
+    console.log '[AW]MessagesController renderDialogs: dialogs:', dialogs
     @$timeout =>
 #      list.forEach (item) ->
 #        console.log item
 #        @getUnreadMessages (item.peer.id)
-      @list = list
-      @$rootScope.$broadcast 'renderConversations'
+      @list = dialogs
+      @$rootScope.$broadcast 'renderDialogs'
 
   selectChat: (peer) ->
     console.log '[AW]ChatsController selectChat'
-
+    console.log '[AW]ChatsController selectChat: peer:', peer
     if @actorService.currentPeer
       console.log '[AW]ChatsController selectChat: conversation already opened: unbind...'
       @actorService.unbindChat @actorService.currentPeer
@@ -35,6 +34,7 @@ class ChatsController
 
     @actorService.bindChat peer
     @actorService.onConversationOpen peer
+
     # Close sidebar
     @$mdSidenav('left').close()
 

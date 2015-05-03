@@ -12,9 +12,10 @@ class ComposeController
   enableCompose: ->
     console.log '[AW]ComposeController enableCompose'
     @isEnabled = true
+    console.log '[AW]ComposeController enableCompose @actorService.currentPeer', @actorService.currentPeer
     @draft = @actorService.loadDraft @actorService.currentPeer
     console.log '[AW]ComposeController enableCompose: @draft:', @draft
-    @message = if @draft then @draft else null
+    @message = if @draft then @draft else ''
     console.log '[AW]ComposeController enableCompose: @message:', @message
 
   onTyping: ->
