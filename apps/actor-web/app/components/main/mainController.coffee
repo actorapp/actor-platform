@@ -1,6 +1,11 @@
 class MainController
-  constructor: (@$mdSidenav, @$mdMedia, @actorService) ->
+  constructor: (@$rootScope, @$scope, @$mdSidenav, @$mdMedia, @actorService) ->
     console.log '[AW]MainController constructor'
+
+    @$scope.$on 'actorReady', =>
+      console.log '[AW]MainController constructor: actorReady fired.'
+      console.log '[AW]MainController constructor: @actorService.isLoggedIn',  @actorService.isLoggedIn
+      @$rootScope.$state.go 'login' if !@actorService.isLoggedIn
 
   # showCompose: ->
     # console.log '[AW]MainController showCompose'
@@ -13,7 +18,7 @@ class MainController
     console.log '[AW]MainController openSidebar'
     @$mdSidenav('left').open()
 
-MainController.$inject = ['$mdSidenav', '$mdMedia', 'actorService']
+MainController.$inject = ['$rootScope', '$scope', '$mdSidenav', '$mdMedia', 'actorService']
 
 angular
   .module 'actorWeb'
