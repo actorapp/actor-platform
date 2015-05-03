@@ -8,8 +8,7 @@ import scodec.bits._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol._
-import im.actor.server.presences.PresenceManagerRegion
-import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
+import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.session.SessionMessage.SubscribeCommand
 
 sealed trait SessionStreamMessage
@@ -23,6 +22,9 @@ object SessionStreamMessage {
 
   @SerialVersionUID(1L)
   case class HandleSubscribe(command: SubscribeCommand) extends SessionStreamMessage
+
+  @SerialVersionUID(1L)
+  case class SendProtoMessage(message: ProtoMessage with OutgoingProtoMessage) extends SessionStreamMessage
 }
 
 private[session] object SessionStream {
@@ -30,12 +32,15 @@ private[session] object SessionStream {
   def graph(
     authId:         Long,
     sessionId:      Long,
+    firstMessageId: Long,
     rpcApiService:  ActorRef,
     rpcHandler:     ActorRef,
-    updatesHandler: ActorRef
+    updatesHandler: ActorRef,
+    reSender:       ActorRef
   )(implicit context: ActorContext) = {
     FlowGraph.partial() { implicit builder ⇒
       import FlowGraph.Implicits._
+
       import SessionStreamMessage._
 
       val discr = builder.add(new SessionMessageDiscriminator)
@@ -43,7 +48,9 @@ private[session] object SessionStream {
       // TODO: think about buffer sizes and overflow strategies
       val rpc = discr.outRpc.buffer(100, OverflowStrategy.backpressure)
       val subscribe = discr.outSubscribe.buffer(100, OverflowStrategy.backpressure)
+      val incomingAck = discr.outIncomingAck.buffer(100, OverflowStrategy.backpressure)
       val unmatched = discr.outUnmatched.buffer(100, OverflowStrategy.backpressure)
+      val outProtoMessages = discr.outProtoMessage.buffer(100, OverflowStrategy.backpressure)
 
       val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcHandler)))
       val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcHandler)))
@@ -51,7 +58,10 @@ private[session] object SessionStream {
       val updatesSubscriber = builder.add(Sink(ActorSubscriber[SubscribeCommand](updatesHandler)))
       val updatesPublisher = builder.add(Source(ActorPublisher[ProtoMessage](updatesHandler)))
 
-      val merge = builder.add(Merge[ProtoMessage](2))
+      val reSendSubscriber = builder.add(Sink(ActorSubscriber[ProtoMessage](reSender)))
+      val reSendPublisher = builder.add(Source(ActorPublisher[MTPackage](reSender)))
+
+      val mergeProto = builder.add(MergePreferred[ProtoMessage](3))
 
       val logging = akka.event.Logging(context.system, s"SessionStream-${authId}-${sessionId}")
 
@@ -59,15 +69,18 @@ private[session] object SessionStream {
 
       // @format: OFF
 
+                   outProtoMessages     ~> mergeProto.preferred
       rpc       ~> rpcRequestSubscriber
-                   rpcResponsePublisher ~> merge
+                   rpcResponsePublisher ~> mergeProto ~> reSendSubscriber
       subscribe ~> updatesSubscriber
-                   updatesPublisher     ~> merge
+                   updatesPublisher     ~> mergeProto
+                   incomingAck          ~> mergeProto
+
       unmatched ~> log
 
       // @format: ON
 
-      FlowShape(discr.in, merge.out)
+      FlowShape(discr.in, reSendPublisher.outlet)
     }
   }
 }
