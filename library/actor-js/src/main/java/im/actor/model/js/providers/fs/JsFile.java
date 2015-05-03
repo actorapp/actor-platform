@@ -18,6 +18,14 @@ public class JsFile extends JavaScriptObject {
         return this.size;
     }-*/;
 
+    public final native String getName()/*-{
+        return this.name;
+    }-*/;
+
+    public final native String getMimeType()/*-{
+        return this.type;
+    }-*/;
+
     public final native JsFileSlice slice(int startByte, int endByte)/*-{
         return this.slice(startByte, endByte);
     }-*/;
