@@ -29,14 +29,13 @@ public class JsFileInput implements InputFile {
             @Override
             public void onLoaded(ArrayBuffer message) {
                 Uint8Array array = TypedArrays.createUint8Array(message);
-                byte[] res = new byte[array.length()];
-                for (int i = 0; i < res.length; i++) {
-                    res[offset + i] = (byte) (array.get(i));
+                for (int i = 0; i < len; i++) {
+                    data[offset + i] = (byte) (array.get(i));
                 }
                 callback.onFileRead(fileOffset, data, offset, len);
             }
         });
-        fileReader.readAsArrayBuffer(jsFile.slice(fileOffset, len));
+        fileReader.readAsArrayBuffer(jsFile.slice(fileOffset, fileOffset + len));
     }
 
     @Override
