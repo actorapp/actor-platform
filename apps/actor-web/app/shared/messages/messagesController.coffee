@@ -16,6 +16,9 @@ class MessagesController
     console.log '[AW]MessagesController renderMessages'
     console.log '[AW]MessagesController renderMessages: messages:', messages
     @$timeout =>
+      for message in messages
+        if message.content.content == 'text'
+          message.content.text = message.content.text.replace(/\n/g, '<br/>')
       @list = messages
       @$rootScope.$broadcast 'renderMessages'
 
