@@ -4,7 +4,7 @@
   <md-list flex class="chatlist">
       <md-list-item class="chatlist__item"
                     ng-repeat="chat in chats.list"
-                    ng-class="{'chatlist__item--selected' : chat.peer.peer==main.actorService.currentPeer}"
+                    ng-class="{'chatlist__item--selected' : chat.peer.peer.id == main.actorService.currentPeer.id}"
                     ng-click="chats.selectChat(chat.peer.peer)">
         <div class="chatlist__avatar">
           <img class="md-avatar" ng-src="{{ chat.peer.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.peer.avatar" />
