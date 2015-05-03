@@ -47,7 +47,7 @@ public class JsNotificationsProvider implements NotificationProvider {
             peerTitle = groupVM.getName().get();
             peerAvatar = groupVM.getAvatar().get();
 
-            contentMessage = messenger.getUsers().get(notification.getPeer().getPeerId()).getName().get() + ": " + contentMessage;
+            contentMessage = messenger.getUsers().get(notification.getSender()).getName().get() + ": " + contentMessage;
         }
 
         String peerAvatarUrl = null;
