@@ -33,9 +33,11 @@
                        ng-disabled="login.isSignUp">
             </md-input-container>
             <footer layout="row" ng-if="!login.isSignUp">
+                <a href="#">Wrong number?</a>
                 <span flex></span>
                 <md-button class="md-primary md-raised md-big">Validate code</md-button>
             </footer>
+
         </form>
         <form name="signUp"
               role="form"
