@@ -29,6 +29,19 @@ object Build extends sbt.Build {
     "-Ywarn-unused-import"
   )
 
+  lazy val defaultScalacOptions = Seq(
+    "-target:jvm-1.8",
+    "-encoding",
+    "UTF-8",
+    "-deprecation",
+    "-unchecked",
+    "-feature",
+    "-language:higherKinds",
+    "-Xfatal-warnings",
+    "-Xlint",
+    "-Xfuture"
+  ) ++ compilerWarnings
+
   lazy val defaultSettings =
     buildSettings ++ Formatting.formatSettings ++
       Seq(
@@ -37,18 +50,8 @@ object Build extends sbt.Build {
             sys.error("Java 8 is required for this project.")
         },
         resolvers ++= Resolvers.seq,
-        scalacOptions in Compile ++= Seq(
-          "-target:jvm-1.8",
-          "-encoding",
-          "UTF-8",
-          "-deprecation",
-          "-unchecked",
-          "-feature",
-          "-language:higherKinds",
-          "-Xfatal-warnings",
-          "-Xlint",
-          "-Xfuture"
-        ) ++ compilerWarnings,
+        scalacOptions in Compile ++= defaultScalacOptions,
+        scalacOptions in (Compile, console) ~= (_.filterNot(_ == "-Ywarn-unused-import").filterNot(_ == "-Yfatal-warnings")),
         javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation")
       )
@@ -73,7 +76,7 @@ object Build extends sbt.Build {
             "-groups",
             "-implicits",
             "-diagrams"
-          ) ++ compilerWarnings
+          )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorFrontend)
