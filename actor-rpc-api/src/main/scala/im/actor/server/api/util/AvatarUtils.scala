@@ -20,14 +20,16 @@ object AvatarUtils {
   import FileUtils._
 
   val AvatarSizeLimit = 1024 * 1024 // TODO: configurable
+  val SmallSize = 100
+  val LargeSize = 200
 
   def avatar(ad: models.AvatarData) =
     (ad.smallOpt, ad.largeOpt, ad.fullOpt) match {
       case (None, None, None) ⇒ None
       case (smallOpt, largeOpt, fullOpt) ⇒
         Some(files.Avatar(
-          avatarImage(smallOpt, 100, 100),
-          avatarImage(largeOpt, 200, 200),
+          avatarImage(smallOpt, SmallSize, SmallSize),
+          avatarImage(largeOpt, LargeSize, LargeSize),
           avatarImage(fullOpt)
         ))
     }
@@ -51,9 +53,9 @@ object AvatarUtils {
     } yield resizedImg
   }
 
-  def resizeToSmall(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, 100)
+  def resizeToSmall(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, SmallSize)
 
-  def resizeToLarge(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, 200)
+  def resizeToLarge(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, LargeSize)
 
   def dimensions(aimg: AsyncImage)(implicit ec: ExecutionContext): (Int, Int) =
     (aimg.width, aimg.height)
@@ -124,6 +126,22 @@ object AvatarUtils {
       case None ⇒
         DBIO.successful(Left(new Exception("Cannot find file model")))
     }
+  }
+
+  def getAvatar(avatarModel: models.AvatarData): Avatar = {
+    val smallImageOpt = avatarModel.smallOpt map {
+      case (fileId, fileHash, fileSize) ⇒ AvatarImage(FileLocation(fileId, fileHash), SmallSize, SmallSize, fileSize)
+    }
+
+    val largeImageOpt = avatarModel.largeOpt map {
+      case (fileId, fileHash, fileSize) ⇒ AvatarImage(FileLocation(fileId, fileHash), LargeSize, LargeSize, fileSize)
+    }
+
+    val fullImageOpt = avatarModel.fullOpt map {
+      case (fileId, fileHash, fileSize, w, h) ⇒ AvatarImage(FileLocation(fileId, fileHash), w, h, fileSize)
+    }
+
+    Avatar(smallImageOpt, largeImageOpt, fullImageOpt)
   }
 
   def getAvatarData(entityType: models.AvatarData.TypeVal, entityId: Int, avatar: Avatar): AvatarData = {
