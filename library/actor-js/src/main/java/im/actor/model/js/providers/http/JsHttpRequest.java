@@ -7,13 +7,13 @@ package im.actor.model.js.providers.http;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
-public class JsXmlHttpRequest extends JavaScriptObject {
+public class JsHttpRequest extends JavaScriptObject {
 
-    public static native JsXmlHttpRequest create()/*-{
+    public static native JsHttpRequest create()/*-{
         return new $wnd.XMLHttpRequest();
     }-*/;
 
-    protected JsXmlHttpRequest() {
+    protected JsHttpRequest() {
 
     }
 
@@ -25,10 +25,10 @@ public class JsXmlHttpRequest extends JavaScriptObject {
         this.setRequestHeader(header, value);
     }-*/;
 
-    public final native void setOnLoadHandler(JsXmlHttpRequestHandler handler)/*-{
+    public final native void setOnLoadHandler(JsHttpRequestHandler handler)/*-{
         var _this = this;
         this.onreadystatechange = $entry(function() {
-            handler.@im.actor.model.js.providers.http.JsXmlHttpRequestHandler::onStateChanged(Lim/actor/model/js/providers/http/JsXmlHttpRequest;)(_this);
+            handler.@im.actor.model.js.providers.http.JsHttpRequestHandler::onStateChanged(Lim/actor/model/js/providers/http/JsHttpRequest;)(_this);
         });
     }-*/;
 
