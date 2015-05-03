@@ -6,11 +6,9 @@
                     ng-repeat="chat in chats.list"
                     ng-class="{'chatlist__item--selected' : chat.peer.peer.id == main.actorService.currentPeer.id}"
                     ng-click="chats.selectChat(chat.peer.peer)">
-        <div class="chatlist__avatar">
-          <img class="md-avatar" ng-src="{{ chat.peer.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.peer.avatar" />
-          <div class="no-avatar no-avatar--{{ chat.peer.placeholder }}" ng-if="!chat.peer.avatar">
-            <span>{{ chat.peer.title | limitTo:1 }}</span>
-          </div>
+        <div class="chatlist__avatar avatar avatar--{{ ::chat.peer.placeholder }}">
+          <img ng-src="{{ chat.peer.avatar }}" alt="{{ chat.peer.title }}" ng-if="::chat.peer.avatar" />
+          <span ng-bind="::chat.peer.title | limitTo:1"></span>
         </div>
         <div class="md-list-item-text chatlist__body" flex>
             <h3 layout="row" class="chatlist__body__title">
