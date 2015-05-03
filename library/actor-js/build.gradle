@@ -128,5 +128,5 @@ task installPackageToWeb(type: Copy, dependsOn: ['buildPackage', 'clearWebPackag
     from "$buildDir/exploded"
     include "ActorMessenger/**"
 
-    into "${projectDir}/../../apps/actor-web/ActorMessenger"
+    into "${projectDir}/../../apps/actor-web/"
 }
