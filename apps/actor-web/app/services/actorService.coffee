@@ -107,7 +107,6 @@ class ActorService
           @$rootScope.$broadcast 'actorAuthCode'
     , (tag, message, canTryAgain, state) ->
       console.log '[AW]ActorService requestSms: error: state:', state
-
   sendCode: (code) ->
     console.log '[AW]ActorService sendCode'
     @messenger.sendCode code, (state) =>
@@ -121,12 +120,14 @@ class ActorService
       console.log '[AW]ActorService sendCode: error: state:', state
 
 
-
   sendMessage: (peer, message) ->
     console.log '[AW]ActorService sendMessage'
-    # console.log '[AW]ActorService sendMessage: message:', message
+    console.log '[AW]ActorService sendMessage: message:', message
+    message = message.replace /^\s+|\s+$/g, ''
+    if message.length > 0
+      console.log '[AW]ActorService sendMessage: message:', message.length
     # console.log '[AW]ActorService sendMessage: peer:', peer
-    @messenger.sendMessage peer, message
+      @messenger.sendMessage peer, message
 
 
   # Events
