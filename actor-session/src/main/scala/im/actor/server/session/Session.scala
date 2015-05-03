@@ -165,9 +165,8 @@ class Session(rpcApiService: ActorRef)(
 
           // format: OFF
 
-          source   ~> g.inlet
-          g.outlet ~> bcast   ~> sink
-                      bcast   ~> Sink.onComplete {_ ⇒ log.warning("Dying due to stream completion"); self ! PoisonPill  }
+          source   ~> g ~> bcast ~> sink
+                           bcast ~> Sink.onComplete {_ ⇒ log.warning("Dying due to stream completion"); self ! PoisonPill  }
 
           // format: ON
         }
