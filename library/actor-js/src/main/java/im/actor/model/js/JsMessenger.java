@@ -4,8 +4,6 @@
 
 package im.actor.model.js;
 
-import java.util.HashMap;
-
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Avatar;
@@ -31,7 +29,6 @@ import im.actor.model.viewmodel.UserVM;
 
 public class JsMessenger extends Messenger {
 
-    private HashMap<String, String> fileUrls;
     private AngularModule angularModule;
     private AngularFilesModule angularFilesModule;
 
