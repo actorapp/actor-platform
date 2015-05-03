@@ -18,6 +18,7 @@ import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
 import im.actor.messenger.R;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
+import im.actor.messenger.app.keyboard.emoji.stickers.StickerProcessor;
 import im.actor.messenger.app.service.KeepAliveService;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.android.AndroidMessenger;
@@ -50,6 +51,7 @@ public class Core {
     }
 
     private final SmileProcessor smileProcessor;
+    private final StickerProcessor stickerProcessor;
     private ImageLoader imageLoader;
     private AndroidMessenger messenger;
 
@@ -98,6 +100,9 @@ public class Core {
         this.smileProcessor = new SmileProcessor(application);
         this.smileProcessor.loadEmoji();
 
+        this.stickerProcessor = new StickerProcessor(application);
+        this.stickerProcessor.loadStickers();
+
         this.imageLoader = new ImageLoader(clasificator, application);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
 
@@ -130,8 +135,12 @@ public class Core {
         return core().messenger.myUid();
     }
 
-    public SmileProcessor getSmileProcessor() {
-        return smileProcessor;
+    public static StickerProcessor getStickerProcessor() {
+        return core().stickerProcessor;
+    }
+
+    public static SmileProcessor getSmileProcessor() {
+        return core().smileProcessor;
     }
 
     public static ImageLoader getImageLoader() {

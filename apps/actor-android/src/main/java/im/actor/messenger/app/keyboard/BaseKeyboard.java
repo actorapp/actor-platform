@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.model.log.Log;
 
@@ -29,6 +30,8 @@ import im.actor.model.log.Log;
  */
 public class BaseKeyboard implements
         ViewTreeObserver.OnGlobalLayoutListener {
+
+
 
     protected Activity activity;
     private View decorView;

@@ -12,6 +12,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
 
+import static im.actor.messenger.app.Core.getStickerProcessor;
+
 /**
  * Created by Jesus Christ. Amen.
  */
@@ -43,8 +45,7 @@ public class StickersPageAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final String packId = stickerPack.getId();
         final String stickerId = stickerPack.getStickerId(position + this.page * 8);
-        Uri uri = Uri.parse("file://" + Stickers.getFile(packId, stickerId));
-        ((SimpleDraweeView) holder.itemView).setImageURI(uri);
+        getStickerProcessor().bindSticker((SimpleDraweeView) holder.itemView, packId, stickerId);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
