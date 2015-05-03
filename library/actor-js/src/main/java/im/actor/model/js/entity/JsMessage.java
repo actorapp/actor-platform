@@ -32,7 +32,10 @@ public class JsMessage extends JavaScriptObject {
 
             JsContent content;
             if (value.getContent() instanceof TextContent) {
-                content = JsContentText.create(((TextContent) value.getContent()).getText());
+                String text = ((TextContent) value.getContent()).getText();
+//                text = SafeHtmlUtils.htmlEscape(text).replace("\n", "<br />");
+//                content = JsContentText.create(text);
+                content = JsContentText.create(text);
             } else if (value.getContent() instanceof ServiceContent) {
                 content = JsContentService.create(modules.getFormatter().formatFullServiceMessage(value.getSenderId(), (ServiceContent) value.getContent()));
             } else if (value.getContent() instanceof DocumentContent) {
@@ -70,12 +73,12 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentUnsupported.create();
             }
 
-            return create(rid, sortKey, sender, isOut, date, content);
+            return create(rid, sortKey, sender, isOut, date, Enums.convert(value.getMessageState()), content);
         }
     };
 
-    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsContent content)/*-{
-        return {rid: rid, sortKey: sortKey, sender: sender, isOut: isOut, date: date, content: content};
+    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, String state, JsContent content)/*-{
+        return {rid: rid, sortKey: sortKey, sender: sender, isOut: isOut, date: date, state: state, content: content};
     }-*/;
 
     protected JsMessage() {
