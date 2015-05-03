@@ -14,7 +14,7 @@ import im.actor.server.models
 import im.actor.server.persist
 import im.actor.server.presences.PresenceManagerRegion
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
-import im.actor.server.session.{ SessionRegion, Session }
+import im.actor.server.session.{ SessionConfig, SessionRegion, Session }
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManagerRegion
 
@@ -89,8 +89,10 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
                                                   presenceManagerRegion: PresenceManagerRegion,
                                                   system:                ActorSystem,
                                                   db:                    Database,
-                                                  flowMaterializer:      FlowMaterializer) =
+                                                  flowMaterializer:      FlowMaterializer) = {
+    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(rpcApiService)))
+  }
 
   def buildAuthService()(
     implicit

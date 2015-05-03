@@ -14,7 +14,7 @@ import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
-import im.actor.server.session.Session
+import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.social.SocialManager
 
 class FilesServiceSpec extends BaseServiceSuite {
@@ -41,6 +41,7 @@ class FilesServiceSpec extends BaseServiceSuite {
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
+  implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
   implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
   implicit val authService = buildAuthService()
 

@@ -8,41 +8,81 @@ import scodec.bits._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol._
+import im.actor.server.mtproto.transport.MTPackage
+import im.actor.server.session.SessionMessage.SubscribeCommand
 
-private[session] object SessionStream {
+sealed trait SessionStreamMessage
 
-  trait SessionStreamMessage
-
+object SessionStreamMessage {
   @SerialVersionUID(1L)
   case class HandleMessageBox(messageBox: MessageBox, clientData: ClientData) extends SessionStreamMessage
 
   @SerialVersionUID(1L)
-  case class SubscribeToPresences(userIds: Int) extends SessionStreamMessage
-
-  @SerialVersionUID(1L)
   case class HandleRpcRequest(messageId: Long, requestBytes: BitVector, clientData: ClientData) extends SessionStreamMessage
 
-  def graph(rpcApiService: ActorRef)(implicit system: ActorSystem) =
+  @SerialVersionUID(1L)
+  case class HandleSubscribe(command: SubscribeCommand) extends SessionStreamMessage
+
+  @SerialVersionUID(1L)
+  case class SendProtoMessage(message: ProtoMessage with OutgoingProtoMessage) extends SessionStreamMessage
+}
+
+private[session] object SessionStream {
+
+  def graph(
+    authId:         Long,
+    sessionId:      Long,
+    firstMessageId: Long,
+    rpcApiService:  ActorRef,
+    rpcHandler:     ActorRef,
+    updatesHandler: ActorRef,
+    reSender:       ActorRef
+  )(implicit context: ActorContext) = {
     FlowGraph.partial() { implicit builder ⇒
       import FlowGraph.Implicits._
 
-      val discriminator = builder.add(new SessionMessageDiscriminator)
+      import SessionStreamMessage._
 
-      val rpcRequestHandlerActor = system.actorOf(RpcRequestHandler.props(rpcApiService))
-
-      val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcRequestHandlerActor)))
-      val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcRequestHandlerActor)))
-
-      // @formatter:off
+      val discr = builder.add(new SessionMessageDiscriminator)
 
       // TODO: think about buffer sizes and overflow strategies
-      discriminator.in
-      discriminator.outRpc.buffer(100, OverflowStrategy.backpressure) ~> rpcRequestSubscriber
-      discriminator.outSubscribe.buffer(100, OverflowStrategy.backpressure) ~> Sink.ignore
-      discriminator.outUnmatched.buffer(100, OverflowStrategy.backpressure) ~> Sink.ignore
+      val rpc = discr.outRpc.buffer(100, OverflowStrategy.backpressure)
+      val subscribe = discr.outSubscribe.buffer(100, OverflowStrategy.backpressure)
+      val incomingAck = discr.outIncomingAck.buffer(100, OverflowStrategy.backpressure)
+      val outProtoMessages = discr.outProtoMessage.buffer(100, OverflowStrategy.backpressure)
+      val outRequestResend = discr.outRequestResend.buffer(100, OverflowStrategy.backpressure)
+      val unmatched = discr.outUnmatched.buffer(100, OverflowStrategy.backpressure)
 
-      // @formatter:on
+      val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcHandler)))
+      val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcHandler)))
 
-      FlowShape(discriminator.in, rpcResponsePublisher)
+      val updatesSubscriber = builder.add(Sink(ActorSubscriber[SubscribeCommand](updatesHandler)))
+      val updatesPublisher = builder.add(Source(ActorPublisher[ProtoMessage](updatesHandler)))
+
+      val reSendSubscriber = builder.add(Sink(ActorSubscriber[ProtoMessage](reSender)))
+      val reSendPublisher = builder.add(Source(ActorPublisher[MTPackage](reSender)))
+
+      val mergeProto = builder.add(MergePreferred[ProtoMessage](4))
+
+      val logging = akka.event.Logging(context.system, s"SessionStream-${authId}-${sessionId}")
+
+      val log = Sink.foreach[SessionStreamMessage](logging.warning("Unmatched {}", _))
+
+      // @format: OFF
+
+                   outProtoMessages     ~> mergeProto.preferred
+                   outRequestResend     ~> mergeProto ~> reSendSubscriber
+      rpc       ~> rpcRequestSubscriber
+                   rpcResponsePublisher ~> mergeProto
+      subscribe ~> updatesSubscriber
+                   updatesPublisher     ~> mergeProto
+                   incomingAck          ~> mergeProto
+
+      unmatched ~> log
+
+      // @format: ON
+
+      FlowShape(discr.in, reSendPublisher.outlet)
     }
+  }
 }

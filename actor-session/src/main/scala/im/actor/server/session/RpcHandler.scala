@@ -9,18 +9,18 @@ import akka.stream.actor._
 import scodec.bits._
 
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.mtproto.protocol.{ MessageAck, ProtoMessage, RpcResponseBox }
+import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
 
-object RpcRequestHandler {
-  private[session] def props(rpcApiService: ActorRef) = Props(classOf[RpcRequestHandler], rpcApiService)
+private[session] object RpcHandler {
+  def props(rpcApiService: ActorRef) = Props(classOf[RpcHandler], rpcApiService)
 }
 
-class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
+private[session] class RpcHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
 
-  import SessionStream._
+  import SessionStreamMessage._
 
   implicit val ec = context.dispatcher
 
@@ -40,26 +40,24 @@ class RpcRequestHandler(rpcApiService: ActorRef) extends ActorSubscriber with Ac
       requestQueue += (messageId → requestBytes)
       assert(requestQueue.size <= MaxRequestQueueSize, s"queued too many: ${requestQueue.size}")
 
-      log.debug("Publishing acknowledge for messageId: {}", messageId)
-      enqueueProtoMessage(MessageAck(Vector(messageId)))
-
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
-    case RpcApiService.RpcResponse(messageId, responseBytes) ⇒
-      requestQueue -= messageId
-
-      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
-      enqueueProtoMessage(RpcResponseBox(messageId, responseBytes))
   }
 
   override val requestStrategy = new MaxInFlightRequestStrategy(max = MaxRequestQueueSize) {
     override def inFlightInternally: Int = requestQueue.size
   }
 
-  // publisher-related
+  // Publisher-related
+
   private[this] var protoMessageQueue = immutable.Queue.empty[ProtoMessage]
 
   def publisher: Receive = {
+    case RpcApiService.RpcResponse(messageId, responseBytes) ⇒
+      requestQueue -= messageId
+
+      log.debug("Received RpcResponse for messageId: {}, publishing", messageId)
+      enqueueProtoMessage(RpcResponseBox(messageId, responseBytes))
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒

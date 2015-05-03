@@ -17,22 +17,21 @@ object SessionMessage {
   case class HandleMessageBox(messageBoxBytes: Array[Byte]) extends SessionMessage
 
   @SerialVersionUID(1L)
-  case class SendProtoMessage(message: ProtoMessage) extends SessionMessage
-
-  @SerialVersionUID(1L)
   case class UserAuthorized(userId: Int) extends SessionMessage
 
-  @SerialVersionUID(1L)
-  case class SubscribeToOnline(userIds: Set[Int]) extends SessionMessage
+  sealed trait SubscribeCommand extends SessionMessage
 
   @SerialVersionUID(1L)
-  case class SubscribeFromOnline(userIds: Set[Int]) extends SessionMessage
+  case class SubscribeToOnline(userIds: Set[Int]) extends SubscribeCommand
 
   @SerialVersionUID(1L)
-  case class SubscribeToGroupOnline(groupIds: Set[Int]) extends SessionMessage
+  case class SubscribeFromOnline(userIds: Set[Int]) extends SubscribeCommand
 
   @SerialVersionUID(1L)
-  case class SubscribeFromGroupOnline(groupIds: Set[Int]) extends SessionMessage
+  case class SubscribeToGroupOnline(groupIds: Set[Int]) extends SubscribeCommand
+
+  @SerialVersionUID(1L)
+  case class SubscribeFromGroupOnline(groupIds: Set[Int]) extends SubscribeCommand
 
   def envelope(authId: Long, sessionId: Long, message: SessionMessage): Envelope =
     Envelope(authId, sessionId, message)

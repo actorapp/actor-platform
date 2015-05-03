@@ -6,67 +6,60 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.util.Timeout
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.messaging.UpdateMessageSent
 import im.actor.api.rpc.sequence.WeakUpdate
 import im.actor.api.rpc.weak.{ UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
-import im.actor.server.models
 import im.actor.server.mtproto.protocol.UpdateBox
 import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
-import im.actor.server.session.SessionMessage
 
-object UpdatesPusher {
+trait UpdatesConsumerMessage
+
+object UpdatesConsumerMessage {
+  @SerialVersionUID(1L)
+  object SubscribeToSeq extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  private object SubscribeToSeq
+  object SubscribeToWeak extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  private object SubscribeToWeak
+  case class SubscribeToUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  case class SubscribeToUserPresences(userIds: Set[Int])
+  case class UnsubscribeFromUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
 
-  @SerialVersionUID(1L)
-  case class UnsubscribeFromUserPresences(userIds: Set[Int])
+}
 
-  def props(authId: Long, session: ActorRef)(implicit
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-                                             weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-                                             presenceManagerRegion:    PresenceManagerRegion,
-                                             db:                       Database) =
+object UpdatesConsumer {
+  def props(authId: Long, session: ActorRef)(
+    implicit
+    seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
+    weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
+    presenceManagerRegion:    PresenceManagerRegion
+  ) =
     Props(
-      classOf[UpdatesPusher],
+      classOf[UpdatesConsumer],
       authId,
       session,
       seqUpdatesManagerRegion,
       weakUpdatesManagerRegion,
-      presenceManagerRegion,
-      db
+      presenceManagerRegion
     )
 }
 
-private[push] class UpdatesPusher(
+private[push] class UpdatesConsumer(
   authId:                                Long,
-  session:                               ActorRef,
+  subscriber:                            ActorRef,
   implicit val seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
   implicit val weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-  implicit val presenceManagerRegion:    PresenceManagerRegion,
-  implicit val db:                       Database
+  implicit val presenceManagerRegion:    PresenceManagerRegion
 )
   extends Actor with ActorLogging with Stash {
 
   import PresenceManager._
-  import SessionMessage._
-  import UpdatesPusher._
-
-  @SerialVersionUID(1L)
-  private case class Initiated(
-    googlePushCredentials: Option[models.push.GooglePushCredentials],
-    applePushCredentials:  Option[models.push.ApplePushCredentials]
-  )
+  import UpdatesConsumerMessage._
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
@@ -114,8 +107,6 @@ private[push] class UpdatesPusher(
     case WeakUpdatesManager.UpdateReceived(updateBox) ⇒
       sendUpdateBox(updateBox)
     case PresenceState(userId, presence, lastSeenAt) ⇒
-      log.debug("presence: {}, lastSeenAt {}", presence, lastSeenAt)
-
       val update: Update =
         presence match {
           case Online ⇒
@@ -129,14 +120,11 @@ private[push] class UpdatesPusher(
             }
         }
 
-      log.debug("Formed update: {}", update)
-
       val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)
   }
 
   private def sendUpdateBox(updateBox: ProtoUpdateBox): Unit = {
-    val ub = UpdateBox(UpdateBoxCodec.encode(updateBox).require)
-    session ! SendProtoMessage(ub)
+    subscriber ! UpdateBox(UpdateBoxCodec.encode(updateBox).require)
   }
 }
