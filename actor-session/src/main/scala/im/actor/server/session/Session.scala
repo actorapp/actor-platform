@@ -27,6 +27,7 @@ import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion 
 import im.actor.server.{ models, persist }
 
 case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
+
 object SessionConfig {
   def fromConfig(config: Config): SessionConfig = {
     SessionConfig(
@@ -160,9 +161,15 @@ class Session(rpcApiService: ActorRef)(
 
           val source = b.add(Source(ActorPublisher[SessionStreamMessage](sessionMessagePublisher)))
           val sink = b.add(Sink.foreach[MTPackage](m ⇒ clients foreach (_ ! m)))
+          val bcast = b.add(Broadcast[MTPackage](2))
 
-          source ~> g.inlet
-          g.outlet ~> sink
+          // format: OFF
+
+          source   ~> g.inlet
+          g.outlet ~> bcast   ~> sink
+                      bcast   ~> Sink.onComplete {_ ⇒ log.warning("Dying due to stream completion"); self ! PoisonPill  }
+
+          // format: ON
         }
 
         flow.run()
