@@ -1,0 +1,19 @@
+{
+  "logo": "bear",
+  "title": "animals",
+  "order": [
+    "panda",
+    "doge",
+    "bear",
+    "koala",
+    "grumpy",
+    "dove",
+    "chicken",
+    "monkey",
+    "elephant",
+    "rat",
+    "frog",
+    "pig",
+    "goat"
+  ]
+}
