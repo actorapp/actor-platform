@@ -24,11 +24,13 @@ public class JsHttpProvider implements HttpDownloaderProvider {
     public void uploadPart(final String url, byte[] contents, final FileUploadCallback callback) {
         JsXmlHttpRequest request = JsXmlHttpRequest.create();
         request.open("PUT", url);
+        request.setRequestHeader("Content-Type", "application/octet-stream");
         request.setOnLoadHandler(new JsXmlHttpRequestHandler() {
             @Override
             public void onStateChanged(JsXmlHttpRequest request) {
                 if (request.getReadyState() == 4) {
                     if (request.getStatus() == 200) {
+
                         callback.onUploaded();
                     } else {
                         callback.onUploadFailure();

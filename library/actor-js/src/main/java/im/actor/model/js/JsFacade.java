@@ -11,6 +11,7 @@ import org.timepedia.exporter.client.Exportable;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.content.FastThumb;
 import im.actor.model.js.angular.AngularListCallback;
 import im.actor.model.js.angular.AngularValueCallback;
 import im.actor.model.js.entity.Enums;
@@ -23,12 +24,15 @@ import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
+import im.actor.model.js.images.JsImageResize;
+import im.actor.model.js.images.JsResizeListener;
 import im.actor.model.js.providers.JsFileSystemProvider;
 import im.actor.model.js.providers.JsHttpProvider;
 import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.util.Base64Utils;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -313,5 +317,27 @@ public class JsFacade implements Exportable {
         messenger.sendDocument(peer.convert(),
                 file.getName(), file.getMimeType(),
                 provider.fileFromDescriptor(descriptor));
+    }
+
+    public void sendPhoto(final JsPeer peer, final JsFile file) {
+        JsImageResize.resize(file, new JsResizeListener() {
+            @Override
+            public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
+                int index = thumb.indexOf("base64,");
+                if (index < 0) {
+                    return;
+                }
+                String rawData = thumb.substring(index + "base64,".length());
+
+                Log.d(TAG, "Data: " + thumb);
+                Log.d(TAG, "Raw: " + rawData);
+
+                byte[] thumbData = Base64Utils.fromBase64(rawData);
+
+                String descriptor = provider.registerUploadFile(file);
+                messenger.sendPhoto(peer.convert(), file.getName(), fullW, fullH,
+                        new FastThumb(thumbW, thumbH, thumbData), provider.fileFromDescriptor(descriptor));
+            }
+        });
     }
 }
