@@ -7,14 +7,18 @@ import slick.dbio.{ NoStream, DBIOAction, DBIO }
 
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.{ Member, Group }
+import im.actor.server.models
 import im.actor.server.persist
 
 object GroupUtils {
+  import AvatarUtils._
+
   def getGroupStructOption(groupId: Int)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
     persist.Group.find(groupId).headOption flatMap {
       case Some(group) ⇒
         for {
           groupUsers ← persist.GroupUser.find(groupId)
+          groupAvatarModelOpt ← persist.AvatarData.findByGroupId(groupId)
         } yield {
           val (userIds, members) = groupUsers.foldLeft(Vector.empty[Int], Vector.empty[Member]) {
             case ((userIdsAcc, membersAcc), groupUser) ⇒
@@ -25,7 +29,7 @@ object GroupUtils {
 
           val isMember = userIds.contains(clientData.userId)
 
-          Some(Group(group.id, group.accessHash, group.title, None, isMember, group.creatorUserId, members, group.createdAt.getMillis))
+          Some(Group(group.id, group.accessHash, group.title, groupAvatarModelOpt map getAvatar, isMember, group.creatorUserId, members, group.createdAt.getMillis))
         }
       case None ⇒ DBIO.successful(None)
     }
