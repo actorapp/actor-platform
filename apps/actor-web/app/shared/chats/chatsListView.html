@@ -7,8 +7,8 @@
                     ng-class="{'chatlist__item--selected' : chat.peer.peer==main.actorService.currentPeer}"
                     ng-click="chats.selectChat(chat.peer.peer)">
         <div class="chatlist__avatar">
-          <img class="md-avatar" ng-src="{{ chat.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.avatar" />
-          <div class="no-avatar no-avatar--{{ chat.peer.placeholder }}" ng-if="!chat.avatar">
+          <img class="md-avatar" ng-src="{{ chat.peer.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.peer.avatar" />
+          <div class="no-avatar no-avatar--{{ chat.peer.placeholder }}" ng-if="!chat.peer.avatar">
             <span>{{ chat.peer.title | limitTo:1 }}</span>
           </div>
         </div>
