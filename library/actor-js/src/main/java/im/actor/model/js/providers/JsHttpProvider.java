@@ -10,8 +10,8 @@ import com.google.gwt.typedarrays.shared.Uint8Array;
 import im.actor.model.HttpDownloaderProvider;
 import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.http.FileUploadCallback;
-import im.actor.model.js.providers.http.JsXmlHttpRequest;
-import im.actor.model.js.providers.http.JsXmlHttpRequestHandler;
+import im.actor.model.js.providers.http.JsHttpRequest;
+import im.actor.model.js.providers.http.JsHttpRequestHandler;
 
 public class JsHttpProvider implements HttpDownloaderProvider {
 
@@ -22,12 +22,12 @@ public class JsHttpProvider implements HttpDownloaderProvider {
 
     @Override
     public void uploadPart(final String url, byte[] contents, final FileUploadCallback callback) {
-        JsXmlHttpRequest request = JsXmlHttpRequest.create();
+        JsHttpRequest request = JsHttpRequest.create();
         request.open("PUT", url);
         request.setRequestHeader("Content-Type", "application/octet-stream");
-        request.setOnLoadHandler(new JsXmlHttpRequestHandler() {
+        request.setOnLoadHandler(new JsHttpRequestHandler() {
             @Override
-            public void onStateChanged(JsXmlHttpRequest request) {
+            public void onStateChanged(JsHttpRequest request) {
                 if (request.getReadyState() == 4) {
                     if (request.getStatus() == 200) {
 
