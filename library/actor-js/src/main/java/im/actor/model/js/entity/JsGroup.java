@@ -28,8 +28,8 @@ public class JsGroup extends JavaScriptObject {
         return create(groupVM.getId(), groupVM.getName().get(), fileUrl, Placeholders.getPlaceholder(groupVM.getId()), groupVM.getCreatorId(), presence);
     }
 
-    public static native JsGroup create(int gid, String title, String avatar, String placeholder, int adminId, String presence)/*-{
-        return {id: id, name: name, adminId: adminId, presence: presence};
+    public static native JsGroup create(int id, String name, String avatar, String placeholder, int adminId, String presence)/*-{
+        return {id: id, name: name, avatar: avatar, placeholder:placeholder,  adminId: adminId, presence: presence};
     }-*/;
 
     protected JsGroup() {
