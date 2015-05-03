@@ -24,6 +24,7 @@ public class JsMessage extends JavaScriptObject {
         public JsMessage convert(Message value, JsMessenger modules) {
 
             String rid = value.getRid() + "";
+            String sortKey = value.getSortDate() + "";
 
             JsPeerInfo sender = modules.buildPeerInfo(Peer.user(value.getSenderId()));
             boolean isOut = value.getSenderId() == modules.myUid();
@@ -69,12 +70,12 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentUnsupported.create();
             }
 
-            return create(rid, sender, isOut, date, content);
+            return create(rid, sortKey, sender, isOut, date, content);
         }
     };
 
-    public native static JsMessage create(String rid, JsPeerInfo sender, boolean isOut, String date, JsContent content)/*-{
-        return {rid: rid, sender: sender, isOut: isOut, date: date, content: content};
+    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsContent content)/*-{
+        return {rid: rid, sortKey: sortKey, sender: sender, isOut: isOut, date: date, content: content};
     }-*/;
 
     protected JsMessage() {
