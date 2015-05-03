@@ -21,12 +21,13 @@ object ReSenderMessage {
   case class NewClient(client: ActorRef) extends ReSenderMessage
 }
 
-case class ReSenderConfig(ackTimeout: FiniteDuration, maxSize: Long)
+case class ReSenderConfig(ackTimeout: FiniteDuration, maxResendSize: Long, maxBufferSize: Long)
 object ReSenderConfig {
   def fromConfig(config: Config): ReSenderConfig = {
     ReSenderConfig(
       ackTimeout = config.getDuration("ack-timeout", TimeUnit.SECONDS).seconds,
-      maxSize = config.getBytes("max-size")
+      maxResendSize = config.getBytes("max-resend-size"),
+      maxBufferSize = config.getBytes("max-buffer-size")
     )
   }
 }
@@ -45,7 +46,8 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
 
   // TODO: configurable
   private val AckTimeout = config.ackTimeout
-  private val MaxResendSize = config.maxSize
+  private val MaxBufferSize = config.maxBufferSize
+  private val MaxResendSize = config.maxResendSize
 
   implicit val ec: ExecutionContext = context.dispatcher
 
@@ -71,16 +73,16 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       log.error("Unmatched msg {}", unmatched)
   }
 
-  private[this] var resendBuffer = immutable.Map.empty[Long, (ProtoMessage, Cancellable)]
+  private[this] var resendBufferSize = 0L
+  private[this] var resendBuffer = immutable.Map.empty[Long, (ProtoMessage with ResendableProtoMessage, Cancellable)]
 
   // Subscriber-related
 
   def subscriber: Receive = {
     case OnNext(msg: MessageAck with IncomingProtoMessage) ⇒
       resendBuffer --= msg.messageIds
-    case OnNext(msg: NewSession)                             ⇒ enqueueProtoMessage(msg)
-    case OnNext(msg: MessageAck with OutgoingProtoMessage)   ⇒ enqueueProtoMessage(msg)
-    case OnNext(msg: ProtoMessage with OutgoingProtoMessage) ⇒ enqueueProtoMessageWithResend(nextMessageId(), msg)
+    case OnNext(msg: ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage) ⇒ enqueueProtoMessageWithResend(msg)
+    case OnNext(msg: ProtoMessage with OutgoingProtoMessage)                             ⇒ enqueueProtoMessage(msg)
     case OnNext(RequestResend(messageId)) ⇒
       resendBuffer.get(messageId) map {
         case (msg, scheduledResend) ⇒
@@ -93,26 +95,26 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       resendBuffer.get(messageId) map {
         case (msg, _) ⇒
           msg match {
-            case RpcResponseBox(requestMessageId, bodyBytes) ⇒
+            case rspBox @ RpcResponseBox(requestMessageId, bodyBytes) ⇒
               val bodySize = bodyBytes.bytes.size
 
               if (bodySize <= MaxResendSize) {
-                enqueueProtoMessageWithResend(messageId, msg)
+                enqueueProtoMessageWithResend(messageId, rspBox)
               } else {
-                scheduleResend(messageId, msg)
+                scheduleResend(messageId, rspBox)
                 enqueueProtoMessage(nextMessageId(), UnsentResponse(messageId, requestMessageId, bodySize))
               }
-            case UpdateBox(bodyBytes) ⇒
+            case ub @ UpdateBox(bodyBytes) ⇒
               val bodySize = bodyBytes.bytes.size
 
               if (bodySize <= MaxResendSize) {
-                enqueueProtoMessageWithResend(messageId, msg)
+                enqueueProtoMessageWithResend(messageId, ub)
               } else {
-                scheduleResend(messageId, msg)
+                scheduleResend(messageId, ub)
                 enqueueProtoMessage(nextMessageId(), UnsentMessage(messageId, bodySize))
               }
-            case wrong ⇒ // should never happen because we don't resend other message types
-              log.error("Scheduled wrong message resend: {}", wrong)
+            case msg ⇒
+              enqueueProtoMessageWithResend(messageId, msg)
           }
       }
   }
@@ -132,15 +134,28 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       context.stop(self)
   }
 
-  private def enqueueProtoMessageWithResend(messageId: Long, message: ProtoMessage): Unit = {
+  private def enqueueProtoMessageWithResend(message: ProtoMessage with ResendableProtoMessage): Unit = {
+    enqueueProtoMessageWithResend(nextMessageId(), message)
+  }
+
+  private def enqueueProtoMessageWithResend(messageId: Long, message: ProtoMessage with ResendableProtoMessage): Unit = {
     scheduleResend(messageId, message)
     enqueueProtoMessage(messageId, message)
   }
 
-  private def scheduleResend(messageId: Long, message: ProtoMessage): Unit = {
+  private def scheduleResend(messageId: Long, message: ProtoMessage with ResendableProtoMessage): Unit = {
     log.debug("Scheduling resend of messageId: {}, timeout: {}", messageId, AckTimeout)
-    val scheduledResend = context.system.scheduler.scheduleOnce(AckTimeout, self, ScheduledResend(messageId))
-    resendBuffer = resendBuffer.updated(messageId, (message, scheduledResend))
+
+    resendBufferSize += message.bodySize
+
+    if (resendBufferSize <= MaxBufferSize) {
+      val scheduledResend = context.system.scheduler.scheduleOnce(AckTimeout, self, ScheduledResend(messageId))
+      resendBuffer = resendBuffer.updated(messageId, (message, scheduledResend))
+    } else {
+      val msg = "Completing stream due to maximum buffer size reached"
+      log.warning(msg)
+      onErrorThenStop(new Exception(msg))
+    }
   }
 
   private def enqueueProtoMessage(message: ProtoMessage): (MTPackage, Long) =
