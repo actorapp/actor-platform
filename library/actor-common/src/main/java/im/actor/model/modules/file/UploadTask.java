@@ -14,6 +14,7 @@ import im.actor.model.api.rpc.ResponseGetFileUploadPartUrl;
 import im.actor.model.api.rpc.ResponseGetFileUploadUrl;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.entity.FileReference;
+import im.actor.model.files.FileReadCallback;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
@@ -37,6 +38,7 @@ public class UploadTask extends ModuleActor {
     private String fileName;
     private String descriptor;
 
+    private boolean isWriteToDestProvider = false;
     private FileSystemProvider fileSystemProvider;
     private HttpDownloaderProvider downloaderProvider;
 
@@ -78,6 +80,7 @@ public class UploadTask extends ModuleActor {
             reportError();
             return;
         }
+        isWriteToDestProvider = fileSystemProvider.isFsPersistent();
 
         downloaderProvider = config().getHttpDownloaderProvider();
         if (downloaderProvider == null) {
@@ -97,13 +100,15 @@ public class UploadTask extends ModuleActor {
             return;
         }
 
-        destReference = fileSystemProvider.createTempFile();
-        if (destReference == null) {
-            if (LOG) {
-                Log.w(TAG, "Error during file dest reference creating");
+        if (isWriteToDestProvider) {
+            destReference = fileSystemProvider.createTempFile();
+            if (destReference == null) {
+                if (LOG) {
+                    Log.w(TAG, "Error during file dest reference creating");
+                }
+                reportError();
+                return;
             }
-            reportError();
-            return;
         }
 
         inputFile = srcReference.openRead();
@@ -115,14 +120,16 @@ public class UploadTask extends ModuleActor {
             return;
         }
 
-        outputFile = destReference.openWrite(srcReference.getSize());
-        if (outputFile == null) {
-            inputFile.close();
-            if (LOG) {
-                Log.w(TAG, "Error during dest file open");
+        if (isWriteToDestProvider) {
+            outputFile = destReference.openWrite(srcReference.getSize());
+            if (outputFile == null) {
+                inputFile.close();
+                if (LOG) {
+                    Log.w(TAG, "Error during dest file open");
+                }
+                reportError();
+                return;
             }
-            reportError();
-            return;
         }
 
         crc32 = new CRC32();
@@ -178,7 +185,9 @@ public class UploadTask extends ModuleActor {
                 Log.d(TAG, "Closing files...");
             }
             inputFile.close();
-            outputFile.close();
+            if (isWriteToDestProvider) {
+                outputFile.close();
+            }
 
             request(new RequestCommitFileUpload(uploadConfig), new RpcCallback<ResponseCommitFileUpload>() {
                 @Override
@@ -189,9 +198,12 @@ public class UploadTask extends ModuleActor {
 
                     FileReference location = EntityConverter.convert(response.getUploadedFileLocation(), fileName, srcReference.getSize());
 
-                    FileSystemReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
-
-                    reportComplete(location, reference);
+                    if (isWriteToDestProvider) {
+                        FileSystemReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
+                        reportComplete(location, reference);
+                    } else {
+                        reportComplete(location, srcReference);
+                    }
                 }
 
                 @Override
@@ -206,44 +218,72 @@ public class UploadTask extends ModuleActor {
         }
 
         if (nextBlock < blocksCount && uploadCount < SIM_BLOCKS_COUNT) {
-            final int blockIndex = nextBlock++;
-
-            int size = blockSize;
-            int fileOffset = blockIndex * blockSize;
-            if ((blockIndex + 1) * blockSize > srcReference.getSize()) {
-                size = srcReference.getSize() - blockIndex * blockSize;
-            }
-            byte[] data = new byte[size];
-
-            if (!inputFile.read(fileOffset, data, 0, size)) {
-                if (LOG) {
-                    Log.w(TAG, "read #" + blockIndex + " error");
-                }
-                reportError();
-                return;
-            }
-            if (!outputFile.write(fileOffset, data, 0, size)) {
-                if (LOG) {
-                    Log.w(TAG, "write #" + blockIndex + " error");
-                }
-                reportError();
-                return;
-            }
-
-            crc32.update(data, 0, size);
-
-            if (LOG) {
-                Log.d(TAG, "Starting block upload #" + blockIndex);
-            }
-
-            uploadCount++;
-            uploadPart(blockIndex, fileOffset, data);
-            checkQueue();
-        } else {
-            if (LOG) {
-                Log.d(TAG, "Nothing to do");
-            }
+            loadPart(nextBlock++);
         }
+    }
+
+    private void loadPart(final int blockIndex) {
+        int size = blockSize;
+        int fileOffset = blockIndex * blockSize;
+        if ((blockIndex + 1) * blockSize > srcReference.getSize()) {
+            size = srcReference.getSize() - blockIndex * blockSize;
+        }
+        byte[] data = new byte[size];
+
+        final int finalSize = size;
+        // TODO: Validate file part load ordering
+        inputFile.read(fileOffset, data, 0, size, new FileReadCallback() {
+            @Override
+            public void onFileRead(final int fileOffset, final byte[] data, int offset, int len) {
+                self().send(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isCompleted) {
+                            return;
+                        }
+                        if (LOG) {
+                            Log.d(TAG, "Block #" + blockIndex + " read");
+                        }
+
+                        if (isWriteToDestProvider) {
+                            if (!outputFile.write(fileOffset, data, 0, finalSize)) {
+                                if (LOG) {
+                                    Log.w(TAG, "write #" + blockIndex + " error");
+                                }
+                                reportError();
+                                return;
+                            }
+                        }
+
+                        crc32.update(data, 0, finalSize);
+
+                        if (LOG) {
+                            Log.d(TAG, "Starting block upload #" + blockIndex);
+                        }
+
+                        uploadCount++;
+                        uploadPart(blockIndex, fileOffset, data);
+                        checkQueue();
+                    }
+                });
+            }
+
+            @Override
+            public void onFileReadError() {
+                self().send(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isCompleted) {
+                            return;
+                        }
+                        if (LOG) {
+                            Log.w(TAG, "Block #" + blockIndex + " read failure");
+                        }
+                        reportError();
+                    }
+                });
+            }
+        });
     }
 
     private void uploadPart(final int blockIndex, final int offset, final byte[] data) {
