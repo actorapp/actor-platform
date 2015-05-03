@@ -140,8 +140,6 @@ public class JsFacade implements Exportable {
         }
     }
 
-    // Models
-
     // Dialogs
 
     public void bindDialogs(AngularListCallback<JsDialog> callback) {
@@ -158,6 +156,8 @@ public class JsFacade implements Exportable {
         messenger.getDialogsList().unsubscribe(callback);
     }
 
+    // Chats
+
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
         if (callback == null) {
             return;
@@ -170,6 +170,34 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getConversationList(peer.convert()).subscribe(callback);
+    }
+
+    public void deleteChat(JsPeer peer, final JsClosure success, final JsClosure error) {
+        messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
+            @Override
+            public void onResult(Boolean res) {
+                success.callback();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                error.callback();
+            }
+        });
+    }
+
+    public void clearChat(JsPeer peer, final JsClosure success, final JsClosure error) {
+        messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
+            @Override
+            public void onResult(Boolean res) {
+                success.callback();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                error.callback();
+            }
+        });
     }
 
     // Users
@@ -218,7 +246,33 @@ public class JsFacade implements Exportable {
         messenger.sendMessage(peer.convert(), text);
     }
 
-    // Helpers
+    public void sendFile(JsPeer peer, JsFile file) {
+        String descriptor = provider.registerUploadFile(file);
+        messenger.sendDocument(peer.convert(),
+                file.getName(), file.getMimeType(),
+                provider.fileFromDescriptor(descriptor));
+    }
+
+    public void sendPhoto(final JsPeer peer, final JsFile file) {
+        JsImageResize.resize(file, new JsResizeListener() {
+            @Override
+            public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
+                int index = thumb.indexOf("base64,");
+                if (index < 0) {
+                    return;
+                }
+                String rawData = thumb.substring(index + "base64,".length());
+
+                byte[] thumbData = Base64Utils.fromBase64(rawData);
+
+                String descriptor = provider.registerUploadFile(file);
+                messenger.sendPhoto(peer.convert(), file.getName(), fullW, fullH,
+                        new FastThumb(thumbW, thumbH, thumbData), provider.fileFromDescriptor(descriptor));
+            }
+        });
+    }
+
+    // Drafts
 
     public void saveDraft(JsPeer peer, String text) {
         messenger.saveDraft(peer.convert(), text);
@@ -226,64 +280,6 @@ public class JsFacade implements Exportable {
 
     public String loadDraft(JsPeer peer) {
         return messenger.loadDraft(peer.convert());
-    }
-
-    // Events
-
-    public void onAppVisible() {
-        messenger.onAppVisible();
-    }
-
-    public void onAppHidden() {
-        messenger.onAppHidden();
-    }
-
-    public void onConversationOpen(JsPeer peer) {
-        Log.d("JsFacade", "On chat open: " + peer.getPeerType() + " : " + peer.getPeerId());
-        messenger.onConversationOpen(peer.convert());
-    }
-
-    public void onConversationClosed(JsPeer peer) {
-        Log.d("JsFacade", "On chat closed: " + peer.getPeerType() + " : " + peer.getPeerId());
-        messenger.onConversationClosed(peer.convert());
-    }
-
-    public void onDialogsOpen() {
-        Log.d("JsFacade", "On dialogs open");
-        messenger.onDialogsOpen();
-    }
-
-    public void onDialogsClosed() {
-        Log.d("JsFacade", "On dialogs closed");
-        messenger.onDialogsClosed();
-    }
-
-    public void deleteChat(JsPeer peer, final JsClosure success, final JsClosure error) {
-        messenger.deleteChat(peer.convert()).start(new CommandCallback<Boolean>() {
-            @Override
-            public void onResult(Boolean res) {
-                success.callback();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                error.callback();
-            }
-        });
-    }
-
-    public void clearChat(JsPeer peer, final JsClosure success, final JsClosure error) {
-        messenger.clearChat(peer.convert()).start(new CommandCallback<Boolean>() {
-            @Override
-            public void onResult(Boolean res) {
-                success.callback();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                error.callback();
-            }
-        });
     }
 
     // Typing
@@ -304,40 +300,37 @@ public class JsFacade implements Exportable {
         messenger.getTyping(peer.convert()).unsubscribe(callback);
     }
 
+    // Events
+
+    public void onAppVisible() {
+        messenger.onAppVisible();
+    }
+
+    public void onAppHidden() {
+        messenger.onAppHidden();
+    }
+
+    public void onConversationOpen(JsPeer peer) {
+        messenger.onConversationOpen(peer.convert());
+    }
+
+    public void onConversationClosed(JsPeer peer) {
+        messenger.onConversationClosed(peer.convert());
+    }
+
+    public void onDialogsOpen() {
+        messenger.onDialogsOpen();
+    }
+
+    public void onDialogsClosed() {
+        messenger.onDialogsClosed();
+    }
+
     public void onProfileOpen(int uid) {
         messenger.onProfileOpen(uid);
     }
 
     public void onProfileClosed(int uid) {
         messenger.onProfileClosed(uid);
-    }
-
-    public void sendFile(JsPeer peer, JsFile file) {
-        String descriptor = provider.registerUploadFile(file);
-        messenger.sendDocument(peer.convert(),
-                file.getName(), file.getMimeType(),
-                provider.fileFromDescriptor(descriptor));
-    }
-
-    public void sendPhoto(final JsPeer peer, final JsFile file) {
-        JsImageResize.resize(file, new JsResizeListener() {
-            @Override
-            public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
-                int index = thumb.indexOf("base64,");
-                if (index < 0) {
-                    return;
-                }
-                String rawData = thumb.substring(index + "base64,".length());
-
-                Log.d(TAG, "Data: " + thumb);
-                Log.d(TAG, "Raw: " + rawData);
-
-                byte[] thumbData = Base64Utils.fromBase64(rawData);
-
-                String descriptor = provider.registerUploadFile(file);
-                messenger.sendPhoto(peer.convert(), file.getName(), fullW, fullH,
-                        new FastThumb(thumbW, thumbH, thumbData), provider.fileFromDescriptor(descriptor));
-            }
-        });
     }
 }
