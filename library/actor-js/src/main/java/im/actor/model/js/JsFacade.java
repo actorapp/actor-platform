@@ -310,6 +310,8 @@ public class JsFacade implements Exportable {
 
     public void sendFile(JsPeer peer, JsFile file) {
         String descriptor = provider.registerUploadFile(file);
-        messenger.sendDocument(peer.convert(), "sample.txt", "application/octet-stream", provider.fileFromDescriptor(descriptor));
+        messenger.sendDocument(peer.convert(),
+                file.getName(), file.getMimeType(),
+                provider.fileFromDescriptor(descriptor));
     }
 }
