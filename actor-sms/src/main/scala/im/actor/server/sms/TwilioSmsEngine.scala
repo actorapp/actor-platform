@@ -26,8 +26,6 @@ class TwilioSmsEngine(config: Config)(implicit system: ActorSystem, flowMaterial
     val to = s"+${phoneNumber}"
 
     Marshal(FormData(Map("From" → from, "To" → to, "Body" → message))).to[RequestEntity] flatMap { entity ⇒
-      println(entity.toString)
-
       val request = HttpRequest(
         method = HttpMethods.POST,
         uri = baseUri,
