@@ -49,8 +49,9 @@ private[session] object SessionStream {
       val rpc = discr.outRpc.buffer(100, OverflowStrategy.backpressure)
       val subscribe = discr.outSubscribe.buffer(100, OverflowStrategy.backpressure)
       val incomingAck = discr.outIncomingAck.buffer(100, OverflowStrategy.backpressure)
-      val unmatched = discr.outUnmatched.buffer(100, OverflowStrategy.backpressure)
       val outProtoMessages = discr.outProtoMessage.buffer(100, OverflowStrategy.backpressure)
+      val outRequestResend = discr.outRequestResend.buffer(100, OverflowStrategy.backpressure)
+      val unmatched = discr.outUnmatched.buffer(100, OverflowStrategy.backpressure)
 
       val rpcRequestSubscriber = builder.add(Sink(ActorSubscriber[HandleRpcRequest](rpcHandler)))
       val rpcResponsePublisher = builder.add(Source(ActorPublisher[ProtoMessage](rpcHandler)))
@@ -61,7 +62,7 @@ private[session] object SessionStream {
       val reSendSubscriber = builder.add(Sink(ActorSubscriber[ProtoMessage](reSender)))
       val reSendPublisher = builder.add(Source(ActorPublisher[MTPackage](reSender)))
 
-      val mergeProto = builder.add(MergePreferred[ProtoMessage](3))
+      val mergeProto = builder.add(MergePreferred[ProtoMessage](4))
 
       val logging = akka.event.Logging(context.system, s"SessionStream-${authId}-${sessionId}")
 
@@ -70,8 +71,9 @@ private[session] object SessionStream {
       // @format: OFF
 
                    outProtoMessages     ~> mergeProto.preferred
+                   outRequestResend     ~> mergeProto ~> reSendSubscriber
       rpc       ~> rpcRequestSubscriber
-                   rpcResponsePublisher ~> mergeProto ~> reSendSubscriber
+                   rpcResponsePublisher ~> mergeProto
       subscribe ~> updatesSubscriber
                    updatesPublisher     ~> mergeProto
                    incomingAck          ~> mergeProto

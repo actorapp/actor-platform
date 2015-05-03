@@ -50,6 +50,13 @@ class SessionResendSpec extends BaseSessionSpec(
       // We didn't send Ack
       Thread.sleep(5000)
 
+      expectRpcResult(sendAckAt = None) should matchPattern {
+        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+      }
+
+      // Still no ack
+      Thread.sleep(5000)
+
       expectRpcResult() should matchPattern {
         case RpcOk(ResponseSendAuthCode(_, _)) ⇒
       }

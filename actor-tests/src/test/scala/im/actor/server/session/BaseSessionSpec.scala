@@ -91,6 +91,14 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
     }
   }
 
+  protected def expectMessageAck(authId: Long, sessionId: Long)(implicit probe: TestProbe): MessageAck = {
+    val mb = expectMessageBox(authId, sessionId)
+    mb.body shouldBe a[MessageAck]
+
+    val ack = mb.body.asInstanceOf[MessageAck]
+    ack
+  }
+
   protected def expectMessageAck(authId: Long, sessionId: Long, messageId: Long)(implicit probe: TestProbe): MessageAck = {
     val mb = expectMessageBox(authId, sessionId)
     mb.body shouldBe a[MessageAck]
@@ -100,8 +108,10 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
     ack
   }
 
-  protected def expectNewSession(authId: Long, sessionId: Long, messageId: Long)(implicit probe: TestProbe): NewSession = {
+  protected def expectNewSession(authId: Long, sessionId: Long, messageId: Long)(implicit probe: TestProbe, sessionRegion: SessionRegion): NewSession = {
     val mb = expectMessageBox(authId, sessionId)
+    sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
+
     mb.body shouldBe a[NewSession]
 
     val ns = mb.body.asInstanceOf[NewSession]

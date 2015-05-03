@@ -14,6 +14,7 @@ class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[
   val outProtoMessage = newOutlet[ProtoMessage]("outProtoMessage")
   val outRpc = newOutlet[HandleRpcRequest]("outRpc")
   val outSubscribe = newOutlet[SubscribeCommand]("outSubscribe")
+  val outRequestResend = newOutlet[ProtoMessage]("outRequestResend")
   val outIncomingAck = newOutlet[ProtoMessage]("outIncomingAck")
   val outUnmatched = newOutlet[SessionStreamMessage]("outUnmatched")
 
@@ -44,6 +45,8 @@ class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, Sessi
           ctx.emit(p.outRpc)(HandleRpcRequest(messageId, bodyBytes, clientData))
         case HandleMessageBox(MessageBox(messageId, m: MessageAck), clientData) ⇒
           ctx.emit(p.outIncomingAck)(MessageAck.incoming(m.messageIds))
+        case HandleMessageBox(MessageBox(messageId, m: RequestResend), _) ⇒
+          ctx.emit(p.outRequestResend)(m)
         case SendProtoMessage(message) ⇒
           ctx.emit(p.outProtoMessage)(message)
         case msg @ HandleSubscribe(command) ⇒
