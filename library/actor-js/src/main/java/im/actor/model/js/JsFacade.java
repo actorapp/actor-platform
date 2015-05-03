@@ -23,6 +23,9 @@ import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
+import im.actor.model.js.providers.fs.JsFile;
+import im.actor.model.js.providers.fs.JsFileLoadedClosure;
+import im.actor.model.js.providers.fs.JsFileReader;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
@@ -298,5 +301,22 @@ public class JsFacade implements Exportable {
 
     public void onProfileClosed(int uid) {
         messenger.onProfileClosed(uid);
+    }
+
+    // Uploading files
+    JsFileReader reader;
+    JsFileLoadedClosure loadedClosure;
+
+    public void sendFile(JsPeer peer, JsFile file) {
+        Log.d(TAG, "send file: " + file.getSize() + ", slice: " + file.slice(0, 10));
+        reader = JsFileReader.create();
+        loadedClosure = new JsFileLoadedClosure() {
+            @Override
+            public void onLoaded() {
+                Log.d(TAG, "Slice loaded");
+            }
+        };
+        reader.setOnLoaded(loadedClosure);
+        reader.readAsArrayBuffer(file.slice(0, 10));
     }
 }
