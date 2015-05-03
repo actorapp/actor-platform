@@ -30,6 +30,10 @@ class ComposeController
     @message = @draft = ''
     @actorService.saveDraft @actorService.currentPeer, @draft
 
+  sendFileMessage: (@file) ->
+    console.log @file
+    @actorService.sendFile @actorService.currentPeer, @file
+
 ComposeController.$inject = ['$rootScope', '$scope', 'actorService']
 
 angular

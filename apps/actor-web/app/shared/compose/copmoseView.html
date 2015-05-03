@@ -1,4 +1,4 @@
-<div ng-controller="composeController as compose">
+<div ng-controller="composeController as compose" id="composeControllerWrap">
   <div class="compose" ng-if="compose.isEnabled">
     <form name="composeForm" role="form" ng-submit="compose.sendMessage()" enter-submit="compose.sendMessage()">
 
@@ -23,6 +23,13 @@
         <md-button class="md-primary md-raised md-big">Send</md-button>
 
       </footer>
+
+
     </form>
+
+      <input type="file" id="files" name="file"/>
+      <button id="sendFileButton" onclick="sendFile()">Send</button>
+
+
   </div>
 </div>
