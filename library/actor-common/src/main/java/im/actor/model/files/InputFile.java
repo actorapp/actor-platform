@@ -5,7 +5,7 @@
 package im.actor.model.files;
 
 public interface InputFile {
-    boolean read(int fileOffset, byte[] data, int offset, int len);
+    void read(int fileOffset, byte[] data, int offset, int len, FileReadCallback callback);
 
     boolean close();
 }
