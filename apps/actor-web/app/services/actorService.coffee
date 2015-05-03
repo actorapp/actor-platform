@@ -114,6 +114,10 @@ class ActorService
     # console.log '[AW]ActorService sendMessage: peer:', peer
     @messenger.sendMessage peer, message
 
+  sendFile: (peer, file) ->
+    console.log '[AW]ActorService sendFile'
+    @messenger.sendFile peer, file
+
 #  getAuthPhone: () ->
 #    console.log '[AW]ActorService getAuthPhone'
 #    @messenger.getAuthPhone()
