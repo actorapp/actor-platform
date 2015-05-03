@@ -56,6 +56,12 @@ object AvatarData {
   def findByUserId(userId: Int) =
     byTypeAndId(models.AvatarData.OfUser, userId.toLong).result
 
+  def findByGroupId(groupId: Int) =
+    byTypeAndId(models.AvatarData.OfGroup, groupId.toLong).result.headOption
+
   def findByUserIds(userIds: Set[Int]) =
     byType(models.AvatarData.OfUser).filter(d ⇒ d.entityId inSet userIds.map(_.toLong)).result
+
+  def findByGroupIds(groupIds: Set[Int]) =
+    byType(models.AvatarData.OfGroup).filter(d ⇒ d.entityId inSet groupIds.map(_.toLong)).result
 }
