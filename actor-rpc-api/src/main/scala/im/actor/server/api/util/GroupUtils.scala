@@ -3,11 +3,10 @@ package im.actor.server.api.util
 import scala.concurrent.ExecutionContext
 
 import slick.dbio.Effect.Read
-import slick.dbio.{ NoStream, DBIOAction, DBIO }
+import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.groups.{ Member, Group }
-import im.actor.server.models
+import im.actor.api.rpc.groups.{ Group, Member }
 import im.actor.server.persist
 
 object GroupUtils {
