@@ -27,6 +27,7 @@ import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
+import im.actor.model.viewmodel.UserPresence;
 import im.actor.model.viewmodel.UserTypingVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -34,6 +35,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
     private JsMessenger messenger;
     private AngularList<JsDialog, Dialog> dialogsList;
     private AngularFilesModule filesModule;
+
     private HashMap<Peer, AngularList<JsMessage, Message>> messagesList = new HashMap<Peer, AngularList<JsMessage, Message>>();
     private HashMap<Integer, AngularValue<JsUser>> users = new HashMap<Integer, AngularValue<JsUser>>();
     private HashMap<Integer, AngularValue<JsGroup>> groups = new HashMap<Integer, AngularValue<JsGroup>>();
@@ -65,12 +67,18 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
     public AngularValue<JsUser> getUser(int uid) {
         if (!users.containsKey(uid)) {
-            UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
-            final AngularValue<JsUser> value = new AngularValue<JsUser>(JsUser.fromUserVM(userVM));
+            final UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
+            final AngularValue<JsUser> value = new AngularValue<JsUser>(JsUser.fromUserVM(userVM, messenger));
             userVM.subscribe(new ModelChangedListener<UserVM>() {
                 @Override
                 public void onChanged(UserVM model) {
-                    value.changeValue(JsUser.fromUserVM(model));
+                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
+                }
+            });
+            userVM.getPresence().subscribe(new ValueChangedListener<UserPresence>() {
+                @Override
+                public void onChanged(UserPresence val, ValueModel<UserPresence> valueModel) {
+                    value.changeValue(JsUser.fromUserVM(userVM, messenger));
                 }
             });
             users.put(uid, value);
@@ -80,12 +88,18 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
 
     public AngularValue<JsGroup> getGroup(int gid) {
         if (!groups.containsKey(gid)) {
-            GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
-            final AngularValue<JsGroup> value = new AngularValue<>(JsGroup.fromGroupVM(groupVM));
+            final GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
+            final AngularValue<JsGroup> value = new AngularValue<>(JsGroup.fromGroupVM(groupVM, messenger));
             groupVM.subscribe(new ModelChangedListener<GroupVM>() {
                 @Override
                 public void onChanged(GroupVM model) {
-                    value.changeValue(JsGroup.fromGroupVM(model));
+                    value.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
+                }
+            });
+            groupVM.getPresence().subscribe(new ValueChangedListener<Integer>() {
+                @Override
+                public void onChanged(Integer val, ValueModel<Integer> valueModel) {
+                    value.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
                 }
             });
             groups.put(gid, value);
@@ -143,9 +157,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
         if (dialogsList != null) {
             boolean founded = false;
             for (Dialog dialog : dialogsList.getRawItems()) {
-                Avatar avatar = dialog.getDialogAvatar();
-                if (avatar != null && avatar.getSmallImage() != null &&
-                        avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+                if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
                     founded = true;
                     break;
                 }
@@ -159,9 +171,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
             boolean founded = false;
             for (Message message : messageList.getRawItems()) {
                 UserVM user = modules().getUsersModule().getUsersCollection().get(message.getSenderId());
-                Avatar avatar = user.getAvatar().get();
-                if (avatar != null && avatar.getSmallImage() != null &&
-                        avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+                if (checkAvatar(user.getAvatar().get(), fileId)) {
                     founded = true;
                     break;
                 }
@@ -179,5 +189,37 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
                 messageList.forceReconvert();
             }
         }
+
+        for (AngularValue<JsUser> u : users.values()) {
+            int uid = u.get().getUid();
+            UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
+            if (checkAvatar(userVM.getAvatar().get(), fileId)) {
+                u.changeValue(JsUser.fromUserVM(userVM, messenger));
+            }
+        }
+
+        for (AngularValue<JsGroup> g : groups.values()) {
+            int gid = g.get().getGid();
+            GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
+            if (checkAvatar(groupVM.getAvatar().get(), fileId)) {
+                g.changeValue(JsGroup.fromGroupVM(groupVM, messenger));
+            }
+        }
+    }
+
+    protected boolean checkAvatar(Avatar avatar, long fileId) {
+        if (avatar == null) {
+            return false;
+        }
+        if (avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference().getFileId() == fileId) {
+            return true;
+        }
+        if (avatar.getFullImage() != null && avatar.getFullImage().getFileReference().getFileId() == fileId) {
+            return true;
+        }
+        if (avatar.getLargeImage() != null && avatar.getLargeImage().getFileReference().getFileId() == fileId) {
+            return true;
+        }
+        return false;
     }
 }
