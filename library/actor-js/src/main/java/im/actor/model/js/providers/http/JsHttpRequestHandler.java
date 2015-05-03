@@ -4,6 +4,6 @@
 
 package im.actor.model.js.providers.http;
 
-public interface JsXmlHttpRequestHandler {
-    void onStateChanged(JsXmlHttpRequest request);
+public interface JsHttpRequestHandler {
+    void onStateChanged(JsHttpRequest request);
 }
