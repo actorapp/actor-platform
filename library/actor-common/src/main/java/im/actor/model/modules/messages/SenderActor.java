@@ -103,6 +103,7 @@ public class SenderActor extends ModuleActor {
         getConversationActor(peer).send(message);
 
         pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, new TextContent(text)));
+        savePending();
 
         performSendContent(peer, rid, new TextContent(text));
     }
