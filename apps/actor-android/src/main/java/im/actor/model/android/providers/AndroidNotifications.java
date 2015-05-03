@@ -36,6 +36,7 @@ public class AndroidNotifications implements NotificationProvider {
     private int soundId;
 
     private Peer visiblePeer;
+
     private Context context;
 
     public AndroidNotifications(Context context) {
@@ -50,7 +51,7 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount) {
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean silentUpdate) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setAutoCancel(true);
@@ -65,6 +66,9 @@ public class AndroidNotifications implements NotificationProvider {
         if (messenger().isNotificationVibrationEnabled()) {
             defaults |= NotificationCompat.DEFAULT_VIBRATE;
         }
+        if (silentUpdate) {
+            defaults = 0;
+        }
         builder.setDefaults(defaults);
 
         // Wearable
@@ -75,7 +79,9 @@ public class AndroidNotifications implements NotificationProvider {
 
         Notification topNotification = topNotifications.get(0);
 
-        builder.setTicker(getNotificationTextFull(topNotification));
+        if (!silentUpdate) {
+            builder.setTicker(getNotificationTextFull(topNotification));
+        }
 
         android.app.Notification result;
         if (messagesCount == 1) {
@@ -148,19 +154,7 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onDialogsOpen(Messenger messenger) {
-        hideNotifications();
-    }
-
-    @Override
-    public void onChatOpen(Messenger messenger, Peer peer) {
-        if (visiblePeer != null && visiblePeer.equals(peer)) {
-            hideNotifications();
-            visiblePeer = null;
-        }
-    }
-
-    private void hideNotifications() {
+    public void hideAllNotifications() {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(NOTIFICATION_ID);
     }
