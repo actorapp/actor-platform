@@ -9,15 +9,12 @@
   }
   &__avatar {
     margin: 12px 12px 12px 0;
-    .no-avatar {
-      margin: 0 !important;
-      width: 32px !important;
-      height: 32px !important;
-      border-radius: 100%;
-      span {
-        font-size: 14px;
-        line-height: 32px;
-      }
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 100%;
+    span {
+      font-size: 14px;
+      line-height: 32px;
     }
   }
   &__body {
@@ -30,6 +27,10 @@
     line-height: 12px;
     margin: 2px 0 0;
     padding: 0;
+    &--single {
+      line-height: 32px;
+      margin: 0;
+    }
   }
   &__profile-link {
     line-height: 12px;
