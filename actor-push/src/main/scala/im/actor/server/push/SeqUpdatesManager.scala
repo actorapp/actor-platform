@@ -3,6 +3,7 @@ package im.actor.server.push
 import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.meta.field
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
@@ -12,6 +13,7 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
+import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
 import com.google.android.gcm.server.{ Message ⇒ GCMMessage, Sender ⇒ GCMSender }
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import com.relayrides.pushy.apns.{ PushManager ⇒ APNSPushManager }
@@ -22,6 +24,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc ⇒ api }
+import im.actor.server.commons.serialization.TaggedFieldSerializable
 import im.actor.server.{ models, persist ⇒ p }
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
@@ -83,7 +86,7 @@ object SeqUpdatesManager {
   private sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
-  private case class SeqChanged(sequence: Int) extends PersistentEvent
+  private final case class SeqChanged(@(KryoTag @field)(0) sequence:Int) extends PersistentEvent with TaggedFieldSerializable
 
   private val noop1: Any ⇒ Unit = _ ⇒ ()
 
@@ -107,11 +110,13 @@ object SeqUpdatesManager {
       shardResolver = shardResolver
     ))
 
-  def startRegion()(implicit
-    system: ActorSystem,
-                    gcmSender:       GCMSender,
-                    apnsPushManager: APNSPushManager[SimpleApnsPushNotification],
-                    db:              Database): SeqUpdatesManagerRegion =
+  def startRegion()(
+    implicit
+    system:          ActorSystem,
+    gcmSender:       GCMSender,
+    apnsPushManager: APNSPushManager[SimpleApnsPushNotification],
+    db:              Database
+  ): SeqUpdatesManagerRegion =
     startRegion(Some(Props(classOf[SeqUpdatesManager], gcmSender, apnsPushManager, db)))
 
   def startRegionProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = startRegion(None)
