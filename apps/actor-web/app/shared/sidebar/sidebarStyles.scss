@@ -1,9 +1,8 @@
 .md-locked-open {
-  //border-radius: 4px 0 0 4px;
   border-right: 1px solid rgb(233,233,233);
 }
 
-.user {
+.user, .info {
   &--padded-left {
     margin-left: 8px;
   }
@@ -25,13 +24,12 @@
       margin: 0;
     }
   }
-  &__profile-link {
+  &__presence {
     line-height: 12px;
     font-size: 11px;
     margin: 0;
     display: inline-block;
     padding: 0;
-    /* margin-top: -1px; */
     text-transform: lowercase;
   }
 }
