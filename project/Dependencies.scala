@@ -21,6 +21,8 @@ object Dependencies {
     val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
+    val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4"
+
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
@@ -70,8 +72,6 @@ object Dependencies {
   object Testing {
     val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test,e2e"
 
-    val akkaPersistenceInmem    = "com.github.dnvriend"           %% "akka-persistence-inmemory"     % "1.0.0" % "test,e2e"
-
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
     val slickTestkit    = "com.typesafe.slick"                    %% "slick-testkit"                 % V.slick % "test"
@@ -89,7 +89,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val commonsBase = shared ++ Seq(akkaActor, chillAkka, chillBijection, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, chillAkka, chillBijection, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
@@ -127,7 +127,7 @@ object Dependencies {
   )
 
   val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, utilTesting, akkaPersistenceInmem,
+    jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
     akkaTestkit
   )
 }

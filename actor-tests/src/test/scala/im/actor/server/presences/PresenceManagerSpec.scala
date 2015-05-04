@@ -7,10 +7,10 @@ import akka.testkit.TestProbe
 import akka.util.Timeout
 import org.scalatest.time.{ Seconds, Span }
 
-import im.actor.server.SqlSpecHelpers
+import im.actor.server.{ KafkaSpec, SqlSpecHelpers }
 import im.actor.util.testing.ActorSuite
 
-class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
+class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers with KafkaSpec {
   behavior of "PresenceManager"
 
   it should "subscribe to presences" in e1

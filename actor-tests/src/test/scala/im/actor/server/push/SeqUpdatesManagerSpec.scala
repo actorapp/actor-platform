@@ -6,17 +6,19 @@ import akka.testkit._
 import com.typesafe.config._
 
 import im.actor.api.{ rpc ⇒ api }
-import im.actor.server.SqlSpecHelpers
+import im.actor.server.{ KafkaSpec, SqlSpecHelpers }
 import im.actor.server.api.ActorSpecHelpers
 import im.actor.util.testing._
 
 class SeqUpdatesManagerSpec extends ActorSuite(
-  ActorSpecification.createSystem(
-    ConfigFactory.parseString("""
-      push.seq-updates-manager.receive-timeout = 1 second
-                              """)
-  )
-) with SqlSpecHelpers with ActorSpecHelpers {
+  {
+    ActorSpecification.createSystem(
+      ConfigFactory.parseString("""
+        push.seq-updates-manager.receive-timeout = 1 second
+                                """)
+    )
+  }
+) with SqlSpecHelpers with ActorSpecHelpers with KafkaSpec {
   behavior of "SeqUpdatesManager"
 
   it should "increment seq on update push" in e1
