@@ -3,6 +3,8 @@ package im.actor.messenger.app.fragment.auth;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +42,27 @@ public class SignUpFragment extends BaseAuthFragment {
 
         firstNameEditText = (EditText) v.findViewById(R.id.et_first_name_enter);
         final View sendConfirmCodeButton = v.findViewById(R.id.button_confirm_sms_code);
+        firstNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                messenger().trackAuthSignupClosedNameType(s.toString());
+            }
+        });
 
         v.findViewById(R.id.pickAvatar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                messenger().trackAuthSignupPressedAvatar();
                 startActivityForResult(Intents.pickAvatar(avatarPath != null, getActivity()), REQUEST_AVATAR);
             }
         });
@@ -61,6 +80,7 @@ public class SignUpFragment extends BaseAuthFragment {
     @Override
     public void onResume() {
         super.onResume();
+        messenger().trackAuthSignupOpen();
         setTitle(R.string.auth_profile_title);
         focus(firstNameEditText);
         keyboardHelper.setImeVisibility(firstNameEditText, true);
@@ -68,15 +88,27 @@ public class SignUpFragment extends BaseAuthFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_AVATAR && resultCode == Activity.RESULT_OK) {
-            int res = data.getIntExtra(Intents.EXTRA_RESULT, Intents.RESULT_IMAGE);
-            if (res == Intents.RESULT_IMAGE) {
-                avatarPath = data.getStringExtra(Intents.EXTRA_IMAGE);
-                avatarView.bindRaw(avatarPath);
-            } else if (res == Intents.RESULT_DELETE) {
-                avatarPath = null;
-                avatarView.unbind();
+        if (requestCode == REQUEST_AVATAR) {
+            if (resultCode == Activity.RESULT_OK) {
+                int res = data.getIntExtra(Intents.EXTRA_RESULT, Intents.RESULT_IMAGE);
+                if (res == Intents.RESULT_IMAGE) {
+                    avatarPath = data.getStringExtra(Intents.EXTRA_IMAGE);
+                    avatarView.bindRaw(avatarPath);
+                    messenger().trackAuthSignupAvatarPicked();
+                } else if (res == Intents.RESULT_DELETE) {
+                    avatarPath = null;
+                    avatarView.unbind();
+                    messenger().trackAuthSignupAvatarDeleted();
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                messenger().trackAuthSignupAvatarCanelled();
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        messenger().trackAuthSignupClosed();
     }
 }
