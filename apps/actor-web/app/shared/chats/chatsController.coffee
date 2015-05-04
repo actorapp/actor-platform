@@ -18,15 +18,15 @@ class ChatsController
     console.log '[AW]ChatsController renderDialogs'
     console.log '[AW]ChatsController renderDialogs: dialogs:', dialogs
     @$timeout =>
-#      list.forEach (item) ->
-#        console.log item
-#        @getUnreadMessages (item.peer.id)
       @list = dialogs
       @$rootScope.$broadcast 'renderDialogs'
 
   selectChat: (peer) ->
     console.log '[AW]ChatsController selectChat'
     console.log '[AW]ChatsController selectChat: peer:', peer
+    if @actorService.currentPeer == peer
+      console.log '[AW]ChatsController selectChat: this peer already selected.'
+      return
     if @actorService.currentPeer
       console.log '[AW]ChatsController selectChat: conversation already opened: unbind...'
       @actorService.unbindChat @actorService.currentPeer
