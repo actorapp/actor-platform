@@ -39,6 +39,7 @@ object Dependencies {
     val libPhoneNumber          = "com.googlecode.libphonenumber" % "libphonenumber"                 % "7.0.+"
 
     val chillAkka               = "com.twitter"                   %% "chill-akka"                    % "0.5.2"
+    val chillBijection          = "com.twitter"                   %% "chill-bijection"               % "0.5.2"
     val kryoSerializers         = "de.javakaffee"                 %  "kryo-serializers"              % "0.29"
 
     val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
@@ -88,7 +89,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val commonsBase = shared ++ Seq(akkaActor, chillAkka, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, chillAkka, chillBijection, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
