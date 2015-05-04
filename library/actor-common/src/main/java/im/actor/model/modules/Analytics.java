@@ -11,18 +11,6 @@ import im.actor.model.entity.Peer;
 
 public class Analytics extends BaseModule {
 
-    private static final String EVENT_APP_VISIBLE = "App Visible";
-    private static final String EVENT_APP_HIDDEN = "App Hidden";
-
-    private static final String DIALOGS_OPEN = "Dialogs Open";
-    private static final String DIALOGS_CLOSED = "Dialogs Closed";
-
-    private static final String CHAT_OPEN = "Chat Open";
-    private static final String CHAT_CLOSED = "Chat Closed";
-
-    private static final String PROFILE_OPEN = "Profile Open";
-    private static final String PROFILE_CLOSED = "Profile Closed";
-
     private AnalyticsProvider analyticsProvider;
 
     public Analytics(Modules modules) {
@@ -49,37 +37,91 @@ public class Analytics extends BaseModule {
         }
     }
 
-    public void onDialogsOpen() {
-        track(DIALOGS_OPEN);
+    public void trackMainScreensOpen() {
+        track("Main Screen Open");
     }
 
-    public void onDialogsClosed() {
-        track(DIALOGS_CLOSED);
+    public void trackMainScreensClosed() {
+        track("Main Screen Closed");
     }
 
-    public void onChatOpen(Peer peer) {
-        track(CHAT_OPEN, "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    public void trackOwnProfileOpen() {
+        track("Own Profile Open");
     }
 
-    public void onChatClosed(Peer peer) {
-        track(CHAT_CLOSED, "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    public void trackOwnProfileClosed() {
+        track("Own Profile Closed");
     }
 
-    public void onProfileOpen(int uid) {
-        track(PROFILE_OPEN, "Id", uid + "");
+    public void trackDialogsOpen() {
+        track("Dialogs Open");
     }
 
-    public void onProfileClosed(int uid) {
-        track(PROFILE_CLOSED, "Id", uid + "");
+    public void trackDialogsClosed() {
+        track("Dialogs Closed");
     }
+
+    public void trackContactsOpen() {
+        track("Contacts Open");
+    }
+
+    public void trackTextSend(Peer peer) {
+        track("Text Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    }
+
+    public void trackPhotoSend(Peer peer) {
+        track("Photo Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    }
+
+    public void trackVideoSend(Peer peer) {
+        track("Video Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    }
+
+    public void trackDocumentSend(Peer peer) {
+        track("Document Send", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    }
+
+    public void trackContactsClosed() {
+        track("Contacts Closed");
+    }
+
+    public void trackChatOpen(Peer peer) {
+        track("Chat Open", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    }
+
+    public void trackChatClosed(Peer peer) {
+        track("Chat Closed", "Type", peer.getPeerType().toString(), "Id", peer.getPeerId() + "");
+    }
+
+    public void trackProfileOpen(int uid) {
+        track("Profile Open", "Id", uid + "");
+    }
+
+    public void trackProfileClosed(int uid) {
+        track("Profile Closed", "Id", uid + "");
+    }
+
+    // Viral
+
+    public void trackInvitePressed() {
+        track("Invite pressed");
+    }
+
+    public void trackAddContactPressed() {
+        track("Add contact pressed");
+    }
+
+    // Common
 
     public void trackAppVisible() {
-        track(EVENT_APP_VISIBLE);
+        track("App Visible");
     }
 
     public void trackAppHidden() {
-        track(EVENT_APP_HIDDEN);
+        track("App Hidden");
     }
+
+    // Auth
 
     public void trackAuthPhoneOpen() {
         track("Auth: Phone Opened");
