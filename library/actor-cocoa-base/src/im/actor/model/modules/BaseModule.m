@@ -57,52 +57,52 @@ __attribute__((unused)) static ImActorModelModulesBaseModule_$1 *new_ImActorMode
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesBaseModule_$1)
 
 NSString *ImActorModelModulesBaseModule_STORAGE_DIALOGS_ = 
-#line 21
+#line 22
 @"dialogs";
 NSString *ImActorModelModulesBaseModule_STORAGE_USERS_ = 
-#line 22
+#line 23
 @"users";
 NSString *ImActorModelModulesBaseModule_STORAGE_GROUPS_ = 
-#line 23
+#line 24
 @"groups";
 NSString *ImActorModelModulesBaseModule_STORAGE_DOWNLOADS_ = 
-#line 24
+#line 25
 @"downloads";
 NSString *ImActorModelModulesBaseModule_STORAGE_CONTACTS_ = 
-#line 25
+#line 26
 @"contacts";
 NSString *ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_ = 
-#line 26
+#line 27
 @"notifications";
 NSString *ImActorModelModulesBaseModule_STORAGE_SEARCH_ = 
-#line 27
+#line 28
 @"search";
 NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = 
-#line 29
+#line 30
 @"chat_";
 NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_MEDIA_PREFIX_ = 
-#line 30
+#line 31
 @"chat_media_";
 NSString *ImActorModelModulesBaseModule_STORAGE_PENDING_ = 
-#line 31
+#line 32
 @"chat_pending";
 NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = 
-#line 32
+#line 33
 @"chat_cursor";
 
 
-#line 19
+#line 20
 @implementation ImActorModelModulesBaseModule
 
 
-#line 36
+#line 37
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 40
+#line 41
 - (ImActorModelModulesModules *)modules {
   return modules__;
 }
@@ -165,13 +165,13 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ =
 }
 
 
-#line 100
+#line 101
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request {
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:new_ImActorModelModulesBaseModule_$1_init()];
 }
 
 
-#line 114
+#line 115
 - (id<DKKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
@@ -183,16 +183,16 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ =
 @end
 
 
-#line 36
+#line 37
 void ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(ImActorModelModulesBaseModule *self, ImActorModelModulesModules *modules) {
   (void) NSObject_init(self);
   
-#line 37
+#line 38
   self->modules__ = modules;
 }
 
 
-#line 36
+#line 37
 ImActorModelModulesBaseModule *new_ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesBaseModule *self = [ImActorModelModulesBaseModule alloc];
   ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
@@ -204,12 +204,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 @implementation ImActorModelModulesBaseModule_$1
 
 
-#line 103
+#line 104
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
 }
 
 
-#line 108
+#line 109
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 

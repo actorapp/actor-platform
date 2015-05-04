@@ -140,18 +140,18 @@ __attribute__((unused)) static ImActorModelModulesUtilsModuleActor_$2_$2 *new_Im
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
 
 
-#line 27
+#line 28
 @implementation ImActorModelModulesUtilsModuleActor
 
 
-#line 36
+#line 37
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 40
+#line 41
 - (ImActorModelApiOutPeer *)buidOutPeerWithAMPeer:(AMPeer *)peer {
   if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
     AMUser *user = [self getUserWithInt:[peer getPeerId]];
@@ -161,7 +161,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
     return new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum_get_PRIVATE(), [((AMUser *) nil_chk(user)) getUid], [user getAccessHash]);
   }
   else
-#line 47
+#line 48
   if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     AMGroup *group = [self getGroupWithInt:[peer getPeerId]];
     if (group == nil) {
@@ -171,31 +171,31 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
   }
   else {
     
-#line 54
+#line 55
     @throw new_JavaLangRuntimeException_initWithNSString_(JreStrcat("$@", @"Unknown peer: ", peer));
   }
 }
 
 
-#line 58
+#line 59
 - (ImActorModelApiPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer {
   if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
     return new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum_get_PRIVATE(), [peer getPeerId]);
   }
   else
-#line 61
+#line 62
   if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     return new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum_get_GROUP(), [peer getPeerId]);
   }
   else {
     
-#line 64
+#line 65
     return nil;
   }
 }
 
 
-#line 68
+#line 69
 - (id<DKKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
@@ -237,13 +237,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
 }
 
 
-#line 107
+#line 108
 - (id<DKListEngine>)mediaWithAMPeer:(AMPeer *)peer {
   return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getMessagesModule])) getMediaEngineWithAMPeer:peer];
 }
 
 
-#line 110
+#line 111
 - (jint)myUid {
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getAuthModule])) myUid];
 }
@@ -261,7 +261,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
 }
 
 
-#line 136
+#line 137
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:new_ImActorModelModulesUtilsModuleActor_$2_initWithImActorModelModulesUtilsModuleActor_withAMRpcCallback_(self, callback)];
@@ -270,16 +270,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
 @end
 
 
-#line 36
+#line 37
 void ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(ImActorModelModulesUtilsModuleActor *self, ImActorModelModulesModules *modules) {
   (void) DKActor_init(self);
   
-#line 37
+#line 38
   self->modules__ = modules;
 }
 
 
-#line 36
+#line 37
 ImActorModelModulesUtilsModuleActor *new_ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUtilsModuleActor *self = [ImActorModelModulesUtilsModuleActor alloc];
   ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, modules);
@@ -291,12 +291,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor)
 @implementation ImActorModelModulesUtilsModuleActor_$1
 
 
-#line 125
+#line 126
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
 }
 
 
-#line 130
+#line 131
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 
@@ -322,13 +322,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$1)
 @implementation ImActorModelModulesUtilsModuleActor_$2
 
 
-#line 139
+#line 140
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesUtilsModuleActor_$2_$1_initWithImActorModelModulesUtilsModuleActor_$2_withImActorModelNetworkParserResponse_(self, response)];
 }
 
 
-#line 149
+#line 150
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesUtilsModuleActor_$2_$2_initWithImActorModelModulesUtilsModuleActor_$2_withAMRpcException_(self, e)];
 }
@@ -358,7 +358,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$2)
 @implementation ImActorModelModulesUtilsModuleActor_$2_$1
 
 
-#line 142
+#line 143
 - (void)run {
   [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onResultWithImActorModelNetworkParserResponse:val$response_];
 }
@@ -388,7 +388,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$2_$1)
 @implementation ImActorModelModulesUtilsModuleActor_$2_$2
 
 
-#line 152
+#line 153
 - (void)run {
   [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onErrorWithAMRpcException:val$e_];
 }

@@ -95,6 +95,7 @@
 #import "im/actor/model/files/FileSystemReference.h"
 #import "im/actor/model/files/InputFile.h"
 #import "im/actor/model/files/OutputFile.h"
+#import "im/actor/model/files/FileReadCallback.h"
 
 // Entities
 

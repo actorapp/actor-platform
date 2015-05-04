@@ -17,11 +17,11 @@ J2OBJC_STATIC_FIELD_GETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadPro
 J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
 
 
-#line 8
+#line 12
 @implementation AMMVVMEngine
 
 
-#line 11
+#line 15
 + (void)init__WithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
   AMMVVMEngine_init__WithAMMainThreadProvider_(mainThreadProvider);
 }
@@ -35,7 +35,7 @@ J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadPro
 }
 
 
-#line 28
+#line 32
 + (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(runnable);
 }
@@ -48,29 +48,29 @@ J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadPro
 @end
 
 
-#line 11
+#line 15
 void AMMVVMEngine_init__WithAMMainThreadProvider_(id<AMMainThreadProvider> mainThreadProvider) {
   AMMVVMEngine_initialize();
   
-#line 12
+#line 16
   AMMVVMEngine_mainThreadProvider_ = mainThreadProvider;
 }
 
 
-#line 15
+#line 19
 id<AMMainThreadProvider> AMMVVMEngine_getMainThreadProvider() {
   AMMVVMEngine_initialize();
   
-#line 16
+#line 20
   return AMMVVMEngine_mainThreadProvider_;
 }
 
 
-#line 19
+#line 23
 void AMMVVMEngine_checkMainThread() {
   AMMVVMEngine_initialize();
   
-#line 20
+#line 24
   if ([((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) isSingleThread]) {
     return;
   }
@@ -80,11 +80,11 @@ void AMMVVMEngine_checkMainThread() {
 }
 
 
-#line 28
+#line 32
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMMVVMEngine_initialize();
   
-#line 29
+#line 33
   [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) postToMainThread:runnable];
 }
 

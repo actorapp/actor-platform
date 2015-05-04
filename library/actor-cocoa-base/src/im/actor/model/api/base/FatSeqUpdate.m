@@ -46,17 +46,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, phones_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiBaseFatSeqUpdate
 
 
-#line 23
+#line 27
 + (ImActorModelApiBaseFatSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(data);
 }
 
 
-#line 36
+#line 40
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
                     withInt:(jint)updateHeader
@@ -70,14 +70,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 }
 
 
-#line 47
+#line 51
 - (instancetype)init {
   ImActorModelApiBaseFatSeqUpdate_init(self);
   return self;
 }
 
 
-#line 51
+#line 55
 - (jint)getSeq {
   return self->seq_;
 }
@@ -111,7 +111,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 }
 
 
-#line 84
+#line 88
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -140,7 +140,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 }
 
 
-#line 112
+#line 116
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
@@ -159,7 +159,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 }
 
 
-#line 130
+#line 134
 - (NSString *)description {
   NSString *res = @"update box FatSeqUpdate{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
@@ -173,7 +173,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 }
 
 
-#line 143
+#line 147
 - (jint)getHeaderKey {
   return ImActorModelApiBaseFatSeqUpdate_HEADER;
 }
@@ -181,20 +181,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseFatSeqUpdate_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiBaseFatSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseFatSeqUpdate_init(), data));
 }
 
 
-#line 36
+#line 40
 void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiBaseFatSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   (void) ImActorModelNetworkParserRpcScope_init(self);
   
-#line 37
+#line 41
   self->seq_ = seq;
   self->state_ = state;
   self->updateHeader_ = updateHeader;
@@ -206,7 +206,7 @@ void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteA
 }
 
 
-#line 36
+#line 40
 ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   ImActorModelApiBaseFatSeqUpdate *self = [ImActorModelApiBaseFatSeqUpdate alloc];
   ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(self, seq, state, updateHeader, update, users, groups, phones, emails);
@@ -214,13 +214,13 @@ ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt
 }
 
 
-#line 47
+#line 51
 void ImActorModelApiBaseFatSeqUpdate_init(ImActorModelApiBaseFatSeqUpdate *self) {
   (void) ImActorModelNetworkParserRpcScope_init(self);
 }
 
 
-#line 47
+#line 51
 ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_init() {
   ImActorModelApiBaseFatSeqUpdate *self = [ImActorModelApiBaseFatSeqUpdate alloc];
   ImActorModelApiBaseFatSeqUpdate_init(self);

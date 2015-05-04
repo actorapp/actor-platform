@@ -171,21 +171,23 @@ class CocoaInputFile :NSObject, AMInputFile {
         self.fileHandle = fileHandle;
     }
     
-    func readAtOffset(fileOffset: jint, toArray data: IOSByteArray!, withArrayOffset offset: jint, withArrayLen len: jint) -> Bool {
+    func readWithInt(fileOffset: jint, withByteArray data: IOSByteArray!, withInt offset: jint, withInt len: jint, withAMFileReadCallback callback: AMFileReadCallback!) {
         
-        fileHandle.seekToFileOffset(UInt64(fileOffset));
-        var readed:NSData = fileHandle.readDataOfLength(Int(len));
-        
-        var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes);
-        var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
-        var len = min(Int(len), Int(readed.length));
-        for i in offset..<offset+len {
-            destBuffer.memory = srcBuffer.memory;
-            destBuffer++;
-            srcBuffer++;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            self.fileHandle.seekToFileOffset(UInt64(fileOffset));
+            var readed:NSData = self.fileHandle.readDataOfLength(Int(len));
+            
+            var srcBuffer = UnsafeMutablePointer<UInt8>(readed.bytes);
+            var destBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
+            var len = min(Int(len), Int(readed.length));
+            for i in offset..<offset+len {
+                destBuffer.memory = srcBuffer.memory;
+                destBuffer++;
+                srcBuffer++;
+            }
+            
+            callback.onFileReadWithInt(fileOffset, withByteArray: data, withInt: offset, withInt: jint(len))
         }
-        
-        return true;
     }
     
     func close() -> Bool {

@@ -9,13 +9,15 @@
 #include "J2ObjC_header.h"
 
 @class IOSByteArray;
+@protocol AMFileReadCallback;
 
 @protocol AMInputFile < NSObject, JavaObject >
 
-- (jboolean)readAtOffset:(jint)fileOffset
-                 toArray:(IOSByteArray *)data
-         withArrayOffset:(jint)offset
-            withArrayLen:(jint)len;
+- (void)readWithInt:(jint)fileOffset
+      withByteArray:(IOSByteArray *)data
+            withInt:(jint)offset
+            withInt:(jint)len
+withAMFileReadCallback:(id<AMFileReadCallback>)callback;
 
 - (jboolean)close;
 

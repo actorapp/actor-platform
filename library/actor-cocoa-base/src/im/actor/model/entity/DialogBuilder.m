@@ -40,25 +40,25 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, text_, NSString *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 
 
-#line 3
+#line 7
 @implementation AMDialogBuilder
 
 
-#line 17
+#line 21
 - (instancetype)init {
   AMDialogBuilder_init(self);
   return self;
 }
 
 
-#line 21
+#line 25
 - (instancetype)initWithAMDialog:(AMDialog *)dialog {
   AMDialogBuilder_initWithAMDialog_(self, dialog);
   return self;
 }
 
 
-#line 36
+#line 40
 - (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer {
   self->peer_ = peer;
   return self;
@@ -126,16 +126,16 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 @end
 
 
-#line 17
+#line 21
 void AMDialogBuilder_init(AMDialogBuilder *self) {
   (void) NSObject_init(self);
   self->relatedUid_ =
-#line 15
+#line 19
   0;
 }
 
 
-#line 17
+#line 21
 AMDialogBuilder *new_AMDialogBuilder_init() {
   AMDialogBuilder *self = [AMDialogBuilder alloc];
   AMDialogBuilder_init(self);
@@ -143,14 +143,14 @@ AMDialogBuilder *new_AMDialogBuilder_init() {
 }
 
 
-#line 21
+#line 25
 void AMDialogBuilder_initWithAMDialog_(AMDialogBuilder *self, AMDialog *dialog) {
   (void) NSObject_init(self);
   self->relatedUid_ =
-#line 15
+#line 19
   0;
   
-#line 22
+#line 26
   self->peer_ = [((AMDialog *) nil_chk(dialog)) getPeer];
   self->sortKey_ = [dialog getSortDate];
   self->dialogTitle_ = [dialog getDialogTitle];
@@ -166,7 +166,7 @@ void AMDialogBuilder_initWithAMDialog_(AMDialogBuilder *self, AMDialog *dialog) 
 }
 
 
-#line 21
+#line 25
 AMDialogBuilder *new_AMDialogBuilder_initWithAMDialog_(AMDialog *dialog) {
   AMDialogBuilder *self = [AMDialogBuilder alloc];
   AMDialogBuilder_initWithAMDialog_(self, dialog);

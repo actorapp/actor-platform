@@ -10,8 +10,6 @@
 #include "im/actor/model/cocoa/CocoaThreadingProvider.h"
 #include "im/actor/model/jvm/JavaThreadingProvider.h"
 
-
-#line 8
 @implementation AMCocoaThreadingProvider
 
 - (instancetype)init {

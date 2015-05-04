@@ -35,7 +35,7 @@ __attribute__((unused)) static void AMServiceGroupAvatarChanged_init(AMServiceGr
 __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_init() NS_RETURNS_RETAINED;
 
 
-#line 13
+#line 14
 @implementation AMServiceGroupAvatarChanged
 
 + (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -43,7 +43,7 @@ __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAv
 }
 
 
-#line 21
+#line 22
 - (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar {
   AMServiceGroupAvatarChanged_initWithAMAvatar_(self, newAvatar);
   return self;
@@ -55,19 +55,19 @@ __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAv
 }
 
 
-#line 30
+#line 31
 - (AMAvatar *)getNewAvatar {
   return newAvatar_;
 }
 
 
-#line 35
+#line 36
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
 }
 
 
-#line 40
+#line 41
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   IOSByteArray *data = [((BSBserValues *) nil_chk(values)) optBytesWithInt:10];
@@ -77,7 +77,7 @@ __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAv
 }
 
 
-#line 49
+#line 50
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   if (newAvatar_ != nil) {
@@ -88,23 +88,23 @@ __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAv
 @end
 
 
-#line 15
+#line 16
 AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupAvatarChanged_initialize();
   
-#line 16
+#line 17
   return ((AMServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupAvatarChanged_init(), data));
 }
 
 
-#line 21
+#line 22
 void AMServiceGroupAvatarChanged_initWithAMAvatar_(AMServiceGroupAvatarChanged *self, AMAvatar *newAvatar) {
   (void) AMServiceContent_initWithNSString_(self, @"Group avatar changed");
   self->newAvatar_ = newAvatar;
 }
 
 
-#line 21
+#line 22
 AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithAMAvatar_(AMAvatar *newAvatar) {
   AMServiceGroupAvatarChanged *self = [AMServiceGroupAvatarChanged alloc];
   AMServiceGroupAvatarChanged_initWithAMAvatar_(self, newAvatar);
@@ -112,13 +112,13 @@ AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithAMAvatar_(A
 }
 
 
-#line 26
+#line 27
 void AMServiceGroupAvatarChanged_init(AMServiceGroupAvatarChanged *self) {
   (void) AMServiceContent_init(self);
 }
 
 
-#line 26
+#line 27
 AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_init() {
   AMServiceGroupAvatarChanged *self = [AMServiceGroupAvatarChanged alloc];
   AMServiceGroupAvatarChanged_init(self);

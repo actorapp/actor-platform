@@ -27,43 +27,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestEditName
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestEditName *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithNSString:(NSString *)name {
   ImActorModelApiRpcRequestEditName_initWithNSString_(self, name);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestEditName_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (NSString *)getName {
   return self->name_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->name_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->name_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"rpc EditName{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"name=", self->name_));
@@ -81,7 +81,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 }
 
 
-#line 63
+#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditName_HEADER;
 }
@@ -89,25 +89,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditName, name_, NSString *)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestEditName *ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditName_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestEditName *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditName_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiRpcRequestEditName_initWithNSString_(ImActorModelApiRpcRequestEditName *self, NSString *name) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 30
+#line 34
   self->name_ = name;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_initWithNSString_(NSString *name) {
   ImActorModelApiRpcRequestEditName *self = [ImActorModelApiRpcRequestEditName alloc];
   ImActorModelApiRpcRequestEditName_initWithNSString_(self, name);
@@ -115,13 +115,13 @@ ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_initWit
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiRpcRequestEditName_init(ImActorModelApiRpcRequestEditName *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_init() {
   ImActorModelApiRpcRequestEditName *self = [ImActorModelApiRpcRequestEditName alloc];
   ImActorModelApiRpcRequestEditName_init(self);

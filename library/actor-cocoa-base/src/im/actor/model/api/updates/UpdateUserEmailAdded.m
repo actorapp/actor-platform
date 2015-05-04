@@ -25,18 +25,16 @@
 
 @end
 
-
-#line 20
 @implementation ImActorModelApiUpdatesUpdateUserEmailAdded
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateUserEmailAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserEmailAdded_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)emailId {
   ImActorModelApiUpdatesUpdateUserEmailAdded_initWithInt_withInt_(self, uid, emailId);
@@ -44,14 +42,14 @@
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserEmailAdded_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getUid {
   return self->uid_;
 }
@@ -61,21 +59,21 @@
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->emailId_ = [values getIntWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->emailId_];
 }
 
 
-#line 60
+#line 64
 - (NSString *)description {
   NSString *res = @"update UserEmailAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -85,7 +83,7 @@
 }
 
 
-#line 69
+#line 73
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserEmailAdded_HEADER;
 }
@@ -93,24 +91,24 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateUserEmailAdded *ImActorModelApiUpdatesUpdateUserEmailAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserEmailAdded_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateUserEmailAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserEmailAdded_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateUserEmailAdded_initWithInt_withInt_(ImActorModelApiUpdatesUpdateUserEmailAdded *self, jint uid, jint emailId) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 31
+#line 35
   self->uid_ = uid;
   self->emailId_ = emailId;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiUpdatesUpdateUserEmailAdded *new_ImActorModelApiUpdatesUpdateUserEmailAdded_initWithInt_withInt_(jint uid, jint emailId) {
   ImActorModelApiUpdatesUpdateUserEmailAdded *self = [ImActorModelApiUpdatesUpdateUserEmailAdded alloc];
   ImActorModelApiUpdatesUpdateUserEmailAdded_initWithInt_withInt_(self, uid, emailId);
@@ -118,13 +116,13 @@ ImActorModelApiUpdatesUpdateUserEmailAdded *new_ImActorModelApiUpdatesUpdateUser
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiUpdatesUpdateUserEmailAdded_init(ImActorModelApiUpdatesUpdateUserEmailAdded *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiUpdatesUpdateUserEmailAdded *new_ImActorModelApiUpdatesUpdateUserEmailAdded_init() {
   ImActorModelApiUpdatesUpdateUserEmailAdded *self = [ImActorModelApiUpdatesUpdateUserEmailAdded alloc];
   ImActorModelApiUpdatesUpdateUserEmailAdded_init(self);

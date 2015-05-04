@@ -26,11 +26,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, email_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiEmailToImport
 
 
-#line 24
+#line 28
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)name {
   ImActorModelApiEmailToImport_initWithNSString_withNSString_(self, email, name);
@@ -38,14 +38,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 }
 
 
-#line 29
+#line 33
 - (instancetype)init {
   ImActorModelApiEmailToImport_init(self);
   return self;
 }
 
 
-#line 33
+#line 37
 - (NSString *)getEmail {
   return self->email_;
 }
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->email_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->name_ = [values optStringWithInt:2];
 }
 
 
-#line 48
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->email_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 }
 
 
-#line 59
+#line 63
 - (NSString *)description {
   NSString *res = @"struct EmailToImport{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"email=", self->email_));
@@ -86,17 +86,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiEmailToImport_initWithNSString_withNSString_(ImActorModelApiEmailToImport *self, NSString *email, NSString *name) {
   (void) BSBserObject_init(self);
   
-#line 25
+#line 29
   self->email_ = email;
   self->name_ = name;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) {
   ImActorModelApiEmailToImport *self = [ImActorModelApiEmailToImport alloc];
   ImActorModelApiEmailToImport_initWithNSString_withNSString_(self, email, name);
@@ -104,13 +104,13 @@ ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_initWithNSString_
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiEmailToImport_init(ImActorModelApiEmailToImport *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 29
+#line 33
 ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_init() {
   ImActorModelApiEmailToImport *self = [ImActorModelApiEmailToImport alloc];
   ImActorModelApiEmailToImport_init(self);

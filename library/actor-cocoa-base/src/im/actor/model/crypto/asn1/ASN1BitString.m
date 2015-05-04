@@ -26,7 +26,7 @@
 J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 
 
-#line 11
+#line 12
 @implementation BCASN1BitString
 
 + (BCASN1BitString *)readBitStringWithBSDataInput:(BSDataInput *)dataInput {
@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 }
 
 
-#line 21
+#line 22
 - (instancetype)initWithInt:(jint)paddingBit
               withByteArray:(IOSByteArray *)content {
   BCASN1BitString_initWithInt_withByteArray_(self, paddingBit, content);
@@ -42,7 +42,7 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 }
 
 
-#line 26
+#line 27
 - (jint)getPaddingBit {
   return paddingBit_;
 }
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 }
 
 
-#line 35
+#line 36
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_BIT_STRING];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(content_))->size_ + 1];
@@ -63,11 +63,11 @@ J2OBJC_FIELD_SETTER(BCASN1BitString, content_, IOSByteArray *)
 @end
 
 
-#line 13
+#line 14
 BCASN1BitString *BCASN1BitString_readBitStringWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1BitString_initialize();
   
-#line 14
+#line 15
   jint paddingBytes = [((BSDataInput *) nil_chk(dataInput)) readByte];
   return new_BCASN1BitString_initWithInt_withByteArray_(paddingBytes, [dataInput readBytesWithInt:[dataInput getRemaining]]);
 }
@@ -75,13 +75,13 @@ BCASN1BitString *BCASN1BitString_readBitStringWithBSDataInput_(BSDataInput *data
 void BCASN1BitString_initWithInt_withByteArray_(BCASN1BitString *self, jint paddingBit, IOSByteArray *content) {
   (void) BCASN1Primitive_init(self);
   
-#line 22
+#line 23
   self->paddingBit_ = paddingBit;
   self->content_ = content;
 }
 
 
-#line 21
+#line 22
 BCASN1BitString *new_BCASN1BitString_initWithInt_withByteArray_(jint paddingBit, IOSByteArray *content) {
   BCASN1BitString *self = [BCASN1BitString alloc];
   BCASN1BitString_initWithInt_withByteArray_(self, paddingBit, content);

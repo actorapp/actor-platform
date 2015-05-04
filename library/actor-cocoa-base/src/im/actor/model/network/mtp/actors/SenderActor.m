@@ -59,7 +59,7 @@ J2OBJC_FIELD_SETTER(MTSenderActor, unsentPackages_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(MTSenderActor, confirm_, JavaUtilHashSet *)
 
 static NSString *MTSenderActor_TAG_ = 
-#line 26
+#line 27
 @"ProtoSender";
 J2OBJC_STATIC_FIELD_GETTER(MTSenderActor, TAG_, NSString *)
 
@@ -123,63 +123,63 @@ __attribute__((unused)) static MTSenderActor_$1 *new_MTSenderActor_$1_initWithMT
 J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
 
 
-#line 24
+#line 25
 @implementation MTSenderActor
 
 
-#line 28
+#line 29
 + (DKActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto {
   return MTSenderActor_senderActorWithMTMTProto_(proto);
 }
 
 
-#line 47
+#line 48
 - (instancetype)initWithMTMTProto:(MTMTProto *)proto {
   MTSenderActor_initWithMTMTProto_(self, proto);
   return self;
 }
 
 
-#line 54
+#line 55
 - (void)preStart {
   manager_ = MTManagerActor_managerWithMTMTProto_(proto_);
 }
 
 
-#line 59
+#line 60
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[MTSenderActor_SendMessage class]]) {
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Received SendMessage #", ((MTSenderActor_SendMessage *) nil_chk(((MTSenderActor_SendMessage *) check_class_cast(message, [MTSenderActor_SendMessage class]))))->mid_));
     
-#line 63
+#line 64
     MTSenderActor_SendMessage *sendMessage = (MTSenderActor_SendMessage *) check_class_cast(message, [MTSenderActor_SendMessage class]);
     MTProtoMessage *holder = new_MTProtoMessage_initWithLong_withByteArray_(((MTSenderActor_SendMessage *) nil_chk(sendMessage))->mid_, sendMessage->message_);
     (void) [((JavaUtilHashMap *) nil_chk(unsentPackages_)) putWithId:JavaLangLong_valueOfWithLong_([holder getMessageId]) withId:holder];
     MTSenderActor_doSendWithMTProtoMessage_(self, holder);
   }
   else
-#line 67
+#line 68
   if ([message isKindOfClass:[MTSenderActor_ConnectionCreated class]]) {
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Received ConnectionCreated");
     
-#line 70
+#line 71
     JavaUtilArrayList *toSend = new_JavaUtilArrayList_init();
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
       AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId]));
       [toSend addWithId:unsentPackage];
     }
     
-#line 76
+#line 77
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);
   }
   else
-#line 77
+#line 78
   if ([message isKindOfClass:[MTSenderActor_ForgetMessage class]]) {
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Received ForgetMessage #", ((MTSenderActor_ForgetMessage *) nil_chk(((MTSenderActor_ForgetMessage *) check_class_cast(message, [MTSenderActor_ForgetMessage class]))))->mid_));
     (void) [((JavaUtilHashMap *) nil_chk(unsentPackages_)) removeWithId:JavaLangLong_valueOfWithLong_(((MTSenderActor_ForgetMessage *) nil_chk(((MTSenderActor_ForgetMessage *) check_class_cast(message, [MTSenderActor_ForgetMessage class]))))->mid_)];
   }
   else
-#line 80
+#line 81
   if ([message isKindOfClass:[MTSenderActor_ConfirmMessage class]]) {
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Confirming message #", ((MTSenderActor_ConfirmMessage *) nil_chk(((MTSenderActor_ConfirmMessage *) check_class_cast(message, [MTSenderActor_ConfirmMessage class]))))->mid_));
     [((JavaUtilHashSet *) nil_chk(confirm_)) addWithId:JavaLangLong_valueOfWithLong_(((MTSenderActor_ConfirmMessage *) nil_chk(((MTSenderActor_ConfirmMessage *) check_class_cast(message, [MTSenderActor_ConfirmMessage class]))))->mid_)];
@@ -187,19 +187,19 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
       [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_MTSenderActor_ForceAck_init()];
     }
     else
-#line 85
+#line 86
     if ([confirm_ size] == 1) {
       [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_MTSenderActor_ForceAck_init() withLong:MTSenderActor_ACK_DELAY];
     }
   }
   else
-#line 88
+#line 89
   if ([message isKindOfClass:[MTSenderActor_ForceAck class]]) {
     if ([((JavaUtilHashSet *) nil_chk(confirm_)) size] == 0) {
       return;
     }
     
-#line 93
+#line 94
     NSString *acks = @"";
     for (JavaLangLong * __strong l in confirm_) {
       if (((jint) [acks length]) != 0) {
@@ -209,48 +209,48 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
     }
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Sending acks ", acks));
     
-#line 102
+#line 103
     MTMessageAck *messageAck = MTSenderActor_buildAck(self);
     [confirm_ clear];
     MTSenderActor_doSendWithMTProtoMessage_(self, new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [((MTMessageAck *) nil_chk(messageAck)) toByteArray]));
   }
   else
-#line 105
+#line 106
   if ([message isKindOfClass:[MTSenderActor_NewSession class]]) {
     AMLog_wWithNSString_withNSString_(MTSenderActor_TAG_, @"Received NewSessionCreated");
     
-#line 109
+#line 110
     JavaUtilArrayList *toSend = new_JavaUtilArrayList_init();
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
       AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId]));
       [toSend addWithId:unsentPackage];
     }
     
-#line 115
+#line 116
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);
   }
 }
 
 
-#line 119
+#line 120
 - (MTMessageAck *)buildAck {
   return MTSenderActor_buildAck(self);
 }
 
 
-#line 128
+#line 129
 - (void)doSendWithJavaUtilList:(id<JavaUtilList>)items {
   MTSenderActor_doSendWithJavaUtilList_(self, items);
 }
 
 
-#line 159
+#line 160
 - (void)doSendWithMTProtoMessage:(MTProtoMessage *)message {
   MTSenderActor_doSendWithMTProtoMessage_(self, message);
 }
 
 
-#line 169
+#line 170
 - (void)performSendWithMTProtoMessage:(MTProtoMessage *)message {
   MTSenderActor_performSendWithMTProtoMessage_(self, message);
 }
@@ -258,29 +258,29 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
 @end
 
 
-#line 28
+#line 29
 DKActorRef *MTSenderActor_senderActorWithMTMTProto_(MTMTProto *proto) {
   MTSenderActor_initialize();
   
-#line 29
+#line 30
   return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_(DKProps_createWithIOSClass_withDKActorCreator_(MTSenderActor_class_(), new_MTSenderActor_$1_initWithMTMTProto_(proto)), JreStrcat("$$",
-#line 34
+#line 35
   [((MTMTProto *) nil_chk(proto)) getActorPath], @"/sender"))];
 }
 
 
-#line 47
+#line 48
 void MTSenderActor_initWithMTMTProto_(MTSenderActor *self, MTMTProto *proto) {
   (void) DKActor_init(self);
   
-#line 48
+#line 49
   self->proto_ = proto;
   self->unsentPackages_ = new_JavaUtilHashMap_init();
   self->confirm_ = new_JavaUtilHashSet_init();
 }
 
 
-#line 47
+#line 48
 MTSenderActor *new_MTSenderActor_initWithMTMTProto_(MTMTProto *proto) {
   MTSenderActor *self = [MTSenderActor alloc];
   MTSenderActor_initWithMTMTProto_(self, proto);
@@ -288,7 +288,7 @@ MTSenderActor *new_MTSenderActor_initWithMTMTProto_(MTMTProto *proto) {
 }
 
 
-#line 119
+#line 120
 MTMessageAck *MTSenderActor_buildAck(MTSenderActor *self) {
   IOSLongArray *ids = [IOSLongArray newArrayWithLength:[((JavaUtilHashSet *) nil_chk(self->confirm_)) size]];
   IOSObjectArray *ids2 = [self->confirm_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[self->confirm_ size] type:JavaLangLong_class_()]];
@@ -309,7 +309,7 @@ void MTSenderActor_doSendWithJavaUtilList_(MTSenderActor *self, id<JavaUtilList>
     MTSenderActor_doSendWithMTProtoMessage_(self, [items getWithInt:0]);
   }
   else
-#line 137
+#line 138
   if ([items size] > 1) {
     JavaUtilArrayList *messages = new_JavaUtilArrayList_init();
     jint currentPayload = 0;
@@ -321,7 +321,7 @@ void MTSenderActor_doSendWithJavaUtilList_(MTSenderActor *self, id<JavaUtilList>
         MTContainer *container = new_MTContainer_initWithMTProtoMessageArray_([messages toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[messages size] type:MTProtoMessage_class_()]]);
         MTSenderActor_performSendWithMTProtoMessage_(self, new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [container toByteArray]));
         
-#line 148
+#line 149
         [messages clear];
         currentPayload = 0;
       }
@@ -334,7 +334,7 @@ void MTSenderActor_doSendWithJavaUtilList_(MTSenderActor *self, id<JavaUtilList>
 }
 
 
-#line 159
+#line 160
 void MTSenderActor_doSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage *message) {
   if ([((JavaUtilHashSet *) nil_chk(self->confirm_)) size] > 0) {
     JavaUtilArrayList *mtpMessages = new_JavaUtilArrayList_init();
@@ -343,13 +343,13 @@ void MTSenderActor_doSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage
   }
   else {
     
-#line 165
+#line 166
     MTSenderActor_performSendWithMTProtoMessage_(self, message);
   }
 }
 
 
-#line 169
+#line 170
 void MTSenderActor_performSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMessage *message) {
   IOSByteArray *data = [((MTProtoMessage *) nil_chk(message)) toByteArray];
   [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_OutMessage_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)];
@@ -358,11 +358,11 @@ void MTSenderActor_performSendWithMTProtoMessage_(MTSenderActor *self, MTProtoMe
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor)
 
 
-#line 174
+#line 175
 @implementation MTSenderActor_SendMessage
 
 
-#line 178
+#line 179
 - (instancetype)initWithLong:(jlong)rid
                withByteArray:(IOSByteArray *)message {
   MTSenderActor_SendMessage_initWithLong_withByteArray_(self, rid, message);
@@ -372,17 +372,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor)
 @end
 
 
-#line 178
+#line 179
 void MTSenderActor_SendMessage_initWithLong_withByteArray_(MTSenderActor_SendMessage *self, jlong rid, IOSByteArray *message) {
   (void) NSObject_init(self);
   
-#line 179
+#line 180
   self->mid_ = rid;
   self->message_ = message;
 }
 
 
-#line 178
+#line 179
 MTSenderActor_SendMessage *new_MTSenderActor_SendMessage_initWithLong_withByteArray_(jlong rid, IOSByteArray *message) {
   MTSenderActor_SendMessage *self = [MTSenderActor_SendMessage alloc];
   MTSenderActor_SendMessage_initWithLong_withByteArray_(self, rid, message);
@@ -392,11 +392,11 @@ MTSenderActor_SendMessage *new_MTSenderActor_SendMessage_initWithLong_withByteAr
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_SendMessage)
 
 
-#line 184
+#line 185
 @implementation MTSenderActor_ForgetMessage
 
 
-#line 187
+#line 188
 - (instancetype)initWithLong:(jlong)rid {
   MTSenderActor_ForgetMessage_initWithLong_(self, rid);
   return self;
@@ -405,16 +405,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_SendMessage)
 @end
 
 
-#line 187
+#line 188
 void MTSenderActor_ForgetMessage_initWithLong_(MTSenderActor_ForgetMessage *self, jlong rid) {
   (void) NSObject_init(self);
   
-#line 188
+#line 189
   self->mid_ = rid;
 }
 
 
-#line 187
+#line 188
 MTSenderActor_ForgetMessage *new_MTSenderActor_ForgetMessage_initWithLong_(jlong rid) {
   MTSenderActor_ForgetMessage *self = [MTSenderActor_ForgetMessage alloc];
   MTSenderActor_ForgetMessage_initWithLong_(self, rid);
@@ -424,11 +424,11 @@ MTSenderActor_ForgetMessage *new_MTSenderActor_ForgetMessage_initWithLong_(jlong
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ForgetMessage)
 
 
-#line 192
+#line 193
 @implementation MTSenderActor_ConfirmMessage
 
 
-#line 195
+#line 196
 - (instancetype)initWithLong:(jlong)rid {
   MTSenderActor_ConfirmMessage_initWithLong_(self, rid);
   return self;
@@ -437,16 +437,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ForgetMessage)
 @end
 
 
-#line 195
+#line 196
 void MTSenderActor_ConfirmMessage_initWithLong_(MTSenderActor_ConfirmMessage *self, jlong rid) {
   (void) NSObject_init(self);
   
-#line 196
+#line 197
   self->mid_ = rid;
 }
 
 
-#line 195
+#line 196
 MTSenderActor_ConfirmMessage *new_MTSenderActor_ConfirmMessage_initWithLong_(jlong rid) {
   MTSenderActor_ConfirmMessage *self = [MTSenderActor_ConfirmMessage alloc];
   MTSenderActor_ConfirmMessage_initWithLong_(self, rid);
@@ -456,7 +456,7 @@ MTSenderActor_ConfirmMessage *new_MTSenderActor_ConfirmMessage_initWithLong_(jlo
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConfirmMessage)
 
 
-#line 200
+#line 201
 @implementation MTSenderActor_ConnectionCreated
 
 - (instancetype)init {
@@ -479,7 +479,7 @@ MTSenderActor_ConnectionCreated *new_MTSenderActor_ConnectionCreated_init() {
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConnectionCreated)
 
 
-#line 204
+#line 205
 @implementation MTSenderActor_NewSession
 
 - (instancetype)init {
@@ -502,7 +502,7 @@ MTSenderActor_NewSession *new_MTSenderActor_NewSession_init() {
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_NewSession)
 
 
-#line 208
+#line 209
 @implementation MTSenderActor_ForceAck
 
 - (instancetype)init {
@@ -527,7 +527,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ForceAck)
 @implementation MTSenderActor_$1
 
 
-#line 31
+#line 32
 - (MTSenderActor *)create {
   return new_MTSenderActor_initWithMTMTProto_(val$proto_);
 }

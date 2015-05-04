@@ -32,7 +32,7 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDeletions_, JavaUtilHashMap *)
 
 
-#line 17
+#line 18
 @implementation ImActorModelModulesMessagesEntityDeleteStorage
 
 + (ImActorModelModulesMessagesEntityDeleteStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -40,13 +40,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 }
 
 
-#line 25
+#line 26
 - (JavaUtilHashMap *)getPendingDeletions {
   return pendingDeletions_;
 }
 
 
-#line 30
+#line 31
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [((JavaUtilHashMap *) nil_chk(pendingDeletions_)) clear];
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
@@ -60,7 +60,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 }
 
 
-#line 43
+#line 44
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:new_JavaUtilArrayList_initWithJavaUtilCollection_([((JavaUtilHashMap *) nil_chk(pendingDeletions_)) values])];
 }
@@ -73,11 +73,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDeleteStorage, pendingDelet
 @end
 
 
-#line 19
+#line 20
 ImActorModelModulesMessagesEntityDeleteStorage *ImActorModelModulesMessagesEntityDeleteStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityDeleteStorage_initialize();
   
-#line 20
+#line 21
   return ((ImActorModelModulesMessagesEntityDeleteStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityDeleteStorage_init(), data));
 }
 

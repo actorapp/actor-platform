@@ -12,25 +12,25 @@
 #include "java/lang/Throwable.h"
 
 
-#line 6
+#line 7
 @implementation BSUnknownFieldException
 
 
-#line 7
+#line 8
 - (instancetype)init {
   BSUnknownFieldException_init(self);
   return self;
 }
 
 
-#line 10
+#line 11
 - (instancetype)initWithNSString:(NSString *)message {
   BSUnknownFieldException_initWithNSString_(self, message);
   return self;
 }
 
 
-#line 14
+#line 15
 - (instancetype)initWithNSString:(NSString *)message
            withJavaLangThrowable:(JavaLangThrowable *)cause {
   BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(self, message, cause);
@@ -38,7 +38,7 @@
 }
 
 
-#line 18
+#line 19
 - (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause {
   BSUnknownFieldException_initWithJavaLangThrowable_(self, cause);
   return self;
@@ -47,13 +47,13 @@
 @end
 
 
-#line 7
+#line 8
 void BSUnknownFieldException_init(BSUnknownFieldException *self) {
   (void) JavaLangRuntimeException_init(self);
 }
 
 
-#line 7
+#line 8
 BSUnknownFieldException *new_BSUnknownFieldException_init() {
   BSUnknownFieldException *self = [BSUnknownFieldException alloc];
   BSUnknownFieldException_init(self);
@@ -61,13 +61,13 @@ BSUnknownFieldException *new_BSUnknownFieldException_init() {
 }
 
 
-#line 10
+#line 11
 void BSUnknownFieldException_initWithNSString_(BSUnknownFieldException *self, NSString *message) {
   (void) JavaLangRuntimeException_initWithNSString_(self, message);
 }
 
 
-#line 10
+#line 11
 BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_(NSString *message) {
   BSUnknownFieldException *self = [BSUnknownFieldException alloc];
   BSUnknownFieldException_initWithNSString_(self, message);
@@ -75,13 +75,13 @@ BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_(NSString 
 }
 
 
-#line 14
+#line 15
 void BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(BSUnknownFieldException *self, NSString *message, JavaLangThrowable *cause) {
   (void) JavaLangRuntimeException_initWithNSString_withJavaLangThrowable_(self, message, cause);
 }
 
 
-#line 14
+#line 15
 BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(NSString *message, JavaLangThrowable *cause) {
   BSUnknownFieldException *self = [BSUnknownFieldException alloc];
   BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(self, message, cause);
@@ -89,13 +89,13 @@ BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_withJavaLa
 }
 
 
-#line 18
+#line 19
 void BSUnknownFieldException_initWithJavaLangThrowable_(BSUnknownFieldException *self, JavaLangThrowable *cause) {
   (void) JavaLangRuntimeException_initWithJavaLangThrowable_(self, cause);
 }
 
 
-#line 18
+#line 19
 BSUnknownFieldException *new_BSUnknownFieldException_initWithJavaLangThrowable_(JavaLangThrowable *cause) {
   BSUnknownFieldException *self = [BSUnknownFieldException alloc];
   BSUnknownFieldException_initWithJavaLangThrowable_(self, cause);

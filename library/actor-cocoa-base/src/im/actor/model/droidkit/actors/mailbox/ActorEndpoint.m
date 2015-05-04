@@ -26,11 +26,11 @@ J2OBJC_FIELD_SETTER(DKActorEndpoint, mailbox_, DKMailbox *)
 J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
 
 
-#line 8
+#line 9
 @implementation DKActorEndpoint
 
 
-#line 14
+#line 15
 - (instancetype)initWithNSString:(NSString *)path {
   DKActorEndpoint_initWithNSString_(self, path);
   return self;
@@ -62,17 +62,17 @@ J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
 @end
 
 
-#line 14
+#line 15
 void DKActorEndpoint_initWithNSString_(DKActorEndpoint *self, NSString *path) {
   (void) NSObject_init(self);
   
-#line 15
+#line 16
   self->path_ = path;
   self->isDisconnected__ = NO;
 }
 
 
-#line 14
+#line 15
 DKActorEndpoint *new_DKActorEndpoint_initWithNSString_(NSString *path) {
   DKActorEndpoint *self = [DKActorEndpoint alloc];
   DKActorEndpoint_initWithNSString_(self, path);
