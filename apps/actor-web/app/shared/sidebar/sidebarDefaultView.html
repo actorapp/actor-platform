@@ -1,12 +1,12 @@
 <md-toolbar>
   <div class="md-toolbar-tools">
     <div class="user" layout="row">
-      <div class="user__avatar avatar avatar--small avatar--{{::sidebar.user.placeholder}}">
-          <img ng-src="{{ ::sidebar.user.avatar }}" alt="{{ ::sidebar.user.title }}" ng-if="::sidebar.user.avatar" />
-          <span ng-bind="::sidebar.user.name|limitTo:1"></span>
+      <div class="user__avatar avatar avatar--small avatar--{{::main.user.placeholder}}">
+          <img ng-src="{{ ::main.user.avatar }}" alt="{{ ::main.user.title }}" ng-if="::main.user.avatar" />
+          <span ng-bind="::main.user.name|limitTo:1"></span>
       </div>
       <div class="user__body" flex>
-        <p class="user__name user__name--single">{{ sidebar.user.name }}</p>
+        <p class="user__name user__name--single">{{ main.user.name }}</p>
         <!-- <a class="user__profile-link" href="">My profile</a> -->
       </div>
     </div>
