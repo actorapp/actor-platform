@@ -994,6 +994,74 @@ public class Messenger {
         modules.getAnalytics().trackCodeRequest();
     }
 
+    public void trackAuthCodeType(String newValue) {
+        modules.getAnalytics().trackAuthCodeType(newValue);
+    }
+
+    public void trackBackPressed() {
+        modules.getAnalytics().trackBackPressed();
+    }
+
+    public void trackUpPressed() {
+        modules.getAnalytics().trackUpPressed();
+    }
+
+    public void trackAuthCodeWrongNumber() {
+        modules.getAnalytics().trackAuthCodeWrongNumber();
+    }
+
+    public void trackAuthCodeWrongNumberCancel() {
+        modules.getAnalytics().trackAuthCodeWrongNumberCancel();
+    }
+
+    public void trackAuthCodeWrongNumberChange() {
+        modules.getAnalytics().trackAuthCodeWrongNumberChange();
+    }
+
+    public void trackAuthCodeOpen() {
+        modules.getAnalytics().trackAuthCodeOpen();
+    }
+
+    public void trackAuthCodeClosed() {
+        modules.getAnalytics().trackAuthCodeClosed();
+    }
+
+    // Auth signup
+
+    public void trackAuthSignupOpen() {
+        modules.getAnalytics().trackAuthSignupOpen();
+    }
+
+    public void trackAuthSignupClosed() {
+        modules.getAnalytics().trackAuthSignupClosed();
+    }
+
+    public void trackAuthSignupClosedNameType(String newValue) {
+        modules.getAnalytics().trackAuthSignupClosedNameType(newValue);
+    }
+
+    public void trackAuthSignupPressedAvatar() {
+        modules.getAnalytics().trackAuthSignupPressedAvatar();
+    }
+
+    public void trackAuthSignupAvatarPicked() {
+        modules.getAnalytics().trackAuthSignupAvatarPicked();
+    }
+
+    public void trackAuthSignupAvatarDeleted() {
+        modules.getAnalytics().trackAuthSignupAvatarDeleted();
+    }
+
+    public void trackAuthSignupAvatarCanelled() {
+        modules.getAnalytics().trackAuthSignupAvatarCanelled();
+    }
+
+    // Auth success
+
+    public void trackAuthSuccess() {
+        modules.getAnalytics().trackAuthSuccess();
+    }
+
     /**
      * Track sync action error
      *
