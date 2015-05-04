@@ -32,9 +32,9 @@ gulp.task 'sass', ->
     .pipe connect.reload()
 
 gulp.task 'html', ->
-  gulp.src ['*.html']
-    .pipe gulp.dest './dist/'
-    .pipe connect.reload()
+#  gulp.src ['*.html']
+#    .pipe gulp.dest './dist/'
+#    .pipe connect.reload()
   gulp.src ['./app/**/*.html']
     .pipe gulp.dest './dist/app/'
     .pipe connect.reload()
@@ -57,8 +57,9 @@ gulp.task 'usemin', ->
       js: [uglify()]
       css: [autoprefixer(), minifycss()]
     .pipe gulp.dest './dist/'
+    .pipe connect.reload()
 
-gulp.task 'server', ->
+gulp.task 'server', ['usemin'], ->
   connect.server
     port: 3000
     root: 'dist'
