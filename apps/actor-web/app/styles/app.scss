@@ -1,7 +1,7 @@
 @charset 'UTF-8';
 @import url(http://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin,cyrillic);
 @import 'variables';
-@import '../../bower_components/normalize.css/normalize.css';
+
 html {
   background-color: $bodyColor;
   background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
