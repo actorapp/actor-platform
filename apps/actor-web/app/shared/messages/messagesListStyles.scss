@@ -4,21 +4,6 @@
     &__item {
       &__avatar {
         margin: 16px 16px 16px 0;
-        .md-avatar,
-        .no-avatar {
-          line-height: 0;
-          overflow: hidden;
-          margin: 0;
-          width: 32px;
-          height: 32px;
-          border-radius: 100%;
-        }
-        .no-avatar {
-          span {
-            font-size: 14px;
-            line-height: 32px;
-          }
-        }
       }
       &__body {
         margin: 12px 0 8px;
@@ -44,6 +29,10 @@
           word-wrap: break-word;
           &.unsupported {
             color: red;
+          }
+          &.service {
+            text-align: center;
+            color: rgba(0,0,0,.2);
           }
         }
       }
