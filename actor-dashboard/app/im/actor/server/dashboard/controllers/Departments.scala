@@ -8,8 +8,8 @@ import play.api.mvc.{ BodyParsers, Controller }
 import slick.dbio.DBIO
 
 import im.actor.server.dashboard.controllers.utils.DepartmentUtils._
-import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db }
 import im.actor.server.dashboard.controllers.utils.json.DepartmentsJsonImplicits._
+import im.actor.server.dashboard.controllers.utils.{ AuthAction, Db }
 import im.actor.server.{ models, persist }
 
 class Departments extends Controller {
@@ -32,13 +32,14 @@ class Departments extends Controller {
   }
 
   def create = AuthAction.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[models.Department].map { department ⇒
-      db.run {
+    request.body.validate[models.Department].fold(
+      errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
+      department ⇒ db.run {
         for {
           _ ← persist.Department.create(department)
         } yield Created(Json.toJson(Map("id" → department.id)))
       }
-    } getOrElse Future(BadRequest)
+    )
   }
 
   def get(struct: String) = AuthAction.async { request ⇒
@@ -48,15 +49,14 @@ class Departments extends Controller {
   }
 
   def update(struct: String) = AuthAction.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[Option[String]].map { optName ⇒
-      db.run {
+    request.body.validate[DepartmentUpdate].fold(
+      errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
+      update ⇒ db.run {
         for {
-          _ ← optName.map {
-            persist.Department.setName(struct, _)
-          } getOrElse DBIO.successful(Ok)
+          _ ← persist.Department.setName(struct, update.title)
         } yield Accepted
       }
-    } getOrElse Future(BadRequest)
+    )
   }
 
   def delete(struct: String) = AuthAction.async { _ ⇒

@@ -32,7 +32,15 @@ class UsersSpec extends BasicDashboardSpec {
 
   "update user" should "change name to one given in request body" in s.updateUserName()
 
+  "update user" should "not update user when request with invalid json body comes" in s.updateUserInvalidJson()
+
   "create user" should "create new user with given name and phone" in s.createUser()
+
+  "create user" should "not create user when request with invalid json body comes" in s.createUserInvalidJson()
+
+  "create user" should "not create user with invalid phone" in s.createUserInvalidPhone()
+
+  "create user" should "not create user when phone number duplicates" in s.createUserDuplicateNumber()
 
   val rnd = ThreadLocalRandom.current()
 
@@ -45,6 +53,7 @@ class UsersSpec extends BasicDashboardSpec {
     val token = "secret"
 
     def authorized(method: String) = FakeRequest(method, s"/users?auth-token=$token")
+
     val authorizedGET = authorized(GET)
     val authorizedDELETE = authorized(DELETE)
     val authorizedPUT = authorized(PUT)
@@ -148,6 +157,29 @@ class UsersSpec extends BasicDashboardSpec {
       }
     }
 
+    def updateUserInvalidJson() = {
+      val user = genUser()
+      whenReady(database.run(persist.User.create(user))) { _ ⇒
+
+        //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+        val update = authorizedPUT.
+          withHeaders(
+            HeaderNames.CONTENT_TYPE → "application/json",
+            HeaderNames.ACCEPT_LANGUAGE → "RU"
+          )
+        val result = new TestController().update(user.id)(update).
+          feed(Input.El(Json.toJson(Map("nameZZZZ" → "George Bush")).toString().getBytes)).
+          flatMap(_.run)
+
+        status(result) shouldEqual 406
+        whenReady(database.run(persist.User.find(user.id).headOption)) { optUser ⇒
+          optUser.map {
+            _.name shouldEqual user.name
+          } getOrElse fail
+        }
+      }
+    }
+
     def createUser() = {
       val user = genUser()
       val phone = genPhone(user.id, 75552223312L)
@@ -188,6 +220,55 @@ class UsersSpec extends BasicDashboardSpec {
           }
         }
       }
+    }
+
+    def createUserInvalidJson() = {
+      val user = genUser()
+      val phone = genPhone(user.id, 75552223312L)
+      val dept = "1.1"
+
+      //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+      val request = authorizedPOST.
+        withHeaders(
+          HeaderNames.CONTENT_TYPE → "application/json",
+          HeaderNames.ACCEPT_LANGUAGE → "RU"
+        )
+      val invalidBody = Json.toJson(Map("name" → user.name, "phoneZZ" → phone.number.toString, "dept" → dept)).toString()
+      val result = new TestController().create()(request).feed(Input.El(invalidBody.getBytes)).flatMap(_.run)
+      status(result) shouldEqual 406
+    }
+
+    def createUserInvalidPhone() = {
+      val user = genUser()
+      val phone = genPhone(user.id, 1)
+      val dept = "1.1"
+
+      //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+      val request = authorizedPOST.
+        withHeaders(
+          HeaderNames.CONTENT_TYPE → "application/json",
+          HeaderNames.ACCEPT_LANGUAGE → "RU"
+        )
+      val invalidBody = Json.toJson(Map("name" → user.name, "phone" → phone.number.toString, "dept" → dept)).toString()
+      val result = new TestController().create()(request).feed(Input.El(invalidBody.getBytes)).flatMap(_.run)
+      status(result) shouldEqual 406
+    }
+
+    def createUserDuplicateNumber() = {
+      val user = genUser()
+      val phone = genPhone(user.id, 75552223312L)
+      val dept = "1.1"
+
+      //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+      val request = authorizedPOST.
+        withHeaders(
+          HeaderNames.CONTENT_TYPE → "application/json",
+          HeaderNames.ACCEPT_LANGUAGE → "RU"
+        )
+      val invalidBody = Json.toJson(Map("name" → user.name, "phone" → phone.number.toString, "dept" → dept)).toString()
+      val result = new TestController().create()(request).feed(Input.El(invalidBody.getBytes)).flatMap(_.run)
+      status(result) shouldEqual 406
+      (contentAsJson(result) \ "message").as[String] shouldBe s"User with phone ${phone.number} already exists"
     }
   }
 

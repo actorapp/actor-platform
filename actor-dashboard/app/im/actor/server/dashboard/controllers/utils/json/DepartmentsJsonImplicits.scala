@@ -6,8 +6,8 @@ import com.github.tminglei.slickpg.LTree
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-import Common._
 import im.actor.server.dashboard.controllers.utils.NestedDept
+import im.actor.server.dashboard.controllers.utils.json.Common._
 import im.actor.server.models
 import im.actor.server.util.IdUtils
 
@@ -31,7 +31,9 @@ object DepartmentsJsonImplicits {
     (JsPath \ "struct").read[String](length)
   )(makeDepartment _)
 
-  implicit val deptUpdateReads: Reads[Option[String]] = (JsPath \ "title").readNullable[String](length)
+  case class DepartmentUpdate(title: String)
+
+  implicit val deptUpdateReads: Reads[DepartmentUpdate] = (JsPath \ "title").read[String](length).map { DepartmentUpdate }
 
   private def makeDepartment(name: String, struct: String): models.Department = {
     val rnd = ThreadLocalRandom.current()

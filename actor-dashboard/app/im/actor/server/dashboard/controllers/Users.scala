@@ -30,34 +30,39 @@ class Users extends Controller {
   }
 
   def create = AuthAction.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[Lang2CompleteUser].map { userAndPhone ⇒
-      db.run {
-        userAndPhone(request.acceptLanguages.headOption) match {
-          case Some((user, struct, phone)) ⇒
+    request.body.validate[CompleteUser](userReads(request.acceptLanguages.headOption)).fold(
+      errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
+      completeUser ⇒ db.run {
+        for {
+          dept ← persist.Department.find(completeUser.struct).headOption
+          result ← dept.map { d ⇒
             for {
-              dept ← persist.Department.find(struct).headOption
-              result ← dept.map { d ⇒
+              optPhone ← persist.UserPhone.findByPhoneNumber(completeUser.phone.number).headOption
+              result ← optPhone.map { phone ⇒
+                DBIO.successful(
+                  NotAcceptable(Json.toJson(Map("message" → s"User with phone ${phone.number} already exists")))
+                )
+              } getOrElse {
                 for {
-                  _ ← persist.User.create(user)
-                  _ ← persist.UserPhone.create(phone)
-                  _ ← persist.UserDepartment.create(user.id, d.id)
-                } yield Created(Json.toJson(Map("id" → user.id)))
-              } getOrElse DBIO.successful(BadRequest(Json.toJson(Map("message" → "No user was created"))))
+                  _ ← persist.User.create(completeUser.user)
+                  _ ← persist.UserPhone.create(completeUser.phone)
+                  _ ← persist.UserDepartment.create(completeUser.user.id, d.id)
+                } yield Created(Json.toJson(Map("id" → completeUser.user.id)))
+              }
             } yield result
-          case _ ⇒ DBIO.successful(BadRequest(Json.toJson(Map("message" → "No name and phone provided"))))
-        }
+          } getOrElse DBIO.successful(NotAcceptable(Json.toJson(Map("message" → "User was not created because no such department exist"))))
+        } yield result
       }
-    } getOrElse Future(BadRequest)
+    )
   }
 
   def update(id: Int) = AuthAction.async(BodyParsers.parse.json) { request ⇒
-    request.body.validate[Option[String]].map { optName ⇒
-      db.run {
-        for {
-          _ ← optName.map { persist.User.setName(id, _) } getOrElse DBIO.successful(Ok)
-        } yield Accepted
+    request.body.validate[UserUpdate].fold(
+      errors ⇒ Future.successful(NotAcceptable(Json.toJson(JsError.toFlatJson(errors)))),
+      update ⇒ db.run {
+        for (_ ← persist.User.setName(id, update.name)) yield Accepted
       }
-    } getOrElse Future(BadRequest)
+    )
   }
 
   def delete(id: Int) = AuthAction.async { request ⇒
