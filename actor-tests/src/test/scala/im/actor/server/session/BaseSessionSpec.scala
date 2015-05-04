@@ -24,11 +24,11 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
-import im.actor.server.{ SqlSpecHelpers, persist }
+import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
 import im.actor.util.testing._
 
 abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.createSystem() })
-  extends ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
+  extends ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers with KafkaSpec {
 
   import SessionMessage._
 

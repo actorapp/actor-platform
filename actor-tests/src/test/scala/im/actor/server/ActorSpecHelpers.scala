@@ -2,11 +2,11 @@ package im.actor.server.api
 
 import akka.actor.ActorSystem
 import com.google.android.gcm.server.Sender
-import com.relayrides.pushy.apns.{ PushManager, ApnsEnvironment, PushManagerConfiguration }
-import com.relayrides.pushy.apns.util.{ SimpleApnsPushNotification, SSLContextUtil }
+import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
+import com.relayrides.pushy.apns.{ ApnsEnvironment, PushManager, PushManagerConfiguration }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
+import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 
 trait ActorSpecHelpers {
   def buildSeqUpdManagerRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = {
