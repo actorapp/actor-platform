@@ -113,6 +113,80 @@ public class Analytics extends BaseModule {
         track("Auth: Code request", "Phone", phone + "");
     }
 
+    // Auth code
+
+    public void trackAuthCodeOpen() {
+        track("Auth: Code Opened");
+    }
+
+    public void trackAuthCodeClosed() {
+        track("Auth: Code Closed");
+    }
+
+    public void trackAuthCodeType(String newValue) {
+        track("Auth: Code Typed: " + newValue);
+    }
+
+    public void trackAuthCodeWrongNumber() {
+        track("Auth: Wrong number pressed");
+    }
+
+    public void trackAuthCodeWrongNumberCancel() {
+        track("Auth: Wrong number cancel");
+    }
+
+    public void trackAuthCodeWrongNumberChange() {
+        track("Auth: Wrong number change number");
+    }
+
+    // Auth signup
+
+    public void trackAuthSignupOpen() {
+        track("Auth: Signup Opened");
+    }
+
+    public void trackAuthSignupClosed() {
+        track("Auth: Signup Closed");
+    }
+
+    public void trackAuthSignupClosedNameType(String newValue) {
+        track("Auth: Name Typed: " + newValue);
+    }
+
+    public void trackAuthSignupPressedAvatar() {
+        track("Auth: Picking avatar");
+    }
+
+    public void trackAuthSignupAvatarPicked() {
+        track("Auth: Avatar picked");
+    }
+
+    public void trackAuthSignupAvatarDeleted() {
+        track("Auth: Avatar deleted");
+    }
+
+    public void trackAuthSignupAvatarCanelled() {
+        track("Auth: Avatar cancelled");
+    }
+
+    // Auth success
+
+    public void trackAuthSuccess() {
+        track("Auth: Completed");
+    }
+
+    // Activity
+
+    public void trackBackPressed() {
+        track("Auth: Back pressed");
+    }
+
+    public void trackUpPressed() {
+        track("Auth: Up pressed");
+    }
+
+    // Actions
+
     public void trackActionError(String action, String tag, String message) {
         track(action + " error", "Tag", tag, "Message", message);
     }
