@@ -28,6 +28,7 @@ class ActorService
     @isLoggedIn = false
     @$rootScope.$state.go 'login'
     @$rootScope.$broadcast 'actorLoggedOut'
+    location.reload()
   setCurrentPeer: (peer) ->
     console.log '[AW]ActorService setCurrentPeer'
     console.log '[AW]ActorService setCurrentPeer: peer:', peer
@@ -43,14 +44,16 @@ class ActorService
     @messenger.bindDialogs (dialogs) ->
       console.log '[AW]ActorService bindDialogs: dialogs:', dialogs
       callback dialogs
-  bindGroup: (peer) ->
+  bindGroup: (id, callback) ->
     console.log '[AW]ActorService bindGroup'
-    console.log '[AW]ActorService bindGroup: peer:', peer
+    console.log '[AW]ActorService bindGroup: id:', id
+    @messenger.bindGroup id, callback
   bindTyping: ->
     console.log '[AW]ActorService bindTyping'
-  bindUser: (peer) ->
+  bindUser: (id, callback) ->
     console.log '[AW]ActorService bindUser'
-    console.log '[AW]ActorService bindUser: peer:', peer
+    console.log '[AW]ActorService bindUser: id:', id
+    @messenger.bindUser id, callback
 
   unbindChat: (peer, callback) ->
     console.log '[AW]ActorService unbindChat'
@@ -58,19 +61,24 @@ class ActorService
     @messenger.unbindChat peer, callback
   unbindDialogs: ->
     console.log '[AW]ActorService unbindDialogs'
-  unbindGroup: ->
+  unbindGroup: (peer, callback) ->
     console.log '[AW]ActorService unbindGroup'
+    console.log '[AW]ActorService unbindGroup: peer:', peer
+    @messenger.unbindGroup peer, callback
   unbindTyping: ->
     console.log '[AW]ActorService unbindTyping'
-  unbindUser: ->
+  unbindUser: (peer, callback) ->
     console.log '[AW]ActorService unbindUser'
+    console.log '[AW]ActorService unbindUser: peer:', peer
+    @messenger.unbindUser peer, callback
 
   getAuthPhone: ->
     console.log '[AW]ActorService getAuthPhone'
   getAuthState: ->
     console.log '[AW]ActorService getAuthState'
-  getGroup: ->
+  getGroup: (uid) ->
     console.log '[AW]ActorService getGroup'
+    @messenger.getGroup uid
   getTyping: ->
     console.log '[AW]ActorService getTyping'
   getUid: ->
@@ -120,6 +128,8 @@ class ActorService
       console.log '[AW]ActorService sendCode: error: state:', state
 
 
+  sendFile: ->
+    console.log '[AW]ActorService sendFile'
   sendMessage: (peer, message) ->
     console.log '[AW]ActorService sendMessage'
     console.log '[AW]ActorService sendMessage: message:', message
@@ -128,9 +138,12 @@ class ActorService
       console.log '[AW]ActorService sendMessage: message:', message.length
     # console.log '[AW]ActorService sendMessage: peer:', peer
       @messenger.sendMessage peer, message
-
+  sendPhoto: ->
+    console.log '[AW]ActorService sendPhoto'
 
   # Events
+  onChatEnd: ->
+    console.log '[AW]ActorService onChatEnd'
   onAppHidden: ->
     console.log '[AW]ActorService onAppHidden'
   onAppVisible: ->
@@ -147,8 +160,12 @@ class ActorService
     @$rootScope.$broadcast 'onConversationOpen', peer
   onDialogsClosed: ->
     console.log '[AW]ActorService onDialogsClosed'
+  onDialogsEnd: ->
+    console.log '[AW]ActorService onDialogsEnd'
   onDialogsOpen: ->
     console.log '[AW]ActorService onDialogsOpen'
+  onMessageShown: ->
+    console.log '[AW]ActorService onMessageShown'
   onProfileClosed: ->
     console.log '[AW]ActorService onProfileClosed'
   onProfileOpen: ->
