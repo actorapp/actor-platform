@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.MainActivity;
@@ -30,6 +31,20 @@ public class AuthActivity extends BaseFragmentActivity {
         if (savedInstanceState == null) {
             updateState();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        messenger().trackBackPressed();
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            messenger().trackUpPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -61,6 +76,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 showFragment(new SignUpFragment(), false, false);
                 break;
             case LOGGED_IN:
+                messenger().trackAuthSuccess();
                 finish();
                 startActivity(new Intent(this, MainActivity.class));
                 break;
