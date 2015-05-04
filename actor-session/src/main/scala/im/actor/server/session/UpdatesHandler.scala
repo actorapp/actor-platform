@@ -7,24 +7,26 @@ import akka.actor.{ ActorLogging, Props }
 import akka.stream.actor._
 
 import im.actor.server.mtproto.protocol.{ ProtoMessage, UpdateBox }
-import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push._
 import im.actor.server.session.SessionMessage._
 
 private[session] object UpdatesHandler {
   def props(authId: Long)(
     implicit
-    seqUpdManagerRegion:   SeqUpdatesManagerRegion,
-    weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-    presenceManagerRegion: PresenceManagerRegion
-  ): Props = Props(classOf[UpdatesHandler], authId, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion)
+    seqUpdManagerRegion:        SeqUpdatesManagerRegion,
+    weakUpdManagerRegion:       WeakUpdatesManagerRegion,
+    presenceManagerRegion:      PresenceManagerRegion,
+    groupPresenceManagerRegion: GroupPresenceManagerRegion
+  ): Props = Props(classOf[UpdatesHandler], authId, seqUpdManagerRegion, weakUpdManagerRegion, presenceManagerRegion, groupPresenceManagerRegion)
 }
 
 private[session] class UpdatesHandler(authId: Long)(
   implicit
-  seqUpdManagerRegion:   SeqUpdatesManagerRegion,
-  weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-  presenceManagerRegion: PresenceManagerRegion
+  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
+  weakUpdManagerRegion:       WeakUpdatesManagerRegion,
+  presenceManagerRegion:      PresenceManagerRegion,
+  groupPresenceManagerRegion: GroupPresenceManagerRegion
 ) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -46,10 +48,10 @@ private[session] class UpdatesHandler(authId: Long)(
           updatesConsumer ! SubscribeToUserPresences(userIds)
         case SubscribeFromOnline(userIds) ⇒
           updatesConsumer ! UnsubscribeFromUserPresences(userIds)
-        case SubscribeToGroupOnline(groupIds)   ⇒
-        // FIXME: implement
+        case SubscribeToGroupOnline(groupIds) ⇒
+          updatesConsumer ! SubscribeToGroupPresences(groupIds)
         case SubscribeFromGroupOnline(groupIds) ⇒
-        // FIXME: implement
+          updatesConsumer ! UnsubscribeFromGroupPresences(groupIds)
       }
   }
 

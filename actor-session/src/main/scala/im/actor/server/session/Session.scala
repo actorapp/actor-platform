@@ -22,7 +22,7 @@ import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
-import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
 import im.actor.server.{ models, persist }
 
@@ -63,12 +63,13 @@ object Session {
 
   def props(rpcApiService: ActorRef)(
     implicit
-    config:                SessionConfig,
-    seqUpdManagerRegion:   SeqUpdatesManagerRegion,
-    weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-    presenceManagerRegion: PresenceManagerRegion,
-    db:                    Database,
-    materializer:          FlowMaterializer
+    config:                     SessionConfig,
+    seqUpdManagerRegion:        SeqUpdatesManagerRegion,
+    weakUpdManagerRegion:       WeakUpdatesManagerRegion,
+    presenceManagerRegion:      PresenceManagerRegion,
+    groupPresenceManagerRegion: GroupPresenceManagerRegion,
+    db:                         Database,
+    materializer:               FlowMaterializer
   ): Props =
     Props(
       classOf[Session],
@@ -77,6 +78,7 @@ object Session {
       seqUpdManagerRegion,
       weakUpdManagerRegion,
       presenceManagerRegion,
+      groupPresenceManagerRegion,
       db,
       materializer
     )
@@ -84,12 +86,13 @@ object Session {
 
 class Session(rpcApiService: ActorRef)(
   implicit
-  config:                SessionConfig,
-  seqUpdManagerRegion:   SeqUpdatesManagerRegion,
-  weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-  presenceManagerRegion: PresenceManagerRegion,
-  db:                    Database,
-  materializer:          FlowMaterializer
+  config:                     SessionConfig,
+  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
+  weakUpdManagerRegion:       WeakUpdatesManagerRegion,
+  presenceManagerRegion:      PresenceManagerRegion,
+  groupPresenceManagerRegion: GroupPresenceManagerRegion,
+  db:                         Database,
+  materializer:               FlowMaterializer
 )
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 

@@ -12,7 +12,7 @@ import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.models
 import im.actor.server.persist
-import im.actor.server.presences.PresenceManagerRegion
+import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionConfig, SessionRegion, Session }
 import im.actor.server.sms.DummyActivationContext
@@ -83,13 +83,16 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def buildRpcApiService()(implicit system: ActorSystem, db: Database) = system.actorOf(RpcApiService.props())
 
-  def buildSessionRegion(rpcApiService: ActorRef)(implicit
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                                                  weakUpdManagerRegion:  WeakUpdatesManagerRegion,
-                                                  presenceManagerRegion: PresenceManagerRegion,
-                                                  system:                ActorSystem,
-                                                  db:                    Database,
-                                                  flowMaterializer:      FlowMaterializer) = {
+  def buildSessionRegion(rpcApiService: ActorRef)(
+    implicit
+    seqUpdManagerRegion:        SeqUpdatesManagerRegion,
+    weakUpdManagerRegion:       WeakUpdatesManagerRegion,
+    presenceManagerRegion:      PresenceManagerRegion,
+    groupPresenceManagerRegion: GroupPresenceManagerRegion,
+    system:                     ActorSystem,
+    db:                         Database,
+    flowMaterializer:           FlowMaterializer
+  ) = {
     implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(rpcApiService)))
   }

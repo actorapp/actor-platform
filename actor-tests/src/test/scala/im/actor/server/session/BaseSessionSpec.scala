@@ -20,7 +20,7 @@ import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
@@ -39,6 +39,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
   val rpcApiService = system.actorOf(RpcApiService.props())
   implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
