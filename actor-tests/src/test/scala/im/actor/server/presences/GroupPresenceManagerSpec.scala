@@ -10,7 +10,7 @@ import org.scalatest.time.{ Seconds, Span }
 import im.actor.server.SqlSpecHelpers
 import im.actor.util.testing.ActorSuite
 
-class GroupPresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
+class GroupPresenceManagerSpec extends ActorSuite with SqlSpecHelpers with KafkaSpec {
   behavior of "GroupPresenceManager"
 
   it should "subscribe/unsubscribe to group presences" in e1
