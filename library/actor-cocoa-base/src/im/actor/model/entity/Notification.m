@@ -24,11 +24,11 @@ J2OBJC_FIELD_SETTER(AMNotification, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 
 
-#line 6
+#line 7
 @implementation AMNotification
 
 
-#line 11
+#line 12
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
       withAMContentDescription:(AMContentDescription *)contentDescription {
@@ -37,7 +37,7 @@ J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 }
 
 
-#line 17
+#line 18
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -53,18 +53,18 @@ J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 @end
 
 
-#line 11
+#line 12
 void AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMNotification *self, AMPeer *peer, jint sender, AMContentDescription *contentDescription) {
   (void) NSObject_init(self);
   
-#line 12
+#line 13
   self->peer_ = peer;
   self->sender_ = sender;
   self->contentDescription_ = contentDescription;
 }
 
 
-#line 11
+#line 12
 AMNotification *new_AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMPeer *peer, jint sender, AMContentDescription *contentDescription) {
   AMNotification *self = [AMNotification alloc];
   AMNotification_initWithAMPeer_withInt_withAMContentDescription_(self, peer, sender, contentDescription);

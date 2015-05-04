@@ -27,43 +27,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestSearchContacts
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithNSString:(NSString *)request {
   ImActorModelApiRpcRequestSearchContacts_initWithNSString_(self, request);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestSearchContacts_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (NSString *)getRequest {
   return self->request_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->request_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->request_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"rpc SearchContacts{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"request=", self->request_));
@@ -81,7 +81,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
 }
 
 
-#line 63
+#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSearchContacts_HEADER;
 }
@@ -89,25 +89,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestSearchContacts *ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSearchContacts_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestSearchContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSearchContacts_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiRpcRequestSearchContacts_initWithNSString_(ImActorModelApiRpcRequestSearchContacts *self, NSString *request) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 30
+#line 34
   self->request_ = request;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_initWithNSString_(NSString *request) {
   ImActorModelApiRpcRequestSearchContacts *self = [ImActorModelApiRpcRequestSearchContacts alloc];
   ImActorModelApiRpcRequestSearchContacts_initWithNSString_(self, request);
@@ -115,13 +115,13 @@ ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchCont
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiRpcRequestSearchContacts_init(ImActorModelApiRpcRequestSearchContacts *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_init() {
   ImActorModelApiRpcRequestSearchContacts *self = [ImActorModelApiRpcRequestSearchContacts alloc];
   ImActorModelApiRpcRequestSearchContacts_init(self);

@@ -33,17 +33,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, phones_, id<JavaUti
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUtilList>)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestImportContacts
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestImportContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)phones
                     withJavaUtilList:(id<JavaUtilList>)emails {
   ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(self, phones, emails);
@@ -51,14 +51,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestImportContacts_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (id<JavaUtilList>)getPhones {
   return self->phones_;
 }
@@ -68,7 +68,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _phones = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -83,14 +83,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 }
 
 
-#line 62
+#line 66
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->phones_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->emails_];
 }
 
 
-#line 68
+#line 72
 - (NSString *)description {
   NSString *res = @"rpc ImportContacts{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"phones=", [((id<JavaUtilList>) nil_chk(self->phones_)) size]));
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 }
 
 
-#line 77
+#line 81
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestImportContacts_HEADER;
 }
@@ -108,24 +108,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestImportContacts, emails_, id<JavaUti
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestImportContacts *ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestImportContacts_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestImportContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestImportContacts_init(), data));
 }
 
 void ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(ImActorModelApiRpcRequestImportContacts *self, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->phones_ = phones;
   self->emails_ = emails;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestImportContacts *new_ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(id<JavaUtilList> phones, id<JavaUtilList> emails) {
   ImActorModelApiRpcRequestImportContacts *self = [ImActorModelApiRpcRequestImportContacts alloc];
   ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(self, phones, emails);
@@ -133,13 +133,13 @@ ImActorModelApiRpcRequestImportContacts *new_ImActorModelApiRpcRequestImportCont
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestImportContacts_init(ImActorModelApiRpcRequestImportContacts *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestImportContacts *new_ImActorModelApiRpcRequestImportContacts_init() {
   ImActorModelApiRpcRequestImportContacts *self = [ImActorModelApiRpcRequestImportContacts alloc];
   ImActorModelApiRpcRequestImportContacts_init(self);

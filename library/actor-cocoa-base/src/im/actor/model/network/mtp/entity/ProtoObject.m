@@ -18,7 +18,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 8
+#line 12
 @implementation MTProtoObject
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
@@ -27,21 +27,21 @@
 }
 
 
-#line 14
+#line 18
 - (instancetype)init {
   MTProtoObject_init(self);
   return self;
 }
 
 
-#line 22
+#line 26
 - (IOSByteArray *)toByteArray {
   BSDataOutput *outputStream = new_BSDataOutput_init();
   @try {
     [self writeObjectWithBSDataOutput:outputStream];
   }
   @catch (
-#line 26
+#line 30
   JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
   }
@@ -51,16 +51,16 @@
 @end
 
 
-#line 10
+#line 14
 void MTProtoObject_initWithBSDataInput_(MTProtoObject *self, BSDataInput *stream) {
   (void) NSObject_init(self);
   
-#line 11
+#line 15
   (void) [self readObjectWithBSDataInput:stream];
 }
 
 
-#line 14
+#line 18
 void MTProtoObject_init(MTProtoObject *self) {
   (void) NSObject_init(self);
 }

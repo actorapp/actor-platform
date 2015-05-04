@@ -31,17 +31,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, avatar_, ImActorModelA
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcResponseEditAvatar
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcResponseEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                                       withInt:(jint)seq
                                 withByteArray:(IOSByteArray *)state {
@@ -50,14 +50,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcResponseEditAvatar_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (ImActorModelApiAvatar *)getAvatar {
   return self->avatar_;
 }
@@ -71,7 +71,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->avatar_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatar_init()];
   self->seq_ = [values getIntWithInt:2];
@@ -79,7 +79,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->avatar_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -93,7 +93,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 
-#line 74
+#line 78
 - (NSString *)description {
   NSString *res = @"tuple EditAvatar{";
   res = JreStrcat("$C", res, '}');
@@ -101,7 +101,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 
-#line 81
+#line 85
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseEditAvatar_HEADER;
 }
@@ -109,27 +109,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcResponseEditAvatar *ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseEditAvatar_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcResponseEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseEditAvatar_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(ImActorModelApiRpcResponseEditAvatar *self, ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state) {
   (void) ImActorModelNetworkParserResponse_init(self);
   
-#line 32
+#line 36
   self->avatar_ = avatar;
   self->seq_ = seq;
   self->state_ = state;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcResponseEditAvatar *new_ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state) {
   ImActorModelApiRpcResponseEditAvatar *self = [ImActorModelApiRpcResponseEditAvatar alloc];
   ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(self, avatar, seq, state);
@@ -141,7 +141,7 @@ void ImActorModelApiRpcResponseEditAvatar_init(ImActorModelApiRpcResponseEditAva
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcResponseEditAvatar *new_ImActorModelApiRpcResponseEditAvatar_init() {
   ImActorModelApiRpcResponseEditAvatar *self = [ImActorModelApiRpcResponseEditAvatar alloc];
   ImActorModelApiRpcResponseEditAvatar_init(self);

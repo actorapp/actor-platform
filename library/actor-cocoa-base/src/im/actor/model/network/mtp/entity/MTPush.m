@@ -25,42 +25,42 @@
 J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 
 
-#line 8
+#line 12
 @implementation MTMTPush
 
 
-#line 14
+#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTMTPush_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 18
+#line 22
 - (IOSByteArray *)getPayload {
   return payload_;
 }
 
 
-#line 23
+#line 27
 - (jbyte)getHeader {
   return MTMTPush_HEADER;
 }
 
 
-#line 28
+#line 32
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
 
-#line 33
+#line 37
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   payload_ = [((BSDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 
-#line 38
+#line 42
 - (NSString *)description {
   return @"UpdateBox";
 }
@@ -68,13 +68,13 @@ J2OBJC_FIELD_SETTER(MTMTPush, payload_, IOSByteArray *)
 @end
 
 
-#line 14
+#line 18
 void MTMTPush_initWithBSDataInput_(MTMTPush *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 14
+#line 18
 MTMTPush *new_MTMTPush_initWithBSDataInput_(BSDataInput *stream) {
   MTMTPush *self = [MTMTPush alloc];
   MTMTPush_initWithBSDataInput_(self, stream);

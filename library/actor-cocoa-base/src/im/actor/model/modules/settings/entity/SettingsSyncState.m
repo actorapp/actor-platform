@@ -29,7 +29,7 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingActions_, id<JavaUtilList>)
 
 
-#line 15
+#line 16
 @implementation ImActorModelModulesSettingsEntitySettingsSyncState
 
 + (ImActorModelModulesSettingsEntitySettingsSyncState *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -37,20 +37,20 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingA
 }
 
 
-#line 23
+#line 24
 - (instancetype)init {
   ImActorModelModulesSettingsEntitySettingsSyncState_init(self);
   return self;
 }
 
 
-#line 26
+#line 27
 - (id<JavaUtilList>)getPendingActions {
   return pendingActions_;
 }
 
 
-#line 31
+#line 32
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> pending = [((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1];
   for (jint i = 0; i < [((id<JavaUtilList>) nil_chk(pending)) size]; i++) {
@@ -59,7 +59,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingA
 }
 
 
-#line 39
+#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   for (ImActorModelModulesSettingsEntitySettingsSyncAction * __strong action in nil_chk(pendingActions_)) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:action];
@@ -69,23 +69,23 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingA
 @end
 
 
-#line 17
+#line 18
 ImActorModelModulesSettingsEntitySettingsSyncState *ImActorModelModulesSettingsEntitySettingsSyncState_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesSettingsEntitySettingsSyncState_initialize();
   
-#line 18
+#line 19
   return ((ImActorModelModulesSettingsEntitySettingsSyncState *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesSettingsEntitySettingsSyncState_init(), data));
 }
 
 
-#line 23
+#line 24
 void ImActorModelModulesSettingsEntitySettingsSyncState_init(ImActorModelModulesSettingsEntitySettingsSyncState *self) {
   (void) BSBserObject_init(self);
   self->pendingActions_ = new_JavaUtilArrayList_init();
 }
 
 
-#line 23
+#line 24
 ImActorModelModulesSettingsEntitySettingsSyncState *new_ImActorModelModulesSettingsEntitySettingsSyncState_init() {
   ImActorModelModulesSettingsEntitySettingsSyncState *self = [ImActorModelModulesSettingsEntitySettingsSyncState alloc];
   ImActorModelModulesSettingsEntitySettingsSyncState_init(self);

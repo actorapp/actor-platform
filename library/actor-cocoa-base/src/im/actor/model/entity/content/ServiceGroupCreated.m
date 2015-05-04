@@ -34,7 +34,7 @@ __attribute__((unused)) static void AMServiceGroupCreated_init(AMServiceGroupCre
 __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_init() NS_RETURNS_RETAINED;
 
 
-#line 12
+#line 13
 @implementation AMServiceGroupCreated
 
 + (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -42,7 +42,7 @@ __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_
 }
 
 
-#line 20
+#line 21
 - (instancetype)initWithNSString:(NSString *)groupTitle {
   AMServiceGroupCreated_initWithNSString_(self, groupTitle);
   return self;
@@ -54,26 +54,26 @@ __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_
 }
 
 
-#line 29
+#line 30
 - (NSString *)getGroupTitle {
   return groupTitle_;
 }
 
 
-#line 34
+#line 35
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
 }
 
 
-#line 39
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   groupTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
 
-#line 45
+#line 46
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
@@ -82,23 +82,23 @@ __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_
 @end
 
 
-#line 14
+#line 15
 AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupCreated_initialize();
   
-#line 15
+#line 16
   return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupCreated_init(), data));
 }
 
 
-#line 20
+#line 21
 void AMServiceGroupCreated_initWithNSString_(AMServiceGroupCreated *self, NSString *groupTitle) {
   (void) AMServiceContent_initWithNSString_(self, JreStrcat("$$$", @"Group '", groupTitle, @"' created"));
   self->groupTitle_ = groupTitle;
 }
 
 
-#line 20
+#line 21
 AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *groupTitle) {
   AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
   AMServiceGroupCreated_initWithNSString_(self, groupTitle);
@@ -106,13 +106,13 @@ AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *gro
 }
 
 
-#line 25
+#line 26
 void AMServiceGroupCreated_init(AMServiceGroupCreated *self) {
   (void) AMServiceContent_init(self);
 }
 
 
-#line 25
+#line 26
 AMServiceGroupCreated *new_AMServiceGroupCreated_init() {
   AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
   AMServiceGroupCreated_init(self);

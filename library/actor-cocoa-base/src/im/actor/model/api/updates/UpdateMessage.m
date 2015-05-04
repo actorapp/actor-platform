@@ -34,17 +34,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, peer_, ImActorModelApiP
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelApiMessage *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateMessage
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(data);
 }
 
 
-#line 33
+#line 37
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)senderUid
                                    withLong:(jlong)date
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
 }
 
 
-#line 41
+#line 45
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateMessage_init(self);
   return self;
 }
 
 
-#line 45
+#line 49
 - (ImActorModelApiPeer *)getPeer {
   return self->peer_;
 }
@@ -84,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
 }
 
 
-#line 66
+#line 70
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
   self->senderUid_ = [values getIntWithInt:2];
@@ -94,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
 }
 
 
-#line 75
+#line 79
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -107,7 +107,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
     @throw new_JavaIoIOException_init();
   }
   
-#line 87
+#line 91
   [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
 }
 
@@ -123,7 +123,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
 }
 
 
-#line 103
+#line 107
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateMessage_HEADER;
 }
@@ -131,20 +131,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateMessage *ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessage_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessage_init(), data));
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(ImActorModelApiUpdatesUpdateMessage *self, ImActorModelApiPeer *peer, jint senderUid, jlong date, jlong rid, ImActorModelApiMessage *message) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 34
+#line 38
   self->peer_ = peer;
   self->senderUid_ = senderUid;
   self->date_ = date;
@@ -153,7 +153,7 @@ void ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_wit
 }
 
 
-#line 33
+#line 37
 ImActorModelApiUpdatesUpdateMessage *new_ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(ImActorModelApiPeer *peer, jint senderUid, jlong date, jlong rid, ImActorModelApiMessage *message) {
   ImActorModelApiUpdatesUpdateMessage *self = [ImActorModelApiUpdatesUpdateMessage alloc];
   ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(self, peer, senderUid, date, rid, message);
@@ -161,13 +161,13 @@ ImActorModelApiUpdatesUpdateMessage *new_ImActorModelApiUpdatesUpdateMessage_ini
 }
 
 
-#line 41
+#line 45
 void ImActorModelApiUpdatesUpdateMessage_init(ImActorModelApiUpdatesUpdateMessage *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 41
+#line 45
 ImActorModelApiUpdatesUpdateMessage *new_ImActorModelApiUpdatesUpdateMessage_init() {
   ImActorModelApiUpdatesUpdateMessage *self = [ImActorModelApiUpdatesUpdateMessage alloc];
   ImActorModelApiUpdatesUpdateMessage_init(self);

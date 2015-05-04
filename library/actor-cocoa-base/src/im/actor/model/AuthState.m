@@ -21,7 +21,7 @@ J2OBJC_INITIALIZED_DEFN(AMAuthStateEnum)
 AMAuthStateEnum *AMAuthStateEnum_values_[4];
 
 
-#line 6
+#line 10
 @implementation AMAuthStateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name

@@ -30,17 +30,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcResponseSeqDate
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcResponseSeqDate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
                    withLong:(jlong)date {
@@ -49,14 +49,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcResponseSeqDate_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (jint)getSeq {
   return self->seq_;
 }
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 }
 
 
-#line 71
+#line 75
 - (NSString *)description {
   NSString *res = @"response SeqDate{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 }
 
 
-#line 81
+#line 85
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSeqDate_HEADER;
 }
@@ -108,27 +108,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeqDate, state_, IOSByteArray *)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcResponseSeqDate *ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSeqDate_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcResponseSeqDate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSeqDate_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcResponseSeqDate_initWithInt_withByteArray_withLong_(ImActorModelApiRpcResponseSeqDate *self, jint seq, IOSByteArray *state, jlong date) {
   (void) ImActorModelNetworkParserResponse_init(self);
   
-#line 32
+#line 36
   self->seq_ = seq;
   self->state_ = state;
   self->date_ = date;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcResponseSeqDate *new_ImActorModelApiRpcResponseSeqDate_initWithInt_withByteArray_withLong_(jint seq, IOSByteArray *state, jlong date) {
   ImActorModelApiRpcResponseSeqDate *self = [ImActorModelApiRpcResponseSeqDate alloc];
   ImActorModelApiRpcResponseSeqDate_initWithInt_withByteArray_withLong_(self, seq, state, date);
@@ -140,7 +140,7 @@ void ImActorModelApiRpcResponseSeqDate_init(ImActorModelApiRpcResponseSeqDate *s
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcResponseSeqDate *new_ImActorModelApiRpcResponseSeqDate_init() {
   ImActorModelApiRpcResponseSeqDate *self = [ImActorModelApiRpcResponseSeqDate alloc];
   ImActorModelApiRpcResponseSeqDate_init(self);

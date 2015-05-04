@@ -22,43 +22,43 @@
 @end
 
 
-#line 11
+#line 12
 @implementation MTRequestResend
 
 
-#line 17
+#line 18
 - (instancetype)initWithLong:(jlong)messageId {
   MTRequestResend_initWithLong_(self, messageId);
   return self;
 }
 
 
-#line 21
+#line 22
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRequestResend_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 25
+#line 26
 - (jlong)getMessageId {
   return messageId_;
 }
 
 
-#line 30
+#line 31
 - (jbyte)getHeader {
   return MTRequestResend_HEADER;
 }
 
 
-#line 35
+#line 36
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
 }
 
 
-#line 40
+#line 41
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
@@ -66,16 +66,16 @@
 @end
 
 
-#line 17
+#line 18
 void MTRequestResend_initWithLong_(MTRequestResend *self, jlong messageId) {
   (void) MTProtoStruct_init(self);
   
-#line 18
+#line 19
   self->messageId_ = messageId;
 }
 
 
-#line 17
+#line 18
 MTRequestResend *new_MTRequestResend_initWithLong_(jlong messageId) {
   MTRequestResend *self = [MTRequestResend alloc];
   MTRequestResend_initWithLong_(self, messageId);
@@ -83,13 +83,13 @@ MTRequestResend *new_MTRequestResend_initWithLong_(jlong messageId) {
 }
 
 
-#line 21
+#line 22
 void MTRequestResend_initWithBSDataInput_(MTRequestResend *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 21
+#line 22
 MTRequestResend *new_MTRequestResend_initWithBSDataInput_(BSDataInput *stream) {
   MTRequestResend *self = [MTRequestResend alloc];
   MTRequestResend_initWithBSDataInput_(self, stream);

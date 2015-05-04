@@ -29,11 +29,11 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelApiEncryptionTypeEnum)
 ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_values_[4];
 
 
-#line 8
+#line 12
 @implementation ImActorModelApiEncryptionTypeEnum
 
 
-#line 17
+#line 21
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -42,7 +42,7 @@ ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_values_[4];
 }
 
 
-#line 21
+#line 25
 - (jint)getValue {
   return value_;
 }
@@ -83,16 +83,16 @@ ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_valueOfWith
 + (void)initialize {
   if (self == [ImActorModelApiEncryptionTypeEnum class]) {
     ImActorModelApiEncryptionTypeEnum_NONE = new_ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(
-#line 10
+#line 14
     0, @"NONE", 0);
     ImActorModelApiEncryptionTypeEnum_AES = new_ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(
-#line 11
+#line 15
     1, @"AES", 1);
     ImActorModelApiEncryptionTypeEnum_AES_THEN_MAC = new_ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(
-#line 12
+#line 16
     2, @"AES_THEN_MAC", 2);
     ImActorModelApiEncryptionTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(
-#line 13
+#line 17
     -1, @"UNSUPPORTED_VALUE", 3);
     J2OBJC_SET_INITIALIZED(ImActorModelApiEncryptionTypeEnum)
   }
@@ -101,16 +101,16 @@ ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_valueOfWith
 @end
 
 
-#line 17
+#line 21
 void ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiEncryptionTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   
-#line 18
+#line 22
   self->value_ = value;
 }
 
 
-#line 17
+#line 21
 ImActorModelApiEncryptionTypeEnum *new_ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   ImActorModelApiEncryptionTypeEnum *self = [ImActorModelApiEncryptionTypeEnum alloc];
   ImActorModelApiEncryptionTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
@@ -118,27 +118,27 @@ ImActorModelApiEncryptionTypeEnum *new_ImActorModelApiEncryptionTypeEnum_initWit
 }
 
 
-#line 25
+#line 29
 ImActorModelApiEncryptionTypeEnum *ImActorModelApiEncryptionTypeEnum_parseWithInt_(jint value) {
   ImActorModelApiEncryptionTypeEnum_initialize();
   
-#line 26
+#line 30
   switch (value) {
     case 0:
     
-#line 27
+#line 31
     return ImActorModelApiEncryptionTypeEnum_NONE;
     case 1:
     
-#line 28
+#line 32
     return ImActorModelApiEncryptionTypeEnum_AES;
     case 2:
     
-#line 29
+#line 33
     return ImActorModelApiEncryptionTypeEnum_AES_THEN_MAC;
     default:
     
-#line 30
+#line 34
     return ImActorModelApiEncryptionTypeEnum_UNSUPPORTED_VALUE;
   }
 }

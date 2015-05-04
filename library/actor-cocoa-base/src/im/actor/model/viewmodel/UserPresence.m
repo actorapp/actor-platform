@@ -27,18 +27,18 @@ __attribute__((unused)) static void AMUserPresence_StateEnum_initWithNSString_wi
 __attribute__((unused)) static AMUserPresence_StateEnum *new_AMUserPresence_StateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
 
-#line 6
+#line 10
 @implementation AMUserPresence
 
 
-#line 16
+#line 20
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state {
   AMUserPresence_initWithAMUserPresence_StateEnum_(self, state);
   return self;
 }
 
 
-#line 28
+#line 32
 - (instancetype)initWithAMUserPresence_StateEnum:(AMUserPresence_StateEnum *)state
                                         withLong:(jlong)lastSeen {
   AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(self, state, lastSeen);
@@ -46,13 +46,13 @@ __attribute__((unused)) static AMUserPresence_StateEnum *new_AMUserPresence_Stat
 }
 
 
-#line 38
+#line 42
 - (AMUserPresence_StateEnum *)getState {
   return state_;
 }
 
 
-#line 47
+#line 51
 - (jlong)getLastSeen {
   return lastSeen_;
 }
@@ -60,17 +60,17 @@ __attribute__((unused)) static AMUserPresence_StateEnum *new_AMUserPresence_Stat
 @end
 
 
-#line 16
+#line 20
 void AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence *self, AMUserPresence_StateEnum *state) {
   (void) NSObject_init(self);
   
-#line 17
+#line 21
   self->state_ = state;
   self->lastSeen_ = 0;
 }
 
 
-#line 16
+#line 20
 AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum *state) {
   AMUserPresence *self = [AMUserPresence alloc];
   AMUserPresence_initWithAMUserPresence_StateEnum_(self, state);
@@ -78,17 +78,17 @@ AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPrese
 }
 
 
-#line 28
+#line 32
 void AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence *self, AMUserPresence_StateEnum *state, jlong lastSeen) {
   (void) NSObject_init(self);
   
-#line 29
+#line 33
   self->state_ = state;
   self->lastSeen_ = lastSeen;
 }
 
 
-#line 28
+#line 32
 AMUserPresence *new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum *state, jlong lastSeen) {
   AMUserPresence *self = [AMUserPresence alloc];
   AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(self, state, lastSeen);
@@ -102,7 +102,7 @@ J2OBJC_INITIALIZED_DEFN(AMUserPresence_StateEnum)
 AMUserPresence_StateEnum *AMUserPresence_StateEnum_values_[3];
 
 
-#line 51
+#line 55
 @implementation AMUserPresence_StateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name

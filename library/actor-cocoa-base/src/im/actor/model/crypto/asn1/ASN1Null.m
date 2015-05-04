@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 
 
-#line 8
+#line 9
 @implementation BCASN1Null
 
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {

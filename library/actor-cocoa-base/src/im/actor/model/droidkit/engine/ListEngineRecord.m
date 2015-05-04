@@ -24,11 +24,11 @@ J2OBJC_FIELD_SETTER(DKListEngineRecord, query_, NSString *)
 J2OBJC_FIELD_SETTER(DKListEngineRecord, data_, IOSByteArray *)
 
 
-#line 6
+#line 7
 @implementation DKListEngineRecord
 
 
-#line 13
+#line 14
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)order
                 withNSString:(NSString *)query
@@ -38,7 +38,7 @@ J2OBJC_FIELD_SETTER(DKListEngineRecord, data_, IOSByteArray *)
 }
 
 
-#line 20
+#line 21
 - (jlong)getKey {
   return key_;
 }
@@ -58,11 +58,11 @@ J2OBJC_FIELD_SETTER(DKListEngineRecord, data_, IOSByteArray *)
 @end
 
 
-#line 13
+#line 14
 void DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(DKListEngineRecord *self, jlong key, jlong order, NSString *query, IOSByteArray *data) {
   (void) NSObject_init(self);
   
-#line 14
+#line 15
   self->key_ = key;
   self->order_ = order;
   self->query_ = query;
@@ -70,7 +70,7 @@ void DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(DKList
 }
 
 
-#line 13
+#line 14
 DKListEngineRecord *new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(jlong key, jlong order, NSString *query, IOSByteArray *data) {
   DKListEngineRecord *self = [DKListEngineRecord alloc];
   DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(self, key, order, query, data);

@@ -28,11 +28,11 @@
 J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 
 
-#line 12
+#line 16
 @implementation AMActorApi
 
 
-#line 20
+#line 31
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
@@ -42,7 +42,7 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 }
 
 
-#line 25
+#line 42
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback {
   if (request == nil) {
@@ -54,14 +54,14 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
 @end
 
 
-#line 20
+#line 31
 void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
   (void) NSObject_init(self);
   self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider);
 }
 
 
-#line 20
+#line 31
 AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
   AMActorApi *self = [AMActorApi alloc];
   AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, endpoints, keyStorage, callback, networkProvider);

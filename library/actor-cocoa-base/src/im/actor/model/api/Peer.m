@@ -26,11 +26,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiPeer
 
 
-#line 24
+#line 28
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
                                             withInt:(jint)id_ {
   ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(self, type, id_);
@@ -38,14 +38,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 }
 
 
-#line 29
+#line 33
 - (instancetype)init {
   ImActorModelApiPeer_init(self);
   return self;
 }
 
 
-#line 33
+#line 37
 - (ImActorModelApiPeerTypeEnum *)getType {
   return self->type_;
 }
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->type_ = ImActorModelApiPeerTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->id__ = [values getIntWithInt:2];
 }
 
 
-#line 48
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->type_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 }
 
 
-#line 57
+#line 61
 - (NSString *)description {
   NSString *res = @"struct Peer{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"type=", self->type_));
@@ -84,17 +84,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_) {
   (void) BSBserObject_init(self);
   
-#line 25
+#line 29
   self->type_ = type;
   self->id__ = id_;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiPeer *new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum *type, jint id_) {
   ImActorModelApiPeer *self = [ImActorModelApiPeer alloc];
   ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(self, type, id_);
@@ -102,13 +102,13 @@ ImActorModelApiPeer *new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiPeer_init(ImActorModelApiPeer *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 29
+#line 33
 ImActorModelApiPeer *new_ImActorModelApiPeer_init() {
   ImActorModelApiPeer *self = [ImActorModelApiPeer alloc];
   ImActorModelApiPeer_init(self);

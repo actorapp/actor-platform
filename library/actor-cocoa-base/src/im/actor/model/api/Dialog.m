@@ -37,11 +37,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, message_, ImActorModelApiMessage *)
 J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEnum *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiDialog
 
 
-#line 30
+#line 34
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                     withInt:(jint)unreadCount
                                    withLong:(jlong)sortDate
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 }
 
 
-#line 41
+#line 45
 - (instancetype)init {
   ImActorModelApiDialog_init(self);
   return self;
 }
 
 
-#line 45
+#line 49
 - (ImActorModelApiPeer *)getPeer {
   return self->peer_;
 }
@@ -96,7 +96,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 }
 
 
-#line 78
+#line 82
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
   self->unreadCount_ = [values getIntWithInt:3];
@@ -112,7 +112,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 }
 
 
-#line 93
+#line 97
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -127,7 +127,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
     @throw new_JavaIoIOException_init();
   }
   
-#line 107
+#line 111
   [writer writeBytesWithInt:8 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
@@ -150,11 +150,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 @end
 
 
-#line 30
+#line 34
 void ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiDialog *self, ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
   (void) BSBserObject_init(self);
   
-#line 31
+#line 35
   self->peer_ = peer;
   self->unreadCount_ = unreadCount;
   self->sortDate_ = sortDate;
@@ -166,7 +166,7 @@ void ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_
 }
 
 
-#line 30
+#line 34
 ImActorModelApiDialog *new_ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
   ImActorModelApiDialog *self = [ImActorModelApiDialog alloc];
   ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
@@ -174,13 +174,13 @@ ImActorModelApiDialog *new_ImActorModelApiDialog_initWithImActorModelApiPeer_wit
 }
 
 
-#line 41
+#line 45
 void ImActorModelApiDialog_init(ImActorModelApiDialog *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 41
+#line 45
 ImActorModelApiDialog *new_ImActorModelApiDialog_init() {
   ImActorModelApiDialog *self = [ImActorModelApiDialog alloc];
   ImActorModelApiDialog_init(self);
