@@ -24,18 +24,18 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitActorsMessagesPoisonPill)
 ImActorModelDroidkitActorsMessagesPoisonPill *ImActorModelDroidkitActorsMessagesPoisonPill_INSTANCE_;
 
 
-#line 8
+#line 10
 @implementation ImActorModelDroidkitActorsMessagesPoisonPill
 
 
-#line 11
+#line 13
 - (instancetype)init {
   ImActorModelDroidkitActorsMessagesPoisonPill_init(self);
   return self;
 }
 
 
-#line 15
+#line 17
 - (NSString *)description {
   return @"PoisonPill";
 }
@@ -50,13 +50,13 @@ ImActorModelDroidkitActorsMessagesPoisonPill *ImActorModelDroidkitActorsMessages
 @end
 
 
-#line 11
+#line 13
 void ImActorModelDroidkitActorsMessagesPoisonPill_init(ImActorModelDroidkitActorsMessagesPoisonPill *self) {
   (void) NSObject_init(self);
 }
 
 
-#line 11
+#line 13
 ImActorModelDroidkitActorsMessagesPoisonPill *new_ImActorModelDroidkitActorsMessagesPoisonPill_init() {
   ImActorModelDroidkitActorsMessagesPoisonPill *self = [ImActorModelDroidkitActorsMessagesPoisonPill alloc];
   ImActorModelDroidkitActorsMessagesPoisonPill_init(self);

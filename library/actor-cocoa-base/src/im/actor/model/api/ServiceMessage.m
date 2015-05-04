@@ -28,11 +28,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, text_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceEx *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiServiceMessage
 
 
-#line 24
+#line 28
 - (instancetype)initWithNSString:(NSString *)text
     withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext {
   ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(self, text, ext);
@@ -40,14 +40,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 }
 
 
-#line 29
+#line 33
 - (instancetype)init {
   ImActorModelApiServiceMessage_init(self);
   return self;
 }
 
 
-#line 33
+#line 37
 - (jint)getHeader {
   return 2;
 }
@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 }
 
 
-#line 46
+#line 50
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->text_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 }
 
 
-#line 65
+#line 69
 - (NSString *)description {
   NSString *res = @"struct ServiceMessage{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
@@ -94,17 +94,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(ImActorModelApiServiceMessage *self, NSString *text, ImActorModelApiServiceEx *ext) {
   (void) ImActorModelApiMessage_init(self);
   
-#line 25
+#line 29
   self->text_ = text;
   self->ext_ = ext;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(NSString *text, ImActorModelApiServiceEx *ext) {
   ImActorModelApiServiceMessage *self = [ImActorModelApiServiceMessage alloc];
   ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(self, text, ext);
@@ -112,13 +112,13 @@ ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_initWithNSStrin
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiServiceMessage_init(ImActorModelApiServiceMessage *self) {
   (void) ImActorModelApiMessage_init(self);
 }
 
 
-#line 29
+#line 33
 ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_init() {
   ImActorModelApiServiceMessage *self = [ImActorModelApiServiceMessage alloc];
   ImActorModelApiServiceMessage_init(self);

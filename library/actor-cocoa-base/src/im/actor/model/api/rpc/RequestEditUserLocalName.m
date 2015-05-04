@@ -29,17 +29,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestEditUserLocalName
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name {
@@ -48,14 +48,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestEditUserLocalName_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (jint)getUid {
   return self->uid_;
 }
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -77,7 +77,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
@@ -88,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 
-#line 71
+#line 75
 - (NSString *)description {
   NSString *res = @"rpc EditUserLocalName{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -98,7 +98,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 
-#line 80
+#line 84
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditUserLocalName_HEADER;
 }
@@ -106,27 +106,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestEditUserLocalName *ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditUserLocalName_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestEditUserLocalName *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditUserLocalName_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(ImActorModelApiRpcRequestEditUserLocalName *self, jint uid, jlong accessHash, NSString *name) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 32
+#line 36
   self->uid_ = uid;
   self->accessHash_ = accessHash;
   self->name_ = name;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(jint uid, jlong accessHash, NSString *name) {
   ImActorModelApiRpcRequestEditUserLocalName *self = [ImActorModelApiRpcRequestEditUserLocalName alloc];
   ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(self, uid, accessHash, name);
@@ -138,7 +138,7 @@ void ImActorModelApiRpcRequestEditUserLocalName_init(ImActorModelApiRpcRequestEd
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_init() {
   ImActorModelApiRpcRequestEditUserLocalName *self = [ImActorModelApiRpcRequestEditUserLocalName alloc];
   ImActorModelApiRpcRequestEditUserLocalName_init(self);

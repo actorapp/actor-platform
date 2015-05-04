@@ -24,11 +24,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, group_, ImAc
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, callback_, id<AMCommandCallback>)
 
 
-#line 9
+#line 10
 @implementation ImActorModelModulesUpdatesInternalGroupCreated
 
 
-#line 13
+#line 14
 - (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group
                        withAMCommandCallback:(id<AMCommandCallback>)callback {
   ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(self, group, callback);
@@ -36,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, callback_, i
 }
 
 
-#line 18
+#line 19
 - (ImActorModelApiGroup *)getGroup {
   return group_;
 }
@@ -48,17 +48,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, callback_, i
 @end
 
 
-#line 13
+#line 14
 void ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, ImActorModelApiGroup *group, id<AMCommandCallback> callback) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   
-#line 14
+#line 15
   self->group_ = group;
   self->callback_ = callback;
 }
 
 
-#line 13
+#line 14
 ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelApiGroup *group, id<AMCommandCallback> callback) {
   ImActorModelModulesUpdatesInternalGroupCreated *self = [ImActorModelModulesUpdatesInternalGroupCreated alloc];
   ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(self, group, callback);

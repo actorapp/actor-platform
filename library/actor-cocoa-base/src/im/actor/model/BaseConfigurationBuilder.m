@@ -13,11 +13,11 @@
 #include "im/actor/model/jvm/JavaThreadingProvider.h"
 
 
-#line 9
+#line 10
 @implementation AMBaseConfigurationBuilder
 
 
-#line 10
+#line 11
 - (instancetype)init {
   AMBaseConfigurationBuilder_init(self);
   return self;
@@ -26,17 +26,17 @@
 @end
 
 
-#line 10
+#line 11
 void AMBaseConfigurationBuilder_init(AMBaseConfigurationBuilder *self) {
   (void) AMConfigurationBuilder_init(self);
   
-#line 11
+#line 12
   (void) [self setCryptoProvider:new_AMJavaCryptoProvider_init()];
   (void) [self setThreadingProvider:new_AMJavaThreadingProvider_init()];
 }
 
 
-#line 10
+#line 11
 AMBaseConfigurationBuilder *new_AMBaseConfigurationBuilder_init() {
   AMBaseConfigurationBuilder *self = [AMBaseConfigurationBuilder alloc];
   AMBaseConfigurationBuilder_init(self);

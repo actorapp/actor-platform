@@ -23,30 +23,30 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_, DKActorRef *)
 
 
-#line 13
+#line 14
 @implementation ImActorModelModulesUpdatesPresenceProcessor
 
 
-#line 17
+#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 23
+#line 24
 - (void)onUserOnlineWithInt:(jint)uid {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(uid)];
 }
 
 
-#line 28
+#line 29
 - (void)onUserOfflineWithInt:(jint)uid {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(uid)];
 }
 
 
-#line 33
+#line 34
 - (void)onUserLastSeenWithInt:(jint)uid
                      withLong:(jlong)date {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(uid, date)];
@@ -60,14 +60,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_,
 @end
 
 
-#line 17
+#line 18
 void ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesPresenceProcessor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->presenceActor_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
 }
 
 
-#line 17
+#line 18
 ImActorModelModulesUpdatesPresenceProcessor *new_ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUpdatesPresenceProcessor *self = [ImActorModelModulesUpdatesPresenceProcessor alloc];
   ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(self, modules);

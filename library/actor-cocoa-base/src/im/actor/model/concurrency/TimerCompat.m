@@ -47,38 +47,38 @@ J2OBJC_TYPE_LITERAL_HEADER(AMTimerCompat_$1)
 J2OBJC_INITIALIZED_DEFN(AMTimerCompat)
 
 
-#line 12
+#line 13
 @implementation AMTimerCompat
 
 
-#line 23
+#line 24
 - (instancetype)initWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   AMTimerCompat_initWithJavaLangRunnable_(self, runnable);
   return self;
 }
 
 
-#line 27
+#line 28
 - (void)cancel {
   @synchronized(self) {
     
-#line 28
+#line 29
     [((DKActorRef *) nil_chk(AMTimerCompat_TIMER_ACTOR_)) sendWithId:new_AMTimerActor_Cancel_initWithAMTimerCompat_(self)];
   }
 }
 
 
-#line 31
+#line 32
 - (void)scheduleWithLong:(jlong)delay {
   @synchronized(self) {
     
-#line 32
+#line 33
     [((DKActorRef *) nil_chk(AMTimerCompat_TIMER_ACTOR_)) sendWithId:new_AMTimerActor_Schedule_initWithAMTimerCompat_withLong_(self, delay)];
   }
 }
 
 
-#line 35
+#line 36
 - (void)invokeRun {
   [((id<JavaLangRunnable>) nil_chk(runnable_)) run];
 }
@@ -86,9 +86,9 @@ J2OBJC_INITIALIZED_DEFN(AMTimerCompat)
 + (void)initialize {
   if (self == [AMTimerCompat class]) {
     AMTimerCompat_TIMER_ACTOR_ =
-#line 14
+#line 15
     [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(AMTimerActor_class_(), new_AMTimerCompat_$1_init()) withNSString:
-#line 19
+#line 20
     @"actor/global_timer"];
     J2OBJC_SET_INITIALIZED(AMTimerCompat)
   }
@@ -97,16 +97,16 @@ J2OBJC_INITIALIZED_DEFN(AMTimerCompat)
 @end
 
 
-#line 23
+#line 24
 void AMTimerCompat_initWithJavaLangRunnable_(AMTimerCompat *self, id<JavaLangRunnable> runnable) {
   (void) NSObject_init(self);
   
-#line 24
+#line 25
   self->runnable_ = runnable;
 }
 
 
-#line 23
+#line 24
 AMTimerCompat *new_AMTimerCompat_initWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMTimerCompat *self = [AMTimerCompat alloc];
   AMTimerCompat_initWithJavaLangRunnable_(self, runnable);
@@ -118,7 +118,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerCompat)
 @implementation AMTimerCompat_$1
 
 
-#line 16
+#line 17
 - (AMTimerActor *)create {
   return new_AMTimerActor_init();
 }

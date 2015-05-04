@@ -31,17 +31,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id<JavaUtilList>)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateGroupMembersUpdate
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateGroupMembersUpdate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)groupId
            withJavaUtilList:(id<JavaUtilList>)members {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(self, groupId, members);
@@ -49,14 +49,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getGroupId {
   return self->groupId_;
 }
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   id<JavaUtilList> _members = new_JavaUtilArrayList_init();
@@ -77,14 +77,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 }
 
 
-#line 58
+#line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->members_];
 }
 
 
-#line 64
+#line 68
 - (NSString *)description {
   NSString *res = @"update GroupMembersUpdate{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -94,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 }
 
 
-#line 73
+#line 77
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupMembersUpdate_HEADER;
 }
@@ -102,24 +102,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, members_, id
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateGroupMembersUpdate *ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(ImActorModelApiUpdatesUpdateGroupMembersUpdate *self, jint groupId, id<JavaUtilList> members) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 31
+#line 35
   self->groupId_ = groupId;
   self->members_ = members;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(jint groupId, id<JavaUtilList> members) {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate *self = [ImActorModelApiUpdatesUpdateGroupMembersUpdate alloc];
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(self, groupId, members);
@@ -127,13 +127,13 @@ ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdate
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiUpdatesUpdateGroupMembersUpdate_init(ImActorModelApiUpdatesUpdateGroupMembersUpdate *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_init() {
   ImActorModelApiUpdatesUpdateGroupMembersUpdate *self = [ImActorModelApiUpdatesUpdateGroupMembersUpdate alloc];
   ImActorModelApiUpdatesUpdateGroupMembersUpdate_init(self);

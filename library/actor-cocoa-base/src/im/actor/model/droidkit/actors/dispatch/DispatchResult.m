@@ -30,23 +30,23 @@ J2OBJC_STATIC_FIELD_SETTER(DKDispatchResult, FREE_RESULTS_, AMThreadLocalCompat 
 J2OBJC_INITIALIZED_DEFN(DKDispatchResult)
 
 
-#line 9
+#line 10
 @implementation DKDispatchResult
 
 
-#line 13
+#line 14
 + (DKDispatchResult *)resultWithId:(id)res {
   return DKDispatchResult_resultWithId_(res);
 }
 
 
-#line 24
+#line 25
 + (DKDispatchResult *)delayWithLong:(jlong)delay {
   return DKDispatchResult_delayWithLong_(delay);
 }
 
 
-#line 40
+#line 41
 - (instancetype)initWithBoolean:(jboolean)isResult
                          withId:(id)res
                        withLong:(jlong)delay {
@@ -55,7 +55,7 @@ J2OBJC_INITIALIZED_DEFN(DKDispatchResult)
 }
 
 
-#line 46
+#line 47
 - (void)updateWithBoolean:(jboolean)isResult
                    withId:(id)res
                  withLong:(jlong)delay {
@@ -65,7 +65,7 @@ J2OBJC_INITIALIZED_DEFN(DKDispatchResult)
 }
 
 
-#line 52
+#line 53
 - (jboolean)isResult {
   return isResult__;
 }
@@ -92,11 +92,11 @@ J2OBJC_INITIALIZED_DEFN(DKDispatchResult)
 @end
 
 
-#line 13
+#line 14
 DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
   DKDispatchResult_initialize();
   
-#line 14
+#line 15
   DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
   if (result != nil) {
     [DKDispatchResult_FREE_RESULTS_ remove];
@@ -104,18 +104,18 @@ DKDispatchResult *DKDispatchResult_resultWithId_(id res) {
   }
   else {
     
-#line 19
+#line 20
     result = new_DKDispatchResult_initWithBoolean_withId_withLong_(YES, res, 0);
   }
   return result;
 }
 
 
-#line 24
+#line 25
 DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay) {
   DKDispatchResult_initialize();
   
-#line 25
+#line 26
   DKDispatchResult *result = [((AMThreadLocalCompat *) nil_chk(DKDispatchResult_FREE_RESULTS_)) get];
   if (result != nil) {
     [DKDispatchResult_FREE_RESULTS_ remove];
@@ -123,25 +123,25 @@ DKDispatchResult *DKDispatchResult_delayWithLong_(jlong delay) {
   }
   else {
     
-#line 30
+#line 31
     result = new_DKDispatchResult_initWithBoolean_withId_withLong_(NO, nil, delay);
   }
   return result;
 }
 
 
-#line 40
+#line 41
 void DKDispatchResult_initWithBoolean_withId_withLong_(DKDispatchResult *self, jboolean isResult, id res, jlong delay) {
   (void) NSObject_init(self);
   
-#line 41
+#line 42
   self->isResult__ = isResult;
   self->res_ = res;
   self->delay__ = delay;
 }
 
 
-#line 40
+#line 41
 DKDispatchResult *new_DKDispatchResult_initWithBoolean_withId_withLong_(jboolean isResult, id res, jlong delay) {
   DKDispatchResult *self = [DKDispatchResult alloc];
   DKDispatchResult_initWithBoolean_withId_withLong_(self, isResult, res, delay);

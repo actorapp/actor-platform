@@ -36,17 +36,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, users_, id<JavaUtilLi
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtilList>)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcResponseLoadDialogs
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcResponseLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups
                     withJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)dialogs {
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcResponseLoadDialogs_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (id<JavaUtilList>)getGroups {
   return self->groups_;
 }
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -96,7 +96,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 
-#line 73
+#line 77
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
   [writer writeRepeatedObjWithInt:2 withJavaUtilList:self->users_];
@@ -104,7 +104,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 
-#line 80
+#line 84
 - (NSString *)description {
   NSString *res = @"tuple LoadDialogs{";
   res = JreStrcat("$C", res, '}');
@@ -112,7 +112,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 
-#line 87
+#line 91
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseLoadDialogs_HEADER;
 }
@@ -120,27 +120,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcResponseLoadDialogs *ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseLoadDialogs_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcResponseLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseLoadDialogs_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiRpcResponseLoadDialogs *self, id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) {
   (void) ImActorModelNetworkParserResponse_init(self);
   
-#line 32
+#line 36
   self->groups_ = groups;
   self->users_ = users;
   self->dialogs_ = dialogs;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcResponseLoadDialogs *new_ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) {
   ImActorModelApiRpcResponseLoadDialogs *self = [ImActorModelApiRpcResponseLoadDialogs alloc];
   ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(self, groups, users, dialogs);
@@ -152,7 +152,7 @@ void ImActorModelApiRpcResponseLoadDialogs_init(ImActorModelApiRpcResponseLoadDi
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcResponseLoadDialogs *new_ImActorModelApiRpcResponseLoadDialogs_init() {
   ImActorModelApiRpcResponseLoadDialogs *self = [ImActorModelApiRpcResponseLoadDialogs alloc];
   ImActorModelApiRpcResponseLoadDialogs_init(self);

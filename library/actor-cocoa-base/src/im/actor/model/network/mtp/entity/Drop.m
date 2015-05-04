@@ -15,18 +15,18 @@
 #include "java/io/IOException.h"
 
 
-#line 8
+#line 12
 @implementation MTDrop
 
 
-#line 16
+#line 20
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTDrop_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 20
+#line 24
 - (instancetype)initWithLong:(jlong)messageId
                 withNSString:(NSString *)message {
   MTDrop_initWithLong_withNSString_(self, messageId, message);
@@ -34,7 +34,7 @@
 }
 
 
-#line 25
+#line 29
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -44,27 +44,27 @@
 }
 
 
-#line 34
+#line 38
 - (jbyte)getHeader {
   return MTDrop_HEADER;
 }
 
 
-#line 39
+#line 43
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoStringWithNSString:message_];
 }
 
 
-#line 45
+#line 49
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   message_ = [bs readProtoString];
 }
 
 
-#line 51
+#line 55
 - (NSString *)description {
   return JreStrcat("$$C", @"Drop[", message_, ']');
 }
@@ -72,13 +72,13 @@
 @end
 
 
-#line 16
+#line 20
 void MTDrop_initWithBSDataInput_(MTDrop *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 16
+#line 20
 MTDrop *new_MTDrop_initWithBSDataInput_(BSDataInput *stream) {
   MTDrop *self = [MTDrop alloc];
   MTDrop_initWithBSDataInput_(self, stream);
@@ -86,17 +86,17 @@ MTDrop *new_MTDrop_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 20
+#line 24
 void MTDrop_initWithLong_withNSString_(MTDrop *self, jlong messageId, NSString *message) {
   (void) MTProtoStruct_init(self);
   
-#line 21
+#line 25
   self->messageId_ = messageId;
   self->message_ = message;
 }
 
 
-#line 20
+#line 24
 MTDrop *new_MTDrop_initWithLong_withNSString_(jlong messageId, NSString *message) {
   MTDrop *self = [MTDrop alloc];
   MTDrop_initWithLong_withNSString_(self, messageId, message);

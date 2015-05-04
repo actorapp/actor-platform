@@ -13,7 +13,7 @@
 #include "im/actor/model/modules/updates/SettingsProcessor.h"
 
 
-#line 9
+#line 10
 @implementation ImActorModelModulesUpdatesSettingsProcessor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
@@ -22,7 +22,7 @@
 }
 
 
-#line 15
+#line 16
 - (void)onSettingsChangedWithNSString:(NSString *)key
                          withNSString:(NSString *)value {
   [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getPreferences])) putString:key withValue:value];
@@ -31,13 +31,13 @@
 @end
 
 
-#line 11
+#line 12
 void ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesSettingsProcessor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
 }
 
 
-#line 11
+#line 12
 ImActorModelModulesUpdatesSettingsProcessor *new_ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUpdatesSettingsProcessor *self = [ImActorModelModulesUpdatesSettingsProcessor alloc];
   ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(self, modules);

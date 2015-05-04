@@ -18,17 +18,17 @@
 #include "java/io/IOException.h"
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestUnregisterPush
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestUnregisterPush *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(data);
 }
 
 
-#line 28
+#line 32
 - (instancetype)init {
   ImActorModelApiRpcRequestUnregisterPush_init(self);
   return self;
@@ -38,12 +38,12 @@
 }
 
 
-#line 37
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 
-#line 41
+#line 45
 - (NSString *)description {
   NSString *res = @"rpc UnregisterPush{";
   res = JreStrcat("$C", res, '}');
@@ -51,7 +51,7 @@
 }
 
 
-#line 48
+#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestUnregisterPush_HEADER;
 }
@@ -59,22 +59,22 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestUnregisterPush *ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestUnregisterPush_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestUnregisterPush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestUnregisterPush_init(), data));
 }
 
 
-#line 28
+#line 32
 void ImActorModelApiRpcRequestUnregisterPush_init(ImActorModelApiRpcRequestUnregisterPush *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 28
+#line 32
 ImActorModelApiRpcRequestUnregisterPush *new_ImActorModelApiRpcRequestUnregisterPush_init() {
   ImActorModelApiRpcRequestUnregisterPush *self = [ImActorModelApiRpcRequestUnregisterPush alloc];
   ImActorModelApiRpcRequestUnregisterPush_init(self);

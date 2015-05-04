@@ -28,43 +28,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApiConfig *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateConfig
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config {
   ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(self, config);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateConfig_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (ImActorModelApiConfig *)getConfig {
   return self->config_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiConfig_init()];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->config_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -73,7 +73,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"update Config{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"config=", self->config_));
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 }
 
 
-#line 63
+#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateConfig_HEADER;
 }
@@ -90,25 +90,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateConfig_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateConfig *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateConfig_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiUpdatesUpdateConfig *self, ImActorModelApiConfig *config) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 30
+#line 34
   self->config_ = config;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiConfig *config) {
   ImActorModelApiUpdatesUpdateConfig *self = [ImActorModelApiUpdatesUpdateConfig alloc];
   ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(self, config);
@@ -116,13 +116,13 @@ ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_initW
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiUpdatesUpdateConfig_init(ImActorModelApiUpdatesUpdateConfig *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_init() {
   ImActorModelApiUpdatesUpdateConfig *self = [ImActorModelApiUpdatesUpdateConfig alloc];
   ImActorModelApiUpdatesUpdateConfig_init(self);

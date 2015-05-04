@@ -12,7 +12,7 @@
 #include "java/util/ArrayList.h"
 
 
-#line 11
+#line 15
 @implementation ImActorModelProvidersEmptyPhoneProvider
 
 - (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback {

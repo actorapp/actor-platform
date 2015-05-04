@@ -21,23 +21,23 @@
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaThreadLocal, tThreadLocal_, JavaLangThreadLocal *)
 
 
-#line 8
+#line 9
 @implementation ImActorModelJvmThreadsJavaThreadLocal
 
 
-#line 12
+#line 13
 - (id)get {
   return [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) get];
 }
 
 
-#line 17
+#line 18
 - (void)setWithId:(id)v {
   [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) setWithId:v];
 }
 
 
-#line 22
+#line 23
 - (void)remove {
   [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) remove];
 }

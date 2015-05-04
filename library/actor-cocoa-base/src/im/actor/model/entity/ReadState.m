@@ -34,7 +34,7 @@ __attribute__((unused)) static void AMReadState_init(AMReadState *self);
 __attribute__((unused)) static AMReadState *new_AMReadState_init() NS_RETURNS_RETAINED;
 
 
-#line 14
+#line 15
 @implementation AMReadState
 
 + (AMReadState *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -42,7 +42,7 @@ __attribute__((unused)) static AMReadState *new_AMReadState_init() NS_RETURNS_RE
 }
 
 
-#line 23
+#line 24
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)lastReadSortingDate {
   AMReadState_initWithAMPeer_withLong_(self, peer, lastReadSortingDate);
@@ -50,14 +50,14 @@ __attribute__((unused)) static AMReadState *new_AMReadState_init() NS_RETURNS_RE
 }
 
 
-#line 28
+#line 29
 - (instancetype)init {
   AMReadState_init(self);
   return self;
 }
 
 
-#line 32
+#line 33
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -67,21 +67,21 @@ __attribute__((unused)) static AMReadState *new_AMReadState_init() NS_RETURNS_RE
 }
 
 
-#line 41
+#line 42
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   lastReadSortingDate_ = [values getLongWithInt:2];
 }
 
 
-#line 47
+#line 48
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:lastReadSortingDate_];
 }
 
 
-#line 53
+#line 54
 - (jlong)getEngineId {
   return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
 }
@@ -89,24 +89,24 @@ __attribute__((unused)) static AMReadState *new_AMReadState_init() NS_RETURNS_RE
 @end
 
 
-#line 16
+#line 17
 AMReadState *AMReadState_fromBytesWithByteArray_(IOSByteArray *data) {
   AMReadState_initialize();
   
-#line 17
+#line 18
   return ((AMReadState *) BSBser_parseWithBSBserObject_withByteArray_(new_AMReadState_init(), data));
 }
 
 void AMReadState_initWithAMPeer_withLong_(AMReadState *self, AMPeer *peer, jlong lastReadSortingDate) {
   (void) BSBserObject_init(self);
   
-#line 24
+#line 25
   self->peer_ = peer;
   self->lastReadSortingDate_ = lastReadSortingDate;
 }
 
 
-#line 23
+#line 24
 AMReadState *new_AMReadState_initWithAMPeer_withLong_(AMPeer *peer, jlong lastReadSortingDate) {
   AMReadState *self = [AMReadState alloc];
   AMReadState_initWithAMPeer_withLong_(self, peer, lastReadSortingDate);
@@ -114,13 +114,13 @@ AMReadState *new_AMReadState_initWithAMPeer_withLong_(AMPeer *peer, jlong lastRe
 }
 
 
-#line 28
+#line 29
 void AMReadState_init(AMReadState *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 28
+#line 29
 AMReadState *new_AMReadState_init() {
   AMReadState *self = [AMReadState alloc];
   AMReadState_init(self);

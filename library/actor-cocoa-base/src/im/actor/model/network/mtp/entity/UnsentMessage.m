@@ -23,11 +23,11 @@
 @end
 
 
-#line 11
+#line 12
 @implementation MTUnsentMessage
 
 
-#line 18
+#line 19
 - (instancetype)initWithLong:(jlong)messageId
                      withInt:(jint)len {
   MTUnsentMessage_initWithLong_withInt_(self, messageId, len);
@@ -35,14 +35,14 @@
 }
 
 
-#line 23
+#line 24
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTUnsentMessage_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 27
+#line 28
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -52,27 +52,27 @@
 }
 
 
-#line 36
+#line 37
 - (jbyte)getHeader {
   return MTUnsentMessage_HEADER;
 }
 
 
-#line 41
+#line 42
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeIntWithInt:len_];
 }
 
 
-#line 47
+#line 48
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   len_ = [bs readInt];
 }
 
 
-#line 53
+#line 54
 - (NSString *)description {
   return JreStrcat("$JC", @"UnsentMessage[", messageId_, ']');
 }
@@ -80,17 +80,17 @@
 @end
 
 
-#line 18
+#line 19
 void MTUnsentMessage_initWithLong_withInt_(MTUnsentMessage *self, jlong messageId, jint len) {
   (void) MTProtoStruct_init(self);
   
-#line 19
+#line 20
   self->messageId_ = messageId;
   self->len_ = len;
 }
 
 
-#line 18
+#line 19
 MTUnsentMessage *new_MTUnsentMessage_initWithLong_withInt_(jlong messageId, jint len) {
   MTUnsentMessage *self = [MTUnsentMessage alloc];
   MTUnsentMessage_initWithLong_withInt_(self, messageId, len);
@@ -98,13 +98,13 @@ MTUnsentMessage *new_MTUnsentMessage_initWithLong_withInt_(jlong messageId, jint
 }
 
 
-#line 23
+#line 24
 void MTUnsentMessage_initWithBSDataInput_(MTUnsentMessage *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 23
+#line 24
 MTUnsentMessage *new_MTUnsentMessage_initWithBSDataInput_(BSDataInput *stream) {
   MTUnsentMessage *self = [MTUnsentMessage alloc];
   MTUnsentMessage_initWithBSDataInput_(self, stream);

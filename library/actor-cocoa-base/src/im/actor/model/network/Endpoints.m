@@ -22,18 +22,18 @@
 J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
 
 
-#line 6
+#line 7
 @implementation AMEndpoints
 
 
-#line 10
+#line 11
 - (instancetype)initWithAMConnectionEndpointArray:(IOSObjectArray *)endpoints {
   AMEndpoints_initWithAMConnectionEndpointArray_(self, endpoints);
   return self;
 }
 
 
-#line 14
+#line 15
 - (AMConnectionEndpoint *)fetchEndpoint {
   roundRobin_ = (roundRobin_ + 1) % ((IOSObjectArray *) nil_chk(endpoints_))->size_;
   return IOSObjectArray_Get(endpoints_, roundRobin_);
@@ -42,19 +42,19 @@ J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
 @end
 
 
-#line 10
+#line 11
 void AMEndpoints_initWithAMConnectionEndpointArray_(AMEndpoints *self, IOSObjectArray *endpoints) {
   (void) NSObject_init(self);
   self->roundRobin_ =
-#line 7
+#line 8
   0;
   
-#line 11
+#line 12
   self->endpoints_ = endpoints;
 }
 
 
-#line 10
+#line 11
 AMEndpoints *new_AMEndpoints_initWithAMConnectionEndpointArray_(IOSObjectArray *endpoints) {
   AMEndpoints *self = [AMEndpoints alloc];
   AMEndpoints_initWithAMConnectionEndpointArray_(self, endpoints);

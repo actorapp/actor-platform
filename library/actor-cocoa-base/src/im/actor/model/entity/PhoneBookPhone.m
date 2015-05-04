@@ -18,11 +18,11 @@
 @end
 
 
-#line 6
+#line 7
 @implementation AMPhoneBookPhone
 
 
-#line 10
+#line 11
 - (instancetype)initWithLong:(jlong)id_
                     withLong:(jlong)number {
   AMPhoneBookPhone_initWithLong_withLong_(self, id_, number);
@@ -30,7 +30,7 @@
 }
 
 
-#line 15
+#line 16
 - (jlong)getId {
   return id__;
 }
@@ -42,17 +42,17 @@
 @end
 
 
-#line 10
+#line 11
 void AMPhoneBookPhone_initWithLong_withLong_(AMPhoneBookPhone *self, jlong id_, jlong number) {
   (void) NSObject_init(self);
   
-#line 11
+#line 12
   self->id__ = id_;
   self->number_ = number;
 }
 
 
-#line 10
+#line 11
 AMPhoneBookPhone *new_AMPhoneBookPhone_initWithLong_withLong_(jlong id_, jlong number) {
   AMPhoneBookPhone *self = [AMPhoneBookPhone alloc];
   AMPhoneBookPhone_initWithLong_withLong_(self, id_, number);

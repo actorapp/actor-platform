@@ -18,23 +18,23 @@
 #define AMActorTrace_PROCESS_THRESHOLD 300
 
 static NSString *AMActorTrace_TAG_ = 
-#line 14
+#line 18
 @"ACTOR_SYSTEM";
 J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, TAG_, NSString *)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 
 
-#line 12
+#line 16
 @implementation AMActorTrace
 
 
-#line 19
+#line 23
 - (void)onEnvelopeDeliveredWithDKEnvelope:(DKEnvelope *)envelope {
 }
 
 
-#line 24
+#line 28
 - (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
                                  withLong:(jlong)duration {
   if (duration > AMActorTrace_PROCESS_THRESHOLD) {
@@ -49,7 +49,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 }
 
 
-#line 36
+#line 40
 - (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
                             withId:(id)message {
   AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Dead Letter: ", message));
@@ -57,7 +57,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 
 - (void)onActorDieWithDKActorRef:(DKActorRef *)ref
            withJavaLangException:(JavaLangException *)e {
-  AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Die: ", e));
+  AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$$$@", @"Die(", [((DKActorRef *) nil_chk(ref)) getPath], @"): ", e));
   [((JavaLangException *) nil_chk(e)) printStackTrace];
 }
 

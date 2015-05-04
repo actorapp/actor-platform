@@ -25,18 +25,18 @@
 J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)
 
 
-#line 12
+#line 14
 @implementation DKMailboxesQueue
 
 
-#line 16
+#line 18
 - (instancetype)init {
   DKMailboxesQueue_init(self);
   return self;
 }
 
 
-#line 20
+#line 22
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)getEnvelopeRoot {
   return envelopeRoot_;
 }
@@ -54,14 +54,14 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
 }
 
 
-#line 37
+#line 39
 - (DKDispatchResult *)dispatchWithLong:(jlong)time {
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *res = [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) fetchCollectionWithLong:time];
   if (res == nil) {
     return [self delayWithLong:DKAbstractDispatchQueue_FOREVER];
   }
   
-#line 43
+#line 45
   if ([((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *) nil_chk(res)) getEnvelope] != nil) {
     DKDispatchResult *result = [self resultWithId:[res getEnvelope]];
     [res recycle];
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
   }
   else {
     
-#line 48
+#line 50
     DKDispatchResult *result = [self delayWithLong:[res getDelay]];
     [res recycle];
     return result;
@@ -79,16 +79,16 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
 @end
 
 
-#line 16
+#line 18
 void DKMailboxesQueue_init(DKMailboxesQueue *self) {
   (void) DKAbstractDispatchQueue_init(self);
   
-#line 17
+#line 19
   self->envelopeRoot_ = new_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(self);
 }
 
 
-#line 16
+#line 18
 DKMailboxesQueue *new_DKMailboxesQueue_init() {
   DKMailboxesQueue *self = [DKMailboxesQueue alloc];
   DKMailboxesQueue_init(self);

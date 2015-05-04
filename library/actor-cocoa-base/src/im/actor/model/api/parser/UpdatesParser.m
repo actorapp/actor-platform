@@ -52,7 +52,7 @@
 #include "java/io/IOException.h"
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiParserUpdatesParser
 
 - (ImActorModelNetworkParserUpdate *)readWithInt:(jint)type
@@ -60,151 +60,151 @@
   switch (type) {
     case 16:
     
-#line 24
+#line 28
     return ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(payload);
     case 32:
     
-#line 25
+#line 29
     return ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(payload);
     case 51:
     
-#line 26
+#line 30
     return ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(payload);
     case 87:
     
-#line 27
+#line 31
     return ImActorModelApiUpdatesUpdateUserPhoneAdded_fromBytesWithByteArray_(payload);
     case 88:
     
-#line 28
+#line 32
     return ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(payload);
     case 89:
     
-#line 29
+#line 33
     return ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(payload);
     case 101:
     
-#line 30
+#line 34
     return ImActorModelApiUpdatesUpdatePhoneMoved_fromBytesWithByteArray_(payload);
     case 96:
     
-#line 31
+#line 35
     return ImActorModelApiUpdatesUpdateUserEmailAdded_fromBytesWithByteArray_(payload);
     case 97:
     
-#line 32
+#line 36
     return ImActorModelApiUpdatesUpdateUserEmailRemoved_fromBytesWithByteArray_(payload);
     case 98:
     
-#line 33
+#line 37
     return ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(payload);
     case 102:
     
-#line 34
+#line 38
     return ImActorModelApiUpdatesUpdateEmailMoved_fromBytesWithByteArray_(payload);
     case 86:
     
-#line 35
+#line 39
     return ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(payload);
     case 5:
     
-#line 36
+#line 40
     return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(payload);
     case 40:
     
-#line 37
+#line 41
     return ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(payload);
     case 41:
     
-#line 38
+#line 42
     return ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(payload);
     case 55:
     
-#line 39
+#line 43
     return ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(payload);
     case 4:
     
-#line 40
+#line 44
     return ImActorModelApiUpdatesUpdateMessageSent_fromBytesWithByteArray_(payload);
     case 54:
     
-#line 41
+#line 45
     return ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(payload);
     case 19:
     
-#line 42
+#line 46
     return ImActorModelApiUpdatesUpdateMessageRead_fromBytesWithByteArray_(payload);
     case 50:
     
-#line 43
+#line 47
     return ImActorModelApiUpdatesUpdateMessageReadByMe_fromBytesWithByteArray_(payload);
     case 46:
     
-#line 44
+#line 48
     return ImActorModelApiUpdatesUpdateMessageDelete_fromBytesWithByteArray_(payload);
     case 47:
     
-#line 45
+#line 49
     return ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(payload);
     case 48:
     
-#line 46
+#line 50
     return ImActorModelApiUpdatesUpdateChatDelete_fromBytesWithByteArray_(payload);
     case 36:
     
-#line 47
+#line 51
     return ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(payload);
     case 21:
     
-#line 48
+#line 52
     return ImActorModelApiUpdatesUpdateGroupUserAdded_fromBytesWithByteArray_(payload);
     case 23:
     
-#line 49
+#line 53
     return ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(payload);
     case 24:
     
-#line 50
+#line 54
     return ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(payload);
     case 44:
     
-#line 51
+#line 55
     return ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(payload);
     case 38:
     
-#line 52
+#line 56
     return ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(payload);
     case 39:
     
-#line 53
+#line 57
     return ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(payload);
     case 6:
     
-#line 54
+#line 58
     return ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(payload);
     case 7:
     
-#line 55
+#line 59
     return ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(payload);
     case 8:
     
-#line 56
+#line 60
     return ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(payload);
     case 9:
     
-#line 57
+#line 61
     return ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(payload);
     case 33:
     
-#line 58
+#line 62
     return ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(payload);
     case 131:
     
-#line 59
+#line 63
     return ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(payload);
     case 42:
     
-#line 60
+#line 64
     return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(payload);
   }
   @throw new_JavaIoIOException_init();

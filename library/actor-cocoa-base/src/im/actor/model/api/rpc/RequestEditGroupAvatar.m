@@ -32,17 +32,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, groupPeer_, ImActo
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImActorModelApiFileLocation *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestEditGroupAvatar
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                     withImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation {
@@ -51,14 +51,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestEditGroupAvatar_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -94,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 
-#line 74
+#line 78
 - (NSString *)description {
   NSString *res = @"rpc EditGroupAvatar{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -105,7 +105,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 
-#line 84
+#line 88
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditGroupAvatar_HEADER;
 }
@@ -113,27 +113,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestEditGroupAvatar *ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditGroupAvatar_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditGroupAvatar_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiRpcRequestEditGroupAvatar *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 32
+#line 36
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
   self->fileLocation_ = fileLocation;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) {
   ImActorModelApiRpcRequestEditGroupAvatar *self = [ImActorModelApiRpcRequestEditGroupAvatar alloc];
   ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(self, groupPeer, rid, fileLocation);
@@ -145,7 +145,7 @@ void ImActorModelApiRpcRequestEditGroupAvatar_init(ImActorModelApiRpcRequestEdit
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_init() {
   ImActorModelApiRpcRequestEditGroupAvatar *self = [ImActorModelApiRpcRequestEditGroupAvatar alloc];
   ImActorModelApiRpcRequestEditGroupAvatar_init(self);

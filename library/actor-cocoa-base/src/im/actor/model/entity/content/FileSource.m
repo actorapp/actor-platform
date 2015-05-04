@@ -24,7 +24,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 14
+#line 15
 @implementation AMFileSource
 
 + (AMFileSource *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -32,24 +32,24 @@
 }
 
 
-#line 34
+#line 35
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
 
-#line 39
+#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if ([self isKindOfClass:[AMFileLocalSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:1];
   }
   else
-#line 42
+#line 43
   if ([self isKindOfClass:[AMFileRemoteSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:2];
   }
   else {
     
-#line 45
+#line 46
     @throw new_JavaIoIOException_initWithNSString_(@"Invalid source type");
   }
 }
@@ -62,11 +62,11 @@
 @end
 
 
-#line 16
+#line 17
 AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
   AMFileSource_initialize();
   
-#line 17
+#line 18
   BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
   jint type = [reader getIntWithInt:1];
   switch (type) {

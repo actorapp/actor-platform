@@ -32,7 +32,7 @@ __attribute__((unused)) static void AMServiceGroupUserKicked_init(AMServiceGroup
 __attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_init() NS_RETURNS_RETAINED;
 
 
-#line 12
+#line 13
 @implementation AMServiceGroupUserKicked
 
 + (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -40,7 +40,7 @@ __attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserK
 }
 
 
-#line 20
+#line 21
 - (instancetype)initWithInt:(jint)kickedUid {
   AMServiceGroupUserKicked_initWithInt_(self, kickedUid);
   return self;
@@ -52,26 +52,26 @@ __attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserK
 }
 
 
-#line 29
+#line 30
 - (jint)getKickedUid {
   return kickedUid_;
 }
 
 
-#line 34
+#line 35
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
 }
 
 
-#line 39
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
 }
 
 
-#line 45
+#line 46
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
@@ -80,23 +80,23 @@ __attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserK
 @end
 
 
-#line 14
+#line 15
 AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserKicked_initialize();
   
-#line 15
+#line 16
   return ((AMServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserKicked_init(), data));
 }
 
 
-#line 20
+#line 21
 void AMServiceGroupUserKicked_initWithInt_(AMServiceGroupUserKicked *self, jint kickedUid) {
   (void) AMServiceContent_initWithNSString_(self, @"User kicked");
   self->kickedUid_ = kickedUid;
 }
 
 
-#line 20
+#line 21
 AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_initWithInt_(jint kickedUid) {
   AMServiceGroupUserKicked *self = [AMServiceGroupUserKicked alloc];
   AMServiceGroupUserKicked_initWithInt_(self, kickedUid);
@@ -104,13 +104,13 @@ AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_initWithInt_(jint kickedU
 }
 
 
-#line 25
+#line 26
 void AMServiceGroupUserKicked_init(AMServiceGroupUserKicked *self) {
   (void) AMServiceContent_init(self);
 }
 
 
-#line 25
+#line 26
 AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_init() {
   AMServiceGroupUserKicked *self = [AMServiceGroupUserKicked alloc];
   AMServiceGroupUserKicked_init(self);

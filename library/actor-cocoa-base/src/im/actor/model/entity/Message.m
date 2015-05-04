@@ -61,7 +61,7 @@ J2OBJC_INITIALIZED_DEFN(AMMessage)
 id<BSBserCreator> AMMessage_CREATOR_;
 
 
-#line 16
+#line 17
 @implementation AMMessage
 
 + (AMMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -69,7 +69,7 @@ id<BSBserCreator> AMMessage_CREATOR_;
 }
 
 
-#line 36
+#line 37
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)sortDate
                     withLong:(jlong)date
@@ -81,14 +81,14 @@ id<BSBserCreator> AMMessage_CREATOR_;
 }
 
 
-#line 45
+#line 46
 - (instancetype)init {
   AMMessage_init(self);
   return self;
 }
 
 
-#line 49
+#line 50
 - (jlong)getRid {
   return rid_;
 }
@@ -126,7 +126,7 @@ id<BSBserCreator> AMMessage_CREATOR_;
 }
 
 
-#line 86
+#line 87
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   sortDate_ = [values getLongWithInt:2];
@@ -137,7 +137,7 @@ id<BSBserCreator> AMMessage_CREATOR_;
 }
 
 
-#line 96
+#line 97
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
   [writer writeLongWithInt:2 withLong:sortDate_];
@@ -148,19 +148,19 @@ id<BSBserCreator> AMMessage_CREATOR_;
 }
 
 
-#line 106
+#line 107
 - (jlong)getEngineId {
   return rid_;
 }
 
 
-#line 111
+#line 112
 - (jlong)getEngineSort {
   return sortDate_;
 }
 
 
-#line 116
+#line 117
 - (NSString *)getEngineSearch {
   return nil;
 }
@@ -175,20 +175,20 @@ id<BSBserCreator> AMMessage_CREATOR_;
 @end
 
 
-#line 18
+#line 19
 AMMessage *AMMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   AMMessage_initialize();
   
-#line 19
+#line 20
   return ((AMMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_AMMessage_init(), data));
 }
 
 
-#line 36
+#line 37
 void AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(AMMessage *self, jlong rid, jlong sortDate, jlong date, jint senderId, AMMessageStateEnum *messageState, AMAbsContent *content) {
   (void) BSBserObject_init(self);
   
-#line 37
+#line 38
   self->rid_ = rid;
   self->sortDate_ = sortDate;
   self->date_ = date;
@@ -198,7 +198,7 @@ void AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_wit
 }
 
 
-#line 36
+#line 37
 AMMessage *new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(jlong rid, jlong sortDate, jlong date, jint senderId, AMMessageStateEnum *messageState, AMAbsContent *content) {
   AMMessage *self = [AMMessage alloc];
   AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(self, rid, sortDate, date, senderId, messageState, content);
@@ -206,13 +206,13 @@ AMMessage *new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageSta
 }
 
 
-#line 45
+#line 46
 void AMMessage_init(AMMessage *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 45
+#line 46
 AMMessage *new_AMMessage_init() {
   AMMessage *self = [AMMessage alloc];
   AMMessage_init(self);
@@ -224,7 +224,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMessage)
 @implementation AMMessage_$1
 
 
-#line 24
+#line 25
 - (AMMessage *)createInstance {
   return new_AMMessage_init();
 }
