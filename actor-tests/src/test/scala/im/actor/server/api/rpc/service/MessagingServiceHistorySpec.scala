@@ -9,7 +9,7 @@ import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util.ACL
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.social.SocialManager
 
@@ -23,6 +23,7 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
 
   val rpcApiService = buildRpcApiService()

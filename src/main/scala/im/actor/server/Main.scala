@@ -25,7 +25,7 @@ import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.SmsActivation
@@ -69,6 +69,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     val rpcApiService = system.actorOf(RpcApiService.props())
