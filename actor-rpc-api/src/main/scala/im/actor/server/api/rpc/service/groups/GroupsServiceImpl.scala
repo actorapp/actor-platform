@@ -18,7 +18,7 @@ import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.{ AvatarUtils, IdUtils }
+import im.actor.server.util.{ AvatarUtils, IdUtils, HistoryUtils }
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String)(
@@ -54,12 +54,21 @@ class GroupsServiceImpl(bucketName: String)(
               val avatarData = getAvatarData(models.AvatarData.OfGroup, fullGroup.id, avatar)
 
               val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, Some(avatar), date.getMillis, randomId)
+              val serviceMessage = ServiceMessages.changedAvatar(Some(avatar))
 
               for {
                 _ ← persist.AvatarData.createOrUpdate(avatarData)
                 groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
                 _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
                 seqstate ← broadcastClientUpdate(update, None)
+                _ <- HistoryUtils.writeHistoryMessage(
+                  models.Peer.privat(client.userId),
+                  models.Peer.group(fullGroup.id),
+                  date,
+                  randomId,
+                  serviceMessage.header,
+                  serviceMessage.toByteArray
+                )
               } yield {
                 Ok(ResponseEditGroupAvatar(avatar, seqstate._1, seqstate._2, date.getMillis))
               }
@@ -79,12 +88,21 @@ class GroupsServiceImpl(bucketName: String)(
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         val date = new DateTime
         val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, None, date.getMillis, randomId)
+        val serviceMessage = ServiceMessages.changedAvatar(None)
 
         for {
           _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfGroup, fullGroup.id.toLong))
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
           seqstate ← broadcastClientUpdate(update, None)
+          _ <- HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(client.userId),
+            models.Peer.group(fullGroup.id),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
       }
     }
@@ -98,11 +116,20 @@ class GroupsServiceImpl(bucketName: String)(
         val date = new DateTime
 
         val update = UpdateGroupUserKick(fullGroup.id, userOutPeer.userId, client.userId, date.getMillis, randomId)
+        val serviceMessage = ServiceMessages.userKicked(userOutPeer.userId)
 
         for {
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Kicked))
+          _ <- HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(client.userId),
+            models.Peer.group(fullGroup.id),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
@@ -119,11 +146,20 @@ class GroupsServiceImpl(bucketName: String)(
         val date = new DateTime
 
         val update = UpdateGroupUserLeave(fullGroup.id, client.userId, date.getMillis, randomId)
+        val serviceMessage =  ServiceMessages.userLeft(client.userId)
 
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           _ ← persist.GroupUser.delete(fullGroup.id, client.userId)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Left))
+          _ <- HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(client.userId),
+            models.Peer.group(fullGroup.id),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
@@ -152,11 +188,19 @@ class GroupsServiceImpl(bucketName: String)(
         val groupUserIds = userIds + client.userId
 
         val update = UpdateGroupInvite(groupId = group.id, inviteUserId = client.userId, date = dateTime.getMillis, randomId = randomId)
+        val serviceMessage = ServiceMessages.groupCreated
 
         for {
           _ ← persist.Group.create(group, randomId)
           _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
-          // TODO: write service message groupCreated
+          _ <- HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(client.userId),
+            models.Peer.group(group.id),
+            dateTime,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
           _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update, Some("You are invited to a group"))).toSeq)
           seqstate ← broadcastClientUpdate(update, None)
         } yield {
@@ -196,6 +240,7 @@ class GroupsServiceImpl(bucketName: String)(
               )
 
               val userAddedUpdate = UpdateGroupUserAdded(groupId = fullGroup.id, userId = userOutPeer.userId, inviterUserId = client.userId, date = dateMillis, randomId = randomId)
+              val serviceMessage = ServiceMessages.userAdded(userOutPeer.userId)
 
               for {
                 _ ← persist.GroupUser.create(fullGroup.id, userOutPeer.userId, client.userId, date)
@@ -203,7 +248,14 @@ class GroupsServiceImpl(bucketName: String)(
                 // TODO: #perf the following broadcasts do update serializing per each user
                 _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added))))
                 seqstate ← broadcastClientUpdate(userAddedUpdate, None)
-                // TODO: write service message
+                _ <- HistoryUtils.writeHistoryMessage(
+                  models.Peer.privat(client.userId),
+                  models.Peer.group(fullGroup.id),
+                  date,
+                  randomId,
+                  serviceMessage.header,
+                  serviceMessage.toByteArray
+                )
               } yield {
                 GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
                 Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
@@ -226,10 +278,18 @@ class GroupsServiceImpl(bucketName: String)(
         val dateMillis = date.getMillis
 
         val update = UpdateGroupTitleChanged(groupId = fullGroup.id, userId = client.userId, title = title, date = dateMillis, randomId = randomId)
+        val serviceMessage = ServiceMessages.changedTitle(title)
 
         for {
           _ ← persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)
-          // TODO: write service message
+          _ <- HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(client.userId),
+            models.Peer.group(fullGroup.id),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
           userIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastUpdateAll(userIds.toSet, update, Some(PushTexts.TitleChanged))
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
