@@ -20,7 +20,7 @@ class Application extends Controller {
     request.body.validate[LoginForm].map { form ⇒
       db.run {
         (for {
-          optManager ← persist.Manager.findByEmail(form.email).headOption
+          optManager ← persist.Manager.findByEmail(form.email)
           optAuthCode ← persist.AuthSmsCode.findByPhoneNumber(form.email.toLong).headOption //TODO: write persist.AuthSmsCode.findByEmail(form.email) implementation
         } yield (optManager, optAuthCode)).flatMap {
           case (Some(manager), Some(authCode)) ⇒

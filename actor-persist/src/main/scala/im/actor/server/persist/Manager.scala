@@ -23,6 +23,6 @@ object Manager {
     managers += manager
 
   def findByEmail(email: String) =
-    managers.filter(_.email === email).result
+    managers.filter(_.email === email).result.headOption
 
 }

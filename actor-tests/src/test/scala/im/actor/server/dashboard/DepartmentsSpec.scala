@@ -22,7 +22,11 @@ class DepartmentsSpec extends BasicDashboardSpec {
 
   "create dept" should "create new dept with given name and struct" in s.createDept()
 
+  "create dept" should "not create dept when request with invalid json body comes" in s.createDeptInvaidJson()
+
   "update dept" should "change name to given one" in s.updateDept()
+
+  "update dept" should "not update dept when request with invalid json body comes" in s.updateDeptInvalidJson()
 
   "delete dept" should "mark dept as deleted at current date" in s.deleteDept()
 
@@ -41,16 +45,18 @@ class DepartmentsSpec extends BasicDashboardSpec {
     val token = "secret"
 
     def authorized(method: String) = FakeRequest(method, s"/users?auth-token=$token")
+
     val authorizedGET = authorized(GET)
     val authorizedDELETE = authorized(DELETE)
     val authorizedPUT = authorized(PUT)
     val authorizedPOST = authorized(POST)
 
-    val manager = persist.Manager.create(models.Manager(1, "Homer", "Simpson", "sm.actor.im", token, "hs@gmail.com"))
+    val manager = models.Manager(1, "Homer", "Simpson", "sm.actor.im", token, "hs@gmail.com")
 
     class TestController extends Departments {
       override val db = database
     }
+
     val deptsController = new TestController()
 
     def notAuthorized() = {
@@ -59,7 +65,7 @@ class DepartmentsSpec extends BasicDashboardSpec {
     }
 
     def createDept() = {
-      whenReady(database.run(manager)) { _ ⇒
+      whenReady(database.run(persist.Manager.create(manager))) { _ ⇒
         val dept = makeDept(Depts.root)
         //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
         val request = authorizedPOST.withHeaders(HeaderNames.CONTENT_TYPE → "application/json")
@@ -80,6 +86,15 @@ class DepartmentsSpec extends BasicDashboardSpec {
       }
     }
 
+    def createDeptInvaidJson() = {
+      //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+      val request = authorizedPOST.withHeaders(HeaderNames.CONTENT_TYPE → "application/json")
+      val body = Json.toJson(Map("titleZZZ" → "Sales dept 2", "struct" → "2.2.1")).toString()
+      val result = deptsController.create()(request).feed(Input.El(body.getBytes)).flatMap(_.run)
+
+      status(result) shouldEqual 406
+    }
+
     def updateDept() = {
       whenReady(database.run(persist.Department.create(makeDept(Depts.main)))) { _ ⇒
         val newTitle = "Uber Main dept"
@@ -92,7 +107,9 @@ class DepartmentsSpec extends BasicDashboardSpec {
 
         whenReady(database.run(persist.Department.find(Depts.main.struct).headOption)) { optDept ⇒
           optDept shouldBe defined
-          optDept.map { _.name shouldEqual newTitle } getOrElse fail
+          optDept.map {
+            _.name shouldEqual newTitle
+          } getOrElse fail
         }
         val r = authorizedPUT.withHeaders(HeaderNames.CONTENT_TYPE → "application/json")
         val b = Json.toJson(Map("title" → Depts.main.name)).toString()
@@ -100,12 +117,23 @@ class DepartmentsSpec extends BasicDashboardSpec {
       }
     }
 
+    def updateDeptInvalidJson() = {
+      //ugly workaround for this bug https://revoltingcode.wordpress.com/2013/10/27/play-framework-2-controller-testing-with-json-body-parser/
+      val request = authorizedPUT.withHeaders(HeaderNames.CONTENT_TYPE → "application/json")
+      val body = Json.toJson(Map("titleZZZ" → "Some other dept")).toString()
+      val result = deptsController.update(Depts.main.struct)(request).feed(Input.El(body.getBytes)).flatMap(_.run)
+
+      status(result) shouldEqual 406
+    }
+
     def deleteDept() = {
       whenReady(database.run(persist.Department.create(makeDept(Depts.subDept)))) { _ ⇒
         val delete = deptsController.delete(Depts.subDept.struct)(authorizedDELETE)
         status(delete) shouldEqual 202
         whenReady(database.run(persist.Department.find(Depts.subDept.struct).headOption)) { optDept ⇒
-          optDept.map { _.deletedAt shouldBe defined } getOrElse fail
+          optDept.map {
+            _.deletedAt shouldBe defined
+          } getOrElse fail
         }
       }
     }
