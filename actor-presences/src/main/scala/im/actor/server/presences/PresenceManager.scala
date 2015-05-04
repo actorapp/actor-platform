@@ -53,6 +53,9 @@ object PresenceManager {
   @SerialVersionUID(1L)
   private case class Envelope(userId: Int, payload: Message)
 
+  @SerialVersionUID(1L)
+  private case class Initialized(lastSeenAt: Option[DateTime])
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
@@ -98,9 +101,6 @@ object PresenceManager {
 class PresenceManager(implicit db: Database) extends Actor with ActorLogging with Stash {
   import Presences._
   import PresenceManager._
-
-  @SerialVersionUID(1L)
-  case class Initialized(lastSeenAt: Option[DateTime])
 
   implicit val ec: ExecutionContext = context.dispatcher
 

@@ -12,10 +12,10 @@ import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.mtproto.protocol.{ ProtoMessage, RpcResponseBox }
 
 private[session] object RpcHandler {
-  def props(rpcApiService: ActorRef) = Props(classOf[RpcHandler], rpcApiService)
+  def props = Props(classOf[RpcHandler])
 }
 
-private[session] class RpcHandler(rpcApiService: ActorRef) extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
+private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[ProtoMessage] with ActorLogging {
 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
@@ -23,6 +23,8 @@ private[session] class RpcHandler(rpcApiService: ActorRef) extends ActorSubscrib
   import SessionStreamMessage._
 
   implicit val ec = context.dispatcher
+
+  val rpcApiService = context.actorSelection("/user/rpcApiService")
 
   def receive = subscriber.orElse(publisher).orElse {
     case unmatched ⇒

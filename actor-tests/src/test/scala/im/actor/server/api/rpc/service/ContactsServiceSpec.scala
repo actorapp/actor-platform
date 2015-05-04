@@ -25,16 +25,14 @@ class ContactsServiceSpec extends BaseServiceSuite {
   "AddContact handler" should "add contact after remove" in (s.addremove.addAfterRemove)
 
   object s {
+    implicit val sessionRegion = buildSessionRegionProxy()
+
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-    implicit val presenceManagerRegion: PresenceManagerRegion = PresenceManager.startRegion()
-    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val rpcApiService = buildRpcApiService()
-    implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
     implicit val service = new contacts.ContactsServiceImpl
     implicit val authService = buildAuthService()
+
     implicit val ec = system.dispatcher
 
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {

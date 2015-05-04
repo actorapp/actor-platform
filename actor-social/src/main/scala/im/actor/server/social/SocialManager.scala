@@ -36,6 +36,9 @@ object SocialManager {
   @SerialVersionUID(1L)
   private case object Ack
 
+  @SerialVersionUID(1L)
+  private case class Initiated(userIds: Set[Int])
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
@@ -84,9 +87,6 @@ object SocialManager {
 
 class SocialManager(implicit db: Database) extends Actor with ActorLogging with Stash {
   import SocialManager._
-
-  @SerialVersionUID(1L)
-  private case class Initiated(userIds: Set[Int])
 
   implicit val ec: ExecutionContext = context.dispatcher
 

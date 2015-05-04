@@ -42,6 +42,8 @@ object GroupPresenceManager {
   @SerialVersionUID(1L)
   private case class UserRemoved(userId: Int) extends Message
 
+  private case class Initialized(groupId: Int, userIds: Set[Int])
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
@@ -91,8 +93,6 @@ class GroupPresenceManager(
 ) extends Actor with ActorLogging with Stash {
   import GroupPresenceManager._
   import Presences._
-
-  case class Initialized(groupId: Int, userIds: Set[Int])
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val timeout = Timeout(5.seconds)

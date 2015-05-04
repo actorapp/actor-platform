@@ -61,7 +61,7 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(rpcApiService: ActorRef)(
+  def props(
     implicit
     config:                     SessionConfig,
     seqUpdManagerRegion:        SeqUpdatesManagerRegion,
@@ -73,7 +73,6 @@ object Session {
   ): Props =
     Props(
       classOf[Session],
-      rpcApiService,
       config,
       seqUpdManagerRegion,
       weakUpdManagerRegion,
@@ -84,7 +83,7 @@ object Session {
     )
 }
 
-class Session(rpcApiService: ActorRef)(
+class Session(
   implicit
   config:                     SessionConfig,
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
@@ -151,13 +150,13 @@ class Session(rpcApiService: ActorRef)(
 
       withValidMessageBox(client, messageBoxBytes) { mb ⇒
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
-        val rpcHandler = context.actorOf(RpcHandler.props(rpcApiService), "rpcHandler")
+        val rpcHandler = context.actorOf(RpcHandler.props, "rpcHandler")
         val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
         val reSender = context.actorOf(ReSender.props(authId, sessionId)(config.reSendConfig), "reSender")
 
         sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
 
-        val graph = SessionStream.graph(authId, sessionId, mb.messageId, rpcApiService, rpcHandler, updatesHandler, reSender)
+        val graph = SessionStream.graph(authId, sessionId, mb.messageId, rpcHandler, updatesHandler, reSender)
 
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
           import FlowGraph.Implicits._
