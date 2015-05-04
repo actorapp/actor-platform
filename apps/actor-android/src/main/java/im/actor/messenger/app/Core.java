@@ -110,11 +110,13 @@ public class Core {
             builder.setPhoneBookProvider(new EmptyPhoneProvider());
         }
         builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
-        builder.addEndpoint(BuildConfig.API_URL);
+        for (String url : BuildConfig.API_URL) {
+            builder.addEndpoint(url);
+        }
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
         builder.setEnableFilesLogging(true);
-        builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(),"b2b7a96c3f1e131cf170029f97b2c7c2"));
+        builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), "b2b7a96c3f1e131cf170029f97b2c7c2"));
 
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,
