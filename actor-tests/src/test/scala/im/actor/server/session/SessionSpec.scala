@@ -39,7 +39,7 @@ class SessionSpec extends BaseSessionSpec {
     def e1() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props(rpcApiService))
+      val session = system.actorOf(Session.props)
 
       sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
 

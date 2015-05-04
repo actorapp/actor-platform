@@ -19,12 +19,13 @@ import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
 import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
 import im.actor.server.session.{ SessionRegion, SessionMessage }
 
-class SequenceServiceImpl(implicit
-  val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                          val presenceManagerRegion: PresenceManagerRegion,
-                          val sessionRegion:         SessionRegion,
-                          db:                        Database,
-                          actorSystem:               ActorSystem) extends SequenceService {
+class SequenceServiceImpl(
+  implicit
+  seqUpdManagerRegion: SeqUpdatesManagerRegion,
+  sessionRegion:       SessionRegion,
+  db:                  Database,
+  actorSystem:         ActorSystem
+) extends SequenceService {
   import SeqUpdatesManager._
   import GroupUtils._
   import UserUtils._

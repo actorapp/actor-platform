@@ -25,13 +25,10 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   it should "send updates ot title change" in e3
 
+  implicit val sessionRegion = buildSessionRegionProxy()
+
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  val rpcApiService = buildRpcApiService()
-  implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()

@@ -67,6 +67,14 @@ object SeqUpdatesManager {
   private[push] case class ApplePushCredentialsUpdated(credsOpt: Option[models.push.ApplePushCredentials]) extends Message
 
   @SerialVersionUID(1L)
+  private case class Initialized(
+    authId:         Long,
+    timestamp:      Long,
+    googleCredsOpt: Option[models.push.GooglePushCredentials],
+    appleCredsOpt:  Option[models.push.ApplePushCredentials]
+  )
+
+  @SerialVersionUID(1L)
   case class UpdateReceived(update: SeqUpdate)
 
   type Sequence = Int
@@ -362,14 +370,6 @@ class SeqUpdatesManager(
 
   import SeqUpdatesManager._
 
-  @SerialVersionUID(1L)
-  private case class Initiated(
-    authId:         Long,
-    timestamp:      Long,
-    googleCredsOpt: Option[models.push.GooglePushCredentials],
-    appleCredsOpt:  Option[models.push.ApplePushCredentials]
-  )
-
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
   // FIXME: move to props
@@ -387,7 +387,7 @@ class SeqUpdatesManager(
   private[this] var googleCredsOpt: Option[models.push.GooglePushCredentials] = None
   private[this] var appleCredsOpt: Option[models.push.ApplePushCredentials] = None
 
-  def receiveInitiated: Receive = {
+  def receiveInitialized: Receive = {
     case Envelope(_, GetSequenceState) ⇒
       sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
     case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds, pushText)) ⇒
@@ -422,13 +422,13 @@ class SeqUpdatesManager(
   }
 
   def stashing: Receive = {
-    case Initiated(authId, timestamp, googleCredsOpt, appleCredsOpt) ⇒
+    case Initialized(authId, timestamp, googleCredsOpt, appleCredsOpt) ⇒
       this.lastTimestamp = timestamp
       this.googleCredsOpt = googleCredsOpt
       this.appleCredsOpt = appleCredsOpt
 
       unstashAll()
-      context.become(receiveInitiated)
+      context.become(receiveInitialized)
     case msg ⇒ stash()
   }
 
@@ -440,11 +440,11 @@ class SeqUpdatesManager(
       // TODO: pinned dispatcher?
       implicit val ec = context.dispatcher
 
-      val initiatedFuture: Future[Initiated] = for {
+      val initiatedFuture: Future[Initialized] = for {
         seqUpdOpt ← db.run(p.sequence.SeqUpdate.find(authId).headOption)
         googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
         appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
-      } yield Initiated(
+      } yield Initialized(
         authId,
         seqUpdOpt.map(_.timestamp).getOrElse(0),
         googleCredsOpt,

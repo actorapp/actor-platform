@@ -20,14 +20,10 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
 
   it should "Load dialogs" in s.dialogs
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
+  implicit val sessionRegion = buildSessionRegionProxy()
 
-  val rpcApiService = buildRpcApiService()
-  implicit val sessionRegion = buildSessionRegion(rpcApiService)
+  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
+  implicit val socialManagerRegion = SocialManager.startRegion()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()

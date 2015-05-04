@@ -19,10 +19,10 @@ trait UpdatesConsumerMessage
 
 object UpdatesConsumerMessage {
   @SerialVersionUID(1L)
-  object SubscribeToSeq extends UpdatesConsumerMessage
+  case object SubscribeToSeq extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
-  object SubscribeToWeak extends UpdatesConsumerMessage
+  case object SubscribeToWeak extends UpdatesConsumerMessage
 
   @SerialVersionUID(1L)
   case class SubscribeToUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
