@@ -1,29 +1,28 @@
 <md-toolbar>
   <div class="md-toolbar-tools">
     <div class="user" layout="row">
-      <div class="user__avatar">
-        <div class="no-avatar no-avatar--lblue">
-          <span>U</span>
-        </div>
+      <div class="user__avatar avatar avatar--small avatar--{{::main.user.placeholder}}">
+          <img ng-src="{{ ::main.user.avatar }}" alt="{{ ::main.user.title }}" ng-if="::main.user.avatar" />
+          <span ng-bind="::main.user.name|limitTo:1"></span>
       </div>
       <div class="user__body" flex>
-        <p class="user__name">{{ sidebar.user.name }}</p>
-        <a class="user__profile-link" href="">My profile</a>
+        <p class="user__name user__name--single">{{ main.user.name }}</p>
+        <!-- <a class="user__profile-link" href="">My profile</a> -->
       </div>
     </div>
 
     <span flex></span>
 
-    <md-button class="md-icon-button" aria-label="New message">
-      <md-icon md-svg-icon="assets/img/icons/ic_message_24px.svg"></md-icon>
-    </md-button>
-    <!-- <md-button class="md-icon-button" aria-label="Menu">
-      <md-icon md-svg-icon="assets/img/icons/ic_more_vert_24px.svg"></md-icon>
-    </md-button> -->
+    <!--<md-button class="md-icon-button" aria-label="New message">-->
+      <!--<md-icon md-svg-icon="assets/img/icons/ic_message_24px.svg"></md-icon>-->
+    <!--</md-button>-->
+    <!--<md-button class="md-icon-button" aria-label="Menu">-->
+      <!--<md-icon md-svg-icon="assets/img/icons/ic_more_vert_24px.svg"></md-icon>-->
+    <!--</md-button>-->
+
     <md-button class="md-icon-button" aria-label="Exit" ng-click="main.actorService.setLoggedOut()">
         <md-icon md-svg-icon="assets/img/icons/ic_exit_to_app_24px.svg"></md-icon>
     </md-button>
-
 
   </div>
 </md-toolbar>
