@@ -28,7 +28,11 @@
     <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
     <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
 
+    <!-- build:css(.) assets/css/vendor.css -->
+    <link rel="stylesheet" href="bower_components/normalize.css/normalize.css">
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+    <!-- endbuild -->
+
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body ng-cloak layout="row">
@@ -40,8 +44,7 @@
                 md-is-locked-open="main.$mdMedia('gt-sm')"
                 ng-class="{'login-image': $state.includes('login')}"
                 flex
-                ng-controller="sidebarController as sidebar"
-                md-swipe-left="sidebar.onSwipeLeft()"
+                md-swipe-left="main.onSidebarSwipeLeft()"
                 layout="column"
                 ui-view="sidebar"></md-sidenav>
 
@@ -53,11 +56,13 @@
 
 </div>
 
-<script src="ActorMessenger/ActorMessenger.nocache.js"></script>
-<script src="assets/libs/crypto/core.js"></script>
-<script src="assets/libs/crypto/sha256.js"></script>
-<script src="assets/libs/crypto/jsencrypt.min.js"></script>
 
+<script src="ActorMessenger/ActorMessenger.nocache.js"></script>
+
+<!-- build:js(.) assets/js/lib.js -->
+<script src="bower_components/CryptoJS/build/components/core-min.js"></script>
+<script src="bower_components/CryptoJS/build/components/sha256-min.js"></script>
+<script src="bower_components/jsencrypt/bin/jsencrypt.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
 
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -67,6 +72,7 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
 <script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
+<!-- endbuild -->
 
 <script src="assets/js/app.js"></script>
 
