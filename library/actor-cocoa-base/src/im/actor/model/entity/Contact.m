@@ -58,7 +58,7 @@ J2OBJC_INITIALIZED_DEFN(AMContact)
 id<BSBserCreator> AMContact_CREATOR_;
 
 
-#line 15
+#line 16
 @implementation AMContact
 
 + (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -66,7 +66,7 @@ id<BSBserCreator> AMContact_CREATOR_;
 }
 
 
-#line 33
+#line 34
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)sortKey
                withAMAvatar:(AMAvatar *)avatar
@@ -76,14 +76,14 @@ id<BSBserCreator> AMContact_CREATOR_;
 }
 
 
-#line 40
+#line 41
 - (instancetype)init {
   AMContact_init(self);
   return self;
 }
 
 
-#line 44
+#line 45
 - (jint)getUid {
   return uid_;
 }
@@ -97,7 +97,7 @@ id<BSBserCreator> AMContact_CREATOR_;
 }
 
 
-#line 57
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   sortKey_ = [values getLongWithInt:2];
@@ -108,7 +108,7 @@ id<BSBserCreator> AMContact_CREATOR_;
 }
 
 
-#line 67
+#line 68
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
   [writer writeLongWithInt:2 withLong:sortKey_];
@@ -119,19 +119,19 @@ id<BSBserCreator> AMContact_CREATOR_;
 }
 
 
-#line 77
+#line 78
 - (jlong)getEngineId {
   return uid_;
 }
 
 
-#line 82
+#line 83
 - (jlong)getEngineSort {
   return sortKey_;
 }
 
 
-#line 87
+#line 88
 - (NSString *)getEngineSearch {
   return name_;
 }
@@ -146,20 +146,20 @@ id<BSBserCreator> AMContact_CREATOR_;
 @end
 
 
-#line 17
+#line 18
 AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data) {
   AMContact_initialize();
   
-#line 18
+#line 19
   return ((AMContact *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContact_init(), data));
 }
 
 
-#line 33
+#line 34
 void AMContact_initWithInt_withLong_withAMAvatar_withNSString_(AMContact *self, jint uid, jlong sortKey, AMAvatar *avatar, NSString *name) {
   (void) BSBserObject_init(self);
   
-#line 34
+#line 35
   self->uid_ = uid;
   self->sortKey_ = sortKey;
   self->avatar_ = avatar;
@@ -167,7 +167,7 @@ void AMContact_initWithInt_withLong_withAMAvatar_withNSString_(AMContact *self, 
 }
 
 
-#line 33
+#line 34
 AMContact *new_AMContact_initWithInt_withLong_withAMAvatar_withNSString_(jint uid, jlong sortKey, AMAvatar *avatar, NSString *name) {
   AMContact *self = [AMContact alloc];
   AMContact_initWithInt_withLong_withAMAvatar_withNSString_(self, uid, sortKey, avatar, name);
@@ -175,13 +175,13 @@ AMContact *new_AMContact_initWithInt_withLong_withAMAvatar_withNSString_(jint ui
 }
 
 
-#line 40
+#line 41
 void AMContact_init(AMContact *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 40
+#line 41
 AMContact *new_AMContact_init() {
   AMContact *self = [AMContact alloc];
   AMContact_init(self);
@@ -193,7 +193,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMContact)
 @implementation AMContact_$1
 
 
-#line 23
+#line 24
 - (AMContact *)createInstance {
   return new_AMContact_init();
 }

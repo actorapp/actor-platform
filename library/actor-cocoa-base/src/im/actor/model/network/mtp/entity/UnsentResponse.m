@@ -24,11 +24,11 @@
 @end
 
 
-#line 11
+#line 12
 @implementation MTUnsentResponse
 
 
-#line 19
+#line 20
 - (instancetype)initWithLong:(jlong)messageId
                     withLong:(jlong)responseMessageId
                      withInt:(jint)len {
@@ -37,7 +37,7 @@
 }
 
 
-#line 25
+#line 26
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -60,7 +60,7 @@
 }
 
 
-#line 47
+#line 48
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeLongWithLong:responseMessageId_];
@@ -68,7 +68,7 @@
 }
 
 
-#line 54
+#line 55
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   responseMessageId_ = [bs readLong];
@@ -76,7 +76,7 @@
 }
 
 
-#line 61
+#line 62
 - (NSString *)description {
   return JreStrcat("$J$JC", @"UnsentResponse[", messageId_, @"->", responseMessageId_, ']');
 }
@@ -84,18 +84,18 @@
 @end
 
 
-#line 19
+#line 20
 void MTUnsentResponse_initWithLong_withLong_withInt_(MTUnsentResponse *self, jlong messageId, jlong responseMessageId, jint len) {
   (void) MTProtoStruct_init(self);
   
-#line 20
+#line 21
   self->messageId_ = messageId;
   self->responseMessageId_ = responseMessageId;
   self->len_ = len;
 }
 
 
-#line 19
+#line 20
 MTUnsentResponse *new_MTUnsentResponse_initWithLong_withLong_withInt_(jlong messageId, jlong responseMessageId, jint len) {
   MTUnsentResponse *self = [MTUnsentResponse alloc];
   MTUnsentResponse_initWithLong_withLong_withInt_(self, messageId, responseMessageId, len);
@@ -103,13 +103,13 @@ MTUnsentResponse *new_MTUnsentResponse_initWithLong_withLong_withInt_(jlong mess
 }
 
 
-#line 37
+#line 38
 void MTUnsentResponse_initWithBSDataInput_(MTUnsentResponse *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 37
+#line 38
 MTUnsentResponse *new_MTUnsentResponse_initWithBSDataInput_(BSDataInput *stream) {
   MTUnsentResponse *self = [MTUnsentResponse alloc];
   MTUnsentResponse_initWithBSDataInput_(self, stream);

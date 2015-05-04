@@ -18,7 +18,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 8
+#line 12
 @implementation MTProtoStruct
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
@@ -27,14 +27,14 @@
 }
 
 
-#line 14
+#line 18
 - (instancetype)init {
   MTProtoStruct_init(self);
   return self;
 }
 
 
-#line 20
+#line 24
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   jbyte header = [self getHeader];
   if (header != 0) {
@@ -44,7 +44,7 @@
 }
 
 
-#line 29
+#line 33
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
   [self readBodyWithBSDataInput:bs];
   return self;
@@ -53,7 +53,7 @@
 @end
 
 
-#line 10
+#line 14
 void MTProtoStruct_initWithBSDataInput_(MTProtoStruct *self, BSDataInput *stream) {
   (void) MTProtoObject_initWithBSDataInput_(self, stream);
 }

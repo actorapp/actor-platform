@@ -24,11 +24,11 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiDocumentExVideo
 
 
-#line 25
+#line 29
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
                     withInt:(jint)duration {
@@ -37,14 +37,14 @@
 }
 
 
-#line 31
+#line 35
 - (instancetype)init {
   ImActorModelApiDocumentExVideo_init(self);
   return self;
 }
 
 
-#line 35
+#line 39
 - (jint)getHeader {
   return 2;
 }
@@ -62,7 +62,7 @@
 }
 
 
-#line 52
+#line 56
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
@@ -70,7 +70,7 @@
 }
 
 
-#line 59
+#line 63
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
@@ -78,7 +78,7 @@
 }
 
 
-#line 66
+#line 70
 - (NSString *)description {
   NSString *res = @"struct DocumentExVideo{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
@@ -91,18 +91,18 @@
 @end
 
 
-#line 25
+#line 29
 void ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(ImActorModelApiDocumentExVideo *self, jint w, jint h, jint duration) {
   (void) ImActorModelApiDocumentEx_init(self);
   
-#line 26
+#line 30
   self->w_ = w;
   self->h_ = h;
   self->duration_ = duration;
 }
 
 
-#line 25
+#line 29
 ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) {
   ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
   ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
@@ -114,7 +114,7 @@ void ImActorModelApiDocumentExVideo_init(ImActorModelApiDocumentExVideo *self) {
 }
 
 
-#line 31
+#line 35
 ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_init() {
   ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
   ImActorModelApiDocumentExVideo_init(self);

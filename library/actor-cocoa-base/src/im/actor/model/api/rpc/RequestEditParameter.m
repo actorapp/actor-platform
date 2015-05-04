@@ -29,17 +29,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, key_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestEditParameter
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
   ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(self, key, value);
@@ -47,14 +47,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestEditParameter_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (NSString *)getKey {
   return self->key_;
 }
@@ -64,14 +64,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->key_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->value_ = [values getStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->key_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -84,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 }
 
 
-#line 66
+#line 70
 - (NSString *)description {
   NSString *res = @"rpc EditParameter{";
   res = JreStrcat("$C", res, '}');
@@ -92,7 +92,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 }
 
 
-#line 73
+#line 77
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditParameter_HEADER;
 }
@@ -100,24 +100,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestEditParameter *ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditParameter_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestEditParameter *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditParameter_init(), data));
 }
 
 void ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(ImActorModelApiRpcRequestEditParameter *self, NSString *key, NSString *value) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->key_ = key;
   self->value_ = value;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(NSString *key, NSString *value) {
   ImActorModelApiRpcRequestEditParameter *self = [ImActorModelApiRpcRequestEditParameter alloc];
   ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(self, key, value);
@@ -125,13 +125,13 @@ ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParamet
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestEditParameter_init(ImActorModelApiRpcRequestEditParameter *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_init() {
   ImActorModelApiRpcRequestEditParameter *self = [ImActorModelApiRpcRequestEditParameter alloc];
   ImActorModelApiRpcRequestEditParameter_init(self);

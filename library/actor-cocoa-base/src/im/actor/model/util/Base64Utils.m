@@ -82,7 +82,7 @@ J2OBJC_INITIALIZED_DEFN(AMBase64Utils)
 #line 33
       'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
 #line 34
-      '4', '5', '6', '7', '8', '9', '$', '_' } count:64];
+      '4', '5', '6', '7', '8', '9', '+', '/' } count:64];
       AMBase64Utils_base64Values_ = [IOSByteArray newArrayWithLength:
 #line 42
       128];

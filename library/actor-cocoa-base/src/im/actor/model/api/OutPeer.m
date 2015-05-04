@@ -27,11 +27,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiOutPeer
 
 
-#line 25
+#line 29
 - (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
                                             withInt:(jint)id_
                                            withLong:(jlong)accessHash {
@@ -40,14 +40,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 }
 
 
-#line 31
+#line 35
 - (instancetype)init {
   ImActorModelApiOutPeer_init(self);
   return self;
 }
 
 
-#line 35
+#line 39
 - (ImActorModelApiPeerTypeEnum *)getType {
   return self->type_;
 }
@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->type_ = ImActorModelApiPeerTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->id__ = [values getIntWithInt:2];
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 }
 
 
-#line 55
+#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->type_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 }
 
 
-#line 65
+#line 69
 - (NSString *)description {
   NSString *res = @"struct OutPeer{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"type=", self->type_));
@@ -92,18 +92,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiOutPeer, type_, ImActorModelApiPeerTypeEnum *
 @end
 
 
-#line 25
+#line 29
 void ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiOutPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash) {
   (void) BSBserObject_init(self);
   
-#line 26
+#line 30
   self->type_ = type;
   self->id__ = id_;
   self->accessHash_ = accessHash;
 }
 
 
-#line 25
+#line 29
 ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash) {
   ImActorModelApiOutPeer *self = [ImActorModelApiOutPeer alloc];
   ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(self, type, id_, accessHash);
@@ -115,7 +115,7 @@ void ImActorModelApiOutPeer_init(ImActorModelApiOutPeer *self) {
 }
 
 
-#line 31
+#line 35
 ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_init() {
   ImActorModelApiOutPeer *self = [ImActorModelApiOutPeer alloc];
   ImActorModelApiOutPeer_init(self);

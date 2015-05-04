@@ -28,17 +28,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateEmailTitleChanged
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateEmailTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)emailId
                withNSString:(NSString *)title {
   ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(self, emailId, title);
@@ -46,14 +46,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateEmailTitleChanged_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getEmailId {
   return self->emailId_;
 }
@@ -63,14 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->emailId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->title_ = [values getStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   if (self->title_ == nil) {
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 }
 
 
-#line 63
+#line 67
 - (NSString *)description {
   NSString *res = @"update EmailTitleChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"emailId=", self->emailId_));
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 }
 
 
-#line 72
+#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateEmailTitleChanged_HEADER;
 }
@@ -98,24 +98,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateEmailTitleChanged, title_, NSStr
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateEmailTitleChanged *ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateEmailTitleChanged_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateEmailTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateEmailTitleChanged_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateEmailTitleChanged *self, jint emailId, NSString *title) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 31
+#line 35
   self->emailId_ = emailId;
   self->title_ = title;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(jint emailId, NSString *title) {
   ImActorModelApiUpdatesUpdateEmailTitleChanged *self = [ImActorModelApiUpdatesUpdateEmailTitleChanged alloc];
   ImActorModelApiUpdatesUpdateEmailTitleChanged_initWithInt_withNSString_(self, emailId, title);
@@ -123,13 +123,13 @@ ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateE
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiUpdatesUpdateEmailTitleChanged_init(ImActorModelApiUpdatesUpdateEmailTitleChanged *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiUpdatesUpdateEmailTitleChanged *new_ImActorModelApiUpdatesUpdateEmailTitleChanged_init() {
   ImActorModelApiUpdatesUpdateEmailTitleChanged *self = [ImActorModelApiUpdatesUpdateEmailTitleChanged alloc];
   ImActorModelApiUpdatesUpdateEmailTitleChanged_init(self);

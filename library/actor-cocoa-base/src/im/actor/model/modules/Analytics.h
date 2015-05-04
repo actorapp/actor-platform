@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
+@class AMPeer;
 @class IOSObjectArray;
 @class ImActorModelModulesModules;
 
@@ -17,6 +18,14 @@
 #pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+
+- (void)onChatClosedWithAMPeer:(AMPeer *)peer;
+
+- (void)onChatOpenWithAMPeer:(AMPeer *)peer;
+
+- (void)onDialogsClosed;
+
+- (void)onDialogsOpen;
 
 - (void)onLoggedInWithNSString:(NSString *)deviceId
                        withInt:(jint)uid
@@ -30,9 +39,44 @@
 
 - (void)onLoggedOutWithNSString:(NSString *)deviceId;
 
+- (void)onProfileClosedWithInt:(jint)uid;
+
+- (void)onProfileOpenWithInt:(jint)uid;
+
+- (void)trackWithNSString:(NSString *)event;
+
+- (void)trackWithNSString:(NSString *)event
+        withNSStringArray:(IOSObjectArray *)args;
+
+- (void)trackActionCancelWithNSString:(NSString *)action;
+
+- (void)trackActionErrorWithNSString:(NSString *)action
+                        withNSString:(NSString *)tag
+                        withNSString:(NSString *)message;
+
+- (void)trackActionSuccessWithNSString:(NSString *)action;
+
+- (void)trackActionTryAgainWithNSString:(NSString *)action;
+
 - (void)trackAppHidden;
 
 - (void)trackAppVisible;
+
+- (void)trackAuthCountryClosed;
+
+- (void)trackAuthCountryOpen;
+
+- (void)trackAuthCountryPickedWithNSString:(NSString *)country;
+
+- (void)trackAuthPhoneInfoOpen;
+
+- (void)trackAuthPhoneOpen;
+
+- (void)trackAuthPhoneTypeWithNSString:(NSString *)newValue;
+
+- (void)trackCodeRequest;
+
+- (void)trackCodeRequestWithLong:(jlong)phone;
 
 @end
 

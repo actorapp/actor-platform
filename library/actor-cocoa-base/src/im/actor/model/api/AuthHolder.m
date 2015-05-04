@@ -29,11 +29,11 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelApiAuthHolderEnum)
 ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
 
 
-#line 8
+#line 12
 @implementation ImActorModelApiAuthHolderEnum
 
 
-#line 16
+#line 20
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -42,7 +42,7 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
 }
 
 
-#line 20
+#line 24
 - (jint)getValue {
   return value_;
 }
@@ -83,13 +83,13 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString
 + (void)initialize {
   if (self == [ImActorModelApiAuthHolderEnum class]) {
     ImActorModelApiAuthHolderEnum_THISDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(
-#line 10
+#line 14
     1, @"THISDEVICE", 0);
     ImActorModelApiAuthHolderEnum_OTHERDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(
-#line 11
+#line 15
     2, @"OTHERDEVICE", 1);
     ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(
-#line 12
+#line 16
     -1, @"UNSUPPORTED_VALUE", 2);
     J2OBJC_SET_INITIALIZED(ImActorModelApiAuthHolderEnum)
   }
@@ -98,16 +98,16 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString
 @end
 
 
-#line 16
+#line 20
 void ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(ImActorModelApiAuthHolderEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   
-#line 17
+#line 21
   self->value_ = value;
 }
 
 
-#line 16
+#line 20
 ImActorModelApiAuthHolderEnum *new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   ImActorModelApiAuthHolderEnum *self = [ImActorModelApiAuthHolderEnum alloc];
   ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
@@ -115,23 +115,23 @@ ImActorModelApiAuthHolderEnum *new_ImActorModelApiAuthHolderEnum_initWithInt_wit
 }
 
 
-#line 24
+#line 28
 ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value) {
   ImActorModelApiAuthHolderEnum_initialize();
   
-#line 25
+#line 29
   switch (value) {
     case 1:
     
-#line 26
+#line 30
     return ImActorModelApiAuthHolderEnum_THISDEVICE;
     case 2:
     
-#line 27
+#line 31
     return ImActorModelApiAuthHolderEnum_OTHERDEVICE;
     default:
     
-#line 28
+#line 32
     return ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE;
   }
 }

@@ -249,11 +249,11 @@ J2OBJC_TYPE_LITERAL_HEADER(AMManagedConnection_TimeoutRunnable)
 J2OBJC_INITIALIZED_DEFN(AMManagedConnection)
 
 
-#line 21
+#line 22
 @implementation AMManagedConnection
 
 
-#line 64
+#line 65
 - (instancetype)initWithInt:(jint)connectionId
                     withInt:(jint)mtprotoVersion
                     withInt:(jint)apiMajorVersion
@@ -267,25 +267,25 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
 }
 
 
-#line 92
+#line 93
 - (void)sendHandshakeRequest {
   AMManagedConnection_sendHandshakeRequest(self);
 }
 
 
-#line 110
+#line 111
 - (void)onHandshakePackageWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onHandshakePackageWithByteArray_(self, data);
 }
 
 
-#line 148
+#line 149
 - (void)onProtoPackageWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onProtoPackageWithByteArray_(self, data);
 }
 
 
-#line 153
+#line 154
 - (void)sendProtoPackageWithByteArray:(IOSByteArray *)data
                               withInt:(jint)offset
                               withInt:(jint)len {
@@ -293,74 +293,74 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
 }
 
 
-#line 162
+#line 163
 - (void)onPingPackageWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onPingPackageWithByteArray_(self, data);
 }
 
 
-#line 168
+#line 169
 - (void)onPongPackageWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onPongPackageWithByteArray_(self, data);
 }
 
 
-#line 188
+#line 189
 - (void)sendPingMessage {
   AMManagedConnection_sendPingMessage(self);
 }
 
 
-#line 208
+#line 209
 - (void)refreshTimeouts {
   AMManagedConnection_refreshTimeouts(self);
 }
 
 
-#line 224
+#line 225
 - (void)onAckPackageWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onAckPackageWithByteArray_(self, data);
 }
 
 
-#line 236
+#line 237
 - (void)sendAckPackageWithInt:(jint)receivedIndex {
   AMManagedConnection_sendAckPackageWithInt_(self, receivedIndex);
 }
 
 
-#line 248
+#line 249
 - (void)onDropPackageWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onDropPackageWithByteArray_(self, data);
 }
 
 
-#line 260
+#line 261
 - (void)onRawConnected {
   AMManagedConnection_onRawConnected(self);
 }
 
 
-#line 277
+#line 278
 - (void)onRawReceivedWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onRawReceivedWithByteArray_(self, data);
 }
 
 
-#line 342
+#line 343
 - (void)onRawClosed {
   AMManagedConnection_onRawClosed(self);
 }
 
 
-#line 349
+#line 350
 - (void)rawPostWithInt:(jint)header
          withByteArray:(IOSByteArray *)data {
   AMManagedConnection_rawPostWithInt_withByteArray_(self, header, data);
 }
 
 
-#line 353
+#line 354
 - (void)rawPostWithInt:(jint)header
          withByteArray:(IOSByteArray *)data
                withInt:(jint)offset
@@ -369,14 +369,11 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
 }
 
 
-#line 377
+#line 378
 - (void)post:(IOSByteArray *)data
   withOffset:(jint)offset
      withLen:(jint)len {
   @synchronized(self) {
-    
-#line 378
-    AMLog_wWithNSString_withNSString_(TAG_, @"post");
     if (isClosed__) {
       return;
     }
@@ -384,7 +381,7 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
       AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(self, data, offset, len);
     }
     @catch (
-#line 384
+#line 385
     JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
       [self close];
@@ -393,31 +390,28 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
 }
 
 
-#line 391
+#line 392
 - (jboolean)isClosed {
   @synchronized(self) {
     
-#line 392
+#line 393
     return isClosed__;
   }
 }
 
 
-#line 396
+#line 397
 - (void)close {
   @synchronized(self) {
-    
-#line 397
-    AMLog_wWithNSString_withNSString_(TAG_, @"close");
     if (isClosed__) {
       return;
     }
     isClosed__ = YES;
     
-#line 403
+#line 404
     [((AMAsyncConnection *) nil_chk(rawConnection_)) doClose];
     
-#line 405
+#line 406
     @synchronized(packageTimers_) {
       for (JavaLangInteger * __strong id_ in nil_chk([((JavaUtilHashMap *) nil_chk(packageTimers_)) keySet])) {
         [((AMTimerCompat *) nil_chk([packageTimers_ getWithId:id_])) cancel];
@@ -429,18 +423,18 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
       [packageTimers_ clear];
     }
     
-#line 416
+#line 417
     [((AMTimerCompat *) nil_chk(pingTask_)) cancel];
     [((AMTimerCompat *) nil_chk(connectionTimeout_)) cancel];
     [((AMTimerCompat *) nil_chk(handshakeTimeout_)) cancel];
     
-#line 420
+#line 421
     if (!isOpened_ || !isHandshakePerformed_) {
       [((id<AMManagedConnectionCreateCallback>) nil_chk(factoryCallback_)) onConnectionCreateErrorWithAMManagedConnection:self];
     }
     else {
       
-#line 423
+#line 424
       [((id<AMConnectionCallback>) nil_chk(callback_)) onConnectionDie];
     }
   }
@@ -456,24 +450,24 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
 @end
 
 
-#line 64
+#line 65
 void AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(AMManagedConnection *self, jint connectionId, jint mtprotoVersion, jint apiMajorVersion, jint apiMinorVersion, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<AMManagedConnectionCreateCallback> factoryCallback, id<AMAsyncConnectionFactory> connectionFactory) {
   (void) NSObject_init(self);
   self->connectionInterface_ = new_AMManagedConnection_ConnectionInterface_initWithAMManagedConnection_(self);
   self->CRC32_ENGINE_ = new_AMCRC32_init();
   self->receivedPackages_ =
-#line 50
+#line 51
   0;
   self->sentPackages_ = 0;
   self->isClosed__ =
-#line 53
+#line 54
   NO;
   self->isOpened_ = NO;
   self->isHandshakePerformed_ = NO;
   self->schedulledPings_ = new_JavaUtilHashMap_init();
   self->packageTimers_ = new_JavaUtilHashMap_init();
   
-#line 72
+#line 73
   self->TAG_ = JreStrcat("$I", @"Connection#", connectionId);
   self->connectionId_ = connectionId;
   self->mtprotoVersion_ = mtprotoVersion;
@@ -482,20 +476,19 @@ void AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEnd
   self->callback_ = callback;
   self->factoryCallback_ = factoryCallback;
   self->rawConnection_ = [((id<AMAsyncConnectionFactory>) nil_chk(connectionFactory)) createConnectionWithInt:connectionId withAMConnectionEndpoint:endpoint withAMAsyncConnectionInterface:self->connectionInterface_];
-  AMLog_dWithNSString_withNSString_(self->TAG_, @"Starting connection");
   
-#line 82
+#line 83
   self->handshakeTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
   self->pingTask_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self));
   self->connectionTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
   [self->connectionTimeout_ scheduleWithLong:AMManagedConnection_CONNECTION_TIMEOUT];
   
-#line 87
+#line 88
   [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doConnect];
 }
 
 
-#line 64
+#line 65
 AMManagedConnection *new_AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(jint connectionId, jint mtprotoVersion, jint apiMajorVersion, jint apiMinorVersion, AMConnectionEndpoint *endpoint, id<AMConnectionCallback> callback, id<AMManagedConnectionCreateCallback> factoryCallback, id<AMAsyncConnectionFactory> connectionFactory) {
   AMManagedConnection *self = [AMManagedConnection alloc];
   AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(self, connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, factoryCallback, connectionFactory);
@@ -503,14 +496,11 @@ AMManagedConnection *new_AMManagedConnection_initWithInt_withInt_withInt_withInt
 }
 
 
-#line 92
+#line 93
 void AMManagedConnection_sendHandshakeRequest(AMManagedConnection *self) {
   @synchronized(self) {
     
-#line 93
-    AMLog_dWithNSString_withNSString_(self->TAG_, @"Starting handshake");
-    
-#line 95
+#line 96
     BSDataOutput *handshakeRequest = new_BSDataOutput_init();
     [handshakeRequest writeByteWithInt:self->mtprotoVersion_];
     [handshakeRequest writeByteWithInt:self->apiMajorVersion_];
@@ -522,19 +512,16 @@ void AMManagedConnection_sendHandshakeRequest(AMManagedConnection *self) {
     [handshakeRequest writeIntWithInt:self->handshakeRandomData_->size_];
     [handshakeRequest writeBytesWithByteArray:self->handshakeRandomData_ withInt:0 withInt:self->handshakeRandomData_->size_];
     
-#line 106
+#line 107
     [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) scheduleWithLong:AMManagedConnection_HANDSHAKE_TIMEOUT];
     AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_HANDSHAKE_REQUEST, [handshakeRequest toByteArray]);
   }
 }
 
 
-#line 110
+#line 111
 void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
-    
-#line 111
-    AMLog_dWithNSString_withNSString_(self->TAG_, @"Handshake response received");
     BSDataInput *handshakeResponse = new_BSDataInput_initWithByteArray_(data);
     jint protoVersion = [handshakeResponse readByte];
     jint apiMajor = [handshakeResponse readByte];
@@ -542,29 +529,27 @@ void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *s
     IOSByteArray *sha256 = [handshakeResponse readBytesWithInt:32];
     IOSByteArray *localSha256 = AMCryptoUtils_SHA256WithByteArray_(self->handshakeRandomData_);
     
-#line 119
+#line 120
     if (!JavaUtilArrays_equalsWithByteArray_withByteArray_(sha256, localSha256)) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, @"SHA 256 is incorrect");
-      AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$$", @"Random data: ", AMCryptoUtils_hexWithByteArray_(self->handshakeRandomData_)));
-      AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$$", @"Remote SHA256: ", AMCryptoUtils_hexWithByteArray_(sha256)));
-      AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$$", @"Local SHA256: ", AMCryptoUtils_hexWithByteArray_(localSha256)));
+      AMLog_wWithNSString_withNSString_(self->TAG_, @"SHA 256 is incorrect");
+      
+#line 125
       @throw new_JavaIoIOException_initWithNSString_(@"SHA 256 is incorrect");
     }
     if (protoVersion != 1) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
       @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
     }
     if (apiMajor != 1) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
       @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
     }
     if (apiMinor != 0) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
       @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
     }
     
-#line 139
-    AMLog_dWithNSString_withNSString_(self->TAG_, @"Handshake successful");
+#line 141
     self->isHandshakePerformed_ = YES;
     [((id<AMManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreatedWithAMManagedConnection:self];
     [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) cancel];
@@ -573,22 +558,22 @@ void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *s
 }
 
 
-#line 148
+#line 149
 void AMManagedConnection_onProtoPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
-#line 149
+#line 150
     [((id<AMConnectionCallback>) nil_chk(self->callback_)) onMessage:data withOffset:0 withLen:((IOSByteArray *) nil_chk(data))->size_];
     AMManagedConnection_refreshTimeouts(self);
   }
 }
 
 
-#line 153
+#line 154
 void AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(AMManagedConnection *self, IOSByteArray *data, jint offset, jint len) {
   @synchronized(self) {
     
-#line 154
+#line 155
     if (self->isClosed__) {
       return;
     }
@@ -597,7 +582,7 @@ void AMManagedConnection_sendProtoPackageWithByteArray_withInt_withInt_(AMManage
 }
 
 
-#line 162
+#line 163
 void AMManagedConnection_onPingPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_PONG, data);
@@ -606,45 +591,42 @@ void AMManagedConnection_onPingPackageWithByteArray_(AMManagedConnection *self, 
 }
 
 
-#line 168
+#line 169
 void AMManagedConnection_onPongPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
-#line 169
+#line 170
     BSDataInput *dataInput = new_BSDataInput_initWithByteArray_(data);
     jint size = [dataInput readInt];
     if (size != 8) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, @"Received incorrect pong");
+      AMLog_wWithNSString_withNSString_(self->TAG_, @"Received incorrect pong");
       @throw new_JavaIoIOException_initWithNSString_(@"Incorrect pong payload size");
     }
     jlong pingId = [dataInput readLong];
     
-#line 177
-    AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$J$", @"Received pong #", pingId, @"..."));
-    
-#line 179
+#line 180
     AMTimerCompat *timeoutTask = [((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) removeWithId:JavaLangLong_valueOfWithLong_(pingId)];
     if (timeoutTask == nil) {
       return;
     }
     
-#line 184
+#line 185
     [((AMTimerCompat *) nil_chk(timeoutTask)) cancel];
     AMManagedConnection_refreshTimeouts(self);
   }
 }
 
 
-#line 188
+#line 189
 void AMManagedConnection_sendPingMessage(AMManagedConnection *self) {
   @synchronized(self) {
     
-#line 189
+#line 190
     if (self->isClosed__) {
       return;
     }
     
-#line 193
+#line 194
     jlong pingId = [((JavaUtilRandom *) nil_chk(AMManagedConnection_RANDOM_)) nextLong];
     BSDataOutput *dataOutput = new_BSDataOutput_init();
     [dataOutput writeIntWithInt:8];
@@ -652,22 +634,21 @@ void AMManagedConnection_sendPingMessage(AMManagedConnection *self) {
       [dataOutput writeLongWithLong:pingId];
     }
     
-#line 200
+#line 201
     AMTimerCompat *pingTimeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
     (void) [((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) putWithId:JavaLangLong_valueOfWithLong_(pingId) withId:pingTimeoutTask];
     [pingTimeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     
-#line 204
-    AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$J$@", @"Performing ping #", pingId, @"... ", pingTimeoutTask));
+#line 206
     AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_PING, [dataOutput toByteArray]);
   }
 }
 
 
-#line 208
+#line 209
 void AMManagedConnection_refreshTimeouts(AMManagedConnection *self) {
   
-#line 212
+#line 213
   for (AMTimerCompat * __strong ping in nil_chk([((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) values])) {
     [((AMTimerCompat *) nil_chk(ping)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
   }
@@ -675,20 +656,20 @@ void AMManagedConnection_refreshTimeouts(AMManagedConnection *self) {
     [((AMTimerCompat *) nil_chk(ackTimeout)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
   }
   
-#line 219
+#line 220
   [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
 }
 
 
-#line 224
+#line 225
 void AMManagedConnection_onAckPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
-#line 225
+#line 226
     BSDataInput *ackContent = new_BSDataInput_initWithByteArray_(data);
     jint frameId = [ackContent readInt];
     
-#line 228
+#line 229
     AMTimerCompat *timerCompat = [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) removeWithId:JavaLangInteger_valueOfWithInt_(frameId)];
     if (timerCompat == nil) {
       return;
@@ -699,16 +680,16 @@ void AMManagedConnection_onAckPackageWithByteArray_(AMManagedConnection *self, I
 }
 
 
-#line 236
+#line 237
 void AMManagedConnection_sendAckPackageWithInt_(AMManagedConnection *self, jint receivedIndex) {
   @synchronized(self) {
     
-#line 237
+#line 238
     if (self->isClosed__) {
       return;
     }
     
-#line 241
+#line 242
     BSDataOutput *ackPackage = new_BSDataOutput_init();
     [ackPackage writeIntWithInt:receivedIndex];
     AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_ACK, [ackPackage toByteArray]);
@@ -716,89 +697,84 @@ void AMManagedConnection_sendAckPackageWithInt_(AMManagedConnection *self, jint 
 }
 
 
-#line 248
+#line 249
 void AMManagedConnection_onDropPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
-#line 249
+#line 250
     BSDataInput *drop = new_BSDataInput_initWithByteArray_(data);
     jlong messageId = [drop readLong];
     jint errorCode = [drop readByte];
     jint messageLen = [drop readInt];
     NSString *message = [NSString stringWithBytes:[drop readBytesWithInt:messageLen] charsetName:@"UTF-8"];
-    AMLog_dWithNSString_withNSString_(self->TAG_, JreStrcat("$$", @"Drop received: ", message));
+    AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$$", @"Drop received: ", message));
     @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$$", @"Drop received: ", message));
   }
 }
 
 
-#line 260
+#line 261
 void AMManagedConnection_onRawConnected(AMManagedConnection *self) {
   @synchronized(self) {
-    
-#line 261
-    AMLog_dWithNSString_withNSString_(self->TAG_, @"onConnected");
     if (self->isClosed__) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, @"onConnected:isClosed");
+      
+#line 265
       return;
     }
     if (self->isOpened_) {
-      AMLog_dWithNSString_withNSString_(self->TAG_, @"onConnected:isOpened");
+      
+#line 269
       return;
     }
     self->isOpened_ = YES;
     
-#line 272
+#line 273
     [((AMTimerCompat *) nil_chk(self->connectionTimeout_)) cancel];
     
-#line 274
+#line 275
     AMManagedConnection_sendHandshakeRequest(self);
   }
 }
 
 
-#line 277
+#line 278
 void AMManagedConnection_onRawReceivedWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     
-#line 278
+#line 279
     if (self->isClosed__) {
       return;
     }
     
-#line 282
-    AMLog_wWithNSString_withNSString_(self->TAG_, @"onRawReceived");
-    
-#line 284
+#line 285
     @try {
       BSDataInput *dataInput = new_BSDataInput_initWithByteArray_(data);
       jint packageIndex = [dataInput readInt];
       
-#line 288
+#line 289
       if (self->receivedPackages_ != packageIndex) {
         AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$I", @"Invalid package index. Expected: ", self->receivedPackages_, @", got: ", packageIndex));
         @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$I", @"Invalid package index. Expected: ", self->receivedPackages_, @", got: ", packageIndex));
       }
       self->receivedPackages_++;
       
-#line 294
+#line 295
       jint header = [dataInput readByte];
       jint dataLength = [dataInput readInt];
       IOSByteArray *content = [dataInput readBytesWithInt:dataLength];
       jint crc32 = [dataInput readInt];
       
-#line 299
+#line 300
       [((AMCRC32 *) nil_chk(self->CRC32_ENGINE_)) reset];
       [self->CRC32_ENGINE_ updateWithByteArray:content];
       
-#line 302
+#line 303
       if (((jint) [self->CRC32_ENGINE_ getValue]) != crc32) {
         AMLog_wWithNSString_withNSString_(self->TAG_, @"Incorrect CRC32");
         @throw new_JavaIoIOException_initWithNSString_(@"Incorrect CRC32");
       }
       
-#line 307
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I", @"Received package: ", header));
+#line 309
       if (header == AMManagedConnection_HEADER_HANDSHAKE_RESPONSE) {
         if (self->isHandshakePerformed_) {
           @throw new_JavaIoIOException_initWithNSString_(@"Double Handshake");
@@ -807,39 +783,39 @@ void AMManagedConnection_onRawReceivedWithByteArray_(AMManagedConnection *self, 
       }
       else {
         
-#line 314
+#line 315
         if (!self->isHandshakePerformed_) {
           @throw new_JavaIoIOException_initWithNSString_(@"Package before Handshake");
         }
         
-#line 318
+#line 319
         if (header == AMManagedConnection_HEADER_PROTO) {
           AMManagedConnection_onProtoPackageWithByteArray_(self, content);
           AMManagedConnection_sendAckPackageWithInt_(self, packageIndex);
         }
         else
-#line 321
+#line 322
         if (header == AMManagedConnection_HEADER_PING) {
           AMManagedConnection_onPingPackageWithByteArray_(self, content);
         }
         else
-#line 323
+#line 324
         if (header == AMManagedConnection_HEADER_PONG) {
           AMManagedConnection_onPongPackageWithByteArray_(self, content);
         }
         else
-#line 325
+#line 326
         if (header == AMManagedConnection_HEADER_DROP) {
           AMManagedConnection_onDropPackageWithByteArray_(self, content);
         }
         else
-#line 327
+#line 328
         if (header == AMManagedConnection_HEADER_ACK) {
           AMManagedConnection_onAckPackageWithByteArray_(self, content);
         }
         else {
           
-#line 330
+#line 331
           AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I", @"Received unknown package #", header));
         }
       }
@@ -848,40 +824,31 @@ void AMManagedConnection_onRawReceivedWithByteArray_(AMManagedConnection *self, 
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
       [self close];
     }
-    
-#line 339
-    AMLog_wWithNSString_withNSString_(self->TAG_, @"onRawReceived:end");
   }
 }
 
 
-#line 342
+#line 343
 void AMManagedConnection_onRawClosed(AMManagedConnection *self) {
   @synchronized(self) {
-    
-#line 343
-    AMLog_wWithNSString_withNSString_(self->TAG_, @"Received closed event");
     [self close];
   }
 }
 
 
-#line 349
+#line 350
 void AMManagedConnection_rawPostWithInt_withByteArray_(AMManagedConnection *self, jint header, IOSByteArray *data) {
   @synchronized(self) {
     
-#line 350
+#line 351
     AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, header, data, 0, ((IOSByteArray *) nil_chk(data))->size_);
   }
 }
 
 
-#line 353
+#line 354
 void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManagedConnection *self, jint header, IOSByteArray *data, jint offset, jint len) {
   @synchronized(self) {
-    
-#line 354
-    AMLog_wWithNSString_withNSString_(self->TAG_, @"rawPost");
     jint packageId = self->sentPackages_++;
     BSDataOutput *dataOutput = new_BSDataOutput_init();
     [dataOutput writeIntWithInt:packageId];
@@ -892,14 +859,14 @@ void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManaged
     [self->CRC32_ENGINE_ updateWithByteArray:data withInt:offset withInt:len];
     [dataOutput writeIntWithInt:(jint) [self->CRC32_ENGINE_ getValue]];
     
-#line 365
+#line 366
     if (header == AMManagedConnection_HEADER_PROTO) {
       AMTimerCompat *timeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
       (void) [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) putWithId:JavaLangInteger_valueOfWithInt_(packageId) withId:timeoutTask];
       [timeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     }
     
-#line 371
+#line 372
     [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doSendWithByteArray:[dataOutput toByteArray]];
   }
 }
@@ -907,23 +874,23 @@ void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManaged
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection)
 
 
-#line 429
+#line 430
 @implementation AMManagedConnection_ConnectionInterface
 
 
-#line 432
+#line 433
 - (void)onConnected {
   AMManagedConnection_onRawConnected(this$0_);
 }
 
 
-#line 437
+#line 438
 - (void)onReceivedWithByteArray:(IOSByteArray *)data {
   AMManagedConnection_onRawReceivedWithByteArray_(this$0_, data);
 }
 
 
-#line 442
+#line 443
 - (void)onClosed {
   AMManagedConnection_onRawClosed(this$0_);
 }
@@ -949,11 +916,11 @@ AMManagedConnection_ConnectionInterface *new_AMManagedConnection_ConnectionInter
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection_ConnectionInterface)
 
 
-#line 448
+#line 449
 @implementation AMManagedConnection_PingRunnable
 
 
-#line 451
+#line 452
 - (void)run {
   AMManagedConnection_sendPingMessage(this$0_);
 }
@@ -979,13 +946,14 @@ AMManagedConnection_PingRunnable *new_AMManagedConnection_PingRunnable_initWithA
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection_PingRunnable)
 
 
-#line 456
+#line 457
 @implementation AMManagedConnection_TimeoutRunnable
 
 
-#line 459
+#line 460
 - (void)run {
-  AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$@", @"Timeout ", self));
+  
+#line 462
   [this$0_ close];
 }
 

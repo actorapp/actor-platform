@@ -24,11 +24,11 @@
 J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 
 
-#line 9
+#line 11
 @implementation DKAbstractDispatchQueue
 
 
-#line 33
+#line 35
 - (void)notifyQueueChanged {
   id<DKQueueListener> lListener = listener_;
   if (lListener != nil) {
@@ -45,13 +45,13 @@ J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 }
 
 
-#line 53
+#line 55
 - (id<DKQueueListener>)getListener {
   return listener_;
 }
 
 
-#line 62
+#line 64
 - (void)setListenerWithDKQueueListener:(id<DKQueueListener>)listener {
   self->listener_ = listener;
 }

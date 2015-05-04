@@ -18,17 +18,17 @@
 #include "java/io/IOException.h"
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiBaseSeqUpdateTooLong
 
 
-#line 23
+#line 27
 + (ImActorModelApiBaseSeqUpdateTooLong *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(data);
 }
 
 
-#line 28
+#line 32
 - (instancetype)init {
   ImActorModelApiBaseSeqUpdateTooLong_init(self);
   return self;
@@ -38,12 +38,12 @@
 }
 
 
-#line 37
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 
-#line 41
+#line 45
 - (NSString *)description {
   NSString *res = @"update box SeqUpdateTooLong{";
   res = JreStrcat("$C", res, '}');
@@ -51,7 +51,7 @@
 }
 
 
-#line 48
+#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiBaseSeqUpdateTooLong_HEADER;
 }
@@ -59,22 +59,22 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseSeqUpdateTooLong_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiBaseSeqUpdateTooLong *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseSeqUpdateTooLong_init(), data));
 }
 
 
-#line 28
+#line 32
 void ImActorModelApiBaseSeqUpdateTooLong_init(ImActorModelApiBaseSeqUpdateTooLong *self) {
   (void) ImActorModelNetworkParserRpcScope_init(self);
 }
 
 
-#line 28
+#line 32
 ImActorModelApiBaseSeqUpdateTooLong *new_ImActorModelApiBaseSeqUpdateTooLong_init() {
   ImActorModelApiBaseSeqUpdateTooLong *self = [ImActorModelApiBaseSeqUpdateTooLong alloc];
   ImActorModelApiBaseSeqUpdateTooLong_init(self);

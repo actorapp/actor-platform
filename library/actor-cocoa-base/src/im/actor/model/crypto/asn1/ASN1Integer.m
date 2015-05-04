@@ -26,7 +26,7 @@
 J2OBJC_FIELD_SETTER(BCASN1Integer, data_, IOSByteArray *)
 
 
-#line 12
+#line 13
 @implementation BCASN1Integer
 
 + (BCASN1Integer *)readIntegerWithBSDataInput:(BSDataInput *)dataInput {
@@ -34,42 +34,42 @@ J2OBJC_FIELD_SETTER(BCASN1Integer, data_, IOSByteArray *)
 }
 
 
-#line 20
+#line 21
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   BCASN1Integer_initWithByteArray_(self, data);
   return self;
 }
 
 
-#line 24
+#line 25
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)data {
   BCASN1Integer_initWithJavaMathBigInteger_(self, data);
   return self;
 }
 
 
-#line 28
+#line 29
 - (instancetype)init {
   BCASN1Integer_init(self);
   return self;
 }
 
 
-#line 32
+#line 33
 - (instancetype)initWithInt:(jint)val {
   BCASN1Integer_initWithInt_(self, val);
   return self;
 }
 
 
-#line 36
+#line 37
 - (IOSByteArray *)getData {
   return data_;
 }
 
 - (JavaMathBigInteger *)asBigInteger {
   
-#line 42
+#line 43
   return new_JavaMathBigInteger_initWithByteArray_(data_);
 }
 
@@ -82,25 +82,25 @@ J2OBJC_FIELD_SETTER(BCASN1Integer, data_, IOSByteArray *)
 @end
 
 
-#line 14
+#line 15
 BCASN1Integer *BCASN1Integer_readIntegerWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1Integer_initialize();
   
-#line 15
+#line 16
   return new_BCASN1Integer_initWithByteArray_([dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]);
 }
 
 
-#line 20
+#line 21
 void BCASN1Integer_initWithByteArray_(BCASN1Integer *self, IOSByteArray *data) {
   (void) BCASN1Primitive_init(self);
   
-#line 21
+#line 22
   self->data_ = data;
 }
 
 
-#line 20
+#line 21
 BCASN1Integer *new_BCASN1Integer_initWithByteArray_(IOSByteArray *data) {
   BCASN1Integer *self = [BCASN1Integer alloc];
   BCASN1Integer_initWithByteArray_(self, data);
@@ -108,16 +108,16 @@ BCASN1Integer *new_BCASN1Integer_initWithByteArray_(IOSByteArray *data) {
 }
 
 
-#line 24
+#line 25
 void BCASN1Integer_initWithJavaMathBigInteger_(BCASN1Integer *self, JavaMathBigInteger *data) {
   (void) BCASN1Primitive_init(self);
   
-#line 25
+#line 26
   self->data_ = [((JavaMathBigInteger *) nil_chk(data)) toByteArray];
 }
 
 
-#line 24
+#line 25
 BCASN1Integer *new_BCASN1Integer_initWithJavaMathBigInteger_(JavaMathBigInteger *data) {
   BCASN1Integer *self = [BCASN1Integer alloc];
   BCASN1Integer_initWithJavaMathBigInteger_(self, data);
@@ -125,16 +125,16 @@ BCASN1Integer *new_BCASN1Integer_initWithJavaMathBigInteger_(JavaMathBigInteger 
 }
 
 
-#line 28
+#line 29
 void BCASN1Integer_init(BCASN1Integer *self) {
   (void) BCASN1Primitive_init(self);
   
-#line 29
+#line 30
   self->data_ = [((JavaMathBigInteger *) nil_chk(JavaMathBigInteger_get_ZERO_())) toByteArray];
 }
 
 
-#line 28
+#line 29
 BCASN1Integer *new_BCASN1Integer_init() {
   BCASN1Integer *self = [BCASN1Integer alloc];
   BCASN1Integer_init(self);
@@ -142,16 +142,16 @@ BCASN1Integer *new_BCASN1Integer_init() {
 }
 
 
-#line 32
+#line 33
 void BCASN1Integer_initWithInt_(BCASN1Integer *self, jint val) {
   (void) BCASN1Primitive_init(self);
   
-#line 33
+#line 34
   self->data_ = [new_JavaMathBigInteger_initWithNSString_(JreStrcat("I", val)) toByteArray];
 }
 
 
-#line 32
+#line 33
 BCASN1Integer *new_BCASN1Integer_initWithInt_(jint val) {
   BCASN1Integer *self = [BCASN1Integer alloc];
   BCASN1Integer_initWithInt_(self, val);

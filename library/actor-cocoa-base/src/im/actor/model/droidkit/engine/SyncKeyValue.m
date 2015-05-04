@@ -21,43 +21,43 @@
 J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
 
 
-#line 6
+#line 7
 @implementation DKSyncKeyValue
 
 
-#line 10
+#line 11
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
   DKSyncKeyValue_initWithDKKeyValueStorage_(self, storage);
   return self;
 }
 
 
-#line 14
+#line 15
 - (void)putWithLong:(jlong)key
       withByteArray:(IOSByteArray *)data {
   @synchronized(self) {
     
-#line 15
+#line 16
     [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:key withByteArray:data];
   }
 }
 
 
-#line 18
+#line 19
 - (void)delete__WithLong:(jlong)key {
   @synchronized(self) {
     
-#line 19
+#line 20
     [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:key];
   }
 }
 
 
-#line 22
+#line 23
 - (IOSByteArray *)getWithLong:(jlong)key {
   @synchronized(self) {
     
-#line 23
+#line 24
     return [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithLong:key];
   }
 }
@@ -65,16 +65,16 @@ J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
 @end
 
 
-#line 10
+#line 11
 void DKSyncKeyValue_initWithDKKeyValueStorage_(DKSyncKeyValue *self, id<DKKeyValueStorage> storage) {
   (void) NSObject_init(self);
   
-#line 11
+#line 12
   self->storage_ = storage;
 }
 
 
-#line 10
+#line 11
 DKSyncKeyValue *new_DKSyncKeyValue_initWithDKKeyValueStorage_(id<DKKeyValueStorage> storage) {
   DKSyncKeyValue *self = [DKSyncKeyValue alloc];
   DKSyncKeyValue_initWithDKKeyValueStorage_(self, storage);

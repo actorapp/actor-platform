@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(MTManagerActor, receiver_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTManagerActor, sender_, DKActorRef *)
 
 static NSString *MTManagerActor_TAG_ = 
-#line 30
+#line 31
 @"Manager";
 J2OBJC_STATIC_FIELD_GETTER(MTManagerActor, TAG_, NSString *)
 
@@ -281,24 +281,24 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$3)
 J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 
 
-#line 28
+#line 29
 @implementation MTManagerActor
 
 
-#line 32
+#line 33
 + (DKActorRef *)managerWithMTMTProto:(MTMTProto *)mtProto {
   return MTManagerActor_managerWithMTMTProto_(mtProto);
 }
 
 
-#line 60
+#line 61
 - (instancetype)initWithMTMTProto:(MTMTProto *)mtProto {
   MTManagerActor_initWithMTMTProto_(self, mtProto);
   return self;
 }
 
 
-#line 68
+#line 69
 - (void)preStart {
   receiver_ = MTReceiverActor_receiverWithMTMTProto_(mtProto_);
   sender_ = MTSenderActor_senderActorWithMTMTProto_(mtProto_);
@@ -306,42 +306,42 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 }
 
 
-#line 75
+#line 76
 - (void)onReceiveWithId:(id)message {
   
-#line 78
+#line 79
   if ([message isKindOfClass:[MTManagerActor_ConnectionCreated class]]) {
     MTManagerActor_ConnectionCreated *c = (MTManagerActor_ConnectionCreated *) check_class_cast(message, [MTManagerActor_ConnectionCreated class]);
     MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(self, ((MTManagerActor_ConnectionCreated *) nil_chk(c))->connectionId_, c->connection_);
   }
   else
-#line 81
+#line 82
   if ([message isKindOfClass:[MTManagerActor_ConnectionCreateFailure class]]) {
     MTManagerActor_onConnectionCreateFailure(self);
   }
   else
-#line 83
+#line 84
   if ([message isKindOfClass:[MTManagerActor_ConnectionDie class]]) {
     MTManagerActor_onConnectionDieWithInt_(self, ((MTManagerActor_ConnectionDie *) nil_chk(((MTManagerActor_ConnectionDie *) check_class_cast(message, [MTManagerActor_ConnectionDie class]))))->connectionId_);
   }
   else
-#line 85
+#line 86
   if ([message isKindOfClass:[MTManagerActor_PerformConnectionCheck class]]) {
     MTManagerActor_checkConnection(self);
   }
   else
-#line 87
+#line 88
   if ([message isKindOfClass:[MTManagerActor_NetworkChanged class]]) {
     MTManagerActor_onNetworkChanged(self);
   }
   else
-#line 91
+#line 92
   if ([message isKindOfClass:[MTManagerActor_OutMessage class]]) {
     MTManagerActor_OutMessage *m = (MTManagerActor_OutMessage *) check_class_cast(message, [MTManagerActor_OutMessage class]);
     MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(self, ((MTManagerActor_OutMessage *) nil_chk(m))->message_, m->offset_, m->len_);
   }
   else
-#line 94
+#line 95
   if ([message isKindOfClass:[MTManagerActor_InMessage class]]) {
     MTManagerActor_InMessage *m = (MTManagerActor_InMessage *) check_class_cast(message, [MTManagerActor_InMessage class]);
     MTManagerActor_onInMessageWithByteArray_withInt_withInt_(self, ((MTManagerActor_InMessage *) nil_chk(m))->data_, m->offset_, m->len_);
@@ -349,32 +349,32 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 }
 
 
-#line 100
+#line 101
 - (void)onConnectionCreatedWithInt:(jint)id_
                   withAMConnection:(id<AMConnection>)connection {
   MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(self, id_, connection);
 }
 
 
-#line 131
+#line 132
 - (void)onConnectionCreateFailure {
   MTManagerActor_onConnectionCreateFailure(self);
 }
 
 
-#line 139
+#line 140
 - (void)onConnectionDieWithInt:(jint)id_ {
   MTManagerActor_onConnectionDieWithInt_(self, id_);
 }
 
 
-#line 152
+#line 153
 - (void)onNetworkChanged {
   MTManagerActor_onNetworkChanged(self);
 }
 
 
-#line 159
+#line 160
 - (void)requestCheckConnection {
   MTManagerActor_requestCheckConnection(self);
 }
@@ -384,13 +384,13 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 }
 
 
-#line 176
+#line 177
 - (void)checkConnection {
   MTManagerActor_checkConnection(self);
 }
 
 
-#line 223
+#line 224
 - (void)onInMessageWithByteArray:(IOSByteArray *)data
                          withInt:(jint)offset
                          withInt:(jint)len {
@@ -398,7 +398,7 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 }
 
 
-#line 253
+#line 254
 - (void)onOutMessageWithByteArray:(IOSByteArray *)data
                           withInt:(jint)offset
                           withInt:(jint)len {
@@ -408,7 +408,7 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 + (void)initialize {
   if (self == [MTManagerActor class]) {
     MTManagerActor_NEXT_CONNECTION_ = DKEnvironment_createAtomicIntWithInt_(
-#line 42
+#line 43
     1);
     J2OBJC_SET_INITIALIZED(MTManagerActor)
   }
@@ -417,28 +417,28 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 @end
 
 
-#line 32
+#line 33
 DKActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
   MTManagerActor_initialize();
   
-#line 33
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_(DKProps_createWithIOSClass_withDKActorCreator_(
 #line 34
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_(DKProps_createWithIOSClass_withDKActorCreator_(
+#line 35
   MTManagerActor_class_(), new_MTManagerActor_$1_initWithMTMTProto_(mtProto)), JreStrcat("$$",
-#line 39
+#line 40
   [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager"))];
 }
 
 
-#line 60
+#line 61
 void MTManagerActor_initWithMTMTProto_(MTManagerActor *self, MTMTProto *mtProto) {
   (void) DKActor_init(self);
   self->isCheckingConnections_ =
-#line 54
+#line 55
   NO;
   self->backoff_ = new_AMExponentialBackoff_init();
   
-#line 61
+#line 62
   self->mtProto_ = mtProto;
   self->endpoints_ = [((MTMTProto *) nil_chk(mtProto)) getEndpoints];
   self->authId_ = [mtProto getAuthId];
@@ -446,7 +446,7 @@ void MTManagerActor_initWithMTMTProto_(MTManagerActor *self, MTMTProto *mtProto)
 }
 
 
-#line 60
+#line 61
 MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) {
   MTManagerActor *self = [MTManagerActor alloc];
   MTManagerActor_initWithMTMTProto_(self, mtProto);
@@ -454,60 +454,60 @@ MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) {
 }
 
 
-#line 100
+#line 101
 void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor *self, jint id_, id<AMConnection> connection) {
   AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Connection #", id_, @" created"));
   
-#line 103
+#line 104
   if ([((id<AMConnection>) nil_chk(connection)) isClosed]) {
     AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to register connection #", id_, @": already closed"));
     return;
   }
   
-#line 108
+#line 109
   if (self->currentConnectionId_ == id_) {
     AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to register connection #", id_, @": already have connection"));
     return;
   }
   
-#line 113
+#line 114
   if (self->currentConnection_ != nil) {
     [self->currentConnection_ close];
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
     self->currentConnectionId_ = 0;
   }
   
-#line 119
+#line 120
   AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I", @"Set connection #", id_));
   self->currentConnectionId_ = id_;
   self->currentConnection_ = connection;
   
-#line 124
+#line 125
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onSuccess];
   self->isCheckingConnections_ = NO;
   MTManagerActor_requestCheckConnection(self);
   
-#line 128
+#line 129
   [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_ConnectionCreated_init()];
 }
 
 
-#line 131
+#line 132
 void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self) {
   AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Connection create failure");
   
-#line 134
+#line 135
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onFailure];
   self->isCheckingConnections_ = NO;
   MTManagerActor_requestCheckConnectionWithLong_(self, [self->backoff_ exponentialWait]);
 }
 
 
-#line 139
+#line 140
 void MTManagerActor_onConnectionDieWithInt_(MTManagerActor *self, jint id_) {
   AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Connection #", id_, @" dies"));
   
-#line 142
+#line 143
   if (self->currentConnectionId_ == id_) {
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
     self->currentConnectionId_ = 0;
@@ -516,23 +516,23 @@ void MTManagerActor_onConnectionDieWithInt_(MTManagerActor *self, jint id_) {
   }
   else {
     
-#line 148
+#line 149
     AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$I", @"Unable to unregister connection #", id_, @": connection not found, expected: #", self->currentConnectionId_));
   }
 }
 
 
-#line 152
+#line 153
 void MTManagerActor_onNetworkChanged(MTManagerActor *self) {
   AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Network configuration changed");
   
-#line 155
+#line 156
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) reset];
   MTManagerActor_checkConnection(self);
 }
 
 
-#line 159
+#line 160
 void MTManagerActor_requestCheckConnection(MTManagerActor *self) {
   MTManagerActor_requestCheckConnectionWithLong_(self, 0);
 }
@@ -545,7 +545,7 @@ void MTManagerActor_requestCheckConnectionWithLong_(MTManagerActor *self, jlong 
       }
       else {
         
-#line 169
+#line 170
         AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$J$", @"Requesting connection creating in ", wait, @" ms"));
       }
     }
@@ -554,64 +554,64 @@ void MTManagerActor_requestCheckConnectionWithLong_(MTManagerActor *self, jlong 
 }
 
 
-#line 176
+#line 177
 void MTManagerActor_checkConnection(MTManagerActor *self) {
   if (self->isCheckingConnections_) {
     return;
   }
   
-#line 181
+#line 182
   if (self->currentConnection_ == nil) {
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Trying to create connection...");
     
-#line 184
+#line 185
     self->isCheckingConnections_ = YES;
     
-#line 186
+#line 187
     jint id_ = [((AMAtomicIntegerCompat *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
     
-#line 188
-    [((id<AMNetworkProvider>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworkProvider])) createConnection:id_ withMTProtoVersion:
 #line 189
-    AMActorApi_MTPROTO_VERSION withApiMajorVersion:
+    [((id<AMNetworkProvider>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworkProvider])) createConnection:id_ withMTProtoVersion:
 #line 190
-    AMActorApi_API_MAJOR_VERSION withApiMinorVersion:
+    AMActorApi_MTPROTO_VERSION withApiMajorVersion:
 #line 191
-    AMActorApi_API_MINOR_VERSION withEndpoint:
+    AMActorApi_API_MAJOR_VERSION withApiMinorVersion:
 #line 192
+    AMActorApi_API_MINOR_VERSION withEndpoint:
+#line 193
     [((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint] withCallback:new_MTManagerActor_$2_initWithMTManagerActor_withInt_(self, id_) withCreateCallback:new_MTManagerActor_$3_initWithMTManagerActor_withInt_(self, id_)];
   }
 }
 
 
-#line 223
+#line 224
 void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
   
-#line 226
+#line 227
   BSDataInput *bis = new_BSDataInput_initWithByteArray_withInt_withInt_(data, offset, len);
   @try {
     jlong authId = [bis readLong];
     jlong sessionId = [bis readLong];
     
-#line 231
+#line 232
     if (authId != self->authId_ || sessionId != self->sessionId_) {
       @throw new_JavaIoIOException_initWithNSString_(@"Incorrect header");
     }
     
-#line 235
+#line 236
     jlong messageId = [bis readLong];
     IOSByteArray *payload = [bis readProtoBytes];
     
-#line 238
+#line 239
     [((DKActorRef *) nil_chk(self->receiver_)) sendWithId:new_MTProtoMessage_initWithLong_withByteArray_(messageId, payload)];
   }
   @catch (
-#line 239
+#line 240
   JavaIoIOException *e) {
     AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Closing connection: incorrect package");
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     
-#line 243
+#line 244
     if (self->currentConnection_ != nil) {
       [self->currentConnection_ close];
       self->currentConnection_ = nil;
@@ -623,10 +623,10 @@ void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *se
 }
 
 
-#line 253
+#line 254
 void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
   
-#line 257
+#line 258
   if (self->currentConnection_ != nil && [self->currentConnection_ isClosed]) {
     self->currentConnection_ = nil;
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
@@ -634,7 +634,7 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
     MTManagerActor_checkConnection(self);
   }
   
-#line 264
+#line 265
   if (self->currentConnection_ != nil) {
     BSDataOutput *bos = new_BSDataOutput_init();
     [bos writeLongWithLong:self->authId_];
@@ -650,11 +650,11 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor)
 
 
-#line 277
+#line 278
 @implementation MTManagerActor_OutMessage
 
 
-#line 282
+#line 283
 - (instancetype)initWithByteArray:(IOSByteArray *)message
                           withInt:(jint)offset
                           withInt:(jint)len {
@@ -663,7 +663,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor)
 }
 
 
-#line 288
+#line 289
 - (jint)getOffset {
   return offset_;
 }
@@ -679,18 +679,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor)
 @end
 
 
-#line 282
+#line 283
 void MTManagerActor_OutMessage_initWithByteArray_withInt_withInt_(MTManagerActor_OutMessage *self, IOSByteArray *message, jint offset, jint len) {
   (void) NSObject_init(self);
   
-#line 283
+#line 284
   self->message_ = message;
   self->offset_ = offset;
   self->len_ = len;
 }
 
 
-#line 282
+#line 283
 MTManagerActor_OutMessage *new_MTManagerActor_OutMessage_initWithByteArray_withInt_withInt_(IOSByteArray *message, jint offset, jint len) {
   MTManagerActor_OutMessage *self = [MTManagerActor_OutMessage alloc];
   MTManagerActor_OutMessage_initWithByteArray_withInt_withInt_(self, message, offset, len);
@@ -700,11 +700,11 @@ MTManagerActor_OutMessage *new_MTManagerActor_OutMessage_initWithByteArray_withI
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_OutMessage)
 
 
-#line 301
+#line 302
 @implementation MTManagerActor_InMessage
 
 
-#line 306
+#line 307
 - (instancetype)initWithByteArray:(IOSByteArray *)data
                           withInt:(jint)offset
                           withInt:(jint)len {
@@ -713,7 +713,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_OutMessage)
 }
 
 
-#line 312
+#line 313
 - (IOSByteArray *)getData {
   return data_;
 }
@@ -729,18 +729,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_OutMessage)
 @end
 
 
-#line 306
+#line 307
 void MTManagerActor_InMessage_initWithByteArray_withInt_withInt_(MTManagerActor_InMessage *self, IOSByteArray *data, jint offset, jint len) {
   (void) NSObject_init(self);
   
-#line 307
+#line 308
   self->data_ = data;
   self->offset_ = offset;
   self->len_ = len;
 }
 
 
-#line 306
+#line 307
 MTManagerActor_InMessage *new_MTManagerActor_InMessage_initWithByteArray_withInt_withInt_(IOSByteArray *data, jint offset, jint len) {
   MTManagerActor_InMessage *self = [MTManagerActor_InMessage alloc];
   MTManagerActor_InMessage_initWithByteArray_withInt_withInt_(self, data, offset, len);
@@ -750,7 +750,7 @@ MTManagerActor_InMessage *new_MTManagerActor_InMessage_initWithByteArray_withInt
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_InMessage)
 
 
-#line 325
+#line 326
 @implementation MTManagerActor_NetworkChanged
 
 - (instancetype)init {
@@ -773,7 +773,7 @@ MTManagerActor_NetworkChanged *new_MTManagerActor_NetworkChanged_init() {
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_NetworkChanged)
 
 
-#line 329
+#line 330
 @implementation MTManagerActor_PerformConnectionCheck
 
 - (instancetype)init {
@@ -796,18 +796,18 @@ MTManagerActor_PerformConnectionCheck *new_MTManagerActor_PerformConnectionCheck
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_PerformConnectionCheck)
 
 
-#line 333
+#line 334
 @implementation MTManagerActor_ConnectionDie
 
 
-#line 336
+#line 337
 - (instancetype)initWithInt:(jint)connectionId {
   MTManagerActor_ConnectionDie_initWithInt_(self, connectionId);
   return self;
 }
 
 
-#line 340
+#line 341
 - (jint)getConnectionId {
   return connectionId_;
 }
@@ -815,16 +815,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_PerformConnectionCheck)
 @end
 
 
-#line 336
+#line 337
 void MTManagerActor_ConnectionDie_initWithInt_(MTManagerActor_ConnectionDie *self, jint connectionId) {
   (void) NSObject_init(self);
   
-#line 337
+#line 338
   self->connectionId_ = connectionId;
 }
 
 
-#line 336
+#line 337
 MTManagerActor_ConnectionDie *new_MTManagerActor_ConnectionDie_initWithInt_(jint connectionId) {
   MTManagerActor_ConnectionDie *self = [MTManagerActor_ConnectionDie alloc];
   MTManagerActor_ConnectionDie_initWithInt_(self, connectionId);
@@ -834,7 +834,7 @@ MTManagerActor_ConnectionDie *new_MTManagerActor_ConnectionDie_initWithInt_(jint
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionDie)
 
 
-#line 345
+#line 346
 @implementation MTManagerActor_ConnectionCreateFailure
 
 - (instancetype)init {
@@ -857,11 +857,11 @@ MTManagerActor_ConnectionCreateFailure *new_MTManagerActor_ConnectionCreateFailu
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreateFailure)
 
 
-#line 349
+#line 350
 @implementation MTManagerActor_ConnectionCreated
 
 
-#line 353
+#line 354
 - (instancetype)initWithInt:(jint)connectionId
            withAMConnection:(id<AMConnection>)connection {
   MTManagerActor_ConnectionCreated_initWithInt_withAMConnection_(self, connectionId, connection);
@@ -869,7 +869,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreateFailure)
 }
 
 
-#line 358
+#line 359
 - (jint)getConnectionId {
   return connectionId_;
 }
@@ -881,17 +881,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreateFailure)
 @end
 
 
-#line 353
+#line 354
 void MTManagerActor_ConnectionCreated_initWithInt_withAMConnection_(MTManagerActor_ConnectionCreated *self, jint connectionId, id<AMConnection> connection) {
   (void) NSObject_init(self);
   
-#line 354
+#line 355
   self->connectionId_ = connectionId;
   self->connection_ = connection;
 }
 
 
-#line 353
+#line 354
 MTManagerActor_ConnectionCreated *new_MTManagerActor_ConnectionCreated_initWithInt_withAMConnection_(jint connectionId, id<AMConnection> connection) {
   MTManagerActor_ConnectionCreated *self = [MTManagerActor_ConnectionCreated alloc];
   MTManagerActor_ConnectionCreated_initWithInt_withAMConnection_(self, connectionId, connection);
@@ -903,7 +903,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ConnectionCreated)
 @implementation MTManagerActor_$1
 
 
-#line 36
+#line 37
 - (MTManagerActor *)create {
   return new_MTManagerActor_initWithMTMTProto_(val$mtProto_);
 }
@@ -931,17 +931,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 @implementation MTManagerActor_$2
 
 
-#line 195
+#line 196
 - (void)onConnectionRedirect:(NSString *)host
                     withPort:(jint)port
                  withTimeout:(jint)timeout {
   
-#line 197
+#line 198
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_ConnectionDie_initWithInt_(val$id_)];
 }
 
 
-#line 201
+#line 202
 - (void)onMessage:(IOSByteArray *)data
        withOffset:(jint)offset
           withLen:(jint)len {
@@ -949,7 +949,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 }
 
 
-#line 206
+#line 207
 - (void)onConnectionDie {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_ConnectionDie_initWithInt_(val$id_)];
 }
@@ -979,13 +979,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
 @implementation MTManagerActor_$3
 
 
-#line 211
+#line 212
 - (void)onConnectionCreated:(id<AMConnection>)connection {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_ConnectionCreated_initWithInt_withAMConnection_(val$id_, connection)];
 }
 
 
-#line 216
+#line 217
 - (void)onConnectionCreateError {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_ConnectionCreateFailure_init()];
 }

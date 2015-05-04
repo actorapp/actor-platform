@@ -31,17 +31,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateGroupTitleChanged
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(data);
 }
 
 
-#line 33
+#line 37
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
@@ -52,14 +52,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 
-#line 41
+#line 45
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateGroupTitleChanged_init(self);
   return self;
 }
 
 
-#line 45
+#line 49
 - (jint)getGroupId {
   return self->groupId_;
 }
@@ -81,7 +81,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 
-#line 66
+#line 70
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
@@ -91,7 +91,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 
-#line 75
+#line 79
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
@@ -104,7 +104,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 
-#line 87
+#line 91
 - (NSString *)description {
   NSString *res = @"update GroupTitleChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -117,7 +117,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 
-#line 99
+#line 103
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
 }
@@ -125,20 +125,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupTitleChanged_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init(), data));
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(ImActorModelApiUpdatesUpdateGroupTitleChanged *self, jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 34
+#line 38
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
@@ -147,7 +147,7 @@ void ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_
 }
 
 
-#line 33
+#line 37
 ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
   ImActorModelApiUpdatesUpdateGroupTitleChanged *self = [ImActorModelApiUpdatesUpdateGroupTitleChanged alloc];
   ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
@@ -155,13 +155,13 @@ ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateG
 }
 
 
-#line 41
+#line 45
 void ImActorModelApiUpdatesUpdateGroupTitleChanged_init(ImActorModelApiUpdatesUpdateGroupTitleChanged *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 41
+#line 45
 ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init() {
   ImActorModelApiUpdatesUpdateGroupTitleChanged *self = [ImActorModelApiUpdatesUpdateGroupTitleChanged alloc];
   ImActorModelApiUpdatesUpdateGroupTitleChanged_init(self);
