@@ -5,20 +5,25 @@
       <md-list-item class="messages__list__item"
                     ng-repeat="message in messages.list">
 
-        <div class="messages__list__item__avatar avatar avatar--small avatar--{{ ::message.sender.placeholder }}">
+        <div class="messages__list__item__avatar avatar avatar--small avatar--{{ ::message.sender.placeholder }}"
+             ng-hide="::message.content.content == 'service'">
             <img ng-src="{{ ::message.sender.avatar }}" alt="{{ ::message.sender.title }}" ng-if="::message.sender.avatar" />
             <span ng-bind="::message.sender.title | limitTo:1"></span>
-          </div>
+        </div>
 
         <div class="md-list-item-text messages__list__item__body" flex>
-            <h3 layout="row" class="messages__list__item__body__title">
+            <h3 layout="row" class="messages__list__item__body__title" ng-hide="::message.content.content == 'service'">
               <span flex>{{ message.sender.title }}</span>
               <time class="messages__list__item__body__timestamp">{{ message.date }}</time>
             </h3>
-            <p ng-if="message.content.content == 'text'"
-               ng-bind-html="message.content.text | html"></p>
-            <img ng-if="message.content.content == 'photo'" data-ng-src="{{ message.content.preview }}" data-err-src="images/png/avatar.png"/>
+            <p ng-if="::message.content.content == 'text'"
+               ng-bind-html="::message.content.text | html"></p>
+            <img ng-if="::message.content.content == 'photo'" data-ng-src="{{ ::message.content.preview }}" data-err-src="images/png/avatar.png"/>
             <!-- <p class="unsupported" ng-if="message.content.content == 'unsupported'">{{ message.content.text }}</p> -->
+            <p class="service"
+               flex
+               ng-if="::message.content.content == 'service'"
+               ng-bind="::message.content.text"></p>
         </div>
 
       </md-list-item>
