@@ -14,7 +14,7 @@ import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.util
 import im.actor.server.models
 import im.actor.server.persist
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
 
@@ -37,6 +37,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     val rpcApiService = buildRpcApiService()

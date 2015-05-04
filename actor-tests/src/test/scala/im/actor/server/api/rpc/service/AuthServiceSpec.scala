@@ -8,7 +8,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseSendAuthCode }
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.DummyActivationContext
@@ -36,6 +36,7 @@ class AuthServiceSpec extends BaseServiceSuite {
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val rpcApiService = system.actorOf(RpcApiService.props())
     implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))

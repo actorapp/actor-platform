@@ -10,10 +10,10 @@ import org.joda.time.DateTime
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.messaging.UpdateMessageSent
 import im.actor.api.rpc.sequence.WeakUpdate
-import im.actor.api.rpc.weak.{ UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
+import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
 import im.actor.server.mtproto.protocol.UpdateBox
-import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
+import im.actor.server.presences._
 
 trait UpdatesConsumerMessage
 
@@ -30,14 +30,21 @@ object UpdatesConsumerMessage {
   @SerialVersionUID(1L)
   case class UnsubscribeFromUserPresences(userIds: Set[Int]) extends UpdatesConsumerMessage
 
+  @SerialVersionUID(1L)
+  case class SubscribeToGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
+
+  @SerialVersionUID(1L)
+  case class UnsubscribeFromGroupPresences(groupIds: Set[Int]) extends UpdatesConsumerMessage
+
 }
 
 object UpdatesConsumer {
   def props(authId: Long, session: ActorRef)(
     implicit
-    seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
-    weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-    presenceManagerRegion:    PresenceManagerRegion
+    seqUpdatesManagerRegion:    SeqUpdatesManagerRegion,
+    weakUpdatesManagerRegion:   WeakUpdatesManagerRegion,
+    presenceManagerRegion:      PresenceManagerRegion,
+    groupPresenceManagerRegion: GroupPresenceManagerRegion
   ) =
     Props(
       classOf[UpdatesConsumer],
@@ -45,20 +52,24 @@ object UpdatesConsumer {
       session,
       seqUpdatesManagerRegion,
       weakUpdatesManagerRegion,
-      presenceManagerRegion
+      presenceManagerRegion,
+      groupPresenceManagerRegion
     )
 }
 
 private[push] class UpdatesConsumer(
-  authId:                                Long,
-  subscriber:                            ActorRef,
-  implicit val seqUpdatesManagerRegion:  SeqUpdatesManagerRegion,
-  implicit val weakUpdatesManagerRegion: WeakUpdatesManagerRegion,
-  implicit val presenceManagerRegion:    PresenceManagerRegion
+  authId:     Long,
+  subscriber: ActorRef
+)(
+  implicit
+  seqUpdatesManagerRegion:    SeqUpdatesManagerRegion,
+  weakUpdatesManagerRegion:   WeakUpdatesManagerRegion,
+  presenceManagerRegion:      PresenceManagerRegion,
+  groupPresenceManagerRegion: GroupPresenceManagerRegion
 )
   extends Actor with ActorLogging with Stash {
 
-  import PresenceManager._
+  import Presences._
   import UpdatesConsumerMessage._
 
   implicit val ec: ExecutionContext = context.dispatcher
@@ -89,7 +100,7 @@ private[push] class UpdatesConsumer(
         PresenceManager.subscribe(userId, self) onFailure {
           case e ⇒
             self ! cmd
-            log.error(e, "Failed to subscribe to presences")
+            log.error(e, "Failed to subscribe to user presences")
         }
       }
     case cmd @ UnsubscribeFromUserPresences(userIds) ⇒
@@ -97,7 +108,23 @@ private[push] class UpdatesConsumer(
         PresenceManager.unsubscribe(userId, self) onFailure {
           case e ⇒
             self ! cmd
-            log.error(e, "Failed to subscribe from presences")
+            log.error(e, "Failed to subscribe from user presences")
+        }
+      }
+    case cmd @ SubscribeToGroupPresences(groupIds) ⇒
+      groupIds foreach { groupId ⇒
+        GroupPresenceManager.subscribe(groupId, self) onFailure {
+          case e ⇒
+            self ! cmd
+            log.error(e, "Failed to subscribe to group presences")
+        }
+      }
+    case cmd @ UnsubscribeFromGroupPresences(groupIds) ⇒
+      groupIds foreach { groupId ⇒
+        GroupPresenceManager.unsubscribe(groupId, self) onFailure {
+          case e ⇒
+            self ! cmd
+            log.error(e, "Failed to unsubscribe from group presences")
         }
       }
     case SeqUpdatesManager.UpdateReceived(updateBox) ⇒
@@ -120,6 +147,10 @@ private[push] class UpdatesConsumer(
             }
         }
 
+      val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
+      sendUpdateBox(updateBox)
+    case GroupPresenceState(groupId, onlineCount) ⇒
+      val update = UpdateGroupOnline(groupId, onlineCount)
       val updateBox = WeakUpdate((new DateTime).getMillis, update.header, update.toByteArray)
       sendUpdateBox(updateBox)
   }
