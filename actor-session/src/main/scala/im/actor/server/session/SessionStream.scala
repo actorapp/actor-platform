@@ -33,7 +33,6 @@ private[session] object SessionStream {
     authId:         Long,
     sessionId:      Long,
     firstMessageId: Long,
-    rpcApiService:  ActorRef,
     rpcHandler:     ActorRef,
     updatesHandler: ActorRef,
     reSender:       ActorRef

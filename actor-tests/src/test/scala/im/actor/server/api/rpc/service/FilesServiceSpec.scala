@@ -28,22 +28,18 @@ class FilesServiceSpec extends BaseServiceSuite {
 
   it should "Generate valid download urls" in e4
 
+  implicit val sessionRegion = Session.startRegionProxy()
+
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
   val bucketName = "actor-uploads-test"
   implicit val client = new AmazonS3ScalaClient(awsCredentials)
   implicit val transferManager = new TransferManager(awsCredentials)
 
-  val service = new FilesServiceImpl(bucketName)
-
-  val rpcApiService = system.actorOf(RpcApiService.props())
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
-  implicit val sessionRegion = Session.startRegion(Some(Session.props(rpcApiService)))
+
+  val service = new FilesServiceImpl(bucketName)
   implicit val authService = buildAuthService()
 
   val (user, _, _) = createUser()

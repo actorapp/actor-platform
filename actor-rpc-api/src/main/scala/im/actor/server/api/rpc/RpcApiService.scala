@@ -20,13 +20,10 @@ object RpcApiService {
   @SerialVersionUID(1L)
   case class RpcResponse(messageId: Long, responseBytes: BitVector)
 
-  @SerialVersionUID(1L)
-  case class AttachService(service: Service)
-
-  def props()(implicit db: Database) = Props(classOf[RpcApiService], db)
+  def props(services: Seq[Service])(implicit db: Database) = Props(classOf[RpcApiService], services, db)
 }
 
-class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
+class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor with ActorLogging {
 
   import RpcApiService._
 
@@ -34,9 +31,7 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
-  def receive = initialized(Seq.empty)
-
-  def initialized(services: Seq[Service]): Receive = {
+  def receive: Receive = {
     log.debug("Services list changed: {}", services)
 
     val chain: Chain =
@@ -49,9 +44,6 @@ class RpcApiService(implicit db: Database) extends Actor with ActorLogging {
       }
 
     {
-      case AttachService(service) ⇒
-        log.debug("Attached service: {}", service)
-        context.become(initialized(services :+ service), discardOld = true)
       case msg @ HandleRpcRequest(messageId, requestBytes, clientData) ⇒
         val replyTo = sender()
 

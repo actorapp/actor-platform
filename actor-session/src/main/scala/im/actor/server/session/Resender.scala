@@ -33,6 +33,8 @@ object ReSenderConfig {
 }
 
 private[session] object ReSender {
+  private case class ScheduledResend(messageId: Long)
+
   def props(authId: Long, sessionId: Long)(implicit config: ReSenderConfig) =
     Props(classOf[ReSender], authId, sessionId, config)
 }
@@ -42,6 +44,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
   import ActorPublisherMessage._
   import ActorSubscriberMessage._
 
+  import ReSender._
   import ReSenderMessage._
 
   // TODO: configurable
@@ -50,8 +53,6 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
   private val MaxResendSize = config.maxResendSize
 
   implicit val ec: ExecutionContext = context.dispatcher
-
-  private case class ScheduledResend(messageId: Long)
 
   def receive = waitingForFirstClient
 

@@ -79,19 +79,29 @@ object Build extends sbt.Build {
           )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .dependsOn(actorFrontend)
-    .aggregate(actorApi, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
+    .dependsOn(actorFrontend, actorCommonsBase, actorRpcApi)
+    .aggregate(actorCommonsApi, actorCommonsBase, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
 
-  lazy val actorApi = Project(
-    id = "actor-api",
-    base = file("actor-api"),
+  lazy val actorCommonsApi = Project(
+    id = "actor-commons-api",
+    base = file("actor-commons-api"),
     settings =
       defaultSettings ++
         SbtActorApi.settings ++
         Seq(
-          libraryDependencies ++= Dependencies.api
+          libraryDependencies ++= Dependencies.commonsApi
         )
   ).dependsOn(actorPersist, actorCodecs)
+
+  lazy val actorCommonsBase = Project(
+    id = "actor-commons-base",
+    base = file("actor-commons-base"),
+    settings =
+      defaultSettings ++
+        Seq(
+          libraryDependencies ++= Dependencies.commonsBase
+        )
+  )
 
   lazy val actorSession = Project(
     id = "actor-session",
@@ -99,13 +109,13 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.session
     )
-  ).dependsOn(actorPersist, actorCodecs, actorApi, actorRpcApi, actorPush)
+  ).dependsOn(actorPersist, actorCodecs, actorCommonsApi, actorRpcApi, actorPush)
 
   lazy val actorSessionMessages = Project(
     id = "actor-session-messages",
     base = file("actor-session-messages"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sessionMessages)
-  ).dependsOn(actorApi)
+  ).dependsOn(actorCommonsApi)
 
   lazy val actorPush = Project(
     id = "actor-push",
@@ -113,7 +123,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.push
     )
-  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorSessionMessages)
+  ).dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorPersist, actorPresences, actorSessionMessages)
 
   lazy val actorPresences = Project(
     id = "actor-presences",
@@ -127,7 +137,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorApi, actorCodecs, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial)
+  ).dependsOn(actorCodecs, actorCommonsApi, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial)
 
   lazy val actorSms = Project(
     id = "actor-sms",
@@ -149,7 +159,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.frontend
     )
-  ).dependsOn(actorApi, actorSessionMessages, actorSession)
+  ).dependsOn(actorCommonsApi, actorSessionMessages, actorSession)
 
   lazy val actorCodecs = Project(
     id = "actor-codecs",
@@ -182,5 +192,5 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.tests
     ))
     .configs(Configs.all: _*)
-    .dependsOn(actorApi, actorCodecs, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
+    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
 }

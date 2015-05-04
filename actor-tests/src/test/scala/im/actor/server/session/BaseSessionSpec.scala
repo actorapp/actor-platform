@@ -1,8 +1,8 @@
 package im.actor.server.session
 
-import scala.concurrent.{ Future, Await, blocking }
+import scala.concurrent.{ Promise, Future, Await, blocking }
 import scala.concurrent.duration._
-import scala.util.Random
+import scala.util.{ Success, Random }
 
 import akka.actor._
 import akka.stream.ActorFlowMaterializer
@@ -41,19 +41,16 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  val rpcApiService = system.actorOf(RpcApiService.props())
-  implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
-  implicit val sessionRegion = Session.startRegion(
-    Some(
-      Session.props(rpcApiService)
-    )
-  )
 
+  implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+
+  Session.startRegion(Some(Session.props))
+
+  implicit val sessionRegion = Session.startRegionProxy()
   val authService = new AuthServiceImpl(new DummyActivationContext)
   val sequenceService = new SequenceServiceImpl
 
-  rpcApiService ! RpcApiService.AttachService(authService)
-  rpcApiService ! RpcApiService.AttachService(sequenceService)
+  system.actorOf(RpcApiService.props(Seq(authService, sequenceService)), "rpcApiService")
 
   protected def createAuthId(): Long = {
     val authId = Random.nextLong()

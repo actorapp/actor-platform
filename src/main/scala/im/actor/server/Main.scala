@@ -72,11 +72,6 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
 
-    val rpcApiService = system.actorOf(RpcApiService.props())
-    implicit val sessionRegion = Session.startRegion(
-      Some(Session.props(rpcApiService))
-    )
-
     val s3BucketName = s3Config.getString("bucket")
     val awsKey = s3Config.getString("key")
     val awsSecret = s3Config.getString("secret")
@@ -86,6 +81,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val transferManager = new TransferManager(awsCredentials)
 
     val activationContext = SmsActivation.newContext(smsConfig)
+
+    implicit val sessionRegionProxy = Session.startRegionProxy()
 
     val services = Seq(
       new AuthServiceImpl(activationContext),
@@ -101,7 +98,11 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ProfileServiceImpl(s3BucketName)
     )
 
-    services foreach (rpcApiService ! RpcApiService.AttachService(_))
+    system.actorOf(RpcApiService.props(services), "rpcApiService")
+
+    val sessionRegion = Session.startRegion(
+      Some(Session.props)
+    )
 
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)

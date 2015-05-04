@@ -20,14 +20,10 @@ class SequenceServiceSpec extends BaseServiceSuite {
   it should "get state" in e1
   it should "get difference" in e2
 
+  implicit val sessionRegion = buildSessionRegionProxy()
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-
-  val rpcApiService = buildRpcApiService()
-  implicit val sessionRegion = buildSessionRegion(rpcApiService)
 
   implicit val service = new sequence.SequenceServiceImpl
   implicit val msgService = new messaging.MessagingServiceImpl
