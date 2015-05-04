@@ -18,6 +18,7 @@
     "normalize.css": "~3.0.3",
     "angular-material": "~0.8.3",
     "ngstorage": "~0.3.0",
-    "angular-scroll-glue": "~2.0.5"
+    "angular-scroll-glue": "~2.0.5",
+    "CryptoJS": "svn+http://crypto-js.googlecode.com/svn/#~3.1.2"
   }
 }
