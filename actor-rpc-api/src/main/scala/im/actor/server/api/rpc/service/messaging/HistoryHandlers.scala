@@ -231,7 +231,7 @@ trait HistoryHandlers {
         if (dialog.peer.`type` == PeerType.Private) {
           (uacc ++ Set(dialog.peer.id, dialog.senderUserId), gacc)
         } else {
-          (uacc, gacc + dialog.peer.id)
+          (uacc + dialog.senderUserId, gacc + dialog.peer.id)
         }
     }
 
