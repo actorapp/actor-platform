@@ -15,19 +15,17 @@
 #include "im/actor/model/network/mtp/entity/rpc/Push.h"
 #include "java/io/IOException.h"
 
-
-#line 13
 @implementation MTPush
 
 
-#line 17
+#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTPush_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 21
+#line 22
 - (instancetype)initWithInt:(jint)updateType
               withByteArray:(IOSByteArray *)body {
   MTPush_initWithInt_withByteArray_(self, updateType, body);
@@ -39,21 +37,21 @@
 }
 
 
-#line 32
+#line 33
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:updateType_];
   [bs writeProtoBytesWithByteArray:body_ withInt:0 withInt:((IOSByteArray *) nil_chk(body_))->size_];
 }
 
 
-#line 38
+#line 39
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   updateType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   body_ = [bs readProtoBytes];
 }
 
 
-#line 44
+#line 45
 - (NSString *)description {
   return JreStrcat("$IC", @"Update[", updateType_, ']');
 }
@@ -61,13 +59,13 @@
 @end
 
 
-#line 17
+#line 18
 void MTPush_initWithBSDataInput_(MTPush *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 17
+#line 18
 MTPush *new_MTPush_initWithBSDataInput_(BSDataInput *stream) {
   MTPush *self = [MTPush alloc];
   MTPush_initWithBSDataInput_(self, stream);
@@ -75,17 +73,17 @@ MTPush *new_MTPush_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 21
+#line 22
 void MTPush_initWithInt_withByteArray_(MTPush *self, jint updateType, IOSByteArray *body) {
   (void) MTProtoStruct_init(self);
   
-#line 22
+#line 23
   self->updateType_ = updateType;
   self->body_ = body;
 }
 
 
-#line 21
+#line 22
 MTPush *new_MTPush_initWithInt_withByteArray_(jint updateType, IOSByteArray *body) {
   MTPush *self = [MTPush alloc];
   MTPush_initWithInt_withByteArray_(self, updateType, body);

@@ -22,18 +22,18 @@
 J2OBJC_FIELD_SETTER(AMBaseValueModel, rawObj_, id)
 
 
-#line 6
+#line 7
 @implementation AMBaseValueModel
 
 
-#line 9
+#line 10
 - (instancetype)initWithId:(id)rawObj {
   AMBaseValueModel_initWithId_(self, rawObj);
   return self;
 }
 
 
-#line 13
+#line 14
 - (void)updateWithId:(id)rawObj {
   self->rawObj_ = rawObj;
   [self updateValuesWithId:rawObj];
@@ -42,11 +42,11 @@ J2OBJC_FIELD_SETTER(AMBaseValueModel, rawObj_, id)
 @end
 
 
-#line 9
+#line 10
 void AMBaseValueModel_initWithId_(AMBaseValueModel *self, id rawObj) {
   (void) NSObject_init(self);
   
-#line 10
+#line 11
   self->rawObj_ = rawObj;
 }
 

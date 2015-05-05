@@ -1,35 +1,36 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.engine;
 
 import java.util.List;
 
 import im.actor.model.droidkit.bser.BserObject;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
 public interface ListEngine<T extends BserObject & ListEngineItem> {
 
     // Write
 
-    public void addOrUpdateItem(T item);
+    void addOrUpdateItem(T item);
 
-    public void addOrUpdateItems(List<T> items);
+    void addOrUpdateItems(List<T> items);
 
-    public void replaceItems(List<T> items);
+    void replaceItems(List<T> items);
 
-    public void removeItem(long key);
+    void removeItem(long key);
 
-    public void removeItems(long[] keys);
+    void removeItems(long[] keys);
 
-    public void clear();
+    void clear();
 
     // Read
 
-    public T getValue(long key);
+    T getValue(long key);
 
-    public T getHeadValue();
+    T getHeadValue();
 
-    public boolean isEmpty();
+    boolean isEmpty();
 
-    public int getCount();
+    int getCount();
 }

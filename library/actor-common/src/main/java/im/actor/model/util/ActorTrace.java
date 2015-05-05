@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.util;
 
 import im.actor.model.droidkit.actors.Actor;
@@ -39,7 +43,7 @@ public class ActorTrace implements TraceInterface {
 
     @Override
     public void onActorDie(ActorRef ref, Exception e) {
-        Log.w(TAG, "Die: " + e);
+        Log.w(TAG, "Die(" + ref.getPath() + "): " + e);
         e.printStackTrace();
     }
 }

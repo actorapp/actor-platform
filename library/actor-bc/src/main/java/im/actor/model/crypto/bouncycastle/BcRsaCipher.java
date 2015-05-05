@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.bouncycastle;
 
 import org.bouncycastle.crypto.AsymmetricBlockCipher;
@@ -11,9 +15,6 @@ import org.bouncycastle.crypto.params.RSAKeyParameters;
 import im.actor.model.crypto.RsaCipher;
 import im.actor.model.crypto.encoding.PKS8RsaPrivateKey;
 
-/**
- * Created by ex3ndr on 07.03.15.
- */
 public class BcRsaCipher extends BcRsaEncryptCipher implements RsaCipher {
     private AsymmetricBlockCipher cipher;
 

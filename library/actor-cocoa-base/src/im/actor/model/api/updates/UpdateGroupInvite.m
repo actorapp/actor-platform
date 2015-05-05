@@ -28,17 +28,17 @@
 @end
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateGroupInvite
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateGroupInvite *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(data);
 }
 
 
-#line 32
+#line 36
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)inviteUid
@@ -48,14 +48,14 @@
 }
 
 
-#line 39
+#line 43
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateGroupInvite_init(self);
   return self;
 }
 
 
-#line 43
+#line 47
 - (jint)getGroupId {
   return self->groupId_;
 }
@@ -73,7 +73,7 @@
 }
 
 
-#line 60
+#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:9];
@@ -82,7 +82,7 @@
 }
 
 
-#line 68
+#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:9 withLong:self->rid_];
@@ -91,7 +91,7 @@
 }
 
 
-#line 76
+#line 80
 - (NSString *)description {
   NSString *res = @"update GroupInvite{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -103,7 +103,7 @@
 }
 
 
-#line 87
+#line 91
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupInvite_HEADER;
 }
@@ -111,20 +111,20 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateGroupInvite *ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupInvite_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateGroupInvite *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupInvite_init(), data));
 }
 
 
-#line 32
+#line 36
 void ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupInvite *self, jint groupId, jlong rid, jint inviteUid, jlong date) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 33
+#line 37
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->inviteUid_ = inviteUid;
@@ -132,7 +132,7 @@ void ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLo
 }
 
 
-#line 32
+#line 36
 ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint inviteUid, jlong date) {
   ImActorModelApiUpdatesUpdateGroupInvite *self = [ImActorModelApiUpdatesUpdateGroupInvite alloc];
   ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(self, groupId, rid, inviteUid, date);
@@ -140,13 +140,13 @@ ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupIn
 }
 
 
-#line 39
+#line 43
 void ImActorModelApiUpdatesUpdateGroupInvite_init(ImActorModelApiUpdatesUpdateGroupInvite *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 39
+#line 43
 ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupInvite_init() {
   ImActorModelApiUpdatesUpdateGroupInvite *self = [ImActorModelApiUpdatesUpdateGroupInvite alloc];
   ImActorModelApiUpdatesUpdateGroupInvite_init(self);

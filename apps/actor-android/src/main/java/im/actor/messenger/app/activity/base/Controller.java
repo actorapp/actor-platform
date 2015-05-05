@@ -6,18 +6,16 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import im.actor.messenger.R;
-
 /**
  * Created by ex3ndr on 25.10.14.
  */
-public abstract class Controller<T extends ActionBarActivity> {
+public abstract class Controller<T extends AppCompatActivity> {
 
     private T activity;
 

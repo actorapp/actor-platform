@@ -23,11 +23,11 @@
 @end
 
 
-#line 12
+#line 13
 @implementation ImActorModelModulesMessagesEntityOutUnreadMessage
 
 
-#line 16
+#line 17
 - (instancetype)initWithLong:(jlong)rid
                     withLong:(jlong)date {
   ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(self, rid, date);
@@ -35,14 +35,14 @@
 }
 
 
-#line 21
+#line 22
 - (instancetype)init {
   ImActorModelModulesMessagesEntityOutUnreadMessage_init(self);
   return self;
 }
 
 
-#line 25
+#line 26
 - (jlong)getDate {
   return date_;
 }
@@ -52,14 +52,14 @@
 }
 
 
-#line 34
+#line 35
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   rid_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   date_ = [values getLongWithInt:2];
 }
 
 
-#line 40
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:rid_];
   [writer writeLongWithInt:2 withLong:date_];
@@ -68,17 +68,17 @@
 @end
 
 
-#line 16
+#line 17
 void ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(ImActorModelModulesMessagesEntityOutUnreadMessage *self, jlong rid, jlong date) {
   (void) BSBserObject_init(self);
   
-#line 17
+#line 18
   self->rid_ = rid;
   self->date_ = date;
 }
 
 
-#line 16
+#line 17
 ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(jlong rid, jlong date) {
   ImActorModelModulesMessagesEntityOutUnreadMessage *self = [ImActorModelModulesMessagesEntityOutUnreadMessage alloc];
   ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(self, rid, date);
@@ -86,13 +86,13 @@ ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessag
 }
 
 
-#line 21
+#line 22
 void ImActorModelModulesMessagesEntityOutUnreadMessage_init(ImActorModelModulesMessagesEntityOutUnreadMessage *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 21
+#line 22
 ImActorModelModulesMessagesEntityOutUnreadMessage *new_ImActorModelModulesMessagesEntityOutUnreadMessage_init() {
   ImActorModelModulesMessagesEntityOutUnreadMessage *self = [ImActorModelModulesMessagesEntityOutUnreadMessage alloc];
   ImActorModelModulesMessagesEntityOutUnreadMessage_init(self);

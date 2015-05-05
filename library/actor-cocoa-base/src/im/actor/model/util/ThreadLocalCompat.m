@@ -13,7 +13,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 6
+#line 10
 @implementation AMThreadLocalCompat
 
 - (instancetype)init {

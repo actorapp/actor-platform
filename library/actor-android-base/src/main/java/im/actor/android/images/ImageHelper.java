@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android.images;
 
 import android.graphics.Bitmap;
@@ -15,9 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * Created by ex3ndr on 01.04.15.
- */
 public class ImageHelper {
     private static final int MAX_PIXELS = 1200 * 1200;
     private static final int MAX_PIXELS_HQ = 1500 * 1500;

@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.crypto;
 
 import im.actor.model.crypto.CryptoKeyPair;
 import im.actor.model.util.Base64Utils;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class Rsa {
 
     public static CryptoKeyPair generate1024RsaKey() {

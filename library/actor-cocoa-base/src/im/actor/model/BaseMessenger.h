@@ -27,8 +27,6 @@
                             withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback;
 
-- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
-
 - (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer;
 
 - (AMBindedDisplayList *)buildSearchList;
@@ -36,6 +34,10 @@
 - (AMBindedDisplayList *)getContactsGlobalList;
 
 - (AMBindedDisplayList *)getDialogsGlobalList;
+
+- (jint)getMediaCountWithAMPeer:(AMPeer *)peer;
+
+- (AMBindedDisplayList *)getMediaGlobalListWithAMPeer:(AMPeer *)peer;
 
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
 

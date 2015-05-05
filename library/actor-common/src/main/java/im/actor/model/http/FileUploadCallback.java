@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.http;
 
-/**
- * Created by ex3ndr on 23.04.15.
- */
 public interface FileUploadCallback {
-    public void onUploaded();
+    void onUploaded();
 
-    public void onUploadFailure();
+    void onUploadFailure();
 }

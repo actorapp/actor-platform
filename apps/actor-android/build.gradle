@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.3'
+        classpath 'com.android.tools.build:gradle:1.2.2'
     }
 }
 apply plugin: 'com.android.application'
@@ -28,20 +28,20 @@ if (project.hasProperty('buildIndex')) {
 
 android {
 
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
+    // Java types for BuildConfig
     def STRING = "String"
+    def STRINGS = "String[]"
     def BOOLEAN = "boolean"
     def INT = "int"
-
     def TRUE = "true"
     def FALSE = "false"
     def NULL = "null"
 
-    def CHROME_BUILD = "IS_CHROME_BUILD"
+    // Fields for BuildConfig
     def ENABLE_PHONE_BOOK = "ENABLE_PHONE_BOOK"
-    def ENABLE_GOOGLE_PLAY = "ENABLE_GOOGLE_PLAY"
     def VERSION_TITLE = "VERSION_TITLE"
     def MINT = "MINT"
     def HOCKEY = "HOCKEY"
@@ -49,38 +49,49 @@ android {
     def API_ID = "API_ID"
     def API_KEY = "API_KEY"
 
-    def URL_RELEASE = "\"tls://mtproto-api.actor.im:443\"";
-    def URL_DEV1 = "\"tls://mtproto-api-dev1.actor.im:443\"";
-    def URL_DEV1_PLAIN = "\"tcp://mtproto-api-dev1.actor.im:8080\"";
-    def URL_DEV2 = "\"tls://mtproto-api-dev2.actor.im:443\"";
+    // Values for BuildConfig
+    def URL_RELEASE = "new String[]{" +
+            "\"tls://front1-mtproto-api-rev2.actor.im\", " +
+            "\"tls://front2-mtproto-api-rev2.actor.im\"" +
+            "}";
+    def URL_DEV1 = "new String[]{" +
+            "\"tls://front1-mtproto-api-rev2-dev1.actor.im\", " +
+            "\"tls://front2-mtproto-api-rev2-dev1.actor.im\"" +
+            "}";
+    def URL_DEV2 = "new String[]{" +
+            "\"tls://front1-mtproto-api-rev2-dev2.actor.im\", " +
+            "\"tls://front2-mtproto-api-rev2-dev2.actor.im\"" +
+            "}";
 
-    def HOCKEY_MAIN = "\"38d528f118a899bbd503bda195609003\""
-    def HOCKEY_DEV1 = "\"e2fb9a8444e1d8a5d90dba0e0c9ed534\""
-    def HOCKEY_DEV2 = "\"0280d81114489bc0f306f5d94a38def1\""
-    def HOCKEY_LLECTRO = "\"95bd155a24b62dceb159444f8bfda949\""
-    def HOCKEY_MODUL = "\"a86c3991f26b932064caf0848bc003a0\""
+    // Development hockey
+    def HOCKEY_INTERNAL = "\"48746ea78e12b511f4be45701b540996\""
+    def HOCKEY_DEV1 = "\"0c9491699393210f523170b407a2bf75\""
+    def HOCKEY_DEV2 = "\"60f1d98874cd122108df9b7043f418d6\""
 
+    // Release hockey
+    def HOCKEY_LLECTRO = "\"48764c521d397a3004f6c94f6062105e\""
+
+    // Bug catch
     def MINT_MAIN = "\"4345135a\""
 
     def API_MAIN_ID = "1"
-    def API_MAIN_KEY = "\"??\""
+    def API_MAIN_KEY = "\"4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855\""
 
     defaultConfig {
+
         minSdkVersion 15
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode Integer.valueOf(customVersionCode)
         versionName project.version
-        applicationId "im.actor.messenger"
+        applicationId "im.actor"
 
         // API
-        buildConfigField STRING, API_URL, URL_RELEASE
+        buildConfigField STRINGS, API_URL, URL_RELEASE
         buildConfigField INT, API_ID, API_MAIN_ID
         buildConfigField STRING, API_KEY, API_MAIN_KEY
 
         // Config
-        buildConfigField BOOLEAN, ENABLE_GOOGLE_PLAY, TRUE
         buildConfigField BOOLEAN, ENABLE_PHONE_BOOK, TRUE
-        buildConfigField BOOLEAN, CHROME_BUILD, FALSE
 
         // Integrations
         buildConfigField STRING, HOCKEY, NULL
@@ -93,30 +104,37 @@ android {
 
     buildTypes {
 
+        // Release builds
+
         release {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
             signingConfig signingConfigs.release
-            buildConfigField STRING, HOCKEY, HOCKEY_MAIN
+            applicationIdSuffix ".business"
         }
 
         llectro {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
             applicationIdSuffix ".llectro"
             signingConfig signingConfigs.release
+
             buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
-        modul {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Modul)\""
-            applicationIdSuffix ".modul"
+        internal {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Internal)\""
             signingConfig signingConfigs.release
-            buildConfigField STRING, HOCKEY, HOCKEY_MODUL
+            applicationIdSuffix ".business"
+
+            buildConfigField STRING, HOCKEY, HOCKEY_INTERNAL
         }
 
-        mchs {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (МЧС)\""
-            applicationIdSuffix ".mchs"
-            signingConfig signingConfigs.release
+        // Development builds
+
+        debug {
+            buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
+            applicationIdSuffix ".debug"
+
+            buildConfigField STRING, MINT, NULL
         }
 
         dev1 {
@@ -124,16 +142,8 @@ android {
             applicationIdSuffix ".dev1"
             signingConfig signingConfigs.release
 
-            buildConfigField STRING, API_URL, URL_DEV1
+            buildConfigField STRINGS, API_URL, URL_DEV1
             buildConfigField STRING, HOCKEY, HOCKEY_DEV1
-        }
-
-        dev1alt {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1 plain)\""
-            applicationIdSuffix ".dev1plain"
-            signingConfig signingConfigs.release
-
-            buildConfigField STRING, API_URL, URL_DEV1_PLAIN
         }
 
         dev2 {
@@ -141,151 +151,77 @@ android {
             signingConfig signingConfigs.release
             applicationIdSuffix ".dev2"
 
-            buildConfigField STRING, API_URL, URL_DEV2
+            buildConfigField STRINGS, API_URL, URL_DEV2
             buildConfigField STRING, HOCKEY, HOCKEY_DEV2
         }
 
-        play {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
-            signingConfig signingConfigs.release
-        }
-
-        chrome {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Chrome)\""
-            signingConfig signingConfigs.release
-
-            buildConfigField BOOLEAN, CHROME_BUILD, TRUE
-        }
-
-        debug {
-            buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
-            applicationIdSuffix ".debug"
-
-            // buildConfigField STRING, API_URL, URL_LOCAL
-            buildConfigField STRING, API_URL, URL_DEV1_PLAIN
-            buildConfigField STRING, MINT, NULL
-            buildConfigField BOOLEAN, ENABLE_PHONE_BOOK, FALSE
-            // buildConfigField STRING, API_URL, URL_DEV1_PLAIN
-        }
-
+        //  Dirty hack for Result apk rename
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
                 def file = output.outputFile
-                //  Dirty hack
                 if (file.name == "actor-android-release.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-play.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Play-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-chrome.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Chrome-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-internal.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Internal-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev1.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-dev1alt.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-Plain-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev2.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-mchs.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-MCHS-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-llectro.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-modul.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Modul-" + defaultConfig.versionName + ".apk")
                 }
             }
         }
     }
 
+    // Setting themes
     sourceSets {
-        release {
-            res.srcDirs = ['src/themes/main', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
+        main {
+            res.srcDirs = ['src/main/res','src/themes/main', 'src/material-icons']
         }
 
         debug {
-            res.srcDirs = ['src/themes/dev', 'src/material-icons']
-            // res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
+            res.srcDirs = ['src/themes/dev']
         }
 
         llectro {
-            res.srcDirs = ['src/themes/main', 'src/themes/dark', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        modul {
-            res.srcDirs = ['src/themes/vendor/module', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        mchs {
-            res.srcDirs = ['src/themes/mchs', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        play {
-            res.srcDirs = ['src/themes/main', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        chrome {
-            res.srcDirs = ['src/themes/chrome', 'src/material-icons']
-            java.srcDirs = ['src/noplay/java']
+            res.srcDirs = ['src/themes/dark']
         }
 
         dev1 {
-            res.srcDirs = ['src/themes/dev', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
-        }
-
-        dev1alt {
-            res.srcDirs = ['src/themes/dev', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
+            res.srcDirs = ['src/themes/dev']
         }
 
         dev2 {
-            res.srcDirs = ['src/themes/dev', 'src/material-icons']
-            java.srcDirs = ['src/play/java']
+            res.srcDirs = ['src/themes/dev']
         }
     }
 
-    if (project.hasProperty('androidStore') &&
-            project.hasProperty('androidStorePass') &&
-            project.hasProperty('androidAliasPass') &&
-            project.hasProperty('androidAlias')) {
+    // Sigining configuration
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    if (!properties.getProperty('androidStore', '').equals('')) {
+        def androidStore = properties.getProperty('androidStore')
+        def androidStorePass = properties.getProperty('androidStorePass')
+        def androidAliasPass = properties.getProperty('androidAliasPass')
+        def androidAlias = properties.getProperty('androidAlias')
 
         android.signingConfigs.release.storeFile = file(androidStore)
         android.signingConfigs.release.storePassword = androidStorePass
         android.signingConfigs.release.keyAlias = androidAlias
         android.signingConfigs.release.keyPassword = androidAliasPass
-
     } else {
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        buildTypes.release.signingConfig = null
+        buildTypes.internal.signingConfig = null
+        buildTypes.llectro.signingConfig = null
 
-        if (!properties.getProperty('androidStore', '').equals('')) {
-            def androidStore = properties.getProperty('androidStore')
-            def androidStorePass = properties.getProperty('androidStorePass')
-            def androidAliasPass = properties.getProperty('androidAliasPass')
-            def androidAlias = properties.getProperty('androidAlias')
-
-            android.signingConfigs.release.storeFile = file(androidStore)
-            android.signingConfigs.release.storePassword = androidStorePass
-            android.signingConfigs.release.keyAlias = androidAlias
-            android.signingConfigs.release.keyPassword = androidAliasPass
-        } else {
-            buildTypes.release.signingConfig = null
-            buildTypes.mchs.signingConfig = null
-            buildTypes.dev1.signingConfig = null
-            buildTypes.dev2.signingConfig = null
-            buildTypes.dev1alt.signingConfig = null
-            buildTypes.play.signingConfig = null
-            buildTypes.chrome.signingConfig = null
-            buildTypes.llectro.signingConfig = null
-        }
+        buildTypes.dev1.signingConfig = null
+        buildTypes.dev2.signingConfig = null
     }
 
-    productFlavors {
-    }
+    // Some technical configuration
 
     packagingOptions {
         exclude 'LICENSE.txt'
@@ -293,12 +229,8 @@ android {
 
     dexOptions {
         incremental true
-        preDexLibraries = false
+        preDexLibraries false
         javaMaxHeapSize "4g"
-    }
-
-    lintOptions {
-        abortOnError false
     }
 
     compileOptions {
@@ -307,24 +239,16 @@ android {
     }
 }
 
-if (project.hasProperty("hockeyKey")) {
-    apply plugin: 'hockeyApp'
-    hockeyapp {
-        apiToken = hockeyKey
-        teamCityLog = true
-    }
-}
-
 dependencies {
     compile project(':library:actor-android-base')
 
     // DroidKit
     compile 'com.droidkit:actors:0.6.1'
-    compile 'com.droidkit:bser:1.2'
+    // compile 'com.droidkit:bser:1.2'
     compile('com.droidkit:actors-android:0.6.1') {
         exclude module: 'appcompat-v7'
     }
-    compile 'com.droidkit:progress:0.5+'
+    compile 'com.droidkit:progress:0.5'
     compile('com.droidkit:pickers:0.7+') {
         exclude module: 'play-services'
         exclude module: 'support-v13'
@@ -334,37 +258,29 @@ dependencies {
 
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
-    compile 'com.facebook.fresco:fresco:0.1.0+'
+    compile 'com.facebook.fresco:fresco:0.1.0'
     compile 'com.facebook.rebound:rebound:0.3.7'
-
-    // compile project(':photoviewer')
     compile('com.github.chrisbanes.photoview:library:1.2.3') {
         exclude module: 'support-v13'
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.afollestad:material-dialogs:0.7.3.1'
-    // Android Support
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:support-v13:21.0.3'
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:palette-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
 
-    releaseCompile 'com.google.android.gms:play-services:6.+'
-    playCompile 'com.google.android.gms:play-services:6.+'
-    debugCompile 'com.google.android.gms:play-services:6.+'
-    dev1Compile 'com.google.android.gms:play-services:6.+'
-    dev1altCompile 'com.google.android.gms:play-services:6.+'
-    dev2Compile 'com.google.android.gms:play-services:6.+'
-    mchsCompile 'com.google.android.gms:play-services:6.+'
-    llectroCompile 'com.google.android.gms:play-services:6.+'
-    modulCompile 'com.google.android.gms:play-services:6.+'
+    // Android Support
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:support-v13:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:palette-v7:22.1.1'
+    compile 'com.android.support:recyclerview-v7:22.1.1'
+
+    // Google
+    compile 'com.google.android.gms:play-services-gcm:7.3.0'
 
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assemblePlay', 'assembleDev1', 'assembleDev1alt']) {
+task dist(dependsOn: ['assembleRelease', 'assembleInternal', 'assembleDev1']) {
 
 }

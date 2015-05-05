@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.entity;
 
 import im.actor.model.AuthState;
 import im.actor.model.entity.MessageState;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class Enums {
     public static String convert(AuthState state) {
         switch (state) {

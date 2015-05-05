@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm.threads;
 
 import im.actor.model.droidkit.actors.ActorSystem;
@@ -9,8 +13,6 @@ import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 
 /**
  * Basic ActorDispatcher backed by ThreadPoolDispatcher
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class JavaDispatcherActor extends ActorDispatcher {
 

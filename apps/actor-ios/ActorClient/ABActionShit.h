@@ -1,11 +1,6 @@
 //
-//  ABActionShit.h
-//  Actor
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
-//  Created by Антон Буков on 03.12.14.
-//  Copyright (c) 2015 Actor. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 
 @class ABActionShit;

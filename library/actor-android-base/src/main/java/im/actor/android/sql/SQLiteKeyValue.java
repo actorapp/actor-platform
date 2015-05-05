@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android.sql;
 
 import android.database.Cursor;
@@ -9,9 +13,6 @@ import java.util.List;
 import im.actor.model.droidkit.engine.KeyValueRecord;
 import im.actor.model.droidkit.engine.KeyValueStorage;
 
-/**
- * Created by ex3ndr on 19.02.15.
- */
 public class SQLiteKeyValue implements KeyValueStorage {
 
     private SQLiteStatement insertStatement;

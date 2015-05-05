@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.avatar;
 
 import java.util.HashMap;
@@ -10,7 +14,6 @@ import im.actor.model.api.rpc.RequestRemoveAvatar;
 import im.actor.model.api.rpc.ResponseEditGroupAvatar;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.api.updates.UpdateGroupAvatarChanged;
-import im.actor.model.api.updates.UpdateUserAvatarChanged;
 import im.actor.model.entity.FileReference;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.UploadManager;
@@ -21,9 +24,6 @@ import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.viewmodel.AvatarUploadState;
 
-/**
- * Created by ex3ndr on 04.03.15.
- */
 public class GroupAvatarChangeActor extends ModuleActor {
 
     private HashMap<Integer, Long> currentTasks = new HashMap<Integer, Long>();

@@ -1,8 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
-/**
- * Created by ex3ndr on 08.03.15.
- */
 class BserUnknownField {
     private int id;
     private int type;

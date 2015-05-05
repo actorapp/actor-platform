@@ -21,11 +21,11 @@
 #include "java/io/IOException.h"
 
 
-#line 10
+#line 11
 @implementation BCASN1
 
 
-#line 11
+#line 12
 + (BCASN1Primitive *)readObjectWithByteArray:(IOSByteArray *)sourceData {
   return BCASN1_readObjectWithByteArray_(sourceData);
 }
@@ -37,7 +37,7 @@
 }
 
 
-#line 19
+#line 20
 + (BCASN1Primitive *)readObjectWithBSDataInput:(BSDataInput *)dataInput {
   return BCASN1_readObjectWithBSDataInput_(dataInput);
 }
@@ -50,49 +50,49 @@
 @end
 
 
-#line 11
+#line 12
 BCASN1Primitive *BCASN1_readObjectWithByteArray_(IOSByteArray *sourceData) {
   BCASN1_initialize();
   
-#line 12
+#line 13
   return BCASN1_readObjectWithByteArray_withInt_withInt_(sourceData, 0, ((IOSByteArray *) nil_chk(sourceData))->size_);
 }
 
 
-#line 15
+#line 16
 BCASN1Primitive *BCASN1_readObjectWithByteArray_withInt_withInt_(IOSByteArray *sourceData, jint offset, jint len) {
   BCASN1_initialize();
   
-#line 16
+#line 17
   return BCASN1_readObjectWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(sourceData, offset, len));
 }
 
 
-#line 19
+#line 20
 BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1_initialize();
   
-#line 20
+#line 21
   jint tag = [((BSDataInput *) nil_chk(dataInput)) readASN1Tag];
   jint tagNumber = [dataInput readASN1TagNumberWithInt:tag];
   jboolean isConstructed = (tag & BCASN1Primitive_TAG_CONSTRUCTED) != 0;
   jint length = [dataInput readASN1Length];
   
-#line 27
+#line 28
   if ((tag & BCASN1Primitive_TAG_APPLICATION) != 0) {
     
-#line 29
+#line 30
     @throw new_JavaIoIOException_init();
   }
   
-#line 32
+#line 33
   if ((tag & BCASN1Primitive_TAG_TAGGED) != 0) {
     
-#line 34
+#line 35
     @throw new_JavaIoIOException_init();
   }
   
-#line 37
+#line 38
   BSDataInput *objDataInput;
   if (length > 0) {
     objDataInput = new_BSDataInput_initWithByteArray_withInt_withInt_([dataInput getData], [dataInput getOffset], length);
@@ -100,11 +100,11 @@ BCASN1Primitive *BCASN1_readObjectWithBSDataInput_(BSDataInput *dataInput) {
   }
   else {
     
-#line 42
+#line 43
     objDataInput = dataInput;
   }
   
-#line 45
+#line 46
   switch (tagNumber) {
     case BCASN1Primitive_TAG_SEQUENCE:
     return BCASN1Sequence_readSequenceWithBSDataInput_(objDataInput);

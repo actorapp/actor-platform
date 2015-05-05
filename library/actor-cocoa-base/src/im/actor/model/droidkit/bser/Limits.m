@@ -20,11 +20,11 @@ __attribute__((unused)) static void BSLimits_init(BSLimits *self);
 __attribute__((unused)) static BSLimits *new_BSLimits_init() NS_RETURNS_RETAINED;
 
 
-#line 6
+#line 7
 @implementation BSLimits
 
 
-#line 10
+#line 11
 - (instancetype)init {
   BSLimits_init(self);
   return self;
@@ -33,13 +33,13 @@ __attribute__((unused)) static BSLimits *new_BSLimits_init() NS_RETURNS_RETAINED
 @end
 
 
-#line 10
+#line 11
 void BSLimits_init(BSLimits *self) {
   (void) NSObject_init(self);
 }
 
 
-#line 10
+#line 11
 BSLimits *new_BSLimits_init() {
   BSLimits *self = [BSLimits alloc];
   BSLimits_init(self);

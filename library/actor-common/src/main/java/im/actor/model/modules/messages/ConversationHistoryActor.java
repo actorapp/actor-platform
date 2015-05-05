@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages;
 
 import im.actor.model.api.rpc.RequestLoadHistory;
@@ -9,9 +13,6 @@ import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 04.03.15.
- */
 public class ConversationHistoryActor extends ModuleActor {
 
     private static final int LIMIT = 20;

@@ -20,11 +20,11 @@
 J2OBJC_FIELD_SETTER(AMPhoneBookEmail, email_, NSString *)
 
 
-#line 6
+#line 7
 @implementation AMPhoneBookEmail
 
 
-#line 10
+#line 11
 - (instancetype)initWithLong:(jlong)id_
                 withNSString:(NSString *)email {
   AMPhoneBookEmail_initWithLong_withNSString_(self, id_, email);
@@ -32,7 +32,7 @@ J2OBJC_FIELD_SETTER(AMPhoneBookEmail, email_, NSString *)
 }
 
 
-#line 15
+#line 16
 - (jlong)getId {
   return id__;
 }
@@ -44,17 +44,17 @@ J2OBJC_FIELD_SETTER(AMPhoneBookEmail, email_, NSString *)
 @end
 
 
-#line 10
+#line 11
 void AMPhoneBookEmail_initWithLong_withNSString_(AMPhoneBookEmail *self, jlong id_, NSString *email) {
   (void) NSObject_init(self);
   
-#line 11
+#line 12
   self->id__ = id_;
   self->email_ = email;
 }
 
 
-#line 10
+#line 11
 AMPhoneBookEmail *new_AMPhoneBookEmail_initWithLong_withNSString_(jlong id_, NSString *email) {
   AMPhoneBookEmail *self = [AMPhoneBookEmail alloc];
   AMPhoneBookEmail_initWithLong_withNSString_(self, id_, email);

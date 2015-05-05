@@ -1,10 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.dispatch;
 
 /**
- * Queue for dispatching messages for {@link com.droidkit.actors.jvm.JavaThreadsDispatcher}.
+ * Queue for dispatching messages.
  * Implementation MUST BE thread-safe.
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public abstract class AbstractDispatchQueue<T> {
 

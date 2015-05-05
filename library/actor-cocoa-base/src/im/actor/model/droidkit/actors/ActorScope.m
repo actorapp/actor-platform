@@ -42,11 +42,11 @@ J2OBJC_FIELD_SETTER(DKActorScope, sender_, DKActorRef *)
 J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
 
 
-#line 13
+#line 15
 @implementation DKActorScope
 
 
-#line 31
+#line 33
 - (instancetype)initWithDKActorSystem:(DKActorSystem *)actorSystem
                         withDKMailbox:(DKMailbox *)mailbox
                 withDKActorDispatcher:(DKActorDispatcher *)dispatcher
@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
 }
 
 
-#line 42
+#line 44
 - (DKActorEndpoint *)getEndpoint {
   return endpoint_;
 }
@@ -110,7 +110,7 @@ J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
 @end
 
 
-#line 31
+#line 33
 void DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorScope *self, DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) {
   (void) NSObject_init(self);
   self->actorSystem_ = actorSystem;
@@ -123,7 +123,7 @@ void DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_with
 }
 
 
-#line 31
+#line 33
 DKActorScope *new_DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) {
   DKActorScope *self = [DKActorScope alloc];
   DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(self, actorSystem, mailbox, dispatcher, path, props, endpoint);

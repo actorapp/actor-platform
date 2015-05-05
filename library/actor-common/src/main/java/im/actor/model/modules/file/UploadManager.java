@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.file;
 
 import java.util.ArrayList;
@@ -16,9 +20,6 @@ import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.viewmodel.UploadFileCallback;
 
-/**
- * Created by ex3ndr on 03.03.15.
- */
 public class UploadManager extends ModuleActor {
 
     private static final String TAG = "UploadManager";

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp;
 
 import im.actor.model.droidkit.actors.ActorRef;
@@ -10,9 +14,6 @@ import im.actor.model.network.mtp.entity.MTRpcRequest;
 import im.actor.model.network.mtp.entity.ProtoStruct;
 import im.actor.model.network.util.MTUids;
 
-/**
- * Created by ex3ndr on 07.02.15.
- */
 public class MTProto {
     private final long authId;
     private final long sessionId;

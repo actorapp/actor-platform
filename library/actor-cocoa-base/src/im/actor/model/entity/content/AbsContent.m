@@ -40,7 +40,7 @@ __attribute__((unused)) static void AMAbsContent_ContentTypeEnum_initWithInt_wit
 __attribute__((unused)) static AMAbsContent_ContentTypeEnum *new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
 
-#line 14
+#line 15
 @implementation AMAbsContent
 
 + (AMAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data {
@@ -48,18 +48,18 @@ __attribute__((unused)) static AMAbsContent_ContentTypeEnum *new_AMAbsContent_Co
 }
 
 
-#line 50
+#line 51
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
 
-#line 55
+#line 56
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((AMAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
 }
 
 
-#line 86
+#line 87
 + (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val {
   return AMAbsContent_typeFromValueWithInt_(val);
 }
@@ -72,11 +72,11 @@ __attribute__((unused)) static AMAbsContent_ContentTypeEnum *new_AMAbsContent_Co
 @end
 
 
-#line 16
+#line 17
 AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
   AMAbsContent_initialize();
   
-#line 17
+#line 18
   BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
   AMAbsContent_ContentTypeEnum *type = AMAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
   switch ([type ordinal]) {
@@ -110,11 +110,11 @@ AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
 }
 
 
-#line 86
+#line 87
 AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val) {
   AMAbsContent_initialize();
   
-#line 87
+#line 88
   switch (val) {
     default:
     case 1:
@@ -155,11 +155,11 @@ J2OBJC_INITIALIZED_DEFN(AMAbsContent_ContentTypeEnum)
 AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[12];
 
 
-#line 59
+#line 60
 @implementation AMAbsContent_ContentTypeEnum
 
 
-#line 75
+#line 76
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -168,7 +168,7 @@ AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[12];
 }
 
 
-#line 79
+#line 80
 - (jint)getValue {
   return value_;
 }
@@ -205,40 +205,40 @@ AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(
 + (void)initialize {
   if (self == [AMAbsContent_ContentTypeEnum class]) {
     AMAbsContent_ContentTypeEnum_TEXT = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 60
+#line 61
     1, @"TEXT", 0);
     AMAbsContent_ContentTypeEnum_DOCUMENT = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 61
+#line 62
     2, @"DOCUMENT", 1);
     AMAbsContent_ContentTypeEnum_DOCUMENT_PHOTO = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 62
+#line 63
     3, @"DOCUMENT_PHOTO", 2);
     AMAbsContent_ContentTypeEnum_DOCUMENT_VIDEO = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 63
+#line 64
     4, @"DOCUMENT_VIDEO", 3);
     AMAbsContent_ContentTypeEnum_SERVICE = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 64
+#line 65
     5, @"SERVICE", 4);
     AMAbsContent_ContentTypeEnum_SERVICE_CREATED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 65
+#line 66
     6, @"SERVICE_CREATED", 5);
     AMAbsContent_ContentTypeEnum_SERVICE_AVATAR = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 66
+#line 67
     7, @"SERVICE_AVATAR", 6);
     AMAbsContent_ContentTypeEnum_SERVICE_TITLE = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 67
+#line 68
     8, @"SERVICE_TITLE", 7);
     AMAbsContent_ContentTypeEnum_SERVICE_ADDED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 68
+#line 69
     9, @"SERVICE_ADDED", 8);
     AMAbsContent_ContentTypeEnum_SERVICE_KICKED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 69
+#line 70
     10, @"SERVICE_KICKED", 9);
     AMAbsContent_ContentTypeEnum_SERVICE_LEAVE = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 70
+#line 71
     11, @"SERVICE_LEAVE", 10);
     AMAbsContent_ContentTypeEnum_SERVICE_REGISTERED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(
-#line 71
+#line 72
     12, @"SERVICE_REGISTERED", 11);
     J2OBJC_SET_INITIALIZED(AMAbsContent_ContentTypeEnum)
   }
@@ -247,16 +247,16 @@ AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(
 @end
 
 
-#line 75
+#line 76
 void AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(AMAbsContent_ContentTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   
-#line 76
+#line 77
   self->value_ = value;
 }
 
 
-#line 75
+#line 76
 AMAbsContent_ContentTypeEnum *new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   AMAbsContent_ContentTypeEnum *self = [AMAbsContent_ContentTypeEnum alloc];
   AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);

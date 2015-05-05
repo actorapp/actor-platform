@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm.tcp;
 
 import java.io.IOException;
@@ -19,9 +23,6 @@ import im.actor.model.network.connection.AsyncConnection;
 import im.actor.model.network.connection.AsyncConnectionInterface;
 import im.actor.model.network.connection.ManagedConnection;
 
-/**
- * Created by ex3ndr on 01.05.15.
- */
 public class AsyncTcpConnection extends AsyncConnection {
 
     private final ExecutorService connectExecutor = Executors.newSingleThreadExecutor();

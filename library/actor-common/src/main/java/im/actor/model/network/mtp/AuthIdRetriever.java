@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp;
 
 import im.actor.model.log.Log;
@@ -11,9 +15,6 @@ import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.util.ExponentialBackoff;
 
-/**
- * Created by ex3ndr on 07.02.15.
- */
 public class AuthIdRetriever {
 
     private static final String TAG = "AuthId";

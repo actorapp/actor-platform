@@ -25,24 +25,24 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesContactsProcessor, contactsSyncActor_, DKActorRef *)
 
 
-#line 13
+#line 14
 @implementation ImActorModelModulesUpdatesContactsProcessor
 
 
-#line 18
+#line 19
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesUpdatesContactsProcessor_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 24
+#line 25
 - (void)onContactsAddedWithIntArray:(IOSIntArray *)uid {
   [((DKActorRef *) nil_chk(contactsSyncActor_)) sendWithId:new_ImActorModelModulesContactsContactsSyncActor_ContactsAdded_initWithIntArray_(uid)];
 }
 
 
-#line 29
+#line 30
 - (void)onContactsRemovedWithIntArray:(IOSIntArray *)uid {
   [((DKActorRef *) nil_chk(contactsSyncActor_)) sendWithId:new_ImActorModelModulesContactsContactsSyncActor_ContactsRemoved_initWithIntArray_(uid)];
 }
@@ -50,14 +50,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesContactsProcessor, contactsSyncAct
 @end
 
 
-#line 18
+#line 19
 void ImActorModelModulesUpdatesContactsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesContactsProcessor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->contactsSyncActor_ = [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor];
 }
 
 
-#line 18
+#line 19
 ImActorModelModulesUpdatesContactsProcessor *new_ImActorModelModulesUpdatesContactsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUpdatesContactsProcessor *self = [ImActorModelModulesUpdatesContactsProcessor alloc];
   ImActorModelModulesUpdatesContactsProcessor_initWithImActorModelModulesModules_(self, modules);

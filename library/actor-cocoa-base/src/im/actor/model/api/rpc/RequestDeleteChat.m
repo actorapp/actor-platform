@@ -28,43 +28,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiOutPeer *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestDeleteChat
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer {
   ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(self, peer);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestDeleteChat_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (ImActorModelApiOutPeer *)getPeer {
   return self->peer_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -73,7 +73,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"rpc DeleteChat{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
 }
 
 
-#line 63
+#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestDeleteChat_HEADER;
 }
@@ -90,25 +90,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestDeleteChat *ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDeleteChat_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestDeleteChat *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestDeleteChat_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestDeleteChat *self, ImActorModelApiOutPeer *peer) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 30
+#line 34
   self->peer_ = peer;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) {
   ImActorModelApiRpcRequestDeleteChat *self = [ImActorModelApiRpcRequestDeleteChat alloc];
   ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(self, peer);
@@ -116,13 +116,13 @@ ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_ini
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiRpcRequestDeleteChat_init(ImActorModelApiRpcRequestDeleteChat *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_init() {
   ImActorModelApiRpcRequestDeleteChat *self = [ImActorModelApiRpcRequestDeleteChat alloc];
   ImActorModelApiRpcRequestDeleteChat_init(self);

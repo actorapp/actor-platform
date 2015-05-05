@@ -25,7 +25,7 @@
 J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 
 
-#line 11
+#line 12
 @implementation BCASN1OctetString
 
 + (BCASN1OctetString *)readOctetStringWithBSDataInput:(BSDataInput *)dataInput {
@@ -33,20 +33,20 @@ J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 }
 
 
-#line 19
+#line 20
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   BCASN1OctetString_initWithByteArray_(self, data);
   return self;
 }
 
 
-#line 23
+#line 24
 - (IOSByteArray *)getData {
   return data_;
 }
 
 
-#line 28
+#line 29
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_OCTET_STRING];
   [dataOutput writeASN1LengthWithInt:((IOSByteArray *) nil_chk(data_))->size_];
@@ -56,25 +56,25 @@ J2OBJC_FIELD_SETTER(BCASN1OctetString, data_, IOSByteArray *)
 @end
 
 
-#line 13
+#line 14
 BCASN1OctetString *BCASN1OctetString_readOctetStringWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1OctetString_initialize();
   
-#line 14
+#line 15
   return new_BCASN1OctetString_initWithByteArray_([dataInput readBytesWithInt:[((BSDataInput *) nil_chk(dataInput)) getRemaining]]);
 }
 
 
-#line 19
+#line 20
 void BCASN1OctetString_initWithByteArray_(BCASN1OctetString *self, IOSByteArray *data) {
   (void) BCASN1Primitive_init(self);
   
-#line 20
+#line 21
   self->data_ = data;
 }
 
 
-#line 19
+#line 20
 BCASN1OctetString *new_BCASN1OctetString_initWithByteArray_(IOSByteArray *data) {
   BCASN1OctetString *self = [BCASN1OctetString alloc];
   BCASN1OctetString_initWithByteArray_(self, data);

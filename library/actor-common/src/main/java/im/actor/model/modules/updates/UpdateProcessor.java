@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates;
 
 import java.util.ArrayList;
@@ -50,9 +54,6 @@ import im.actor.model.modules.updates.internal.UsersFounded;
 import im.actor.model.network.parser.Update;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 09.02.15.
- */
 public class UpdateProcessor extends BaseModule {
 
     private static final String TAG = "Updates";

@@ -26,11 +26,11 @@
 J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 
 
-#line 8
+#line 12
 @implementation MTProtoMessage
 
 
-#line 14
+#line 18
 - (instancetype)initWithLong:(jlong)messageId
                withByteArray:(IOSByteArray *)payload {
   MTProtoMessage_initWithLong_withByteArray_(self, messageId, payload);
@@ -38,7 +38,7 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 }
 
 
-#line 19
+#line 23
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 }
 
 
-#line 38
+#line 42
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   payload_ = [bs readProtoBytes];
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 }
 
 
-#line 45
+#line 49
 - (NSString *)description {
   return JreStrcat("$JC", @"ProtoMessage [#", messageId_, ']');
 }
@@ -74,17 +74,17 @@ J2OBJC_FIELD_SETTER(MTProtoMessage, payload_, IOSByteArray *)
 @end
 
 
-#line 14
+#line 18
 void MTProtoMessage_initWithLong_withByteArray_(MTProtoMessage *self, jlong messageId, IOSByteArray *payload) {
   (void) MTProtoObject_init(self);
   
-#line 15
+#line 19
   self->messageId_ = messageId;
   self->payload_ = payload;
 }
 
 
-#line 14
+#line 18
 MTProtoMessage *new_MTProtoMessage_initWithLong_withByteArray_(jlong messageId, IOSByteArray *payload) {
   MTProtoMessage *self = [MTProtoMessage alloc];
   MTProtoMessage_initWithLong_withByteArray_(self, messageId, payload);
@@ -92,13 +92,13 @@ MTProtoMessage *new_MTProtoMessage_initWithLong_withByteArray_(jlong messageId, 
 }
 
 
-#line 27
+#line 31
 void MTProtoMessage_initWithBSDataInput_(MTProtoMessage *self, BSDataInput *stream) {
   (void) MTProtoObject_initWithBSDataInput_(self, stream);
 }
 
 
-#line 27
+#line 31
 MTProtoMessage *new_MTProtoMessage_initWithBSDataInput_(BSDataInput *stream) {
   MTProtoMessage *self = [MTProtoMessage alloc];
   MTProtoMessage_initWithBSDataInput_(self, stream);

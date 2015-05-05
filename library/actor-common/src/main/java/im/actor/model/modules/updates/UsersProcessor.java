@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.updates;
 
 import java.util.ArrayList;
@@ -15,9 +19,6 @@ import im.actor.model.modules.messages.entity.EntityConverter;
 
 import static im.actor.model.util.JavaUtil.equalsE;
 
-/**
- * Created by ex3ndr on 09.02.15.
- */
 @Verified
 public class UsersProcessor extends BaseModule {
 

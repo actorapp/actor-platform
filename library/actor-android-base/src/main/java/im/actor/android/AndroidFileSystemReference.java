@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import java.io.File;
@@ -8,9 +12,6 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
 
-/**
- * Created by ex3ndr on 26.02.15.
- */
 public class AndroidFileSystemReference implements FileSystemReference {
     private String fileName;
 

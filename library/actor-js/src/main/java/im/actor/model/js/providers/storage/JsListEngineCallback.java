@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.storage;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public interface JsListEngineCallback<T> {
-    public void onItemAddedOrUpdated(T item);
+    void onItemAddedOrUpdated(T item);
 
-    public void onItemRemoved(long id);
+    void onItemRemoved(long id);
 
-    public void onClear();
+    void onClear();
 }

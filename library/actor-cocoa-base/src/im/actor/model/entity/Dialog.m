@@ -73,7 +73,7 @@ J2OBJC_INITIALIZED_DEFN(AMDialog)
 id<BSBserCreator> AMDialog_CREATOR_;
 
 
-#line 15
+#line 16
 @implementation AMDialog
 
 + (AMDialog *)fromBytesWithByteArray:(IOSByteArray *)date {
@@ -81,7 +81,7 @@ id<BSBserCreator> AMDialog_CREATOR_;
 }
 
 
-#line 41
+#line 42
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortKey
                   withNSString:(NSString *)dialogTitle
@@ -99,14 +99,14 @@ id<BSBserCreator> AMDialog_CREATOR_;
 }
 
 
-#line 61
+#line 62
 - (instancetype)init {
   AMDialog_init(self);
   return self;
 }
 
 
-#line 65
+#line 66
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -158,27 +158,27 @@ id<BSBserCreator> AMDialog_CREATOR_;
 - (AMDialog *)editPeerInfoWithNSString:(NSString *)title
                           withAMAvatar:(AMAvatar *)dialogAvatar {
   return new_AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(peer_, sortDate_, title, dialogAvatar, unreadCount_, rid_, messageType_, text_, status_, senderId_,
-#line 115
+#line 116
   date_, relatedUid_);
 }
 
 
-#line 119
+#line 120
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:1]);
   
-#line 122
+#line 123
   dialogTitle_ = [values getStringWithInt:2];
   IOSByteArray *av = [values optBytesWithInt:3];
   if (av != nil) {
     dialogAvatar_ = AMAvatar_fromBytesWithByteArray_(av);
   }
   
-#line 128
+#line 129
   unreadCount_ = [values getIntWithInt:4];
   sortDate_ = [values getLongWithInt:5];
   
-#line 131
+#line 132
   rid_ = [values getLongWithInt:6];
   senderId_ = [values getIntWithInt:7];
   date_ = [values getLongWithInt:8];
@@ -189,7 +189,7 @@ id<BSBserCreator> AMDialog_CREATOR_;
 }
 
 
-#line 141
+#line 142
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:peer_];
   [writer writeStringWithInt:2 withNSString:dialogTitle_];
@@ -208,19 +208,19 @@ id<BSBserCreator> AMDialog_CREATOR_;
 }
 
 
-#line 159
+#line 160
 - (jlong)getEngineId {
   return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
 }
 
 
-#line 164
+#line 165
 - (jlong)getEngineSort {
   return sortDate_;
 }
 
 
-#line 169
+#line 170
 - (NSString *)getEngineSearch {
   return dialogTitle_;
 }
@@ -235,20 +235,20 @@ id<BSBserCreator> AMDialog_CREATOR_;
 @end
 
 
-#line 17
+#line 18
 AMDialog *AMDialog_fromBytesWithByteArray_(IOSByteArray *date) {
   AMDialog_initialize();
   
-#line 18
+#line 19
   return ((AMDialog *) BSBser_parseWithBSBserObject_withByteArray_(new_AMDialog_init(), date));
 }
 
 
-#line 41
+#line 42
 void AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(AMDialog *self, AMPeer *peer, jlong sortKey, NSString *dialogTitle, AMAvatar *dialogAvatar, jint unreadCount, jlong rid, AMContentTypeEnum *messageType, NSString *text, AMMessageStateEnum *status, jint senderId, jlong date, jint relatedUid) {
   (void) BSBserObject_init(self);
   
-#line 47
+#line 48
   self->peer_ = peer;
   self->dialogTitle_ = dialogTitle;
   self->dialogAvatar_ = dialogAvatar;
@@ -264,7 +264,7 @@ void AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong
 }
 
 
-#line 41
+#line 42
 AMDialog *new_AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(AMPeer *peer, jlong sortKey, NSString *dialogTitle, AMAvatar *dialogAvatar, jint unreadCount, jlong rid, AMContentTypeEnum *messageType, NSString *text, AMMessageStateEnum *status, jint senderId, jlong date, jint relatedUid) {
   AMDialog *self = [AMDialog alloc];
   AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_(self, peer, sortKey, dialogTitle, dialogAvatar, unreadCount, rid, messageType, text, status, senderId, date, relatedUid);
@@ -272,13 +272,13 @@ AMDialog *new_AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt
 }
 
 
-#line 61
+#line 62
 void AMDialog_init(AMDialog *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 61
+#line 62
 AMDialog *new_AMDialog_init() {
   AMDialog *self = [AMDialog alloc];
   AMDialog_init(self);
@@ -290,7 +290,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDialog)
 @implementation AMDialog_$1
 
 
-#line 23
+#line 24
 - (AMDialog *)createInstance {
   return new_AMDialog_init();
 }

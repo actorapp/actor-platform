@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.content.Context;
@@ -6,9 +10,6 @@ import android.util.Base64;
 
 import im.actor.model.droidkit.engine.PreferencesStorage;
 
-/**
- * Created by ex3ndr on 15.02.15.
- */
 public class AndroidProperties implements PreferencesStorage {
 
     private SharedPreferences preference;

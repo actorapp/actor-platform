@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.engine;
 
 import java.io.IOException;
@@ -9,9 +13,6 @@ import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 
-/**
- * Created by ex3ndr on 15.03.15.
- */
 class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
     private final ListStorageDisplayEx storage;
     private final BserCreator<T> creator;

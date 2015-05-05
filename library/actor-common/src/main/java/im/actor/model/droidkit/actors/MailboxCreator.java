@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 import im.actor.model.droidkit.actors.mailbox.Mailbox;
@@ -5,8 +9,6 @@ import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 
 /**
  * Creator of mailbox for Actor
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public interface MailboxCreator {
     /**
@@ -15,5 +17,5 @@ public interface MailboxCreator {
      * @param queue mailbox queue
      * @return mailbox
      */
-    public Mailbox createMailbox(MailboxesQueue queue);
+    Mailbox createMailbox(MailboxesQueue queue);
 }

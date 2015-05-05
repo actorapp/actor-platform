@@ -19,16 +19,16 @@
 @end
 
 
-#line 9
+#line 10
 @implementation DKObjectCache
 
 
-#line 14
+#line 15
 - (void)onObjectLoadedWithId:(id)key
                       withId:(id)value {
   @synchronized(self) {
     
-#line 15
+#line 16
     if (lockLoading_) {
       return;
     }
@@ -43,65 +43,65 @@
 }
 
 
-#line 27
+#line 28
 - (void)onObjectUpdatedWithId:(id)key
                        withId:(id)value {
   @synchronized(self) {
     
-#line 28
+#line 29
     [((JavaUtilHashSet *) nil_chk(removedItems_)) removeWithId:key];
     (void) [((JavaUtilHashMap *) nil_chk(memoryCache_)) putWithId:key withId:value];
   }
 }
 
 
-#line 32
+#line 33
 - (void)removeObjectWithId:(id)key {
   @synchronized(self) {
     
-#line 33
+#line 34
     (void) [((JavaUtilHashMap *) nil_chk(memoryCache_)) removeWithId:key];
     [((JavaUtilHashSet *) nil_chk(removedItems_)) addWithId:key];
   }
 }
 
 
-#line 37
+#line 38
 - (id)lookupWithId:(id)key {
   @synchronized(self) {
     
-#line 38
+#line 39
     return [((JavaUtilHashMap *) nil_chk(memoryCache_)) getWithId:key];
   }
 }
 
 
-#line 41
+#line 42
 - (void)clear {
   @synchronized(self) {
     
-#line 42
+#line 43
     [((JavaUtilHashMap *) nil_chk(memoryCache_)) clear];
     [((JavaUtilHashSet *) nil_chk(removedItems_)) clear];
   }
 }
 
 
-#line 46
+#line 47
 - (void)startLock {
   @synchronized(self) {
     
-#line 47
+#line 48
     lockLoading_ = YES;
   }
 }
 
 
-#line 50
+#line 51
 - (void)stopLock {
   @synchronized(self) {
     
-#line 51
+#line 52
     lockLoading_ = NO;
   }
 }
@@ -118,7 +118,7 @@ void DKObjectCache_init(DKObjectCache *self) {
   self->memoryCache_ = new_JavaUtilHashMap_init();
   self->removedItems_ = new_JavaUtilHashSet_init();
   self->lockLoading_ =
-#line 12
+#line 13
   NO;
 }
 

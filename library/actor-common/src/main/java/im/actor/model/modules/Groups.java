@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.io.IOException;
@@ -44,9 +48,6 @@ import im.actor.model.viewmodel.GroupVM;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 23.02.15.
- */
 public class Groups extends BaseModule {
 
     private KeyValueEngine<Group> groups;

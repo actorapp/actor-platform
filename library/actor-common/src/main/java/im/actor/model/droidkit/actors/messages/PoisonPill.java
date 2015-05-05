@@ -1,9 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.messages;
 
 /**
  * PoisonPill message for killing actors
- *
- * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public final class PoisonPill {
     public static final PoisonPill INSTANCE = new PoisonPill();
