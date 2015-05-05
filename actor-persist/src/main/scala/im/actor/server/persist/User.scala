@@ -1,7 +1,10 @@
 package im.actor.server.persist
 
-import im.actor.server.models
+import com.github.tototoshi.slick.PostgresJodaSupport._
+import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models
 
 class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   import SexColumnType._
@@ -13,18 +16,26 @@ class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   def countryCode = column[String]("country_code")
   def sex = column[models.Sex]("sex")
   def state = column[models.UserState]("state")
+  def deletedAt = column[Option[DateTime]]("deleted_at")
 
-  def * = (id, accessSalt, name, countryCode, sex, state) <> (models.User.tupled, models.User.unapply)
+  def * = (id, accessSalt, name, countryCode, sex, state, deletedAt) <> (models.User.tupled, models.User.unapply)
 }
 
 object User {
   val users = TableQuery[UserTable]
+
+  val activeUsers = users.filter(_.deletedAt.isEmpty)
 
   def create(user: models.User) =
     users += user
 
   def setCountryCode(userId: Int, countryCode: String) =
     users.filter(_.id === userId).map(_.countryCode).update(countryCode)
+
+  def setDeletedAt(userId: Int) =
+    users.filter(_.id === userId).
+      map(_.deletedAt).
+      update(Some(new DateTime))
 
   def setName(userId: Int, name: String) =
     users.filter(_.id === userId).map(_.name).update(name)
@@ -41,4 +52,22 @@ object User {
 
   def findByIds(ids: Set[Int]) =
     users.filter(_.id inSet ids).result
+
+  def findByIdsPaged(ids: Set[Int], number: Int, size: Int) = {
+    val offset = (number - 1) * size
+    users.
+      filter(_.id inSet ids).
+      sortBy(_.name).
+      drop(offset).
+      take(size).
+      result
+  }
+
+  def page(number: Int, size: Int) = {
+    val offset = (number - 1) * size
+    activeUsers.
+      sortBy(_.name).
+      drop(offset).
+      take(size)
+  }
 }

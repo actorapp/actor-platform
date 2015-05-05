@@ -1,10 +1,10 @@
 package im.actor.server.persist
 
-import slick.dbio.Effect.{ Write, Read }
+import slick.dbio.Effect.{ Read, Write }
+import slick.driver.PostgresDriver.api._
 import slick.profile.{ FixedSqlAction, FixedSqlStreamingAction }
 
 import im.actor.server.models
-import slick.driver.PostgresDriver.api._
 
 class UserPhoneTable(tag: Tag) extends Table[models.UserPhone](tag, "user_phones") {
   def userId = column[Int]("user_id", O.PrimaryKey)
@@ -37,6 +37,9 @@ object UserPhone {
 
   def create(id: Int, userId: Int, accessSalt: String, number: Long, title: String): FixedSqlAction[Int, NoStream, Write] =
     phones += models.UserPhone(id, userId, accessSalt, number, title)
+
+  def create(userPhone: models.UserPhone): FixedSqlAction[Int, NoStream, Write] =
+    phones += userPhone
 
   def updateTitle(userId: Int, id: Int, title: String) =
     phones.filter(p ⇒ p.userId === userId && p.id === id).map(_.title).update(title)

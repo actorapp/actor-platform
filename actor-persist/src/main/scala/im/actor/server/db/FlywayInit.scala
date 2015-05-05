@@ -27,18 +27,18 @@ class BeforeCleanCallback extends FlywayCallback {
   def afterRepair(connection: Connection): Unit = {}
   def afterValidate(connection: Connection): Unit = {}
   def beforeBaseline(connection: Connection): Unit = {}
-  def beforeClean(connection: Connection): Unit = {}
+  def beforeClean(connection: Connection): Unit = executeStmt(connection, """DROP EXTENSION IF EXISTS "ltree" CASCADE;""")
   def beforeEachMigrate(connection: Connection, migrationInfo: MigrationInfo): Unit = {}
   def beforeInfo(connection: Connection): Unit = {}
   def beforeInit(connection: Connection): Unit = {}
   def beforeMigrate(connection: Connection): Unit = {}
   def beforeRepair(connection: Connection): Unit = {}
   def beforeValidate(connection: Connection): Unit = {}
+  def afterInit(connection: Connection): Unit = executeStmt(connection, """DROP EXTENSION IF EXISTS "ltree" CASCADE;""")
 
-  def afterInit(connection: Connection): Unit = {
+  def executeStmt(connection: Connection, statement: String): Unit = {
     if (connection.getMetaData().getDriverName().startsWith("PostgreSQL")) {
-      val stmt = connection.prepareStatement("""DROP EXTENSION IF EXISTS "uuid-ossp";""")
-
+      val stmt = connection.prepareStatement(statement)
       try {
         stmt.execute()
       } finally {
@@ -46,4 +46,5 @@ class BeforeCleanCallback extends FlywayCallback {
       }
     }
   }
+
 }

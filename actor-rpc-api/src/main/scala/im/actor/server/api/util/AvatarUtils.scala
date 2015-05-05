@@ -13,6 +13,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.files
 import im.actor.api.rpc.files.{ Avatar, AvatarImage, FileLocation }
 import im.actor.server.models.AvatarData
+import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
 object AvatarUtils {
@@ -108,7 +109,7 @@ object AvatarUtils {
               )
 
               val fullImage = AvatarImage(
-                FileLocation(fullFileId, ACL.fileAccessHash(fullFileId, fullFileModel.accessSalt)),
+                FileLocation(fullFileId, ACLUtils.fileAccessHash(fullFileId, fullFileModel.accessSalt)),
                 fullAimg.width,
                 fullAimg.height,
                 fullFile.length().toInt

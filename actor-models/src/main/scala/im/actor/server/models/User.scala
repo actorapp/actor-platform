@@ -1,5 +1,7 @@
 package im.actor.server.models
 
+import org.joda.time.DateTime
+
 sealed trait UserState {
   def toInt: Int
 }
@@ -34,5 +36,6 @@ case class User(
   name:        String,
   countryCode: String,
   sex:         Sex,
-  state:       UserState
+  state:       UserState,
+  deletedAt:   Option[DateTime] = None
 )
