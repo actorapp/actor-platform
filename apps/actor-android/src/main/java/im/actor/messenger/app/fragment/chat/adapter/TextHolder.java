@@ -9,9 +9,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
-import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
+import im.actor.messenger.app.emoji.SmileProcessor;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
@@ -22,7 +22,7 @@ import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
-import static im.actor.messenger.app.keyboard.emoji.SmileProcessor.emoji;
+import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
 
 /**
  * Created by ex3ndr on 10.09.14.
@@ -109,7 +109,7 @@ public class TextHolder extends MessageHolder {
                 }
                 smilesListener = new SmilesListener() {
                     @Override
-                    public void onEmojiUpdated(boolean completed) {
+                    public void onSmilesUpdated(boolean completed) {
                         text.setText(emoji().processEmojiCompatMutable(finalSpannedText, SmileProcessor.CONFIGURATION_BUBBLES));
                         emoji().unregisterListener(this);
                     }

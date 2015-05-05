@@ -1,7 +1,6 @@
 package im.actor.messenger.app.keyboard.emoji.stickers;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.emoji.stickers.StickersPack;
 
 import static im.actor.messenger.app.Core.getStickerProcessor;
 

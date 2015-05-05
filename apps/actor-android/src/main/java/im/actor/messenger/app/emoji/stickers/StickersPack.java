@@ -1,4 +1,4 @@
-package im.actor.messenger.app.keyboard.emoji.stickers;
+package im.actor.messenger.app.emoji.stickers;
 
 /**
  * Created by Jesus Christ. Amen.
