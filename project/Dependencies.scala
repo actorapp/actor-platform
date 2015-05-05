@@ -21,7 +21,7 @@ object Dependencies {
     val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
-    val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4"
+    val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4" exclude("org.slf4j", "slf4j-log4j12")
 
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
