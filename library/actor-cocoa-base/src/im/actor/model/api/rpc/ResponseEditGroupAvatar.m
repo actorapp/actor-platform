@@ -32,17 +32,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, avatar_, ImActorM
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteArray *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcResponseEditGroupAvatar
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcResponseEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(data);
 }
 
 
-#line 32
+#line 36
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                                       withInt:(jint)seq
                                 withByteArray:(IOSByteArray *)state
@@ -52,14 +52,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 }
 
 
-#line 39
+#line 43
 - (instancetype)init {
   ImActorModelApiRpcResponseEditGroupAvatar_init(self);
   return self;
 }
 
 
-#line 43
+#line 47
 - (ImActorModelApiAvatar *)getAvatar {
   return self->avatar_;
 }
@@ -77,7 +77,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 }
 
 
-#line 60
+#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->avatar_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatar_init()];
   self->seq_ = [values getIntWithInt:2];
@@ -86,7 +86,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 }
 
 
-#line 68
+#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->avatar_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -101,7 +101,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 }
 
 
-#line 82
+#line 86
 - (NSString *)description {
   NSString *res = @"tuple EditGroupAvatar{";
   res = JreStrcat("$C", res, '}');
@@ -109,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 }
 
 
-#line 89
+#line 93
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseEditGroupAvatar_HEADER;
 }
@@ -117,20 +117,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcResponseEditGroupAvatar *ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseEditGroupAvatar_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcResponseEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseEditGroupAvatar_init(), data));
 }
 
 
-#line 32
+#line 36
 void ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(ImActorModelApiRpcResponseEditGroupAvatar *self, ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state, jlong date) {
   (void) ImActorModelNetworkParserResponse_init(self);
   
-#line 33
+#line 37
   self->avatar_ = avatar;
   self->seq_ = seq;
   self->state_ = state;
@@ -138,7 +138,7 @@ void ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_wit
 }
 
 
-#line 32
+#line 36
 ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state, jlong date) {
   ImActorModelApiRpcResponseEditGroupAvatar *self = [ImActorModelApiRpcResponseEditGroupAvatar alloc];
   ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(self, avatar, seq, state, date);
@@ -146,13 +146,13 @@ ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGro
 }
 
 
-#line 39
+#line 43
 void ImActorModelApiRpcResponseEditGroupAvatar_init(ImActorModelApiRpcResponseEditGroupAvatar *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
 
-#line 39
+#line 43
 ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGroupAvatar_init() {
   ImActorModelApiRpcResponseEditGroupAvatar *self = [ImActorModelApiRpcResponseEditGroupAvatar alloc];
   ImActorModelApiRpcResponseEditGroupAvatar_init(self);

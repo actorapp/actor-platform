@@ -29,17 +29,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, email_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestSendEmailCode
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestSendEmailCode *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)description_ {
   ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(self, email, description_);
@@ -47,14 +47,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestSendEmailCode_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (NSString *)getEmail {
   return self->email_;
 }
@@ -64,14 +64,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->email_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->description__ = [values optStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->email_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 }
 
 
-#line 65
+#line 69
 - (NSString *)description {
   NSString *res = @"rpc SendEmailCode{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"email=", self->email_));
@@ -93,7 +93,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 }
 
 
-#line 74
+#line 78
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSendEmailCode_HEADER;
 }
@@ -101,24 +101,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendEmailCode, description__, NSStr
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestSendEmailCode *ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendEmailCode_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestSendEmailCode *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendEmailCode_init(), data));
 }
 
 void ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(ImActorModelApiRpcRequestSendEmailCode *self, NSString *email, NSString *description_) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->email_ = email;
   self->description__ = description_;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestSendEmailCode *new_ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(NSString *email, NSString *description_) {
   ImActorModelApiRpcRequestSendEmailCode *self = [ImActorModelApiRpcRequestSendEmailCode alloc];
   ImActorModelApiRpcRequestSendEmailCode_initWithNSString_withNSString_(self, email, description_);
@@ -126,13 +126,13 @@ ImActorModelApiRpcRequestSendEmailCode *new_ImActorModelApiRpcRequestSendEmailCo
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestSendEmailCode_init(ImActorModelApiRpcRequestSendEmailCode *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestSendEmailCode *new_ImActorModelApiRpcRequestSendEmailCode_init() {
   ImActorModelApiRpcRequestSendEmailCode *self = [ImActorModelApiRpcRequestSendEmailCode alloc];
   ImActorModelApiRpcRequestSendEmailCode_init(self);

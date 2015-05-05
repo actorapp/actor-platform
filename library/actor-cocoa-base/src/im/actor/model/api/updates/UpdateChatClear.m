@@ -28,43 +28,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelApiPeer *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateChatClear
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateChatClear *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer {
   ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(self, peer);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateChatClear_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (ImActorModelApiPeer *)getPeer {
   return self->peer_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -73,7 +73,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"update ChatClear{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 }
 
 
-#line 63
+#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateChatClear_HEADER;
 }
@@ -90,25 +90,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatClear, peer_, ImActorModelAp
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateChatClear_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateChatClear *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateChatClear_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiUpdatesUpdateChatClear *self, ImActorModelApiPeer *peer) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 30
+#line 34
   self->peer_ = peer;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiPeer *peer) {
   ImActorModelApiUpdatesUpdateChatClear *self = [ImActorModelApiUpdatesUpdateChatClear alloc];
   ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(self, peer);
@@ -116,13 +116,13 @@ ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiUpdatesUpdateChatClear_init(ImActorModelApiUpdatesUpdateChatClear *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_init() {
   ImActorModelApiUpdatesUpdateChatClear *self = [ImActorModelApiUpdatesUpdateChatClear alloc];
   ImActorModelApiUpdatesUpdateChatClear_init(self);

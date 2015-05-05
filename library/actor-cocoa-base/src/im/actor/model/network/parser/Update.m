@@ -11,7 +11,7 @@
 #include "im/actor/model/network/parser/Update.h"
 
 
-#line 6
+#line 7
 @implementation ImActorModelNetworkParserUpdate
 
 - (instancetype)init {

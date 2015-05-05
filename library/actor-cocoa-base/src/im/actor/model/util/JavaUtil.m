@@ -10,11 +10,11 @@
 #include "im/actor/model/util/JavaUtil.h"
 
 
-#line 6
+#line 10
 @implementation AMJavaUtil
 
 
-#line 15
+#line 19
 + (jboolean)equalsEWithId:(id)a
                    withId:(id)b {
   return AMJavaUtil_equalsEWithId_withId_(a, b);
@@ -28,11 +28,11 @@
 @end
 
 
-#line 15
+#line 19
 jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {
   AMJavaUtil_initialize();
   
-#line 16
+#line 20
   if (a == nil && b == nil) {
     return YES;
   }

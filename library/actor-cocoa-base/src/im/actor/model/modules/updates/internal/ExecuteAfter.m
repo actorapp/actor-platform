@@ -21,11 +21,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalExecuteAfter, runnable_, id<JavaLangRunnable>)
 
 
-#line 6
+#line 7
 @implementation ImActorModelModulesUpdatesInternalExecuteAfter
 
 
-#line 10
+#line 11
 - (instancetype)initWithInt:(jint)seq
        withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(self, seq, runnable);
@@ -33,7 +33,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalExecuteAfter, runnable_, i
 }
 
 
-#line 15
+#line 16
 - (jint)getSeq {
   return seq_;
 }
@@ -45,17 +45,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalExecuteAfter, runnable_, i
 @end
 
 
-#line 10
+#line 11
 void ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(ImActorModelModulesUpdatesInternalExecuteAfter *self, jint seq, id<JavaLangRunnable> runnable) {
   (void) NSObject_init(self);
   
-#line 11
+#line 12
   self->seq_ = seq;
   self->runnable_ = runnable;
 }
 
 
-#line 10
+#line 11
 ImActorModelModulesUpdatesInternalExecuteAfter *new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(jint seq, id<JavaLangRunnable> runnable) {
   ImActorModelModulesUpdatesInternalExecuteAfter *self = [ImActorModelModulesUpdatesInternalExecuteAfter alloc];
   ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(self, seq, runnable);

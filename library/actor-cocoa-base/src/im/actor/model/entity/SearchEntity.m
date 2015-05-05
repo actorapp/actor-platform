@@ -60,7 +60,7 @@ J2OBJC_INITIALIZED_DEFN(AMSearchEntity)
 id<BSBserCreator> AMSearchEntity_CREATOR_;
 
 
-#line 15
+#line 16
 @implementation AMSearchEntity
 
 + (AMSearchEntity *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -68,7 +68,7 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 }
 
 
-#line 34
+#line 35
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)order
                   withAMAvatar:(AMAvatar *)avatar
@@ -78,14 +78,14 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 }
 
 
-#line 41
+#line 42
 - (instancetype)init {
   AMSearchEntity_init(self);
   return self;
 }
 
 
-#line 45
+#line 46
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -103,7 +103,7 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 }
 
 
-#line 62
+#line 63
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:1]);
   order_ = [values getLongWithInt:2];
@@ -112,14 +112,14 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
   }
   else {
     
-#line 68
+#line 69
     avatar_ = nil;
   }
   title_ = [values getStringWithInt:4];
 }
 
 
-#line 74
+#line 75
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:peer_];
   [writer writeLongWithInt:2 withLong:order_];
@@ -130,19 +130,19 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 }
 
 
-#line 84
+#line 85
 - (jlong)getEngineId {
   return [((AMPeer *) nil_chk(peer_)) getUnuqueId];
 }
 
 
-#line 89
+#line 90
 - (jlong)getEngineSort {
   return order_;
 }
 
 
-#line 94
+#line 95
 - (NSString *)getEngineSearch {
   return title_;
 }
@@ -157,20 +157,20 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 @end
 
 
-#line 17
+#line 18
 AMSearchEntity *AMSearchEntity_fromBytesWithByteArray_(IOSByteArray *data) {
   AMSearchEntity_initialize();
   
-#line 18
+#line 19
   return ((AMSearchEntity *) BSBser_parseWithBSBserObject_withByteArray_(new_AMSearchEntity_init(), data));
 }
 
 
-#line 34
+#line 35
 void AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMSearchEntity *self, AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title) {
   (void) BSBserObject_init(self);
   
-#line 35
+#line 36
   self->peer_ = peer;
   self->order_ = order;
   self->avatar_ = avatar;
@@ -178,7 +178,7 @@ void AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMSearchE
 }
 
 
-#line 34
+#line 35
 AMSearchEntity *new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title) {
   AMSearchEntity *self = [AMSearchEntity alloc];
   AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(self, peer, order, avatar, title);
@@ -186,13 +186,13 @@ AMSearchEntity *new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSSt
 }
 
 
-#line 41
+#line 42
 void AMSearchEntity_init(AMSearchEntity *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 41
+#line 42
 AMSearchEntity *new_AMSearchEntity_init() {
   AMSearchEntity *self = [AMSearchEntity alloc];
   AMSearchEntity_init(self);
@@ -204,7 +204,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMSearchEntity)
 @implementation AMSearchEntity_$1
 
 
-#line 23
+#line 24
 - (AMSearchEntity *)createInstance {
   return new_AMSearchEntity_init();
 }

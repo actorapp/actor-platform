@@ -28,29 +28,29 @@ __attribute__((unused)) static IOSIntArray *AMCRC32_make_crc_table();
 J2OBJC_INITIALIZED_DEFN(AMCRC32)
 
 
-#line 6
+#line 10
 @implementation AMCRC32
 
 
-#line 20
+#line 24
 + (IOSIntArray *)make_crc_table {
   return AMCRC32_make_crc_table();
 }
 
 
-#line 38
+#line 42
 - (jlong)getValue {
   return (jlong) crc_ & (jlong) 0xffffffffLL;
 }
 
 
-#line 45
+#line 49
 - (void)reset {
   crc_ = 0;
 }
 
 
-#line 55
+#line 59
 - (void)updateWithInt:(jint)bval {
   jint c = ~crc_;
   c = IOSIntArray_Get(nil_chk(AMCRC32_crc_table_), (c ^ bval) & (jint) 0xff) ^ (URShift32(c, 8));
@@ -58,13 +58,13 @@ J2OBJC_INITIALIZED_DEFN(AMCRC32)
 }
 
 
-#line 68
+#line 72
 - (void)updateWithByteArray:(IOSByteArray *)buf
                     withInt:(jint)off
                     withInt:(jint)len {
   jint c = ~crc_;
   while (--len >= 0)
-#line 71
+#line 75
   c = IOSIntArray_Get(nil_chk(AMCRC32_crc_table_), (c ^ IOSByteArray_Get(nil_chk(buf), off++)) & (jint) 0xff) ^ (URShift32(c, 8));
   crc_ = ~c;
 }
@@ -88,20 +88,20 @@ J2OBJC_INITIALIZED_DEFN(AMCRC32)
 @end
 
 
-#line 20
+#line 24
 IOSIntArray *AMCRC32_make_crc_table() {
   AMCRC32_initialize();
   
-#line 21
+#line 25
   IOSIntArray *crc_table = [IOSIntArray newArrayWithLength:256];
   for (jint n = 0; n < 256; n++) {
     jint c = n;
     for (jint k = 8; --k >= 0; ) {
       if ((c & 1) != 0)
-#line 26
+#line 30
       c = (jint) 0xedb88320 ^ (URShift32(c, 1));
       else
-#line 28
+#line 32
       c = URShift32(c, 1);
     }
     *IOSIntArray_GetRef(crc_table, n) = c;
@@ -112,7 +112,7 @@ IOSIntArray *AMCRC32_make_crc_table() {
 void AMCRC32_init(AMCRC32 *self) {
   (void) NSObject_init(self);
   self->crc_ =
-#line 10
+#line 14
   0;
 }
 

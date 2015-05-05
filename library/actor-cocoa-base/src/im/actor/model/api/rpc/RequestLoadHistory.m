@@ -30,17 +30,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApiOutPeer *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestLoadHistory
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestLoadHistory *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestLoadHistory_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)minDate
                                        withInt:(jint)limit {
@@ -49,14 +49,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestLoadHistory_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (ImActorModelApiOutPeer *)getPeer {
   return self->peer_;
 }
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
   self->minDate_ = [values getLongWithInt:3];
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 }
 
 
-#line 71
+#line 75
 - (NSString *)description {
   NSString *res = @"rpc LoadHistory{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 }
 
 
-#line 81
+#line 85
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLoadHistory_HEADER;
 }
@@ -108,27 +108,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLoadHistory, peer_, ImActorModelApi
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestLoadHistory *ImActorModelApiRpcRequestLoadHistory_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLoadHistory_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestLoadHistory *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLoadHistory_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_(ImActorModelApiRpcRequestLoadHistory *self, ImActorModelApiOutPeer *peer, jlong minDate, jint limit) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 32
+#line 36
   self->peer_ = peer;
   self->minDate_ = minDate;
   self->limit_ = limit;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcRequestLoadHistory *new_ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_(ImActorModelApiOutPeer *peer, jlong minDate, jint limit) {
   ImActorModelApiRpcRequestLoadHistory *self = [ImActorModelApiRpcRequestLoadHistory alloc];
   ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_(self, peer, minDate, limit);
@@ -140,7 +140,7 @@ void ImActorModelApiRpcRequestLoadHistory_init(ImActorModelApiRpcRequestLoadHist
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcRequestLoadHistory *new_ImActorModelApiRpcRequestLoadHistory_init() {
   ImActorModelApiRpcRequestLoadHistory *self = [ImActorModelApiRpcRequestLoadHistory alloc];
   ImActorModelApiRpcRequestLoadHistory_init(self);

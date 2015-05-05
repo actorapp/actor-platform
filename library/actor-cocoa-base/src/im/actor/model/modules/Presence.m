@@ -52,18 +52,18 @@ __attribute__((unused)) static ImActorModelModulesPresence_$1 *new_ImActorModelM
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence_$1)
 
 
-#line 15
+#line 16
 @implementation ImActorModelModulesPresence
 
 
-#line 19
+#line 20
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesPresence_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 30
+#line 31
 - (void)run {
   [((DKActorRef *) nil_chk(myPresence_)) sendWithId:new_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init()];
 }
@@ -87,17 +87,17 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence_$1)
 @end
 
 
-#line 19
+#line 20
 void ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesPresence *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->myPresence_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesPresenceOwnPresenceActor_class_(), new_ImActorModelModulesPresence_$1_initWithImActorModelModulesModules_(modules)) withNSString:
-#line 26
+#line 27
   @"actor/presence/own"];
   self->presence_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
 }
 
 
-#line 19
+#line 20
 ImActorModelModulesPresence *new_ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesPresence *self = [ImActorModelModulesPresence alloc];
   ImActorModelModulesPresence_initWithImActorModelModulesModules_(self, modules);
@@ -109,7 +109,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresence)
 @implementation ImActorModelModulesPresence_$1
 
 
-#line 23
+#line 24
 - (ImActorModelModulesPresenceOwnPresenceActor *)create {
   return new_ImActorModelModulesPresenceOwnPresenceActor_initWithImActorModelModulesModules_(val$modules_);
 }

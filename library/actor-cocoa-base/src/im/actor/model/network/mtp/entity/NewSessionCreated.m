@@ -15,18 +15,18 @@
 #include "java/io/IOException.h"
 
 
-#line 8
+#line 12
 @implementation MTNewSessionCreated
 
 
-#line 16
+#line 20
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTNewSessionCreated_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 20
+#line 24
 - (instancetype)initWithLong:(jlong)sessionId
                     withLong:(jlong)messageId {
   MTNewSessionCreated_initWithLong_withLong_(self, sessionId, messageId);
@@ -34,7 +34,7 @@
 }
 
 
-#line 25
+#line 29
 - (jlong)getSessionId {
   return sessionId_;
 }
@@ -44,27 +44,27 @@
 }
 
 
-#line 34
+#line 38
 - (jbyte)getHeader {
   return MTNewSessionCreated_HEADER;
 }
 
 
-#line 39
+#line 43
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:sessionId_];
   [bs writeLongWithLong:messageId_];
 }
 
 
-#line 45
+#line 49
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   sessionId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   messageId_ = [bs readLong];
 }
 
 
-#line 51
+#line 55
 - (NSString *)description {
   return JreStrcat("$JC", @"NewSession {", sessionId_, '}');
 }
@@ -72,13 +72,13 @@
 @end
 
 
-#line 16
+#line 20
 void MTNewSessionCreated_initWithBSDataInput_(MTNewSessionCreated *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 16
+#line 20
 MTNewSessionCreated *new_MTNewSessionCreated_initWithBSDataInput_(BSDataInput *stream) {
   MTNewSessionCreated *self = [MTNewSessionCreated alloc];
   MTNewSessionCreated_initWithBSDataInput_(self, stream);
@@ -86,17 +86,17 @@ MTNewSessionCreated *new_MTNewSessionCreated_initWithBSDataInput_(BSDataInput *s
 }
 
 
-#line 20
+#line 24
 void MTNewSessionCreated_initWithLong_withLong_(MTNewSessionCreated *self, jlong sessionId, jlong messageId) {
   (void) MTProtoStruct_init(self);
   
-#line 21
+#line 25
   self->sessionId_ = sessionId;
   self->messageId_ = messageId;
 }
 
 
-#line 20
+#line 24
 MTNewSessionCreated *new_MTNewSessionCreated_initWithLong_withLong_(jlong sessionId, jlong messageId) {
   MTNewSessionCreated *self = [MTNewSessionCreated alloc];
   MTNewSessionCreated_initWithLong_withLong_(self, sessionId, messageId);

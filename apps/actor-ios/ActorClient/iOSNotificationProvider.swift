@@ -19,15 +19,11 @@ import AVFoundation
         AudioServicesPlaySystemSound(internalMessage)
     }
     
-    func onDialogsOpenWithAMMessenger(messenger: AMMessenger!) {
+    func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint, withBoolean silentUpdate: Bool) {
         
     }
     
-    func onChatOpenWithAMMessenger(messenger: AMMessenger!, withAMPeer peer: AMPeer!) {
-        
-    }
-    
-    func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint) {
+    func hideAllNotifications() {
         
     }
 }

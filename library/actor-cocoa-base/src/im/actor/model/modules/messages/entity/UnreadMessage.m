@@ -29,7 +29,7 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPeer *)
 
 
-#line 14
+#line 15
 @implementation ImActorModelModulesMessagesEntityUnreadMessage
 
 + (ImActorModelModulesMessagesEntityUnreadMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -37,7 +37,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 24
+#line 25
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
                       withLong:(jlong)sortDate {
@@ -46,14 +46,14 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 30
+#line 31
 - (instancetype)init {
   ImActorModelModulesMessagesEntityUnreadMessage_init(self);
   return self;
 }
 
 
-#line 34
+#line 35
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -67,7 +67,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 47
+#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
@@ -75,7 +75,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 54
+#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
@@ -83,24 +83,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 }
 
 
-#line 61
+#line 62
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 65
+#line 66
   ImActorModelModulesMessagesEntityUnreadMessage *that = (ImActorModelModulesMessagesEntityUnreadMessage *) check_class_cast(o, [ImActorModelModulesMessagesEntityUnreadMessage class]);
   
-#line 67
+#line 68
   if (rid_ != ((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(that))->rid_) return NO;
   if (![((AMPeer *) nil_chk(peer_)) isEqual:that->peer_]) return NO;
   
-#line 70
+#line 71
   return YES;
 }
 
 
-#line 74
+#line 75
 - (NSUInteger)hash {
   jint result = ((jint) [((AMPeer *) nil_chk(peer_)) hash]);
   result = 31 * result + (jint) (rid_ ^ (URShift64(rid_, 32)));
@@ -110,27 +110,27 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessage, peer_, AMPee
 @end
 
 
-#line 16
+#line 17
 ImActorModelModulesMessagesEntityUnreadMessage *ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityUnreadMessage_initialize();
   
-#line 17
+#line 18
   return ((ImActorModelModulesMessagesEntityUnreadMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityUnreadMessage_init(), data));
 }
 
 
-#line 24
+#line 25
 void ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesEntityUnreadMessage *self, AMPeer *peer, jlong rid, jlong sortDate) {
   (void) BSBserObject_init(self);
   
-#line 25
+#line 26
   self->peer_ = peer;
   self->rid_ = rid;
   self->sortDate_ = sortDate;
 }
 
 
-#line 24
+#line 25
 ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortDate) {
   ImActorModelModulesMessagesEntityUnreadMessage *self = [ImActorModelModulesMessagesEntityUnreadMessage alloc];
   ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortDate);
@@ -142,7 +142,7 @@ void ImActorModelModulesMessagesEntityUnreadMessage_init(ImActorModelModulesMess
 }
 
 
-#line 30
+#line 31
 ImActorModelModulesMessagesEntityUnreadMessage *new_ImActorModelModulesMessagesEntityUnreadMessage_init() {
   ImActorModelModulesMessagesEntityUnreadMessage *self = [ImActorModelModulesMessagesEntityUnreadMessage alloc];
   ImActorModelModulesMessagesEntityUnreadMessage_init(self);

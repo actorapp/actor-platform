@@ -36,7 +36,7 @@ __attribute__((unused)) static void AMVideoContent_init(AMVideoContent *self);
 __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETURNS_RETAINED;
 
 
-#line 12
+#line 13
 @implementation AMVideoContent
 
 + (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data {
@@ -44,7 +44,7 @@ __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETU
 }
 
 
-#line 22
+#line 23
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
@@ -57,14 +57,14 @@ __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETU
 }
 
 
-#line 29
+#line 30
 - (instancetype)init {
   AMVideoContent_init(self);
   return self;
 }
 
 
-#line 33
+#line 34
 - (jint)getDuration {
   return duration_;
 }
@@ -78,13 +78,13 @@ __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETU
 }
 
 
-#line 46
+#line 47
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
 }
 
 
-#line 51
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
@@ -93,7 +93,7 @@ __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETU
 }
 
 
-#line 59
+#line 60
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:duration_];
@@ -104,16 +104,16 @@ __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETU
 @end
 
 
-#line 14
+#line 15
 AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
   AMVideoContent_initialize();
   
-#line 15
+#line 16
   return ((AMVideoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMVideoContent_init(), data));
 }
 
 
-#line 22
+#line 23
 void AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMVideoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) {
   (void) AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, location, mimetype, name, fastThumb);
   self->duration_ = duration;
@@ -122,7 +122,7 @@ void AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThu
 }
 
 
-#line 22
+#line 23
 AMVideoContent *new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) {
   AMVideoContent *self = [AMVideoContent alloc];
   AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(self, location, mimetype, name, fastThumb, duration, w, h);
@@ -130,13 +130,13 @@ AMVideoContent *new_AMVideoContent_initWithAMFileSource_withNSString_withNSStrin
 }
 
 
-#line 29
+#line 30
 void AMVideoContent_init(AMVideoContent *self) {
   (void) AMDocumentContent_init(self);
 }
 
 
-#line 29
+#line 30
 AMVideoContent *new_AMVideoContent_init() {
   AMVideoContent *self = [AMVideoContent alloc];
   AMVideoContent_init(self);

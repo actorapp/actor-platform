@@ -18,17 +18,17 @@
 #include "java/io/IOException.h"
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestSignOut
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestSignOut *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(data);
 }
 
 
-#line 28
+#line 32
 - (instancetype)init {
   ImActorModelApiRpcRequestSignOut_init(self);
   return self;
@@ -38,12 +38,12 @@
 }
 
 
-#line 37
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 
-#line 41
+#line 45
 - (NSString *)description {
   NSString *res = @"rpc SignOut{";
   res = JreStrcat("$C", res, '}');
@@ -51,7 +51,7 @@
 }
 
 
-#line 48
+#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSignOut_HEADER;
 }
@@ -59,22 +59,22 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestSignOut *ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSignOut_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestSignOut *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSignOut_init(), data));
 }
 
 
-#line 28
+#line 32
 void ImActorModelApiRpcRequestSignOut_init(ImActorModelApiRpcRequestSignOut *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 28
+#line 32
 ImActorModelApiRpcRequestSignOut *new_ImActorModelApiRpcRequestSignOut_init() {
   ImActorModelApiRpcRequestSignOut *self = [ImActorModelApiRpcRequestSignOut alloc];
   ImActorModelApiRpcRequestSignOut_init(self);

@@ -46,7 +46,7 @@ __attribute__((unused)) static void AMGroup_init(AMGroup *self);
 __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 
 
-#line 16
+#line 17
 @implementation AMGroup
 
 + (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -54,7 +54,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 30
+#line 31
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
@@ -72,7 +72,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 45
+#line 46
 - (AMPeer *)peer {
   return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_GROUP(), groupId_);
 }
@@ -138,7 +138,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 106
+#line 107
 - (AMGroup *)editTitleWithNSString:(NSString *)title {
   return new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(groupId_, accessHash_, title, avatar_, members_, adminId_, isMember__);
 }
@@ -148,7 +148,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 115
+#line 116
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
@@ -158,7 +158,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
   }
   adminId_ = [values getIntWithInt:5];
   
-#line 124
+#line 125
   jint count = [values getRepeatedCountWithInt:6];
   if (count > 0) {
     JavaUtilArrayList *res = new_JavaUtilArrayList_init();
@@ -169,16 +169,16 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
   }
   else {
     
-#line 132
+#line 133
     members_ = new_JavaUtilArrayList_init();
   }
   
-#line 135
+#line 136
   isMember__ = [values getBoolWithInt:7];
 }
 
 
-#line 139
+#line 140
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:groupId_];
   [writer writeLongWithInt:2 withLong:accessHash_];
@@ -192,7 +192,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 152
+#line 153
 - (jlong)getEngineId {
   return groupId_;
 }
@@ -200,16 +200,16 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 @end
 
 
-#line 18
+#line 19
 AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   AMGroup_initialize();
   
-#line 19
+#line 20
   return ((AMGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_AMGroup_init(), data));
 }
 
 
-#line 30
+#line 31
 void AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(AMGroup *self, jint groupId, jlong accessHash, NSString *title, AMAvatar *avatar, id<JavaUtilList> members, jint adminId, jboolean isMember) {
   (void) BSBserObject_init(self);
   self->groupId_ = groupId;
@@ -222,7 +222,7 @@ void AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_wit
 }
 
 
-#line 30
+#line 31
 AMGroup *new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(jint groupId, jlong accessHash, NSString *title, AMAvatar *avatar, id<JavaUtilList> members, jint adminId, jboolean isMember) {
   AMGroup *self = [AMGroup alloc];
   AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(self, groupId, accessHash, title, avatar, members, adminId, isMember);
@@ -230,13 +230,13 @@ AMGroup *new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtil
 }
 
 
-#line 41
+#line 42
 void AMGroup_init(AMGroup *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 41
+#line 42
 AMGroup *new_AMGroup_init() {
   AMGroup *self = [AMGroup alloc];
   AMGroup_init(self);

@@ -81,11 +81,11 @@ __attribute__((unused)) static AMUserVM_$1 *new_AMUserVM_$1_initWithAMUserVM_(AM
 J2OBJC_TYPE_LITERAL_HEADER(AMUserVM_$1)
 
 
-#line 20
+#line 24
 @implementation AMUserVM
 
 
-#line 38
+#line 42
 - (instancetype)initWithAMUser:(AMUser *)user
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   AMUserVM_initWithAMUser_withImActorModelModulesModules_(self, user, modules);
@@ -93,63 +93,63 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 }
 
 
-#line 52
+#line 56
 - (void)updateValuesWithId:(AMUser *)rawObj {
   jboolean isChanged = NO;
   isChanged |= [((AMValueModel *) nil_chk(name_)) changeWithId:[((AMUser *) nil_chk(rawObj)) getName]];
   isChanged |= [((AMValueModel *) nil_chk(avatar_)) changeWithId:[rawObj getAvatar]];
   isChanged |= [((AMValueModel *) nil_chk(phones_)) changeWithId:AMUserVM_buildPhonesWithJavaUtilList_(self, [rawObj getRecords])];
   
-#line 58
+#line 62
   if (isChanged) {
     AMUserVM_notifyChange(self);
   }
 }
 
 
-#line 68
+#line 72
 - (jint)getId {
   return id__;
 }
 
 
-#line 77
+#line 81
 - (jlong)getHash {
   return hash__;
 }
 
 
-#line 86
+#line 90
 - (AMValueModel *)getName {
   return name_;
 }
 
 
-#line 95
+#line 99
 - (AMValueModel *)getAvatar {
   return avatar_;
 }
 
 
-#line 104
+#line 108
 - (AMSexEnum *)getSex {
   return sex_;
 }
 
 
-#line 113
+#line 117
 - (AMValueModel *)isContact {
   return isContact__;
 }
 
 
-#line 122
+#line 126
 - (AMValueModel *)getPresence {
   return presence_;
 }
 
 
-#line 131
+#line 135
 - (AMValueModel *)getPhones {
   return phones_;
 }
@@ -159,7 +159,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 }
 
 
-#line 151
+#line 155
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
@@ -170,7 +170,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 }
 
 
-#line 166
+#line 170
 - (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:listener];
@@ -183,7 +183,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 @end
 
 
-#line 38
+#line 42
 void AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUserVM *self, AMUser *user, ImActorModelModulesModules *modules) {
   (void) AMBaseValueModel_initWithId_(self, user);
   self->listeners_ = new_JavaUtilArrayList_init();
@@ -198,7 +198,7 @@ void AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUserVM *self, AMU
 }
 
 
-#line 38
+#line 42
 AMUserVM *new_AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUser *user, ImActorModelModulesModules *modules) {
   AMUserVM *self = [AMUserVM alloc];
   AMUserVM_initWithAMUser_withImActorModelModulesModules_(self, user, modules);
@@ -206,7 +206,7 @@ AMUserVM *new_AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUser *us
 }
 
 
-#line 135
+#line 139
 JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<JavaUtilList> records) {
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   for (AMContactRecord * __strong r in nil_chk(records)) {
@@ -218,7 +218,7 @@ JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<Java
 }
 
 
-#line 171
+#line 175
 void AMUserVM_notifyChange(AMUserVM *self) {
   [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:new_AMUserVM_$1_initWithAMUserVM_(self)];
 }
@@ -228,18 +228,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserVM)
 @implementation AMUserVM_$1
 
 
-#line 174
+#line 178
 - (void)run {
   {
     IOSObjectArray *a__ =
-#line 175
+#line 179
     [((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:AMModelChangedListener_class_()]];
     id<AMModelChangedListener> const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     id<AMModelChangedListener> const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       id<AMModelChangedListener> l = *b__++;
       
-#line 176
+#line 180
       [((id<AMModelChangedListener>) nil_chk(l)) onChangedWithId:this$0_];
     }
   }

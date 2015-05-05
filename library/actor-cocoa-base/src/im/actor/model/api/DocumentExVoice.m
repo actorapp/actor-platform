@@ -22,25 +22,25 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiDocumentExVoice
 
 
-#line 23
+#line 27
 - (instancetype)initWithInt:(jint)duration {
   ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
   return self;
 }
 
 
-#line 27
+#line 31
 - (instancetype)init {
   ImActorModelApiDocumentExVoice_init(self);
   return self;
 }
 
 
-#line 31
+#line 35
 - (jint)getHeader {
   return 3;
 }
@@ -50,19 +50,19 @@
 }
 
 
-#line 40
+#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
 
-#line 45
+#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->duration_];
 }
 
 
-#line 50
+#line 54
 - (NSString *)description {
   NSString *res = @"struct DocumentExVoice{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"duration=", self->duration_));
@@ -73,16 +73,16 @@
 @end
 
 
-#line 23
+#line 27
 void ImActorModelApiDocumentExVoice_initWithInt_(ImActorModelApiDocumentExVoice *self, jint duration) {
   (void) ImActorModelApiDocumentEx_init(self);
   
-#line 24
+#line 28
   self->duration_ = duration;
 }
 
 
-#line 23
+#line 27
 ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_initWithInt_(jint duration) {
   ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
   ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
@@ -90,13 +90,13 @@ ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_initWithInt_(
 }
 
 
-#line 27
+#line 31
 void ImActorModelApiDocumentExVoice_init(ImActorModelApiDocumentExVoice *self) {
   (void) ImActorModelApiDocumentEx_init(self);
 }
 
 
-#line 27
+#line 31
 ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_init() {
   ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
   ImActorModelApiDocumentExVoice_init(self);

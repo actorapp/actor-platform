@@ -69,11 +69,11 @@ __attribute__((unused)) static DKAsyncListEngine_$1 *new_DKAsyncListEngine_$1_in
 J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 
 
-#line 13
+#line 14
 @implementation DKAsyncListEngine
 
 
-#line 21
+#line 22
 - (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)storage
                              withBSBserCreator:(id<BSBserCreator>)creator {
   DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_(self, storage, creator);
@@ -81,19 +81,19 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 }
 
 
-#line 28
+#line 29
 - (void)addOrUpdateItemWithBSBserObject:(BSBserObject<DKListEngineItem> *)item {
   @synchronized(LOCK_) {
     
-#line 31
+#line 32
     [((DKObjectCache *) nil_chk(cache_)) onObjectUpdatedWithId:JavaLangLong_valueOfWithLong_([((BSBserObject<DKListEngineItem> *) nil_chk(item)) getEngineId]) withId:item];
     
-#line 33
+#line 34
     id<JavaUtilList> items = new_JavaUtilArrayList_init();
     [items addWithId:item];
     [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) addOrUpdateItemsWithJavaUtilList:items];
     
-#line 37
+#line 38
     for (id<DKListEngineDisplayListener> __strong l in nil_chk(listeners_)) {
       [((id<DKListEngineDisplayListener>) nil_chk(l)) addOrUpdateWithId:item];
     }
@@ -101,19 +101,19 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 }
 
 
-#line 44
+#line 45
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items {
   @synchronized(LOCK_) {
     
-#line 48
+#line 49
     for (BSBserObject<DKListEngineItem> * __strong i in nil_chk(items)) {
       [((DKObjectCache *) nil_chk(cache_)) onObjectUpdatedWithId:JavaLangLong_valueOfWithLong_([((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId]) withId:i];
     }
     
-#line 52
+#line 53
     [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) addOrUpdateItemsWithJavaUtilList:items];
     
-#line 54
+#line 55
     for (id<DKListEngineDisplayListener> __strong l in nil_chk(listeners_)) {
       [((id<DKListEngineDisplayListener>) nil_chk(l)) addOrUpdateWithJavaUtilList:items];
     }
@@ -121,20 +121,20 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 }
 
 
-#line 61
+#line 62
 - (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items {
   @synchronized(LOCK_) {
     
-#line 65
+#line 66
     [((DKObjectCache *) nil_chk(cache_)) clear];
     for (BSBserObject<DKListEngineItem> * __strong i in nil_chk(items)) {
       [cache_ onObjectUpdatedWithId:JavaLangLong_valueOfWithLong_([((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId]) withId:i];
     }
     
-#line 70
+#line 71
     [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) replaceItemsWithJavaUtilList:items];
     
-#line 73
+#line 74
     for (id<DKListEngineDisplayListener> __strong l in nil_chk(listeners_)) {
       [((id<DKListEngineDisplayListener>) nil_chk(l)) onItemsReplacedWithJavaUtilList:items];
     }
@@ -146,7 +146,7 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
     [((DKObjectCache *) nil_chk(cache_)) removeObjectWithId:JavaLangLong_valueOfWithLong_(key)];
     [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) removeWithLongArray:[IOSLongArray newArrayWithLongs:(jlong[]){ key } count:1]];
     
-#line 85
+#line 86
     for (id<DKListEngineDisplayListener> __strong l in nil_chk(listeners_)) {
       [((id<DKListEngineDisplayListener>) nil_chk(l)) onItemRemovedWithLong:key];
     }
@@ -157,22 +157,22 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
   @synchronized(LOCK_) {
     {
       IOSLongArray *a__ =
-#line 94
+#line 95
       keys;
       jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong key = *b__++;
         
-#line 95
+#line 96
         [((DKObjectCache *) nil_chk(cache_)) removeObjectWithId:JavaLangLong_valueOfWithLong_(key)];
       }
     }
     
-#line 97
+#line 98
     [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) removeWithLongArray:keys];
     
-#line 99
+#line 100
     for (id<DKListEngineDisplayListener> __strong l in nil_chk(listeners_)) {
       [((id<DKListEngineDisplayListener>) nil_chk(l)) onItemsRemovedWithLongArray:keys];
     }
@@ -180,13 +180,13 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 }
 
 
-#line 106
+#line 107
 - (void)clear {
   @synchronized(LOCK_) {
     [((DKObjectCache *) nil_chk(cache_)) clear];
     [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) clear];
     
-#line 111
+#line 112
     for (id<DKListEngineDisplayListener> __strong l in nil_chk(listeners_)) {
       [((id<DKListEngineDisplayListener>) nil_chk(l)) onListClear];
     }
@@ -201,10 +201,10 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
     }
   }
   
-#line 126
+#line 127
   BSBserObject<DKListEngineItem> *res = [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) getValueWithLong:key];
   
-#line 128
+#line 129
   if (res != nil) {
     @synchronized(LOCK_) {
       [cache_ onObjectLoadedWithId:JavaLangLong_valueOfWithLong_(key) withId:res];
@@ -216,22 +216,22 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 - (id)getHeadValue {
   BSBserObject<DKListEngineItem> *res = [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) getHeadValue];
   
-#line 141
+#line 142
   if (res != nil) {
     @synchronized(LOCK_) {
       [((DKObjectCache *) nil_chk(cache_)) onObjectLoadedWithId:JavaLangLong_valueOfWithLong_([res getEngineId]) withId:res];
     }
   }
   
-#line 147
+#line 148
   return res;
 }
 
 
-#line 151
+#line 152
 - (jboolean)isEmpty {
   
-#line 153
+#line 154
   return [self getCount] == 0;
 }
 
@@ -240,7 +240,7 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 }
 
 
-#line 164
+#line 165
 - (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener {
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     [listeners_ addWithId:listener];
@@ -248,13 +248,13 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAsyncListEngine_$1)
 }
 
 
-#line 171
+#line 172
 - (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener {
   [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(listeners_)) removeWithId:listener];
 }
 
 
-#line 176
+#line 177
 - (void)loadForwardWithInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
   [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) loadForwardWithNSString:nil withJavaLangLong:nil withInt:limit withDKListEngineDisplayLoadCallback:DKAsyncListEngine_coverWithDKListEngineDisplayLoadCallback_(self, callback)];
@@ -267,7 +267,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 186
+#line 187
 - (void)loadForwardWithNSString:(NSString *)query
                         withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
@@ -275,7 +275,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 191
+#line 192
 - (void)loadForwardWithNSString:(NSString *)query
                        withLong:(jlong)afterSortKey
                         withInt:(jint)limit
@@ -284,7 +284,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 196
+#line 197
 - (void)loadBackwardWithInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
   [((DKAsyncStorageInt *) nil_chk(asyncStorageInt_)) loadBackwardWithNSString:nil withJavaLangLong:nil withInt:limit withDKListEngineDisplayLoadCallback:DKAsyncListEngine_coverWithDKListEngineDisplayLoadCallback_(self, callback)];
@@ -297,7 +297,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 206
+#line 207
 - (void)loadBackwardWithNSString:(NSString *)query
                          withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
@@ -305,7 +305,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 211
+#line 212
 - (void)loadBackwardWithNSString:(NSString *)query
                         withLong:(jlong)beforeSortKey
                          withInt:(jint)limit
@@ -314,7 +314,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 216
+#line 217
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
@@ -322,7 +322,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 }
 
 
-#line 220
+#line 221
 - (id<DKListEngineDisplayLoadCallback>)coverWithDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
   return DKAsyncListEngine_coverWithDKListEngineDisplayLoadCallback_(self, callback);
 }
@@ -330,19 +330,19 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 @end
 
 
-#line 21
+#line 22
 void DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_(DKAsyncListEngine *self, id<DKListStorageDisplayEx> storage, id<BSBserCreator> creator) {
   (void) NSObject_init(self);
   self->cache_ = new_DKObjectCache_init();
   self->LOCK_ = new_NSObject_init();
   self->listeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
   
-#line 22
+#line 23
   self->asyncStorageInt_ = new_DKAsyncStorageInt_initWithDKListStorageDisplayEx_withBSBserCreator_(storage, creator);
 }
 
 
-#line 21
+#line 22
 DKAsyncListEngine *new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_(id<DKListStorageDisplayEx> storage, id<BSBserCreator> creator) {
   DKAsyncListEngine *self = [DKAsyncListEngine alloc];
   DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_(self, storage, creator);
@@ -350,7 +350,7 @@ DKAsyncListEngine *new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBs
 }
 
 
-#line 220
+#line 221
 id<DKListEngineDisplayLoadCallback> DKAsyncListEngine_coverWithDKListEngineDisplayLoadCallback_(DKAsyncListEngine *self, id<DKListEngineDisplayLoadCallback> callback) {
   return new_DKAsyncListEngine_$1_initWithDKAsyncListEngine_withDKListEngineDisplayLoadCallback_(self, callback);
 }
@@ -360,7 +360,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncListEngine)
 @implementation DKAsyncListEngine_$1
 
 
-#line 223
+#line 224
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {

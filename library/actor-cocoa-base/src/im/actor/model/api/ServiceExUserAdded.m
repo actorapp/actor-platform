@@ -22,25 +22,25 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiServiceExUserAdded
 
 
-#line 23
+#line 27
 - (instancetype)initWithInt:(jint)addedUid {
   ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
 
-#line 27
+#line 31
 - (instancetype)init {
   ImActorModelApiServiceExUserAdded_init(self);
   return self;
 }
 
 
-#line 31
+#line 35
 - (jint)getHeader {
   return 1;
 }
@@ -50,19 +50,19 @@
 }
 
 
-#line 40
+#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
 
-#line 45
+#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
 }
 
 
-#line 50
+#line 54
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"addedUid=", self->addedUid_));
@@ -73,16 +73,16 @@
 @end
 
 
-#line 23
+#line 27
 void ImActorModelApiServiceExUserAdded_initWithInt_(ImActorModelApiServiceExUserAdded *self, jint addedUid) {
   (void) ImActorModelApiServiceEx_init(self);
   
-#line 24
+#line 28
   self->addedUid_ = addedUid;
 }
 
 
-#line 23
+#line 27
 ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_initWithInt_(jint addedUid) {
   ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
   ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
@@ -90,13 +90,13 @@ ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_initWit
 }
 
 
-#line 27
+#line 31
 void ImActorModelApiServiceExUserAdded_init(ImActorModelApiServiceExUserAdded *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
 
-#line 27
+#line 31
 ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_init() {
   ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
   ImActorModelApiServiceExUserAdded_init(self);

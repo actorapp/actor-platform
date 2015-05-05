@@ -31,17 +31,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, smsHash_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestSendAuthCall
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestSendAuthCall *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(data);
 }
 
 
-#line 32
+#line 36
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)smsHash
                      withInt:(jint)appId
@@ -51,14 +51,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 }
 
 
-#line 39
+#line 43
 - (instancetype)init {
   ImActorModelApiRpcRequestSendAuthCall_init(self);
   return self;
 }
 
 
-#line 43
+#line 47
 - (jlong)getPhoneNumber {
   return self->phoneNumber_;
 }
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 }
 
 
-#line 60
+#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->smsHash_ = [values getStringWithInt:2];
@@ -85,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 }
 
 
-#line 68
+#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->smsHash_ == nil) {
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 }
 
 
-#line 82
+#line 86
 - (NSString *)description {
   NSString *res = @"rpc SendAuthCall{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"phoneNumber=", self->phoneNumber_));
@@ -109,7 +109,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 }
 
 
-#line 90
+#line 94
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSendAuthCall_HEADER;
 }
@@ -117,20 +117,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestSendAuthCall *ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendAuthCall_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestSendAuthCall *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendAuthCall_init(), data));
 }
 
 
-#line 32
+#line 36
 void ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(ImActorModelApiRpcRequestSendAuthCall *self, jlong phoneNumber, NSString *smsHash, jint appId, NSString *apiKey) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 33
+#line 37
   self->phoneNumber_ = phoneNumber;
   self->smsHash_ = smsHash;
   self->appId_ = appId;
@@ -138,7 +138,7 @@ void ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_wit
 }
 
 
-#line 32
+#line 36
 ImActorModelApiRpcRequestSendAuthCall *new_ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, jint appId, NSString *apiKey) {
   ImActorModelApiRpcRequestSendAuthCall *self = [ImActorModelApiRpcRequestSendAuthCall alloc];
   ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, appId, apiKey);
@@ -146,13 +146,13 @@ ImActorModelApiRpcRequestSendAuthCall *new_ImActorModelApiRpcRequestSendAuthCall
 }
 
 
-#line 39
+#line 43
 void ImActorModelApiRpcRequestSendAuthCall_init(ImActorModelApiRpcRequestSendAuthCall *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 39
+#line 43
 ImActorModelApiRpcRequestSendAuthCall *new_ImActorModelApiRpcRequestSendAuthCall_init() {
   ImActorModelApiRpcRequestSendAuthCall *self = [ImActorModelApiRpcRequestSendAuthCall alloc];
   ImActorModelApiRpcRequestSendAuthCall_init(self);

@@ -11,7 +11,7 @@
 #include "im/actor/model/network/parser/RpcScope.h"
 
 
-#line 6
+#line 7
 @implementation ImActorModelNetworkParserRequest
 
 - (instancetype)init {

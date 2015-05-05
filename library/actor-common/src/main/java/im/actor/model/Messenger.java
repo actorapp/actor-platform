@@ -279,7 +279,6 @@ public class Messenger {
      * MUST be called on dialogs open
      */
     public void onDialogsOpen() {
-        modules.getAnalytics().onDialogsOpen();
         if (modules.getNotifications() != null) {
             modules.getNotifications().onDialogsOpen();
         }
@@ -289,7 +288,6 @@ public class Messenger {
      * MUST be called on dialogs closed
      */
     public void onDialogsClosed() {
-        modules.getAnalytics().onDialogsClosed();
         if (modules.getNotifications() != null) {
             modules.getNotifications().onDialogsClosed();
         }
@@ -301,7 +299,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     public void onConversationOpen(Peer peer) {
-        modules.getAnalytics().onChatOpen(peer);
+        modules.getAnalytics().trackChatOpen(peer);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(peer);
             modules.getNotifications().onConversationOpen(peer);
@@ -315,7 +313,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     public void onConversationClosed(Peer peer) {
-        modules.getAnalytics().onChatClosed(peer);
+        modules.getAnalytics().trackChatClosed(peer);
         if (modules.getPresenceModule() != null) {
             modules.getNotifications().onConversationClose(peer);
         }
@@ -327,7 +325,7 @@ public class Messenger {
      * @param uid user's Id
      */
     public void onProfileOpen(int uid) {
-        modules.getAnalytics().onProfileOpen(uid);
+        modules.getAnalytics().trackProfileOpen(uid);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(Peer.user(uid));
         }
@@ -339,7 +337,7 @@ public class Messenger {
      * @param uid user's Id
      */
     public void onProfileClosed(int uid) {
-        modules.getAnalytics().onProfileClosed(uid);
+        modules.getAnalytics().trackProfileClosed(uid);
     }
 
     /**
@@ -994,6 +992,126 @@ public class Messenger {
         modules.getAnalytics().trackCodeRequest();
     }
 
+    public void trackAuthCodeType(String newValue) {
+        modules.getAnalytics().trackAuthCodeType(newValue);
+    }
+
+    public void trackBackPressed() {
+        modules.getAnalytics().trackBackPressed();
+    }
+
+    public void trackUpPressed() {
+        modules.getAnalytics().trackUpPressed();
+    }
+
+    public void trackAuthCodeWrongNumber() {
+        modules.getAnalytics().trackAuthCodeWrongNumber();
+    }
+
+    public void trackAuthCodeWrongNumberCancel() {
+        modules.getAnalytics().trackAuthCodeWrongNumberCancel();
+    }
+
+    public void trackAuthCodeWrongNumberChange() {
+        modules.getAnalytics().trackAuthCodeWrongNumberChange();
+    }
+
+    public void trackAuthCodeOpen() {
+        modules.getAnalytics().trackAuthCodeOpen();
+    }
+
+    public void trackAuthCodeClosed() {
+        modules.getAnalytics().trackAuthCodeClosed();
+    }
+
+    // Auth signup
+
+    public void trackAuthSignupOpen() {
+        modules.getAnalytics().trackAuthSignupOpen();
+    }
+
+    public void trackAuthSignupClosed() {
+        modules.getAnalytics().trackAuthSignupClosed();
+    }
+
+    public void trackAuthSignupClosedNameType(String newValue) {
+        modules.getAnalytics().trackAuthSignupClosedNameType(newValue);
+    }
+
+    public void trackAuthSignupPressedAvatar() {
+        modules.getAnalytics().trackAuthSignupPressedAvatar();
+    }
+
+    public void trackAuthSignupAvatarPicked() {
+        modules.getAnalytics().trackAuthSignupAvatarPicked();
+    }
+
+    public void trackAuthSignupAvatarDeleted() {
+        modules.getAnalytics().trackAuthSignupAvatarDeleted();
+    }
+
+    public void trackAuthSignupAvatarCanelled() {
+        modules.getAnalytics().trackAuthSignupAvatarCanelled();
+    }
+
+    // Auth success
+
+    public void trackAuthSuccess() {
+        modules.getAnalytics().trackAuthSuccess();
+    }
+
+    // Main screens
+
+    public void trackDialogsOpen() {
+        modules.getAnalytics().trackDialogsOpen();
+    }
+
+    public void trackDialogsClosed() {
+        modules.getAnalytics().trackDialogsClosed();
+    }
+
+    public void trackContactsOpen() {
+        modules.getAnalytics().trackContactsOpen();
+    }
+
+    public void trackContactsClosed() {
+        modules.getAnalytics().trackContactsClosed();
+    }
+
+    public void trackMainScreensOpen() {
+        modules.getAnalytics().trackMainScreensOpen();
+    }
+
+    public void trackMainScreensClosed() {
+        modules.getAnalytics().trackMainScreensClosed();
+    }
+
+    public void trackOwnProfileOpen() {
+        modules.getAnalytics().trackOwnProfileOpen();
+    }
+
+    public void trackOwnProfileClosed() {
+        modules.getAnalytics().trackOwnProfileClosed();
+    }
+
+    // Track message send
+
+    public void trackTextSend(Peer peer) {
+        modules.getAnalytics().trackTextSend(peer);
+    }
+
+    public void trackPhotoSend(Peer peer) {
+        modules.getAnalytics().trackPhotoSend(peer);
+    }
+
+    public void trackVideoSend(Peer peer) {
+        modules.getAnalytics().trackVideoSend(peer);
+    }
+
+    public void trackDocumentSend(Peer peer) {
+        modules.getAnalytics().trackDocumentSend(peer);
+    }
+
     /**
      * Track sync action error
      *
@@ -1007,6 +1125,7 @@ public class Messenger {
 
     /**
      * Track sync action success
+     *
      * @param action action key
      */
     public void trackActionSuccess(String action) {
@@ -1015,6 +1134,7 @@ public class Messenger {
 
     /**
      * Track sync action try again
+     *
      * @param action action key
      */
     public void trackActionTryAgain(String action) {
@@ -1023,6 +1143,7 @@ public class Messenger {
 
     /**
      * Track sync action cancel
+     *
      * @param action action key
      */
     public void trackActionCancel(String action) {

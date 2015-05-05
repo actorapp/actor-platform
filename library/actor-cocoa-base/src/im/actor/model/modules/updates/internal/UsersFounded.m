@@ -24,11 +24,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, users_, id<J
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, commandCallback_, id<AMCommandCallback>)
 
 
-#line 12
+#line 13
 @implementation ImActorModelModulesUpdatesInternalUsersFounded
 
 
-#line 16
+#line 17
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                withAMCommandCallback:(id<AMCommandCallback>)commandCallback {
   ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(self, users, commandCallback);
@@ -36,7 +36,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, commandCallb
 }
 
 
-#line 21
+#line 22
 - (id<JavaUtilList>)getUsers {
   return users_;
 }
@@ -48,17 +48,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, commandCallb
 @end
 
 
-#line 16
+#line 17
 void ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(ImActorModelModulesUpdatesInternalUsersFounded *self, id<JavaUtilList> users, id<AMCommandCallback> commandCallback) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   
-#line 17
+#line 18
   self->users_ = users;
   self->commandCallback_ = commandCallback;
 }
 
 
-#line 16
+#line 17
 ImActorModelModulesUpdatesInternalUsersFounded *new_ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(id<JavaUtilList> users, id<AMCommandCallback> commandCallback) {
   ImActorModelModulesUpdatesInternalUsersFounded *self = [ImActorModelModulesUpdatesInternalUsersFounded alloc];
   ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(self, users, commandCallback);

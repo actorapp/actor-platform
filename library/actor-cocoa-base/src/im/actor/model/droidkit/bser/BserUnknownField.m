@@ -22,11 +22,11 @@
 J2OBJC_FIELD_SETTER(BSBserUnknownField, binary_, IOSByteArray *)
 
 
-#line 6
+#line 7
 @implementation BSBserUnknownField
 
 
-#line 11
+#line 12
 - (instancetype)initWithInt:(jint)id_
                     withInt:(jint)type
               withByteArray:(IOSByteArray *)binary {
@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(BSBserUnknownField, binary_, IOSByteArray *)
 }
 
 
-#line 17
+#line 18
 - (jint)getId {
   return id__;
 }
@@ -51,18 +51,18 @@ J2OBJC_FIELD_SETTER(BSBserUnknownField, binary_, IOSByteArray *)
 @end
 
 
-#line 11
+#line 12
 void BSBserUnknownField_initWithInt_withInt_withByteArray_(BSBserUnknownField *self, jint id_, jint type, IOSByteArray *binary) {
   (void) NSObject_init(self);
   
-#line 12
+#line 13
   self->id__ = id_;
   self->type_ = type;
   self->binary_ = binary;
 }
 
 
-#line 11
+#line 12
 BSBserUnknownField *new_BSBserUnknownField_initWithInt_withInt_withByteArray_(jint id_, jint type, IOSByteArray *binary) {
   BSBserUnknownField *self = [BSBserUnknownField alloc];
   BSBserUnknownField_initWithInt_withInt_withByteArray_(self, id_, type, binary);
