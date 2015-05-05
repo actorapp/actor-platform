@@ -10,11 +10,11 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.util.ACL
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.util.ACLUtils
 
 class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "GroupsService"
@@ -65,7 +65,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
 
     val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACL.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
     val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer

@@ -17,7 +17,8 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.api.util.{ FileUtils, ACL }
+import im.actor.server.api.util.FileUtils
+import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
 class FilesServiceImpl(bucketName: String)(
@@ -29,6 +30,7 @@ class FilesServiceImpl(bucketName: String)(
 ) extends FilesService {
 
   import scala.collection.JavaConverters._
+
   import FileUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
@@ -37,7 +39,7 @@ class FilesServiceImpl(bucketName: String)(
     val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.File.find(location.fileId) flatMap {
         case Some(file) ⇒
-          if (ACL.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
+          if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
             val presignedRequest = new GeneratePresignedUrlRequest(bucketName, FileUtils.s3Key(file.id))
             val timeout = 1.day
 
@@ -65,7 +67,7 @@ class FilesServiceImpl(bucketName: String)(
     val authorizedAction = requireAuth(clientData).map { client ⇒
       val rnd = ThreadLocalRandom.current()
       val id = rnd.nextLong()
-      val salt = ACL.nextAccessSalt(rnd)
+      val salt = ACLUtils.nextAccessSalt(rnd)
 
       val key = s"upload_${id}"
       val presignedRequest = new GeneratePresignedUrlRequest(bucketName, key)
@@ -135,7 +137,7 @@ class FilesServiceImpl(bucketName: String)(
             _ ← DBIO.from(deleteDir(tempDir))
             _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.File.setUploaded(file.id, size))
           } yield {
-            Ok(ResponseCommitFileUpload(FileLocation(file.id, ACL.fileAccessHash(file.id, file.accessSalt))))
+            Ok(ResponseCommitFileUpload(FileLocation(file.id, ACLUtils.fileAccessHash(file.id, file.accessSalt))))
           }
         case None ⇒
           DBIO.successful(Error(Errors.FileNotFound))

@@ -8,10 +8,10 @@ import im.actor.api.rpc.messaging.{ MessageState, TextMessage }
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.util.ACL
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.util.ACLUtils
 
 class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "MessagingServiceHistoryService"
@@ -45,11 +45,11 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
     val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
 
     val user1Model = getUserModel(user1.id)
-    val user1AccessHash = ACL.userAccessHash(authId2, user1.id, user1Model.accessSalt)
+    val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
     val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
 
     val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACL.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
     val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
     def privat() = {

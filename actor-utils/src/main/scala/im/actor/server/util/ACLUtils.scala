@@ -1,15 +1,15 @@
-package im.actor.server.api.util
+package im.actor.server.util
+
+import java.nio.ByteBuffer
+import java.security.MessageDigest
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import akka.actor.ActorSystem
-import java.nio.ByteBuffer
-import java.security.MessageDigest
-import im.actor.server.models
-import scala.util.Try
 
-// TODO: rename ACL to something more suitable for its functionality
-object ACL {
+import im.actor.server.models
+
+object ACLUtils {
   def secretKey()(implicit s: ActorSystem) =
     s.settings.config.getString("secret")
 

@@ -13,21 +13,22 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
-import im.actor.server.api.util.{ ContactsUtils, HistoryUtils, PeerUtils, UserUtils }
+import im.actor.server.api.util.{ ContactsUtils, PeerUtils, UserUtils }
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
+import im.actor.server.util.HistoryUtils
 import im.actor.server.{ models, persist }
 
 private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl ⇒
 
-  import im.actor.api.rpc.Implicits._
+  import ContactsUtils._
   import HistoryUtils._
   import PeerUtils._
   import SeqUpdatesManager._
   import SocialManager._
   import UserUtils._
-  import ContactsUtils._
+  import im.actor.api.rpc.Implicits._
 
   override implicit val ec = actorSystem.dispatcher
 

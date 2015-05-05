@@ -30,6 +30,7 @@ object Dependencies {
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "1.3.0-SNAPSHOT"
+    val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % "0.9.0"
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
 
@@ -75,13 +76,15 @@ object Dependencies {
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
     val slickTestkit    = "com.typesafe.slick"                    %% "slick-testkit"                 % V.slick % "test"
-
+    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
+    
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
 
     val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test,e2e"
   }
 
-  import Compile._, Testing._
+  import Compile._
+  import Testing._
 
   val shared = Seq(logbackClassic, scalaLogging)
 
@@ -94,10 +97,9 @@ object Dependencies {
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
   val rpcApi = shared ++ Seq(
-    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, libPhoneNumber, shapeless,
-    scrImageCore
+    akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless, scrImageCore
   )
-
+  
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val session = shared ++ Seq(
@@ -108,7 +110,7 @@ object Dependencies {
 
   val push = shared ++ Seq(akkaContrib, gcmServer, pushy)
 
-  val persist = shared ++ Seq(postgresJdbc, slick, slickJoda, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(postgresJdbc, slick, slickJoda, slickPg, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaContrib
 
@@ -117,8 +119,8 @@ object Dependencies {
   val social = shared :+ akkaContrib
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
-
-  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert)
+  
+  val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
 
   val frontend = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream,
@@ -126,8 +128,12 @@ object Dependencies {
     scalazCore, scalazConcurrent
   )
 
+  val dashboard = shared :+ scalazCore
+
+  val utils = shared ++ Seq(akkaActor, libPhoneNumber, slick)
+
   val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
+    jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,
     akkaTestkit
   )
 }

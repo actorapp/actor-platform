@@ -18,13 +18,13 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc._
-import im.actor.server.api.rpc.util.IdUtils
 import im.actor.server.api.util
-import im.actor.server.api.util.{ ContactsUtils, ACL }
-import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
+import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
 import im.actor.server.sms.ActivationContext
-import im.actor.server.social.{ SocialManagerRegion, SocialManager }
+import im.actor.server.social.{ SocialManager, SocialManagerRegion }
+import im.actor.server.util.PhoneNumber.normalizeWithCountry
+import im.actor.server.util.{ ACLUtils, IdUtils, PhoneNumber }
 import im.actor.server.{ models, persist }
 
 class AuthServiceImpl(activationContext: ActivationContext)(
@@ -37,8 +37,8 @@ class AuthServiceImpl(activationContext: ActivationContext)(
 ) extends AuthService with Helpers {
 
   import IdUtils._
-  import SocialManager._
   import SeqUpdatesManager._
+  import SocialManager._
 
   private trait SignType
 
@@ -99,7 +99,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     apiKey:         String,
     clientData:     ClientData
   ): Future[HandlerResult[ResponseSendAuthCode]] = {
-    util.PhoneNumber.normalizeLong(rawPhoneNumber) match {
+    PhoneNumber.normalizeLong(rawPhoneNumber) match {
       case None ⇒
         Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some(normPhoneNumber) ⇒
@@ -194,7 +194,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     appKey:         String,
     clientData:     ClientData
   ): Future[HandlerResult[ResponseAuth]] = {
-    util.PhoneNumber.normalizeWithCountry(rawPhoneNumber) match {
+    normalizeWithCountry(rawPhoneNumber) match {
       case None ⇒ Future.successful(Error(Errors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) ⇒
         if (smsCode.isEmpty) Future.successful(Error(Errors.PhoneCodeEmpty))
@@ -217,11 +217,11 @@ class AuthServiceImpl(activationContext: ActivationContext)(
                       case None ⇒ withValidName(rawName) { name ⇒
                         val rnd = ThreadLocalRandom.current()
                         val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
-                        val user = models.User(userId, ACL.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
+                        val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
 
                         for {
                           _ ← persist.User.create(user)
-                          _ ← persist.UserPhone.create(phoneId, userId, ACL.nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
+                          _ ← persist.UserPhone.create(phoneId, userId, ACLUtils.nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
                           _ ← persist.AuthId.setUserData(clientData.authId, userId)
                           _ ← persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {

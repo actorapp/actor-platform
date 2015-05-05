@@ -1,4 +1,4 @@
-package im.actor.server.api.util
+package im.actor.server.util
 
 import scala.annotation.tailrec
 import scala.util.Try
