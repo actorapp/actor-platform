@@ -36,6 +36,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.emoji.SmileProcessor;
+import im.actor.messenger.app.emoji.stickers.Sticker;
 import im.actor.messenger.app.emoji.stickers.StickersPack;
 import im.actor.messenger.app.keyboard.BaseKeyboard;
 import im.actor.messenger.app.keyboard.emoji.smiles.OnBackspaceClickListener;
@@ -64,7 +65,6 @@ public class EmojiKeyboard extends BaseKeyboard
 
     public EmojiKeyboard(Activity activity) {
         super(activity);
-
     }
 
     public void onEmojiClicked(String smile) {
@@ -99,9 +99,10 @@ public class EmojiKeyboard extends BaseKeyboard
     }
 
     @Override
-    public void onStickerClick(String packId, String stickerId) {
+    public void onStickerClick(Sticker sticker) {
         if (onStickerClickListener != null) {
-            onStickerClickListener.onStickerClick(packId, stickerId);
+            getStickerProcessor().upRecentSticker(sticker);
+            onStickerClickListener.onStickerClick(sticker);
         }
     }
 
@@ -129,6 +130,12 @@ public class EmojiKeyboard extends BaseKeyboard
         return keyboardView;
     }
 
+    @Override
+    protected void onDismiss() {
+        getSmileProcessor().getRecentController().saveRecents();
+        getStickerProcessor().getRecentController().saveRecents();
+    }
+
     class EmojiPagerAdapter extends PagerAdapter implements PagerSlidingTabStrip.TabProvider {
         @Override
         public int getCount() {
@@ -147,7 +154,7 @@ public class EmojiKeyboard extends BaseKeyboard
                 item = createSmilesPager();
             } else {
                 if (position == 1) {
-                    item = new View(activity);//createStickersRecentPagerView();
+                    item = createStickersRecentPagerView();
                 } else {
                     item = createStickersPagerView(position - 2);
                 }
@@ -182,9 +189,8 @@ public class EmojiKeyboard extends BaseKeyboard
                             tabView.setPadding(0, 0, 0, 0);
                         } else {
                             StickersPack pack = getStickerProcessor().getPacks().get(position - 2);
-                            String packId = pack.getId();
-                            final String packLogoId = pack.getLogoStickerId();
-                            getStickerProcessor().bindSticker(tabView, packId, packLogoId);
+                            final Sticker packLogo = pack.getLogoStickerId();
+                            getStickerProcessor().bindSticker(tabView, packLogo);
 
                             tabView.setPadding(Screen.dp(5), Screen.dp(5), Screen.dp(5), Screen.dp(5));
                         }
@@ -193,13 +199,13 @@ public class EmojiKeyboard extends BaseKeyboard
                 }
             }, BINDING_DELAY);
 
-            Log.d(TAG, "Tab created in " + (System.currentTimeMillis()-startTime));
+            Log.d(TAG, "Tab created in " + (System.currentTimeMillis() - startTime));
             return tabView;
         }
     }
 
     private View createStickersRecentPagerView() {
-        return createStickersPagerView(0);
+        return createStickersPagerView(-1);
     }
 
 
@@ -259,7 +265,13 @@ public class EmojiKeyboard extends BaseKeyboard
             public void run() {
                 recyclerView.setAlpha(0f);
                 animateView(recyclerView);
-                recyclerView.setAdapter(new StickersFullpackAdapter(activity, EmojiKeyboard.this, getStickerProcessor().getPacks().get(packIndex), 0));
+                StickersPack pack;
+                if (packIndex == -1) {
+                    pack = getStickerProcessor().getRecentController().getPack();
+                } else {
+                    pack = getStickerProcessor().getPacks().get(packIndex);
+                }
+                recyclerView.setAdapter(new StickersFullpackAdapter(activity, EmojiKeyboard.this, pack, 0));
             }
         }, BINDING_DELAY);
         return recyclerView;
@@ -269,7 +281,7 @@ public class EmojiKeyboard extends BaseKeyboard
         view
                 .animate()
                 .setInterpolator(MaterialInterpolator.getInstance())
-                .alpha(300)
+                .alpha(150)
                 .setDuration(300)
                 .start();
     }

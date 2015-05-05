@@ -4,16 +4,20 @@ package im.actor.messenger.app.emoji.stickers;
  * Created by Jesus Christ. Amen.
  */
 public class StickersPack {
-    private final String[] order;
-    private final String packId;
-    private final String logoId;
-    private final String title;
+    private Sticker[] order;
+    private String packId;
+    private Sticker logoId;
+    private String title;
 
-    public StickersPack(String packId, String packTitle, String logoId, String[] order) {
+    public StickersPack(String packId, String packTitle, Sticker logoId, Sticker[] order) {
         this.order = order;
         this.packId = packId;
         this.logoId = logoId;
         this.title = packTitle;
+    }
+
+    public StickersPack(Sticker[] array) {
+        this("", "", null , array);
     }
 
 
@@ -26,10 +30,14 @@ public class StickersPack {
     }
 
     public String getStickerId(int position) {
-        return order[position];
+        return order[position].getId();
     }
 
-    public String getLogoStickerId() {
+    public Sticker getLogoStickerId() {
         return logoId;
+    }
+
+    public Sticker get(int position) {
+        return order[position];
     }
 }

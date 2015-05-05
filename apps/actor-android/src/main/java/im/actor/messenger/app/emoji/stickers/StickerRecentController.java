@@ -1,20 +1,4 @@
-/*
- * Copyright 2014 Ankush Sachdeva
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package im.actor.messenger.app.emoji.smiles;
+package im.actor.messenger.app.emoji.stickers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,30 +11,35 @@ import im.actor.messenger.app.AppContext;
 /**
  * Created by Jesus Christ. Amen.
  */
-public class SmilesRecentsController extends ArrayList<Long> {
+public class StickerRecentController extends ArrayList<Sticker> {
+    
+    
+    
 
-    private static final String PREFERENCE_NAME = "smiles";
-    private static final String PREF_RECENTS = "recent_smiles";
+
+
+    private static final String PREFERENCE_NAME = "Sticker";
+    private static final String PREF_RECENTS = "recent_Sticker";
 
     private static final Object LOCK = new Object();
-    private static SmilesRecentsController sInstance;
+    private static StickerRecentController sInstance;
 
     private Context mContext;
 
-    private SmilesRecentsController(Context context) {
+    private StickerRecentController(Context context) {
         mContext = context.getApplicationContext();
         loadRecents();
     }
 
-    public static SmilesRecentsController getInstance() {
+    public static StickerRecentController getInstance() {
         return getInstance(AppContext.getContext());
     }
 
-    public static SmilesRecentsController getInstance(Context context) {
+    public static StickerRecentController getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 if (sInstance == null) {
-                    sInstance = new SmilesRecentsController(context);
+                    sInstance = new StickerRecentController(context);
                 }
             }
         }
@@ -58,7 +47,7 @@ public class SmilesRecentsController extends ArrayList<Long> {
     }
 
 
-    public void push(Long object) {
+    public void push(Sticker object) {
         if (contains(object)) {
             super.remove(object);
         }
@@ -69,13 +58,13 @@ public class SmilesRecentsController extends ArrayList<Long> {
     }
 
     @Override
-    public boolean add(Long object) {
+    public boolean add(Sticker object) {
         boolean ret = super.add(object);
         return ret;
     }
 
     @Override
-    public void add(int index, Long object) {
+    public void add(int index, Sticker object) {
         super.add(index, object);
     }
 
@@ -95,7 +84,7 @@ public class SmilesRecentsController extends ArrayList<Long> {
         StringTokenizer tokenizer = new StringTokenizer(str, "~");
         while (tokenizer.hasMoreTokens()) {
             try {
-                add(Long.valueOf(tokenizer.nextToken()));
+                add(Sticker.parse(tokenizer.nextToken()));
             } catch (NumberFormatException e) {
                 // ignored
             }
@@ -106,7 +95,7 @@ public class SmilesRecentsController extends ArrayList<Long> {
         StringBuilder str = new StringBuilder();
         int c = size();
         for (int i = 0; i < c; i++) {
-            Long e = get(i);
+            Sticker e = get(i);
             str.append(e);
             if (i < (c - 1)) {
                 str.append('~');
@@ -116,4 +105,9 @@ public class SmilesRecentsController extends ArrayList<Long> {
         prefs.edit().putString(PREF_RECENTS, str.toString()).apply();
     }
 
+    public StickersPack getPack() {
+        Sticker[] array = new Sticker[size()];
+        this.toArray(array);
+        return new StickersPack(array);
+    }
 }

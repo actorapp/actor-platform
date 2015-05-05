@@ -137,6 +137,7 @@ public class BaseKeyboard implements
 
         if(keyboardStatusListener!=null)
             keyboardStatusListener.onShow();
+        onShow();
     }
 
     private void update() {
@@ -177,10 +178,11 @@ public class BaseKeyboard implements
                         }
                     })
                     .start();
-
+            showing = false;
             emojiKeyboardView = null;
             if(keyboardStatusListener!=null)
                 keyboardStatusListener.onDismiss();
+            onDismiss();
         }
     }
 
@@ -262,6 +264,13 @@ public class BaseKeyboard implements
             dismissed = true;
             dismissInternally();
         }
+    }
+
+    protected void onDismiss(){
+        // override it
+    }
+    protected void onShow(){
+        // override it
     }
 
     protected View createView(){

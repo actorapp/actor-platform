@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import im.actor.messenger.app.emoji.SmileProcessor;
 import im.actor.messenger.app.keyboard.emoji.smiles.OnSmileClickListener;
 
+import static im.actor.messenger.app.Core.getSmileProcessor;
+
 /**
  * Author: Korshakov Stepan
  * Created: 04.07.13 22:50
@@ -126,6 +128,7 @@ public class SmilesPackView extends View {
                                 } else {
                                     smile = "" + a;
                                 }
+                                getSmileProcessor().upRecent(smileId);
                                 onSmileClickListener.onEmojiClicked(smile);
                             }
                         }
@@ -155,5 +158,9 @@ public class SmilesPackView extends View {
                 }
             }
         }
+    }
+
+    public void setPack(Long[] updated) {
+
     }
 }
