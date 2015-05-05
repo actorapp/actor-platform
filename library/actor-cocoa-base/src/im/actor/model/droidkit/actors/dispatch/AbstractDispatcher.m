@@ -43,11 +43,11 @@ __attribute__((unused)) static DKAbstractDispatcher_$1 *new_DKAbstractDispatcher
 J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher_$1)
 
 
-#line 6
+#line 10
 @implementation DKAbstractDispatcher
 
 
-#line 10
+#line 14
 - (instancetype)initWithDKAbstractDispatchQueue:(DKAbstractDispatchQueue *)queue
                                  withDKDispatch:(id<DKDispatch>)dispatch {
   DKAbstractDispatcher_initWithDKAbstractDispatchQueue_withDKDispatch_(self, queue, dispatch);
@@ -55,13 +55,13 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher_$1)
 }
 
 
-#line 26
+#line 30
 - (id)getQueue {
   return queue_;
 }
 
 
-#line 35
+#line 39
 - (void)dispatchMessageWithId:(id)message {
   if (dispatch_ != nil) {
     [dispatch_ dispatchMessageWithId:message];
@@ -69,18 +69,18 @@ J2OBJC_TYPE_LITERAL_HEADER(DKAbstractDispatcher_$1)
 }
 
 
-#line 44
+#line 48
 - (void)notifyDispatcher {
 }
 
 @end
 
 
-#line 10
+#line 14
 void DKAbstractDispatcher_initWithDKAbstractDispatchQueue_withDKDispatch_(DKAbstractDispatcher *self, DKAbstractDispatchQueue *queue, id<DKDispatch> dispatch) {
   (void) NSObject_init(self);
   
-#line 11
+#line 15
   self->queue_ = queue;
   self->dispatch_ = dispatch;
   [((DKAbstractDispatchQueue *) nil_chk(self->queue_)) setListenerWithDKQueueListener:new_DKAbstractDispatcher_$1_initWithDKAbstractDispatcher_(self)];
@@ -91,7 +91,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAbstractDispatcher)
 @implementation DKAbstractDispatcher_$1
 
 
-#line 15
+#line 19
 - (void)onQueueChanged {
   [this$0_ notifyDispatcher];
 }

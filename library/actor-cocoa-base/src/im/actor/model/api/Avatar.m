@@ -29,11 +29,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, largeImage_, ImActorModelApiAvatarIma
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImage *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiAvatar
 
 
-#line 25
+#line 29
 - (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)smallImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
                     withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage {
@@ -42,14 +42,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 }
 
 
-#line 31
+#line 35
 - (instancetype)init {
   ImActorModelApiAvatar_init(self);
   return self;
 }
 
 
-#line 35
+#line 39
 - (ImActorModelApiAvatarImage *)getSmallImage {
   return self->smallImage_;
 }
@@ -63,7 +63,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
   self->largeImage_ = [values optObjWithInt:2 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
@@ -71,7 +71,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 }
 
 
-#line 55
+#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->smallImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->smallImage_];
@@ -85,7 +85,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 }
 
 
-#line 68
+#line 72
 - (NSString *)description {
   NSString *res = @"struct Avatar{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"smallImage=", (self->smallImage_ != nil ? @"set" : @"empty")));
@@ -98,18 +98,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 @end
 
 
-#line 25
+#line 29
 void ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatar *self, ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) {
   (void) BSBserObject_init(self);
   
-#line 26
+#line 30
   self->smallImage_ = smallImage;
   self->largeImage_ = largeImage;
   self->fullImage_ = fullImage;
 }
 
 
-#line 25
+#line 29
 ImActorModelApiAvatar *new_ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) {
   ImActorModelApiAvatar *self = [ImActorModelApiAvatar alloc];
   ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(self, smallImage, largeImage, fullImage);
@@ -121,7 +121,7 @@ void ImActorModelApiAvatar_init(ImActorModelApiAvatar *self) {
 }
 
 
-#line 31
+#line 35
 ImActorModelApiAvatar *new_ImActorModelApiAvatar_init() {
   ImActorModelApiAvatar *self = [ImActorModelApiAvatar alloc];
   ImActorModelApiAvatar_init(self);

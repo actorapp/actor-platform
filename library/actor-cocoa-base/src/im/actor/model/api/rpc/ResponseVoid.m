@@ -18,17 +18,17 @@
 #include "java/io/IOException.h"
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcResponseVoid
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(data);
 }
 
 
-#line 28
+#line 32
 - (instancetype)init {
   ImActorModelApiRpcResponseVoid_init(self);
   return self;
@@ -38,12 +38,12 @@
 }
 
 
-#line 37
+#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 
-#line 41
+#line 45
 - (NSString *)description {
   NSString *res = @"response Void{";
   res = JreStrcat("$C", res, '}');
@@ -51,7 +51,7 @@
 }
 
 
-#line 48
+#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseVoid_HEADER;
 }
@@ -59,22 +59,22 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseVoid_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcResponseVoid *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseVoid_init(), data));
 }
 
 
-#line 28
+#line 32
 void ImActorModelApiRpcResponseVoid_init(ImActorModelApiRpcResponseVoid *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
 
-#line 28
+#line 32
 ImActorModelApiRpcResponseVoid *new_ImActorModelApiRpcResponseVoid_init() {
   ImActorModelApiRpcResponseVoid *self = [ImActorModelApiRpcResponseVoid alloc];
   ImActorModelApiRpcResponseVoid_init(self);

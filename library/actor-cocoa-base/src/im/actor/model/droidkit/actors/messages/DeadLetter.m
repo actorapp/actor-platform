@@ -19,24 +19,24 @@
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
 
 
-#line 6
+#line 10
 @implementation ImActorModelDroidkitActorsMessagesDeadLetter
 
 
-#line 9
+#line 13
 - (instancetype)initWithId:(id)message {
   ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(self, message);
   return self;
 }
 
 
-#line 13
+#line 17
 - (id)getMessage {
   return message_;
 }
 
 
-#line 18
+#line 22
 - (NSString *)description {
   return JreStrcat("$@C", @"DeadLetter(", message_, ')');
 }
@@ -44,16 +44,16 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMessagesDeadLetter, message_, id)
 @end
 
 
-#line 9
+#line 13
 void ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(ImActorModelDroidkitActorsMessagesDeadLetter *self, id message) {
   (void) NSObject_init(self);
   
-#line 10
+#line 14
   self->message_ = message;
 }
 
 
-#line 9
+#line 13
 ImActorModelDroidkitActorsMessagesDeadLetter *new_ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(id message) {
   ImActorModelDroidkitActorsMessagesDeadLetter *self = [ImActorModelDroidkitActorsMessagesDeadLetter alloc];
   ImActorModelDroidkitActorsMessagesDeadLetter_initWithId_(self, message);

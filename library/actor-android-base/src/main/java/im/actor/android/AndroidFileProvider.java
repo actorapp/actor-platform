@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import android.content.Context;
@@ -9,9 +13,6 @@ import im.actor.model.FileSystemProvider;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 
-/**
- * Created by ex3ndr on 26.02.15.
- */
 public class AndroidFileProvider implements FileSystemProvider {
 
     private Context context;

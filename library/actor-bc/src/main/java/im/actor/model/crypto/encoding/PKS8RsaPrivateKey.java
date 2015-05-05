@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.encoding;
 
 import java.io.IOException;
@@ -11,9 +15,6 @@ import im.actor.model.crypto.asn1.ASN1OctetString;
 import im.actor.model.crypto.asn1.ASN1Primitive;
 import im.actor.model.crypto.asn1.ASN1Sequence;
 
-/**
- * Created by ex3ndr on 10.03.15.
- */
 public class PKS8RsaPrivateKey {
 
     private static final String ALGO = "1.2.840.113549.1.1.1";

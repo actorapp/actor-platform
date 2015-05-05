@@ -27,7 +27,7 @@
 @end
 
 
-#line 13
+#line 14
 @implementation AMGroupMember
 
 + (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -35,7 +35,7 @@
 }
 
 
-#line 27
+#line 28
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)inviteDate
@@ -50,7 +50,7 @@
 }
 
 
-#line 39
+#line 40
 - (jint)getUid {
   return uid_;
 }
@@ -68,7 +68,7 @@
 }
 
 
-#line 56
+#line 57
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   inviterUid_ = [values getIntWithInt:2];
@@ -77,7 +77,7 @@
 }
 
 
-#line 64
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
   [writer writeIntWithInt:2 withInt:inviterUid_];
@@ -86,23 +86,23 @@
 }
 
 
-#line 72
+#line 73
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 76
+#line 77
   AMGroupMember *member = (AMGroupMember *) check_class_cast(o, [AMGroupMember class]);
   
-#line 78
+#line 79
   if (uid_ != ((AMGroupMember *) nil_chk(member))->uid_) return NO;
   
-#line 80
+#line 81
   return YES;
 }
 
 
-#line 84
+#line 85
 - (NSUInteger)hash {
   return uid_;
 }
@@ -110,16 +110,16 @@
 @end
 
 
-#line 15
+#line 16
 AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data) {
   AMGroupMember_initialize();
   
-#line 16
+#line 17
   return ((AMGroupMember *) BSBser_parseWithBSBserObject_withByteArray_(new_AMGroupMember_init(), data));
 }
 
 
-#line 27
+#line 28
 void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self, jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
@@ -129,7 +129,7 @@ void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self
 }
 
 
-#line 27
+#line 28
 AMGroupMember *new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_(jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
   AMGroupMember *self = [AMGroupMember alloc];
   AMGroupMember_initWithInt_withInt_withLong_withBoolean_(self, uid, inviterUid, inviteDate, isAdministrator);
@@ -137,13 +137,13 @@ AMGroupMember *new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_(jint 
 }
 
 
-#line 35
+#line 36
 void AMGroupMember_init(AMGroupMember *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 35
+#line 36
 AMGroupMember *new_AMGroupMember_init() {
   AMGroupMember *self = [AMGroupMember alloc];
   AMGroupMember_init(self);

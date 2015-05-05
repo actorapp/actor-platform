@@ -55,11 +55,11 @@ __attribute__((unused)) static ImActorModelModulesNotifications_$1 *new_ImActorM
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 
 
-#line 16
+#line 17
 @implementation ImActorModelModulesNotifications
 
 
-#line 20
+#line 21
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesNotifications_initWithImActorModelModulesModules_(self, modules);
   return self;
@@ -67,12 +67,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 
 - (void)run {
   self->notificationsActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesNotificationsNotificationsActor_class_(), new_ImActorModelModulesNotifications_$1_initWithImActorModelModulesNotifications_(self)) withNSString:
-#line 31
+#line 32
   @"actor/notifications"];
 }
 
 
-#line 34
+#line 35
 - (DKSyncKeyValue *)getNotificationsStorage {
   return notificationsStorage_;
 }
@@ -83,7 +83,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 }
 
 
-#line 42
+#line 43
 - (void)onInMessageWithAMPeer:(AMPeer *)peer
                       withInt:(jint)sender
                      withLong:(jlong)sortDate
@@ -92,7 +92,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 }
 
 
-#line 46
+#line 47
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
   [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_OnConversationVisible_initWithAMPeer_(peer)];
 }
@@ -120,14 +120,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 @end
 
 
-#line 20
+#line 21
 void ImActorModelModulesNotifications_initWithImActorModelModulesModules_(ImActorModelModulesNotifications *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->notificationsStorage_ = new_DKSyncKeyValue_initWithDKKeyValueStorage_([((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithName:ImActorModelModulesBaseModule_get_STORAGE_NOTIFICATIONS_()]);
 }
 
 
-#line 20
+#line 21
 ImActorModelModulesNotifications *new_ImActorModelModulesNotifications_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesNotifications *self = [ImActorModelModulesNotifications alloc];
   ImActorModelModulesNotifications_initWithImActorModelModulesModules_(self, modules);
@@ -139,7 +139,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotifications)
 @implementation ImActorModelModulesNotifications_$1
 
 
-#line 28
+#line 29
 - (ImActorModelModulesNotificationsNotificationsActor *)create {
   return new_ImActorModelModulesNotificationsNotificationsActor_initWithImActorModelModulesModules_([this$0_ modules]);
 }

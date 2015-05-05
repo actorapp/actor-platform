@@ -28,17 +28,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestChangeEmailTitle
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestChangeEmailTitle *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestChangeEmailTitle_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)emailId
                withNSString:(NSString *)title {
   ImActorModelApiRpcRequestChangeEmailTitle_initWithInt_withNSString_(self, emailId, title);
@@ -46,14 +46,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestChangeEmailTitle_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getEmailId {
   return self->emailId_;
 }
@@ -63,14 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->emailId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->title_ = [values getStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->emailId_];
   if (self->title_ == nil) {
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 }
 
 
-#line 63
+#line 67
 - (NSString *)description {
   NSString *res = @"rpc ChangeEmailTitle{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"emailId=", self->emailId_));
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 }
 
 
-#line 72
+#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestChangeEmailTitle_HEADER;
 }
@@ -98,24 +98,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangeEmailTitle, title_, NSString 
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestChangeEmailTitle *ImActorModelApiRpcRequestChangeEmailTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestChangeEmailTitle_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestChangeEmailTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestChangeEmailTitle_init(), data));
 }
 
 void ImActorModelApiRpcRequestChangeEmailTitle_initWithInt_withNSString_(ImActorModelApiRpcRequestChangeEmailTitle *self, jint emailId, NSString *title) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->emailId_ = emailId;
   self->title_ = title;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestChangeEmailTitle *new_ImActorModelApiRpcRequestChangeEmailTitle_initWithInt_withNSString_(jint emailId, NSString *title) {
   ImActorModelApiRpcRequestChangeEmailTitle *self = [ImActorModelApiRpcRequestChangeEmailTitle alloc];
   ImActorModelApiRpcRequestChangeEmailTitle_initWithInt_withNSString_(self, emailId, title);
@@ -123,13 +123,13 @@ ImActorModelApiRpcRequestChangeEmailTitle *new_ImActorModelApiRpcRequestChangeEm
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestChangeEmailTitle_init(ImActorModelApiRpcRequestChangeEmailTitle *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestChangeEmailTitle *new_ImActorModelApiRpcRequestChangeEmailTitle_init() {
   ImActorModelApiRpcRequestChangeEmailTitle *self = [ImActorModelApiRpcRequestChangeEmailTitle alloc];
   ImActorModelApiRpcRequestChangeEmailTitle_init(self);

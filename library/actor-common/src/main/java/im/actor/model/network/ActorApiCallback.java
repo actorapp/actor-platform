@@ -1,12 +1,28 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network;
 
 /**
- * Created by ex3ndr on 08.02.15.
+ * API Callback
  */
 public interface ActorApiCallback {
-    public void onAuthIdInvalidated(long authKey);
+    /**
+     * Called when Auth Key is invalidated
+     *
+     * @param authKey invalidated auth key
+     */
+    void onAuthIdInvalidated(long authKey);
 
-    public void onNewSessionCreated();
+    /**
+     * Called when session was (re-)created on server
+     */
+    void onNewSessionCreated();
 
-    public void onUpdateReceived(Object obj);
+    /**
+     * Called when update received
+     * @param obj update object
+     */
+    void onUpdateReceived(Object obj);
 }

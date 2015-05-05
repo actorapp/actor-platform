@@ -1,11 +1,8 @@
 //
-//  FMDatabaseVariadic.swift
-//  FMDB
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
-
 //  This extension inspired by http://stackoverflow.com/a/24187932/1271826
-
 import Foundation
 
 extension FMDatabase {

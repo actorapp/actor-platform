@@ -24,7 +24,7 @@
 #include "java/lang/RuntimeException.h"
 
 static NSString *MTAuthIdRetriever_TAG_ = 
-#line 19
+#line 20
 @"AuthId";
 J2OBJC_STATIC_FIELD_GETTER(MTAuthIdRetriever, TAG_, NSString *)
 
@@ -90,11 +90,11 @@ __attribute__((unused)) static MTAuthIdRetriever_$2 *new_MTAuthIdRetriever_$2_in
 J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$2)
 
 
-#line 17
+#line 18
 @implementation MTAuthIdRetriever
 
 
-#line 21
+#line 22
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
                withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback {
@@ -109,27 +109,27 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callb
 @end
 
 
-#line 21
+#line 22
 void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, id<MTAuthIdRetriever_AuthIdCallback> callback) {
   MTAuthIdRetriever_initialize();
   
-#line 22
+#line 23
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_TAG_, @"Requesting AuthId");
   
-#line 24
+#line 25
   IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
   AMExponentialBackoff *backoff = new_AMExponentialBackoff_init();
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
   
-#line 28
-  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnection:0 withMTProtoVersion:
 #line 29
-  AMActorApi_MTPROTO_VERSION withApiMajorVersion:
+  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnection:0 withMTProtoVersion:
 #line 30
-  AMActorApi_API_MAJOR_VERSION withApiMinorVersion:
+  AMActorApi_MTPROTO_VERSION withApiMajorVersion:
 #line 31
-  AMActorApi_API_MINOR_VERSION withEndpoint:
+  AMActorApi_API_MAJOR_VERSION withApiMinorVersion:
 #line 32
+  AMActorApi_API_MINOR_VERSION withEndpoint:
+#line 33
   [((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(isFinished, callback) withCreateCallback:new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(isFinished, backoff, callback)];
 }
 
@@ -150,7 +150,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 @implementation MTAuthIdRetriever_$1
 
 
-#line 35
+#line 36
 - (void)onConnectionRedirect:(NSString *)host
                     withPort:(jint)port
                  withTimeout:(jint)timeout {
@@ -162,7 +162,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 }
 
 
-#line 44
+#line 45
 - (void)onMessage:(IOSByteArray *)data
        withOffset:(jint)offset
           withLen:(jint)len {
@@ -170,7 +170,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
     return;
   }
   
-#line 49
+#line 50
   @try {
     BSDataInput *dataInput = new_BSDataInput_initWithByteArray_withInt_withInt_(data, offset, len);
     jlong pAuthId = [dataInput readLong];
@@ -178,42 +178,42 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
     jlong messageId = [dataInput readLong];
     IOSByteArray *payload = [dataInput readProtoBytes];
     
-#line 56
+#line 57
     BSDataInput *msg = new_BSDataInput_initWithByteArray_withInt_withInt_(payload, 0, ((IOSByteArray *) nil_chk(payload))->size_);
     jint header = [msg readByte];
     jlong authId = [msg readLong];
     
-#line 60
+#line 61
     if (!IOSBooleanArray_Get(val$isFinished_, 0)) {
       *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
       [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onSuccessWithLong:authId];
       
-#line 64
+#line 65
       AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), JreStrcat("$J", @"Auth Id loaded: ", authId));
       
-#line 66
+#line 67
       return;
     }
   }
   @catch (
-#line 68
+#line 69
   JavaLangException *e) {
     AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Error during parsing auth id response");
     [((JavaLangException *) nil_chk(e)) printStackTrace];
   }
   
-#line 74
+#line 75
   @throw new_JavaLangRuntimeException_init();
 }
 
 
-#line 78
+#line 79
 - (void)onConnectionDie {
   if (!IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
     [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onFailure];
     
-#line 83
+#line 84
     AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Connection dies");
   }
 }
@@ -243,17 +243,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 @implementation MTAuthIdRetriever_$2
 
 
-#line 88
+#line 89
 - (void)onConnectionCreated:(id<AMConnection>)connection {
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
   
-#line 93
+#line 94
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Connection created");
   [((AMExponentialBackoff *) nil_chk(val$backoff_)) onSuccess];
   
-#line 96
+#line 97
   @try {
     BSDataOutput *output = new_BSDataOutput_init();
     [output writeLongWithLong:0];
@@ -265,7 +265,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
     [((id<AMConnection>) nil_chk(connection)) post:data withOffset:0 withLen:((IOSByteArray *) nil_chk(data))->size_];
   }
   @catch (
-#line 105
+#line 106
   JavaLangException *e) {
     AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Error during requesting auth id");
     [((JavaLangException *) nil_chk(e)) printStackTrace];
@@ -277,7 +277,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 }
 
 
-#line 116
+#line 117
 - (void)onConnectionCreateError {
   if (!IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;

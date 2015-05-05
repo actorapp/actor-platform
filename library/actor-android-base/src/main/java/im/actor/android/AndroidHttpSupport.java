@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import com.squareup.okhttp.Callback;
@@ -14,9 +18,6 @@ import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.http.FileUploadCallback;
 import im.actor.model.log.Log;
 
-/**
- * Created by ex3ndr on 23.04.15.
- */
 public class AndroidHttpSupport implements HttpDownloaderProvider {
 
     private static final String TAG = "AndroidHTTP";

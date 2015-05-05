@@ -15,11 +15,11 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 8
+#line 9
 @implementation BCASN1Primitive
 
 
-#line 12
+#line 13
 - (IOSByteArray *)serialize {
   BSDataOutput *res = new_BSDataOutput_init();
   [self serializeWithBSDataOutput:res];

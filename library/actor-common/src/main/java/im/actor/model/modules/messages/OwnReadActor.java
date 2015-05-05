@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages;
 
 import java.io.IOException;
@@ -12,9 +16,6 @@ import im.actor.model.modules.messages.entity.UnreadMessage;
 import im.actor.model.modules.messages.entity.UnreadMessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
 
-/**
- * Created by ex3ndr on 17.02.15.
- */
 public class OwnReadActor extends ModuleActor {
 
     private UnreadMessagesStorage messagesStorage;

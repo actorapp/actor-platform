@@ -41,17 +41,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, deviceTitle_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestSignUp
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestSignUp *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(data);
 }
 
 
-#line 37
+#line 41
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)smsHash
                 withNSString:(NSString *)smsCode
@@ -66,14 +66,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 }
 
 
-#line 49
+#line 53
 - (instancetype)init {
   ImActorModelApiRpcRequestSignUp_init(self);
   return self;
 }
 
 
-#line 53
+#line 57
 - (jlong)getPhoneNumber {
   return self->phoneNumber_;
 }
@@ -111,7 +111,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 }
 
 
-#line 90
+#line 94
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->smsHash_ = [values getStringWithInt:2];
@@ -125,7 +125,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 }
 
 
-#line 103
+#line 107
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->smsHash_ == nil) {
@@ -157,7 +157,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 }
 
 
-#line 134
+#line 138
 - (NSString *)description {
   NSString *res = @"rpc SignUp{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"name=", self->name_));
@@ -168,7 +168,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 }
 
 
-#line 144
+#line 148
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSignUp_HEADER;
 }
@@ -176,20 +176,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestSignUp *ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSignUp_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestSignUp *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSignUp_init(), data));
 }
 
 
-#line 37
+#line 41
 void ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(ImActorModelApiRpcRequestSignUp *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 38
+#line 42
   self->phoneNumber_ = phoneNumber;
   self->smsHash_ = smsHash;
   self->smsCode_ = smsCode;
@@ -202,7 +202,7 @@ void ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_with
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) {
   ImActorModelApiRpcRequestSignUp *self = [ImActorModelApiRpcRequestSignUp alloc];
   ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(self, phoneNumber, smsHash, smsCode, name, deviceHash, deviceTitle, appId, appKey, isSilent);
@@ -210,13 +210,13 @@ ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_initWithLon
 }
 
 
-#line 49
+#line 53
 void ImActorModelApiRpcRequestSignUp_init(ImActorModelApiRpcRequestSignUp *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 49
+#line 53
 ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_init() {
   ImActorModelApiRpcRequestSignUp *self = [ImActorModelApiRpcRequestSignUp alloc];
   ImActorModelApiRpcRequestSignUp_init(self);

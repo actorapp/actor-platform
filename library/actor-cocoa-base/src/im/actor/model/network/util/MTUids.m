@@ -17,11 +17,11 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkUtilMTUids, NEXT_ID_, AMAtomicLong
 J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkUtilMTUids)
 
 
-#line 9
+#line 10
 @implementation ImActorModelNetworkUtilMTUids
 
 
-#line 12
+#line 13
 + (jlong)nextId {
   return ImActorModelNetworkUtilMTUids_nextId();
 }
@@ -34,7 +34,7 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkUtilMTUids)
 + (void)initialize {
   if (self == [ImActorModelNetworkUtilMTUids class]) {
     ImActorModelNetworkUtilMTUids_NEXT_ID_ = DKEnvironment_createAtomicLongWithLong_(
-#line 10
+#line 11
     1);
     J2OBJC_SET_INITIALIZED(ImActorModelNetworkUtilMTUids)
   }
@@ -43,11 +43,11 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkUtilMTUids)
 @end
 
 
-#line 12
+#line 13
 jlong ImActorModelNetworkUtilMTUids_nextId() {
   ImActorModelNetworkUtilMTUids_initialize();
   
-#line 13
+#line 14
   return [((AMAtomicLongCompat *) nil_chk(ImActorModelNetworkUtilMTUids_NEXT_ID_)) getAndIncrement];
 }
 

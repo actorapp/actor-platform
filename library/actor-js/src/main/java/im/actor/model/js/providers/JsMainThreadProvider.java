@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
 
 import com.google.gwt.core.client.Scheduler;
 
 import im.actor.model.MainThreadProvider;
 
-/**
- * Created by ex3ndr on 21.02.15.
- */
 public class JsMainThreadProvider implements MainThreadProvider {
 
     @Override

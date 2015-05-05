@@ -34,7 +34,7 @@ __attribute__((unused)) static void AMPeer_init(AMPeer *self);
 __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 
 
-#line 13
+#line 14
 @implementation AMPeer
 
 + (AMPeer *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -46,7 +46,7 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 34
+#line 35
 + (AMPeer *)userWithInt:(jint)uid {
   return AMPeer_userWithInt_(uid);
 }
@@ -56,7 +56,7 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 45
+#line 46
 - (instancetype)initWithAMPeerTypeEnum:(AMPeerTypeEnum *)peerType
                                withInt:(jint)peerId {
   AMPeer_initWithAMPeerTypeEnum_withInt_(self, peerType, peerId);
@@ -64,14 +64,14 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 50
+#line 51
 - (instancetype)init {
   AMPeer_init(self);
   return self;
 }
 
 
-#line 54
+#line 55
 - (jlong)getUnuqueId {
   jint type;
   switch ([peerType_ ordinal]) {
@@ -98,24 +98,24 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 80
+#line 81
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 84
+#line 85
   AMPeer *peer = (AMPeer *) check_class_cast(o, [AMPeer class]);
   
-#line 86
+#line 87
   if (peerId_ != ((AMPeer *) nil_chk(peer))->peerId_) return NO;
   if (peerType_ != peer->peerType_) return NO;
   
-#line 89
+#line 90
   return YES;
 }
 
 
-#line 93
+#line 94
 - (NSUInteger)hash {
   jint result = ((jint) [((AMPeerTypeEnum *) nil_chk(peerType_)) hash]);
   result = 31 * result + peerId_;
@@ -123,7 +123,7 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 100
+#line 101
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peerId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   switch ([values getIntWithInt:2]) {
@@ -141,7 +141,7 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 117
+#line 118
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:peerId_];
   switch ([peerType_ ordinal]) {
@@ -159,7 +159,7 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 134
+#line 135
 - (NSString *)description {
   return JreStrcat("$@$IC", @"{type:", peerType_, @", id:", peerId_, '}');
 }
@@ -167,24 +167,24 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
 @end
 
 
-#line 15
+#line 16
 AMPeer *AMPeer_fromBytesWithByteArray_(IOSByteArray *data) {
   AMPeer_initialize();
   
-#line 16
+#line 17
   return ((AMPeer *) BSBser_parseWithBSBserObject_withByteArray_(new_AMPeer_init(), data));
 }
 
 
-#line 19
+#line 20
 AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid) {
   AMPeer_initialize();
   
-#line 20
+#line 21
   jint id_ = (jint) (uid & (jlong) 0xFFFFFFFFLL);
   jint type = (jint) ((RShift64(uid, 32)) & (jlong) 0xFFFFFFFFLL);
   
-#line 23
+#line 24
   switch (type) {
     default:
     case 0:
@@ -197,33 +197,33 @@ AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid) {
 }
 
 
-#line 34
+#line 35
 AMPeer *AMPeer_userWithInt_(jint uid) {
   AMPeer_initialize();
   
-#line 35
+#line 36
   return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_PRIVATE(), uid);
 }
 
 
-#line 38
+#line 39
 AMPeer *AMPeer_groupWithInt_(jint gid) {
   AMPeer_initialize();
   
-#line 39
+#line 40
   return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_GROUP(), gid);
 }
 
 void AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeer *self, AMPeerTypeEnum *peerType, jint peerId) {
   (void) BSBserObject_init(self);
   
-#line 46
+#line 47
   self->peerType_ = peerType;
   self->peerId_ = peerId;
 }
 
 
-#line 45
+#line 46
 AMPeer *new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum *peerType, jint peerId) {
   AMPeer *self = [AMPeer alloc];
   AMPeer_initWithAMPeerTypeEnum_withInt_(self, peerType, peerId);
@@ -231,13 +231,13 @@ AMPeer *new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum *peerType, jin
 }
 
 
-#line 50
+#line 51
 void AMPeer_init(AMPeer *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 50
+#line 51
 AMPeer *new_AMPeer_init() {
   AMPeer *self = [AMPeer alloc];
   AMPeer_init(self);

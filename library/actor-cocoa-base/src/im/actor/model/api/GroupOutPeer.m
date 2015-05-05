@@ -23,11 +23,11 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiGroupOutPeer
 
 
-#line 24
+#line 28
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash {
   ImActorModelApiGroupOutPeer_initWithInt_withLong_(self, groupId, accessHash);
@@ -35,14 +35,14 @@
 }
 
 
-#line 29
+#line 33
 - (instancetype)init {
   ImActorModelApiGroupOutPeer_init(self);
   return self;
 }
 
 
-#line 33
+#line 37
 - (jint)getGroupId {
   return self->groupId_;
 }
@@ -52,21 +52,21 @@
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
 
-#line 48
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
 
-#line 54
+#line 58
 - (NSString *)description {
   NSString *res = @"struct GroupOutPeer{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -77,17 +77,17 @@
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiGroupOutPeer_initWithInt_withLong_(ImActorModelApiGroupOutPeer *self, jint groupId, jlong accessHash) {
   (void) BSBserObject_init(self);
   
-#line 25
+#line 29
   self->groupId_ = groupId;
   self->accessHash_ = accessHash;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_initWithInt_withLong_(jint groupId, jlong accessHash) {
   ImActorModelApiGroupOutPeer *self = [ImActorModelApiGroupOutPeer alloc];
   ImActorModelApiGroupOutPeer_initWithInt_withLong_(self, groupId, accessHash);
@@ -95,13 +95,13 @@ ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_initWithInt_withLon
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiGroupOutPeer_init(ImActorModelApiGroupOutPeer *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 29
+#line 33
 ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_init() {
   ImActorModelApiGroupOutPeer *self = [ImActorModelApiGroupOutPeer alloc];
   ImActorModelApiGroupOutPeer_init(self);

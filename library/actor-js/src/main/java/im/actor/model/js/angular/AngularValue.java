@@ -1,6 +1,8 @@
-package im.actor.model.js.angular;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import com.google.gwt.core.client.JavaScriptObject;
+package im.actor.model.js.angular;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,10 @@ public class AngularValue<T> {
 
     public AngularValue(T value) {
         this.value = value;
+    }
+
+    public AngularValue() {
+
     }
 
     public T get() {

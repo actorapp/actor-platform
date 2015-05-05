@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.mvvm;
 
 import java.util.ArrayList;
 
 import im.actor.model.annotation.MainThread;
 
-/**
- * Value Model for syncing values from background with UI
- */
 public class ValueModel<T> {
 
     private ArrayList<ValueChangedListener<T>> listeners = new ArrayList<ValueChangedListener<T>>();

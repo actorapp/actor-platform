@@ -1,11 +1,6 @@
 //
-//  DialogCell.swift
-//  ActorClient
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
-//  Created by Stepan Korshakov on 12.03.15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
-//
-
 import UIKit;
 
 class DialogCell: UITableViewCell {

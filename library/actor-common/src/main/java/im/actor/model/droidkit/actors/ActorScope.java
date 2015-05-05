@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
@@ -7,8 +11,6 @@ import im.actor.model.droidkit.actors.mailbox.Mailbox;
 /**
  * <p>INTERNAL API</p>
  * Actor Scope contains UUID, Path, Props and Actor (if created).
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class ActorScope {
 

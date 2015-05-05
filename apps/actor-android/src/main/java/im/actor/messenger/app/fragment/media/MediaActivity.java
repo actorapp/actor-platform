@@ -278,7 +278,7 @@ public class MediaActivity extends BaseActivity {
 
 
         emptyView.setVisibility(View.GONE);
-        displayList = messenger().buildMediaList(peer);
+        displayList = messenger().getMediaGlobalList(peer);
         adapter = new MediaAdapter(displayList, new OnMediaClickListener() {
 
 

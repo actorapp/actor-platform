@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp.actors;
 
 import java.util.ArrayList;
@@ -18,9 +22,6 @@ import im.actor.model.network.mtp.entity.MessageAck;
 import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.network.util.MTUids;
 
-/**
- * Created by ex3ndr on 02.09.14.
- */
 public class SenderActor extends Actor {
 
     private static final String TAG = "ProtoSender";

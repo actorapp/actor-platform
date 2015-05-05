@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules;
 
 import java.util.HashMap;
@@ -13,9 +17,6 @@ import im.actor.model.viewmodel.UserTypingVM;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 15.02.15.
- */
 public class Typing extends BaseModule {
     private ActorRef ownTypingActor;
     private ActorRef typingActor;

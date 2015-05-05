@@ -1,7 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.dispatch;
 
 /**
- * Abstract thread dispatcher for messages
+ * Abstract thread dispatcher for messages.
  */
 public abstract class AbstractDispatcher<T, Q extends AbstractDispatchQueue<T>> {
     final private Q queue;

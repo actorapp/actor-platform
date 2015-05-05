@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.angular;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -69,6 +73,10 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         }
 
         notifySubscribers();
+    }
+
+    public ArrayList<V> getRawItems() {
+        return values;
     }
 
     @Override

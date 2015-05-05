@@ -1,13 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.connection;
 
-/**
- * Created by ex3ndr on 29.04.15.
- */
 public interface AsyncConnectionInterface {
 
-    public void onConnected();
+    void onConnected();
 
-    public void onReceived(byte[] data);
+    void onReceived(byte[] data);
 
-    public void onClosed();
+    void onClosed();
 }

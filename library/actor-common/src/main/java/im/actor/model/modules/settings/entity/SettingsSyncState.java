@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.settings.entity;
 
 import java.io.IOException;
@@ -9,9 +13,6 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-/**
- * Created by ex3ndr on 28.04.15.
- */
 public class SettingsSyncState extends BserObject {
 
     public static SettingsSyncState fromBytes(byte[] data) throws IOException {

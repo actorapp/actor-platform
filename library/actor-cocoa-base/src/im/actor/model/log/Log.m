@@ -16,11 +16,11 @@ J2OBJC_STATIC_FIELD_GETTER(AMLog, log_, id<AMLogProvider>)
 J2OBJC_STATIC_FIELD_SETTER(AMLog, log_, id<AMLogProvider>)
 
 
-#line 8
+#line 9
 @implementation AMLog
 
 
-#line 12
+#line 13
 + (id<AMLogProvider>)getLog {
   return AMLog_getLog();
 }
@@ -35,21 +35,21 @@ J2OBJC_STATIC_FIELD_SETTER(AMLog, log_, id<AMLogProvider>)
 }
 
 
-#line 26
+#line 27
 + (void)eWithNSString:(NSString *)tag
 withJavaLangThrowable:(JavaLangThrowable *)throwable {
   AMLog_eWithNSString_withJavaLangThrowable_(tag, throwable);
 }
 
 
-#line 32
+#line 33
 + (void)dWithNSString:(NSString *)tag
          withNSString:(NSString *)message {
   AMLog_dWithNSString_withNSString_(tag, message);
 }
 
 
-#line 38
+#line 39
 + (void)vWithNSString:(NSString *)tag
          withNSString:(NSString *)message {
   AMLog_vWithNSString_withNSString_(tag, message);
@@ -63,62 +63,62 @@ withJavaLangThrowable:(JavaLangThrowable *)throwable {
 @end
 
 
-#line 12
+#line 13
 id<AMLogProvider> AMLog_getLog() {
   AMLog_initialize();
   
-#line 13
+#line 14
   return AMLog_log_;
 }
 
 
-#line 16
+#line 17
 void AMLog_setLogWithAMLogProvider_(id<AMLogProvider> log) {
   AMLog_initialize();
   
-#line 17
+#line 18
   AMLog_log_ = log;
 }
 
 
-#line 20
+#line 21
 void AMLog_wWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
   
-#line 21
+#line 22
   if (AMLog_log_ != nil) {
     [AMLog_log_ w:tag withMessage:message];
   }
 }
 
 
-#line 26
+#line 27
 void AMLog_eWithNSString_withJavaLangThrowable_(NSString *tag, JavaLangThrowable *throwable) {
   AMLog_initialize();
   
-#line 27
+#line 28
   if (AMLog_log_ != nil) {
     [AMLog_log_ v:tag withError:throwable];
   }
 }
 
 
-#line 32
+#line 33
 void AMLog_dWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
   
-#line 33
+#line 34
   if (AMLog_log_ != nil) {
     [AMLog_log_ d:tag withMessage:message];
   }
 }
 
 
-#line 38
+#line 39
 void AMLog_vWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
   
-#line 39
+#line 40
   if (AMLog_log_ != nil) {
     [AMLog_log_ v:tag withMessage:message];
   }

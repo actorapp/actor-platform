@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.asn1;
 
 import im.actor.model.droidkit.bser.DataOutput;
 
-/**
- * Created by ex3ndr on 09.03.15.
- */
 public abstract class ASN1Primitive {
 
     public abstract void serialize(DataOutput dataOutput);

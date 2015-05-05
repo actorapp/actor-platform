@@ -1,13 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
+
+import java.io.IOException;
 
 import im.actor.model.crypto.CryptoUtils;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
-/**
- * Created by ex3ndr on 01.03.15.
- */
 public final class Utils {
 
     public static int convertInt(long val) throws IOException {

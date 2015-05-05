@@ -57,7 +57,7 @@ __attribute__((unused)) static ImActorModelModulesMessagesCursorReceiverActor_$1
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReceiverActor_$1)
 
 
-#line 14
+#line 15
 @implementation ImActorModelModulesMessagesCursorReceiverActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
@@ -69,17 +69,17 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReceiverActor_$1)
                  withLong:(jlong)date {
   ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   
-#line 24
+#line 25
   if (outPeer == nil) {
     return;
   }
   
-#line 28
+#line 29
   [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(outPeer, date) withAMRpcCallback:new_ImActorModelModulesMessagesCursorReceiverActor_$1_initWithImActorModelModulesMessagesCursorReceiverActor_withAMPeer_withLong_(self, peer, date)];
 }
 
 
-#line 42
+#line 43
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesCursorReceiverActor_MarkReceived class]]) {
     ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *received = (ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *) check_class_cast(message, [ImActorModelModulesMessagesCursorReceiverActor_MarkReceived class]);
@@ -87,7 +87,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReceiverActor_$1)
   }
   else {
     
-#line 47
+#line 48
     [super onReceiveWithId:message];
   }
 }
@@ -95,13 +95,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReceiverActor_$1)
 @end
 
 
-#line 16
+#line 17
 void ImActorModelModulesMessagesCursorReceiverActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesCursorReceiverActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesMessagesCursorActor_initWithLong_withImActorModelModulesModules_(self, ImActorModelModulesUtilsModuleActor_CURSOR_RECEIVED, messenger);
 }
 
 
-#line 16
+#line 17
 ImActorModelModulesMessagesCursorReceiverActor *new_ImActorModelModulesMessagesCursorReceiverActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesMessagesCursorReceiverActor *self = [ImActorModelModulesMessagesCursorReceiverActor alloc];
   ImActorModelModulesMessagesCursorReceiverActor_initWithImActorModelModulesModules_(self, messenger);
@@ -111,11 +111,11 @@ ImActorModelModulesMessagesCursorReceiverActor *new_ImActorModelModulesMessagesC
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor)
 
 
-#line 51
+#line 52
 @implementation ImActorModelModulesMessagesCursorReceiverActor_MarkReceived
 
 
-#line 55
+#line 56
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)date {
   ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(self, peer, date);
@@ -123,7 +123,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor)
 }
 
 
-#line 60
+#line 61
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -135,17 +135,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor)
 @end
 
 
-#line 55
+#line 56
 void ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *self, AMPeer *peer, jlong date) {
   (void) NSObject_init(self);
   
-#line 56
+#line 57
   self->peer_ = peer;
   self->date_ = date;
 }
 
 
-#line 55
+#line 56
 ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *new_ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(AMPeer *peer, jlong date) {
   ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *self = [ImActorModelModulesMessagesCursorReceiverActor_MarkReceived alloc];
   ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(self, peer, date);
@@ -157,13 +157,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor_
 @implementation ImActorModelModulesMessagesCursorReceiverActor_$1
 
 
-#line 30
+#line 31
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
   [this$0_ onCompletedWithAMPeer:val$peer_ withLong:val$date_];
 }
 
 
-#line 35
+#line 36
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_ onErrorWithAMPeer:val$peer_ withLong:val$date_];
 }

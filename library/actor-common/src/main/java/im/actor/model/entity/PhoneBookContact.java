@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity;
 
 import java.util.ArrayList;
 
-/**
- * Created by ex3ndr on 25.02.15.
- */
 public class PhoneBookContact {
     private long contactId;
     private String name;

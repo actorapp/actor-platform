@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm;
 
 import im.actor.model.BaseConfigurationBuilder;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JvmConfigurationBuilder extends BaseConfigurationBuilder {
 
     public JvmConfigurationBuilder(String locale) {

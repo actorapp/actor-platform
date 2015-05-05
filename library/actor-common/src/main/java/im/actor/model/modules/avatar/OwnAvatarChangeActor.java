@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.avatar;
 
 import im.actor.model.api.base.SeqUpdate;
@@ -16,9 +20,6 @@ import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.viewmodel.AvatarUploadState;
 
-/**
- * Created by ex3ndr on 04.03.15.
- */
 public class OwnAvatarChangeActor extends ModuleActor {
 
     private long currentChangeTask = 0;

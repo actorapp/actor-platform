@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.utils;
 
 import java.util.ArrayList;
@@ -9,9 +13,6 @@ import im.actor.model.droidkit.engine.KeyValueItem;
 import im.actor.model.droidkit.engine.KeyValueRecord;
 import im.actor.model.droidkit.engine.KeyValueStorage;
 
-/**
- * Created by ex3ndr on 25.02.15.
- */
 public abstract class BaseKeyValueEngine<T extends KeyValueItem> implements KeyValueEngine<T> {
     private final HashMap<Long, T> cache = new HashMap<Long, T>();
 
@@ -74,10 +75,11 @@ public abstract class BaseKeyValueEngine<T extends KeyValueItem> implements KeyV
         byte[] data = storage.getValue(id);
         if (data != null) {
             T res = deserialize(data);
-            cache.put(res.getEngineId(), res);
-            return res;
-        } else {
-            return null;
+            if (res != null) {
+                cache.put(res.getEngineId(), res);
+                return res;
+            }
         }
+        return null;
     }
 }

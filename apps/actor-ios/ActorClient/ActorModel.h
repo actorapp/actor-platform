@@ -1,9 +1,5 @@
 //
-//  ActorModel.h
-//  ActorClient
-//
-//  Created by Антон Буков on 05.03.15.
-//  Copyright (c) 2015 Anton Bukov. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 #ifndef ActorClient_ActorModel_h
@@ -99,6 +95,7 @@
 #import "im/actor/model/files/FileSystemReference.h"
 #import "im/actor/model/files/InputFile.h"
 #import "im/actor/model/files/OutputFile.h"
+#import "im/actor/model/files/FileReadCallback.h"
 
 // Entities
 

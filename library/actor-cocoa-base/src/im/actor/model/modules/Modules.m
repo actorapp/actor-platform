@@ -117,11 +117,11 @@ __attribute__((unused)) static ImActorModelModulesModules_ActorApiCallbackImpl *
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
 
 
-#line 16
+#line 17
 @implementation ImActorModelModulesModules
 
 
-#line 42
+#line 43
 - (instancetype)initWithAMMessenger:(AMMessenger *)messenger
                 withAMConfiguration:(AMConfiguration *)configuration {
   ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(self, messenger, configuration);
@@ -129,7 +129,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
 }
 
 
-#line 75
+#line 76
 - (void)run {
   [((ImActorModelModulesAuth *) nil_chk(self->auth_)) run];
 }
@@ -164,7 +164,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
   profile_ = new_ImActorModelModulesProfile_initWithImActorModelModulesModules_(self);
   [timing end];
   
-#line 109
+#line 110
   timing = new_AMTiming_initWithNSString_(@"ACCOUNT_RUN");
   [timing sectionWithNSString:@"Settings"];
   [settings_ run];
@@ -186,20 +186,20 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
   [presence_ run];
   [timing end];
   
-#line 131
+#line 132
   if (isAppVisible_) {
     [presence_ onAppVisible];
     [notifications_ onAppVisible];
   }
   else {
     
-#line 137
+#line 138
     [notifications_ onAppHidden];
   }
 }
 
 
-#line 141
+#line 142
 - (id<DKPreferencesStorage>)getPreferences {
   return preferences_;
 }
@@ -309,53 +309,53 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
 @end
 
 
-#line 42
+#line 43
 void ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(ImActorModelModulesModules *self, AMMessenger *messenger, AMConfiguration *configuration) {
   (void) NSObject_init(self);
   
-#line 43
+#line 44
   self->messenger_ = messenger;
   self->configuration_ = configuration;
   
-#line 46
+#line 47
   AMTiming *timing = new_AMTiming_initWithNSString_(@"MODULES_INIT");
   
-#line 48
+#line 49
   [timing sectionWithNSString:@"I18N"];
   self->i18nEngine_ = new_AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_([((AMConfiguration *) nil_chk(configuration)) getLocaleProvider], self);
   
-#line 51
+#line 52
   [timing sectionWithNSString:@"Preferences"];
   self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
   
-#line 54
+#line 55
   [timing sectionWithNSString:@"Analytics"];
   self->analytics_ = new_ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(self);
   
-#line 57
+#line 58
   [timing sectionWithNSString:@"API"];
   self->actorApi_ = new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(new_AMEndpoints_initWithAMConnectionEndpointArray_([configuration getEndpoints]), new_ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(self->preferences_), new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(self),
-#line 61
+#line 62
   [configuration getNetworkProvider]);
   
-#line 63
+#line 64
   [timing sectionWithNSString:@"Auth"];
   self->auth_ = new_ImActorModelModulesAuth_initWithImActorModelModulesModules_(self);
   
-#line 66
+#line 67
   [timing sectionWithNSString:@"Pushes"];
   self->pushes_ = new_ImActorModelModulesPushes_initWithImActorModelModulesModules_(self);
   
-#line 69
+#line 70
   [timing sectionWithNSString:@"App State"];
   self->appStateModule_ = new_ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(self);
   
-#line 72
+#line 73
   [timing end];
 }
 
 
-#line 42
+#line 43
 ImActorModelModulesModules *new_ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(AMMessenger *messenger, AMConfiguration *configuration) {
   ImActorModelModulesModules *self = [ImActorModelModulesModules alloc];
   ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(self, messenger, configuration);
@@ -365,16 +365,16 @@ ImActorModelModulesModules *new_ImActorModelModulesModules_initWithAMMessenger_w
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 
 
-#line 247
+#line 248
 @implementation ImActorModelModulesModules_ActorApiCallbackImpl
 
 
-#line 250
+#line 251
 - (void)onAuthIdInvalidatedWithLong:(jlong)authKey {
 }
 
 
-#line 255
+#line 256
 - (void)onNewSessionCreated {
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onNewSessionCreated];
@@ -385,7 +385,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 }
 
 
-#line 265
+#line 266
 - (void)onUpdateReceivedWithId:(id)obj {
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onUpdateReceivedWithId:obj];

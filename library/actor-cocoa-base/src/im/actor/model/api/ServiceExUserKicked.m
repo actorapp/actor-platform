@@ -22,25 +22,25 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiServiceExUserKicked
 
 
-#line 23
+#line 27
 - (instancetype)initWithInt:(jint)kickedUid {
   ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
   return self;
 }
 
 
-#line 27
+#line 31
 - (instancetype)init {
   ImActorModelApiServiceExUserKicked_init(self);
   return self;
 }
 
 
-#line 31
+#line 35
 - (jint)getHeader {
   return 2;
 }
@@ -50,19 +50,19 @@
 }
 
 
-#line 40
+#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
 
-#line 45
+#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->kickedUid_];
 }
 
 
-#line 50
+#line 54
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserKicked{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"kickedUid=", self->kickedUid_));
@@ -73,16 +73,16 @@
 @end
 
 
-#line 23
+#line 27
 void ImActorModelApiServiceExUserKicked_initWithInt_(ImActorModelApiServiceExUserKicked *self, jint kickedUid) {
   (void) ImActorModelApiServiceEx_init(self);
   
-#line 24
+#line 28
   self->kickedUid_ = kickedUid;
 }
 
 
-#line 23
+#line 27
 ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initWithInt_(jint kickedUid) {
   ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
   ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
@@ -90,13 +90,13 @@ ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initW
 }
 
 
-#line 27
+#line 31
 void ImActorModelApiServiceExUserKicked_init(ImActorModelApiServiceExUserKicked *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
 
-#line 27
+#line 31
 ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_init() {
   ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
   ImActorModelApiServiceExUserKicked_init(self);

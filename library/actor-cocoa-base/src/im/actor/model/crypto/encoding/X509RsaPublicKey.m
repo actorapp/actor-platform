@@ -33,16 +33,16 @@ J2OBJC_FIELD_SETTER(BCX509RsaPublicKey, modulus_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(BCX509RsaPublicKey, exponent_, JavaMathBigInteger *)
 
 static NSString *BCX509RsaPublicKey_ALGO_TYPE_ = 
-#line 19
+#line 20
 @"1.2.840.113549.1.1.1";
 J2OBJC_STATIC_FIELD_GETTER(BCX509RsaPublicKey, ALGO_TYPE_, NSString *)
 
 
-#line 17
+#line 18
 @implementation BCX509RsaPublicKey
 
 
-#line 24
+#line 25
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)exponent {
   BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, exponent);
@@ -50,14 +50,14 @@ J2OBJC_STATIC_FIELD_GETTER(BCX509RsaPublicKey, ALGO_TYPE_, NSString *)
 }
 
 
-#line 29
+#line 30
 - (instancetype)initWithByteArray:(IOSByteArray *)data {
   BCX509RsaPublicKey_initWithByteArray_(self, data);
   return self;
 }
 
 
-#line 84
+#line 85
 - (JavaMathBigInteger *)getModulus {
   return modulus_;
 }
@@ -68,32 +68,32 @@ J2OBJC_STATIC_FIELD_GETTER(BCX509RsaPublicKey, ALGO_TYPE_, NSString *)
 
 - (IOSByteArray *)serialize {
   return [new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1ObjectIdentifier_initWithNSString_(
-#line 95
+#line 96
   BCX509RsaPublicKey_ALGO_TYPE_), new_BCASN1Null_init() } count:2 type:BCASN1Primitive_class_()]), new_BCASN1BitString_initWithInt_withByteArray_(
-#line 97
-  0,
 #line 98
-  [new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Integer_initWithJavaMathBigInteger_(
+  0,
 #line 99
-  modulus_), new_BCASN1Integer_initWithJavaMathBigInteger_(
+  [new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Integer_initWithJavaMathBigInteger_(
 #line 100
+  modulus_), new_BCASN1Integer_initWithJavaMathBigInteger_(
+#line 101
   exponent_) } count:2 type:BCASN1Primitive_class_()]) serialize]) } count:2 type:BCASN1Primitive_class_()]) serialize];
 }
 
 @end
 
 
-#line 24
+#line 25
 void BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(BCX509RsaPublicKey *self, JavaMathBigInteger *modulus, JavaMathBigInteger *exponent) {
   (void) NSObject_init(self);
   
-#line 25
+#line 26
   self->modulus_ = modulus;
   self->exponent_ = exponent;
 }
 
 
-#line 24
+#line 25
 BCX509RsaPublicKey *new_BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *exponent) {
   BCX509RsaPublicKey *self = [BCX509RsaPublicKey alloc];
   BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, exponent);
@@ -101,23 +101,23 @@ BCX509RsaPublicKey *new_BCX509RsaPublicKey_initWithJavaMathBigInteger_withJavaMa
 }
 
 
-#line 29
+#line 30
 void BCX509RsaPublicKey_initWithByteArray_(BCX509RsaPublicKey *self, IOSByteArray *data) {
   (void) NSObject_init(self);
   
-#line 30
+#line 31
   BCASN1Primitive *root = BCASN1_readObjectWithByteArray_(data);
   if (!([root isKindOfClass:[BCASN1Sequence class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   BCASN1Sequence *rootSequence = (BCASN1Sequence *) check_class_cast(BCASN1_readObjectWithByteArray_(data), [BCASN1Sequence class]);
   
-#line 36
+#line 37
   if ([((BCASN1Sequence *) nil_chk(rootSequence)) size] != 2) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 40
+#line 41
   if (!([[rootSequence getWithInt:0] isKindOfClass:[BCASN1Sequence class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
@@ -125,54 +125,54 @@ void BCX509RsaPublicKey_initWithByteArray_(BCX509RsaPublicKey *self, IOSByteArra
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 47
+#line 48
   BCASN1Sequence *algoHeader = (BCASN1Sequence *) check_class_cast([rootSequence getWithInt:0], [BCASN1Sequence class]);
   if (!([[((BCASN1Sequence *) nil_chk(algoHeader)) getWithInt:0] isKindOfClass:[BCASN1ObjectIdentifier class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 52
+#line 53
   BCASN1ObjectIdentifier *algo = (BCASN1ObjectIdentifier *) check_class_cast([algoHeader getWithInt:0], [BCASN1ObjectIdentifier class]);
   if (![((NSString *) nil_chk([((BCASN1ObjectIdentifier *) nil_chk(algo)) getIdentifier])) isEqual:BCX509RsaPublicKey_ALGO_TYPE_]) {
     @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$$", @"Incorrect type of header: ", [algo getIdentifier]));
   }
   
-#line 57
+#line 58
   BCASN1BitString *bitString = (BCASN1BitString *) check_class_cast([rootSequence getWithInt:1], [BCASN1BitString class]);
   
-#line 59
+#line 60
   BCASN1Primitive *keyRoot = BCASN1_readObjectWithByteArray_([((BCASN1BitString *) nil_chk(bitString)) getContent]);
   if (!([keyRoot isKindOfClass:[BCASN1Sequence class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 64
+#line 65
   BCASN1Sequence *keySequence = (BCASN1Sequence *) check_class_cast(keyRoot, [BCASN1Sequence class]);
   if ([((BCASN1Sequence *) nil_chk(keySequence)) size] != 2) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 69
+#line 70
   if (!([[keySequence getWithInt:0] isKindOfClass:[BCASN1Integer class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 73
+#line 74
   if (!([[keySequence getWithInt:1] isKindOfClass:[BCASN1Integer class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   
-#line 77
+#line 78
   BCASN1Integer *modulus = (BCASN1Integer *) check_class_cast([keySequence getWithInt:0], [BCASN1Integer class]);
   BCASN1Integer *exponent = (BCASN1Integer *) check_class_cast([keySequence getWithInt:1], [BCASN1Integer class]);
   
-#line 80
+#line 81
   self->modulus_ = new_JavaMathBigInteger_initWithInt_withByteArray_(1, [((BCASN1Integer *) nil_chk(modulus)) getData]);
   self->exponent_ = new_JavaMathBigInteger_initWithInt_withByteArray_(1, [((BCASN1Integer *) nil_chk(exponent)) getData]);
 }
 
 
-#line 29
+#line 30
 BCX509RsaPublicKey *new_BCX509RsaPublicKey_initWithByteArray_(IOSByteArray *data) {
   BCX509RsaPublicKey *self = [BCX509RsaPublicKey alloc];
   BCX509RsaPublicKey_initWithByteArray_(self, data);

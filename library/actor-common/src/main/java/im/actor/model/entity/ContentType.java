@@ -1,8 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity;
 
-/**
-* Created by ex3ndr on 01.03.15.
-*/
 public enum ContentType {
     TEXT(2), EMPTY(1),
     DOCUMENT(3),

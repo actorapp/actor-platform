@@ -19,7 +19,8 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer;
+- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer
+                                      withBoolean:(jboolean)isGlobalList;
 
 - (AMBindedDisplayList *)buildNewChatListWithAMPeer:(AMPeer *)peer
                                         withBoolean:(jboolean)isGlobalList;
@@ -34,7 +35,11 @@
 
 - (AMBindedDisplayList *)getDialogsGlobalList;
 
+- (jint)getMediaCountWithAMPeer:(AMPeer *)peer;
+
 - (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
+
+- (AMBindedDisplayList *)getMessagesMediaListWithAMPeer:(AMPeer *)peer;
 
 @end
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.notifications;
 
 import java.io.IOException;
@@ -14,9 +18,6 @@ import im.actor.model.modules.notifications.entity.PendingNotification;
 import im.actor.model.modules.notifications.entity.PendingStorage;
 import im.actor.model.modules.utils.ModuleActor;
 
-/**
- * Created by ex3ndr on 01.03.15.
- */
 public class NotificationsActor extends ModuleActor {
 
     private static final String PREFERENCES_STORAGE = "notifications_pending";
@@ -79,34 +80,10 @@ public class NotificationsActor extends ModuleActor {
                 return;
             }
 
-            List<PendingNotification> destNotifications;
-            if (allPending.size() <= MAX_NOTIFICATION_COUNT) {
-                destNotifications = new ArrayList<PendingNotification>();
-                for (int i = 0; i < allPending.size(); i++) {
-                    destNotifications.add(allPending.get(allPending.size() - 1 - i));
-                }
-            } else {
-                destNotifications = new ArrayList<PendingNotification>();
-                for (int i = 0; i < MAX_NOTIFICATION_COUNT; i++) {
-                    destNotifications.add(allPending.get(allPending.size() - 1 - i));
-                }
-            }
-
-            List<Notification> res = new ArrayList<Notification>();
-            for (PendingNotification p : destNotifications) {
-                res.add(new Notification(p.getPeer(), p.getSender(), p.getContent()));
-            }
-
-            int messagesCount = allPending.size();
-            HashSet<Peer> peers = new HashSet<Peer>();
-            for (PendingNotification p : allPending) {
-                peers.add(p.getPeer());
-            }
-            int chatsCount = peers.size();
-
-            config().getNotificationProvider().onNotification(modules().getMessenger(), res, messagesCount, chatsCount);
+            performNotification(false);
         }
     }
+
 
     public void onMessagesRead(Peer peer, long fromDate) {
         boolean isChanged = false;
@@ -119,14 +96,13 @@ public class NotificationsActor extends ModuleActor {
 
         if (isChanged) {
             saveStorage();
+            performNotification(true);
         }
     }
 
     public void onConversationVisible(Peer peer) {
         this.visiblePeer = peer;
-        if (config().getNotificationProvider() != null) {
-            config().getNotificationProvider().onChatOpen(modules().getMessenger(), peer);
-        }
+        performNotification(true);
     }
 
     public void onConversationHidden(Peer peer) {
@@ -137,6 +113,7 @@ public class NotificationsActor extends ModuleActor {
 
     public void onAppVisible() {
         isAppVisible = true;
+        hideNotification();
     }
 
     public void onAppHidden() {
@@ -145,13 +122,50 @@ public class NotificationsActor extends ModuleActor {
 
     public void onDialogsVisible() {
         isDialogsVisible = true;
-        if (config().getNotificationProvider() != null) {
-            config().getNotificationProvider().onDialogsOpen(modules().getMessenger());
-        }
+        hideNotification();
     }
 
     public void onDialogsHidden() {
         isDialogsVisible = false;
+    }
+
+    private void performNotification(boolean isSilentUpdate) {
+        List<PendingNotification> allPending = getNotifications();
+
+        List<PendingNotification> destNotifications = new ArrayList<PendingNotification>();
+        for (int i = 0; i < allPending.size(); i++) {
+            if (destNotifications.size() >= MAX_NOTIFICATION_COUNT) {
+                break;
+            }
+            PendingNotification pendingNotification = allPending.get(allPending.size() - 1 - i);
+            if (visiblePeer != null && visiblePeer.equals(pendingNotification.getPeer())) {
+                continue;
+            }
+            destNotifications.add(pendingNotification);
+        }
+
+        if (destNotifications.size() == 0) {
+            hideNotification();
+            return;
+        }
+
+        List<Notification> res = new ArrayList<Notification>();
+        for (PendingNotification p : destNotifications) {
+            res.add(new Notification(p.getPeer(), p.getSender(), p.getContent()));
+        }
+
+        int messagesCount = allPending.size();
+        HashSet<Peer> peers = new HashSet<Peer>();
+        for (PendingNotification p : allPending) {
+            peers.add(p.getPeer());
+        }
+        int chatsCount = peers.size();
+
+        config().getNotificationProvider().onNotification(modules().getMessenger(), res, messagesCount, chatsCount, isSilentUpdate);
+    }
+
+    private void hideNotification() {
+        config().getNotificationProvider().hideAllNotifications();
     }
 
     private void saveStorage() {

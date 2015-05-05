@@ -16,18 +16,18 @@
 #include "java/io/IOException.h"
 
 
-#line 9
+#line 13
 @implementation MTRpcRequest
 
 
-#line 17
+#line 21
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRpcRequest_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 21
+#line 25
 - (instancetype)initWithInt:(jint)requestType
               withByteArray:(IOSByteArray *)payload {
   MTRpcRequest_initWithInt_withByteArray_(self, requestType, payload);
@@ -35,7 +35,7 @@
 }
 
 
-#line 26
+#line 30
 - (jint)getRequestType {
   return requestType_;
 }
@@ -45,27 +45,27 @@
 }
 
 
-#line 35
+#line 39
 - (jbyte)getHeader {
   return MTRpcRequest_HEADER;
 }
 
 
-#line 40
+#line 44
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:requestType_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
 
-#line 46
+#line 50
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   requestType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   payload_ = [bs readProtoBytes];
 }
 
 
-#line 52
+#line 56
 - (NSString *)description {
   return JreStrcat("$IC", @"RpcRequest[", requestType_, ']');
 }
@@ -73,13 +73,13 @@
 @end
 
 
-#line 17
+#line 21
 void MTRpcRequest_initWithBSDataInput_(MTRpcRequest *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 17
+#line 21
 MTRpcRequest *new_MTRpcRequest_initWithBSDataInput_(BSDataInput *stream) {
   MTRpcRequest *self = [MTRpcRequest alloc];
   MTRpcRequest_initWithBSDataInput_(self, stream);
@@ -87,17 +87,17 @@ MTRpcRequest *new_MTRpcRequest_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 21
+#line 25
 void MTRpcRequest_initWithInt_withByteArray_(MTRpcRequest *self, jint requestType, IOSByteArray *payload) {
   (void) MTProtoStruct_init(self);
   
-#line 22
+#line 26
   self->requestType_ = requestType;
   self->payload_ = payload;
 }
 
 
-#line 21
+#line 25
 MTRpcRequest *new_MTRpcRequest_initWithInt_withByteArray_(jint requestType, IOSByteArray *payload) {
   MTRpcRequest *self = [MTRpcRequest alloc];
   MTRpcRequest_initWithInt_withByteArray_(self, requestType, payload);

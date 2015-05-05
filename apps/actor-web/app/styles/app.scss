@@ -1,7 +1,7 @@
 @charset 'UTF-8';
 @import url(http://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin,cyrillic);
 @import 'variables';
-@import '../../bower_components/normalize.css/normalize.css';
+
 html {
   background-color: $bodyColor;
   background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
@@ -61,26 +61,7 @@ md-toolbar.md-default-theme {
     }
   }
 }
-.login-image {
-  background-image: url("/assets/img/auth-splash.jpg");
-  background-repeat: no-repeat;
-  background-position: 30% 0;
-  background-size: cover;
-}
-.login {
-  form {
-    max-width: 360px;
-    padding: 0 16px 16px;
-    p {
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 36px;
-      padding: 0 4px;
-      text-align: center;
-      color: rgba(0,0,0,.4);
-    }
-  }
-}
+
 .md-button {
   &.md-primary {
     font-size: 14px;
@@ -149,8 +130,53 @@ md-list-item {
     border-radius: 0;
   }
 }
-.no-avatar {
+
+.avatar{
   cursor: default;
+  border-radius: 100%;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  position: relative;
+  line-height: 0;
+  img {
+    border-radius: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    width: 48px;
+    height: 48px;
+  }
+  span {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    z-index: 0;
+    text-transform: uppercase;
+    text-shadow: 0 -1px 5px rgba(0,0,0,.07);
+    color: rgb(255,255,255);
+    line-height: 48px;
+  }
+  &--small {
+    width: 32px;
+    height: 32px;
+    img {
+      width: 32px;
+      height: 32px;
+    }
+    span {
+      font-size: 14px;
+      line-height: 32px;
+    }
+  }
+
   &--empty {
     background-color: $emptyColor;
   }
@@ -174,18 +200,6 @@ md-list-item {
   }
   &--green {
     background-color: $greenColor;
-  }
-  span {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    display: block;
-    height: 100%;
-    font-size: 18px;
-    font-weight: 700;
-    text-shadow: 0 -1px 5px rgba(0,0,0,.07);
-    color: rgb(255,255,255);
-    line-height: 48px;
   }
 }
 

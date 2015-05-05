@@ -1,7 +1,7 @@
 package im.actor.messenger.app.base;
 
 import android.app.ProgressDialog;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,7 +22,7 @@ import static im.actor.messenger.app.AppStateBroker.stateBroker;
 /**
  * Created by ex3ndr on 29.12.14.
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
     private final ActorBinder BINDER = new ActorBinder();
 
     @Override

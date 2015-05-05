@@ -16,7 +16,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 8
+#line 9
 @implementation ImActorModelNetworkParserBaseParser
 
 - (instancetype)init {

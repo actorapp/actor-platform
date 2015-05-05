@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.settings;
 
 import java.io.IOException;
@@ -16,9 +20,6 @@ import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 28.04.15.
- */
 public class SettingsSyncActor extends ModuleActor {
 
     private static final String SYNC_STATE = "settings_sync_state";

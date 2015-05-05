@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
 
 import im.actor.model.crypto.bouncycastle.RandomProvider;
@@ -5,9 +9,6 @@ import im.actor.model.crypto.bouncycastle.RandomProvider;
 import java.math.BigInteger;
 import java.util.Random;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsRandomProvider implements RandomProvider {
     private Random random = new Random();
 

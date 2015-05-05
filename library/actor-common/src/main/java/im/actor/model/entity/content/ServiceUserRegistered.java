@@ -1,12 +1,13 @@
-package im.actor.model.entity.content;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import im.actor.model.droidkit.bser.Bser;
+package im.actor.model.entity.content;
 
 import java.io.IOException;
 
-/**
- * Created by ex3ndr on 14.02.15.
- */
+import im.actor.model.droidkit.bser.Bser;
+
 public class ServiceUserRegistered extends ServiceContent {
 
     public static ServiceUserRegistered fromBytes(byte[] data) throws IOException {

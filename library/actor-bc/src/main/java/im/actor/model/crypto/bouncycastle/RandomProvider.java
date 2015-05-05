@@ -1,19 +1,19 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.bouncycastle;
 
 import java.math.BigInteger;
-import java.util.Random;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public interface RandomProvider {
-    public byte[] randomBytes(int length);
+    byte[] randomBytes(int length);
 
-    public int randomInt(int maxValue);
+    int randomInt(int maxValue);
 
-    public void nextBytes(byte[] data);
+    void nextBytes(byte[] data);
 
-    public BigInteger generateBigInteger(int numBits);
+    BigInteger generateBigInteger(int numBits);
 
-    public BigInteger generateBigInteger(int numBits, int certanity);
+    BigInteger generateBigInteger(int numBits, int certanity);
 }

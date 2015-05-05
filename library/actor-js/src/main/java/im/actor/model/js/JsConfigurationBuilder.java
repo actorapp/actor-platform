@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js;
 
 import im.actor.model.ConfigurationBuilder;
@@ -12,9 +16,6 @@ import im.actor.model.js.providers.JsPhoneBookProvider;
 import im.actor.model.js.providers.JsStorageProvider;
 import im.actor.model.js.providers.JsThreadingProvider;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsConfigurationBuilder extends ConfigurationBuilder {
     public JsConfigurationBuilder() {
         setThreadingProvider(new JsThreadingProvider());

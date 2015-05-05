@@ -38,7 +38,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesEntityPendingMess
 __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_init() NS_RETURNS_RETAINED;
 
 
-#line 15
+#line 16
 @implementation ImActorModelModulesMessagesEntityPendingMessage
 
 + (ImActorModelModulesMessagesEntityPendingMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -46,7 +46,7 @@ __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *
 }
 
 
-#line 26
+#line 27
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
               withAMAbsContent:(AMAbsContent *)content {
@@ -55,14 +55,14 @@ __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *
 }
 
 
-#line 32
+#line 33
 - (instancetype)init {
   ImActorModelModulesMessagesEntityPendingMessage_init(self);
   return self;
 }
 
 
-#line 36
+#line 37
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -80,7 +80,7 @@ __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *
 }
 
 
-#line 53
+#line 54
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
@@ -89,7 +89,7 @@ __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *
 }
 
 
-#line 61
+#line 62
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
@@ -100,27 +100,27 @@ __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *
 @end
 
 
-#line 17
+#line 18
 ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityPendingMessage_initialize();
   
-#line 18
+#line 19
   return ((ImActorModelModulesMessagesEntityPendingMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityPendingMessage_init(), data));
 }
 
 
-#line 26
+#line 27
 void ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesEntityPendingMessage *self, AMPeer *peer, jlong rid, AMAbsContent *content) {
   (void) BSBserObject_init(self);
   
-#line 27
+#line 28
   self->peer_ = peer;
   self->rid_ = rid;
   self->content_ = content;
 }
 
 
-#line 26
+#line 27
 ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(AMPeer *peer, jlong rid, AMAbsContent *content) {
   ImActorModelModulesMessagesEntityPendingMessage *self = [ImActorModelModulesMessagesEntityPendingMessage alloc];
   ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(self, peer, rid, content);
@@ -132,7 +132,7 @@ void ImActorModelModulesMessagesEntityPendingMessage_init(ImActorModelModulesMes
 }
 
 
-#line 32
+#line 33
 ImActorModelModulesMessagesEntityPendingMessage *new_ImActorModelModulesMessagesEntityPendingMessage_init() {
   ImActorModelModulesMessagesEntityPendingMessage *self = [ImActorModelModulesMessagesEntityPendingMessage alloc];
   ImActorModelModulesMessagesEntityPendingMessage_init(self);

@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm.threads;
 
 import im.actor.model.util.ThreadLocalCompat;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 public class JavaThreadLocal<T> extends ThreadLocalCompat<T> {
     private final ThreadLocal<T> tThreadLocal = new ThreadLocal<T>();
 

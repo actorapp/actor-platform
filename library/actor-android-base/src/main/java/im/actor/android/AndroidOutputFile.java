@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android;
 
 import java.io.IOException;
@@ -5,9 +9,6 @@ import java.io.RandomAccessFile;
 
 import im.actor.model.files.OutputFile;
 
-/**
- * Created by ex3ndr on 26.02.15.
- */
 public class AndroidOutputFile implements OutputFile {
 
     private RandomAccessFile randomAccessFile;
