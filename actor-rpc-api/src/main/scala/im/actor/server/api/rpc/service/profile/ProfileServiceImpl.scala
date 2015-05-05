@@ -14,11 +14,10 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.api.rpc.users.{ UpdatePhoneTitleChanged, UpdateUserAvatarChanged, UpdateUserNameChanged }
-import im.actor.server.api.util.{ FileUtils, ACL, AvatarUtils }
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.api.util.{ AvatarUtils, FileUtils }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
+import im.actor.server.{ models, persist }
 
 class ProfileServiceImpl(bucketName: String)(
   implicit

@@ -1,7 +1,9 @@
 package im.actor
 
 import akka.sbt.AkkaKernelPlugin
-import akka.sbt.AkkaKernelPlugin.{Dist, distBootClass, distJvmOptions, outputDirectory}
+import akka.sbt.AkkaKernelPlugin.{ Dist, distBootClass, distJvmOptions, outputDirectory }
+import im.actor.SbtActorApi
+import play.PlayScala
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
@@ -80,7 +82,7 @@ object Build extends sbt.Build {
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorFrontend, actorCommonsBase, actorRpcApi)
-    .aggregate(actorCommonsApi, actorCommonsBase, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
+    .aggregate(actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -137,14 +139,14 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorCodecs, actorCommonsApi, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial)
+  ).dependsOn(actorCodecs, actorCommonsApi, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial, actorUtils)
 
   lazy val actorSms = Project(
     id = "actor-sms",
     base = file("actor-sms"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
   )
-
+  
   lazy val actorSocial = Project(
     id = "actor-social",
     base = file("actor-social"),
@@ -176,7 +178,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.models
     )
   )
-
+  
   lazy val actorPersist = Project(
     id = "actor-persist",
     base = file("actor-persist"),
@@ -185,6 +187,27 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorModels)
 
+  lazy val actorDashboard = Project(
+    id = "actor-dashboard",
+    base = file("actor-dashboard"),
+    settings = defaultSettings ++ Seq(
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
+      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
+      libraryDependencies ++= Dependencies.dashboard
+    )
+  )
+    .enablePlugins(PlayScala)
+    .dependsOn(actorPersist, actorUtils)
+
+  lazy val actorUtils = Project(
+    id = "actor-utils",
+    base = file("actor-utils"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.utils
+    )
+  )
+    .dependsOn(actorModels, actorPersist)
+
   lazy val actorTests = Project(
     id = "actor-tests",
     base = file("actor-tests"),
@@ -192,5 +215,5 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.tests
     ))
     .configs(Configs.all: _*)
-    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
+    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
 }

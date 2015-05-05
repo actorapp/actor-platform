@@ -5,11 +5,12 @@ import scala.language.postfixOps
 
 import akka.actor.ActorSystem
 import slick.dbio.Effect.Read
-import slick.dbio.{ Effect, DBIO, DBIOAction, NoStream }
+import slick.dbio.{ DBIO, DBIOAction, NoStream }
 import slick.profile.SqlAction
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.users.{ Phone, User }
+import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
 object UserUtils {
@@ -24,7 +25,7 @@ object UserUtils {
     } yield {
       users.User(
         id = u.id,
-        accessHash = ACL.userAccessHash(senderAuthId, u),
+        accessHash = ACLUtils.userAccessHash(senderAuthId, u),
         name = u.name,
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
@@ -49,7 +50,7 @@ object UserUtils {
     } yield {
       users.User(
         id = u.id,
-        accessHash = ACL.userAccessHash(senderAuthId, u),
+        accessHash = ACLUtils.userAccessHash(senderAuthId, u),
         name = u.name,
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
@@ -79,7 +80,7 @@ object UserUtils {
   def getUserPhones(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[Phone], NoStream, Read] = {
     for {
       phoneModels ← persist.UserPhone.findByUserIds(userIds)
-    } yield phoneModels map (model ⇒ Phone(model.id, ACL.phoneAccessHash(client.authId, model), model.number, model.title))
+    } yield phoneModels map (model ⇒ Phone(model.id, ACLUtils.phoneAccessHash(client.authId, model), model.number, model.title))
   }
 
   def getClientUser(implicit client: AuthorizedClientData): SqlAction[Option[models.User], NoStream, Read] = {

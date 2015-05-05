@@ -1,15 +1,15 @@
 package im.actor.server.api.util
 
-import scala.concurrent.ExecutionContext
 import scala.collection.immutable
+import scala.concurrent.ExecutionContext
 import scalaz._
 
 import akka.actor._
-import slick.dbio.{ DBIO, Effect }
+import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.peers._
-import im.actor.server.api.util
+import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
 object PeerUtils {
@@ -100,7 +100,7 @@ object PeerUtils {
     for {
       userOpt ← persist.User.find(userId).headOption
     } yield {
-      userOpt map (u ⇒ ACL.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
+      userOpt map (u ⇒ ACLUtils.userAccessHash(client.authId, u.id, u.accessSalt) == accessHash)
     }
   }
 
@@ -121,7 +121,7 @@ object PeerUtils {
   }
 
   private def validUserAccessHash(accessHash: Long, user: models.User)(implicit client: BaseClientData, actorSystem: ActorSystem) = {
-    if (accessHash == util.ACL.userAccessHash(client.authId, user)) {
+    if (accessHash == ACLUtils.userAccessHash(client.authId, user)) {
       \/-(user)
     } else {
       Error(CommonErrors.InvalidAccessHash)
