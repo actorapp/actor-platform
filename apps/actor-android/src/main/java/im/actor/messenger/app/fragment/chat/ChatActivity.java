@@ -39,8 +39,9 @@ import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.SmileProcessor;
-import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
+import im.actor.messenger.app.emoji.stickers.Sticker;
 import im.actor.messenger.app.keyboard.KeyboardStatusListener;
+import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.keyboard.emoji.stickers.OnStickerClickListener;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
@@ -316,8 +317,8 @@ public class ChatActivity extends BaseActivity {
         emojiKeyboard = new EmojiKeyboard(this);
         emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
             @Override
-            public void onStickerClick(String packId, String stickerId) {
-                messenger().sendPhoto(peer, getStickerProcessor().getStickerPath(packId, stickerId));
+            public void onStickerClick(Sticker sticker) {
+                messenger().sendPhoto(peer, getStickerProcessor().getStickerPath(sticker));
             }
         });
 

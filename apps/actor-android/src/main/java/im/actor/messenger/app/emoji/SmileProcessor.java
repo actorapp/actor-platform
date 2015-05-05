@@ -26,6 +26,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import im.actor.images.common.ImageMetadata;
 import im.actor.images.ops.ImageLoading;
 import im.actor.images.sources.FileSource;
+import im.actor.messenger.app.emoji.smiles.SmilesPack;
+import im.actor.messenger.app.emoji.smiles.SmilesRecentListener;
+import im.actor.messenger.app.emoji.smiles.SmilesRecentsController;
 import im.actor.messenger.app.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.Logger;
@@ -121,6 +124,8 @@ public class SmileProcessor {
     private int emojiSideSize;
 
     private int rectSize = 0;
+    private SmilesRecentListener smilesRecentListener;
+    private SmilesRecentsController recentController;
 
     public static final SmileProcessor emoji(){
         return processor;
@@ -373,6 +378,9 @@ public class SmileProcessor {
 
                         Logger.d(TAG, "emoji region loaded in " + (System.currentTimeMillis() - start) + " ms");
                     }
+
+                    recentController = SmilesRecentsController.getInstance(application);
+
                     isLoaded = true;
                     notifyEmojiUpdated(true);
                     Logger.d(TAG, "emoji loaded in " + (System.currentTimeMillis() - start) + " ms");
@@ -412,6 +420,22 @@ public class SmileProcessor {
 
     public Bitmap getBitmap(String emojiString){
         return getSection(emojiString.charAt(0));
+    }
+
+    public void upRecent(long smileId) {
+        SmilesPack.upRecent(smileId);
+        if(smilesRecentListener!=null){
+            smilesRecentListener.onSmilesUpdated();
+        }
+
+    }
+
+    public void setRecentUpdateListener(SmilesRecentListener smilesRecentListener) {
+        this.smilesRecentListener = smilesRecentListener;
+    }
+
+    public SmilesRecentsController getRecentController() {
+        return recentController;
     }
 
     private class SpanDescription {
