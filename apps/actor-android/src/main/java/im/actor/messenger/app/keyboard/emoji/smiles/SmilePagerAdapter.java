@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.emoji.smiles.SmilesPack;
+import im.actor.messenger.app.emoji.smiles.SmilesPackView;
 import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
-import im.actor.messenger.app.keyboard.emoji.smiles.SmilesPack;
-import im.actor.messenger.app.keyboard.emoji.smiles.SmilesPackView;
-import im.actor.messenger.app.keyboard.emoji.smiles.OnSmileClickListener;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
 
-import static im.actor.messenger.app.Core.core;
 import static im.actor.messenger.app.Core.getSmileProcessor;
 
 /**
@@ -77,7 +75,7 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
         if(!getSmileProcessor().isLoaded()){
             getSmileProcessor().registerListener(new SmilesListener() {
                 @Override
-                public void onEmojiUpdated(boolean completed) {
+                public void onSmilesUpdated(boolean completed) {
                     smilesPackView.update();
                     getSmileProcessor().unregisterListener(this);
                 }

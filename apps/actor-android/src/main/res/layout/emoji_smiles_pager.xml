@@ -30,8 +30,9 @@
             android:layout_height="1dp"/>
         <im.actor.messenger.app.view.PagerSlidingTabStrip
             android:id="@+id/emoji_pager_indicator"
+            android:layout_toLeftOf="@+id/backspace"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="48dp"/>
         <ImageView
             android:id="@+id/backspace"
             android:layout_alignParentRight="true"
