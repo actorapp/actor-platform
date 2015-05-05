@@ -22,11 +22,13 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.{ models, persist }
 
-class ContactsServiceImpl(implicit
+class ContactsServiceImpl(
+  implicit
   val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-                          val socialManagerRegion: SocialManagerRegion,
-                          db:                      Database,
-                          actorSystem:             ActorSystem)
+  val socialManagerRegion: SocialManagerRegion,
+  db:                      Database,
+  actorSystem:             ActorSystem
+)
   extends ContactsService {
 
   import ContactsUtils._
@@ -51,13 +53,17 @@ class ContactsServiceImpl(implicit
 
   override def jhandleImportContacts(phones: Vector[PhoneToImport], emails: Vector[EmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      // TODO: flatten
-
       persist.UserPhone.findByUserId(client.userId).head.flatMap { currentUserPhone ⇒
         persist.User.find(client.userId).head.flatMap { currentUser ⇒
-          val filteredPhones = phones.filterNot(_.phoneNumber == currentUserPhone.number)
-          val phoneNumbers = filteredPhones.map(_.phoneNumber).map(PhoneNumber.normalizeLong(_, currentUser.countryCode)).flatten.toSet
-          val phonesMap = immutable.HashMap(filteredPhones.map { p ⇒ p.phoneNumber → p.name }: _*)
+          val filteredPhones = phones.view.filterNot(_.phoneNumber == currentUserPhone.number)
+
+          val (phoneNumbers, phonesMap) = filteredPhones.foldLeft((Set.empty[Long], Map.empty[Long, Option[String]])) {
+            case ((phonesAcc, mapAcc), PhoneToImport(phone, nameOpt)) ⇒
+              PhoneNumber.normalizeLong(phone, currentUser.countryCode) match {
+                case Some(normPhone) ⇒ ((phonesAcc + normPhone), mapAcc ++ Seq((phone, nameOpt), (normPhone, nameOpt)))
+                case None            ⇒ (phonesAcc, mapAcc + ((phone, nameOpt)))
+              }
+          }
 
           val f = for {
             userPhones ← persist.UserPhone.findByNumbers(phoneNumbers)
@@ -89,7 +95,6 @@ class ContactsServiceImpl(implicit
               }
 
               DBIO.sequence(unregInsertActions).flatMap { _ ⇒
-
                 if (userStructsSalts.nonEmpty) {
                   val socialActions = newContactIds.toSeq map (id ⇒ DBIO.from(recordRelation(id, client.userId)))
 

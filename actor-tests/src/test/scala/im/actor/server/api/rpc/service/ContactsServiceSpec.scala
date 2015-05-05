@@ -5,6 +5,7 @@ import scala.concurrent.duration._
 
 import slick.dbio.DBIO
 
+import im.actor.api.rpc.contacts.PhoneToImport
 import im.actor.api.{ rpc ⇒ api }, api._
 import im.actor.server.api.util
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
@@ -23,6 +24,8 @@ class ContactsServiceSpec extends BaseServiceSuite {
   "RemoveContact handler" should "remove contact" in (s.addremove.remove)
 
   "AddContact handler" should "add contact after remove" in (s.addremove.addAfterRemove)
+
+  "ImportContacts handler" should "import contacts starting with 8 in RU" in (s.imprt.ru)
 
   object s {
     implicit val sessionRegion = buildSessionRegionProxy()
@@ -119,6 +122,27 @@ class ContactsServiceSpec extends BaseServiceSuite {
       def addAfterRemove() = add(firstRun = false, expectedUpdSeq = 1003)
     }
 
+    object imprt {
+      val authId = createAuthId()
+      val sessionId = createSessionId()
+      val user = createUser(authId, 79031151515L)
+
+      val user2 = createUser(79031161616L)
+
+      val user3 = createUser(79031171717L)
+
+      implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
+
+      def ru() = {
+        whenReady(service.handleImportContacts(Vector(PhoneToImport(79031161616L, Some("Kaizer 7"))), Vector.empty)) { resp ⇒
+          resp.toOption.get.users.map(_.id) shouldEqual Vector(user2.id)
+        }
+
+        whenReady(service.handleImportContacts(Vector(PhoneToImport(89031171717L, Some("Kaizer 8"))), Vector.empty)) { resp ⇒
+          resp.toOption.get.users.map(_.id) shouldEqual Vector(user3.id)
+        }
+      }
+    }
   }
 
 }

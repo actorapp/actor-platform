@@ -2,6 +2,7 @@
 <configuration>
     <logger name="com.zaxxer.hikari.HikariConfig" level="WARN"/>
     <logger name="org.flywaydb" level="WARN"/>
+    <logger name="org.apache.zookeeper" level="WARN"/>
     <logger name="slick.ast" level="WARN"/>
     <logger name="slick.compiler" level="WARN"/>
     <logger name="slick.relational.ResultConverterCompiler" level="WARN"/>
