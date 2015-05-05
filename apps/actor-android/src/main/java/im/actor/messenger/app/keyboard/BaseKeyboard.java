@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -21,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.model.log.Log;
 
@@ -32,7 +30,7 @@ public class BaseKeyboard implements
         ViewTreeObserver.OnGlobalLayoutListener {
 
 
-
+    private static final String TAG = "BaseKeyboard";
     protected Activity activity;
     private View decorView;
     private boolean softKeyboardListeningEnabled = true;
@@ -112,17 +110,17 @@ public class BaseKeyboard implements
                 animation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-                        Log.d("BaseKeyboard", "onAnimationStart");
+                        Log.d(TAG, "onAnimationStart");
                     }
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        Log.d("BaseKeyboard", "onAnimationEnd");
+                        Log.d(TAG, "onAnimationEnd");
                     }
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-                        Log.d("BaseKeyboard", "onAnimationReset");
+                        Log.d(TAG, "onAnimationReset");
                     }
                 });
             }
@@ -174,6 +172,7 @@ public class BaseKeyboard implements
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
+                            emojiKeyboardViewCopy.setVisibility(View.GONE);
                             windowManager.removeView(emojiKeyboardViewCopy);
                         }
                     })
@@ -213,7 +212,7 @@ public class BaseKeyboard implements
 
     @Override
     public void onGlobalLayout() {
-        Log.d("EmojiKeyboard", "onGlobalLayout");
+        Log.d(TAG, "onGlobalLayout");
         if (!softKeyboardListeningEnabled) {
             return;
         }
@@ -248,15 +247,15 @@ public class BaseKeyboard implements
         }
 
         if (heightDifference > 100) {
-            Log.d("EmojiKeyboard", "onGlobalLayout: " + heightDifference);
+            Log.d(TAG, "onGlobalLayout: " + heightDifference);
             softwareKeyboardShowing = true;
             keyboardHeight = heightDifference;
-            Log.d("EmojiKeyboard", "onGlobalLayout: " +  "showing");
+            Log.d(TAG, "onGlobalLayout: " + "showing");
 
             showInternal();
         } else {
-            Log.d("EmojiKeyboard", "onGlobalLayout: " + heightDifference);
-            Log.d("EmojiKeyboard", "onGlobalLayout: " +  "dismiss?");
+            Log.d(TAG, "onGlobalLayout: " + heightDifference);
+            Log.d(TAG, "onGlobalLayout: " + "dismiss?");
             // dismiss not wirk
             softwareKeyboardShowing = false;
             // keyboard showing or not?

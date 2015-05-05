@@ -1,7 +1,9 @@
-package im.actor.messenger.app.keyboard.emoji.smiles;
+package im.actor.messenger.app.emoji.smiles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import im.actor.messenger.app.keyboard.emoji.smiles.OnRecentChangeListener;
 
 /**
  * Created by Jesus Christ. Amen.

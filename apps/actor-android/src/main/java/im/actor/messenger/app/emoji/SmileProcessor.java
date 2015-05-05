@@ -1,4 +1,4 @@
-package im.actor.messenger.app.keyboard.emoji;
+package im.actor.messenger.app.emoji;
 
 import android.app.Application;
 import android.graphics.Bitmap;
@@ -26,8 +26,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import im.actor.images.common.ImageMetadata;
 import im.actor.images.ops.ImageLoading;
 import im.actor.images.sources.FileSource;
+import im.actor.messenger.app.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
-import im.actor.messenger.app.keyboard.emoji.smiles.SmileysPack;
 import im.actor.messenger.app.util.Logger;
 import im.actor.messenger.app.util.io.IOUtils;
 
@@ -392,7 +392,7 @@ public class SmileProcessor {
             public void run() {
                 Logger.d(TAG, "notify");
                 for (SmilesListener listener : listeners) {
-                    listener.onEmojiUpdated(completed);
+                    listener.onSmilesUpdated(completed);
                 }
             }
         });

@@ -1,9 +1,9 @@
-package im.actor.messenger.app.keyboard.emoji.stickers;
+package im.actor.messenger.app.emoji;
 
 import android.app.Application;
 import android.content.res.AssetManager;
 import android.net.Uri;
-import android.os.*;
+import android.os.Handler;
 import android.os.Process;
 import android.util.Log;
 import android.widget.ImageView;
@@ -11,17 +11,15 @@ import android.widget.ImageView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 import im.actor.messenger.app.ActorBinder;
+import im.actor.messenger.app.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
@@ -179,7 +177,7 @@ public class StickerProcessor {
         }
         String bindingId = "stickers." + packId + "." + stickerId;
 
-        ValueModel<Object> vm = mvvmCollection.get(bindingId);
+        ValueModel vm = mvvmCollection.get(bindingId);
         if(vm==null) {
             vm = new ValueModel<Object>(bindingId, null);
             mvvmCollection.put(bindingId, vm);

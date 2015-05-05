@@ -1,4 +1,4 @@
-package im.actor.messenger.app.keyboard.emoji.smiles;
+package im.actor.messenger.app.emoji.smiles;
 
 /**
  * Created by Jesus Christ. Amen.
@@ -16,7 +16,8 @@ import android.view.ViewConfiguration;
 
 import java.util.ArrayList;
 
-import im.actor.messenger.app.keyboard.emoji.SmileProcessor;
+import im.actor.messenger.app.emoji.SmileProcessor;
+import im.actor.messenger.app.keyboard.emoji.smiles.OnSmileClickListener;
 
 /**
  * Author: Korshakov Stepan
