@@ -154,8 +154,6 @@ class Session(
         val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
         val reSender = context.actorOf(ReSender.props(authId, sessionId)(config.reSendConfig), "reSender")
 
-        sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
-
         val graph = SessionStream.graph(authId, sessionId, mb.messageId, rpcHandler, updatesHandler, reSender)
 
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
@@ -175,8 +173,10 @@ class Session(
 
         flow.run()
 
-        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
         recordClient(client, reSender)
+
+        sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
+        sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
         context.become(resolved(authId, sessionId, sessionMessagePublisher, reSender))
       }
