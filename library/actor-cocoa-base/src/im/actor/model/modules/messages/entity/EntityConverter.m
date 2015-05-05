@@ -63,7 +63,7 @@
 #include "java/util/List.h"
 
 
-#line 48
+#line 49
 @implementation ImActorModelModulesMessagesEntityEntityConverter
 
 + (AMMessageStateEnum *)convertWithImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
@@ -71,19 +71,19 @@
 }
 
 
-#line 66
+#line 67
 + (AMAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(avatar);
 }
 
 
-#line 75
+#line 76
 + (AMAvatarImage *)convertWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)avatarImage {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(avatarImage);
 }
 
 
-#line 83
+#line 84
 + (AMFileReference *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
                                                withNSString:(NSString *)fileName
                                                     withInt:(jint)size {
@@ -91,38 +91,38 @@
 }
 
 
-#line 87
+#line 88
 + (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(sex);
 }
 
 
-#line 103
+#line 104
 + (AMUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(user);
 }
 
 
-#line 111
+#line 112
 + (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group);
 }
 
 
-#line 116
+#line 117
 + (JavaUtilArrayList *)convertWithJavaUtilList:(id<JavaUtilList>)members
                                        withInt:(jint)admin {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withInt_(members, admin);
 }
 
 
-#line 124
+#line 125
 + (AMPeerTypeEnum *)convertWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)peerType {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(peerType);
 }
 
 
-#line 136
+#line 137
 + (AMPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(peer);
 }
@@ -132,7 +132,7 @@
 }
 
 
-#line 193
+#line 194
 + (AMFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_(fastThumb);
 }
@@ -145,11 +145,11 @@
 @end
 
 
-#line 50
+#line 51
 AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 51
+#line 52
   if (state == nil) {
     return AMMessageStateEnum_get_UNKNOWN();
   }
@@ -166,50 +166,50 @@ AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWith
 }
 
 
-#line 66
+#line 67
 AMAvatar *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 67
+#line 68
   if (avatar == nil) {
     return nil;
   }
   return new_AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_([((ImActorModelApiAvatar *) nil_chk(avatar)) getSmallImage]), ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(
-#line 71
-  [avatar getLargeImage]), ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(
 #line 72
+  [avatar getLargeImage]), ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(
+#line 73
   [avatar getFullImage]));
 }
 
 
-#line 75
+#line 76
 AMAvatarImage *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 76
+#line 77
   if (avatarImage == nil) {
     return nil;
   }
   return new_AMAvatarImage_initWithInt_withInt_withAMFileReference_([((ImActorModelApiAvatarImage *) nil_chk(avatarImage)) getWidth], [avatarImage getHeight], ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(
-#line 80
+#line 81
   [avatarImage getFileLocation], @"avatar.jpg", [avatarImage getFileSize]));
 }
 
 
-#line 83
+#line 84
 AMFileReference *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *location, NSString *fileName, jint size) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 84
+#line 85
   return new_AMFileReference_initWithLong_withLong_withInt_withNSString_([((ImActorModelApiFileLocation *) nil_chk(location)) getFileId], [location getAccessHash], size, fileName);
 }
 
 
-#line 87
+#line 88
 AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 88
+#line 89
   if (sex == nil) {
     return AMSexEnum_get_UNKNOWN();
   }
@@ -225,37 +225,37 @@ AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorMo
 }
 
 
-#line 103
+#line 104
 AMUser *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 104
+#line 105
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   [res addWithId:new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(0, 0, AMContactRecord_get_TYPE_PHONE_(), JreStrcat("J", [((ImActorModelApiUser *) nil_chk(user)) getPhone]), @"Mobile")];
   return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_([user getId], [user getAccessHash], [user getName], [user getLocalName], ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(
-#line 107
-  [user getAvatar]), ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_([user getSex]),
 #line 108
+  [user getAvatar]), ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_([user getSex]),
+#line 109
   res);
 }
 
 
-#line 111
+#line 112
 AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 112
-  return new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_([((ImActorModelApiGroup *) nil_chk(group)) getId], [group getAccessHash], [group getTitle], ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([group getAvatar]), ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withInt_(
 #line 113
+  return new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_([((ImActorModelApiGroup *) nil_chk(group)) getId], [group getAccessHash], [group getTitle], ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([group getAvatar]), ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withInt_(
+#line 114
   [group getMembers], [group getCreatorUid]), [group getCreatorUid], [group isMember]);
 }
 
 
-#line 116
+#line 117
 JavaUtilArrayList *ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withInt_(id<JavaUtilList> members, jint admin) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 117
+#line 118
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   for (ImActorModelApiMember * __strong m in nil_chk(members)) {
     [res addWithId:new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_([((ImActorModelApiMember *) nil_chk(m)) getUid], [m getInviterUid], [m getDate], [m getUid] == admin)];
@@ -264,11 +264,11 @@ JavaUtilArrayList *ImActorModelModulesMessagesEntityEntityConverter_convertWithJ
 }
 
 
-#line 124
+#line 125
 AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 125
+#line 126
   switch ([peerType ordinal]) {
     case ImActorModelApiPeerType_EMAIL:
     return AMPeerTypeEnum_get_EMAIL();
@@ -281,26 +281,26 @@ AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImAc
 }
 
 
-#line 136
+#line 137
 AMPeer *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 137
+#line 138
   return new_AMPeer_initWithAMPeerTypeEnum_withInt_(ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_([((ImActorModelApiPeer *) nil_chk(peer)) getType]), [peer getId]);
 }
 
 
-#line 140
+#line 141
 AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessage_(ImActorModelApiMessage *content) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 141
+#line 142
   if ([content isKindOfClass:[ImActorModelApiTextMessage class]]) {
     ImActorModelApiTextMessage *message = (ImActorModelApiTextMessage *) check_class_cast(content, [ImActorModelApiTextMessage class]);
     return new_AMTextContent_initWithNSString_([((ImActorModelApiTextMessage *) nil_chk(message)) getText]);
   }
   else
-#line 144
+#line 145
   if ([content isKindOfClass:[ImActorModelApiServiceMessage class]]) {
     ImActorModelApiServiceMessage *message = (ImActorModelApiServiceMessage *) check_class_cast(content, [ImActorModelApiServiceMessage class]);
     ImActorModelApiServiceEx *ex = [((ImActorModelApiServiceMessage *) nil_chk(message)) getExt];
@@ -309,75 +309,75 @@ AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActo
       return new_AMServiceGroupAvatarChanged_initWithAMAvatar_(ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([((ImActorModelApiServiceExChangedAvatar *) nil_chk(avatar)) getAvatar]));
     }
     else
-#line 150
+#line 151
     if ([ex isKindOfClass:[ImActorModelApiServiceExChangedTitle class]]) {
       ImActorModelApiServiceExChangedTitle *title = (ImActorModelApiServiceExChangedTitle *) check_class_cast(ex, [ImActorModelApiServiceExChangedTitle class]);
       return new_AMServiceGroupTitleChanged_initWithNSString_([((ImActorModelApiServiceExChangedTitle *) nil_chk(title)) getTitle]);
     }
     else
-#line 153
+#line 154
     if ([ex isKindOfClass:[ImActorModelApiServiceExUserAdded class]]) {
       ImActorModelApiServiceExUserAdded *userAdded = (ImActorModelApiServiceExUserAdded *) check_class_cast(ex, [ImActorModelApiServiceExUserAdded class]);
       return new_AMServiceGroupUserAdded_initWithInt_([((ImActorModelApiServiceExUserAdded *) nil_chk(userAdded)) getAddedUid]);
     }
     else
-#line 156
+#line 157
     if ([ex isKindOfClass:[ImActorModelApiServiceExUserKicked class]]) {
       ImActorModelApiServiceExUserKicked *exUserKicked = (ImActorModelApiServiceExUserKicked *) check_class_cast(ex, [ImActorModelApiServiceExUserKicked class]);
       return new_AMServiceGroupUserKicked_initWithInt_([((ImActorModelApiServiceExUserKicked *) nil_chk(exUserKicked)) getKickedUid]);
     }
     else
-#line 159
+#line 160
     if ([ex isKindOfClass:[ImActorModelApiServiceExUserLeft class]]) {
       return new_AMServiceGroupUserLeave_init();
     }
     else
-#line 161
+#line 162
     if ([ex isKindOfClass:[ImActorModelApiServiceExGroupCreated class]]) {
       
-#line 163
+#line 164
       return new_AMServiceGroupCreated_initWithNSString_(@"");
     }
     else {
       
-#line 165
+#line 166
       return new_AMServiceContent_initWithNSString_([message getText]);
     }
   }
   else
-#line 167
+#line 168
   if ([content isKindOfClass:[ImActorModelApiDocumentMessage class]]) {
     ImActorModelApiDocumentMessage *documentMessage = (ImActorModelApiDocumentMessage *) check_class_cast(content, [ImActorModelApiDocumentMessage class]);
     
-#line 170
+#line 171
     NSString *mimeType = [((ImActorModelApiDocumentMessage *) nil_chk(documentMessage)) getMimeType];
     NSString *name = [documentMessage getName];
     AMFastThumb *fastThumb = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_([documentMessage getThumb]);
     AMFileReference *fileReference = new_AMFileReference_initWithLong_withLong_withInt_withNSString_([documentMessage getFileId],
-#line 174
-    [documentMessage getAccessHash],
 #line 175
-    [documentMessage getFileSize],
+    [documentMessage getAccessHash],
 #line 176
+    [documentMessage getFileSize],
+#line 177
     [documentMessage getName]);
     AMFileRemoteSource *source = new_AMFileRemoteSource_initWithAMFileReference_(fileReference);
     
-#line 179
+#line 180
     if ([[documentMessage getExt] isKindOfClass:[ImActorModelApiDocumentExPhoto class]]) {
       ImActorModelApiDocumentExPhoto *photo = (ImActorModelApiDocumentExPhoto *) check_class_cast([documentMessage getExt], [ImActorModelApiDocumentExPhoto class]);
       return new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(source, mimeType, name, fastThumb, [((ImActorModelApiDocumentExPhoto *) nil_chk(photo)) getW], [photo getH]);
     }
     else
-#line 182
+#line 183
     if ([[documentMessage getExt] isKindOfClass:[ImActorModelApiDocumentExVideo class]]) {
       ImActorModelApiDocumentExVideo *video = (ImActorModelApiDocumentExVideo *) check_class_cast([documentMessage getExt], [ImActorModelApiDocumentExVideo class]);
       return new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(source, mimeType, name, fastThumb,
-#line 185
+#line 186
       [((ImActorModelApiDocumentExVideo *) nil_chk(video)) getDuration], [video getW], [video getH]);
     }
     else {
       
-#line 187
+#line 188
       return new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(source, mimeType, name, fastThumb);
     }
   }
@@ -385,11 +385,11 @@ AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActo
 }
 
 
-#line 193
+#line 194
 AMFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   
-#line 194
+#line 195
   if (fastThumb == nil) {
     return nil;
   }

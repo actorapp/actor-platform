@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm.threads;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 import im.actor.model.util.AtomicLongCompat;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 public class JavaAtomicLong extends AtomicLongCompat {
     final AtomicLong atomicLong;
 

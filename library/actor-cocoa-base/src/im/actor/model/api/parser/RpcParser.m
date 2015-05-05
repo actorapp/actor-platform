@@ -92,7 +92,7 @@
 #include "java/io/IOException.h"
 
 
-#line 21
+#line 25
 @implementation ImActorModelApiParserRpcParser
 
 - (ImActorModelNetworkParserRpcScope *)readWithInt:(jint)type
@@ -100,311 +100,311 @@
   switch (type) {
     case 1:
     
-#line 25
+#line 29
     return ImActorModelApiRpcRequestSendAuthCode_fromBytesWithByteArray_(payload);
     case 90:
     
-#line 26
+#line 30
     return ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(payload);
     case 3:
     
-#line 27
+#line 31
     return ImActorModelApiRpcRequestSignIn_fromBytesWithByteArray_(payload);
     case 4:
     
-#line 28
+#line 32
     return ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(payload);
     case 80:
     
-#line 29
+#line 33
     return ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(payload);
     case 82:
     
-#line 30
+#line 34
     return ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(payload);
     case 83:
     
-#line 31
+#line 35
     return ImActorModelApiRpcRequestTerminateAllSessions_fromBytesWithByteArray_(payload);
     case 84:
     
-#line 32
+#line 36
     return ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(payload);
     case 96:
     
-#line 33
+#line 37
     return ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(payload);
     case 53:
     
-#line 34
+#line 38
     return ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(payload);
     case 31:
     
-#line 35
+#line 39
     return ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(payload);
     case 91:
     
-#line 36
+#line 40
     return ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(payload);
     case 120:
     
-#line 37
+#line 41
     return ImActorModelApiRpcRequestSendEmailCode_fromBytesWithByteArray_(payload);
     case 123:
     
-#line 38
+#line 42
     return ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(payload);
     case 124:
     
-#line 39
+#line 43
     return ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(payload);
     case 125:
     
-#line 40
+#line 44
     return ImActorModelApiRpcRequestChangeEmailTitle_fromBytesWithByteArray_(payload);
     case 7:
     
-#line 41
+#line 45
     return ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(payload);
     case 87:
     
-#line 42
+#line 46
     return ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(payload);
     case 89:
     
-#line 43
+#line 47
     return ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(payload);
     case 114:
     
-#line 44
+#line 48
     return ImActorModelApiRpcRequestAddContact_fromBytesWithByteArray_(payload);
     case 112:
     
-#line 45
+#line 49
     return ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(payload);
     case 92:
     
-#line 46
+#line 50
     return ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(payload);
     case 55:
     
-#line 47
+#line 51
     return ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(payload);
     case 57:
     
-#line 48
+#line 52
     return ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(payload);
     case 98:
     
-#line 49
+#line 53
     return ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(payload);
     case 99:
     
-#line 50
+#line 54
     return ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(payload);
     case 100:
     
-#line 51
+#line 55
     return ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(payload);
     case 118:
     
-#line 52
+#line 56
     return ImActorModelApiRpcRequestLoadHistory_fromBytesWithByteArray_(payload);
     case 104:
     
-#line 53
+#line 57
     return ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(payload);
     case 65:
     
-#line 54
+#line 58
     return ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(payload);
     case 85:
     
-#line 55
+#line 59
     return ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(payload);
     case 86:
     
-#line 56
+#line 60
     return ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(payload);
     case 101:
     
-#line 57
+#line 61
     return ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(payload);
     case 69:
     
-#line 58
+#line 62
     return ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(payload);
     case 70:
     
-#line 59
+#line 63
     return ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(payload);
     case 71:
     
-#line 60
+#line 64
     return ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(payload);
     case 27:
     
-#line 61
+#line 65
     return ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(payload);
     case 29:
     
-#line 62
+#line 66
     return ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(payload);
     case 77:
     
-#line 63
+#line 67
     return ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(payload);
     case 97:
     
-#line 64
+#line 68
     return ImActorModelApiRpcRequestGetFileUploadUrl_fromBytesWithByteArray_(payload);
     case 122:
     
-#line 65
+#line 69
     return ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(payload);
     case 142:
     
-#line 66
+#line 70
     return ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(payload);
     case 134:
     
-#line 67
+#line 71
     return ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(payload);
     case 128:
     
-#line 68
+#line 72
     return ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(payload);
     case 51:
     
-#line 69
+#line 73
     return ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(payload);
     case 76:
     
-#line 70
+#line 74
     return ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(payload);
     case 52:
     
-#line 71
+#line 75
     return ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(payload);
     case 9:
     
-#line 72
+#line 76
     return ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(payload);
     case 11:
     
-#line 73
+#line 77
     return ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(payload);
     case 32:
     
-#line 74
+#line 78
     return ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(payload);
     case 33:
     
-#line 75
+#line 79
     return ImActorModelApiRpcRequestSubscribeFromOnline_fromBytesWithByteArray_(payload);
     case 74:
     
-#line 76
+#line 80
     return ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(payload);
     case 75:
     
-#line 77
+#line 81
     return ImActorModelApiRpcRequestSubscribeFromGroupOnline_fromBytesWithByteArray_(payload);
     case 2:
     
-#line 78
+#line 82
     return ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(payload);
     case 5:
     
-#line 79
+#line 83
     return ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(payload);
     case 81:
     
-#line 80
+#line 84
     return ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(payload);
     case 103:
     
-#line 81
+#line 85
     return ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(payload);
     case 8:
     
-#line 82
+#line 86
     return ImActorModelApiRpcResponseImportContacts_fromBytesWithByteArray_(payload);
     case 88:
     
-#line 83
+#line 87
     return ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(payload);
     case 113:
     
-#line 84
+#line 88
     return ImActorModelApiRpcResponseSearchContacts_fromBytesWithByteArray_(payload);
     case 119:
     
-#line 85
+#line 89
     return ImActorModelApiRpcResponseLoadHistory_fromBytesWithByteArray_(payload);
     case 105:
     
-#line 86
+#line 90
     return ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(payload);
     case 66:
     
-#line 87
+#line 91
     return ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(payload);
     case 115:
     
-#line 88
+#line 92
     return ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(payload);
     case 78:
     
-#line 89
+#line 93
     return ImActorModelApiRpcResponseGetFileUrl_fromBytesWithByteArray_(payload);
     case 121:
     
-#line 90
+#line 94
     return ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(payload);
     case 138:
     
-#line 91
+#line 95
     return ImActorModelApiRpcResponseCommitFileUpload_fromBytesWithByteArray_(payload);
     case 141:
     
-#line 92
+#line 96
     return ImActorModelApiRpcResponseGetFileUploadPartUrl_fromBytesWithByteArray_(payload);
     case 135:
     
-#line 93
+#line 97
     return ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(payload);
     case 12:
     
-#line 94
+#line 98
     return ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(payload);
     case 50:
     
-#line 95
+#line 99
     return ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(payload);
     case 72:
     
-#line 96
+#line 100
     return ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(payload);
     case 102:
     
-#line 97
+#line 101
     return ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(payload);
     case 13:
     
-#line 98
+#line 102
     return ImActorModelApiBaseSeqUpdate_fromBytesWithByteArray_(payload);
     case 73:
     
-#line 99
+#line 103
     return ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(payload);
     case 26:
     
-#line 100
+#line 104
     return ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(payload);
     case 25:
     
-#line 101
+#line 105
     return ImActorModelApiBaseSeqUpdateTooLong_fromBytesWithByteArray_(payload);
   }
   @throw new_JavaIoIOException_init();

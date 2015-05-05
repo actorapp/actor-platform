@@ -29,7 +29,7 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, messages_, JavaUtilArrayList *)
 
 
-#line 15
+#line 16
 @implementation ImActorModelModulesMessagesEntityOutUnreadMessagesStorage
 
 + (ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -37,13 +37,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
 }
 
 
-#line 23
+#line 24
 - (JavaUtilArrayList *)getMessages {
   return messages_;
 }
 
 
-#line 28
+#line 29
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [((JavaUtilArrayList *) nil_chk(messages_)) clear];
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
@@ -55,7 +55,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
 }
 
 
-#line 39
+#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:messages_];
 }
@@ -68,11 +68,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
 @end
 
 
-#line 17
+#line 18
 ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_initialize();
   
-#line 18
+#line 19
   return ((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_init(), data));
 }
 

@@ -30,17 +30,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModelApiPeer *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateMessageRead
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateMessageRead_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
                                    withLong:(jlong)startDate
                                    withLong:(jlong)readDate {
@@ -49,14 +49,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModel
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateMessageRead_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (ImActorModelApiPeer *)getPeer {
   return self->peer_;
 }
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModel
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
   self->startDate_ = [values getLongWithInt:2];
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModel
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModel
 }
 
 
-#line 71
+#line 75
 - (NSString *)description {
   NSString *res = @"update MessageRead{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModel
 }
 
 
-#line 81
+#line 85
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateMessageRead_HEADER;
 }
@@ -108,27 +108,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageRead, peer_, ImActorModel
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateMessageRead *ImActorModelApiUpdatesUpdateMessageRead_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateMessageRead_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateMessageRead *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessageRead_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiUpdatesUpdateMessageRead_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiUpdatesUpdateMessageRead *self, ImActorModelApiPeer *peer, jlong startDate, jlong readDate) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 32
+#line 36
   self->peer_ = peer;
   self->startDate_ = startDate;
   self->readDate_ = readDate;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiUpdatesUpdateMessageRead *new_ImActorModelApiUpdatesUpdateMessageRead_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiPeer *peer, jlong startDate, jlong readDate) {
   ImActorModelApiUpdatesUpdateMessageRead *self = [ImActorModelApiUpdatesUpdateMessageRead alloc];
   ImActorModelApiUpdatesUpdateMessageRead_initWithImActorModelApiPeer_withLong_withLong_(self, peer, startDate, readDate);
@@ -140,7 +140,7 @@ void ImActorModelApiUpdatesUpdateMessageRead_init(ImActorModelApiUpdatesUpdateMe
 }
 
 
-#line 37
+#line 41
 ImActorModelApiUpdatesUpdateMessageRead *new_ImActorModelApiUpdatesUpdateMessageRead_init() {
   ImActorModelApiUpdatesUpdateMessageRead *self = [ImActorModelApiUpdatesUpdateMessageRead alloc];
   ImActorModelApiUpdatesUpdateMessageRead_init(self);

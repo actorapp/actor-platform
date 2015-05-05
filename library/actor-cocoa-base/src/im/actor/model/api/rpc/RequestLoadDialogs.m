@@ -25,18 +25,16 @@
 
 @end
 
-
-#line 20
 @implementation ImActorModelApiRpcRequestLoadDialogs
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit {
   ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
@@ -44,14 +42,14 @@
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestLoadDialogs_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jlong)getMinDate {
   return self->minDate_;
 }
@@ -61,21 +59,21 @@
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->minDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->limit_ = [values getIntWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->minDate_];
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
 
 
-#line 60
+#line 64
 - (NSString *)description {
   NSString *res = @"rpc LoadDialogs{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"minDate=", self->minDate_));
@@ -85,7 +83,7 @@
 }
 
 
-#line 69
+#line 73
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLoadDialogs_HEADER;
 }
@@ -93,24 +91,24 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLoadDialogs_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLoadDialogs_init(), data));
 }
 
 void ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(ImActorModelApiRpcRequestLoadDialogs *self, jlong minDate, jint limit) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->minDate_ = minDate;
   self->limit_ = limit;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) {
   ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
   ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
@@ -118,13 +116,13 @@ ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_i
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestLoadDialogs_init(ImActorModelApiRpcRequestLoadDialogs *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_init() {
   ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
   ImActorModelApiRpcRequestLoadDialogs_init(self);

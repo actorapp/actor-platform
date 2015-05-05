@@ -28,17 +28,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestRegisterGooglePush
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestRegisterGooglePush *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithLong:(jlong)projectId
                 withNSString:(NSString *)token {
   ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(self, projectId, token);
@@ -46,14 +46,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestRegisterGooglePush_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jlong)getProjectId {
   return self->projectId_;
 }
@@ -63,14 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->projectId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->token_ = [values getStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->projectId_];
   if (self->token_ == nil) {
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 }
 
 
-#line 63
+#line 67
 - (NSString *)description {
   NSString *res = @"rpc RegisterGooglePush{";
   res = JreStrcat("$C", res, '}');
@@ -88,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 }
 
 
-#line 70
+#line 74
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRegisterGooglePush_HEADER;
 }
@@ -96,24 +96,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterGooglePush, token_, NSStrin
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestRegisterGooglePush *ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRegisterGooglePush_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestRegisterGooglePush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRegisterGooglePush_init(), data));
 }
 
 void ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(ImActorModelApiRpcRequestRegisterGooglePush *self, jlong projectId, NSString *token) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->projectId_ = projectId;
   self->token_ = token;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(jlong projectId, NSString *token) {
   ImActorModelApiRpcRequestRegisterGooglePush *self = [ImActorModelApiRpcRequestRegisterGooglePush alloc];
   ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(self, projectId, token);
@@ -121,13 +121,13 @@ ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegist
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestRegisterGooglePush_init(ImActorModelApiRpcRequestRegisterGooglePush *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegisterGooglePush_init() {
   ImActorModelApiRpcRequestRegisterGooglePush *self = [ImActorModelApiRpcRequestRegisterGooglePush alloc];
   ImActorModelApiRpcRequestRegisterGooglePush_init(self);

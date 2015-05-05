@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +28,7 @@ import im.actor.images.loading.tasks.RawFileTask;
 import im.actor.images.loading.view.ImageKitView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
@@ -44,7 +44,7 @@ import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 
 
-public class PictureActivity extends ActionBarActivity {
+public class PictureActivity extends BaseActivity {
 
     private static final String ARG_FILE_PATH = "arg_file_path";
     private static final String ARG_FILE_ID = "arg_file_id";

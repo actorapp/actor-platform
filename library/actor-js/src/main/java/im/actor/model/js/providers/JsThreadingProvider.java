@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
 
 import java.util.Date;
@@ -14,9 +18,6 @@ import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.util.ThreadLocalCompat;
 
-/**
- * Created by ex3ndr on 21.02.15.
- */
 public class JsThreadingProvider implements ThreadingProvider {
     @Override
     public long getActorTime() {

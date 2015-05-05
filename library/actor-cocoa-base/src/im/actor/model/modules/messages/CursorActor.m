@@ -72,11 +72,11 @@ __attribute__((unused)) static ImActorModelModulesMessagesCursorActor_OnComplete
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorActor_OnCompleted)
 
 
-#line 16
+#line 17
 @implementation ImActorModelModulesMessagesCursorActor
 
 
-#line 23
+#line 24
 - (instancetype)initWithLong:(jlong)cursorId
 withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesCursorActor_initWithLong_withImActorModelModulesModules_(self, cursorId, messenger);
@@ -84,11 +84,11 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 }
 
 
-#line 30
+#line 31
 - (void)preStart {
   [super preStart];
   
-#line 33
+#line 34
   plainCursorsStorage_ = new_ImActorModelModulesMessagesEntityPlainCursorsStorage_init();
   IOSByteArray *data = [((DKSyncKeyValue *) nil_chk(keyValue_)) getWithLong:cursorId_];
   if (data != nil) {
@@ -96,13 +96,13 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
       plainCursorsStorage_ = ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(data);
     }
     @catch (
-#line 38
+#line 39
     JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
   
-#line 43
+#line 44
   for (ImActorModelModulesMessagesEntityPlainCursor * __strong cursor in nil_chk([((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(plainCursorsStorage_)) getAllCursors])) {
     if ([((ImActorModelModulesMessagesEntityPlainCursor *) nil_chk(cursor)) getSortDate] < [cursor getPendingSortDate]) {
       [((JavaUtilHashSet *) nil_chk(inProgress_)) addWithId:[cursor getPeer]];
@@ -112,7 +112,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 }
 
 
-#line 51
+#line 52
 - (void)moveCursorWithAMPeer:(AMPeer *)peer
                     withLong:(jlong)date {
   ImActorModelModulesMessagesEntityPlainCursor *cursor = [((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(plainCursorsStorage_)) getCursorWithAMPeer:peer];
@@ -123,53 +123,53 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
     return;
   }
   
-#line 60
+#line 61
   date = JavaLangMath_maxWithLong_withLong_([cursor getPendingSortDate], date);
   
-#line 62
+#line 63
   [plainCursorsStorage_ putCursorWithImActorModelModulesMessagesEntityPlainCursor:[cursor changePendingSortDateWithLong:date]];
   
-#line 64
+#line 65
   ImActorModelModulesMessagesCursorActor_saveCursorState(self);
   
-#line 66
+#line 67
   if ([((JavaUtilHashSet *) nil_chk(inProgress_)) containsWithId:peer]) {
     return;
   }
   
-#line 70
+#line 71
   [inProgress_ addWithId:peer];
   [self performWithAMPeer:peer withLong:date];
 }
 
 
-#line 74
+#line 75
 - (void)onMovedWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date {
   ImActorModelModulesMessagesCursorActor_onMovedWithAMPeer_withLong_(self, peer, date);
 }
 
 
-#line 91
+#line 92
 - (void)onCompletedWithAMPeer:(AMPeer *)peer
                      withLong:(jlong)date {
   [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelModulesMessagesCursorActor_OnCompleted_initWithAMPeer_withLong_(peer, date)];
 }
 
 
-#line 95
+#line 96
 - (void)onErrorWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date {
 }
 
 
-#line 100
+#line 101
 - (void)saveCursorState {
   ImActorModelModulesMessagesCursorActor_saveCursorState(self);
 }
 
 
-#line 105
+#line 106
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesCursorActor_OnCompleted class]]) {
     ImActorModelModulesMessagesCursorActor_OnCompleted *completed = (ImActorModelModulesMessagesCursorActor_OnCompleted *) check_class_cast(message, [ImActorModelModulesMessagesCursorActor_OnCompleted class]);
@@ -177,7 +177,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   }
   else {
     
-#line 110
+#line 111
     [self dropWithId:message];
   }
 }
@@ -185,28 +185,28 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 @end
 
 
-#line 23
+#line 24
 void ImActorModelModulesMessagesCursorActor_initWithLong_withImActorModelModulesModules_(ImActorModelModulesMessagesCursorActor *self, jlong cursorId, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
   self->inProgress_ = new_JavaUtilHashSet_init();
   
-#line 25
+#line 26
   self->cursorId_ = cursorId;
   self->keyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getCursorStorage];
 }
 
 
-#line 74
+#line 75
 void ImActorModelModulesMessagesCursorActor_onMovedWithAMPeer_withLong_(ImActorModelModulesMessagesCursorActor *self, AMPeer *peer, jlong date) {
   [((JavaUtilHashSet *) nil_chk(self->inProgress_)) removeWithId:peer];
   
-#line 77
+#line 78
   ImActorModelModulesMessagesEntityPlainCursor *cursor = [((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(self->plainCursorsStorage_)) getCursorWithAMPeer:peer];
   cursor = [cursor changeSortDateWithLong:JavaLangMath_maxWithLong_withLong_(date, [((ImActorModelModulesMessagesEntityPlainCursor *) nil_chk(cursor)) getSortDate])];
   [self->plainCursorsStorage_ putCursorWithImActorModelModulesMessagesEntityPlainCursor:cursor];
   ImActorModelModulesMessagesCursorActor_saveCursorState(self);
   
-#line 82
+#line 83
   if ([((ImActorModelModulesMessagesEntityPlainCursor *) nil_chk(cursor)) getSortDate] < [cursor getPendingSortDate]) {
     [self->inProgress_ addWithId:peer];
     [self performWithAMPeer:peer withLong:[cursor getPendingSortDate]];
@@ -214,7 +214,7 @@ void ImActorModelModulesMessagesCursorActor_onMovedWithAMPeer_withLong_(ImActorM
 }
 
 
-#line 100
+#line 101
 void ImActorModelModulesMessagesCursorActor_saveCursorState(ImActorModelModulesMessagesCursorActor *self) {
   [((DKSyncKeyValue *) nil_chk(self->keyValue_)) putWithLong:self->cursorId_ withByteArray:[((ImActorModelModulesMessagesEntityPlainCursorsStorage *) nil_chk(self->plainCursorsStorage_)) toByteArray]];
 }
@@ -222,11 +222,11 @@ void ImActorModelModulesMessagesCursorActor_saveCursorState(ImActorModelModulesM
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorActor)
 
 
-#line 114
+#line 115
 @implementation ImActorModelModulesMessagesCursorActor_OnCompleted
 
 
-#line 118
+#line 119
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)date {
   ImActorModelModulesMessagesCursorActor_OnCompleted_initWithAMPeer_withLong_(self, peer, date);
@@ -234,7 +234,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorActor)
 }
 
 
-#line 123
+#line 124
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -246,17 +246,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorActor)
 @end
 
 
-#line 118
+#line 119
 void ImActorModelModulesMessagesCursorActor_OnCompleted_initWithAMPeer_withLong_(ImActorModelModulesMessagesCursorActor_OnCompleted *self, AMPeer *peer, jlong date) {
   (void) NSObject_init(self);
   
-#line 119
+#line 120
   self->peer_ = peer;
   self->date_ = date;
 }
 
 
-#line 118
+#line 119
 ImActorModelModulesMessagesCursorActor_OnCompleted *new_ImActorModelModulesMessagesCursorActor_OnCompleted_initWithAMPeer_withLong_(AMPeer *peer, jlong date) {
   ImActorModelModulesMessagesCursorActor_OnCompleted *self = [ImActorModelModulesMessagesCursorActor_OnCompleted alloc];
   ImActorModelModulesMessagesCursorActor_OnCompleted_initWithAMPeer_withLong_(self, peer, date);

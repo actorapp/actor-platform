@@ -1,16 +1,14 @@
 <div flex ng-controller="chatsController as chats">
-  <!-- <md-subheader>Opened chats</md-subheader> -->
+  <md-subheader>Opened chats</md-subheader>
 
   <md-list flex class="chatlist">
       <md-list-item class="chatlist__item"
                     ng-repeat="chat in chats.list"
-                    ng-class="{'chatlist__item--selected' : chat.peer.peer==main.actorService.currentPeer}"
+                    ng-class="{'chatlist__item--selected' : chat.peer.peer.id == main.actorService.currentPeer.id}"
                     ng-click="chats.selectChat(chat.peer.peer)">
-        <div class="chatlist__avatar">
-          <img class="md-avatar" ng-src="{{ chat.avatar }}" alt="{{ chat.peer.title }}" ng-if="chat.avatar" />
-          <div class="no-avatar no-avatar--{{ chat.peer.placeholder }}" ng-if="!chat.avatar">
-            <span>{{ chat.peer.title | limitTo:1 }}</span>
-          </div>
+        <div class="chatlist__avatar avatar avatar--{{ ::chat.peer.placeholder }}">
+          <img ng-src="{{ chat.peer.avatar }}" alt="{{ chat.peer.title }}" ng-if="::chat.peer.avatar" />
+          <span ng-bind="::chat.peer.title | limitTo:1"></span>
         </div>
         <div class="md-list-item-text chatlist__body" flex>
             <h3 layout="row" class="chatlist__body__title">
@@ -38,7 +36,7 @@
               <md-icon md-svg-icon="assets/img/icons/ic_report_problem_24px.svg"
                        ng-if="chat.state == 'error'"
                        class="chatlist__body__message__icon chatlist__body__message__icon--error"></md-icon>
-              {{ chat.text | truncate : 23 }}
+              {{ chat.text | truncate : 22 }}
             </p>
         </div>
       </md-list-item>

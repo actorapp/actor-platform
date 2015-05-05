@@ -1,4 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.engine;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -6,14 +13,8 @@ import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 15.03.15.
- */
 class AsyncStorageInt<T extends BserObject & ListEngineItem> {
 
     private static int NEXT_ID = 0;

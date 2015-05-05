@@ -29,7 +29,7 @@
 @end
 
 
-#line 9
+#line 10
 @implementation ImActorModelModulesStateListsStatesActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
@@ -38,7 +38,7 @@
 }
 
 
-#line 15
+#line 16
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
   [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onDialogsChangedWithBoolean:isEmpty];
 }
@@ -60,34 +60,34 @@
 }
 
 
-#line 36
+#line 37
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnContactsChanged class]]) {
     [self onContactsChangedWithBoolean:[((ImActorModelModulesStateListsStatesActor_OnContactsChanged *) nil_chk(((ImActorModelModulesStateListsStatesActor_OnContactsChanged *) check_class_cast(message, [ImActorModelModulesStateListsStatesActor_OnContactsChanged class])))) isEmpty]];
   }
   else
-#line 39
+#line 40
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnDialogsChanged class]]) {
     [self onDialogsChangedWithBoolean:[((ImActorModelModulesStateListsStatesActor_OnDialogsChanged *) nil_chk(((ImActorModelModulesStateListsStatesActor_OnDialogsChanged *) check_class_cast(message, [ImActorModelModulesStateListsStatesActor_OnDialogsChanged class])))) isEmpty]];
   }
   else
-#line 41
+#line 42
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnBookImported class]]) {
     [self onBookImported];
   }
   else
-#line 43
+#line 44
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnContactsLoaded class]]) {
     [self onContactsLoaded];
   }
   else
-#line 45
+#line 46
   if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnDialogsLoaded class]]) {
     [self onDialogsLoaded];
   }
   else {
     
-#line 48
+#line 49
     [self dropWithId:message];
   }
 }
@@ -95,13 +95,13 @@
 @end
 
 
-#line 11
+#line 12
 void ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(ImActorModelModulesStateListsStatesActor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, modules);
 }
 
 
-#line 11
+#line 12
 ImActorModelModulesStateListsStatesActor *new_ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesStateListsStatesActor *self = [ImActorModelModulesStateListsStatesActor alloc];
   ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(self, modules);
@@ -111,7 +111,7 @@ ImActorModelModulesStateListsStatesActor *new_ImActorModelModulesStateListsState
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor)
 
 
-#line 52
+#line 53
 @implementation ImActorModelModulesStateListsStatesActor_OnBookImported
 
 - (instancetype)init {
@@ -134,7 +134,7 @@ ImActorModelModulesStateListsStatesActor_OnBookImported *new_ImActorModelModules
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnBookImported)
 
 
-#line 56
+#line 57
 @implementation ImActorModelModulesStateListsStatesActor_OnContactsLoaded
 
 - (instancetype)init {
@@ -157,7 +157,7 @@ ImActorModelModulesStateListsStatesActor_OnContactsLoaded *new_ImActorModelModul
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnContactsLoaded)
 
 
-#line 60
+#line 61
 @implementation ImActorModelModulesStateListsStatesActor_OnDialogsLoaded
 
 - (instancetype)init {
@@ -180,18 +180,18 @@ ImActorModelModulesStateListsStatesActor_OnDialogsLoaded *new_ImActorModelModule
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnDialogsLoaded)
 
 
-#line 64
+#line 65
 @implementation ImActorModelModulesStateListsStatesActor_OnContactsChanged
 
 
-#line 67
+#line 68
 - (instancetype)initWithBoolean:(jboolean)isEmpty {
   ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(self, isEmpty);
   return self;
 }
 
 
-#line 71
+#line 72
 - (jboolean)isEmpty {
   return isEmpty__;
 }
@@ -199,16 +199,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnDial
 @end
 
 
-#line 67
+#line 68
 void ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(ImActorModelModulesStateListsStatesActor_OnContactsChanged *self, jboolean isEmpty) {
   (void) NSObject_init(self);
   
-#line 68
+#line 69
   self->isEmpty__ = isEmpty;
 }
 
 
-#line 67
+#line 68
 ImActorModelModulesStateListsStatesActor_OnContactsChanged *new_ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(jboolean isEmpty) {
   ImActorModelModulesStateListsStatesActor_OnContactsChanged *self = [ImActorModelModulesStateListsStatesActor_OnContactsChanged alloc];
   ImActorModelModulesStateListsStatesActor_OnContactsChanged_initWithBoolean_(self, isEmpty);
@@ -218,18 +218,18 @@ ImActorModelModulesStateListsStatesActor_OnContactsChanged *new_ImActorModelModu
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnContactsChanged)
 
 
-#line 76
+#line 77
 @implementation ImActorModelModulesStateListsStatesActor_OnDialogsChanged
 
 
-#line 79
+#line 80
 - (instancetype)initWithBoolean:(jboolean)isEmpty {
   ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(self, isEmpty);
   return self;
 }
 
 
-#line 83
+#line 84
 - (jboolean)isEmpty {
   return isEmpty__;
 }
@@ -237,16 +237,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnCont
 @end
 
 
-#line 79
+#line 80
 void ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(ImActorModelModulesStateListsStatesActor_OnDialogsChanged *self, jboolean isEmpty) {
   (void) NSObject_init(self);
   
-#line 80
+#line 81
   self->isEmpty__ = isEmpty;
 }
 
 
-#line 79
+#line 80
 ImActorModelModulesStateListsStatesActor_OnDialogsChanged *new_ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(jboolean isEmpty) {
   ImActorModelModulesStateListsStatesActor_OnDialogsChanged *self = [ImActorModelModulesStateListsStatesActor_OnDialogsChanged alloc];
   ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(self, isEmpty);

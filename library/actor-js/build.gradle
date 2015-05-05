@@ -68,7 +68,7 @@ task buildWebApp(dependsOn: ['gulpBuild']) {
 
 tasks.compileJava.dependsOn(copyGenResources)
 tasks.compileJava.dependsOn(copyGenSources)
-tasks.compileJava.dependsOn(buildWebApp)
+// tasks.compileJava.dependsOn(buildWebApp)
 
 tasks.clean.dependsOn(cleanGenSources)
 tasks.clean.dependsOn(cleanGenResources)
@@ -118,4 +118,15 @@ task buildPackage(type: Zip, dependsOn: ['war']) {
     from "$buildDir/exploded"
     exclude "WEB-INF/**"
     exclude "META-INF/**"
+}
+
+task clearWebPackage(type: Delete) {
+    delete "${projectDir}/../../apps/actor-web/ActorMessenger"
+}
+
+task installPackageToWeb(type: Copy, dependsOn: ['buildPackage', 'clearWebPackage']) {
+    from "$buildDir/exploded"
+    include "ActorMessenger/**"
+
+    into "${projectDir}/../../apps/actor-web/"
 }

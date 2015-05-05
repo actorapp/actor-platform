@@ -1,9 +1,5 @@
 //
-//  CocoaMessenger.swift
-//  ActorClient
-//
-//  Created by Stepan Korshakov on 10.03.15.
-//  Copyright (c) 2015 Anton Bukov. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -20,8 +16,8 @@ get{
         // Providers
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
-        builder.setNetworkProvider(AMManagedNetworkProvider(AMAsyncConnectionFactory: TcpConnectionFactory()))
-        builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(HttpProvider())
+        builder.setNetworkProvider(AMManagedNetworkProvider(AMAsyncConnectionFactory: CocoaTcpConnectionFactory()))
+        builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(CocoaHttpProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
         builder.setStorageProvider(CocoaStorage(dbPath: dbPath))
         builder.setMainThreadProvider(CocoaMainThreadProvider())
@@ -29,7 +25,7 @@ get{
         builder.setPhoneBookProvider(PhoneBookProvider())
         builder.setCryptoProvider(CocoaCryptoProvider())
         builder.setFileSystemProvider(CocoaFileSystem())
-        builder.setDispatcherProvider(DispatcherProvider())
+        builder.setDispatcherProvider(CocoaDispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setEnableNetworkLogging(true)
         builder.setEnableFilesLoggingWithBoolean(true)

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages;
 
 import im.actor.model.api.OutPeer;
@@ -8,9 +12,6 @@ import im.actor.model.modules.Modules;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 
-/**
- * Created by ex3ndr on 17.02.15.
- */
 public class CursorReaderActor extends CursorActor {
 
     public CursorReaderActor(Modules messenger) {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.viewmodel;
 
 import im.actor.model.entity.Message;
@@ -6,9 +10,6 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 
-/**
- * Created by ex3ndr on 25.03.15.
- */
 public class ConversationVM {
     private BindedDisplayList<Message> displayList;
     private BindedDisplayList.Listener listener;

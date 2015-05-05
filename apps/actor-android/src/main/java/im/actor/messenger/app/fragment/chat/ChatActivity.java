@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
@@ -33,7 +34,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
@@ -103,6 +103,10 @@ public class ChatActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
+
+        if (saveInstance != null) {
+            fileName = saveInstance.getString("pending_file_name", null);
+        }
 
         keyboardUtils = new KeyboardHelper(this);
 
@@ -255,11 +259,7 @@ public class ChatActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                if (BuildConfig.IS_CHROME_BUILD) {
-                    popup.getMenuInflater().inflate(R.menu.attach_popup_chrome, popup.getMenu());
-                } else {
-                    popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
-                }
+                popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -323,6 +323,7 @@ public class ChatActivity extends BaseActivity {
         });
 
         emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
+
 
             @Override
             public void onDismiss() {
@@ -413,6 +414,7 @@ public class ChatActivity extends BaseActivity {
         }
 
         messenger().sendMessage(peer, text);
+        messenger().trackTextSend(peer);
     }
 
     @Override
@@ -424,8 +426,10 @@ public class ChatActivity extends BaseActivity {
                 }
             } else if (requestCode == REQUEST_PHOTO) {
                 messenger().sendPhoto(peer, fileName);
+                messenger().trackPhotoSend(peer);
             } else if (requestCode == REQUEST_VIDEO) {
                 messenger().sendVideo(peer, fileName);
+                messenger().trackVideoSend(peer);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
                     sendUri(data.getData());
@@ -434,6 +438,7 @@ public class ChatActivity extends BaseActivity {
                     if (files != null) {
                         for (String s : files) {
                             messenger().sendDocument(peer, s);
+                            messenger().trackDocumentSend(peer);
                         }
                     }
                 }
@@ -495,10 +500,13 @@ public class ChatActivity extends BaseActivity {
 
                 if (mimeType.startsWith("video/")) {
                     messenger().sendVideo(peer, picturePath, fileName);
+                    messenger().trackVideoSend(peer);
                 } else if (mimeType.startsWith("image/")) {
                     messenger().sendPhoto(peer, picturePath, new File(fileName).getName());
+                    messenger().trackPhotoSend(peer);
                 } else {
                     messenger().sendDocument(peer, picturePath, new File(fileName).getName());
+                    messenger().trackDocumentSend(peer);
                 }
 
                 return null;
@@ -594,6 +602,14 @@ public class ChatActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        if (fileName != null) {
+            outState.putString("pending_file_name", fileName);
+        }
     }
 
     @Override

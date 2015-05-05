@@ -1,15 +1,15 @@
-package im.actor.model.network.mtp.entity.rpc;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import im.actor.model.network.mtp.entity.ProtoStruct;
-import im.actor.model.droidkit.bser.DataInput;
-import im.actor.model.droidkit.bser.DataOutput;
+package im.actor.model.network.mtp.entity.rpc;
 
 import java.io.IOException;
 
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.network.mtp.entity.ProtoStruct;
 
-/**
- * Created by ex3ndr on 03.09.14.
- */
 public class RpcFloodWait extends ProtoStruct {
     public static final byte HEADER = (byte) 0x03;
 

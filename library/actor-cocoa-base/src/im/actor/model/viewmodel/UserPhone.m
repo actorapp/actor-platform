@@ -21,11 +21,11 @@
 J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 
 
-#line 6
+#line 10
 @implementation AMUserPhone
 
 
-#line 17
+#line 21
 - (instancetype)initWithLong:(jlong)phone
                 withNSString:(NSString *)title {
   AMUserPhone_initWithLong_withNSString_(self, phone, title);
@@ -33,35 +33,35 @@ J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 }
 
 
-#line 27
+#line 31
 - (jlong)getPhone {
   return phone_;
 }
 
 
-#line 36
+#line 40
 - (NSString *)getTitle {
   return title_;
 }
 
 
-#line 41
+#line 45
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 45
+#line 49
   AMUserPhone *userPhone = (AMUserPhone *) check_class_cast(o, [AMUserPhone class]);
   
-#line 47
+#line 51
   if (phone_ != ((AMUserPhone *) nil_chk(userPhone))->phone_) return NO;
   
-#line 49
+#line 53
   return YES;
 }
 
 
-#line 53
+#line 57
 - (NSUInteger)hash {
   return (jint) (phone_ ^ (URShift64(phone_, 32)));
 }
@@ -69,17 +69,17 @@ J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 @end
 
 
-#line 17
+#line 21
 void AMUserPhone_initWithLong_withNSString_(AMUserPhone *self, jlong phone, NSString *title) {
   (void) NSObject_init(self);
   
-#line 18
+#line 22
   self->phone_ = phone;
   self->title_ = title;
 }
 
 
-#line 17
+#line 21
 AMUserPhone *new_AMUserPhone_initWithLong_withNSString_(jlong phone, NSString *title) {
   AMUserPhone *self = [AMUserPhone alloc];
   AMUserPhone_initWithLong_withNSString_(self, phone, title);

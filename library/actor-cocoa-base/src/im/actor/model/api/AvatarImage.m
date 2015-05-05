@@ -28,11 +28,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFileLocation *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiAvatarImage
 
 
-#line 26
+#line 30
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
                                             withInt:(jint)width
                                             withInt:(jint)height
@@ -42,14 +42,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiAvatarImage_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (ImActorModelApiFileLocation *)getFileLocation {
   return self->fileLocation_;
 }
@@ -67,7 +67,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiFileLocation_init()];
   self->width_ = [values getIntWithInt:2];
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 }
 
 
-#line 62
+#line 66
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->fileLocation_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -88,7 +88,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 }
 
 
-#line 73
+#line 77
 - (NSString *)description {
   NSString *res = @"struct AvatarImage{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"fileLocation=", self->fileLocation_));
@@ -102,11 +102,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatarImage, fileLocation_, ImActorModelApiFi
 @end
 
 
-#line 26
+#line 30
 void ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiAvatarImage *self, ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize) {
   (void) BSBserObject_init(self);
   
-#line 27
+#line 31
   self->fileLocation_ = fileLocation;
   self->width_ = width;
   self->height_ = height;
@@ -114,7 +114,7 @@ void ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_with
 }
 
 
-#line 26
+#line 30
 ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize) {
   ImActorModelApiAvatarImage *self = [ImActorModelApiAvatarImage alloc];
   ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(self, fileLocation, width, height, fileSize);
@@ -122,13 +122,13 @@ ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_initWithImActorModelA
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiAvatarImage_init(ImActorModelApiAvatarImage *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_init() {
   ImActorModelApiAvatarImage *self = [ImActorModelApiAvatarImage alloc];
   ImActorModelApiAvatarImage_init(self);

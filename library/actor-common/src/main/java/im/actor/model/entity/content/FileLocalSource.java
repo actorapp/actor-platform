@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity.content;
 
 import java.io.IOException;
@@ -5,9 +9,6 @@ import java.io.IOException;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-/**
- * Created by ex3ndr on 14.02.15.
- */
 public class FileLocalSource extends FileSource {
 
     protected static FileLocalSource fromValues(BserValues reader) throws IOException {

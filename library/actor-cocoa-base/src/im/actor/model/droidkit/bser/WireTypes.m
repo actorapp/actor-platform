@@ -10,7 +10,7 @@
 #include "im/actor/model/droidkit/bser/WireTypes.h"
 
 
-#line 6
+#line 7
 @implementation BSWireTypes
 
 - (instancetype)init {

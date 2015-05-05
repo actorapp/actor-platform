@@ -21,7 +21,7 @@ J2OBJC_INITIALIZED_DEFN(AMGroupStateEnum)
 AMGroupStateEnum *AMGroupStateEnum_values_[4];
 
 
-#line 6
+#line 7
 @implementation AMGroupStateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name

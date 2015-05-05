@@ -31,11 +31,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, content_, AM
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, status_, AMMessageStateEnum *)
 
 
-#line 10
+#line 11
 @implementation ImActorModelModulesMessagesEntityDialogHistory
 
 
-#line 21
+#line 22
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)unreadCount
                       withLong:(jlong)sortDate
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, status_, AMM
 @end
 
 
-#line 21
+#line 22
 void ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(ImActorModelModulesMessagesEntityDialogHistory *self, AMPeer *peer, jint unreadCount, jlong sortDate, jlong rid, jlong date, jint senderId, AMAbsContent *content, AMMessageStateEnum *status) {
   (void) NSObject_init(self);
   self->peer_ = peer;
@@ -97,7 +97,7 @@ void ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withL
 }
 
 
-#line 21
+#line 22
 ImActorModelModulesMessagesEntityDialogHistory *new_ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(AMPeer *peer, jint unreadCount, jlong sortDate, jlong rid, jlong date, jint senderId, AMAbsContent *content, AMMessageStateEnum *status) {
   ImActorModelModulesMessagesEntityDialogHistory *self = [ImActorModelModulesMessagesEntityDialogHistory alloc];
   ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(self, peer, unreadCount, sortDate, rid, date, senderId, content, status);

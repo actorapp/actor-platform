@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.threading;
 
 import com.google.gwt.core.client.Scheduler;
@@ -9,10 +13,6 @@ import im.actor.model.droidkit.actors.dispatch.AbstractDispatcher;
 import im.actor.model.droidkit.actors.dispatch.Dispatch;
 import im.actor.model.droidkit.actors.dispatch.DispatchResult;
 
-
-/**
- * Created by ex3ndr on 07.02.15.
- */
 public class JsThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDispatcher<T, Q> {
 
     private boolean isSchedulled = false;

@@ -28,6 +28,7 @@ import im.actor.model.entity.PhoneBookPhone;
 public class AndroidPhoneBook implements PhoneBookProvider {
 
     private static final int PRELOAD_DELAY = 3000;
+    private static final int READ_ITEM_DELAY_BATCH = 30;
     private static final int READ_ITEM_DELAY = 10;
     private static final boolean DISABLE_PHONE_BOOK = false;
     private static final String TAG = "PhoneBookLoader";
@@ -82,12 +83,16 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         }
         int idIndex = cur.getColumnIndex(ContactsContract.Contacts._ID);
         int nameIndex = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+
+        int index = 0;
         while (cur.moveToNext()) {
-            if (READ_ITEM_DELAY > 0) {
-                try {
-                    Thread.sleep(READ_ITEM_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (index++ == READ_ITEM_DELAY_BATCH) {
+                if (READ_ITEM_DELAY > 0) {
+                    try {
+                        Thread.sleep(READ_ITEM_DELAY);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -124,12 +129,15 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         final int idPhoneIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID);
         final int idNumberIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
+
         while (cur.moveToNext()) {
-            if (READ_ITEM_DELAY > 0) {
-                try {
-                    Thread.sleep(READ_ITEM_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (index++ == READ_ITEM_DELAY_BATCH) {
+                if (READ_ITEM_DELAY > 0) {
+                    try {
+                        Thread.sleep(READ_ITEM_DELAY);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -187,11 +195,13 @@ public class AndroidPhoneBook implements PhoneBookProvider {
         final int idEmailIndex = cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS);
 
         while (cur.moveToNext()) {
-            if (READ_ITEM_DELAY > 0) {
-                try {
-                    Thread.sleep(READ_ITEM_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (index++ == READ_ITEM_DELAY_BATCH) {
+                if (READ_ITEM_DELAY > 0) {
+                    try {
+                        Thread.sleep(READ_ITEM_DELAY);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -224,7 +234,7 @@ public class AndroidPhoneBook implements PhoneBookProvider {
                 res.add(rec);
             }
         }
-        Logger.d(TAG, "Phone book loaded in " + (SystemClock.uptimeMillis() - start) + " ms");
+        Logger.d(TAG, "Phone book loaded in " + (SystemClock.uptimeMillis() - start) + " ms in " + (index) + " iterations");
         return res;
     }
 }

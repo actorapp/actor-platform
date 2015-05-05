@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.android.view;
 
 import android.support.v7.widget.RecyclerView;
@@ -8,9 +12,6 @@ import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 
-/**
- * Created by ex3ndr on 14.03.15.
- */
 public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
         T extends BindedViewHolder>
         extends RecyclerView.Adapter<T> {

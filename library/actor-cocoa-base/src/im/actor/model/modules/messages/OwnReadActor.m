@@ -45,22 +45,22 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor, syncKeyValue_, DKSy
 __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self);
 
 
-#line 18
+#line 19
 @implementation ImActorModelModulesMessagesOwnReadActor
 
 
-#line 23
+#line 24
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
 
-#line 29
+#line 30
 - (void)preStart {
   [super preStart];
   
-#line 32
+#line 33
   messagesStorage_ = new_ImActorModelModulesMessagesEntityUnreadMessagesStorage_init();
   IOSByteArray *st = [((DKSyncKeyValue *) nil_chk(syncKeyValue_)) getWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ];
   if (st != nil) {
@@ -68,7 +68,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
       messagesStorage_ = ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(st);
     }
     @catch (
-#line 37
+#line 38
     JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
@@ -76,59 +76,59 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 }
 
 
-#line 43
+#line 44
 - (void)onNewInMessageWithAMPeer:(AMPeer *)peer
                         withLong:(jlong)rid
                         withLong:(jlong)sortingDate {
   
-#line 45
+#line 46
   jlong readState = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
   if (sortingDate <= readState) {
     
-#line 48
+#line 49
     return;
   }
   
-#line 52
+#line 53
   JavaUtilHashSet *unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   [((JavaUtilHashSet *) nil_chk(unread)) addWithId:new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(peer, rid, sortingDate)];
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
   
-#line 57
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
 #line 58
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
+#line 59
   peer, [unread size])];
 }
 
 
-#line 61
+#line 62
 - (void)onMessageReadWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)sortingDate {
   
-#line 63
+#line 64
   jlong readState = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
   if (sortingDate <= readState) {
     
-#line 66
+#line 67
     return;
   }
   
-#line 70
+#line 71
   JavaUtilHashSet *unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   
-#line 72
+#line 73
   jlong maxPlainReadDate = sortingDate;
   jboolean removed = NO;
   {
     IOSObjectArray *a__ =
-#line 74
+#line 75
     [((JavaUtilHashSet *) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelModulesMessagesEntityUnreadMessage *u = *b__++;
       
-#line 75
+#line 76
       if ([((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(u)) getSortDate] <= sortingDate) {
         maxPlainReadDate = JavaLangMath_maxWithLong_withLong_([u getSortDate], maxPlainReadDate);
         removed = YES;
@@ -137,50 +137,50 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
     }
   }
   
-#line 81
+#line 82
   if (removed) {
     ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
   }
   
-#line 85
+#line 86
   if (maxPlainReadDate > 0) {
     [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReadActor])) sendWithId:new_ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(
-#line 87
+#line 88
     peer, maxPlainReadDate)];
   }
   
-#line 91
+#line 92
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) saveReadStateWithAMPeer:peer withLong:sortingDate];
   
-#line 94
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
 #line 95
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
+#line 96
   peer, [unread size])];
   
-#line 97
+#line 98
   [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onOwnReadWithAMPeer:peer withLong:sortingDate];
 }
 
 
-#line 100
+#line 101
 - (void)onMessageReadByMeWithAMPeer:(AMPeer *)peer
                            withLong:(jlong)sortingDate {
   
-#line 102
+#line 103
   jlong msgSortingDate = 0;
   
-#line 105
+#line 106
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   {
     IOSObjectArray *a__ =
-#line 106
+#line 107
     [((id<JavaUtilSet>) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelModulesMessagesEntityUnreadMessage *u = *b__++;
       
-#line 107
+#line 108
       if ([((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(u)) getSortDate] <= sortingDate && [u getSortDate] > msgSortingDate) {
         msgSortingDate = [u getSortDate];
       }
@@ -192,21 +192,21 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 }
 
 
-#line 117
+#line 118
 - (void)onMessageDeleteWithAMPeer:(AMPeer *)peer
                  withJavaUtilList:(id<JavaUtilList>)rids {
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   jboolean isRemoved = NO;
   {
     IOSObjectArray *a__ =
-#line 120
+#line 121
     [((id<JavaUtilSet>) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelModulesMessagesEntityUnreadMessage *u = *b__++;
       
-#line 121
+#line 122
       if ([((id<JavaUtilList>) nil_chk(rids)) containsWithId:JavaLangLong_valueOfWithLong_([((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(u)) getRid])]) {
         [unread removeWithId:u];
         isRemoved = YES;
@@ -214,54 +214,54 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
     }
   }
   
-#line 126
+#line 127
   if (!isRemoved) {
     return;
   }
   
-#line 130
+#line 131
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
   
-#line 133
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
 #line 134
+  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(
+#line 135
   peer, [unread size])];
 }
 
 
-#line 139
+#line 140
 - (void)saveStorage {
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
 }
 
 
-#line 146
+#line 147
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_NewMessage class]]) {
     ImActorModelModulesMessagesOwnReadActor_NewMessage *newMessage = (ImActorModelModulesMessagesOwnReadActor_NewMessage *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_NewMessage class]);
     [self onNewInMessageWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_NewMessage *) nil_chk(newMessage)) getPeer] withLong:[newMessage getRid] withLong:[newMessage getSortingDate]];
   }
   else
-#line 150
+#line 151
   if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_MessageRead class]]) {
     ImActorModelModulesMessagesOwnReadActor_MessageRead *messageRead = (ImActorModelModulesMessagesOwnReadActor_MessageRead *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_MessageRead class]);
     [self onMessageReadWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_MessageRead *) nil_chk(messageRead)) getPeer] withLong:[messageRead getSortingDate]];
   }
   else
-#line 153
+#line 154
   if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_MessageReadByMe class]]) {
     ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *readByMe = (ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_MessageReadByMe class]);
     [self onMessageReadByMeWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *) nil_chk(readByMe)) getPeer] withLong:[readByMe getSortDate]];
   }
   else
-#line 156
+#line 157
   if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_MessageDeleted class]]) {
     ImActorModelModulesMessagesOwnReadActor_MessageDeleted *deleted = (ImActorModelModulesMessagesOwnReadActor_MessageDeleted *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_MessageDeleted class]);
     [self onMessageDeleteWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_MessageDeleted *) nil_chk(deleted)) getPeer] withJavaUtilList:[deleted getRids]];
   }
   else {
     
-#line 160
+#line 161
     [self dropWithId:message];
   }
 }
@@ -269,14 +269,14 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 @end
 
 
-#line 23
+#line 24
 void ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesOwnReadActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
   self->syncKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getCursorStorage];
 }
 
 
-#line 23
+#line 24
 ImActorModelModulesMessagesOwnReadActor *new_ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesMessagesOwnReadActor *self = [ImActorModelModulesMessagesOwnReadActor alloc];
   ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(self, messenger);
@@ -284,7 +284,7 @@ ImActorModelModulesMessagesOwnReadActor *new_ImActorModelModulesMessagesOwnReadA
 }
 
 
-#line 139
+#line 140
 void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMessagesOwnReadActor *self) {
   [((DKSyncKeyValue *) nil_chk(self->syncKeyValue_)) putWithLong:ImActorModelModulesUtilsModuleActor_CURSOR_OWN_READ withByteArray:[((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) toByteArray]];
 }
@@ -292,11 +292,11 @@ void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMess
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)
 
 
-#line 164
+#line 165
 @implementation ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted
 
 
-#line 168
+#line 169
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid {
   ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
@@ -304,7 +304,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)
 }
 
 
-#line 173
+#line 174
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -316,17 +316,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)
 @end
 
 
-#line 168
+#line 169
 void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid) {
   (void) NSObject_init(self);
   
-#line 169
+#line 170
   self->peer_ = peer;
   self->rid_ = rid;
 }
 
 
-#line 168
+#line 169
 ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) {
   ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self = [ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted alloc];
   ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
@@ -336,11 +336,11 @@ ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorMod
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
 
 
-#line 182
+#line 183
 @implementation ImActorModelModulesMessagesOwnReadActor_MessageReadByMe
 
 
-#line 186
+#line 187
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortDate {
   ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(self, peer, sortDate);
@@ -348,7 +348,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 }
 
 
-#line 191
+#line 192
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -360,17 +360,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 @end
 
 
-#line 186
+#line 187
 void ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *self, AMPeer *peer, jlong sortDate) {
   (void) NSObject_init(self);
   
-#line 187
+#line 188
   self->peer_ = peer;
   self->sortDate_ = sortDate;
 }
 
 
-#line 186
+#line 187
 ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(AMPeer *peer, jlong sortDate) {
   ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *self = [ImActorModelModulesMessagesOwnReadActor_MessageReadByMe alloc];
   ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(self, peer, sortDate);
@@ -380,11 +380,11 @@ ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *new_ImActorModelModules
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageReadByMe)
 
 
-#line 200
+#line 201
 @implementation ImActorModelModulesMessagesOwnReadActor_MessageRead
 
 
-#line 204
+#line 205
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)sortingDate {
   ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(self, peer, sortingDate);
@@ -392,7 +392,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 }
 
 
-#line 209
+#line 210
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -404,17 +404,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 @end
 
 
-#line 204
+#line 205
 void ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageRead *self, AMPeer *peer, jlong sortingDate) {
   (void) NSObject_init(self);
   
-#line 205
+#line 206
   self->peer_ = peer;
   self->sortingDate_ = sortingDate;
 }
 
 
-#line 204
+#line 205
 ImActorModelModulesMessagesOwnReadActor_MessageRead *new_ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(AMPeer *peer, jlong sortingDate) {
   ImActorModelModulesMessagesOwnReadActor_MessageRead *self = [ImActorModelModulesMessagesOwnReadActor_MessageRead alloc];
   ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(self, peer, sortingDate);
@@ -424,11 +424,11 @@ ImActorModelModulesMessagesOwnReadActor_MessageRead *new_ImActorModelModulesMess
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 
 
-#line 218
+#line 219
 @implementation ImActorModelModulesMessagesOwnReadActor_NewMessage
 
 
-#line 223
+#line 224
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid
                       withLong:(jlong)sortingDate {
@@ -437,7 +437,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 }
 
 
-#line 229
+#line 230
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -453,18 +453,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 @end
 
 
-#line 223
+#line 224
 void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesOwnReadActor_NewMessage *self, AMPeer *peer, jlong rid, jlong sortingDate) {
   (void) NSObject_init(self);
   
-#line 224
+#line 225
   self->peer_ = peer;
   self->rid_ = rid;
   self->sortingDate_ = sortingDate;
 }
 
 
-#line 223
+#line 224
 ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortingDate) {
   ImActorModelModulesMessagesOwnReadActor_NewMessage *self = [ImActorModelModulesMessagesOwnReadActor_NewMessage alloc];
   ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortingDate);
@@ -474,11 +474,11 @@ ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessa
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_NewMessage)
 
 
-#line 242
+#line 243
 @implementation ImActorModelModulesMessagesOwnReadActor_MessageDeleted
 
 
-#line 246
+#line 247
 - (instancetype)initWithAMPeer:(AMPeer *)peer
               withJavaUtilList:(id<JavaUtilList>)rids {
   ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(self, peer, rids);
@@ -486,7 +486,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_NewMess
 }
 
 
-#line 251
+#line 252
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -498,17 +498,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_NewMess
 @end
 
 
-#line 246
+#line 247
 void ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(ImActorModelModulesMessagesOwnReadActor_MessageDeleted *self, AMPeer *peer, id<JavaUtilList> rids) {
   (void) NSObject_init(self);
   
-#line 247
+#line 248
   self->peer_ = peer;
   self->rids_ = rids;
 }
 
 
-#line 246
+#line 247
 ImActorModelModulesMessagesOwnReadActor_MessageDeleted *new_ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(AMPeer *peer, id<JavaUtilList> rids) {
   ImActorModelModulesMessagesOwnReadActor_MessageDeleted *self = [ImActorModelModulesMessagesOwnReadActor_MessageDeleted alloc];
   ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(self, peer, rids);

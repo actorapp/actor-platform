@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 import im.actor.model.droidkit.actors.mailbox.Mailbox;
@@ -7,8 +11,6 @@ import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
  * <p>Props is a configuration class to specify options for the creation of actors, think of it as an immutable and
  * thus freely shareable recipe for creating an actor including associated dispatcher information.</p>
  * For more information you may read about <a href="http://doc.akka.io/docs/akka/2.3.5/java/untyped-actors.html">Akka Props</a>.
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public final class Props<T extends Actor> {
 

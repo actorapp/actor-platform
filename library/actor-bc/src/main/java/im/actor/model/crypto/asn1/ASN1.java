@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.crypto.asn1;
 
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.DataInput;
 
-/**
- * Created by ex3ndr on 09.03.15.
- */
 public class ASN1 {
     public static ASN1Primitive readObject(byte[] sourceData) throws IOException {
         return readObject(sourceData, 0, sourceData.length);

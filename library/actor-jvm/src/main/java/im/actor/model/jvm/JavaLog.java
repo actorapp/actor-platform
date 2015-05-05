@@ -1,10 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.jvm;
 
 import im.actor.model.LogProvider;
 
-/**
- * Created by ex3ndr on 07.02.15.
- */
 public class JavaLog implements LogProvider {
     @Override
     public void w(String tag, String message) {

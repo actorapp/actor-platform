@@ -1,9 +1,5 @@
 //
-//  iOSNotificationProvider.swift
-//  ActorClient
-//
-//  Created by Stepan Korshakov on 17.03.15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -23,15 +19,11 @@ import AVFoundation
         AudioServicesPlaySystemSound(internalMessage)
     }
     
-    func onDialogsOpenWithAMMessenger(messenger: AMMessenger!) {
+    func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint, withBoolean silentUpdate: Bool) {
         
     }
     
-    func onChatOpenWithAMMessenger(messenger: AMMessenger!, withAMPeer peer: AMPeer!) {
-        
-    }
-    
-    func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint) {
+    func hideAllNotifications() {
         
     }
 }

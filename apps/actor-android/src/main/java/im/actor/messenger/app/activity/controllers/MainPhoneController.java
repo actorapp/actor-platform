@@ -140,6 +140,40 @@ public class MainPhoneController extends MainBaseController {
         pager = (ViewPager) findViewById(R.id.vp_pager);
         homePagerAdapter = new HomePagerAdapter(getFragmentManager());
         pager.setAdapter(homePagerAdapter);
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            private int prevPage = -1;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    if (position != prevPage) {
+                        messenger().trackDialogsOpen();
+                    }
+                    if (prevPage == 1) {
+                        messenger().trackContactsClosed();
+                    }
+                    prevPage = position;
+                } else if (position == 1) {
+                    if (position != prevPage) {
+                        messenger().trackContactsOpen();
+                    }
+                    if (prevPage == 0) {
+                        messenger().trackDialogsClosed();
+                    }
+                    prevPage = position;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         findViewById(R.id.composeContainer).setOnClickListener(new View.OnClickListener() {
             @Override

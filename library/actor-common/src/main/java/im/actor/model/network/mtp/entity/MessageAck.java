@@ -1,10 +1,14 @@
-package im.actor.model.network.mtp.entity;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import im.actor.model.droidkit.bser.DataInput;
-import im.actor.model.droidkit.bser.DataOutput;
+package im.actor.model.network.mtp.entity;
 
 import java.io.IOException;
 import java.util.Arrays;
+
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
 
 public class MessageAck extends ProtoStruct {
 

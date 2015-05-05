@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.threading;
 
 
@@ -7,9 +11,6 @@ import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 
-/**
- * Created by ex3ndr on 07.02.15.
- */
 public class JsDispatch extends ActorDispatcher {
     public JsDispatch(String name, ActorSystem actorSystem) {
         super(name, actorSystem);

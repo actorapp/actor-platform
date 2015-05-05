@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.state;
 
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
-/**
- * Created by ex3ndr on 28.03.15.
- */
 public class ListsStatesActor extends ModuleActor {
 
     public ListsStatesActor(Modules modules) {

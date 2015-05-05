@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.concurrency;
 
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -6,9 +10,6 @@ import im.actor.model.droidkit.actors.Props;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
-/**
- * Created by ex3ndr on 01.05.15.
- */
 public class TimerCompat {
 
     private static final ActorRef TIMER_ACTOR = system().actorOf(Props.create(TimerActor.class, new ActorCreator<TimerActor>() {

@@ -49,7 +49,7 @@ __attribute__((unused)) static void AMUser_init(AMUser *self);
 __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 
 
-#line 16
+#line 17
 @implementation AMUser
 
 + (AMUser *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -57,7 +57,7 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 30
+#line 31
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name
@@ -75,7 +75,7 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 45
+#line 46
 - (AMPeer *)peer {
   return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_PRIVATE(), uid_);
 }
@@ -102,13 +102,13 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
   }
   else {
     
-#line 69
+#line 70
     return localName_;
   }
 }
 
 
-#line 73
+#line 74
 - (AMAvatar *)getAvatar {
   return avatar_;
 }
@@ -134,13 +134,13 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 98
+#line 99
 - (jlong)getEngineId {
   return [self getUid];
 }
 
 
-#line 103
+#line 104
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
@@ -162,7 +162,7 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 }
 
 
-#line 124
+#line 125
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
   [writer writeLongWithInt:2 withLong:accessHash_];
@@ -180,16 +180,16 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 @end
 
 
-#line 18
+#line 19
 AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data) {
   AMUser_initialize();
   
-#line 19
+#line 20
   return ((AMUser *) BSBser_parseWithBSBserObject_withByteArray_(new_AMUser_init(), data));
 }
 
 
-#line 30
+#line 31
 void AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(AMUser *self, jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
@@ -202,7 +202,7 @@ void AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSe
 }
 
 
-#line 30
+#line 31
 AMUser *new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) {
   AMUser *self = [AMUser alloc];
   AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(self, uid, accessHash, name, localName, avatar, sex, records);
@@ -210,13 +210,13 @@ AMUser *new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_w
 }
 
 
-#line 41
+#line 42
 void AMUser_init(AMUser *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 41
+#line 42
 AMUser *new_AMUser_init() {
   AMUser *self = [AMUser alloc];
   AMUser_init(self);

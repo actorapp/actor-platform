@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.i18n;
 
 import java.util.Arrays;
@@ -24,9 +28,6 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.viewmodel.UserPresence;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class I18nEngine {
     private final Modules modules;
     private final HashMap<String, String> locale;

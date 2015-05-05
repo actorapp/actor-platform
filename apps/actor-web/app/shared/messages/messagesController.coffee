@@ -1,13 +1,13 @@
 class MessagesController
   list: null
 
-  constructor: (@$rootScope, @$timeout, @actorService) ->
+  constructor: (@$rootScope, @$scope, @$timeout, @actorService) ->
     console.log '[AW]MessagesController constructor'
-    @$rootScope.$on 'openConversation', (event, peer) =>
-      console.log '[AW]MessagesController constructor: openConversation fired.'
-      @getMessages(peer)
+    @$scope.$on 'onConversationOpen', (event, peer) =>
+      console.log '[AW]MessagesController constructor: onConversationOpen fired.'
+      @bindChat peer
 
-  getMessages: (peer) ->
+  bindChat: (peer) ->
     console.log '[AW]MessagesController getMessages'
     console.log '[AW]MessagesController getMessages: peer:', peer
     @actorService.bindChat peer, @renderMessages
@@ -16,11 +16,14 @@ class MessagesController
     console.log '[AW]MessagesController renderMessages'
     console.log '[AW]MessagesController renderMessages: messages:', messages
     @$timeout =>
+      for message in messages
+        if message.content.content == 'text'
+          message.content.text = message.content.text.replace(/\n/g, '<br/>')
       @list = messages
       @$rootScope.$broadcast 'renderMessages'
 
 
-MessagesController.$inject = ['$rootScope', '$timeout', 'actorService']
+MessagesController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
 
 angular
   .module 'actorWeb'

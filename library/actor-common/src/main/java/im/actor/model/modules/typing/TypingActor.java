@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.typing;
 
 import java.util.HashMap;
@@ -16,9 +20,6 @@ import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
-/**
- * Created by ex3ndr on 16.02.15.
- */
 @Verified
 public class TypingActor extends ModuleActor {
 

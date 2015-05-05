@@ -1,9 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model;
 
 import java.util.List;
 
 import im.actor.model.entity.Notification;
-import im.actor.model.entity.Peer;
 
 /**
  * Provider for notifications support
@@ -23,22 +26,13 @@ public interface NotificationProvider {
      * @param topNotifications   top 10 notifications
      * @param messagesCount      total messages count
      * @param conversationsCount total conversations count
+     * @param silentUpdate       is silent notification update required
      */
     void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount,
-                        int conversationsCount);
+                        int conversationsCount, boolean silentUpdate);
 
     /**
-     * Called on dialogs open (need for hiding all notifications)
-     *
-     * @param messenger Messenger object
+     * Hide all notifications
      */
-    void onDialogsOpen(Messenger messenger);
-
-    /**
-     * Called on conversation open (need for hiding conversation notifications)
-     *
-     * @param messenger Messenger object
-     * @param peer peer of chat
-     */
-    void onChatOpen(Messenger messenger, Peer peer);
+    void hideAllNotifications();
 }

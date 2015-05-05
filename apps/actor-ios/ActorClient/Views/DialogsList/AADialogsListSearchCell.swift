@@ -1,11 +1,6 @@
 //
-//  AADialogsListSearchCell.swift
-//  ActorApp
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
-//  Created by Danil Gontovnik on 4/9/15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
-//
-
 import UIKit
 
 class AADialogsListSearchCell: AATableViewCell {
