@@ -81,6 +81,15 @@ public class SmilePagerAdapter extends PagerAdapter implements PagerSlidingTabSt
                 }
             });
         }
+        // is this necessary?
+        /*if(position==0){
+            getSmileProcessor().setRecentUpdateListener(new SmilesRecentListener() {
+                @Override
+                public void onSmilesUpdated() {
+                    smilesPackView.update();
+                }
+            });
+        }*/
         smilesPackView.setOnSmileClickListener(new OnSmileClickListener() {
             @Override
             public void onEmojiClicked(String smile) {

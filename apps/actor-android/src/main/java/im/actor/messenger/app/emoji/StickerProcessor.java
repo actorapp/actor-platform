@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import im.actor.messenger.app.ActorBinder;
+import im.actor.messenger.app.emoji.stickers.Sticker;
+import im.actor.messenger.app.emoji.stickers.StickerRecentController;
 import im.actor.messenger.app.emoji.stickers.StickersPack;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.model.mvvm.ValueChangedListener;
@@ -37,6 +39,7 @@ public class StickerProcessor {
     private boolean loading;
     private boolean loaded;
     private AssetManager assetsManager;
+    private StickerRecentController recentController;
 
     public StickerProcessor(Application application) {
 
@@ -68,9 +71,9 @@ public class StickerProcessor {
                         String[] files = assetsManager.list("stickers/" + stickersPackId);
 
                         String packTitle = stickersPackId;
-                        String packLogo = null;
-                        String[] order = null;
-                        ArrayList<String> stickers = new ArrayList<String>();
+                        Sticker packLogo = null;
+                        Sticker[] order = null;
+                        ArrayList<Sticker> stickers = new ArrayList<Sticker>();
 
 
                         File sourceFileDir= new File(application.getFilesDir() + "/stickers/" + stickersPackId);
@@ -81,14 +84,12 @@ public class StickerProcessor {
                                 stickersCount++;
                                 try {
                                     File sourceFile = new File(sourceFileDir, fileName);
-                                    if (sourceFile.exists()) {
-                                        stickers.add(fileName.replace(".png", ""));
-                                        continue;
+                                    if (!sourceFile.exists()) {
+                                        InputStream fileIS = assetsManager.open("stickers/" + stickersPackId + "/" + fileName);
+                                        IOUtils.copy(fileIS, sourceFile);
+                                        fileIS.close();
                                     }
-                                    InputStream fileIS = assetsManager.open("stickers/" + stickersPackId + "/" + fileName);
-                                    IOUtils.copy(fileIS, sourceFile);
-                                    fileIS.close();
-                                    stickers.add(fileName.replace(".png", ""));
+                                    stickers.add(new Sticker(fileName.replace(".png", ""), stickersPackId));
                                 } catch (Exception ex) {
                                     Log.e(TAG, "Eror reading sticker", ex);
                                 }
@@ -104,11 +105,11 @@ public class StickerProcessor {
                                         String total = IOUtils.toString(new FileInputStream(sourceFile));
                                         JSONObject jObj = new JSONObject(total);
                                         packTitle = jObj.optString("title");
-                                        packLogo = jObj.optString("logo");
+                                        packLogo = new Sticker(jObj.optString("logo"), stickersPackId);
                                         JSONArray jOrder = jObj.optJSONArray("order");
-                                        order = new String[jOrder.length()];
+                                        order = new Sticker[jOrder.length()];
                                         for (int i = 0; i < jOrder.length(); i++) {
-                                            order[i] = jOrder.optString(i);
+                                            order[i] = new Sticker(jOrder.optString(i), stickersPackId);
                                         }
                                     } catch (Exception exp){
                                         Log.e(TAG, "Eror reading pack meta", exp);
@@ -120,7 +121,7 @@ public class StickerProcessor {
                             continue;
                         }
                         if(order==null){
-                            order = new String[stickers.size()];
+                            order = new Sticker[stickers.size()];
                             order = stickers.toArray(order);
                         }
                         if(packLogo==null){
@@ -137,6 +138,8 @@ public class StickerProcessor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                recentController = StickerRecentController.getInstance();
 
                 handler.post(new Runnable() {
                     @Override
@@ -162,17 +165,19 @@ public class StickerProcessor {
         return loading;
     }
 
-    public String getStickerPath(String packId, String stickerId) {
-        return application.getFilesDir().getAbsolutePath()+"/stickers/" + packId + "/" + stickerId + ".png";
+    public String getStickerPath(Sticker sticker) {
+        return application.getFilesDir().getAbsolutePath()+"/stickers/" + sticker.getPackId() + "/" + sticker.getId() + ".png";
     }
 
 
 
     HashMap<String, ValueModel> mvvmCollection = new HashMap<String, ValueModel>();
 
-    public void bindSticker(final ImageView tabView, final String packId, final String stickerId) {
+    public void bindSticker(final ImageView tabView, final Sticker sticker) {
+        String stickerId = sticker.getId();
+        String packId = sticker.getPackId();
         if(isLoaded()){
-            tabView.setImageURI(Uri.parse("file://" + getStickerPath(packId, stickerId)));
+            tabView.setImageURI(Uri.parse("file://" + getStickerPath(sticker)));
             return;
         }
         String bindingId = "stickers." + packId + "." + stickerId;
@@ -185,7 +190,7 @@ public class StickerProcessor {
         BINDER.bind(vm, new ValueChangedListener<Object>() {
             @Override
             public void onChanged(Object val, ValueModel<Object> valueModel) {
-                tabView.setImageURI(Uri.parse("file://" + getStickerPath(packId, stickerId)));
+                tabView.setImageURI(Uri.parse("file://" + getStickerPath(sticker)));
                 valueModel.unsubscribe(this);
             }
         });
@@ -196,5 +201,13 @@ public class StickerProcessor {
 
     public ArrayList<StickersPack> getPacks() {
         return stickerPacks;
+    }
+
+    public StickerRecentController getRecentController() {
+        return recentController;
+    }
+
+    public void upRecentSticker(Sticker sticker) {
+        recentController.push(sticker);
     }
 }
