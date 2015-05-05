@@ -28,11 +28,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, email_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiEmail
 
 
-#line 26
+#line 30
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)email
@@ -42,14 +42,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiEmail_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (jint)getId {
   return self->id__;
 }
@@ -67,7 +67,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 }
 
 
-#line 62
+#line 66
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
@@ -91,7 +91,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 }
 
 
-#line 76
+#line 80
 - (NSString *)description {
   NSString *res = @"struct Email{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
@@ -104,11 +104,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmail, emailTitle_, NSString *)
 @end
 
 
-#line 26
+#line 30
 void ImActorModelApiEmail_initWithInt_withLong_withNSString_withNSString_(ImActorModelApiEmail *self, jint id_, jlong accessHash, NSString *email, NSString *emailTitle) {
   (void) BSBserObject_init(self);
   
-#line 27
+#line 31
   self->id__ = id_;
   self->accessHash_ = accessHash;
   self->email_ = email;
@@ -116,7 +116,7 @@ void ImActorModelApiEmail_initWithInt_withLong_withNSString_withNSString_(ImActo
 }
 
 
-#line 26
+#line 30
 ImActorModelApiEmail *new_ImActorModelApiEmail_initWithInt_withLong_withNSString_withNSString_(jint id_, jlong accessHash, NSString *email, NSString *emailTitle) {
   ImActorModelApiEmail *self = [ImActorModelApiEmail alloc];
   ImActorModelApiEmail_initWithInt_withLong_withNSString_withNSString_(self, id_, accessHash, email, emailTitle);
@@ -124,13 +124,13 @@ ImActorModelApiEmail *new_ImActorModelApiEmail_initWithInt_withLong_withNSString
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiEmail_init(ImActorModelApiEmail *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiEmail *new_ImActorModelApiEmail_init() {
   ImActorModelApiEmail *self = [ImActorModelApiEmail alloc];
   ImActorModelApiEmail_init(self);

@@ -27,17 +27,17 @@
 @end
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateContactRegistered
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
                    withLong:(jlong)date {
@@ -46,14 +46,14 @@
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateContactRegistered_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (jint)getUid {
   return self->uid_;
 }
@@ -67,7 +67,7 @@
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->isSilent__ = [values getBoolWithInt:2];
@@ -75,7 +75,7 @@
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeBoolWithInt:2 withBoolean:self->isSilent__];
@@ -83,7 +83,7 @@
 }
 
 
-#line 68
+#line 72
 - (NSString *)description {
   NSString *res = @"update ContactRegistered{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -94,7 +94,7 @@
 }
 
 
-#line 78
+#line 82
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
 }
@@ -102,27 +102,27 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactRegistered_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactRegistered_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 32
+#line 36
   self->uid_ = uid;
   self->isSilent__ = isSilent;
   self->date_ = date;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(jint uid, jboolean isSilent, jlong date) {
   ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
   ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
@@ -134,7 +134,7 @@ void ImActorModelApiUpdatesUpdateContactRegistered_init(ImActorModelApiUpdatesUp
 }
 
 
-#line 37
+#line 41
 ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_init() {
   ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
   ImActorModelApiUpdatesUpdateContactRegistered_init(self);

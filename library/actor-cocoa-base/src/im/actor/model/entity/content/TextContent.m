@@ -33,7 +33,7 @@ __attribute__((unused)) static void AMTextContent_init(AMTextContent *self);
 __attribute__((unused)) static AMTextContent *new_AMTextContent_init() NS_RETURNS_RETAINED;
 
 
-#line 12
+#line 13
 @implementation AMTextContent
 
 + (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data {
@@ -41,40 +41,40 @@ __attribute__((unused)) static AMTextContent *new_AMTextContent_init() NS_RETURN
 }
 
 
-#line 20
+#line 21
 - (instancetype)initWithNSString:(NSString *)text {
   AMTextContent_initWithNSString_(self, text);
   return self;
 }
 
 
-#line 24
+#line 25
 - (instancetype)init {
   AMTextContent_init(self);
   return self;
 }
 
 
-#line 28
+#line 29
 - (NSString *)getText {
   return text_;
 }
 
 
-#line 33
+#line 34
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_TEXT();
 }
 
 
-#line 38
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
 
-#line 44
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
@@ -83,25 +83,25 @@ __attribute__((unused)) static AMTextContent *new_AMTextContent_init() NS_RETURN
 @end
 
 
-#line 14
+#line 15
 AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
   AMTextContent_initialize();
   
-#line 15
+#line 16
   return ((AMTextContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMTextContent_init(), data));
 }
 
 
-#line 20
+#line 21
 void AMTextContent_initWithNSString_(AMTextContent *self, NSString *text) {
   (void) AMAbsContent_init(self);
   
-#line 21
+#line 22
   self->text_ = text;
 }
 
 
-#line 20
+#line 21
 AMTextContent *new_AMTextContent_initWithNSString_(NSString *text) {
   AMTextContent *self = [AMTextContent alloc];
   AMTextContent_initWithNSString_(self, text);
@@ -109,13 +109,13 @@ AMTextContent *new_AMTextContent_initWithNSString_(NSString *text) {
 }
 
 
-#line 24
+#line 25
 void AMTextContent_init(AMTextContent *self) {
   (void) AMAbsContent_init(self);
 }
 
 
-#line 24
+#line 25
 AMTextContent *new_AMTextContent_init() {
   AMTextContent *self = [AMTextContent alloc];
   AMTextContent_init(self);

@@ -32,11 +32,11 @@ J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, cipher_, id<OrgBouncycastleCryptoAsymm
 J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, random_, id<BCRandomProvider>)
 
 
-#line 16
+#line 17
 @implementation BCBcRsaEncryptCipher
 
 
-#line 21
+#line 22
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                            withByteArray:(IOSByteArray *)publicKey {
   BCBcRsaEncryptCipher_initWithBCRandomProvider_withByteArray_(self, random, publicKey);
@@ -44,11 +44,11 @@ J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, random_, id<BCRandomProvider>)
 }
 
 
-#line 34
+#line 35
 - (IOSByteArray *)encryptWithByteArray:(IOSByteArray *)sourceData {
   @synchronized(self) {
     
-#line 35
+#line 36
     if (cipher_ == nil) {
       return nil;
     }
@@ -56,7 +56,7 @@ J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, random_, id<BCRandomProvider>)
       return [((id<OrgBouncycastleCryptoAsymmetricBlockCipher>) nil_chk(cipher_)) processBlockWithByteArray:sourceData withInt:0 withInt:((IOSByteArray *) nil_chk(sourceData))->size_];
     }
     @catch (
-#line 40
+#line 41
     JavaLangException *e) {
       [((JavaLangException *) nil_chk(e)) printStackTrace];
       return nil;
@@ -67,11 +67,11 @@ J2OBJC_FIELD_SETTER(BCBcRsaEncryptCipher, random_, id<BCRandomProvider>)
 @end
 
 
-#line 21
+#line 22
 void BCBcRsaEncryptCipher_initWithBCRandomProvider_withByteArray_(BCBcRsaEncryptCipher *self, id<BCRandomProvider> random, IOSByteArray *publicKey) {
   (void) NSObject_init(self);
   
-#line 22
+#line 23
   self->random_ = random;
   @try {
     BCX509RsaPublicKey *key = new_BCX509RsaPublicKey_initWithByteArray_(publicKey);
@@ -80,14 +80,14 @@ void BCBcRsaEncryptCipher_initWithBCRandomProvider_withByteArray_(BCBcRsaEncrypt
     [self->cipher_ init__WithBoolean:YES withOrgBouncycastleCryptoParamsParametersWithRandom:new_OrgBouncycastleCryptoParamsParametersWithRandom_initWithOrgBouncycastleCryptoCipherParameters_withBCRandomProvider_(param, random)];
   }
   @catch (
-#line 28
+#line 29
   JavaLangException *e) {
     [((JavaLangException *) nil_chk(e)) printStackTrace];
   }
 }
 
 
-#line 21
+#line 22
 BCBcRsaEncryptCipher *new_BCBcRsaEncryptCipher_initWithBCRandomProvider_withByteArray_(id<BCRandomProvider> random, IOSByteArray *publicKey) {
   BCBcRsaEncryptCipher *self = [BCBcRsaEncryptCipher alloc];
   BCBcRsaEncryptCipher_initWithBCRandomProvider_withByteArray_(self, random, publicKey);

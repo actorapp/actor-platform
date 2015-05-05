@@ -25,49 +25,49 @@
 @end
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateUserOffline
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateUserOffline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithInt:(jint)uid {
   ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(self, uid);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserOffline_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (jint)getUid {
   return self->uid_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 
 
-#line 52
+#line 56
 - (NSString *)description {
   NSString *res = @"update UserOffline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -76,7 +76,7 @@
 }
 
 
-#line 60
+#line 64
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserOffline_HEADER;
 }
@@ -84,25 +84,25 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateUserOffline *ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserOffline_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateUserOffline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserOffline_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(ImActorModelApiUpdatesUpdateUserOffline *self, jint uid) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 30
+#line 34
   self->uid_ = uid;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(jint uid) {
   ImActorModelApiUpdatesUpdateUserOffline *self = [ImActorModelApiUpdatesUpdateUserOffline alloc];
   ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(self, uid);
@@ -110,13 +110,13 @@ ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOff
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiUpdatesUpdateUserOffline_init(ImActorModelApiUpdatesUpdateUserOffline *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_init() {
   ImActorModelApiUpdatesUpdateUserOffline *self = [ImActorModelApiUpdatesUpdateUserOffline alloc];
   ImActorModelApiUpdatesUpdateUserOffline_init(self);

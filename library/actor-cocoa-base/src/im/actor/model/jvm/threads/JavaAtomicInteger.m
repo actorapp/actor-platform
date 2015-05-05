@@ -21,11 +21,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, JavaUtilConcurrentAtomicAtomicInteger *)
 
 
-#line 10
+#line 11
 @implementation ImActorModelJvmThreadsJavaAtomicInteger
 
 
-#line 14
+#line 15
 - (instancetype)initWithInt:(jint)value {
   ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(self, value);
   return self;
@@ -36,19 +36,19 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, Jav
 }
 
 
-#line 24
+#line 25
 - (jint)incrementAndGet {
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) incrementAndGet];
 }
 
 
-#line 29
+#line 30
 - (jint)getAndIncrement {
   return [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) getAndIncrement];
 }
 
 
-#line 34
+#line 35
 - (void)compareAndSetWithInt:(jint)exp
                      withInt:(jint)v {
   [((JavaUtilConcurrentAtomicAtomicInteger *) nil_chk(atomicInteger_)) compareAndSetWithInt:exp withInt:v];
@@ -61,16 +61,16 @@ J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaAtomicInteger, atomicInteger_, Jav
 @end
 
 
-#line 14
+#line 15
 void ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(ImActorModelJvmThreadsJavaAtomicInteger *self, jint value) {
   (void) AMAtomicIntegerCompat_init(self);
   
-#line 15
+#line 16
   self->atomicInteger_ = new_JavaUtilConcurrentAtomicAtomicInteger_initWithInt_(value);
 }
 
 
-#line 14
+#line 15
 ImActorModelJvmThreadsJavaAtomicInteger *new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(jint value) {
   ImActorModelJvmThreadsJavaAtomicInteger *self = [ImActorModelJvmThreadsJavaAtomicInteger alloc];
   ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(self, value);

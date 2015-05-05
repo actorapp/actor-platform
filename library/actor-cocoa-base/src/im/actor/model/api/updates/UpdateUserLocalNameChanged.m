@@ -28,17 +28,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateUserLocalNameChanged
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateUserLocalNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)localName {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
@@ -46,14 +46,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getUid {
   return self->uid_;
 }
@@ -63,14 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->localName_ = [values optStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->localName_ != nil) {
@@ -79,7 +79,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 }
 
 
-#line 62
+#line 66
 - (NSString *)description {
   NSString *res = @"update UserLocalNameChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 }
 
 
-#line 71
+#line 75
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER;
 }
@@ -97,24 +97,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self, jint uid, NSString *localName) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 31
+#line 35
   self->uid_ = uid;
   self->localName_ = localName;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(jint uid, NSString *localName) {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged *self = [ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc];
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
@@ -122,13 +122,13 @@ ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpda
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init() {
   ImActorModelApiUpdatesUpdateUserLocalNameChanged *self = [ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc];
   ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(self);

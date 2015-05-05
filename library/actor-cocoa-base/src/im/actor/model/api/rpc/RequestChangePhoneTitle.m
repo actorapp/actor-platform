@@ -28,17 +28,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestChangePhoneTitle
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestChangePhoneTitle *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)phoneId
                withNSString:(NSString *)title {
   ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(self, phoneId, title);
@@ -46,14 +46,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestChangePhoneTitle_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getPhoneId {
   return self->phoneId_;
 }
@@ -63,14 +63,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->title_ = [values getStringWithInt:2];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->phoneId_];
   if (self->title_ == nil) {
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 }
 
 
-#line 63
+#line 67
 - (NSString *)description {
   NSString *res = @"rpc ChangePhoneTitle{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"phoneId=", self->phoneId_));
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 }
 
 
-#line 72
+#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestChangePhoneTitle_HEADER;
 }
@@ -98,24 +98,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestChangePhoneTitle, title_, NSString 
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestChangePhoneTitle *ImActorModelApiRpcRequestChangePhoneTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestChangePhoneTitle_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestChangePhoneTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestChangePhoneTitle_init(), data));
 }
 
 void ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(ImActorModelApiRpcRequestChangePhoneTitle *self, jint phoneId, NSString *title) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->phoneId_ = phoneId;
   self->title_ = title;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(jint phoneId, NSString *title) {
   ImActorModelApiRpcRequestChangePhoneTitle *self = [ImActorModelApiRpcRequestChangePhoneTitle alloc];
   ImActorModelApiRpcRequestChangePhoneTitle_initWithInt_withNSString_(self, phoneId, title);
@@ -123,13 +123,13 @@ ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePh
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestChangePhoneTitle_init(ImActorModelApiRpcRequestChangePhoneTitle *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestChangePhoneTitle *new_ImActorModelApiRpcRequestChangePhoneTitle_init() {
   ImActorModelApiRpcRequestChangePhoneTitle *self = [ImActorModelApiRpcRequestChangePhoneTitle alloc];
   ImActorModelApiRpcRequestChangePhoneTitle_init(self);

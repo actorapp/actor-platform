@@ -28,17 +28,17 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiDocumentEx
 
 
-#line 20
+#line 24
 + (ImActorModelApiDocumentEx *)fromBytesWithByteArray:(IOSByteArray *)src {
   return ImActorModelApiDocumentEx_fromBytesWithByteArray_(src);
 }
 
 
-#line 33
+#line 37
 - (IOSByteArray *)buildContainer {
   BSDataOutput *res = new_BSDataOutput_init();
   BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(res);
@@ -55,30 +55,30 @@
 @end
 
 
-#line 20
+#line 24
 ImActorModelApiDocumentEx *ImActorModelApiDocumentEx_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiDocumentEx_initialize();
   
-#line 21
+#line 25
   BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
     
-#line 25
+#line 29
     return ((ImActorModelApiDocumentExPhoto *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentExPhoto_init(), content));
     case 2:
     
-#line 26
+#line 30
     return ((ImActorModelApiDocumentExVideo *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentExVideo_init(), content));
     case 3:
     
-#line 27
+#line 31
     return ((ImActorModelApiDocumentExVoice *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentExVoice_init(), content));
     default:
     
-#line 28
+#line 32
     return new_ImActorModelApiDocumentExUnsupported_initWithInt_withByteArray_(key, content);
   }
 }

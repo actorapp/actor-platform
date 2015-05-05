@@ -27,7 +27,7 @@
 J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
 
-#line 12
+#line 13
 @implementation AMServiceContent
 
 + (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data {
@@ -35,40 +35,40 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 }
 
 
-#line 20
+#line 21
 - (instancetype)initWithNSString:(NSString *)compatText {
   AMServiceContent_initWithNSString_(self, compatText);
   return self;
 }
 
 
-#line 24
+#line 25
 - (instancetype)init {
   AMServiceContent_init(self);
   return self;
 }
 
 
-#line 28
+#line 29
 - (NSString *)getCompatText {
   return compatText_;
 }
 
 
-#line 33
+#line 34
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE();
 }
 
 
-#line 38
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   compatText_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
 }
 
 
-#line 44
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
@@ -77,25 +77,25 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 @end
 
 
-#line 14
+#line 15
 AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceContent_initialize();
   
-#line 15
+#line 16
   return ((AMServiceContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceContent_init(), data));
 }
 
 
-#line 20
+#line 21
 void AMServiceContent_initWithNSString_(AMServiceContent *self, NSString *compatText) {
   (void) AMAbsContent_init(self);
   
-#line 21
+#line 22
   self->compatText_ = compatText;
 }
 
 
-#line 20
+#line 21
 AMServiceContent *new_AMServiceContent_initWithNSString_(NSString *compatText) {
   AMServiceContent *self = [AMServiceContent alloc];
   AMServiceContent_initWithNSString_(self, compatText);
@@ -103,13 +103,13 @@ AMServiceContent *new_AMServiceContent_initWithNSString_(NSString *compatText) {
 }
 
 
-#line 24
+#line 25
 void AMServiceContent_init(AMServiceContent *self) {
   (void) AMAbsContent_init(self);
 }
 
 
-#line 24
+#line 25
 AMServiceContent *new_AMServiceContent_init() {
   AMServiceContent *self = [AMServiceContent alloc];
   AMServiceContent_init(self);

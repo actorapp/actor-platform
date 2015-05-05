@@ -22,11 +22,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope, envelope_, DKEnvelope *)
 
 
-#line 8
+#line 9
 @implementation ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope
 
 
-#line 13
+#line 14
 - (instancetype)initWithLong:(jlong)key
                     withLong:(jlong)time
               withDKEnvelope:(DKEnvelope *)envelope {
@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelop
 }
 
 
-#line 19
+#line 20
 - (jlong)getKey {
   return key_;
 }
@@ -49,7 +49,7 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelop
 }
 
 
-#line 32
+#line 33
 - (NSString *)description {
   return JreStrcat("C@C", '<', [((DKEnvelope *) nil_chk(envelope_)) getMessage], '>');
 }
@@ -57,18 +57,18 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelop
 @end
 
 
-#line 13
+#line 14
 void ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_initWithLong_withLong_withDKEnvelope_(ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *self, jlong key, jlong time, DKEnvelope *envelope) {
   (void) NSObject_init(self);
   
-#line 14
+#line 15
   self->key_ = key;
   self->time_ = time;
   self->envelope_ = envelope;
 }
 
 
-#line 13
+#line 14
 ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *new_ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_initWithLong_withLong_withDKEnvelope_(jlong key, jlong time, DKEnvelope *envelope) {
   ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope *self = [ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope alloc];
   ImActorModelDroidkitActorsMailboxCollectionsScheduledEnvelope_initWithLong_withLong_withDKEnvelope_(self, key, time, envelope);

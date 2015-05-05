@@ -16,11 +16,11 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsRandomUtils, RANDOM_, JavaUti
 J2OBJC_INITIALIZED_DEFN(ImActorModelModulesUtilsRandomUtils)
 
 
-#line 8
+#line 9
 @implementation ImActorModelModulesUtilsRandomUtils
 
 
-#line 12
+#line 13
 + (jlong)nextRid {
   return ImActorModelModulesUtilsRandomUtils_nextRid();
 }
@@ -40,12 +40,12 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelModulesUtilsRandomUtils)
 @end
 
 
-#line 12
+#line 13
 jlong ImActorModelModulesUtilsRandomUtils_nextRid() {
   ImActorModelModulesUtilsRandomUtils_initialize();
   @synchronized(ImActorModelModulesUtilsRandomUtils_class_()) {
     
-#line 13
+#line 14
     return [((JavaUtilRandom *) nil_chk(ImActorModelModulesUtilsRandomUtils_RANDOM_)) nextLong];
   }
 }

@@ -23,11 +23,11 @@
 J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
 
 
-#line 8
+#line 9
 @implementation BSBserUnknownFields
 
 
-#line 12
+#line 13
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
      withByteArray:(IOSByteArray *)field {
@@ -35,7 +35,7 @@ J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
 }
 
 
-#line 16
+#line 17
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
           withLong:(jlong)value {

@@ -48,25 +48,25 @@ __attribute__((unused)) static ImActorModelModulesPushes_$1 *new_ImActorModelMod
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushes_$1)
 
 
-#line 13
+#line 14
 @implementation ImActorModelModulesPushes
 
 
-#line 16
+#line 17
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesPushes_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 27
+#line 28
 - (void)registerGooglePushWithLong:(jlong)projectId
                       withNSString:(NSString *)token {
   [((DKActorRef *) nil_chk(pushActor_)) sendWithId:new_ImActorModelModulesPushPushRegisterActor_RegisterGooglePush_initWithLong_withNSString_(projectId, token)];
 }
 
 
-#line 31
+#line 32
 - (void)registerApplePushWithInt:(jint)apnsKey
                     withNSString:(NSString *)token {
   [((DKActorRef *) nil_chk(pushActor_)) sendWithId:new_ImActorModelModulesPushPushRegisterActor_RegisterApplePush_initWithInt_withNSString_(apnsKey, token)];
@@ -75,18 +75,18 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushes_$1)
 @end
 
 
-#line 16
+#line 17
 void ImActorModelModulesPushes_initWithImActorModelModulesModules_(ImActorModelModulesPushes *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   
-#line 19
+#line 20
   self->pushActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesPushPushRegisterActor_class_(), new_ImActorModelModulesPushes_$1_initWithImActorModelModulesPushes_(self)) withNSString:
-#line 24
+#line 25
   @"actor/push"];
 }
 
 
-#line 16
+#line 17
 ImActorModelModulesPushes *new_ImActorModelModulesPushes_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesPushes *self = [ImActorModelModulesPushes alloc];
   ImActorModelModulesPushes_initWithImActorModelModulesModules_(self, modules);
@@ -98,7 +98,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushes)
 @implementation ImActorModelModulesPushes_$1
 
 
-#line 21
+#line 22
 - (ImActorModelModulesPushPushRegisterActor *)create {
   return new_ImActorModelModulesPushPushRegisterActor_initWithImActorModelModulesModules_([this$0_ modules]);
 }

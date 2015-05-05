@@ -30,17 +30,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiBaseWeakUpdate
 
 
-#line 23
+#line 27
 + (ImActorModelApiBaseWeakUpdate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithLong:(jlong)date
                      withInt:(jint)updateHeader
                withByteArray:(IOSByteArray *)update {
@@ -49,14 +49,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiBaseWeakUpdate_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (jlong)getDate {
   return self->date_;
 }
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->date_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->updateHeader_ = [values getIntWithInt:2];
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->date_];
   [writer writeIntWithInt:2 withInt:self->updateHeader_];
@@ -89,7 +89,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 }
 
 
-#line 71
+#line 75
 - (NSString *)description {
   NSString *res = @"update box WeakUpdate{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"date=", self->date_));
@@ -100,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 }
 
 
-#line 81
+#line 85
 - (jint)getHeaderKey {
   return ImActorModelApiBaseWeakUpdate_HEADER;
 }
@@ -108,27 +108,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseWeakUpdate, update_, IOSByteArray *)
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseWeakUpdate_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiBaseWeakUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseWeakUpdate_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(ImActorModelApiBaseWeakUpdate *self, jlong date, jint updateHeader, IOSByteArray *update) {
   (void) ImActorModelNetworkParserRpcScope_init(self);
   
-#line 32
+#line 36
   self->date_ = date;
   self->updateHeader_ = updateHeader;
   self->update_ = update;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(jlong date, jint updateHeader, IOSByteArray *update) {
   ImActorModelApiBaseWeakUpdate *self = [ImActorModelApiBaseWeakUpdate alloc];
   ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(self, date, updateHeader, update);
@@ -140,7 +140,7 @@ void ImActorModelApiBaseWeakUpdate_init(ImActorModelApiBaseWeakUpdate *self) {
 }
 
 
-#line 37
+#line 41
 ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_init() {
   ImActorModelApiBaseWeakUpdate *self = [ImActorModelApiBaseWeakUpdate alloc];
   ImActorModelApiBaseWeakUpdate_init(self);

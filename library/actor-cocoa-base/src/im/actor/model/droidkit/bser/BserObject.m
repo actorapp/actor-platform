@@ -20,18 +20,18 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 8
+#line 9
 @implementation BSBserObject
 
 
-#line 9
+#line 10
 - (instancetype)init {
   BSBserObject_init(self);
   return self;
 }
 
 
-#line 13
+#line 14
 - (IOSByteArray *)toByteArray {
   BSDataOutput *outputStream = new_BSDataOutput_init();
   BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(outputStream);
@@ -39,7 +39,7 @@
     [self serializeWithBSBserWriter:writer];
   }
   @catch (
-#line 18
+#line 19
   JavaIoIOException *e) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Unexpected IO exception");
   }
@@ -49,7 +49,7 @@
 @end
 
 
-#line 9
+#line 10
 void BSBserObject_init(BSBserObject *self) {
   (void) NSObject_init(self);
 }

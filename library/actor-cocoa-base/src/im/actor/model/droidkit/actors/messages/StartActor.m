@@ -24,18 +24,18 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitActorsMessagesStartActor)
 ImActorModelDroidkitActorsMessagesStartActor *ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_;
 
 
-#line 8
+#line 10
 @implementation ImActorModelDroidkitActorsMessagesStartActor
 
 
-#line 11
+#line 13
 - (instancetype)init {
   ImActorModelDroidkitActorsMessagesStartActor_init(self);
   return self;
 }
 
 
-#line 15
+#line 17
 - (NSString *)description {
   return @"StartActor";
 }
@@ -50,13 +50,13 @@ ImActorModelDroidkitActorsMessagesStartActor *ImActorModelDroidkitActorsMessages
 @end
 
 
-#line 11
+#line 13
 void ImActorModelDroidkitActorsMessagesStartActor_init(ImActorModelDroidkitActorsMessagesStartActor *self) {
   (void) NSObject_init(self);
 }
 
 
-#line 11
+#line 13
 ImActorModelDroidkitActorsMessagesStartActor *new_ImActorModelDroidkitActorsMessagesStartActor_init() {
   ImActorModelDroidkitActorsMessagesStartActor *self = [ImActorModelDroidkitActorsMessagesStartActor alloc];
   ImActorModelDroidkitActorsMessagesStartActor_init(self);

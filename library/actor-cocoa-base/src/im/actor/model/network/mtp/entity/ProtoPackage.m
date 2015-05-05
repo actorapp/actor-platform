@@ -27,18 +27,18 @@
 J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
 
-#line 8
+#line 12
 @implementation MTProtoPackage
 
 
-#line 14
+#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTProtoPackage_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 18
+#line 22
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
           withMTProtoMessage:(MTProtoMessage *)payload {
@@ -47,7 +47,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 }
 
 
-#line 24
+#line 28
 - (jlong)getAuthId {
   return authId_;
 }
@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 }
 
 
-#line 37
+#line 41
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:authId_];
   [bs writeLongWithLong:sessionId_];
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 }
 
 
-#line 44
+#line 48
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
   authId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   sessionId_ = [bs readLong];
@@ -78,7 +78,7 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 }
 
 
-#line 52
+#line 56
 - (NSString *)description {
   return JreStrcat("$JCJC", @"ProtoPackage[", authId_, '|', sessionId_, ']');
 }
@@ -86,13 +86,13 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 @end
 
 
-#line 14
+#line 18
 void MTProtoPackage_initWithBSDataInput_(MTProtoPackage *self, BSDataInput *stream) {
   (void) MTProtoObject_initWithBSDataInput_(self, stream);
 }
 
 
-#line 14
+#line 18
 MTProtoPackage *new_MTProtoPackage_initWithBSDataInput_(BSDataInput *stream) {
   MTProtoPackage *self = [MTProtoPackage alloc];
   MTProtoPackage_initWithBSDataInput_(self, stream);
@@ -100,18 +100,18 @@ MTProtoPackage *new_MTProtoPackage_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 18
+#line 22
 void MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(MTProtoPackage *self, jlong authId, jlong sessionId, MTProtoMessage *payload) {
   (void) MTProtoObject_init(self);
   
-#line 19
+#line 23
   self->authId_ = authId;
   self->sessionId_ = sessionId;
   self->payload_ = payload;
 }
 
 
-#line 18
+#line 22
 MTProtoPackage *new_MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(jlong authId, jlong sessionId, MTProtoMessage *payload) {
   MTProtoPackage *self = [MTProtoPackage alloc];
   MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(self, authId, sessionId, payload);
