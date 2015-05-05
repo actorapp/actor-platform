@@ -50,4 +50,3 @@
     - name: "Restart app"
       command: "monit restart {{ app_name }}"
       sudo: true
-      tags: ["deploy"]
