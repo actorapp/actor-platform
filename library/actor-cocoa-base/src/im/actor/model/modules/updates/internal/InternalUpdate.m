@@ -10,7 +10,7 @@
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
 
-#line 6
+#line 7
 @implementation ImActorModelModulesUpdatesInternalInternalUpdate
 
 - (instancetype)init {

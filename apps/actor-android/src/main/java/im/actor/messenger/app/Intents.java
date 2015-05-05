@@ -193,12 +193,8 @@ public class Intents {
     }
 
     public static Intent openAvatar(FileReference location) {
-        if (BuildConfig.IS_CHROME_BUILD) {
-            return shareAvatar(location);
-        } else {
-            return new Intent(Intent.ACTION_VIEW)
-                    .setDataAndType(getAvatarUri(location), "image/jpeg");
-        }
+        return new Intent(Intent.ACTION_VIEW)
+                .setDataAndType(getAvatarUri(location), "image/jpeg");
     }
 
     public static Intent setAsAvatar(FileReference location) {
@@ -233,11 +229,7 @@ public class Intents {
 //    }
 
     public static Intent pickFile(Context context) {
-        if (BuildConfig.IS_CHROME_BUILD) {
-            return new Intent(Intent.ACTION_PICK).setType("*/*");
-        } else {
-            return com.droidkit.pickers.Intents.pickFile(context);
-        }
+        return com.droidkit.pickers.Intents.pickFile(context);
     }
 
     public static Intent openMedias(Peer peer, Context context){

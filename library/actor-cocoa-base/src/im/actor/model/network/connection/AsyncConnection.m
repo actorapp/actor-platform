@@ -27,11 +27,11 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, connection_, id<AMAsyncConnectionInterfac
 J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 
 
-#line 8
+#line 9
 @implementation AMAsyncConnection
 
 
-#line 12
+#line 13
 - (instancetype)initWithAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
               withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connection {
   AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(self, endpoint, connection);
@@ -39,7 +39,7 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 }
 
 
-#line 23
+#line 24
 - (AMConnectionEndpoint *)getEndpoint {
   return endpoint_;
 }
@@ -59,11 +59,11 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 @end
 
 
-#line 12
+#line 13
 void AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection) {
   (void) NSObject_init(self);
   
-#line 13
+#line 14
   self->connection_ = connection;
   self->endpoint_ = endpoint;
 }

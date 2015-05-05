@@ -18,13 +18,15 @@ task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
 }
 
 // Translate java to objc
-task j2objc(type: Exec, dependsOn: ['copySources']) {
+task j2objc(dependsOn: ['copySources']) {
 
-    doLast {
+    doFirst {
+
         Properties properties = new Properties()
-        properties.load(project.file('local.properties').newDataInputStream())
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
         exec {
+
             executable "${properties.get("j2objcDir")}/j2objc"
 
             args "-use-arc", "--strip-reflection", "-g"
@@ -37,12 +39,10 @@ task j2objc(type: Exec, dependsOn: ['copySources']) {
 
             args "--mapping", "${projectDir}/mapping.properties"
 
-            doFirst {
-                def srcFiles = fileTree("${buildDir}/java/")
+            def srcFiles = fileTree("${buildDir}/java/")
 
-                srcFiles.each { file ->
-                    args file.path
-                }
+            srcFiles.each { file ->
+                args file.path
             }
         }
     }

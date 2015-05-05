@@ -32,28 +32,28 @@ J2OBJC_FIELD_SETTER(AMTimerActor_Cancel, timerCompat_, AMTimerCompat *)
 J2OBJC_FIELD_SETTER(AMTimerActor_Schedule, timerCompat_, AMTimerCompat *)
 
 
-#line 8
+#line 9
 @implementation AMTimerActor
 
 
-#line 11
+#line 12
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[AMTimerActor_Schedule class]]) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:[((AMTimerActor_Schedule *) nil_chk(((AMTimerActor_Schedule *) check_class_cast(message, [AMTimerActor_Schedule class])))) getTimerCompat] withLong:[((AMTimerActor_Schedule *) nil_chk(((AMTimerActor_Schedule *) check_class_cast(message, [AMTimerActor_Schedule class])))) getDelay]];
   }
   else
-#line 14
+#line 15
   if ([message isKindOfClass:[AMTimerActor_Cancel class]]) {
     [((DKActorRef *) nil_chk([self self__])) cancelMessageWithId:[((AMTimerActor_Cancel *) nil_chk(((AMTimerActor_Cancel *) check_class_cast(message, [AMTimerActor_Cancel class])))) getTimerCompat]];
   }
   else
-#line 16
+#line 17
   if ([message isKindOfClass:[AMTimerCompat class]]) {
     [((AMTimerCompat *) nil_chk(((AMTimerCompat *) check_class_cast(message, [AMTimerCompat class])))) invokeRun];
   }
   else {
     
-#line 19
+#line 20
     [self dropWithId:message];
   }
 }
@@ -78,18 +78,18 @@ AMTimerActor *new_AMTimerActor_init() {
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerActor)
 
 
-#line 23
+#line 24
 @implementation AMTimerActor_Cancel
 
 
-#line 26
+#line 27
 - (instancetype)initWithAMTimerCompat:(AMTimerCompat *)timerCompat {
   AMTimerActor_Cancel_initWithAMTimerCompat_(self, timerCompat);
   return self;
 }
 
 
-#line 30
+#line 31
 - (AMTimerCompat *)getTimerCompat {
   return timerCompat_;
 }
@@ -97,16 +97,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerActor)
 @end
 
 
-#line 26
+#line 27
 void AMTimerActor_Cancel_initWithAMTimerCompat_(AMTimerActor_Cancel *self, AMTimerCompat *timerCompat) {
   (void) NSObject_init(self);
   
-#line 27
+#line 28
   self->timerCompat_ = timerCompat;
 }
 
 
-#line 26
+#line 27
 AMTimerActor_Cancel *new_AMTimerActor_Cancel_initWithAMTimerCompat_(AMTimerCompat *timerCompat) {
   AMTimerActor_Cancel *self = [AMTimerActor_Cancel alloc];
   AMTimerActor_Cancel_initWithAMTimerCompat_(self, timerCompat);
@@ -116,11 +116,11 @@ AMTimerActor_Cancel *new_AMTimerActor_Cancel_initWithAMTimerCompat_(AMTimerCompa
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerActor_Cancel)
 
 
-#line 35
+#line 36
 @implementation AMTimerActor_Schedule
 
 
-#line 39
+#line 40
 - (instancetype)initWithAMTimerCompat:(AMTimerCompat *)timerCompat
                              withLong:(jlong)delay {
   AMTimerActor_Schedule_initWithAMTimerCompat_withLong_(self, timerCompat, delay);
@@ -128,7 +128,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerActor_Cancel)
 }
 
 
-#line 44
+#line 45
 - (jlong)getDelay {
   return delay_;
 }
@@ -140,17 +140,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerActor_Cancel)
 @end
 
 
-#line 39
+#line 40
 void AMTimerActor_Schedule_initWithAMTimerCompat_withLong_(AMTimerActor_Schedule *self, AMTimerCompat *timerCompat, jlong delay) {
   (void) NSObject_init(self);
   
-#line 40
+#line 41
   self->timerCompat_ = timerCompat;
   self->delay_ = delay;
 }
 
 
-#line 39
+#line 40
 AMTimerActor_Schedule *new_AMTimerActor_Schedule_initWithAMTimerCompat_withLong_(AMTimerCompat *timerCompat, jlong delay) {
   AMTimerActor_Schedule *self = [AMTimerActor_Schedule alloc];
   AMTimerActor_Schedule_initWithAMTimerCompat_withLong_(self, timerCompat, delay);

@@ -21,11 +21,11 @@ J2OBJC_INITIALIZED_DEFN(AMMessageStateEnum)
 AMMessageStateEnum *AMMessageStateEnum_values_[6];
 
 
-#line 6
+#line 7
 @implementation AMMessageStateEnum
 
 
-#line 16
+#line 17
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -34,7 +34,7 @@ AMMessageStateEnum *AMMessageStateEnum_values_[6];
 }
 
 
-#line 20
+#line 21
 - (jint)getValue {
   return value_;
 }
@@ -75,22 +75,22 @@ AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
 + (void)initialize {
   if (self == [AMMessageStateEnum class]) {
     AMMessageStateEnum_PENDING = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
-#line 7
+#line 8
     1, @"PENDING", 0);
     AMMessageStateEnum_SENT = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
-#line 8
+#line 9
     2, @"SENT", 1);
     AMMessageStateEnum_RECEIVED = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
-#line 9
+#line 10
     3, @"RECEIVED", 2);
     AMMessageStateEnum_READ = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
-#line 10
+#line 11
     4, @"READ", 3);
     AMMessageStateEnum_ERROR = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
-#line 11
+#line 12
     5, @"ERROR", 4);
     AMMessageStateEnum_UNKNOWN = new_AMMessageStateEnum_initWithInt_withNSString_withInt_(
-#line 12
+#line 13
     6, @"UNKNOWN", 5);
     J2OBJC_SET_INITIALIZED(AMMessageStateEnum)
   }
@@ -99,16 +99,16 @@ AMMessageStateEnum *AMMessageStateEnum_valueOfWithNSString_(NSString *name) {
 @end
 
 
-#line 16
+#line 17
 void AMMessageStateEnum_initWithInt_withNSString_withInt_(AMMessageStateEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   
-#line 17
+#line 18
   self->value_ = value;
 }
 
 
-#line 16
+#line 17
 AMMessageStateEnum *new_AMMessageStateEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   AMMessageStateEnum *self = [AMMessageStateEnum alloc];
   AMMessageStateEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
@@ -116,11 +116,11 @@ AMMessageStateEnum *new_AMMessageStateEnum_initWithInt_withNSString_withInt_(jin
 }
 
 
-#line 24
+#line 25
 AMMessageStateEnum *AMMessageStateEnum_fromValueWithInt_(jint value) {
   AMMessageStateEnum_initialize();
   
-#line 25
+#line 26
   switch (value) {
     case 1:
     return AMMessageStateEnum_PENDING;

@@ -23,18 +23,18 @@
 @end
 
 
-#line 12
+#line 13
 @implementation MTRpcInternalError
 
 
-#line 18
+#line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRpcInternalError_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 22
+#line 23
 - (instancetype)initWithBoolean:(jboolean)canTryAgain
                         withInt:(jint)tryAgainDelay {
   MTRpcInternalError_initWithBoolean_withInt_(self, canTryAgain, tryAgainDelay);
@@ -42,7 +42,7 @@
 }
 
 
-#line 27
+#line 28
 - (jboolean)isCanTryAgain {
   return canTryAgain_;
 }
@@ -52,20 +52,20 @@
 }
 
 
-#line 36
+#line 37
 - (jbyte)getHeader {
   return MTRpcInternalError_HEADER;
 }
 
 
-#line 41
+#line 42
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeProtoBoolWithBoolean:canTryAgain_];
   [bs writeIntWithInt:tryAgainDelay_];
 }
 
 
-#line 47
+#line 48
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   canTryAgain_ = [((BSDataInput *) nil_chk(bs)) readProtoBool];
   tryAgainDelay_ = [bs readInt];
@@ -74,13 +74,13 @@
 @end
 
 
-#line 18
+#line 19
 void MTRpcInternalError_initWithBSDataInput_(MTRpcInternalError *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 18
+#line 19
 MTRpcInternalError *new_MTRpcInternalError_initWithBSDataInput_(BSDataInput *stream) {
   MTRpcInternalError *self = [MTRpcInternalError alloc];
   MTRpcInternalError_initWithBSDataInput_(self, stream);
@@ -88,17 +88,17 @@ MTRpcInternalError *new_MTRpcInternalError_initWithBSDataInput_(BSDataInput *str
 }
 
 
-#line 22
+#line 23
 void MTRpcInternalError_initWithBoolean_withInt_(MTRpcInternalError *self, jboolean canTryAgain, jint tryAgainDelay) {
   (void) MTProtoStruct_init(self);
   
-#line 23
+#line 24
   self->canTryAgain_ = canTryAgain;
   self->tryAgainDelay_ = tryAgainDelay;
 }
 
 
-#line 22
+#line 23
 MTRpcInternalError *new_MTRpcInternalError_initWithBoolean_withInt_(jboolean canTryAgain, jint tryAgainDelay) {
   MTRpcInternalError *self = [MTRpcInternalError alloc];
   MTRpcInternalError_initWithBoolean_withInt_(self, canTryAgain, tryAgainDelay);

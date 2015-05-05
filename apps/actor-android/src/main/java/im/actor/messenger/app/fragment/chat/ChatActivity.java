@@ -255,11 +255,7 @@ public class ChatActivity extends BaseActivity {
                     e.printStackTrace();
                 }
 
-                if (BuildConfig.IS_CHROME_BUILD) {
-                    popup.getMenuInflater().inflate(R.menu.attach_popup_chrome, popup.getMenu());
-                } else {
-                    popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
-                }
+                popup.getMenuInflater().inflate(R.menu.attach_popup, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
@@ -491,6 +487,7 @@ public class ChatActivity extends BaseActivity {
         }
 
         messenger().sendMessage(peer, text);
+        messenger().trackTextSend(peer);
     }
 
     @Override
@@ -502,8 +499,10 @@ public class ChatActivity extends BaseActivity {
                 }
             } else if (requestCode == REQUEST_PHOTO) {
                 messenger().sendPhoto(peer, fileName);
+                messenger().trackPhotoSend(peer);
             } else if (requestCode == REQUEST_VIDEO) {
                 messenger().sendVideo(peer, fileName);
+                messenger().trackVideoSend(peer);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
                     sendUri(data.getData());
@@ -512,6 +511,7 @@ public class ChatActivity extends BaseActivity {
                     if (files != null) {
                         for (String s : files) {
                             messenger().sendDocument(peer, s);
+                            messenger().trackDocumentSend(peer);
                         }
                     }
                 }
@@ -573,10 +573,13 @@ public class ChatActivity extends BaseActivity {
 
                 if (mimeType.startsWith("video/")) {
                     messenger().sendVideo(peer, picturePath, fileName);
+                    messenger().trackVideoSend(peer);
                 } else if (mimeType.startsWith("image/")) {
                     messenger().sendPhoto(peer, picturePath, new File(fileName).getName());
+                    messenger().trackPhotoSend(peer);
                 } else {
                     messenger().sendDocument(peer, picturePath, new File(fileName).getName());
+                    messenger().trackDocumentSend(peer);
                 }
 
                 return null;

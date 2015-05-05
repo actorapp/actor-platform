@@ -12,11 +12,11 @@
 #include "im/actor/model/network/RpcTimeoutException.h"
 
 
-#line 6
+#line 7
 @implementation AMRpcTimeoutException
 
 
-#line 7
+#line 8
 - (instancetype)init {
   AMRpcTimeoutException_init(self);
   return self;
@@ -25,13 +25,13 @@
 @end
 
 
-#line 7
+#line 8
 void AMRpcTimeoutException_init(AMRpcTimeoutException *self) {
   (void) AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(self, @"TIMEOUT", 500, @"Request timeout", YES, nil);
 }
 
 
-#line 7
+#line 8
 AMRpcTimeoutException *new_AMRpcTimeoutException_init() {
   AMRpcTimeoutException *self = [AMRpcTimeoutException alloc];
   AMRpcTimeoutException_init(self);

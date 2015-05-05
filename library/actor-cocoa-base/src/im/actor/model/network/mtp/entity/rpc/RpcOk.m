@@ -16,18 +16,18 @@
 #include "java/io/IOException.h"
 
 
-#line 9
+#line 13
 @implementation MTRpcOk
 
 
-#line 16
+#line 20
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRpcOk_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 20
+#line 24
 - (instancetype)initWithInt:(jint)responseType
               withByteArray:(IOSByteArray *)payload {
   MTRpcOk_initWithInt_withByteArray_(self, responseType, payload);
@@ -35,7 +35,7 @@
 }
 
 
-#line 25
+#line 29
 - (jint)getResponseType {
   return responseType_;
 }
@@ -45,27 +45,27 @@
 }
 
 
-#line 34
+#line 38
 - (jbyte)getHeader {
   return MTRpcOk_HEADER;
 }
 
 
-#line 39
+#line 43
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:responseType_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
 
-#line 45
+#line 49
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   responseType_ = [((BSDataInput *) nil_chk(bs)) readInt];
   payload_ = [bs readProtoBytes];
 }
 
 
-#line 52
+#line 56
 - (NSString *)description {
   return JreStrcat("$IC", @"RpcOk{", responseType_, ']');
 }
@@ -73,13 +73,13 @@
 @end
 
 
-#line 16
+#line 20
 void MTRpcOk_initWithBSDataInput_(MTRpcOk *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 16
+#line 20
 MTRpcOk *new_MTRpcOk_initWithBSDataInput_(BSDataInput *stream) {
   MTRpcOk *self = [MTRpcOk alloc];
   MTRpcOk_initWithBSDataInput_(self, stream);
@@ -87,17 +87,17 @@ MTRpcOk *new_MTRpcOk_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 20
+#line 24
 void MTRpcOk_initWithInt_withByteArray_(MTRpcOk *self, jint responseType, IOSByteArray *payload) {
   (void) MTProtoStruct_init(self);
   
-#line 21
+#line 25
   self->responseType_ = responseType;
   self->payload_ = payload;
 }
 
 
-#line 20
+#line 24
 MTRpcOk *new_MTRpcOk_initWithInt_withByteArray_(jint responseType, IOSByteArray *payload) {
   MTRpcOk *self = [MTRpcOk alloc];
   MTRpcOk_initWithInt_withByteArray_(self, responseType, payload);

@@ -43,7 +43,7 @@ public class ActorTrace implements TraceInterface {
 
     @Override
     public void onActorDie(ActorRef ref, Exception e) {
-        Log.w(TAG, "Die: " + e);
+        Log.w(TAG, "Die(" + ref.getPath() + "): " + e);
         e.printStackTrace();
     }
 }

@@ -25,11 +25,11 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, phones_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
 
 
-#line 8
+#line 9
 @implementation AMPhoneBookContact
 
 
-#line 15
+#line 16
 - (instancetype)initWithLong:(jlong)contactId
                 withNSString:(NSString *)name
        withJavaUtilArrayList:(JavaUtilArrayList *)phones
@@ -39,7 +39,7 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
 }
 
 
-#line 22
+#line 23
 - (JavaUtilArrayList *)getPhones {
   return phones_;
 }
@@ -59,13 +59,13 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
 @end
 
 
-#line 15
+#line 16
 void AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(AMPhoneBookContact *self, jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) {
   (void) NSObject_init(self);
   self->phones_ = new_JavaUtilArrayList_init();
   self->emails_ = new_JavaUtilArrayList_init();
   
-#line 16
+#line 17
   self->contactId_ = contactId;
   self->name_ = name;
   self->phones_ = phones;
@@ -73,7 +73,7 @@ void AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJava
 }
 
 
-#line 15
+#line 16
 AMPhoneBookContact *new_AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) {
   AMPhoneBookContact *self = [AMPhoneBookContact alloc];
   AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(self, contactId, name, phones, emails);

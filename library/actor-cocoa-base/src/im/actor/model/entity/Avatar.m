@@ -37,7 +37,7 @@ __attribute__((unused)) static void AMAvatar_init(AMAvatar *self);
 __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED;
 
 
-#line 13
+#line 14
 @implementation AMAvatar
 
 + (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -45,7 +45,7 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
 }
 
 
-#line 23
+#line 24
 - (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
                     withAMAvatarImage:(AMAvatarImage *)largeImage
                     withAMAvatarImage:(AMAvatarImage *)fullImage {
@@ -54,14 +54,14 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
 }
 
 
-#line 29
+#line 30
 - (instancetype)init {
   AMAvatar_init(self);
   return self;
 }
 
 
-#line 33
+#line 34
 - (AMAvatarImage *)getSmallImage {
   return smallImage_;
 }
@@ -75,31 +75,31 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
 }
 
 
-#line 46
+#line 47
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   
-#line 50
+#line 51
   AMAvatar *avatar = (AMAvatar *) check_class_cast(o, [AMAvatar class]);
   
-#line 52
-  if (fullImage_ != nil ? ![fullImage_ isEqual:((AMAvatar *) nil_chk(avatar))->fullImage_] : ((AMAvatar *) nil_chk(avatar))->fullImage_ != nil)
 #line 53
+  if (fullImage_ != nil ? ![fullImage_ isEqual:((AMAvatar *) nil_chk(avatar))->fullImage_] : ((AMAvatar *) nil_chk(avatar))->fullImage_ != nil)
+#line 54
   return NO;
   if (largeImage_ != nil ? ![largeImage_ isEqual:((AMAvatar *) nil_chk(avatar))->largeImage_] : ((AMAvatar *) nil_chk(avatar))->largeImage_ != nil)
-#line 55
+#line 56
   return NO;
   if (smallImage_ != nil ? ![smallImage_ isEqual:((AMAvatar *) nil_chk(avatar))->smallImage_] : ((AMAvatar *) nil_chk(avatar))->smallImage_ != nil)
-#line 57
+#line 58
   return NO;
   
-#line 59
+#line 60
   return YES;
 }
 
 
-#line 63
+#line 64
 - (NSUInteger)hash {
   jint result = smallImage_ != nil ? ((jint) [smallImage_ hash]) : 0;
   result = 31 * result + (largeImage_ != nil ? ((jint) [largeImage_ hash]) : 0);
@@ -108,20 +108,20 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
 }
 
 
-#line 71
+#line 72
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   IOSByteArray *small = [((BSBserValues *) nil_chk(values)) optBytesWithInt:1];
   if (small != nil) {
     smallImage_ = AMAvatarImage_fromBytesWithByteArray_(small);
   }
   
-#line 77
+#line 78
   IOSByteArray *large = [values optBytesWithInt:2];
   if (large != nil) {
     largeImage_ = AMAvatarImage_fromBytesWithByteArray_(large);
   }
   
-#line 82
+#line 83
   IOSByteArray *full = [values optBytesWithInt:3];
   if (full != nil) {
     fullImage_ = AMAvatarImage_fromBytesWithByteArray_(full);
@@ -129,7 +129,7 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
 }
 
 
-#line 89
+#line 90
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (smallImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:smallImage_];
@@ -145,27 +145,27 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
 @end
 
 
-#line 15
+#line 16
 AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   AMAvatar_initialize();
   
-#line 16
+#line 17
   return ((AMAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_AMAvatar_init(), data));
 }
 
 
-#line 23
+#line 24
 void AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatar *self, AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) {
   (void) BSBserObject_init(self);
   
-#line 24
+#line 25
   self->smallImage_ = smallImage;
   self->largeImage_ = largeImage;
   self->fullImage_ = fullImage;
 }
 
 
-#line 23
+#line 24
 AMAvatar *new_AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) {
   AMAvatar *self = [AMAvatar alloc];
   AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(self, smallImage, largeImage, fullImage);
@@ -177,7 +177,7 @@ void AMAvatar_init(AMAvatar *self) {
 }
 
 
-#line 29
+#line 30
 AMAvatar *new_AMAvatar_init() {
   AMAvatar *self = [AMAvatar alloc];
   AMAvatar_init(self);

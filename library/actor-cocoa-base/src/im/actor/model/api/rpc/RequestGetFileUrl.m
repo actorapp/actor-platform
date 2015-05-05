@@ -28,43 +28,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUrl, file_, ImActorModelApiFileLocation *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestGetFileUrl
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)file {
   ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(self, file);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestGetFileUrl_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (ImActorModelApiFileLocation *)getFile {
   return self->file_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->file_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiFileLocation_init()];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->file_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -73,7 +73,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUrl, file_, ImActorModelApiF
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"rpc GetFileUrl{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"file=", self->file_));
@@ -82,7 +82,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUrl, file_, ImActorModelApiF
 }
 
 
-#line 63
+#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetFileUrl_HEADER;
 }
@@ -90,25 +90,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUrl, file_, ImActorModelApiF
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestGetFileUrl *ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetFileUrl_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestGetFileUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUrl_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(ImActorModelApiRpcRequestGetFileUrl *self, ImActorModelApiFileLocation *file) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 30
+#line 34
   self->file_ = file;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *file) {
   ImActorModelApiRpcRequestGetFileUrl *self = [ImActorModelApiRpcRequestGetFileUrl alloc];
   ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(self, file);
@@ -116,13 +116,13 @@ ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_ini
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiRpcRequestGetFileUrl_init(ImActorModelApiRpcRequestGetFileUrl *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_init() {
   ImActorModelApiRpcRequestGetFileUrl *self = [ImActorModelApiRpcRequestGetFileUrl alloc];
   ImActorModelApiRpcRequestGetFileUrl_init(self);

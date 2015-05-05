@@ -16,49 +16,49 @@
 #include "java/io/IOException.h"
 
 
-#line 8
+#line 12
 @implementation MTMTRpcRequest
 
 
-#line 14
+#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTMTRpcRequest_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 18
+#line 22
 - (instancetype)initWithByteArray:(IOSByteArray *)payload {
   MTMTRpcRequest_initWithByteArray_(self, payload);
   return self;
 }
 
 
-#line 22
+#line 26
 - (IOSByteArray *)getPayload {
   return payload_;
 }
 
 
-#line 27
+#line 31
 - (jbyte)getHeader {
   return MTMTRpcRequest_HEADER;
 }
 
 
-#line 32
+#line 36
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
 
-#line 37
+#line 41
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   payload_ = [((BSDataInput *) nil_chk(bs)) readProtoBytes];
 }
 
 
-#line 42
+#line 46
 - (NSString *)description {
   return @"RequestBox";
 }
@@ -66,13 +66,13 @@
 @end
 
 
-#line 14
+#line 18
 void MTMTRpcRequest_initWithBSDataInput_(MTMTRpcRequest *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 14
+#line 18
 MTMTRpcRequest *new_MTMTRpcRequest_initWithBSDataInput_(BSDataInput *stream) {
   MTMTRpcRequest *self = [MTMTRpcRequest alloc];
   MTMTRpcRequest_initWithBSDataInput_(self, stream);
@@ -80,16 +80,16 @@ MTMTRpcRequest *new_MTMTRpcRequest_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 18
+#line 22
 void MTMTRpcRequest_initWithByteArray_(MTMTRpcRequest *self, IOSByteArray *payload) {
   (void) MTProtoStruct_init(self);
   
-#line 19
+#line 23
   self->payload_ = payload;
 }
 
 
-#line 18
+#line 22
 MTMTRpcRequest *new_MTMTRpcRequest_initWithByteArray_(IOSByteArray *payload) {
   MTMTRpcRequest *self = [MTMTRpcRequest alloc];
   MTMTRpcRequest_initWithByteArray_(self, payload);

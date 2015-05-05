@@ -27,11 +27,11 @@ J2OBJC_FIELD_SETTER(AMRpcException, message_, NSString *)
 J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
 
 
-#line 6
+#line 7
 @implementation AMRpcException
 
 
-#line 13
+#line 14
 - (instancetype)initWithNSString:(NSString *)tag
                          withInt:(jint)code
                     withNSString:(NSString *)message
@@ -42,7 +42,7 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
 }
 
 
-#line 21
+#line 22
 - (jboolean)isCanTryAgain {
   return canTryAgain_;
 }
@@ -60,7 +60,7 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
 }
 
 
-#line 38
+#line 39
 - (NSString *)getMessage {
   return message_;
 }
@@ -68,11 +68,11 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
 @end
 
 
-#line 13
+#line 14
 void AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(AMRpcException *self, NSString *tag, jint code, NSString *message, jboolean canTryAgain, IOSByteArray *relatedData) {
   (void) JavaLangException_init(self);
   
-#line 14
+#line 15
   self->tag_ = tag;
   self->code_ = code;
   self->message_ = message;
@@ -81,7 +81,7 @@ void AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteAr
 }
 
 
-#line 13
+#line 14
 AMRpcException *new_AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(NSString *tag, jint code, NSString *message, jboolean canTryAgain, IOSByteArray *relatedData) {
   AMRpcException *self = [AMRpcException alloc];
   AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(self, tag, code, message, canTryAgain, relatedData);

@@ -22,11 +22,11 @@
 J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
 
 
-#line 8
+#line 12
 @implementation AMOwnAvatarVM
 
 
-#line 17
+#line 21
 - (AMValueModel *)getUploadState {
   return uploadState_;
 }
@@ -41,7 +41,7 @@ J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
 void AMOwnAvatarVM_init(AMOwnAvatarVM *self) {
   (void) NSObject_init(self);
   self->uploadState_ = new_AMValueModel_initWithNSString_withId_(
-#line 10
+#line 14
   @"avatar.my", new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO));
 }
 

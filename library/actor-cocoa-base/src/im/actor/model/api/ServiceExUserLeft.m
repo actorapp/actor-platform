@@ -15,34 +15,34 @@
 #include "java/io/IOException.h"
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiServiceExUserLeft
 
 
-#line 22
+#line 26
 - (instancetype)init {
   ImActorModelApiServiceExUserLeft_init(self);
   return self;
 }
 
 
-#line 26
+#line 30
 - (jint)getHeader {
   return 3;
 }
 
 
-#line 31
+#line 35
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
 
-#line 35
+#line 39
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
 
-#line 39
+#line 43
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserLeft{";
   res = JreStrcat("$C", res, '}');
@@ -52,13 +52,13 @@
 @end
 
 
-#line 22
+#line 26
 void ImActorModelApiServiceExUserLeft_init(ImActorModelApiServiceExUserLeft *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
 
-#line 22
+#line 26
 ImActorModelApiServiceExUserLeft *new_ImActorModelApiServiceExUserLeft_init() {
   ImActorModelApiServiceExUserLeft *self = [ImActorModelApiServiceExUserLeft alloc];
   ImActorModelApiServiceExUserLeft_init(self);

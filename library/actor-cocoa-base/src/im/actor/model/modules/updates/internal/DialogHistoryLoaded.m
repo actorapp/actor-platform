@@ -21,18 +21,18 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialogs_, ImActorModelApiRpcResponseLoadDialogs *)
 
 
-#line 8
+#line 9
 @implementation ImActorModelModulesUpdatesInternalDialogHistoryLoaded
 
 
-#line 11
+#line 12
 - (instancetype)initWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogs {
   ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(self, dialogs);
   return self;
 }
 
 
-#line 15
+#line 16
 - (ImActorModelApiRpcResponseLoadDialogs *)getDialogs {
   return dialogs_;
 }
@@ -40,16 +40,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalDialogHistoryLoaded, dialo
 @end
 
 
-#line 11
+#line 12
 void ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(ImActorModelModulesUpdatesInternalDialogHistoryLoaded *self, ImActorModelApiRpcResponseLoadDialogs *dialogs) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   
-#line 12
+#line 13
   self->dialogs_ = dialogs;
 }
 
 
-#line 11
+#line 12
 ImActorModelModulesUpdatesInternalDialogHistoryLoaded *new_ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(ImActorModelApiRpcResponseLoadDialogs *dialogs) {
   ImActorModelModulesUpdatesInternalDialogHistoryLoaded *self = [ImActorModelModulesUpdatesInternalDialogHistoryLoaded alloc];
   ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(self, dialogs);

@@ -20,11 +20,11 @@
 J2OBJC_FIELD_SETTER(AMAvatarUploadState, descriptor_, NSString *)
 
 
-#line 6
+#line 10
 @implementation AMAvatarUploadState
 
 
-#line 10
+#line 14
 - (instancetype)initWithNSString:(NSString *)descriptor
                      withBoolean:(jboolean)isUploading {
   AMAvatarUploadState_initWithNSString_withBoolean_(self, descriptor, isUploading);
@@ -32,13 +32,13 @@ J2OBJC_FIELD_SETTER(AMAvatarUploadState, descriptor_, NSString *)
 }
 
 
-#line 20
+#line 24
 - (NSString *)getDescriptor {
   return descriptor_;
 }
 
 
-#line 29
+#line 33
 - (jboolean)isUploading {
   return isUploading__;
 }
@@ -46,17 +46,17 @@ J2OBJC_FIELD_SETTER(AMAvatarUploadState, descriptor_, NSString *)
 @end
 
 
-#line 10
+#line 14
 void AMAvatarUploadState_initWithNSString_withBoolean_(AMAvatarUploadState *self, NSString *descriptor, jboolean isUploading) {
   (void) NSObject_init(self);
   
-#line 11
+#line 15
   self->descriptor_ = descriptor;
   self->isUploading__ = isUploading;
 }
 
 
-#line 10
+#line 14
 AMAvatarUploadState *new_AMAvatarUploadState_initWithNSString_withBoolean_(NSString *descriptor, jboolean isUploading) {
   AMAvatarUploadState *self = [AMAvatarUploadState alloc];
   AMAvatarUploadState_initWithNSString_withBoolean_(self, descriptor, isUploading);

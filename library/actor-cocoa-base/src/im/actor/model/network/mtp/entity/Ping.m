@@ -22,49 +22,49 @@
 @end
 
 
-#line 9
+#line 13
 @implementation MTPing
 
 
-#line 15
+#line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTPing_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 19
+#line 23
 - (instancetype)initWithLong:(jlong)randomId {
   MTPing_initWithLong_(self, randomId);
   return self;
 }
 
 
-#line 23
+#line 27
 - (jlong)getRandomId {
   return randomId_;
 }
 
 
-#line 28
+#line 32
 - (jbyte)getHeader {
   return MTPing_HEADER;
 }
 
 
-#line 33
+#line 37
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
 
-#line 38
+#line 42
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   randomId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
 
 
-#line 43
+#line 47
 - (NSString *)description {
   return JreStrcat("$JC", @"Ping{", randomId_, '}');
 }
@@ -72,13 +72,13 @@
 @end
 
 
-#line 15
+#line 19
 void MTPing_initWithBSDataInput_(MTPing *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 15
+#line 19
 MTPing *new_MTPing_initWithBSDataInput_(BSDataInput *stream) {
   MTPing *self = [MTPing alloc];
   MTPing_initWithBSDataInput_(self, stream);
@@ -86,16 +86,16 @@ MTPing *new_MTPing_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 19
+#line 23
 void MTPing_initWithLong_(MTPing *self, jlong randomId) {
   (void) MTProtoStruct_init(self);
   
-#line 20
+#line 24
   self->randomId_ = randomId;
 }
 
 
-#line 19
+#line 23
 MTPing *new_MTPing_initWithLong_(jlong randomId) {
   MTPing *self = [MTPing alloc];
   MTPing_initWithLong_(self, randomId);

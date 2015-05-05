@@ -51,18 +51,18 @@ __attribute__((unused)) static ImActorModelModulesProfile_$1 *new_ImActorModelMo
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesProfile_$1)
 
 
-#line 14
+#line 15
 @implementation ImActorModelModulesProfile
 
 
-#line 18
+#line 19
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesProfile_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 29
+#line 30
 - (AMOwnAvatarVM *)getOwnAvatarVM {
   return ownAvatarVM_;
 }
@@ -78,17 +78,17 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesProfile_$1)
 @end
 
 
-#line 18
+#line 19
 void ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesProfile *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->ownAvatarVM_ = new_AMOwnAvatarVM_init();
   self->avatarChangeActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesAvatarOwnAvatarChangeActor_class_(), new_ImActorModelModulesProfile_$1_initWithImActorModelModulesModules_(modules)) withNSString:
-#line 26
+#line 27
   @"actor/avatar/my"];
 }
 
 
-#line 18
+#line 19
 ImActorModelModulesProfile *new_ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesProfile *self = [ImActorModelModulesProfile alloc];
   ImActorModelModulesProfile_initWithImActorModelModulesModules_(self, modules);
@@ -100,7 +100,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesProfile)
 @implementation ImActorModelModulesProfile_$1
 
 
-#line 23
+#line 24
 - (ImActorModelModulesAvatarOwnAvatarChangeActor *)create {
   return new_ImActorModelModulesAvatarOwnAvatarChangeActor_initWithImActorModelModulesModules_(val$modules_);
 }
