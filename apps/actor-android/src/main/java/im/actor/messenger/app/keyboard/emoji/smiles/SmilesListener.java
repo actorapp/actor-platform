@@ -5,5 +5,5 @@ package im.actor.messenger.app.keyboard.emoji.smiles;
  * Created: 16.08.13 13:34
  */
 public interface SmilesListener {
-    public void onEmojiUpdated(boolean completed);
+    public void onSmilesUpdated(boolean completed);
 }

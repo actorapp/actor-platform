@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.emoji.stickers.StickersPack;
 import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.util.Screen;
 

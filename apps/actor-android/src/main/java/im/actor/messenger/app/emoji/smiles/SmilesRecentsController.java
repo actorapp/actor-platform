@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package im.actor.messenger.app.keyboard.emoji.smiles;
+package im.actor.messenger.app.emoji.smiles;
 
 import android.content.Context;
 import android.content.SharedPreferences;
