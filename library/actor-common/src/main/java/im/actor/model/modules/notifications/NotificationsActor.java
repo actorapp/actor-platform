@@ -144,6 +144,11 @@ public class NotificationsActor extends ModuleActor {
             destNotifications.add(pendingNotification);
         }
 
+        if (destNotifications.size() == 0) {
+            hideNotification();
+            return;
+        }
+
         List<Notification> res = new ArrayList<Notification>();
         for (PendingNotification p : destNotifications) {
             res.add(new Notification(p.getPeer(), p.getSender(), p.getContent()));
