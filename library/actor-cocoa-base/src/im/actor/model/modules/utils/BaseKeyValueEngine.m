@@ -32,22 +32,22 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, cache_, JavaUtil
 J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKKeyValueStorage>)
 
 
-#line 15
+#line 16
 @implementation ImActorModelModulesUtilsBaseKeyValueEngine
 
 
-#line 20
+#line 21
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
   ImActorModelModulesUtilsBaseKeyValueEngine_initWithDKKeyValueStorage_(self, storage);
   return self;
 }
 
 
-#line 29
+#line 30
 - (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item {
   @synchronized(self) {
     
-#line 30
+#line 31
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
     IOSByteArray *data = [self serializeWithDKKeyValueItem:item];
     [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:[item getEngineId] withByteArray:data];
@@ -55,16 +55,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
 }
 
 
-#line 36
+#line 37
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
   @synchronized(self) {
     
-#line 37
+#line 38
     for (id<DKKeyValueItem> __strong t in nil_chk(values)) {
       (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(t)) getEngineId]) withId:t];
     }
     
-#line 41
+#line 42
     JavaUtilArrayList *records = new_JavaUtilArrayList_init();
     for (id<DKKeyValueItem> __strong v in values) {
       [records addWithId:new_DKKeyValueRecord_initWithLong_withByteArray_([((id<DKKeyValueItem>) nil_chk(v)) getEngineId], [self serializeWithDKKeyValueItem:v])];
@@ -74,84 +74,82 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsBaseKeyValueEngine, storage_, id<DKK
 }
 
 
-#line 49
+#line 50
 - (void)removeItemWithLong:(jlong)id_ {
   @synchronized(self) {
     
-#line 50
+#line 51
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
     [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:id_];
   }
 }
 
 
-#line 55
+#line 56
 - (void)removeItemsWithLongArray:(IOSLongArray *)ids {
   @synchronized(self) {
     {
       IOSLongArray *a__ =
-#line 56
+#line 57
       ids;
       jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong l = *b__++;
         
-#line 57
+#line 58
         (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
       }
     }
     
-#line 59
+#line 60
     [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemsWithLongArray:ids];
   }
 }
 
 
-#line 63
+#line 64
 - (void)clear {
   @synchronized(self) {
     
-#line 64
+#line 65
     [((JavaUtilHashMap *) nil_chk(cache_)) clear];
     [((id<DKKeyValueStorage>) nil_chk(storage_)) clear];
   }
 }
 
 
-#line 69
+#line 70
 - (id)getValueWithLong:(jlong)id_ {
   @synchronized(self) {
     
-#line 70
+#line 71
     if ([((JavaUtilHashMap *) nil_chk(cache_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(id_)]) {
       return [cache_ getWithId:JavaLangLong_valueOfWithLong_(id_)];
     }
     
-#line 74
+#line 75
     IOSByteArray *data = [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithLong:id_];
     if (data != nil) {
       id<DKKeyValueItem> res = [self deserializeWithByteArray:data];
-      (void) [cache_ putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(res)) getEngineId]) withId:res];
-      return res;
+      if (res != nil) {
+        (void) [cache_ putWithId:JavaLangLong_valueOfWithLong_([res getEngineId]) withId:res];
+        return res;
+      }
     }
-    else {
-      
-#line 80
-      return nil;
-    }
+    return nil;
   }
 }
 
 @end
 
 
-#line 20
+#line 21
 void ImActorModelModulesUtilsBaseKeyValueEngine_initWithDKKeyValueStorage_(ImActorModelModulesUtilsBaseKeyValueEngine *self, id<DKKeyValueStorage> storage) {
   (void) NSObject_init(self);
   self->cache_ = new_JavaUtilHashMap_init();
   
-#line 21
+#line 22
   self->storage_ = storage;
 }
 

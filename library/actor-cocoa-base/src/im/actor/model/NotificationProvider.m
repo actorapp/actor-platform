@@ -9,7 +9,6 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/NotificationProvider.h"
-#include "im/actor/model/entity/Peer.h"
 #include "java/util/List.h"
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMNotificationProvider)

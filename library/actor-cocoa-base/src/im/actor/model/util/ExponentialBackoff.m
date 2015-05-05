@@ -34,11 +34,11 @@ J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_DELAY, jint)
 J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_FAILURE_COUNT, jint)
 
 
-#line 10
+#line 14
 @implementation AMExponentialBackoff
 
 
-#line 25
+#line 29
 - (jlong)exponentialWait {
   jlong maxDelay = AMExponentialBackoff_MIN_DELAY + ((AMExponentialBackoff_MAX_DELAY - AMExponentialBackoff_MIN_DELAY) / AMExponentialBackoff_MAX_FAILURE_COUNT) * [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) get];
   @synchronized(random_) {
@@ -47,7 +47,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_FAILURE_COUNT, jint)
 }
 
 
-#line 35
+#line 39
 - (void)onFailure {
   jint val = [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) incrementAndGet];
   if (val > 50) {
@@ -56,13 +56,13 @@ J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_FAILURE_COUNT, jint)
 }
 
 
-#line 45
+#line 49
 - (void)onSuccess {
   [self reset];
 }
 
 
-#line 52
+#line 56
 - (void)reset {
   [((AMAtomicIntegerCompat *) nil_chk(currentFailureCount_)) setWithInt:0];
 }
@@ -77,7 +77,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMExponentialBackoff, MAX_FAILURE_COUNT, jint)
 void AMExponentialBackoff_init(AMExponentialBackoff *self) {
   (void) NSObject_init(self);
   self->currentFailureCount_ = DKEnvironment_createAtomicIntWithInt_(
-#line 16
+#line 20
   1);
   self->random_ = new_JavaUtilRandom_init();
 }

@@ -28,11 +28,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, text_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, ImActorModelApiTextMessageEx *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiTextMessage
 
 
-#line 24
+#line 28
 - (instancetype)initWithNSString:(NSString *)text
 withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
   ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(self, text, ext);
@@ -40,14 +40,14 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 }
 
 
-#line 29
+#line 33
 - (instancetype)init {
   ImActorModelApiTextMessage_init(self);
   return self;
 }
 
 
-#line 33
+#line 37
 - (jint)getHeader {
   return 1;
 }
@@ -61,7 +61,7 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 }
 
 
-#line 46
+#line 50
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
@@ -70,7 +70,7 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->text_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -82,7 +82,7 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 }
 
 
-#line 65
+#line 69
 - (NSString *)description {
   NSString *res = @"struct TextMessage{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
@@ -94,17 +94,17 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(ImActorModelApiTextMessage *self, NSString *text, ImActorModelApiTextMessageEx *ext) {
   (void) ImActorModelApiMessage_init(self);
   
-#line 25
+#line 29
   self->text_ = text;
   self->ext_ = ext;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(NSString *text, ImActorModelApiTextMessageEx *ext) {
   ImActorModelApiTextMessage *self = [ImActorModelApiTextMessage alloc];
   ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(self, text, ext);
@@ -112,13 +112,13 @@ ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_with
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiTextMessage_init(ImActorModelApiTextMessage *self) {
   (void) ImActorModelApiMessage_init(self);
 }
 
 
-#line 29
+#line 33
 ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_init() {
   ImActorModelApiTextMessage *self = [ImActorModelApiTextMessage alloc];
   ImActorModelApiTextMessage_init(self);

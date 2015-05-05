@@ -63,7 +63,7 @@ task copyAppBootstrap {
 }
 
 task buildAsar (type: Exec, dependsOn: ['buildWeb', 'copyAppBootstrap']) {
-    commandLine 'asar', 'pack', "${buildDir}/web", "${buildDir}/electron/app.asar"
+    commandLine 'asar', 'pack', "${buildDir}/web/dist", "${buildDir}/electron/app.asar"
 }
 
 task prepareBuild (dependsOn: ['buildAsar']) {

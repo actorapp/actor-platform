@@ -41,6 +41,7 @@ import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
 
@@ -236,6 +237,7 @@ public class MyProfileFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        messenger().trackOwnProfileOpen();
         bind(avatar, users().get(myUid()).getAvatar());
     }
 
@@ -261,6 +263,7 @@ public class MyProfileFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
+        messenger().trackOwnProfileClosed();
         avatar.unbind();
     }
 

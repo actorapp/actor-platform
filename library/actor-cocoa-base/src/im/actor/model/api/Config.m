@@ -22,43 +22,43 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiConfig
 
 
-#line 23
+#line 27
 - (instancetype)initWithInt:(jint)maxGroupSize {
   ImActorModelApiConfig_initWithInt_(self, maxGroupSize);
   return self;
 }
 
 
-#line 27
+#line 31
 - (instancetype)init {
   ImActorModelApiConfig_init(self);
   return self;
 }
 
 
-#line 31
+#line 35
 - (jint)getMaxGroupSize {
   return self->maxGroupSize_;
 }
 
 
-#line 36
+#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->maxGroupSize_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
 
-#line 41
+#line 45
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->maxGroupSize_];
 }
 
 
-#line 46
+#line 50
 - (NSString *)description {
   NSString *res = @"struct Config{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"maxGroupSize=", self->maxGroupSize_));
@@ -69,16 +69,16 @@
 @end
 
 
-#line 23
+#line 27
 void ImActorModelApiConfig_initWithInt_(ImActorModelApiConfig *self, jint maxGroupSize) {
   (void) BSBserObject_init(self);
   
-#line 24
+#line 28
   self->maxGroupSize_ = maxGroupSize;
 }
 
 
-#line 23
+#line 27
 ImActorModelApiConfig *new_ImActorModelApiConfig_initWithInt_(jint maxGroupSize) {
   ImActorModelApiConfig *self = [ImActorModelApiConfig alloc];
   ImActorModelApiConfig_initWithInt_(self, maxGroupSize);
@@ -86,13 +86,13 @@ ImActorModelApiConfig *new_ImActorModelApiConfig_initWithInt_(jint maxGroupSize)
 }
 
 
-#line 27
+#line 31
 void ImActorModelApiConfig_init(ImActorModelApiConfig *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 27
+#line 31
 ImActorModelApiConfig *new_ImActorModelApiConfig_init() {
   ImActorModelApiConfig *self = [ImActorModelApiConfig alloc];
   ImActorModelApiConfig_init(self);

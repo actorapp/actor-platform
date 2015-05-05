@@ -29,7 +29,7 @@
 @end
 
 
-#line 12
+#line 13
 @implementation AMPhotoContent
 
 + (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data {
@@ -37,7 +37,7 @@
 }
 
 
-#line 21
+#line 22
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
@@ -49,14 +49,14 @@
 }
 
 
-#line 27
+#line 28
 - (instancetype)init {
   AMPhotoContent_init(self);
   return self;
 }
 
 
-#line 31
+#line 32
 - (jint)getW {
   return w_;
 }
@@ -66,13 +66,13 @@
 }
 
 
-#line 40
+#line 41
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
 }
 
 
-#line 45
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
@@ -80,7 +80,7 @@
 }
 
 
-#line 52
+#line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:w_];
@@ -90,11 +90,11 @@
 @end
 
 
-#line 14
+#line 15
 AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
   AMPhotoContent_initialize();
   
-#line 15
+#line 16
   return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMPhotoContent_init(), data));
 }
 
@@ -105,7 +105,7 @@ void AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThu
 }
 
 
-#line 21
+#line 22
 AMPhotoContent *new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) {
   AMPhotoContent *self = [AMPhotoContent alloc];
   AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(self, location, mimetype, name, fastThumb, w, h);
@@ -117,7 +117,7 @@ void AMPhotoContent_init(AMPhotoContent *self) {
 }
 
 
-#line 27
+#line 28
 AMPhotoContent *new_AMPhotoContent_init() {
   AMPhotoContent *self = [AMPhotoContent alloc];
   AMPhotoContent_init(self);

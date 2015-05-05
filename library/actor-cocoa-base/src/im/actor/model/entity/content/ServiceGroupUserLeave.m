@@ -17,17 +17,17 @@
 #include "java/io/IOException.h"
 
 
-#line 10
+#line 11
 @implementation AMServiceGroupUserLeave
 
 
-#line 13
+#line 14
 + (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
 
-#line 18
+#line 19
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
 }
@@ -40,22 +40,22 @@
 @end
 
 
-#line 13
+#line 14
 AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserLeave_initialize();
   
-#line 14
+#line 15
   return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserLeave_init(), data));
 }
 
 
-#line 22
+#line 23
 void AMServiceGroupUserLeave_init(AMServiceGroupUserLeave *self) {
   (void) AMServiceContent_initWithNSString_(self, @"User leave");
 }
 
 
-#line 22
+#line 23
 AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_init() {
   AMServiceGroupUserLeave *self = [AMServiceGroupUserLeave alloc];
   AMServiceGroupUserLeave_init(self);

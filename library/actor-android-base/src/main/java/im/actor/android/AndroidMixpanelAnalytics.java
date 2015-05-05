@@ -53,7 +53,7 @@ public class AndroidMixpanelAnalytics implements AnalyticsProvider {
         mixpanel.identify("uid:" + uid);
         mixpanel.getPeople().identify("uid:" + uid);
         mixpanel.getPeople().set("PhoneNumber", phoneNumber);
-        mixpanel.getPeople().set("Name", userName);
+        mixpanel.getPeople().set("$name", userName);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class AndroidMixpanelAnalytics implements AnalyticsProvider {
         mixpanel.identify("uid:" + uid);
         mixpanel.getPeople().identify("uid:" + uid);
         mixpanel.getPeople().set("PhoneNumber", phoneNumber);
-        mixpanel.getPeople().set("Name", userName);
+        mixpanel.getPeople().set("$name", userName);
     }
 
     @Override

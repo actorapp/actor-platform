@@ -26,11 +26,11 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiTextMessageExUnsupported, content_, IOSByteArray *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiTextMessageExUnsupported
 
 
-#line 24
+#line 28
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content {
   ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(self, key, content);
@@ -42,13 +42,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessageExUnsupported, content_, IOSByteAr
 }
 
 
-#line 35
+#line 39
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   @throw new_JavaIoIOException_initWithNSString_(@"Parsing is unsupported");
 }
 
 
-#line 40
+#line 44
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:key_];
   [writer writeBytesWithInt:2 withByteArray:content_];
@@ -57,17 +57,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessageExUnsupported, content_, IOSByteAr
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(ImActorModelApiTextMessageExUnsupported *self, jint key, IOSByteArray *content) {
   (void) ImActorModelApiTextMessageEx_init(self);
   
-#line 25
+#line 29
   self->key_ = key;
   self->content_ = content;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiTextMessageExUnsupported *new_ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
   ImActorModelApiTextMessageExUnsupported *self = [ImActorModelApiTextMessageExUnsupported alloc];
   ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(self, key, content);

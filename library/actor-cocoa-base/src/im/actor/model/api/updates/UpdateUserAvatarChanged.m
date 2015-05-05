@@ -29,17 +29,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImActorModelApiAvatar *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateUserAvatarChanged
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithInt:(jint)uid
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(self, uid, avatar);
@@ -47,14 +47,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (jint)getUid {
   return self->uid_;
 }
@@ -64,14 +64,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->avatar_ = [values optObjWithInt:2 withBSBserObject:new_ImActorModelApiAvatar_init()];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->avatar_ != nil) {
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 }
 
 
-#line 62
+#line 66
 - (NSString *)description {
   NSString *res = @"update UserAvatarChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 }
 
 
-#line 71
+#line 75
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_HEADER;
 }
@@ -98,24 +98,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateUserAvatarChanged *ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateUserAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserAvatarChanged_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(ImActorModelApiUpdatesUpdateUserAvatarChanged *self, jint uid, ImActorModelApiAvatar *avatar) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 31
+#line 35
   self->uid_ = uid;
   self->avatar_ = avatar;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(jint uid, ImActorModelApiAvatar *avatar) {
   ImActorModelApiUpdatesUpdateUserAvatarChanged *self = [ImActorModelApiUpdatesUpdateUserAvatarChanged alloc];
   ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(self, uid, avatar);
@@ -123,13 +123,13 @@ ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateU
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiUpdatesUpdateUserAvatarChanged_init(ImActorModelApiUpdatesUpdateUserAvatarChanged *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_init() {
   ImActorModelApiUpdatesUpdateUserAvatarChanged *self = [ImActorModelApiUpdatesUpdateUserAvatarChanged alloc];
   ImActorModelApiUpdatesUpdateUserAvatarChanged_init(self);

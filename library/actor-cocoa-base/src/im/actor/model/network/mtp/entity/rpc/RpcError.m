@@ -16,18 +16,18 @@
 #include "java/io/IOException.h"
 
 
-#line 9
+#line 13
 @implementation MTRpcError
 
 
-#line 19
+#line 23
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRpcError_initWithBSDataInput_(self, stream);
   return self;
 }
 
 
-#line 23
+#line 27
 - (instancetype)initWithInt:(jint)errorCode
                withNSString:(NSString *)errorTag
                withNSString:(NSString *)userMessage
@@ -42,7 +42,7 @@
 }
 
 
-#line 37
+#line 41
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:errorCode_];
   [bs writeProtoStringWithNSString:errorTag_];
@@ -52,7 +52,7 @@
 }
 
 
-#line 46
+#line 50
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   errorCode_ = [((BSDataInput *) nil_chk(bs)) readInt];
   errorTag_ = [bs readProtoString];
@@ -62,7 +62,7 @@
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   return JreStrcat("$IC$C", @"RpcError [#", errorCode_, ' ', errorTag_, ']');
 }
@@ -70,13 +70,13 @@
 @end
 
 
-#line 19
+#line 23
 void MTRpcError_initWithBSDataInput_(MTRpcError *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
 
-#line 19
+#line 23
 MTRpcError *new_MTRpcError_initWithBSDataInput_(BSDataInput *stream) {
   MTRpcError *self = [MTRpcError alloc];
   MTRpcError_initWithBSDataInput_(self, stream);
@@ -84,11 +84,11 @@ MTRpcError *new_MTRpcError_initWithBSDataInput_(BSDataInput *stream) {
 }
 
 
-#line 23
+#line 27
 void MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(MTRpcError *self, jint errorCode, NSString *errorTag, NSString *userMessage, jboolean canTryAgain, IOSByteArray *relatedData) {
   (void) MTProtoStruct_init(self);
   
-#line 24
+#line 28
   self->errorCode_ = errorCode;
   self->errorTag_ = errorTag;
   self->userMessage_ = userMessage;
@@ -97,7 +97,7 @@ void MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_
 }
 
 
-#line 23
+#line 27
 MTRpcError *new_MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(jint errorCode, NSString *errorTag, NSString *userMessage, jboolean canTryAgain, IOSByteArray *relatedData) {
   MTRpcError *self = [MTRpcError alloc];
   MTRpcError_initWithInt_withNSString_withNSString_withBoolean_withByteArray_(self, errorCode, errorTag, userMessage, canTryAgain, relatedData);

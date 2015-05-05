@@ -29,17 +29,17 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImActorModelApiGroupOutPeer *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestRemoveGroupAvatar
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestRemoveGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(data);
 }
 
 
-#line 30
+#line 34
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid {
   ImActorModelApiRpcRequestRemoveGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_(self, groupPeer, rid);
@@ -47,14 +47,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 }
 
 
-#line 35
+#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestRemoveGroupAvatar_init(self);
   return self;
 }
 
 
-#line 39
+#line 43
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
@@ -64,14 +64,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
 }
 
 
-#line 54
+#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -81,7 +81,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 }
 
 
-#line 63
+#line 67
 - (NSString *)description {
   NSString *res = @"rpc RemoveGroupAvatar{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -91,7 +91,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 }
 
 
-#line 72
+#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRemoveGroupAvatar_HEADER;
 }
@@ -99,24 +99,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRemoveGroupAvatar, groupPeer_, ImAc
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestRemoveGroupAvatar *ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRemoveGroupAvatar_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestRemoveGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRemoveGroupAvatar_init(), data));
 }
 
 void ImActorModelApiRpcRequestRemoveGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiRpcRequestRemoveGroupAvatar *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 31
+#line 35
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
 }
 
 
-#line 30
+#line 34
 ImActorModelApiRpcRequestRemoveGroupAvatar *new_ImActorModelApiRpcRequestRemoveGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid) {
   ImActorModelApiRpcRequestRemoveGroupAvatar *self = [ImActorModelApiRpcRequestRemoveGroupAvatar alloc];
   ImActorModelApiRpcRequestRemoveGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_(self, groupPeer, rid);
@@ -124,13 +124,13 @@ ImActorModelApiRpcRequestRemoveGroupAvatar *new_ImActorModelApiRpcRequestRemoveG
 }
 
 
-#line 35
+#line 39
 void ImActorModelApiRpcRequestRemoveGroupAvatar_init(ImActorModelApiRpcRequestRemoveGroupAvatar *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 35
+#line 39
 ImActorModelApiRpcRequestRemoveGroupAvatar *new_ImActorModelApiRpcRequestRemoveGroupAvatar_init() {
   ImActorModelApiRpcRequestRemoveGroupAvatar *self = [ImActorModelApiRpcRequestRemoveGroupAvatar alloc];
   ImActorModelApiRpcRequestRemoveGroupAvatar_init(self);

@@ -39,11 +39,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, latitude_, JavaLangDouble *)
 J2OBJC_FIELD_SETTER(ImActorModelApiAuthSession, longitude_, JavaLangDouble *)
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiAuthSession
 
 
-#line 31
+#line 35
 - (instancetype)initWithInt:(jint)id_
 withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
                     withInt:(jint)appId
@@ -58,14 +58,14 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 }
 
 
-#line 43
+#line 47
 - (instancetype)init {
   ImActorModelApiAuthSession_init(self);
   return self;
 }
 
 
-#line 47
+#line 51
 - (jint)getId {
   return self->id__;
 }
@@ -103,7 +103,7 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 }
 
 
-#line 84
+#line 88
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->authHolder_ = ImActorModelApiAuthHolderEnum_parseWithInt_([values getIntWithInt:2]);
@@ -117,7 +117,7 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 }
 
 
-#line 97
+#line 101
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   if (self->authHolder_ == nil) {
@@ -147,7 +147,7 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 }
 
 
-#line 126
+#line 130
 - (NSString *)description {
   NSString *res = @"struct AuthSession{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
@@ -163,11 +163,11 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 @end
 
 
-#line 31
+#line 35
 void ImActorModelApiAuthSession_initWithInt_withImActorModelApiAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(ImActorModelApiAuthSession *self, jint id_, ImActorModelApiAuthHolderEnum *authHolder, jint appId, NSString *appTitle, NSString *deviceTitle, jint authTime, NSString *authLocation, JavaLangDouble *latitude, JavaLangDouble *longitude) {
   (void) BSBserObject_init(self);
   
-#line 32
+#line 36
   self->id__ = id_;
   self->authHolder_ = authHolder;
   self->appId_ = appId;
@@ -180,7 +180,7 @@ void ImActorModelApiAuthSession_initWithInt_withImActorModelApiAuthHolderEnum_wi
 }
 
 
-#line 31
+#line 35
 ImActorModelApiAuthSession *new_ImActorModelApiAuthSession_initWithInt_withImActorModelApiAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(jint id_, ImActorModelApiAuthHolderEnum *authHolder, jint appId, NSString *appTitle, NSString *deviceTitle, jint authTime, NSString *authLocation, JavaLangDouble *latitude, JavaLangDouble *longitude) {
   ImActorModelApiAuthSession *self = [ImActorModelApiAuthSession alloc];
   ImActorModelApiAuthSession_initWithInt_withImActorModelApiAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(self, id_, authHolder, appId, appTitle, deviceTitle, authTime, authLocation, latitude, longitude);
@@ -188,13 +188,13 @@ ImActorModelApiAuthSession *new_ImActorModelApiAuthSession_initWithInt_withImAct
 }
 
 
-#line 43
+#line 47
 void ImActorModelApiAuthSession_init(ImActorModelApiAuthSession *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 43
+#line 47
 ImActorModelApiAuthSession *new_ImActorModelApiAuthSession_init() {
   ImActorModelApiAuthSession *self = [ImActorModelApiAuthSession alloc];
   ImActorModelApiAuthSession_init(self);

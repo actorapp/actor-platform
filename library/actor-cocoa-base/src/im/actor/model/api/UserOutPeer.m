@@ -23,11 +23,11 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiUserOutPeer
 
 
-#line 24
+#line 28
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash {
   ImActorModelApiUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
@@ -35,14 +35,14 @@
 }
 
 
-#line 29
+#line 33
 - (instancetype)init {
   ImActorModelApiUserOutPeer_init(self);
   return self;
 }
 
 
-#line 33
+#line 37
 - (jint)getUid {
   return self->uid_;
 }
@@ -52,21 +52,21 @@
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
 
-#line 48
+#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
 
-#line 54
+#line 58
 - (NSString *)description {
   NSString *res = @"struct UserOutPeer{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -77,17 +77,17 @@
 @end
 
 
-#line 24
+#line 28
 void ImActorModelApiUserOutPeer_initWithInt_withLong_(ImActorModelApiUserOutPeer *self, jint uid, jlong accessHash) {
   (void) BSBserObject_init(self);
   
-#line 25
+#line 29
   self->uid_ = uid;
   self->accessHash_ = accessHash;
 }
 
 
-#line 24
+#line 28
 ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_initWithInt_withLong_(jint uid, jlong accessHash) {
   ImActorModelApiUserOutPeer *self = [ImActorModelApiUserOutPeer alloc];
   ImActorModelApiUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
@@ -95,13 +95,13 @@ ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_initWithInt_withLong_
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiUserOutPeer_init(ImActorModelApiUserOutPeer *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 29
+#line 33
 ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_init() {
   ImActorModelApiUserOutPeer *self = [ImActorModelApiUserOutPeer alloc];
   ImActorModelApiUserOutPeer_init(self);

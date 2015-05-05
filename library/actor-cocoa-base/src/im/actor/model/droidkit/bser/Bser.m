@@ -28,25 +28,25 @@ __attribute__((unused)) static void BSBser_init(BSBser *self);
 __attribute__((unused)) static BSBser *new_BSBser_init() NS_RETURNS_RETAINED;
 
 
-#line 8
+#line 9
 @implementation BSBser
 
 
-#line 9
+#line 10
 + (id)parseWithBSBserObject:(BSBserObject *)res
             withBSDataInput:(BSDataInput *)inputStream {
   return BSBser_parseWithBSBserObject_withBSDataInput_(res, inputStream);
 }
 
 
-#line 15
+#line 16
 + (id)parseWithBSBserObject:(BSBserObject *)res
               withByteArray:(IOSByteArray *)data {
   return BSBser_parseWithBSBserObject_withByteArray_(res, data);
 }
 
 
-#line 19
+#line 20
 - (instancetype)init {
   BSBser_init(self);
   return self;
@@ -55,33 +55,33 @@ __attribute__((unused)) static BSBser *new_BSBser_init() NS_RETURNS_RETAINED;
 @end
 
 
-#line 9
+#line 10
 id BSBser_parseWithBSBserObject_withBSDataInput_(BSBserObject *res, BSDataInput *inputStream) {
   BSBser_initialize();
   
-#line 10
+#line 11
   BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(inputStream));
   [((BSBserObject *) nil_chk(res)) parseWithBSBserValues:reader];
   return res;
 }
 
 
-#line 15
+#line 16
 id BSBser_parseWithBSBserObject_withByteArray_(BSBserObject *res, IOSByteArray *data) {
   BSBser_initialize();
   
-#line 16
+#line 17
   return ((BSBserObject *) BSBser_parseWithBSBserObject_withBSDataInput_(res, new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
 }
 
 
-#line 19
+#line 20
 void BSBser_init(BSBser *self) {
   (void) NSObject_init(self);
 }
 
 
-#line 19
+#line 20
 BSBser *new_BSBser_init() {
   BSBser *self = [BSBser alloc];
   BSBser_init(self);

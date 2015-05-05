@@ -25,49 +25,49 @@
 @end
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestGetFileUploadUrl
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetFileUploadUrl_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithInt:(jint)expectedSize {
   ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(self, expectedSize);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestGetFileUploadUrl_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (jint)getExpectedSize {
   return self->expectedSize_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->expectedSize_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->expectedSize_];
 }
 
 
-#line 52
+#line 56
 - (NSString *)description {
   NSString *res = @"rpc GetFileUploadUrl{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"expectedSize=", self->expectedSize_));
@@ -76,7 +76,7 @@
 }
 
 
-#line 60
+#line 64
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetFileUploadUrl_HEADER;
 }
@@ -84,25 +84,25 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestGetFileUploadUrl *ImActorModelApiRpcRequestGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetFileUploadUrl_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestGetFileUploadUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUploadUrl_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(ImActorModelApiRpcRequestGetFileUploadUrl *self, jint expectedSize) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 30
+#line 34
   self->expectedSize_ = expectedSize;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(jint expectedSize) {
   ImActorModelApiRpcRequestGetFileUploadUrl *self = [ImActorModelApiRpcRequestGetFileUploadUrl alloc];
   ImActorModelApiRpcRequestGetFileUploadUrl_initWithInt_(self, expectedSize);
@@ -110,13 +110,13 @@ ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileU
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiRpcRequestGetFileUploadUrl_init(ImActorModelApiRpcRequestGetFileUploadUrl *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiRpcRequestGetFileUploadUrl *new_ImActorModelApiRpcRequestGetFileUploadUrl_init() {
   ImActorModelApiRpcRequestGetFileUploadUrl *self = [ImActorModelApiRpcRequestGetFileUploadUrl alloc];
   ImActorModelApiRpcRequestGetFileUploadUrl_init(self);

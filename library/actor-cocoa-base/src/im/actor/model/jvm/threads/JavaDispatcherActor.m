@@ -38,7 +38,7 @@ __attribute__((unused)) static ImActorModelJvmThreadsJavaDispatcherActor_$1 *new
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaDispatcherActor_$1)
 
 
-#line 15
+#line 17
 @implementation ImActorModelJvmThreadsJavaDispatcherActor
 
 - (instancetype)initWithNSString:(NSString *)name
@@ -52,16 +52,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelJvmThreadsJavaDispatcherActor_$1)
 @end
 
 
-#line 17
+#line 19
 void ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(ImActorModelJvmThreadsJavaDispatcherActor *self, NSString *name, DKActorSystem *actorSystem, jint threadsCount, DKThreadPriorityEnum *priority) {
   (void) DKActorDispatcher_initWithNSString_withDKActorSystem_(self, name, actorSystem);
   [self initDispatcherWithDKAbstractDispatcher:new_ImActorModelJvmThreadsJavaDispatcherThreads_initWithNSString_withInt_withDKThreadPriorityEnum_withDKAbstractDispatchQueue_withDKDispatch_withBoolean_([self getName], threadsCount, priority, new_DKMailboxesQueue_init(), new_ImActorModelJvmThreadsJavaDispatcherActor_$1_initWithImActorModelJvmThreadsJavaDispatcherActor_(self),
-#line 25
+#line 27
   YES)];
 }
 
 
-#line 17
+#line 19
 ImActorModelJvmThreadsJavaDispatcherActor *new_ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(NSString *name, DKActorSystem *actorSystem, jint threadsCount, DKThreadPriorityEnum *priority) {
   ImActorModelJvmThreadsJavaDispatcherActor *self = [ImActorModelJvmThreadsJavaDispatcherActor alloc];
   ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(self, name, actorSystem, threadsCount, priority);
@@ -73,7 +73,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelJvmThreadsJavaDispatcherActor)
 @implementation ImActorModelJvmThreadsJavaDispatcherActor_$1
 
 
-#line 22
+#line 24
 - (void)dispatchMessageWithId:(DKEnvelope *)message {
   [this$0_ processEnvelopeWithDKEnvelope:message];
 }

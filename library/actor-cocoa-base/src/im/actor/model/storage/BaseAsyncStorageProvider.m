@@ -23,11 +23,11 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 
 
-#line 17
+#line 18
 @implementation AMBaseAsyncStorageProvider
 
 
-#line 20
+#line 21
 - (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
@@ -36,7 +36,7 @@
 }
 
 
-#line 28
+#line 29
 - (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
@@ -45,7 +45,7 @@
 }
 
 
-#line 36
+#line 37
 - (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
                                withDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {

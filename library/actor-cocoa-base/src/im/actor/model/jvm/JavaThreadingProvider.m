@@ -22,7 +22,7 @@
 #include "java/lang/System.h"
 
 
-#line 18
+#line 22
 @implementation AMJavaThreadingProvider
 
 - (instancetype)init {
@@ -35,43 +35,43 @@
 }
 
 
-#line 30
+#line 34
 - (jlong)getCurrentTime {
   return JavaLangSystem_currentTimeMillis();
 }
 
 
-#line 35
+#line 39
 - (jlong)getSyncedCurrentTime {
   return [self getCurrentTime];
 }
 
 
-#line 40
+#line 44
 - (jint)getCoresCount {
   return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
 }
 
 
-#line 45
+#line 49
 - (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value {
   return new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(value);
 }
 
 
-#line 50
+#line 54
 - (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value {
   return new_ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(value);
 }
 
 
-#line 55
+#line 59
 - (AMThreadLocalCompat *)createThreadLocal {
   return new_ImActorModelJvmThreadsJavaThreadLocal_init();
 }
 
 
-#line 60
+#line 64
 - (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
                                             withInt:(jint)threadsCount
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
@@ -80,7 +80,7 @@
 }
 
 
-#line 65
+#line 69
 - (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                          withDKActorSystem:(DKActorSystem *)actorSystem {
@@ -90,13 +90,13 @@
 @end
 
 
-#line 20
+#line 24
 void AMJavaThreadingProvider_init(AMJavaThreadingProvider *self) {
   (void) NSObject_init(self);
 }
 
 
-#line 20
+#line 24
 AMJavaThreadingProvider *new_AMJavaThreadingProvider_init() {
   AMJavaThreadingProvider *self = [AMJavaThreadingProvider alloc];
   AMJavaThreadingProvider_init(self);

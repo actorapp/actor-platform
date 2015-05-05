@@ -11,11 +11,11 @@
 #include "im/actor/model/droidkit/actors/Environment.h"
 
 
-#line 8
+#line 10
 @implementation DKActorTime
 
 
-#line 14
+#line 16
 + (jlong)currentTime {
   return DKActorTime_currentTime();
 }
@@ -28,11 +28,11 @@
 @end
 
 
-#line 14
+#line 16
 jlong DKActorTime_currentTime() {
   DKActorTime_initialize();
   
-#line 15
+#line 17
   return DKEnvironment_getActorTime();
 }
 

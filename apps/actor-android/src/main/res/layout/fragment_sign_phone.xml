@@ -27,7 +27,8 @@
 
         <Button
             android:id="@+id/button_country_select"
-            style="?android:attr/dropDownSpinnerStyle"
+            style="@style/Widget.AppCompat.Spinner"
+            android:background="@drawable/abc_spinner_mtrl_am_alpha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"

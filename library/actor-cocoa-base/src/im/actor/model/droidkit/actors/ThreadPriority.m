@@ -21,7 +21,7 @@ J2OBJC_INITIALIZED_DEFN(DKThreadPriorityEnum)
 DKThreadPriorityEnum *DKThreadPriorityEnum_values_[3];
 
 
-#line 6
+#line 7
 @implementation DKThreadPriorityEnum
 
 - (instancetype)initWithNSString:(NSString *)__name
