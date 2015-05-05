@@ -7,16 +7,13 @@ import akka.testkit.TestProbe
 import akka.util.Timeout
 import org.scalatest.time.{ Seconds, Span }
 
-import im.actor.server.SqlSpecHelpers
+import im.actor.server.{ KafkaSpec, SqlSpecHelpers }
 import im.actor.util.testing.ActorSuite
 
 class GroupPresenceManagerSpec extends ActorSuite with SqlSpecHelpers with KafkaSpec {
   behavior of "GroupPresenceManager"
 
   it should "subscribe/unsubscribe to group presences" in e1
-  //it should "send presence on subscription" in e2
-  //it should "deliver presence changes" in e3
-  //it should "change presence to Offline after timeout" in e4
 
   import GroupPresenceManager._
 
@@ -50,39 +47,6 @@ class GroupPresenceManagerSpec extends ActorSuite with SqlSpecHelpers with Kafka
     whenReady(unsubscribe(groupId, probe.ref)) { _ ⇒ }
     probe.expectNoMsg()
   }
-  /*
-  def e2() = {
-    probe.expectMsg(PresenceState(userId, Offline, None))
-  }
-
-  def e3() = {
-    presenceSetOnline(userId, 500)
-    val lastSeenAt = probe.expectMsgPF() {
-      case PresenceState(1, Online, Some(ls)) ⇒
-        ls
-    }
-
-    presenceSetOffline(userId, 100)
-    probe.expectMsgPF() {
-      case PresenceState(1, Offline, Some(ls)) ⇒
-        ls should ===(lastSeenAt)
-    }
-  }
-
-  def e4() = {
-    presenceSetOnline(userId, 100)
-    val lastSeenAt = probe.expectMsgPF() {
-      case PresenceState(1, Online, Some(ls)) ⇒
-        ls
-    }
-
-    Thread.sleep(200)
-
-    probe.expectMsgPF() {
-      case PresenceState(1, Offline, Some(ls)) ⇒
-        ls should ===(lastSeenAt)
-    }
-  }*/
 
   override def afterAll: Unit = {
     super.afterAll()
