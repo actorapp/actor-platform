@@ -1,11 +1,13 @@
 package im.actor.server.api.rpc.service
 
 import scala.concurrent._, duration._
+import scalaz.{ -\/, \/- }
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.stream.FlowMaterializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
+import org.scalatest.Suite
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.{ rpc ⇒ api }
@@ -32,6 +34,8 @@ trait UserStructExtensions {
 }
 
 trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
+  this: Suite ⇒
+
   val fairy = Fairy.create()
 
   def buildPhone(): Long = {
@@ -51,7 +55,15 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem): String = withoutLogs {
     val api.auth.ResponseSendAuthCode(smsHash, _) =
       Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+
     smsHash
+  }
+
+  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): models.AuthSmsCode = withoutLogs {
+    val api.auth.ResponseSendAuthCode(smsHash, _) =
+      Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+
+    Await.result(db.run(persist.AuthSmsCode.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
   def createUser()(implicit service: api.auth.AuthService, db: Database, system: ActorSystem): (api.users.User, Long, Long) = withoutLogs {
@@ -63,20 +75,27 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def createUser(phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User =
     createUser(createAuthId(), phoneNumber)
 
-  def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem): api.users.User = withoutLogs {
-    val smsHash = getSmsHash(authId, phoneNumber)(service, system)
+  def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User = withoutLogs {
+    val smsCode = getSmsCode(authId, phoneNumber)
 
-    val rsp = Await.result(service.handleSignUp(
+    val res = Await.result(service.handleSignUp(
       phoneNumber = phoneNumber,
-      smsHash = smsHash,
-      smsCode = "0000",
+      smsHash = smsCode.smsHash,
+      smsCode = smsCode.smsCode,
       name = fairy.person().fullName(),
       deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
       deviceTitle = "Specs virtual device",
       appId = 42,
       appKey = "appKey",
       isSilent = false
-    )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds).toOption.get
+    )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
+
+    res match {
+      case \/-(rsp) ⇒ rsp
+      case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
+    }
+
+    val rsp = res.toOption.get
 
     rsp.user
   }
