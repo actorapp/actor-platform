@@ -166,7 +166,7 @@ public class Analytics extends BaseModule {
     }
 
     public void trackAuthCodeType(String newValue) {
-        track("Auth: Code Typed: " + newValue);
+        track("Auth: Code Typed", "Value", newValue);
     }
 
     public void trackAuthCodeWrongNumber() {
@@ -192,7 +192,7 @@ public class Analytics extends BaseModule {
     }
 
     public void trackAuthSignupClosedNameType(String newValue) {
-        track("Auth: Name Typed: " + newValue);
+        track("Auth: Name Typed", "Value", newValue);
     }
 
     public void trackAuthSignupPressedAvatar() {
