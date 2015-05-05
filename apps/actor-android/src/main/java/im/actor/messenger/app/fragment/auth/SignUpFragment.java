@@ -33,6 +33,11 @@ public class SignUpFragment extends BaseAuthFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        if (savedInstanceState != null) {
+            avatarPath = savedInstanceState.getString("avatarPath", null);
+        }
+
         keyboardHelper = new KeyboardHelper(getActivity());
         avatarView = (AvatarView) v.findViewById(R.id.avatar);
         avatarView.init(Screen.dp(96), 24);
@@ -74,6 +79,10 @@ public class SignUpFragment extends BaseAuthFragment {
             }
         });
 
+        if (avatarPath != null) {
+            avatarView.bindRaw(avatarPath);
+        }
+
         return v;
     }
 
@@ -103,6 +112,14 @@ public class SignUpFragment extends BaseAuthFragment {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 messenger().trackAuthSignupAvatarCanelled();
             }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (avatarPath != null) {
+            outState.putString("avatarPath", avatarPath);
         }
     }
 
