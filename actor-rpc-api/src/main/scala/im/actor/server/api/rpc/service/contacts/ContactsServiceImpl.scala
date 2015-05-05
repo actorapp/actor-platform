@@ -83,24 +83,26 @@ class ContactsServiceImpl(implicit
             case (userStructsSalts, newContactIds, registeredPhoneNumbers) ⇒
               actorSystem.log.debug("Phone numbers: {}, registered: {}", phoneNumbers, registeredPhoneNumbers)
 
-              (phoneNumbers &~ registeredPhoneNumbers).foreach { phoneNumber ⇒
-                actorSystem.log.debug("Inserting UnregisteredContact {} {}", phoneNumber, client.userId)
-
+              // TODO: #perf do less queries
+              val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
                 persist.contact.UnregisteredContact.createIfNotExists(phoneNumber, client.userId)
               }
 
-              if (userStructsSalts.nonEmpty) {
-                val socialActions = newContactIds.toSeq map (id ⇒ DBIO.from(recordRelation(id, client.userId)))
+              DBIO.sequence(unregInsertActions).flatMap { _ ⇒
 
-                for {
-                  _ ← createAllUserContacts(client.userId, userStructsSalts)
-                  _ ← DBIO.sequence(socialActions)
-                  seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector), None)
-                } yield {
-                  Ok(ResponseImportContacts(userStructsSalts.toVector.map(_._1), seqstate._1, seqstate._2))
+                if (userStructsSalts.nonEmpty) {
+                  val socialActions = newContactIds.toSeq map (id ⇒ DBIO.from(recordRelation(id, client.userId)))
+
+                  for {
+                    _ ← createAllUserContacts(client.userId, userStructsSalts)
+                    _ ← DBIO.sequence(socialActions)
+                    seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector), None)
+                  } yield {
+                    Ok(ResponseImportContacts(userStructsSalts.toVector.map(_._1), seqstate._1, seqstate._2))
+                  }
+                } else {
+                  DBIO.successful(Ok(ResponseImportContacts(immutable.Vector.empty, 0, Array.empty)))
                 }
-              } else {
-                DBIO.successful(Ok(ResponseImportContacts(immutable.Vector.empty, 0, Array.empty)))
               }
           }
         }
