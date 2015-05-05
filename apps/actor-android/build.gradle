@@ -75,15 +75,15 @@ android {
     def MINT_MAIN = "\"4345135a\""
 
     def API_MAIN_ID = "1"
-    def API_MAIN_KEY = "\"??\""
+    def API_MAIN_KEY = "\"4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855\""
 
     defaultConfig {
+
         minSdkVersion 15
         targetSdkVersion 22
         versionCode Integer.valueOf(customVersionCode)
         versionName project.version
         applicationId "im.actor"
-        // multiDexEnabled true
 
         // API
         buildConfigField STRINGS, API_URL, URL_RELEASE
@@ -229,13 +229,8 @@ android {
 
     dexOptions {
         incremental true
-        // preDexLibraries = false
         javaMaxHeapSize "4g"
     }
-
-//    lintOptions {
-//        abortOnError false
-//    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_6
@@ -279,7 +274,6 @@ dependencies {
 
     // Google
     compile 'com.google.android.gms:play-services-gcm:7.3.0'
-    // compile 'com.google.android.gms:play-services:7.3.0'
 
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')

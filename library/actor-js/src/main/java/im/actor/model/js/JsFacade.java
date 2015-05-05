@@ -41,8 +41,8 @@ public class JsFacade implements Exportable {
     private static final String TAG = "JsMessenger";
 
     private static final String APP_NAME = "Actor Web App";
-    private static final int APP_ID = 1;
-    private static final String APP_KEY = "??";
+    private static final int APP_ID = 3;
+    private static final String APP_KEY = "278f13e07eee8398b189bced0db2cf66703d1746e2b541d85f5b42b1641aae0e";
 
     private JsMessenger messenger;
     private JsFileSystemProvider provider;
@@ -58,7 +58,8 @@ public class JsFacade implements Exportable {
         configuration.setFileSystemProvider(provider);
         configuration.setHttpDownloaderProvider(new JsHttpProvider());
 
-        configuration.addEndpoint("wss://mtproto-api.actor.im:10443/");
+        configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
+        configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
 
         messenger = new JsMessenger(configuration.build());
 
