@@ -10,6 +10,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.emoji.stickers.Sticker;
 import im.actor.messenger.app.emoji.stickers.StickersPack;
 
 import static im.actor.messenger.app.Core.getStickerProcessor;
@@ -42,13 +43,12 @@ public class StickersFullpackAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final String packId = stickerPack.getId();
-        final String stickerId = stickerPack.getStickerId(position);
-        getStickerProcessor().bindSticker((SimpleDraweeView) holder.itemView, packId, stickerId);
+        final Sticker sticker = stickerPack.get(position);
+        getStickerProcessor().bindSticker((SimpleDraweeView) holder.itemView, sticker);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onStickerClickListener.onStickerClick(packId, stickerId);
+                onStickerClickListener.onStickerClick(sticker);
             }
         });
     }
