@@ -126,7 +126,7 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
           respBody.dialogs.length should ===(1)
           val dialog = respBody.dialogs.head
           dialog.unreadCount should ===(0)
-          respBody.users.length should ===(1)
+          respBody.users.length should ===(2)
         }
       }
 
