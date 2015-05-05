@@ -36,7 +36,7 @@ gulp.task 'html', ->
     .pipe gulp.dest './dist/app/'
     .pipe connect.reload()
 
-gulp.task 'watch', ->
+gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
   gulp.watch ['./app/**/*.scss'], ['sass']
   gulp.watch ['./app/**/*.html'], ['html']
@@ -59,7 +59,7 @@ gulp.task 'usemin', ->
 gulp.task 'server', ['usemin'], ->
   connect.server
     port: 3000
-    root: 'dist'
+    root: './dist/'
     livereload: true
 
 gulp.task 'build', ['assets', 'coffee', 'sass', 'html', 'usemin']
