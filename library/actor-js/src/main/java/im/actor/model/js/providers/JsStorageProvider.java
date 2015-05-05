@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
 
 import im.actor.model.entity.*;
@@ -11,9 +15,6 @@ import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListStorage;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsStorageProvider implements StorageProvider {
 
     private com.google.gwt.storage.client.Storage storage;

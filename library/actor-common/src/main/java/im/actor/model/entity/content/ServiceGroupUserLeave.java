@@ -1,12 +1,13 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.entity.content;
 
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
 
-/**
- * Created by ex3ndr on 14.02.15.
- */
 public class ServiceGroupUserLeave extends ServiceContent {
 
 

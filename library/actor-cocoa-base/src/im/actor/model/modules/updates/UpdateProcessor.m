@@ -104,7 +104,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, typingProcessor_,
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesUpdateProcessor, contactsProcessor_, ImActorModelModulesUpdatesContactsProcessor *)
 
 static NSString *ImActorModelModulesUpdatesUpdateProcessor_TAG_ = 
-#line 58
+#line 59
 @"Updates";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesUpdateProcessor, TAG_, NSString *)
 
@@ -154,29 +154,29 @@ __attribute__((unused)) static ImActorModelModulesUpdatesUpdateProcessor_$2 *new
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
 
 
-#line 56
+#line 57
 @implementation ImActorModelModulesUpdatesUpdateProcessor
 
 
-#line 68
+#line 69
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesUpdatesUpdateProcessor_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 
-#line 79
+#line 80
 - (void)applyRelatedWithJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)groups
                          withBoolean:(jboolean)force {
   
-#line 82
+#line 83
   [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) applyUsersWithJavaUtilCollection:users withBoolean:force];
   [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) applyGroupsWithJavaUtilCollection:groups withBoolean:force];
 }
 
 
-#line 86
+#line 87
 - (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update {
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalDialogHistoryLoaded class]]) {
     ImActorModelApiRpcResponseLoadDialogs *dialogs = [((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) nil_chk(((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalDialogHistoryLoaded class])))) getDialogs];
@@ -184,14 +184,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:dialogs];
   }
   else
-#line 91
+#line 92
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalMessagesHistoryLoaded class]]) {
     ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *historyLoaded = (ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalMessagesHistoryLoaded class]);
     [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadHistory *) nil_chk([((ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) nil_chk(historyLoaded)) getLoadHistory])) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessagesLoadedWithAMPeer:[historyLoaded getPeer] withImActorModelApiRpcResponseLoadHistory:[historyLoaded getLoadHistory]];
   }
   else
-#line 95
+#line 96
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalLoggedIn class]]) {
     JavaUtilArrayList *users = new_JavaUtilArrayList_init();
     [users addWithId:[((ImActorModelApiRpcResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getUser]];
@@ -199,16 +199,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [self runOnUiThreadWithJavaLangRunnable:[((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getRunnable]];
   }
   else
-#line 100
+#line 101
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalContactsLoaded class]]) {
     ImActorModelModulesUpdatesInternalContactsLoaded *contactsLoaded = (ImActorModelModulesUpdatesInternalContactsLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalContactsLoaded class]);
     [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseGetContacts *) nil_chk([((ImActorModelModulesUpdatesInternalContactsLoaded *) nil_chk(contactsLoaded)) getContacts])) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
     [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(
-#line 104
+#line 105
     [contactsLoaded getContacts])];
   }
   else
-#line 105
+#line 106
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalUsersFounded class]]) {
     ImActorModelModulesUpdatesInternalUsersFounded *founded = (ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class]);
     [self applyRelatedWithJavaUtilList:[((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(((ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class])))) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
@@ -219,7 +219,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [self runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUpdatesUpdateProcessor_$1_initWithImActorModelModulesUpdatesInternalUsersFounded_withJavaUtilArrayList_(founded, users)];
   }
   else
-#line 118
+#line 119
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalGroupCreated class]]) {
     ImActorModelModulesUpdatesInternalGroupCreated *created = (ImActorModelModulesUpdatesInternalGroupCreated *) check_class_cast(update, [ImActorModelModulesUpdatesInternalGroupCreated class]);
     JavaUtilArrayList *groups = new_JavaUtilArrayList_init();
@@ -230,7 +230,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
 }
 
 
-#line 132
+#line 133
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserNameChanged class]]) {
@@ -238,70 +238,70 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserNameChangedWithInt:[((ImActorModelApiUpdatesUpdateUserNameChanged *) nil_chk(userNameChanged)) getUid] withNSString:[userNameChanged getName]];
   }
   else
-#line 137
+#line 138
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLocalNameChanged class]]) {
     ImActorModelApiUpdatesUpdateUserLocalNameChanged *localNameChanged = (ImActorModelApiUpdatesUpdateUserLocalNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLocalNameChanged class]);
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserLocalNameChangedWithInt:[((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid] withNSString:[localNameChanged getLocalName]];
   }
   else
-#line 140
+#line 141
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserAvatarChanged class]]) {
     ImActorModelApiUpdatesUpdateUserAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateUserAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserAvatarChanged class]);
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateUserAvatarChanged *) nil_chk(avatarChanged)) getUid] withImActorModelApiAvatar:[avatarChanged getAvatar]];
   }
   else
-#line 143
+#line 144
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
     ImActorModelApiUpdatesUpdateMessage *message = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withImActorModelApiMessage:
-#line 146
+#line 147
     [message getMessage]];
     [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[message getPeer] withInt:[message getSenderUid]];
   }
   else
-#line 148
+#line 149
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageRead class]]) {
     ImActorModelApiUpdatesUpdateMessageRead *messageRead = (ImActorModelApiUpdatesUpdateMessageRead *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageRead class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReadWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageRead *) nil_chk(messageRead)) getPeer] withLong:[messageRead getStartDate] withLong:[messageRead getReadDate]];
   }
   else
-#line 151
+#line 152
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageReadByMe class]]) {
     ImActorModelApiUpdatesUpdateMessageReadByMe *messageReadByMe = (ImActorModelApiUpdatesUpdateMessageReadByMe *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageReadByMe class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReadByMeWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageReadByMe *) nil_chk(messageReadByMe)) getPeer] withLong:[messageReadByMe getStartDate]];
   }
   else
-#line 154
+#line 155
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageReceived class]]) {
     ImActorModelApiUpdatesUpdateMessageReceived *received = (ImActorModelApiUpdatesUpdateMessageReceived *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageReceived class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReceivedWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageReceived *) nil_chk(received)) getPeer] withLong:[received getStartDate] withLong:[received getReceivedDate]];
   }
   else
-#line 157
+#line 158
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageDelete class]]) {
     ImActorModelApiUpdatesUpdateMessageDelete *messageDelete = (ImActorModelApiUpdatesUpdateMessageDelete *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageDelete class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageDeleteWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageDelete *) nil_chk(messageDelete)) getPeer] withJavaUtilList:[messageDelete getRids]];
   }
   else
-#line 160
+#line 161
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageSent class]]) {
     ImActorModelApiUpdatesUpdateMessageSent *messageSent = (ImActorModelApiUpdatesUpdateMessageSent *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageSent class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageSentWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageSent *) nil_chk(messageSent)) getPeer] withLong:[messageSent getRid] withLong:[messageSent getDate]];
   }
   else
-#line 163
+#line 164
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateChatClear class]]) {
     ImActorModelApiUpdatesUpdateChatClear *chatClear = (ImActorModelApiUpdatesUpdateChatClear *) check_class_cast(update, [ImActorModelApiUpdatesUpdateChatClear class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatClearWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateChatClear *) nil_chk(chatClear)) getPeer]];
   }
   else
-#line 166
+#line 167
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateChatDelete class]]) {
     ImActorModelApiUpdatesUpdateChatDelete *chatDelete = (ImActorModelApiUpdatesUpdateChatDelete *) check_class_cast(update, [ImActorModelApiUpdatesUpdateChatDelete class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatDeleteWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateChatDelete *) nil_chk(chatDelete)) getPeer]];
   }
   else
-#line 169
+#line 170
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactRegistered class]]) {
     ImActorModelApiUpdatesUpdateContactRegistered *registered = (ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class]);
     if (![((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
@@ -309,95 +309,95 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     }
   }
   else
-#line 174
+#line 175
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserOnline class]]) {
     ImActorModelApiUpdatesUpdateUserOnline *userOnline = (ImActorModelApiUpdatesUpdateUserOnline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserOnline class]);
     [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOnlineWithInt:[((ImActorModelApiUpdatesUpdateUserOnline *) nil_chk(userOnline)) getUid]];
   }
   else
-#line 177
+#line 178
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserOffline class]]) {
     ImActorModelApiUpdatesUpdateUserOffline *offline = (ImActorModelApiUpdatesUpdateUserOffline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserOffline class]);
     [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOfflineWithInt:[((ImActorModelApiUpdatesUpdateUserOffline *) nil_chk(offline)) getUid]];
   }
   else
-#line 180
+#line 181
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLastSeen class]]) {
     ImActorModelApiUpdatesUpdateUserLastSeen *lastSeen = (ImActorModelApiUpdatesUpdateUserLastSeen *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLastSeen class]);
     [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserLastSeenWithInt:[((ImActorModelApiUpdatesUpdateUserLastSeen *) nil_chk(lastSeen)) getUid] withLong:[lastSeen getDate]];
   }
   else
-#line 183
+#line 184
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupOnline class]]) {
     ImActorModelApiUpdatesUpdateGroupOnline *groupOnline = (ImActorModelApiUpdatesUpdateGroupOnline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupOnline class]);
     [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onGroupOnlineWithInt:[((ImActorModelApiUpdatesUpdateGroupOnline *) nil_chk(groupOnline)) getGroupId] withInt:[groupOnline getCount]];
   }
   else
-#line 186
+#line 187
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateTyping class]]) {
     ImActorModelApiUpdatesUpdateTyping *typing = (ImActorModelApiUpdatesUpdateTyping *) check_class_cast(update, [ImActorModelApiUpdatesUpdateTyping class]);
     [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withImActorModelApiTypingTypeEnum:[typing getTypingType]];
   }
   else
-#line 189
+#line 190
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupTitleChanged class]]) {
     ImActorModelApiUpdatesUpdateGroupTitleChanged *titleChanged = (ImActorModelApiUpdatesUpdateGroupTitleChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupTitleChanged class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onTitleChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupTitleChanged *) nil_chk(titleChanged)) getGroupId] withLong:[titleChanged getRid] withInt:
-#line 192
-    [titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate] withBoolean:
 #line 193
+    [titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate] withBoolean:
+#line 194
     NO];
   }
   else
-#line 194
+#line 195
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupAvatarChanged class]]) {
     ImActorModelApiUpdatesUpdateGroupAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateGroupAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupAvatarChanged class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:
-#line 197
-    [avatarChanged getUid] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([avatarChanged getAvatar]) withLong:
 #line 198
+    [avatarChanged getUid] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([avatarChanged getAvatar]) withLong:
+#line 199
     [avatarChanged getDate] withBoolean:NO];
   }
   else
-#line 199
+#line 200
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
     ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onGroupInviteWithInt:[((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getGroupId] withLong:
-#line 202
-    [groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate] withBoolean:
 #line 203
+    [groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate] withBoolean:
+#line 204
     NO];
   }
   else
-#line 204
+#line 205
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserLeave class]]) {
     ImActorModelApiUpdatesUpdateGroupUserLeave *leave = (ImActorModelApiUpdatesUpdateGroupUserLeave *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserLeave class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserLeaveWithInt:[((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getGroupId] withLong:[leave getRid] withInt:[leave getUid] withLong:
-#line 207
+#line 208
     [leave getDate] withBoolean:NO];
   }
   else
-#line 208
+#line 209
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserKick class]]) {
     ImActorModelApiUpdatesUpdateGroupUserKick *userKick = (ImActorModelApiUpdatesUpdateGroupUserKick *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserKick class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:
-#line 211
-    [userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate] withBoolean:
 #line 212
+    [userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate] withBoolean:
+#line 213
     NO];
   }
   else
-#line 213
+#line 214
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserAdded class]]) {
     ImActorModelApiUpdatesUpdateGroupUserAdded *userAdded = (ImActorModelApiUpdatesUpdateGroupUserAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserAdded class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(userAdded)) getGroupId] withLong:
-#line 216
-    [userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate] withBoolean:
 #line 217
+    [userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate] withBoolean:
+#line 218
     NO];
   }
   else
-#line 218
+#line 219
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsAdded class]]) {
     ImActorModelApiUpdatesUpdateContactsAdded *contactsAdded = (ImActorModelApiUpdatesUpdateContactsAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsAdded class]);
     IOSIntArray *res = [IOSIntArray newArrayWithLength:[((id<JavaUtilList>) nil_chk([((ImActorModelApiUpdatesUpdateContactsAdded *) nil_chk(contactsAdded)) getUids])) size]];
@@ -407,7 +407,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [((ImActorModelModulesUpdatesContactsProcessor *) nil_chk(contactsProcessor_)) onContactsAddedWithIntArray:res];
   }
   else
-#line 225
+#line 226
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsRemoved class]]) {
     ImActorModelApiUpdatesUpdateContactsRemoved *contactsRemoved = (ImActorModelApiUpdatesUpdateContactsRemoved *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsRemoved class]);
     IOSIntArray *res = [IOSIntArray newArrayWithLength:[((id<JavaUtilList>) nil_chk([((ImActorModelApiUpdatesUpdateContactsRemoved *) nil_chk(contactsRemoved)) getUids])) size]];
@@ -417,30 +417,30 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [((ImActorModelModulesUpdatesContactsProcessor *) nil_chk(contactsProcessor_)) onContactsRemovedWithIntArray:res];
   }
   else
-#line 232
+#line 233
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupMembersUpdate class]]) {
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onMembersUpdatedWithInt:[((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) nil_chk(((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupMembersUpdate class])))) getGroupId] withJavaUtilList:
-#line 234
+#line 235
     [((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) nil_chk(((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupMembersUpdate class])))) getMembers]];
   }
   else
-#line 235
+#line 236
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateParameterChanged class]]) {
     [((ImActorModelModulesUpdatesSettingsProcessor *) nil_chk(settingsProcessor_)) onSettingsChangedWithNSString:
-#line 237
-    [((ImActorModelApiUpdatesUpdateParameterChanged *) nil_chk(((ImActorModelApiUpdatesUpdateParameterChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateParameterChanged class])))) getKey] withNSString:
 #line 238
+    [((ImActorModelApiUpdatesUpdateParameterChanged *) nil_chk(((ImActorModelApiUpdatesUpdateParameterChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateParameterChanged class])))) getKey] withNSString:
+#line 239
     [((ImActorModelApiUpdatesUpdateParameterChanged *) nil_chk(((ImActorModelApiUpdatesUpdateParameterChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateParameterChanged class])))) getValue]];
   }
 }
 
 
-#line 243
+#line 244
 - (jboolean)isCausesInvalidationWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
   JavaUtilHashSet *users = new_JavaUtilHashSet_init();
   JavaUtilHashSet *groups = new_JavaUtilHashSet_init();
   
-#line 247
+#line 248
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
     ImActorModelApiUpdatesUpdateMessage *updateMessage = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateMessage *) nil_chk(updateMessage)) getSenderUid])];
@@ -452,20 +452,20 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     }
   }
   else
-#line 256
+#line 257
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactRegistered class]]) {
     ImActorModelApiUpdatesUpdateContactRegistered *contactRegistered = (ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(contactRegistered)) getUid])];
   }
   else
-#line 259
+#line 260
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
     ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getInviteUid])];
     [groups addWithId:JavaLangInteger_valueOfWithInt_([groupInvite getGroupId])];
   }
   else
-#line 263
+#line 264
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserAdded class]]) {
     ImActorModelApiUpdatesUpdateGroupUserAdded *added = (ImActorModelApiUpdatesUpdateGroupUserAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserAdded class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(added)) getInviterUid])];
@@ -473,7 +473,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [groups addWithId:JavaLangInteger_valueOfWithInt_([added getGroupId])];
   }
   else
-#line 268
+#line 269
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserKick class]]) {
     ImActorModelApiUpdatesUpdateGroupUserKick *kick = (ImActorModelApiUpdatesUpdateGroupUserKick *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserKick class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(kick)) getKickerUid])];
@@ -481,47 +481,47 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [groups addWithId:JavaLangInteger_valueOfWithInt_([kick getGroupId])];
   }
   else
-#line 273
+#line 274
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserLeave class]]) {
     ImActorModelApiUpdatesUpdateGroupUserLeave *leave = (ImActorModelApiUpdatesUpdateGroupUserLeave *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserLeave class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getUid])];
     [groups addWithId:JavaLangInteger_valueOfWithInt_([leave getGroupId])];
   }
   else
-#line 277
+#line 278
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsAdded class]]) {
     [users addAllWithJavaUtilCollection:[((ImActorModelApiUpdatesUpdateContactsAdded *) nil_chk(((ImActorModelApiUpdatesUpdateContactsAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsAdded class])))) getUids]];
   }
   else
-#line 279
+#line 280
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsRemoved class]]) {
     [users addAllWithJavaUtilCollection:[((ImActorModelApiUpdatesUpdateContactsRemoved *) nil_chk(((ImActorModelApiUpdatesUpdateContactsRemoved *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsRemoved class])))) getUids]];
   }
   else
-#line 281
+#line 282
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLocalNameChanged class]]) {
     ImActorModelApiUpdatesUpdateUserLocalNameChanged *localNameChanged = (ImActorModelApiUpdatesUpdateUserLocalNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLocalNameChanged class]);
     [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid])];
   }
   
-#line 286
+#line 287
   if (![((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) hasUsersWithJavaUtilCollection:users]) {
     return YES;
   }
   
-#line 290
+#line 291
   if (![((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) hasGroupsWithJavaUtilCollection:groups]) {
     return YES;
   }
   
-#line 294
+#line 295
   return NO;
 }
 
 @end
 
 
-#line 68
+#line 69
 void ImActorModelModulesUpdatesUpdateProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesUpdateProcessor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->settingsProcessor_ = new_ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(modules);
@@ -534,7 +534,7 @@ void ImActorModelModulesUpdatesUpdateProcessor_initWithImActorModelModulesModule
 }
 
 
-#line 68
+#line 69
 ImActorModelModulesUpdatesUpdateProcessor *new_ImActorModelModulesUpdatesUpdateProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUpdatesUpdateProcessor *self = [ImActorModelModulesUpdatesUpdateProcessor alloc];
   ImActorModelModulesUpdatesUpdateProcessor_initWithImActorModelModulesModules_(self, modules);
@@ -546,7 +546,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor)
 @implementation ImActorModelModulesUpdatesUpdateProcessor_$1
 
 
-#line 114
+#line 115
 - (void)run {
   [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(val$founded_)) getCommandCallback])) onResultWithId:[val$users_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(val$users_)) size] type:AMUserVM_class_()]]];
 }
@@ -576,7 +576,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor_$1)
 @implementation ImActorModelModulesUpdatesUpdateProcessor_$2
 
 
-#line 125
+#line 126
 - (void)run {
   [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(val$created_)) getCallback])) onResultWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiGroup *) nil_chk([val$created_ getGroup])) getId])];
 }

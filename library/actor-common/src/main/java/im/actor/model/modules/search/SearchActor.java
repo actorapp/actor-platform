@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.search;
 
 import java.util.ArrayList;
@@ -11,9 +15,6 @@ import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
-/**
- * Created by ex3ndr on 05.04.15.
- */
 public class SearchActor extends ModuleActor {
 
     private static final long CONTACTS_PREFIX = 1L << 32;

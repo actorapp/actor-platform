@@ -16,7 +16,7 @@
 #include "java/io/IOException.h"
 
 
-#line 10
+#line 11
 @implementation AMServiceUserRegistered
 
 + (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -31,22 +31,22 @@
 @end
 
 
-#line 12
+#line 13
 AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceUserRegistered_initialize();
   
-#line 13
+#line 14
   return ((AMServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceUserRegistered_init(), data));
 }
 
 
-#line 16
+#line 17
 void AMServiceUserRegistered_init(AMServiceUserRegistered *self) {
   (void) AMServiceContent_initWithNSString_(self, @"User registered");
 }
 
 
-#line 16
+#line 17
 AMServiceUserRegistered *new_AMServiceUserRegistered_init() {
   AMServiceUserRegistered *self = [AMServiceUserRegistered alloc];
   AMServiceUserRegistered_init(self);

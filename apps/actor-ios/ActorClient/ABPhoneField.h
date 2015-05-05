@@ -1,9 +1,5 @@
 //
-//  ABPhoneField.h
-//  ActorClient
-//
-//  Created by Антон Буков on 20.02.15.
-//  Copyright (c) 2015 Anton Bukov. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 #import <UIKit/UIKit.h>

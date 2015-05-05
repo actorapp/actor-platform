@@ -29,7 +29,7 @@
 J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 
 
-#line 13
+#line 14
 @implementation BCASN1Sequence
 
 + (BCASN1Sequence *)readSequenceWithBSDataInput:(BSDataInput *)dataInput {
@@ -37,28 +37,28 @@ J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 }
 
 
-#line 25
+#line 26
 - (instancetype)init {
   BCASN1Sequence_init(self);
   return self;
 }
 
 
-#line 29
+#line 30
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)sequence {
   BCASN1Sequence_initWithJavaUtilList_(self, sequence);
   return self;
 }
 
 
-#line 33
+#line 34
 - (instancetype)initWithBCASN1PrimitiveArray:(IOSObjectArray *)sequence {
   BCASN1Sequence_initWithBCASN1PrimitiveArray_(self, sequence);
   return self;
 }
 
 
-#line 40
+#line 41
 - (void)addWithBCASN1Primitive:(BCASN1Primitive *)item {
   [((JavaUtilArrayList *) nil_chk(sequence_)) addWithId:item];
 }
@@ -76,7 +76,7 @@ J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 }
 
 
-#line 57
+#line 58
 - (void)serializeWithBSDataOutput:(BSDataOutput *)dataOutput {
   [((BSDataOutput *) nil_chk(dataOutput)) writeByteWithInt:BCASN1Primitive_TAG_SEQUENCE | BCASN1Primitive_TAG_CONSTRUCTED];
   BSDataOutput *content = new_BSDataOutput_init();
@@ -91,11 +91,11 @@ J2OBJC_FIELD_SETTER(BCASN1Sequence, sequence_, JavaUtilArrayList *)
 @end
 
 
-#line 15
+#line 16
 BCASN1Sequence *BCASN1Sequence_readSequenceWithBSDataInput_(BSDataInput *dataInput) {
   BCASN1Sequence_initialize();
   
-#line 16
+#line 17
   BCASN1Sequence *sequence = new_BCASN1Sequence_init();
   while (![((BSDataInput *) nil_chk(dataInput)) isEOF]) {
     [sequence addWithBCASN1Primitive:BCASN1_readObjectWithBSDataInput_(dataInput)];
@@ -104,16 +104,16 @@ BCASN1Sequence *BCASN1Sequence_readSequenceWithBSDataInput_(BSDataInput *dataInp
 }
 
 
-#line 25
+#line 26
 void BCASN1Sequence_init(BCASN1Sequence *self) {
   (void) BCASN1Primitive_init(self);
   
-#line 26
+#line 27
   self->sequence_ = new_JavaUtilArrayList_init();
 }
 
 
-#line 25
+#line 26
 BCASN1Sequence *new_BCASN1Sequence_init() {
   BCASN1Sequence *self = [BCASN1Sequence alloc];
   BCASN1Sequence_init(self);
@@ -121,16 +121,16 @@ BCASN1Sequence *new_BCASN1Sequence_init() {
 }
 
 
-#line 29
+#line 30
 void BCASN1Sequence_initWithJavaUtilList_(BCASN1Sequence *self, id<JavaUtilList> sequence) {
   (void) BCASN1Primitive_init(self);
   
-#line 30
+#line 31
   self->sequence_ = new_JavaUtilArrayList_initWithJavaUtilCollection_(sequence);
 }
 
 
-#line 29
+#line 30
 BCASN1Sequence *new_BCASN1Sequence_initWithJavaUtilList_(id<JavaUtilList> sequence) {
   BCASN1Sequence *self = [BCASN1Sequence alloc];
   BCASN1Sequence_initWithJavaUtilList_(self, sequence);
@@ -138,29 +138,29 @@ BCASN1Sequence *new_BCASN1Sequence_initWithJavaUtilList_(id<JavaUtilList> sequen
 }
 
 
-#line 33
+#line 34
 void BCASN1Sequence_initWithBCASN1PrimitiveArray_(BCASN1Sequence *self, IOSObjectArray *sequence) {
   (void) BCASN1Primitive_init(self);
   
-#line 34
+#line 35
   self->sequence_ = new_JavaUtilArrayList_init();
   {
     IOSObjectArray *a__ =
-#line 35
+#line 36
     sequence;
     BCASN1Primitive * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     BCASN1Primitive * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       BCASN1Primitive *p = *b__++;
       
-#line 36
+#line 37
       [self->sequence_ addWithId:p];
     }
   }
 }
 
 
-#line 33
+#line 34
 BCASN1Sequence *new_BCASN1Sequence_initWithBCASN1PrimitiveArray_(IOSObjectArray *sequence) {
   BCASN1Sequence *self = [BCASN1Sequence alloc];
   BCASN1Sequence_initWithBCASN1PrimitiveArray_(self, sequence);

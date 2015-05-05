@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.modules.messages;
 
 import java.util.ArrayList;
@@ -23,9 +27,6 @@ import im.actor.model.modules.utils.ModuleActor;
 
 import static im.actor.model.util.JavaUtil.equalsE;
 
-/**
- * Created by ex3ndr on 09.02.15.
- */
 public class DialogsActor extends ModuleActor {
 
     private ListEngine<Dialog> dialogs;

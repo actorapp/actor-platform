@@ -30,7 +30,6 @@
 @protocol AMFileVMCallback;
 @protocol AMUploadFileCallback;
 @protocol AMUploadFileVMCallback;
-@protocol DKListEngine;
 @protocol DKPreferencesStorage;
 
 @interface AMMessenger : NSObject {
@@ -117,8 +116,6 @@
 - (AMMVVMCollection *)getGroups;
 
 - (AMValueModel *)getGroupTypingWithInt:(jint)gid;
-
-- (id<DKListEngine>)getMediaWithAMPeer:(AMPeer *)peer;
 
 - (AMOwnAvatarVM *)getOwnAvatarVM;
 
@@ -246,6 +243,30 @@
 - (id<AMCommand>)terminateAllSessions;
 
 - (id<AMCommand>)terminateSessionWithInt:(jint)id_;
+
+- (void)trackActionCancelWithNSString:(NSString *)action;
+
+- (void)trackActionErrorWithNSString:(NSString *)action
+                        withNSString:(NSString *)tag
+                        withNSString:(NSString *)message;
+
+- (void)trackActionSuccessWithNSString:(NSString *)action;
+
+- (void)trackActionTryAgainWithNSString:(NSString *)action;
+
+- (void)trackAuthCountryClosed;
+
+- (void)trackAuthCountryOpen;
+
+- (void)trackAuthCountryPickedWithNSString:(NSString *)country;
+
+- (void)trackAuthPhoneInfoOpen;
+
+- (void)trackAuthPhoneOpen;
+
+- (void)trackAuthPhoneTypeWithNSString:(NSString *)newValue;
+
+- (void)trackCodeRequest;
 
 - (void)unbindRawFile:(jlong)fileId
        withAutoCancel:(jboolean)isAutoCancel

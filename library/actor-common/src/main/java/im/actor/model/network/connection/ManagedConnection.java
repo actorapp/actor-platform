@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.connection;
 
 import java.io.IOException;
@@ -15,9 +19,6 @@ import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.util.CRC32;
 
-/**
- * Created by ex3ndr on 29.04.15.
- */
 public class ManagedConnection implements Connection {
 
     public static final int CONNECTION_TIMEOUT = 5 * 1000;
@@ -77,7 +78,7 @@ public class ManagedConnection implements Connection {
         this.callback = callback;
         this.factoryCallback = factoryCallback;
         this.rawConnection = connectionFactory.createConnection(connectionId, endpoint, connectionInterface);
-        Log.d(TAG, "Starting connection");
+        // Log.d(TAG, "Starting connection");
 
         handshakeTimeout = new TimerCompat(new TimeoutRunnable());
         pingTask = new TimerCompat(new PingRunnable());
@@ -90,7 +91,7 @@ public class ManagedConnection implements Connection {
     // Handshake
 
     private synchronized void sendHandshakeRequest() {
-        Log.d(TAG, "Starting handshake");
+        // Log.d(TAG, "Starting handshake");
 
         DataOutput handshakeRequest = new DataOutput();
         handshakeRequest.writeByte(mtprotoVersion);
@@ -108,7 +109,7 @@ public class ManagedConnection implements Connection {
     }
 
     private synchronized void onHandshakePackage(byte[] data) throws IOException {
-        Log.d(TAG, "Handshake response received");
+        // Log.d(TAG, "Handshake response received");
         DataInput handshakeResponse = new DataInput(data);
         int protoVersion = handshakeResponse.readByte();
         int apiMajor = handshakeResponse.readByte();
@@ -117,26 +118,26 @@ public class ManagedConnection implements Connection {
         byte[] localSha256 = CryptoUtils.SHA256(handshakeRandomData);
 
         if (!Arrays.equals(sha256, localSha256)) {
-            Log.d(TAG, "SHA 256 is incorrect");
-            Log.d(TAG, "Random data: " + CryptoUtils.hex(handshakeRandomData));
-            Log.d(TAG, "Remote SHA256: " + CryptoUtils.hex(sha256));
-            Log.d(TAG, "Local SHA256: " + CryptoUtils.hex(localSha256));
+            Log.w(TAG, "SHA 256 is incorrect");
+//            Log.d(TAG, "Random data: " + CryptoUtils.hex(handshakeRandomData));
+//            Log.d(TAG, "Remote SHA256: " + CryptoUtils.hex(sha256));
+//            Log.d(TAG, "Local SHA256: " + CryptoUtils.hex(localSha256));
             throw new IOException("SHA 256 is incorrect");
         }
         if (protoVersion != 1) {
-            Log.d(TAG, "Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
+            Log.w(TAG, "Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
             throw new IOException("Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
         }
         if (apiMajor != 1) {
-            Log.d(TAG, "Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
+            Log.w(TAG, "Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
             throw new IOException("Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
         }
         if (apiMinor != 0) {
-            Log.d(TAG, "Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
+            Log.w(TAG, "Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
             throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
         }
 
-        Log.d(TAG, "Handshake successful");
+        // Log.d(TAG, "Handshake successful");
         isHandshakePerformed = true;
         factoryCallback.onConnectionCreated(this);
         handshakeTimeout.cancel();
@@ -169,12 +170,12 @@ public class ManagedConnection implements Connection {
         DataInput dataInput = new DataInput(data);
         int size = dataInput.readInt();
         if (size != 8) {
-            Log.d(TAG, "Received incorrect pong");
+            Log.w(TAG, "Received incorrect pong");
             throw new IOException("Incorrect pong payload size");
         }
         long pingId = dataInput.readLong();
 
-        Log.d(TAG, "Received pong #" + pingId + "...");
+        // Log.d(TAG, "Received pong #" + pingId + "...");
 
         TimerCompat timeoutTask = schedulledPings.remove(pingId);
         if (timeoutTask == null) {
@@ -201,7 +202,7 @@ public class ManagedConnection implements Connection {
         schedulledPings.put(pingId, pingTimeoutTask);
         pingTimeoutTask.schedule(RESPONSE_TIMEOUT);
 
-        Log.d(TAG, "Performing ping #" + pingId + "... " + pingTimeoutTask);
+        // Log.d(TAG, "Performing ping #" + pingId + "... " + pingTimeoutTask);
         rawPost(HEADER_PING, dataOutput.toByteArray());
     }
 
@@ -251,20 +252,20 @@ public class ManagedConnection implements Connection {
         int errorCode = drop.readByte();
         int messageLen = drop.readInt();
         String message = new String(drop.readBytes(messageLen), "UTF-8");
-        Log.d(TAG, "Drop received: " + message);
+        Log.w(TAG, "Drop received: " + message);
         throw new IOException("Drop received: " + message);
     }
 
     // Raw callbacks
 
     private synchronized void onRawConnected() {
-        Log.d(TAG, "onConnected");
+        // Log.d(TAG, "onConnected");
         if (isClosed) {
-            Log.d(TAG, "onConnected:isClosed");
+            // Log.d(TAG, "onConnected:isClosed");
             return;
         }
         if (isOpened) {
-            Log.d(TAG, "onConnected:isOpened");
+            // Log.d(TAG, "onConnected:isOpened");
             return;
         }
         isOpened = true;
@@ -279,7 +280,7 @@ public class ManagedConnection implements Connection {
             return;
         }
 
-        Log.w(TAG, "onRawReceived");
+        // Log.w(TAG, "onRawReceived");
 
         try {
             DataInput dataInput = new DataInput(data);
@@ -304,7 +305,7 @@ public class ManagedConnection implements Connection {
                 throw new IOException("Incorrect CRC32");
             }
 
-            Log.w(TAG, "Received package: " + header);
+            // Log.w(TAG, "Received package: " + header);
             if (header == HEADER_HANDSHAKE_RESPONSE) {
                 if (isHandshakePerformed) {
                     throw new IOException("Double Handshake");
@@ -336,11 +337,11 @@ public class ManagedConnection implements Connection {
             close();
         }
 
-        Log.w(TAG, "onRawReceived:end");
+        // Log.w(TAG, "onRawReceived:end");
     }
 
     private synchronized void onRawClosed() {
-        Log.w(TAG, "Received closed event");
+        // Log.w(TAG, "Received closed event");
         close();
     }
 
@@ -351,7 +352,7 @@ public class ManagedConnection implements Connection {
     }
 
     private synchronized void rawPost(int header, byte[] data, int offset, int len) {
-        Log.w(TAG, "rawPost");
+        // Log.w(TAG, "rawPost");
         int packageId = sentPackages++;
         DataOutput dataOutput = new DataOutput();
         dataOutput.writeInt(packageId);
@@ -375,7 +376,7 @@ public class ManagedConnection implements Connection {
 
     @Override
     public synchronized void post(byte[] data, int offset, int len) {
-        Log.w(TAG, "post");
+        // Log.w(TAG, "post");
         if (isClosed) {
             return;
         }
@@ -394,7 +395,7 @@ public class ManagedConnection implements Connection {
 
     @Override
     public synchronized void close() {
-        Log.w(TAG, "close");
+        // Log.w(TAG, "close");
         if (isClosed) {
             return;
         }
@@ -457,7 +458,7 @@ public class ManagedConnection implements Connection {
 
         @Override
         public void run() {
-            Log.d(TAG, "Timeout " + this);
+            // Log.d(TAG, "Timeout " + this);
             close();
         }
     }

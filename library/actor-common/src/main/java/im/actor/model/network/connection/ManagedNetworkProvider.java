@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.connection;
 
 import java.util.ArrayList;
@@ -7,9 +11,6 @@ import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.CreateConnectionCallback;
 
-/**
- * Created by ex3ndr on 29.04.15.
- */
 public class ManagedNetworkProvider implements NetworkProvider {
 
     private final AsyncConnectionFactory factory;

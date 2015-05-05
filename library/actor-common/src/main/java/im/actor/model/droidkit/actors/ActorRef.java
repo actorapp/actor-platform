@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
@@ -5,8 +9,6 @@ import im.actor.model.droidkit.actors.mailbox.ActorEndpoint;
 
 /**
  * Reference to Actor that allows to send messages to real Actor
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class ActorRef {
     private ActorSystem system;

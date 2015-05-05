@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.mailbox;
 
 import im.actor.model.droidkit.actors.ActorRef;
@@ -6,8 +10,6 @@ import im.actor.model.droidkit.actors.ActorTime;
 
 /**
  * Actor system envelope
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class Envelope {
     private final Object message;

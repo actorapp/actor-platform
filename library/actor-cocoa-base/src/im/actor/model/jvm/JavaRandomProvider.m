@@ -22,11 +22,11 @@
 J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 
 
-#line 11
+#line 15
 @implementation AMJavaRandomProvider
 
 
-#line 15
+#line 19
 - (IOSByteArray *)randomBytesWithInt:(jint)length {
   IOSByteArray *res = [IOSByteArray newArrayWithLength:length];
   @synchronized(random_) {
@@ -36,7 +36,7 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 }
 
 
-#line 24
+#line 28
 - (jint)randomIntWithInt:(jint)maxValue {
   @synchronized(random_) {
     return [((JavaSecuritySecureRandom *) nil_chk(random_)) nextIntWithInt:maxValue];
@@ -44,7 +44,7 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 }
 
 
-#line 31
+#line 35
 - (void)nextBytesWithByteArray:(IOSByteArray *)data {
   @synchronized(random_) {
     [((JavaSecuritySecureRandom *) nil_chk(random_)) nextBytesWithByteArray:data];
@@ -52,13 +52,13 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 }
 
 
-#line 38
+#line 42
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits {
   return new_JavaMathBigInteger_initWithInt_withJavaUtilRandom_(numBits, random_);
 }
 
 
-#line 43
+#line 47
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits
                                           withInt:(jint)certanity {
   return new_JavaMathBigInteger_initWithInt_withInt_withJavaUtilRandom_(numBits, certanity, random_);

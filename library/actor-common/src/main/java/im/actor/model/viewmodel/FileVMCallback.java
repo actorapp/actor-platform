@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.viewmodel;
 
 import im.actor.model.files.FileSystemReference;
@@ -9,19 +13,19 @@ public interface FileVMCallback {
     /**
      * On file not downloaded
      */
-    public void onNotDownloaded();
+    void onNotDownloaded();
 
     /**
      * On file started download
      *
      * @param progress progress in [0..1]
      */
-    public void onDownloading(float progress);
+    void onDownloading(float progress);
 
     /**
      * On file downloaded
      *
      * @param reference FileSystemReference of downloaded file
      */
-    public void onDownloaded(FileSystemReference reference);
+    void onDownloaded(FileSystemReference reference);
 }

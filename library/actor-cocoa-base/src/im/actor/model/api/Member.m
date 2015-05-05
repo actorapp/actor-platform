@@ -24,11 +24,11 @@
 @end
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiMember
 
 
-#line 25
+#line 29
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
@@ -37,14 +37,14 @@
 }
 
 
-#line 31
+#line 35
 - (instancetype)init {
   ImActorModelApiMember_init(self);
   return self;
 }
 
 
-#line 35
+#line 39
 - (jint)getUid {
   return self->uid_;
 }
@@ -58,7 +58,7 @@
 }
 
 
-#line 48
+#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->inviterUid_ = [values getIntWithInt:2];
@@ -66,7 +66,7 @@
 }
 
 
-#line 55
+#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->inviterUid_];
@@ -74,7 +74,7 @@
 }
 
 
-#line 62
+#line 66
 - (NSString *)description {
   NSString *res = @"struct Member{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -87,18 +87,18 @@
 @end
 
 
-#line 25
+#line 29
 void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date) {
   (void) BSBserObject_init(self);
   
-#line 26
+#line 30
   self->uid_ = uid;
   self->inviterUid_ = inviterUid;
   self->date_ = date;
 }
 
 
-#line 25
+#line 29
 ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
   ImActorModelApiMember *self = [ImActorModelApiMember alloc];
   ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
@@ -110,7 +110,7 @@ void ImActorModelApiMember_init(ImActorModelApiMember *self) {
 }
 
 
-#line 31
+#line 35
 ImActorModelApiMember *new_ImActorModelApiMember_init() {
   ImActorModelApiMember *self = [ImActorModelApiMember alloc];
   ImActorModelApiMember_init(self);

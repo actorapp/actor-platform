@@ -24,17 +24,17 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 
-#line 19
+#line 23
 @implementation ImActorModelApiTextMessageEx
 
 
-#line 20
+#line 24
 + (ImActorModelApiTextMessageEx *)fromBytesWithByteArray:(IOSByteArray *)src {
   return ImActorModelApiTextMessageEx_fromBytesWithByteArray_(src);
 }
 
 
-#line 30
+#line 34
 - (IOSByteArray *)buildContainer {
   BSDataOutput *res = new_BSDataOutput_init();
   BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(res);
@@ -51,18 +51,18 @@
 @end
 
 
-#line 20
+#line 24
 ImActorModelApiTextMessageEx *ImActorModelApiTextMessageEx_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiTextMessageEx_initialize();
   
-#line 21
+#line 25
   BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     default:
     
-#line 25
+#line 29
     return new_ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(key, content);
   }
 }

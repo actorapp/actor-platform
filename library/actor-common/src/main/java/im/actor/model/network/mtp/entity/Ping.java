@@ -1,10 +1,14 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.mtp.entity;
 
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
-
-import java.io.IOException;
 
 public class Ping extends ProtoStruct {
 

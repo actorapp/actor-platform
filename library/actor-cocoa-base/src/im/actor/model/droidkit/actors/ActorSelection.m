@@ -22,11 +22,11 @@ J2OBJC_FIELD_SETTER(DKActorSelection, props_, DKProps *)
 J2OBJC_FIELD_SETTER(DKActorSelection, path_, NSString *)
 
 
-#line 8
+#line 10
 @implementation DKActorSelection
 
 
-#line 12
+#line 14
 - (instancetype)initWithDKProps:(DKProps *)props
                    withNSString:(NSString *)path {
   DKActorSelection_initWithDKProps_withNSString_(self, props, path);
@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(DKActorSelection, path_, NSString *)
 }
 
 
-#line 17
+#line 19
 - (DKProps *)getProps {
   return props_;
 }
@@ -46,17 +46,17 @@ J2OBJC_FIELD_SETTER(DKActorSelection, path_, NSString *)
 @end
 
 
-#line 12
+#line 14
 void DKActorSelection_initWithDKProps_withNSString_(DKActorSelection *self, DKProps *props, NSString *path) {
   (void) NSObject_init(self);
   
-#line 13
+#line 15
   self->props_ = props;
   self->path_ = path;
 }
 
 
-#line 12
+#line 14
 DKActorSelection *new_DKActorSelection_initWithDKProps_withNSString_(DKProps *props, NSString *path) {
   DKActorSelection *self = [DKActorSelection alloc];
   DKActorSelection_initWithDKProps_withNSString_(self, props, path);

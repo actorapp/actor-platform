@@ -27,11 +27,11 @@
 J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLists *)
 
 
-#line 16
+#line 20
 @implementation AMBaseMessenger
 
 
-#line 20
+#line 24
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   AMBaseMessenger_initWithAMConfiguration_(self, configuration);
   return self;
@@ -41,12 +41,12 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
                             withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback {
   
-#line 27
+#line 31
   return new_AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(peer, callback, modules_, displayList);
 }
 
 
-#line 32
+#line 36
 - (AMBindedDisplayList *)getDialogsGlobalList {
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getDialogsGlobalList];
 }
@@ -59,8 +59,12 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewChatListWithAMPeer:peer withBoolean:NO];
 }
 
-- (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer {
-  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildMediaListWithAMPeer:peer];
+- (AMBindedDisplayList *)getMediaGlobalListWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getMessagesMediaListWithAMPeer:peer];
+}
+
+- (jint)getMediaCountWithAMPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getMediaCountWithAMPeer:peer];
 }
 
 - (AMBindedDisplayList *)getContactsGlobalList {
@@ -78,14 +82,14 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 @end
 
 
-#line 20
+#line 24
 void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration) {
   (void) AMMessenger_initWithAMConfiguration_(self, configuration);
   self->displayLists_ = new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self->modules_);
 }
 
 
-#line 20
+#line 24
 AMBaseMessenger *new_AMBaseMessenger_initWithAMConfiguration_(AMConfiguration *configuration) {
   AMBaseMessenger *self = [AMBaseMessenger alloc];
   AMBaseMessenger_initWithAMConfiguration_(self, configuration);

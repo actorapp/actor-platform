@@ -1,6 +1,8 @@
-package im.actor.model.js;
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
 
-import java.util.HashMap;
+package im.actor.model.js;
 
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
@@ -19,24 +21,33 @@ import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsPeerInfo;
+import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.entity.Placeholders;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsMessenger extends Messenger {
 
-    private HashMap<String, String> fileUrls;
     private AngularModule angularModule;
     private AngularFilesModule angularFilesModule;
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
-        this.angularModule = new AngularModule(this, modules);
-        this.angularFilesModule = new AngularFilesModule(modules);
+        angularFilesModule = new AngularFilesModule(modules);
+        angularModule = new AngularModule(this, angularFilesModule, modules);
+    }
+
+    public void onMessageShown(Peer peer, Long sortKey) {
+        modules.getMessagesModule().onInMessageShown(peer, sortKey);
+    }
+
+    public void loadMoreDialogs() {
+        modules.getMessagesModule().loadMoreDialogs();
+    }
+
+    public void loadMoreHistory(Peer peer) {
+        modules.getMessagesModule().loadMoreHistory(peer);
     }
 
     public AngularList<JsDialog, Dialog> getDialogsList() {
@@ -53,6 +64,10 @@ public class JsMessenger extends Messenger {
 
     public AngularValue<JsGroup> getGroup(int gid) {
         return angularModule.getGroup(gid);
+    }
+
+    public AngularValue<JsTyping> getTyping(Peer peer) {
+        return angularModule.getTyping(peer);
     }
 
     public JsPeerInfo buildPeerInfo(Peer peer) {

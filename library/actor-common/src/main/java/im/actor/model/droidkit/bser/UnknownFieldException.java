@@ -1,8 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
-/**
- * Created by ex3ndr on 18.10.14.
- */
 public class UnknownFieldException extends RuntimeException {
     public UnknownFieldException() {
     }

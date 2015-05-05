@@ -1,4 +1,8 @@
 /*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
+/*
  * This software is provided 'as-is', without any express or implied
  * warranty.  In no event will Google be held liable for any damages
  * arising from the use of this software.

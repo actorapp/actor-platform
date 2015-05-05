@@ -1,21 +1,23 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers.storage;
 
 import com.google.gwt.storage.client.Storage;
-import im.actor.model.droidkit.bser.DataInput;
-import im.actor.model.droidkit.bser.DataOutput;
-import im.actor.model.droidkit.engine.KeyValueRecord;
-import im.actor.model.droidkit.engine.KeyValueStorage;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.engine.KeyValueRecord;
+import im.actor.model.droidkit.engine.KeyValueStorage;
+
 import static im.actor.model.util.Base64Utils.fromBase64;
 import static im.actor.model.util.Base64Utils.toBase64;
 
-/**
- * Created by ex3ndr on 27.03.15.
- */
 public class JsKeyValueStorage implements KeyValueStorage {
 
     private Storage storage;

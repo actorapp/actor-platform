@@ -9,7 +9,6 @@
 #include "J2ObjC_header.h"
 
 @class AMMessenger;
-@class AMPeer;
 @protocol JavaUtilList;
 
 @protocol AMNotificationProvider < NSObject, JavaObject >
@@ -19,12 +18,10 @@
 - (void)onNotificationWithAMMessenger:(AMMessenger *)messenger
                      withJavaUtilList:(id<JavaUtilList>)topNotifications
                               withInt:(jint)messagesCount
-                              withInt:(jint)conversationsCount;
+                              withInt:(jint)conversationsCount
+                          withBoolean:(jboolean)silentUpdate;
 
-- (void)onDialogsOpenWithAMMessenger:(AMMessenger *)messenger;
-
-- (void)onChatOpenWithAMMessenger:(AMMessenger *)messenger
-                       withAMPeer:(AMPeer *)peer;
+- (void)hideAllNotifications;
 
 @end
 

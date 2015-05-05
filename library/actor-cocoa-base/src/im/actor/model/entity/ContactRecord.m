@@ -31,24 +31,24 @@ J2OBJC_FIELD_SETTER(AMContactRecord, recordData_, NSString *)
 J2OBJC_FIELD_SETTER(AMContactRecord, recordTitle_, NSString *)
 
 jint AMContactRecord_TYPE_PHONE_ = 
-#line 16
+#line 17
 0;
 jint AMContactRecord_TYPE_EMAIL_ = 
-#line 17
+#line 18
 1;
 
 
-#line 14
+#line 15
 @implementation AMContactRecord
 
 
-#line 19
+#line 20
 + (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMContactRecord_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 30
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                     withInt:(jint)recordType
@@ -59,14 +59,14 @@ jint AMContactRecord_TYPE_EMAIL_ =
 }
 
 
-#line 37
+#line 38
 - (instancetype)init {
   AMContactRecord_init(self);
   return self;
 }
 
 
-#line 41
+#line 42
 - (jint)getId {
   return id__;
 }
@@ -88,7 +88,7 @@ jint AMContactRecord_TYPE_EMAIL_ =
 }
 
 
-#line 62
+#line 63
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
@@ -98,7 +98,7 @@ jint AMContactRecord_TYPE_EMAIL_ =
 }
 
 
-#line 71
+#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:id__];
   [writer writeLongWithInt:2 withLong:accessHash_];
@@ -108,7 +108,7 @@ jint AMContactRecord_TYPE_EMAIL_ =
 }
 
 
-#line 80
+#line 81
 - (jlong)getEngineId {
   return id__;
 }
@@ -116,20 +116,20 @@ jint AMContactRecord_TYPE_EMAIL_ =
 @end
 
 
-#line 19
+#line 20
 AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data) {
   AMContactRecord_initialize();
   
-#line 20
+#line 21
   return ((AMContactRecord *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContactRecord_init(), data));
 }
 
 
-#line 29
+#line 30
 void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMContactRecord *self, jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
   (void) BSBserObject_init(self);
   
-#line 30
+#line 31
   self->id__ = id_;
   self->accessHash_ = accessHash;
   self->recordType_ = recordType;
@@ -138,7 +138,7 @@ void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMC
 }
 
 
-#line 29
+#line 30
 AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
   AMContactRecord *self = [AMContactRecord alloc];
   AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(self, id_, accessHash, recordType, recordData, recordTitle);
@@ -146,13 +146,13 @@ AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_w
 }
 
 
-#line 37
+#line 38
 void AMContactRecord_init(AMContactRecord *self) {
   (void) BSBserObject_init(self);
 }
 
 
-#line 37
+#line 38
 AMContactRecord *new_AMContactRecord_init() {
   AMContactRecord *self = [AMContactRecord alloc];
   AMContactRecord_init(self);

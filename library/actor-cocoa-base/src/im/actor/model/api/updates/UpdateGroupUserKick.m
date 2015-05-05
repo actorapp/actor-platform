@@ -29,17 +29,17 @@
 @end
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiUpdatesUpdateGroupUserKick
 
 
-#line 23
+#line 27
 + (ImActorModelApiUpdatesUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(data);
 }
 
 
-#line 33
+#line 37
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
@@ -50,14 +50,14 @@
 }
 
 
-#line 41
+#line 45
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateGroupUserKick_init(self);
   return self;
 }
 
 
-#line 45
+#line 49
 - (jint)getGroupId {
   return self->groupId_;
 }
@@ -79,7 +79,7 @@
 }
 
 
-#line 66
+#line 70
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
@@ -89,7 +89,7 @@
 }
 
 
-#line 75
+#line 79
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:5 withLong:self->rid_];
@@ -99,7 +99,7 @@
 }
 
 
-#line 84
+#line 88
 - (NSString *)description {
   NSString *res = @"update GroupUserKick{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -112,7 +112,7 @@
 }
 
 
-#line 96
+#line 100
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupUserKick_HEADER;
 }
@@ -120,20 +120,20 @@
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiUpdatesUpdateGroupUserKick *ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupUserKick_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiUpdatesUpdateGroupUserKick *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserKick_init(), data));
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserKick *self, jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   
-#line 34
+#line 38
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
@@ -142,7 +142,7 @@ void ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_with
 }
 
 
-#line 33
+#line 37
 ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) {
   ImActorModelApiUpdatesUpdateGroupUserKick *self = [ImActorModelApiUpdatesUpdateGroupUserKick alloc];
   ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, kickerUid, date);
@@ -150,13 +150,13 @@ ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroup
 }
 
 
-#line 41
+#line 45
 void ImActorModelApiUpdatesUpdateGroupUserKick_init(ImActorModelApiUpdatesUpdateGroupUserKick *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
 
-#line 41
+#line 45
 ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_init() {
   ImActorModelApiUpdatesUpdateGroupUserKick *self = [ImActorModelApiUpdatesUpdateGroupUserKick alloc];
   ImActorModelApiUpdatesUpdateGroupUserKick_init(self);

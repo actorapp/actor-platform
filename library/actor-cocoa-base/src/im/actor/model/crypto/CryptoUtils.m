@@ -30,11 +30,11 @@ J2OBJC_INITIALIZED_DEFN(AMCryptoUtils)
 IOSCharArray *AMCryptoUtils_hexArray_;
 
 
-#line 8
+#line 9
 @implementation AMCryptoUtils
 
 
-#line 14
+#line 15
 + (void)init__WithAMCryptoProvider:(id<AMCryptoProvider>)provider {
   AMCryptoUtils_init__WithAMCryptoProvider_(provider);
 }
@@ -48,43 +48,43 @@ IOSCharArray *AMCryptoUtils_hexArray_;
 }
 
 
-#line 32
+#line 33
 + (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data {
   return AMCryptoUtils_SHA256WithByteArray_(data);
 }
 
 
-#line 42
+#line 43
 + (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data {
   return AMCryptoUtils_SHA512WithByteArray_(data);
 }
 
 
-#line 52
+#line 53
 + (jint)randomIntWithInt:(jint)maxValue {
   return AMCryptoUtils_randomIntWithInt_(maxValue);
 }
 
 
-#line 62
+#line 63
 + (IOSByteArray *)randomBytesWithInt:(jint)len {
   return AMCryptoUtils_randomBytesWithInt_(len);
 }
 
 
-#line 72
+#line 73
 + (NSString *)hexWithByteArray:(IOSByteArray *)bytes {
   return AMCryptoUtils_hexWithByteArray_(bytes);
 }
 
 
-#line 82
+#line 83
 + (jint)fromHexShortWithChar:(jchar)a {
   return AMCryptoUtils_fromHexShortWithChar_(a);
 }
 
 
-#line 93
+#line 94
 + (IOSByteArray *)fromHexWithNSString:(NSString *)hex {
   return AMCryptoUtils_fromHexWithNSString_(hex);
 }
@@ -97,7 +97,7 @@ IOSCharArray *AMCryptoUtils_hexArray_;
 + (void)initialize {
   if (self == [AMCryptoUtils class]) {
     AMCryptoUtils_hexArray_ =
-#line 10
+#line 11
     [@"0123456789abcdef" toCharArray];
     J2OBJC_SET_INITIALIZED(AMCryptoUtils)
   }
@@ -106,74 +106,74 @@ IOSCharArray *AMCryptoUtils_hexArray_;
 @end
 
 
-#line 14
+#line 15
 void AMCryptoUtils_init__WithAMCryptoProvider_(id<AMCryptoProvider> provider) {
   AMCryptoUtils_initialize();
   
-#line 15
+#line 16
   AMCryptoUtils_provider_ = provider;
 }
 
 
-#line 18
+#line 19
 AMCryptoKeyPair *AMCryptoUtils_generateRSA1024KeyPair() {
   AMCryptoUtils_initialize();
   
-#line 19
+#line 20
   return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) generateRSA1024KeyPair];
 }
 
 
-#line 22
+#line 23
 IOSByteArray *AMCryptoUtils_MD5WithByteArray_(IOSByteArray *data) {
   AMCryptoUtils_initialize();
   
-#line 23
+#line 24
   return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) MD5WithByteArray:data];
 }
 
 
-#line 32
+#line 33
 IOSByteArray *AMCryptoUtils_SHA256WithByteArray_(IOSByteArray *data) {
   AMCryptoUtils_initialize();
   
-#line 33
+#line 34
   return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) SHA256WithByteArray:data];
 }
 
 
-#line 42
+#line 43
 IOSByteArray *AMCryptoUtils_SHA512WithByteArray_(IOSByteArray *data) {
   AMCryptoUtils_initialize();
   
-#line 43
+#line 44
   return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) SHA512WithByteArray:data];
 }
 
 
-#line 52
+#line 53
 jint AMCryptoUtils_randomIntWithInt_(jint maxValue) {
   AMCryptoUtils_initialize();
   
-#line 53
+#line 54
   return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) randomIntWithInt:maxValue];
 }
 
 
-#line 62
+#line 63
 IOSByteArray *AMCryptoUtils_randomBytesWithInt_(jint len) {
   AMCryptoUtils_initialize();
   
-#line 63
+#line 64
   return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) randomBytesWithInt:len];
 }
 
 
-#line 72
+#line 73
 NSString *AMCryptoUtils_hexWithByteArray_(IOSByteArray *bytes) {
   AMCryptoUtils_initialize();
   
-#line 73
+#line 74
   IOSCharArray *hexChars = [IOSCharArray newArrayWithLength:((IOSByteArray *) nil_chk(bytes))->size_ * 2];
   for (jint j = 0; j < bytes->size_; j++) {
     jint v = IOSByteArray_Get(bytes, j) & (jint) 0xFF;
@@ -184,11 +184,11 @@ NSString *AMCryptoUtils_hexWithByteArray_(IOSByteArray *bytes) {
 }
 
 
-#line 82
+#line 83
 jint AMCryptoUtils_fromHexShortWithChar_(jchar a) {
   AMCryptoUtils_initialize();
   
-#line 83
+#line 84
   if (a >= '0' && a <= '9') {
     return a - '0';
   }
@@ -196,16 +196,16 @@ jint AMCryptoUtils_fromHexShortWithChar_(jchar a) {
     return 10 + (a - 'a');
   }
   
-#line 90
+#line 91
   @throw new_JavaLangRuntimeException_init();
 }
 
 
-#line 93
+#line 94
 IOSByteArray *AMCryptoUtils_fromHexWithNSString_(NSString *hex) {
   AMCryptoUtils_initialize();
   
-#line 94
+#line 95
   IOSByteArray *res = [IOSByteArray newArrayWithLength:((jint) [((NSString *) nil_chk(hex)) length]) / 2];
   for (jint i = 0; i < res->size_; i++) {
     *IOSByteArray_GetRef(res, i) = (jbyte) ((LShift32(AMCryptoUtils_fromHexShortWithChar_([hex charAtWithInt:i * 2]), 4)) + AMCryptoUtils_fromHexShortWithChar_([hex charAtWithInt:i * 2 + 1]));

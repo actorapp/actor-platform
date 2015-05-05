@@ -32,17 +32,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, groupPeer_, ImActorMode
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiUserOutPeer *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestInviteUser
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestInviteUser *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(data);
 }
 
 
-#line 31
+#line 35
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                      withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user {
@@ -51,14 +51,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 
-#line 37
+#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestInviteUser_init(self);
   return self;
 }
 
 
-#line 41
+#line 45
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 
-#line 54
+#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 
-#line 61
+#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -94,7 +94,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 
-#line 74
+#line 78
 - (NSString *)description {
   NSString *res = @"rpc InviteUser{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -105,7 +105,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 
-#line 84
+#line 88
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestInviteUser_HEADER;
 }
@@ -113,27 +113,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestInviteUser *ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestInviteUser_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestInviteUser *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestInviteUser_init(), data));
 }
 
 
-#line 31
+#line 35
 void ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestInviteUser *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 32
+#line 36
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
   self->user_ = user;
 }
 
 
-#line 31
+#line 35
 ImActorModelApiRpcRequestInviteUser *new_ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) {
   ImActorModelApiRpcRequestInviteUser *self = [ImActorModelApiRpcRequestInviteUser alloc];
   ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(self, groupPeer, rid, user);
@@ -145,7 +145,7 @@ void ImActorModelApiRpcRequestInviteUser_init(ImActorModelApiRpcRequestInviteUse
 }
 
 
-#line 37
+#line 41
 ImActorModelApiRpcRequestInviteUser *new_ImActorModelApiRpcRequestInviteUser_init() {
   ImActorModelApiRpcRequestInviteUser *self = [ImActorModelApiRpcRequestInviteUser alloc];
   ImActorModelApiRpcRequestInviteUser_init(self);

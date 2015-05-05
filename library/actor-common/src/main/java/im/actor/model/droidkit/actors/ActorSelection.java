@@ -1,9 +1,11 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors;
 
 /**
  * Actor selection: props and path of actor
- *
- * @author Steve Ex3NDR Korshakov (steve@actor.im)
  */
 public class ActorSelection {
     private final Props props;

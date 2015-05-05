@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.network.util;
 
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.util.AtomicLongCompat;
 
-/**
- * Created by ex3ndr on 03.09.14.
- */
 public class MTUids {
     private static final AtomicLongCompat NEXT_ID = Environment.createAtomicLong(1);
 

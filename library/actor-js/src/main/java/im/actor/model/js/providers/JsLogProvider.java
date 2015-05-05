@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.js.providers;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -6,9 +10,6 @@ import java.util.Date;
 
 import im.actor.model.LogProvider;
 
-/**
- * Created by ex3ndr on 21.02.15.
- */
 public class JsLogProvider implements LogProvider {
 
     private static DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("HH:mm:ss.SSSS");

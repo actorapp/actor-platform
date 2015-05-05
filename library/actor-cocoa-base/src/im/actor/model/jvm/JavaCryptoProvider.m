@@ -13,18 +13,18 @@
 #include "im/actor/model/jvm/JavaRandomProvider.h"
 
 
-#line 9
+#line 13
 @implementation AMJavaCryptoProvider
 
 
-#line 10
+#line 14
 - (instancetype)init {
   AMJavaCryptoProvider_init(self);
   return self;
 }
 
 
-#line 14
+#line 18
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider {
   AMJavaCryptoProvider_initWithBCRandomProvider_(self, provider);
   return self;
@@ -33,13 +33,13 @@
 @end
 
 
-#line 10
+#line 14
 void AMJavaCryptoProvider_init(AMJavaCryptoProvider *self) {
   (void) BCBouncyCastleProvider_initWithBCRandomProvider_(self, new_AMJavaRandomProvider_init());
 }
 
 
-#line 10
+#line 14
 AMJavaCryptoProvider *new_AMJavaCryptoProvider_init() {
   AMJavaCryptoProvider *self = [AMJavaCryptoProvider alloc];
   AMJavaCryptoProvider_init(self);
@@ -47,13 +47,13 @@ AMJavaCryptoProvider *new_AMJavaCryptoProvider_init() {
 }
 
 
-#line 14
+#line 18
 void AMJavaCryptoProvider_initWithBCRandomProvider_(AMJavaCryptoProvider *self, id<BCRandomProvider> provider) {
   (void) BCBouncyCastleProvider_initWithBCRandomProvider_(self, provider);
 }
 
 
-#line 14
+#line 18
 AMJavaCryptoProvider *new_AMJavaCryptoProvider_initWithBCRandomProvider_(id<BCRandomProvider> provider) {
   AMJavaCryptoProvider *self = [AMJavaCryptoProvider alloc];
   AMJavaCryptoProvider_initWithBCRandomProvider_(self, provider);

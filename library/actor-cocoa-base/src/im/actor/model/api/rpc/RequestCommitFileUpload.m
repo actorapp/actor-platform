@@ -27,43 +27,43 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSByteArray *)
 
 
-#line 20
+#line 24
 @implementation ImActorModelApiRpcRequestCommitFileUpload
 
 
-#line 23
+#line 27
 + (ImActorModelApiRpcRequestCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(data);
 }
 
 
-#line 29
+#line 33
 - (instancetype)initWithByteArray:(IOSByteArray *)uploadKey {
   ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self, uploadKey);
   return self;
 }
 
 
-#line 33
+#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestCommitFileUpload_init(self);
   return self;
 }
 
 
-#line 37
+#line 41
 - (IOSByteArray *)getUploadKey {
   return self->uploadKey_;
 }
 
 
-#line 42
+#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uploadKey_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
 }
 
 
-#line 47
+#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->uploadKey_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -72,7 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSBy
 }
 
 
-#line 55
+#line 59
 - (NSString *)description {
   NSString *res = @"rpc CommitFileUpload{";
   res = JreStrcat("$C", res, '}');
@@ -80,7 +80,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSBy
 }
 
 
-#line 62
+#line 66
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestCommitFileUpload_HEADER;
 }
@@ -88,25 +88,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSBy
 @end
 
 
-#line 23
+#line 27
 ImActorModelApiRpcRequestCommitFileUpload *ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCommitFileUpload_initialize();
   
-#line 24
+#line 28
   return ((ImActorModelApiRpcRequestCommitFileUpload *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestCommitFileUpload_init(), data));
 }
 
 
-#line 29
+#line 33
 void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey) {
   (void) ImActorModelNetworkParserRequest_init(self);
   
-#line 30
+#line 34
   self->uploadKey_ = uploadKey;
 }
 
 
-#line 29
+#line 33
 ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(IOSByteArray *uploadKey) {
   ImActorModelApiRpcRequestCommitFileUpload *self = [ImActorModelApiRpcRequestCommitFileUpload alloc];
   ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self, uploadKey);
@@ -114,13 +114,13 @@ ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFi
 }
 
 
-#line 33
+#line 37
 void ImActorModelApiRpcRequestCommitFileUpload_init(ImActorModelApiRpcRequestCommitFileUpload *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
 
-#line 33
+#line 37
 ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_init() {
   ImActorModelApiRpcRequestCommitFileUpload *self = [ImActorModelApiRpcRequestCommitFileUpload alloc];
   ImActorModelApiRpcRequestCommitFileUpload_init(self);

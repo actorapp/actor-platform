@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.actors.dispatch;
 
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.util.ThreadLocalCompat;
 
-/**
- * Created by ex3ndr on 29.10.14.
- */
 public class DispatchResult {
 
     private static ThreadLocalCompat<DispatchResult> FREE_RESULTS = Environment.createThreadLocal();

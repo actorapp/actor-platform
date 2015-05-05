@@ -1,8 +1,9 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.engine;
 
-/**
- * Created by ex3ndr on 15.03.15.
- */
 public class SyncKeyValue {
 
     private KeyValueStorage storage;

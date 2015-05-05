@@ -1,11 +1,12 @@
+/*
+ * Copyright (C) 2015 Actor LLC. <https://actor.im>
+ */
+
 package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by ex3ndr on 17.10.14.
- */
 public class BserWriter {
 
     private DataOutput stream;
