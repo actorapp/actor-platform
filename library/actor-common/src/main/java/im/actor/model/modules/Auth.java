@@ -117,7 +117,7 @@ public class Auth extends BaseModule {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
                 modules().getAnalytics().trackCodeRequest(phone);
-                
+
                 request(new RequestSendAuthCode(phone, apiConfiguration.getAppId(),
                                 apiConfiguration.getAppKey()),
                         new RpcCallback<ResponseSendAuthCode>() {
@@ -205,7 +205,9 @@ public class Auth extends BaseModule {
                     @Override
                     public void onResult(ResponseAuth response) {
                         onLoggedIn(callback, response);
-                        modules().getProfile().changeAvatar(avatarPath);
+                        if (avatarPath != null) {
+                            modules().getProfile().changeAvatar(avatarPath);
+                        }
                     }
 
                     @Override
