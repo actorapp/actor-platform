@@ -1,4 +1,6 @@
 class MainController
+  isReady: false
+
   constructor: (@$rootScope, @$scope, @$timeout, @$mdSidenav, @$mdMedia, @actorService) ->
     console.log '[AW]MainController constructor'
     @$scope.$on 'actorReady', =>
