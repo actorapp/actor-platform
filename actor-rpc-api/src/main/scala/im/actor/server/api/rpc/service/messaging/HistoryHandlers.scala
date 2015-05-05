@@ -229,7 +229,7 @@ trait HistoryHandlers {
     val (userIds, groupIds) = dialogs.foldLeft((Set.empty[Int], Set.empty[Int])) {
       case ((uacc, gacc), dialog) ⇒
         if (dialog.peer.`type` == PeerType.Private) {
-          (uacc + dialog.peer.id, gacc)
+          (uacc ++ Set(dialog.peer.id, dialog.senderUserId), gacc)
         } else {
           (uacc, gacc + dialog.peer.id)
         }
