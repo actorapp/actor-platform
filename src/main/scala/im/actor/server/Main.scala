@@ -82,7 +82,11 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val activationContext = SmsActivation.newContext(smsConfig)
 
-    implicit val sessionRegionProxy = Session.startRegionProxy()
+    Session.startRegion(
+      Some(Session.props)
+    )
+
+    implicit val sessionRegion = Session.startRegionProxy()
 
     val services = Seq(
       new AuthServiceImpl(activationContext),
@@ -99,10 +103,6 @@ class Main extends Bootable with DbInit with FlywayInit {
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
-
-    val sessionRegion = Session.startRegion(
-      Some(Session.props)
-    )
 
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)
