@@ -38,6 +38,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.emoji.SmileProcessor;
 import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.keyboard.KeyboardStatusListener;
 import im.actor.messenger.app.keyboard.emoji.stickers.OnStickerClickListener;
@@ -60,6 +61,7 @@ import static im.actor.messenger.app.Core.getStickerProcessor;
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
 
 public class ChatActivity extends BaseActivity {
 
@@ -389,7 +391,7 @@ public class ChatActivity extends BaseActivity {
         isTypingDisabled = true;
         String text = messenger().loadDraft(peer);
         if (text != null) {
-            messageBody.setText(text);
+            messageBody.setText((emoji().processEmojiCompatMutable(text, SmileProcessor.CONFIGURATION_BUBBLES)));
         } else {
             messageBody.setText("");
         }
