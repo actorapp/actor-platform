@@ -1,4 +1,4 @@
-package im.actor.server.api.util
+package im.actor.server.util
 
 import scala.concurrent._
 import scala.language.postfixOps
@@ -10,13 +10,14 @@ import slick.profile.SqlAction
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.users.{ Phone, User }
-import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
 object UserUtils {
-  def userStruct(u: models.User, localName: Option[String], senderAuthId: Long)(implicit
+  def userStruct(u: models.User, localName: Option[String], senderAuthId: Long)(
+    implicit
     ec: ExecutionContext,
-                                                                                s: ActorSystem): DBIOAction[User, NoStream, Read with Read with Read with Read] =
+    s:  ActorSystem
+  ): DBIOAction[User, NoStream, Read with Read with Read with Read] =
     for {
       keyHashes ← persist.UserPublicKey.findKeyHashes(u.id)
       phones ← persist.UserPhone.findByUserId(u.id)
@@ -38,9 +39,11 @@ object UserUtils {
       )
     }
 
-  def userStruct(u: models.User, senderUserId: Int, senderAuthId: Long)(implicit
+  def userStruct(u: models.User, senderUserId: Int, senderAuthId: Long)(
+    implicit
     ec: ExecutionContext,
-                                                                        s: ActorSystem): DBIOAction[User, NoStream, Read with Read with Read with Read with Read] =
+    s:  ActorSystem
+  ): DBIOAction[User, NoStream, Read with Read with Read with Read with Read] =
     for {
       localName ← persist.contact.UserContact.findName(senderUserId: Int, u.id).headOption map (_.getOrElse(None))
       keyHashes ← persist.UserPublicKey.findKeyHashes(u.id)

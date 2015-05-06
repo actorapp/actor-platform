@@ -206,7 +206,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorModels, actorPersist)
+    .dependsOn(actorCommonsApi, actorModels, actorPersist, actorPush)
 
   lazy val actorTests = Project(
     id = "actor-tests",
