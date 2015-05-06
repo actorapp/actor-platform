@@ -17,8 +17,9 @@
     <com.droidkit.progress.CircularView
         android:id="@+id/progress"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_centerInParent="true"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
     <RelativeLayout
         android:id="@+id/ownerContainer"
         android:background="#40000000"
