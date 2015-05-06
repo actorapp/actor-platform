@@ -472,6 +472,8 @@ class SeqUpdatesManager(
     case SeqChanged(value) ⇒
       log.debug("Recovery: SeqChanged {}", value)
       seq = value
+    case RecoveryFailure(cause) ⇒
+      log.error(cause, "Failed to recover")
     case RecoveryCompleted ⇒
       log.debug("Recovery: Completed, seq: {}", seq)
       seq += IncrementOnStart - 1

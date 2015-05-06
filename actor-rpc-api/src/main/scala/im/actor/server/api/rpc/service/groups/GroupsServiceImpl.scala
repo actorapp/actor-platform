@@ -15,6 +15,7 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.util.PeerUtils._
+import im.actor.server.presences.{ GroupPresenceManagerRegion, GroupPresenceManager }
 import im.actor.server.api.util.{ AvatarUtils, FileUtils }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -23,10 +24,11 @@ import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String)(
   implicit
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  transferManager:     TransferManager,
-  db:                  Database,
-  actorSystem:         ActorSystem
+  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
+  groupPresenceManagerRegion: GroupPresenceManagerRegion,
+  transferManager:            TransferManager,
+  db:                         Database,
+  actorSystem:                ActorSystem
 ) extends GroupsService {
 
   import AvatarUtils._
@@ -102,7 +104,10 @@ class GroupsServiceImpl(bucketName: String)(
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Kicked))
-        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+        } yield {
+          GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
+          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+        }
       }
     }
 
@@ -119,7 +124,10 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Left))
-        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+        } yield {
+          GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
+          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+        }
       }
     }
 
@@ -197,6 +205,7 @@ class GroupsServiceImpl(bucketName: String)(
                 seqstate ← broadcastClientUpdate(userAddedUpdate, None)
                 // TODO: write service message
               } yield {
+                GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
                 Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
               }
             } else {
