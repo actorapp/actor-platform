@@ -35,27 +35,13 @@
 
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body ng-cloak layout="row">
+<body layout="row" ng-controller="mainController as main">
 
-<div class="main" layout="row" ng-controller="mainController as main">
-
-    <md-sidenav md-component-id="left"
-                class="md-sidenav-left"
-                md-is-locked-open="main.$mdMedia('gt-sm')"
-                ng-class="{'login-image': $state.includes('login')}"
-                flex
-                md-swipe-left="main.onSidebarSwipeLeft()"
-                layout="column"
-                ui-view="sidebar"></md-sidenav>
-
-    <md-content flex layout="column">
-        <md-toolbar ui-view="toolbar" ng-if="!$state.includes('login')"></md-toolbar>
-        <md-content ui-view="content" flex layout="column" scroll-glue></md-content>
-        <md-content ui-view="compose"></md-content>
-    </md-content>
-
+<div ng-if="!main.isReady" class="splash-screen" layout="row" layout-align="center center">
+    <img src="assets/img/logo_152x152.png" alt="Actor"/>
 </div>
 
+<div ng-if="main.isReady" ui-view class="app" layout="row"></div>
 
 <script src="ActorMessenger/ActorMessenger.nocache.js"></script>
 
@@ -63,11 +49,9 @@
 <script src="bower_components/CryptoJS/build/components/core-min.js"></script>
 <script src="bower_components/CryptoJS/build/components/sha256-min.js"></script>
 <script src="bower_components/jsencrypt/bin/jsencrypt.min.js"></script>
-<script src="bower_components/angular/angular.min.js"></script>
-
+<script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="bower_components/ngstorage/ngStorage.min.js"></script>
-
 <script src="bower_components/angular-aria/angular-aria.js"></script>
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
