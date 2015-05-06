@@ -9,17 +9,16 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.Implicits._
+import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
-import im.actor.server.api.util.PeerUtils._
-import im.actor.server.presences.{ GroupPresenceManagerRegion, GroupPresenceManager }
-import im.actor.server.api.util.{ AvatarUtils, FileUtils }
+import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.IdUtils
+import im.actor.server.util.{ AvatarUtils, IdUtils }
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String)(
@@ -32,7 +31,7 @@ class GroupsServiceImpl(bucketName: String)(
 ) extends GroupsService {
 
   import AvatarUtils._
-  import FileUtils._
+  import FileHelpers._
   import IdUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher

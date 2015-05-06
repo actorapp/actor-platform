@@ -15,10 +15,8 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
-import im.actor.server.api.util.{ AvatarUtils, FileUtils }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.social.SocialManager
+import im.actor.server.util.{ AvatarUtils, FileUtils }
 
 class AvatarsSpec extends BaseServiceSuite {
   behavior of "Profile Service"
