@@ -1,4 +1,4 @@
-package im.actor.server.api.util
+package im.actor.api.rpc
 
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
@@ -7,12 +7,11 @@ import scalaz._
 import akka.actor._
 import slick.dbio.DBIO
 
-import im.actor.api.rpc._
 import im.actor.api.rpc.peers._
 import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
-object PeerUtils {
+object PeerHelpers {
   def withOutPeer[R <: RpcResponse](
     clientUserId: Int,
     outPeer:      OutPeer
