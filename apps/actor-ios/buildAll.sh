@@ -1,3 +1,5 @@
+# !/bin/bash
+
 # Installing CocoaPods
 echo "##teamcity[progressStart 'Installing CocoaPods']"
 pod install
