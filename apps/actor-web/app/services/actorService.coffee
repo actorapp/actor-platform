@@ -1,5 +1,4 @@
 class ActorService
-  isLoggedIn: false
   messenger: null
   currentPeer: null
 
@@ -10,33 +9,35 @@ class ActorService
   initActor: ->
     console.log '[AW]ActorService initActor'
     @messenger = new actor.ActorApp
-    window.messenger = @messenger
-    @setLoggedIn() if @messenger.isLoggedIn()
-    console.log '[AW]ActorService initActor: @isLoggedIn:', @isLoggedIn
-    console.log '[AW]ActorService initActor: $broadcast: actorReady'
+    window.messenger = @messenger # for debug
+    if @messenger.isLoggedIn()
+      console.log '[AW]ActorService initActor: User already logged, redirect to im.'
+      @$rootScope.$state.go 'im'
+    else
+      console.log '[AW]ActorService initActor: User not logged, redirect to login.'
+      @$rootScope.$state.go 'login'
+    console.log '[AW]ActorService initActor: broadcast: actorReady'
     @$rootScope.$broadcast 'actorReady'
 
 
   setLoggedIn: () =>
     console.log '[AW]ActorService setLoggedIn'
-    @isLoggedIn = true
-    @$rootScope.$state.go 'home'
-    @$rootScope.$broadcast 'actorLoggedIn'
+#    @isLoggedIn = true
+    @$rootScope.$state.go 'im'
+#    @$rootScope.$broadcast 'actorLoggedIn'
   setLoggedOut: () =>
     console.log '[AW]ActorService setLoggedOut'
     localStorage.clear()
-    @isLoggedIn = false
-    @$rootScope.$state.go 'login'
-    @$rootScope.$broadcast 'actorLoggedOut'
     location.reload()
+#    @isLoggedIn = false
+#    @$rootScope.$state.go 'login'
+#    @$rootScope.$broadcast 'actorLoggedOut'
   setCurrentPeer: (peer) ->
-    console.log '[AW]ActorService setCurrentPeer'
-    console.log '[AW]ActorService setCurrentPeer: peer:', peer
+    console.log '[AW]ActorService setCurrentPeer', peer
     @currentPeer = peer
 
   bindChat: (peer, callback) ->
-    console.log '[AW]ActorService bindChat'
-    console.log '[AW]ActorService bindChat: peer:', peer
+    console.log '[AW]ActorService bindChat', peer
     @setCurrentPeer peer
     @messenger.bindChat peer, callback
   bindDialogs: (callback) ->
@@ -45,31 +46,26 @@ class ActorService
       console.log '[AW]ActorService bindDialogs: dialogs:', dialogs
       callback dialogs
   bindGroup: (id, callback) ->
-    console.log '[AW]ActorService bindGroup'
-    console.log '[AW]ActorService bindGroup: id:', id
+    console.log '[AW]ActorService bindGroup', id
     @messenger.bindGroup id, callback
   bindTyping: ->
     console.log '[AW]ActorService bindTyping'
   bindUser: (id, callback) ->
-    console.log '[AW]ActorService bindUser'
-    console.log '[AW]ActorService bindUser: id:', id
+    console.log '[AW]ActorService bindUser', id
     @messenger.bindUser id, callback
 
   unbindChat: (peer, callback) ->
-    console.log '[AW]ActorService unbindChat'
-    console.log '[AW]ActorService unbindChat: peer:', peer
+    console.log '[AW]ActorService unbindChat', peer
     @messenger.unbindChat peer, callback
-  unbindDialogs: ->
+  unbindDialogs: (callback) ->
     console.log '[AW]ActorService unbindDialogs'
   unbindGroup: (peer, callback) ->
-    console.log '[AW]ActorService unbindGroup'
-    console.log '[AW]ActorService unbindGroup: peer:', peer
+    console.log '[AW]ActorService unbindGroup', peer
     @messenger.unbindGroup peer, callback
   unbindTyping: ->
     console.log '[AW]ActorService unbindTyping'
   unbindUser: (peer, callback) ->
-    console.log '[AW]ActorService unbindUser'
-    console.log '[AW]ActorService unbindUser: peer:', peer
+    console.log '[AW]ActorService unbindUser', peer
     @messenger.unbindUser peer, callback
 
   getAuthPhone: ->
@@ -77,7 +73,7 @@ class ActorService
   getAuthState: ->
     console.log '[AW]ActorService getAuthState'
   getGroup: (uid) ->
-    console.log '[AW]ActorService getGroup'
+    console.log '[AW]ActorService getGroup', uid
     @messenger.getGroup uid
   getTyping: ->
     console.log '[AW]ActorService getTyping'
@@ -85,7 +81,7 @@ class ActorService
     console.log '[AW]ActorService getUid'
     @messenger.getUid()
   getUser: (uid) ->
-    console.log '[AW]ActorService getUser'
+    console.log '[AW]ActorService getUser', uid
     @messenger.getUser uid
 
   clearChat: ->
@@ -98,15 +94,13 @@ class ActorService
     console.log '[AW]ActorService loadDraft'
     @messenger.loadDraft peer
   saveDraft: (peer, draft) ->
-    console.log '[AW]ActorService saveDraft'
-    console.log '[AW]ActorService saveDraft: draft:', draft
+    console.log '[AW]ActorService saveDraft', draft
     if draft != null
       @messenger.saveDraft peer, draft
 
 
   requestSms: (phone) ->
-    console.log '[AW]ActorService requestSms'
-    console.log '[AW]ActorService requestSms: phone:', phone
+    console.log '[AW]ActorService requestSms', phone
     @messenger.requestSms phone.toString(), (state) =>
       console.log '[AW]ActorService requestSms: state:', state
       switch state
@@ -122,7 +116,7 @@ class ActorService
       switch state
         when 'logged_in'
           @setLoggedIn()
-        when 'logged_in'
+        when 'signup'
           @$rootScope.$broadcast 'actorSignUp'
     , (tag, message, canTryAgain, state) ->
       console.log '[AW]ActorService sendCode: error: state:', state
@@ -149,13 +143,11 @@ class ActorService
   onAppVisible: ->
     console.log '[AW]ActorService onAppVisible'
   onConversationClosed: (peer) ->
-    console.log '[AW]ActorService onConversationClosed'
-    console.log '[AW]ActorService onConversationClosed: peer:', peer
+    console.log '[AW]ActorService onConversationClosed', peer
     @messenger.onConversationClosed peer
     @$rootScope.$broadcast 'onConversationClosed', peer
   onConversationOpen: (peer) ->
-    console.log '[AW]ActorService onConversationOpen'
-    console.log '[AW]ActorService onConversationOpen: peer:', peer
+    console.log '[AW]ActorService onConversationOpen', peer
     @messenger.onConversationOpen peer
     @$rootScope.$broadcast 'onConversationOpen', peer
   onDialogsClosed: ->

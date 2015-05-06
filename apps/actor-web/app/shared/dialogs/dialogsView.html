@@ -1,0 +1,51 @@
+<div flex ng-controller="dialogsController as dialogs">
+  <md-subheader>Opened coversations</md-subheader>
+
+  <md-list flex class="dialogs">
+      <md-list-item class="dialogs__item"
+                    ng-repeat="dialog in dialogs.list"
+                    ng-class="{'dialogs__item--selected' : dialog.peer.peer.id == main.actorService.currentPeer.id}"
+                    ng-click="dialogs.selectDialog(dialog.peer.peer)">
+
+        <div class="dialogs__avatar avatar avatar--{{::dialog.peer.placeholder }}">
+          <img ng-src="{{::dialog.peer.avatar }}" alt="{{::dialog.peer.title }}" ng-if="::dialog.peer.avatar" />
+          <span ng-bind="::dialog.peer.title | limitTo:1"></span>
+        </div>
+
+        <div class="md-list-item-text dialogs__body" flex>
+
+            <h3 layout="row" class="dialogs__body__title">
+              <span flex >
+                <md-icon md-svg-icon="assets/img/icons/ic_group_24px.svg"
+                         ng-if="::dialog.peer.peer.type == 'group'"
+                         class="dialogs__body__title__icon"></md-icon>
+                {{ ::dialog.peer.title }}
+              </span>
+                <time class="dialogs__body__title__timestamp">{{ ::dialog.date }}</time>
+            </h3>
+
+            <p class="dialogs__body__message" ng-if="::dialog.state != 'unknown'">
+
+              <md-icon md-svg-icon="assets/img/icons/ic_access_time_24px.svg"
+                       ng-if="::dialog.state == 'pending'"
+                       class="dialogs__body__message__icon dialogs__body__message__icon--penging"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_done_24px.svg"
+                       ng-if="::dialog.state == 'sent'"
+                       class="dialogs__body__message__icon dialogs__body__message__icon--sent"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
+                       ng-if="::dialog.state == 'received'"
+                       class="dialogs__body__message__icon dialogs__body__message__icon--received"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
+                       ng-if="::dialog.state == 'read'"
+                       class="dialogs__body__message__icon dialogs__body__message__icon--read"></md-icon>
+              <md-icon md-svg-icon="assets/img/icons/ic_report_problem_24px.svg"
+                       ng-if="::dialog.state == 'error'"
+                       class="dialogs__body__message__icon dialogs__body__message__icon--error"></md-icon>
+
+              {{ ::dialog.text | truncate : 22 }}
+
+            </p>
+        </div>
+      </md-list-item>
+  </md-list>
+</div>
