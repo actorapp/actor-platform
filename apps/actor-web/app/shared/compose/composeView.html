@@ -1,5 +1,4 @@
-<div ng-controller="composeController as compose" id="composeControllerWrap">
-  <div class="compose" ng-if="compose.isEnabled">
+  <div class="compose" ng-show="compose.isEnabled" ng-controller="composeController as compose" id="composeControllerWrap">
     <form name="composeForm" role="form" ng-submit="compose.sendMessage()" enter-submit="compose.sendMessage()">
 
       <textarea class="compose__message"
@@ -27,9 +26,7 @@
 
     </form>
 
-      <input type="file" id="files" name="file"/>
-      <button id="sendFileButton" onclick="sendFile()">Send</button>
-
+      <!--<input type="file" id="files" name="file"/>-->
+      <!--<button id="sendFileButton" onclick="sendFile()">Send</button>-->
 
   </div>
-</div>

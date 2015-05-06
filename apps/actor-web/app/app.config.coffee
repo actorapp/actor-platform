@@ -4,7 +4,7 @@ class ActorConfig
       .state 'home',
         abstract: true
         views:
-          '@': templateUrl: 'app/components/main/mainView.html'
+          '@': templateUrl: 'app/components/app/appView.html'
 
       .state 'im',
         url: '/im'
