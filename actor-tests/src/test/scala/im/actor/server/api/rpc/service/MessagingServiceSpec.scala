@@ -36,6 +36,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     implicit val sessionRegion = buildSessionRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
+    implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()

@@ -12,9 +12,8 @@ import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.{ ACLUtils, IdUtils }
 
 class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "GroupsService"
@@ -29,6 +28,8 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
+  implicit val presenceManagerRegion = PresenceManager.startRegion()
+  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
