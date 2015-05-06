@@ -1,32 +1,33 @@
-  <div class="compose" ng-show="compose.isEnabled" ng-controller="composeController as compose" id="composeControllerWrap">
-    <form name="composeForm" role="form" ng-submit="compose.sendMessage()" enter-submit="compose.sendMessage()">
+<div class="compose" ng-show="compose.isEnabled" ng-controller="composeController as compose">
+    <form name="composeForm" role="form" enter-submit="compose.sendMessage()">
 
-      <textarea class="compose__message"
-                ng-model="compose.message"
-                ng-keyup="compose.onTyping()"
-                placeholder="Type your message..."></textarea>
+        <textarea class="compose__message"
+                  ng-model="compose.message"
+                  ng-keyup="compose.onTyping()"
+                  placeholder="Type your message...">
+        </textarea>
 
-      <footer layout="row" class="compose__footer">
-
-        <md-button class="md-icon-button" aria-label="Send file">
-          <md-icon md-svg-icon="assets/img/icons/ic_attachment_24px.svg"></md-icon>
-          Send file
-        </md-button>
-        <md-button class="md-icon-button" aria-label="Send photo">
-          <md-icon md-svg-icon="assets/img/icons/ic_photo_camera_24px.svg"></md-icon>
-          Send photo
-        </md-button>
-
-        <span flex></span>
-
-        <md-button class="md-primary md-raised md-big">Send</md-button>
-
-      </footer>
+        <footer layout="row" class="compose__footer">
 
 
+            <md-button class="md-icon-button" aria-label="Send file" ng-click="compose.openFileDialog()">
+                <md-icon md-svg-icon="assets/img/icons/ic_attachment_24px.svg"></md-icon>
+                Send file
+            </md-button>
+            <md-button class="md-icon-button" aria-label="Send photo">
+              <md-icon md-svg-icon="assets/img/icons/ic_photo_camera_24px.svg"></md-icon>
+              Send photo
+            </md-button>
+
+            <span flex></span>
+
+            <md-button class="md-primary md-raised md-big">Send</md-button>
+
+        </footer>
+
+        <div class="compose__hidden">
+            <input type="file" id="file" name="file"
+                   onchange="angular.element(this).scope().compose.fileSelected()">
+        </div>
     </form>
-
-      <!--<input type="file" id="files" name="file"/>-->
-      <!--<button id="sendFileButton" onclick="sendFile()">Send</button>-->
-
-  </div>
+</div>
