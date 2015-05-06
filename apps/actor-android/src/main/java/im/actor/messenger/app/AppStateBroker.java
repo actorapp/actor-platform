@@ -17,7 +17,7 @@ public class AppStateBroker extends TypedActor<AppStateInterface> implements App
         return HOLDER.get();
     }
 
-    private static final int CLOSE_TIMEOUT = 300;
+    private static final int CLOSE_TIMEOUT = 1000;
 
     private boolean isAppOpen = false;
     private int activityCount = 0;
