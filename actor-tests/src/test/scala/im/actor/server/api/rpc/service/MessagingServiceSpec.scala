@@ -1,18 +1,19 @@
 package im.actor.server.api.rpc.service
 
 import scala.concurrent.Future
+import scalaz.{ -\/, \/ }
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import org.scalatest.matchers.Matcher
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
+import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeqDate, ResponseVoid }
-import im.actor.api.rpc.peers.PeerType
+import im.actor.api.rpc.peers.{ PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
@@ -23,6 +24,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   "Messaging" should "send messages" in s.privat.sendMessage
 
   it should "send group messages" in s.group.sendMessage
+
+  it should "not send messages when user is not in group" in s.group.restrictAlienUser
 
   "History" should "mark messages received and send updates (private)" in s.historyPrivate.markReceived
 
@@ -85,6 +88,45 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { u ⇒
           u.header should ===(UpdateMessage.header)
         }
+      }
+
+      def restrictAlienUser() = {
+        val (alien, authIdAlien, _) = createUser()
+
+        val alienClientData = ClientData(authId1, sessionId, Some(alien.id))
+
+        def matchNotAuthorized[T]: Matcher[\/[RpcError, T]] = matchPattern {
+          case -\/(RpcError(403, "USER_NOT_AUTHORIZED", _, _, _)) ⇒
+        }
+
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi again", None))(alienClientData)) { resp ⇒
+          resp should matchNotAuthorized
+        }
+
+        whenReady(groupsService.handleEditGroupTitle(groupOutPeer, 4L, "Loosers")(alienClientData)) { resp ⇒
+          resp should matchNotAuthorized
+        }
+
+        val (user3, authId3, _) = createUser()
+        val user3OutPeer = UserOutPeer(user3.id, 11)
+
+        whenReady(groupsService.handleInviteUser(groupOutPeer, 4L, user3OutPeer)(alienClientData)) { resp ⇒
+          resp should matchNotAuthorized
+        }
+
+        val fileLocation = FileLocation(1L, 1L)
+        whenReady(groupsService.handleEditGroupAvatar(groupOutPeer, 5L, fileLocation)(alienClientData)) { resp ⇒
+          resp should matchNotAuthorized
+        }
+
+        whenReady(groupsService.handleRemoveGroupAvatar(groupOutPeer, 5L)(alienClientData)) { resp ⇒
+          resp should matchNotAuthorized
+        }
+
+        whenReady(groupsService.handleLeaveGroup(groupOutPeer, 5L)(alienClientData)) { resp ⇒
+          resp should matchNotAuthorized
+        }
+
       }
     }
 
