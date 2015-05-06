@@ -47,7 +47,7 @@ class GroupsServiceImpl(bucketName: String)(
 
   override def jhandleEditGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
           scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
             case Right(avatar) ⇒
@@ -77,7 +77,7 @@ class GroupsServiceImpl(bucketName: String)(
 
   override def jhandleRemoveGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         val date = new DateTime
         val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, None, date.getMillis, randomId)
 
@@ -116,7 +116,7 @@ class GroupsServiceImpl(bucketName: String)(
 
   override def jhandleLeaveGroup(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         val date = new DateTime
 
         val update = UpdateGroupUserLeave(fullGroup.id, client.userId, date.getMillis, randomId)
@@ -176,7 +176,7 @@ class GroupsServiceImpl(bucketName: String)(
 
   override def jhandleInviteUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
           persist.GroupUser.find(fullGroup.id).flatMap { groupUsers ⇒
             val userIds = groupUsers.map(_.userId)
@@ -221,7 +221,7 @@ class GroupsServiceImpl(bucketName: String)(
 
   override def jhandleEditGroupTitle(groupOutPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupOutPeer(groupOutPeer) { fullGroup ⇒
+      withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         val date = new DateTime
         val dateMillis = date.getMillis
 
