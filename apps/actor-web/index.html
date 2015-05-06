@@ -37,11 +37,11 @@
 </head>
 <body layout="row" ng-controller="mainController as main">
 
-<div class="splash-screen" ng-if="!main.isReady" layout="row" layout-align="center center">
+<div ng-if="!main.isReady" class="splash-screen" layout="row" layout-align="center center">
     <img src="assets/img/logo_152x152.png" alt="Actor"/>
 </div>
 
-<div class="app" layout="row" ng-if="main.isReady" ui-view></div>
+<div ng-if="main.isReady" ui-view class="app" layout="row"></div>
 
 <script src="ActorMessenger/ActorMessenger.nocache.js"></script>
 
