@@ -142,7 +142,7 @@ public class GroupInfoFragment extends BaseFragment {
 
 
         // Media
-        int docsCount = 10;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        int docsCount = 0;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
         if (docsCount == 0) {
             header.findViewById(R.id.docsContainer).setVisibility(View.GONE);
         } else {
