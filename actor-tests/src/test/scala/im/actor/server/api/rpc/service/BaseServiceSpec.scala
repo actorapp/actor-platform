@@ -5,8 +5,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
-import im.actor.server.{ KafkaSpec, SqlSpecHelpers }
 import im.actor.server.api.ActorSpecHelpers
+import im.actor.server.{ KafkaSpec, ServiceSpecMatchers, SqlSpecHelpers }
 import im.actor.util.testing._
 
 trait BaseServiceSuite
@@ -14,6 +14,7 @@ trait BaseServiceSuite
   with FlatSpecLike
   with ScalaFutures
   with Matchers
+  with ServiceSpecMatchers
   with KafkaSpec
   with SqlSpecHelpers
   with ServiceSpecHelpers
