@@ -17,10 +17,9 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server
-import im.actor.server.api.util.{ ContactsUtils, UserUtils }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ ACLUtils, PhoneNumber }
+import im.actor.server.util.{ UserUtils, ContactsUtils, ACLUtils, PhoneNumber }
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(

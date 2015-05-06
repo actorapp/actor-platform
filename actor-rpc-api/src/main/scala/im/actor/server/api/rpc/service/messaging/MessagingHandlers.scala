@@ -13,10 +13,9 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
-import im.actor.server.api.util.{ ContactsUtils, PeerUtils, UserUtils }
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
-import im.actor.server.util.HistoryUtils
+import im.actor.server.util.{ ContactsUtils, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 private[messaging] trait MessagingHandlers {
@@ -24,7 +23,7 @@ private[messaging] trait MessagingHandlers {
 
   import ContactsUtils._
   import HistoryUtils._
-  import PeerUtils._
+  import PeerHelpers._
   import SeqUpdatesManager._
   import SocialManager._
   import UserUtils._

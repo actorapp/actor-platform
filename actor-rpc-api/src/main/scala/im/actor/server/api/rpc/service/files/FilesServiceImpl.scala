@@ -15,10 +15,10 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.api.util.FileUtils
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.{ ACLUtils, FileUtils }
 import im.actor.server.{ models, persist }
 
 class FilesServiceImpl(bucketName: String)(
