@@ -20,15 +20,26 @@
             <p ng-if="::message.content.content == 'text'"
                ng-bind-html="::message.content.text | html"></p>
 
+            <div ng-if="::message.content.content == 'document'"
+                 class="messages-list__item__document">
+                <p><md-icon md-svg-icon="assets/img/icons/ic_attach_file_24px.svg"></md-icon> <a href="{{::message.content.fileUrl}}">{{::message.content.fileName}}</a></p>
+            </div>
+
             <img ng-if="::message.content.content == 'photo'"
+                 class="messages-list__item__photo"
+                 width="{{ ::message.content.w }}"
+                 height="{{ ::message.content.h }}"
                  data-ng-src="{{ ::message.content.preview }}"
                  data-err-src="assets/img/err.png"/>
 
-            <!-- <p class="unsupported" ng-if="message.content.content == 'unsupported'">{{ message.content.text }}</p> -->
             <p class="service"
                flex
                ng-if="::message.content.content == 'service'"
                ng-bind="::message.content.text"></p>
+
+            <p class="unsupported" ng-if="message.content.content == 'unsupported'">
+                Данный вид контента не поддерживается.
+            </p>
 
         </div>
     </md-list-item>
