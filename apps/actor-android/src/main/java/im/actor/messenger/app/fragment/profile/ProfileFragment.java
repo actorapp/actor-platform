@@ -184,7 +184,7 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
-        int docsCount = 10;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        int docsCount = 0;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
         if (docsCount == 0) {
             res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
         } else {
