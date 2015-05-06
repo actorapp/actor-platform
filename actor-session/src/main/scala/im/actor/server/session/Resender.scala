@@ -95,6 +95,8 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       log.debug("Scheduled resend for messageId: {}", messageId)
       resendBuffer.get(messageId) map {
         case (msg, _) ⇒
+          log.debug("Resending {}", msg)
+
           msg match {
             case rspBox @ RpcResponseBox(requestMessageId, bodyBytes) ⇒
               val bodySize = bodyBytes.bytes.size
