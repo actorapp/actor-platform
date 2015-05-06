@@ -14,8 +14,7 @@ class ComposeController
     @isEnabled = true
     @draft = @actorService.loadDraft @actorService.currentPeer
     console.log '[AW]ComposeController enableCompose: @draft:', @draft
-    @message = if @draft then @draft else ''
-    console.log '[AW]ComposeController enableCompose: @message:', @message
+    @message = @draft if @draft
 
   onTyping: ->
     console.log '[AW]ComposeController onTyping'
@@ -28,10 +27,19 @@ class ComposeController
     @message = @draft = ''
     @actorService.saveDraft @actorService.currentPeer, @draft
 
-#  sendFileMessage: (file) ->
-#    console.log '[AW]ComposeController sendFileMessage'
-#    console.log file
-#    @actorService.sendFile @actorService.currentPeer, file
+  openFileDialog: ->
+    console.log '[AW]ComposeController openFileDialog'
+    document.getElementById('file').click()
+
+  fileSelected: ->
+    console.log '[AW]ComposeController fileSelected'
+    files = document.getElementById('file').files
+    console.log '[AW]ComposeController fileSelected: files', files
+    @sendFile files[0]
+
+  sendFile: (file) ->
+    console.log '[AW]ComposeController sendFileMessage', file
+    @actorService.sendFile @actorService.currentPeer, file
 
 ComposeController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
 
