@@ -1,11 +1,9 @@
 package im.actor.server.api.rpc.service
 
 import scala.concurrent.Future
-import scalaz.{ -\/, \/ }
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
-import org.scalatest.matchers.Matcher
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
@@ -14,6 +12,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeqDate, ResponseVoid }
 import im.actor.api.rpc.peers.{ PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
@@ -94,10 +93,6 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         val (alien, authIdAlien, _) = createUser()
 
         val alienClientData = ClientData(authId1, sessionId, Some(alien.id))
-
-        def matchNotAuthorized[T]: Matcher[\/[RpcError, T]] = matchPattern {
-          case -\/(RpcError(403, "USER_NOT_AUTHORIZED", _, _, _)) ⇒
-        }
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi again", None))(alienClientData)) { resp ⇒
           resp should matchNotAuthorized
