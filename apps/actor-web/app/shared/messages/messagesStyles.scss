@@ -1,4 +1,5 @@
 @import '../../styles/variables';
+
 .messages-list
 {
     &__item
@@ -29,7 +30,7 @@
 
                 color: rgb(190,190,190);
             }
-            p
+            > p
             {
                 font-size: 13px;
                 font-weight: 400;
@@ -49,6 +50,37 @@
                     text-align: center;
 
                     color: rgba(0,0,0,.2);
+                }
+            }
+        }
+
+        &__photo
+        {
+            max-width: 150px;
+            height: auto;
+        }
+        &__document {
+            background-color: rgba($baseColor, .05);
+            display: inline-block;
+            border-radius: 4px;
+            color: rgba(0,0,0,.5);
+            padding: 10px;
+            md-icon {
+                width: 20px;
+                height: 20px;
+                //float: left;
+                vertical-align: top;
+            }
+            p {
+                font-size: 14px;
+                line-height: 20px;
+                margin: 0;
+            }
+            a {
+                color: $baseColor;
+                text-decoration: none;
+                &:hover {
+                    text-decoration: underline;
                 }
             }
         }
