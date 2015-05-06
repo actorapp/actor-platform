@@ -7,18 +7,20 @@ class AppController
       @user = @actorService.getUser @actorService.getUid()
 
     @$scope.$on 'onConversationOpen', (event, peer) =>
-      if peer.type == 'user'
-        @actorService.bindUser peer.id, @renderPeerInfo
-      else if peer.type == 'group'
-        @actorService.bindGroup peer.id, @renderPeerInfo
+      switch peer.type
+        when 'user'
+          @actorService.bindUser peer.id, (info) => @renderPeerInfo info
+        when 'group'
+          @actorService.bindGroup peer.id, (info) => @renderPeerInfo info
 
     @$scope.$on 'onConversationClosed', (event, peer) =>
-      if peer.type == 'user'
-        @actorService.unbindUser peer.id, =>
-          console.log '[AW]AppController unbindUser: unbinded'
-      else if peer.type == 'group'
-        @actorService.unbindGroup peer.id, =>
-          console.log '[AW]AppController unbindGroup: unbinded'
+      switch peer.type
+        when 'user'
+          @actorService.unbindUser peer.id, =>
+            console.log '[AW]AppController unbindUser: unbinded'
+        when 'group'
+          @actorService.unbindGroup peer.id, =>
+            console.log '[AW]AppController unbindGroup: unbinded'
 
   renderPeerInfo: (info) =>
     console.log '[AW]AppController renderPeerInfo', info

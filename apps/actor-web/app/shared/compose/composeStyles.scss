@@ -22,4 +22,9 @@
       }
     }
   }
+  &__hidden {
+    position: absolute;
+    left: -5000px;
+    visibility: hidden;
+  }
 }
