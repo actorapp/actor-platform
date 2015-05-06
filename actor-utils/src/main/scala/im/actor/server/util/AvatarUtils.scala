@@ -1,4 +1,4 @@
-package im.actor.server.api.util
+package im.actor.server.util
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -13,11 +13,9 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.files
 import im.actor.api.rpc.files.{ Avatar, AvatarImage, FileLocation }
 import im.actor.server.models.AvatarData
-import im.actor.server.util.ACLUtils
 import im.actor.server.{ models, persist }
 
 object AvatarUtils {
-
   import FileUtils._
 
   val AvatarSizeLimit = 1024 * 1024 // TODO: configurable

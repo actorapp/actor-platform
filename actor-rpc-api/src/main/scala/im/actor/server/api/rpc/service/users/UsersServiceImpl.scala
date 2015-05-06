@@ -8,10 +8,9 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
-import im.actor.server.api.util.ContactsUtils
 import im.actor.server.persist
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.{ ContactsUtils, ACLUtils }
 
 class UsersServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, db: Database, actorSystem: ActorSystem) extends UsersService {
   import ContactsUtils._

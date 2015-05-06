@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service.sequence
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.ActorSystem
 import slick.dbio
 import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
@@ -13,11 +13,10 @@ import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
 import im.actor.api.rpc.users.{ Phone, User }
-import im.actor.server.api.util.{ UserUtils, GroupUtils }
 import im.actor.server.models
-import im.actor.server.presences.{ PresenceManager, PresenceManagerRegion }
-import im.actor.server.push.{ SeqUpdatesManagerRegion, SeqUpdatesManager }
-import im.actor.server.session.{ SessionRegion, SessionMessage }
+import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.session.{ SessionMessage, SessionRegion }
+import im.actor.server.util.{ GroupUtils, UserUtils }
 
 class SequenceServiceImpl(
   implicit
@@ -26,8 +25,8 @@ class SequenceServiceImpl(
   db:                  Database,
   actorSystem:         ActorSystem
 ) extends SequenceService {
-  import SeqUpdatesManager._
   import GroupUtils._
+  import SeqUpdatesManager._
   import UserUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher

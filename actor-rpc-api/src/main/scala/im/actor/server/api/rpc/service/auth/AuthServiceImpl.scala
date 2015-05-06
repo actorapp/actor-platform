@@ -24,7 +24,7 @@ import im.actor.server.session._
 import im.actor.server.sms.ActivationContext
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.PhoneNumber.normalizeWithCountry
-import im.actor.server.util.{ ACLUtils, IdUtils, PhoneNumber }
+import im.actor.server.util.{ UserUtils, ACLUtils, IdUtils, PhoneNumber }
 import im.actor.server.{ models, persist }
 
 class AuthServiceImpl(activationContext: ActivationContext)(
@@ -267,7 +267,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
                   case Up(_, isSilent) ⇒ markContactRegistered(user, normPhoneNumber, isSilent)
                   case _               ⇒ DBIO.successful(())
                 }
-                userStruct ← util.UserUtils.userStruct(
+                userStruct ← UserUtils.userStruct(
                   user,
                   None,
                   clientData.authId
