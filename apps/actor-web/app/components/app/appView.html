@@ -1,0 +1,17 @@
+<div ng-controller="appController as app" flex layout="row">
+    <md-sidenav class="md-sidenav-left"
+                md-component-id="left"
+                md-is-locked-open="app.$mdMedia('gt-sm')"
+                md-swipe-left="app.onSidebarSwipeLeft()"
+                flex
+                ui-view="sidebar"
+                layout="column">
+    </md-sidenav>
+
+
+    <div layout="column" flex>
+        <div ui-view="toolbar"></div>
+        <md-content flex layout="column" scroll-glue ui-view="content"></md-content>
+        <div ui-view="compose"></div>
+    </div>
+</div>

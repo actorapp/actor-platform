@@ -4,13 +4,12 @@ class LoginController
 
   constructor: (@$rootScope, @$scope, @actorService) ->
     console.log '[AW]LoginController constructor'
-    @$rootScope.$state.go 'home' if @actorService.isLoggedIn
     @$scope.$on 'actorAuthCode', =>
-      console.log '[AW]LoginController constructor: actorAuthCode fired.'
-      @$scope.$apply => @isCodeRequested = true
+      @$scope.$apply =>
+        @isCodeRequested = true
     @$scope.$on 'actorSignUp', =>
-      console.log '[AW]LoginController constructor: actorSignUp fired.'
-      @$scope.$apply => @isSignUp = true
+      @$scope.$apply =>
+        @isSignUp = true
 
   requestSms: (phone) ->
     console.log '[AW]LoginController requestSms'
