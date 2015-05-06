@@ -112,21 +112,24 @@ class ActorService
   sendCode: (code) ->
     console.log '[AW]ActorService sendCode'
     @messenger.sendCode code, (state) =>
-      console.log '[AW]ActorService sendCode: state:', state
+      console.log '[AW]ActorService sendCode: ok:', state
       switch state
         when 'logged_in'
           @setLoggedIn()
         when 'signup'
           @$rootScope.$broadcast 'actorSignUp'
     , (tag, message, canTryAgain, state) ->
-      console.log '[AW]ActorService sendCode: error: state:', state
+      console.log '[AW]ActorService sendCode: error:', state
+      switch state
+        when 'code'
+          console.log '[AW]ActorService sendCode: wrong code'
 
 
-  sendFile: ->
-    console.log '[AW]ActorService sendFile'
+  sendFile: (peer, file) ->
+    console.log '[AW]ActorService sendFile', file
+    @messenger.sendFile peer, file
   sendMessage: (peer, message) ->
-    console.log '[AW]ActorService sendMessage'
-    console.log '[AW]ActorService sendMessage: message:', message
+    console.log '[AW]ActorService sendMessage', message
     message = message.replace /^\s+|\s+$/g, ''
     if message.length > 0
       console.log '[AW]ActorService sendMessage: message:', message.length
