@@ -296,7 +296,7 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1']) {
+task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1', 'assembleDev2']) {
     doFirst {
         println "##teamcity[buildNumber '${project.version}']"
     }
