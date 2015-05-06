@@ -1,6 +1,7 @@
 package im.actor.server.dashboard
 
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ BeforeAndAfterAll, FlatSpec, Matchers }
 import slick.driver.PostgresDriver
 
@@ -12,6 +13,9 @@ trait BasicDashboardSpec
   with ScalaFutures
   with Matchers
   with BeforeAndAfterAll {
+
+  override implicit def patienceConfig: PatienceConfig =
+    new PatienceConfig(timeout = Span(5, Seconds))
 
   lazy val (ds, database: PostgresDriver.backend.DatabaseDef) = migrateAndInitDb()
 
