@@ -64,7 +64,9 @@ android {
             "}";
 
     // Development hockey
-    def HOCKEY_INTERNAL = "\"48746ea78e12b511f4be45701b540996\""
+    def HOCKEY_ENTERPRISE = "\"48746ea78e12b511f4be45701b540996\""
+    def HOCKEY_ALPHA = "\"85d5a88c6c5ac7f59b9341943fb824d0\""
+
     def HOCKEY_DEV1 = "\"0c9491699393210f523170b407a2bf75\""
     def HOCKEY_DEV2 = "\"60f1d98874cd122108df9b7043f418d6\""
 
@@ -120,12 +122,20 @@ android {
             buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
-        internal {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Internal)\""
+        alpha {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Alpha)\""
             signingConfig signingConfigs.release
             applicationIdSuffix ".business"
 
-            buildConfigField STRING, HOCKEY, HOCKEY_INTERNAL
+            buildConfigField STRING, HOCKEY, HOCKEY_ALPHA
+        }
+
+        enterprise {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Enterprise)\""
+            signingConfig signingConfigs.release
+            applicationIdSuffix ".business"
+
+            buildConfigField STRING, HOCKEY, HOCKEY_ENTERPRISE
         }
 
         // Development builds
@@ -161,12 +171,14 @@ android {
                 def file = output.outputFile
                 if (file.name == "actor-android-release.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-internal.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Internal-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-enterprise.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Enterprise-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev1.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-dev2.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
+                } else if (file.name == "actor-android-alpha.apk") {
+                    output.outputFile = new File("$project.buildDir/apk/Actor-Alpha-" + defaultConfig.versionName + ".apk")
                 } else if (file.name == "actor-android-llectro.apk") {
                     output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
                 }
@@ -177,7 +189,7 @@ android {
     // Setting themes
     sourceSets {
         main {
-            res.srcDirs = ['src/main/res','src/themes/main', 'src/material-icons']
+            res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
         }
 
         debug {
@@ -214,11 +226,14 @@ android {
         android.signingConfigs.release.keyPassword = androidAliasPass
     } else {
         buildTypes.release.signingConfig = null
-        buildTypes.internal.signingConfig = null
+        buildTypes.enterprise.signingConfig = null
+        buildTypes.alpha.signingConfig = null
+
         buildTypes.llectro.signingConfig = null
 
         buildTypes.dev1.signingConfig = null
         buildTypes.dev2.signingConfig = null
+
     }
 
     // Some technical configuration
@@ -281,6 +296,8 @@ dependencies {
     compile 'com.splunk.mint:mint:4.0.8'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assembleInternal', 'assembleDev1']) {
-
+task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1']) {
+    doFirst {
+        println "##teamcity[buildNumber '${project.version}']"
+    }
 }
