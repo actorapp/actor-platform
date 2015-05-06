@@ -7,11 +7,12 @@ import slick.dbio.DBIO
 
 import im.actor.api.rpc.contacts.PhoneToImport
 import im.actor.api.{ rpc ⇒ api }, api._
+import im.actor.server
 import im.actor.server.api.util
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.{ UserUtils, ACLUtils }
 
 class ContactsServiceSpec extends BaseServiceSuite {
   behavior of "Contacts Service"
@@ -56,7 +57,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
 
       def changed() = {
         val expectedUsers = Await.result(db.run(DBIO.sequence(userModels map { user ⇒
-          util.UserUtils.userStruct(user, None, clientData.authId)
+          UserUtils.userStruct(user, None, clientData.authId)
         })), 3.seconds)
 
         whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
@@ -95,7 +96,7 @@ class ContactsServiceSpec extends BaseServiceSuite {
         }
 
         val expectedUsers = Vector(Await.result(
-          db.run(util.UserUtils.userStruct(user2Model, None, clientData.authId)),
+          db.run(server.util.UserUtils.userStruct(user2Model, None, clientData.authId)),
           3.seconds
         ))
 

@@ -1,18 +1,16 @@
-package im.actor.server.api.util
+package im.actor.server.util
 
 import scala.concurrent.ExecutionContext
 
-import slick.dbio.Effect.{ Read, All, Write }
-import slick.dbio.{ DBIO, NoStream, DBIOAction }
+import slick.dbio.Effect.{ All, Read, Write }
+import slick.dbio.{ DBIOAction, NoStream }
 
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.contacts.UpdateContactsAdded
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.{ models, persist }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 
 object ContactsUtils {
-
   import SeqUpdatesManager._
 
   def addContactSendUpdate(
