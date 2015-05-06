@@ -1,24 +1,20 @@
 @import '../../styles/variables';
 
-.chatlist {
+.dialogs {
   padding: 0;
   &__item {
     &--selected {
-      background-color: $baseColor;
+      background-color: $baseColor !important;
       * { // TODO: fix it
         color: rgb(255,255,255) !important;
       }
     }
+    &:hover {
+      background-color: rgba($baseColor, .05);
+    }
   }
   &__avatar {
     margin: 8px 16px 8px 0;
-    line-height: 0px;
-    .md-avatar, .no-avatar {
-      margin: 0 !important;
-      width: 48px !important;
-      height: 48px !important;
-      border-radius: 100%;
-    }
   }
   &__body {
     margin: 8px 0;
