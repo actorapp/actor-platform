@@ -1,14 +1,11 @@
 class AppController
   isReady: false
-  @user: undefined
-  @info: undefined
+  user: undefined
+  info: undefined
 
   constructor: (@$rootScope, @$scope, @$timeout, @$mdSidenav, @$mdMedia, @actorService) ->
     console.log '[AW]AppController constructor'
-
-    @$scope.$on 'actorReady', =>
-      console.log '[AW]AppController constructor'
-      @actorService.bindUser @actorService.getUid(), (user) => @renderMyInfo user
+    @actorService.bindUser @actorService.getUid(), (user) => @renderMyInfo user
 
     @$scope.$on 'onConversationOpen', (event, peer) =>
       switch peer.type

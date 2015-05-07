@@ -23,15 +23,13 @@ class ActorService
   setLoggedIn: () =>
     console.log '[AW]ActorService setLoggedIn'
 #    @isLoggedIn = true
+    @$rootScope.$broadcast 'actorLoggedIn'
     @$rootScope.$state.go 'im'
-#    @$rootScope.$broadcast 'actorLoggedIn'
   setLoggedOut: () =>
     console.log '[AW]ActorService setLoggedOut'
     localStorage.clear()
     location.reload()
-#    @isLoggedIn = false
-#    @$rootScope.$state.go 'login'
-#    @$rootScope.$broadcast 'actorLoggedOut'
+    @$rootScope.$broadcast 'actorLoggedOut'
   setCurrentPeer: (peer) ->
     console.log '[AW]ActorService setCurrentPeer', peer
     @currentPeer = peer
@@ -135,8 +133,10 @@ class ActorService
       console.log '[AW]ActorService sendMessage: message:', message.length
     # console.log '[AW]ActorService sendMessage: peer:', peer
       @messenger.sendMessage peer, message
-  sendPhoto: ->
-    console.log '[AW]ActorService sendPhoto'
+  sendPhoto: (peer, file) ->
+    console.log '[AW]ActorService sendPhoto', file
+    @messenger.sendPhoto peer, file
+
 
   # Events
   onChatEnd: ->
