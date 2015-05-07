@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetDifference.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestGetDifference
 
-
-#line 27
 + (ImActorModelApiRpcRequestGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state {
   ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestGetDifference_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getSeq {
   return self->seq_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray
   return self->state_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
@@ -80,8 +64,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray
   [writer writeBytesWithInt:2 withByteArray:self->state_];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"rpc GetDifference{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
@@ -90,47 +72,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray
   return res;
 }
 
-
-#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetDifference_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestGetDifference *ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetDifference_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetDifference_init(), data));
 }
 
 void ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(ImActorModelApiRpcRequestGetDifference *self, jint seq, IOSByteArray *state) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->seq_ = seq;
   self->state_ = state;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestGetDifference *new_ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(jint seq, IOSByteArray *state) {
   ImActorModelApiRpcRequestGetDifference *self = [ImActorModelApiRpcRequestGetDifference alloc];
   ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestGetDifference_init(ImActorModelApiRpcRequestGetDifference *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestGetDifference *new_ImActorModelApiRpcRequestGetDifference_init() {
   ImActorModelApiRpcRequestGetDifference *self = [ImActorModelApiRpcRequestGetDifference alloc];
   ImActorModelApiRpcRequestGetDifference_init(self);

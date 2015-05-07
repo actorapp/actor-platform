@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoPackage.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -26,19 +24,13 @@
 
 J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
 
-
-#line 12
 @implementation MTProtoPackage
 
-
-#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTProtoPackage_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 22
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
           withMTProtoMessage:(MTProtoMessage *)payload {
@@ -46,8 +38,6 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   return self;
 }
 
-
-#line 28
 - (jlong)getAuthId {
   return authId_;
 }
@@ -60,16 +50,12 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   return payload_;
 }
 
-
-#line 41
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:authId_];
   [bs writeLongWithLong:sessionId_];
   [((MTProtoMessage *) nil_chk(payload_)) writeObjectWithBSDataOutput:bs];
 }
 
-
-#line 48
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
   authId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   sessionId_ = [bs readLong];
@@ -77,41 +63,29 @@ J2OBJC_FIELD_SETTER(MTProtoPackage, payload_, MTProtoMessage *)
   return self;
 }
 
-
-#line 56
 - (NSString *)description {
   return JreStrcat("$JCJC", @"ProtoPackage[", authId_, '|', sessionId_, ']');
 }
 
 @end
 
-
-#line 18
 void MTProtoPackage_initWithBSDataInput_(MTProtoPackage *self, BSDataInput *stream) {
   (void) MTProtoObject_initWithBSDataInput_(self, stream);
 }
 
-
-#line 18
 MTProtoPackage *new_MTProtoPackage_initWithBSDataInput_(BSDataInput *stream) {
   MTProtoPackage *self = [MTProtoPackage alloc];
   MTProtoPackage_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 22
 void MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(MTProtoPackage *self, jlong authId, jlong sessionId, MTProtoMessage *payload) {
   (void) MTProtoObject_init(self);
-  
-#line 23
   self->authId_ = authId;
   self->sessionId_ = sessionId;
   self->payload_ = payload;
 }
 
-
-#line 22
 MTProtoPackage *new_MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(jlong authId, jlong sessionId, MTProtoMessage *payload) {
   MTProtoPackage *self = [MTProtoPackage alloc];
   MTProtoPackage_initWithLong_withLong_withMTProtoMessage_(self, authId, sessionId, payload);

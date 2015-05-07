@@ -129,6 +129,9 @@ class AppList {
     var dialogText: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0) } }
     var dialogDate: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0) } }
     
+    var unreadText: UIColor { get { return UIColor.whiteColor() } }
+    var unreadBg: UIColor { get { return UIColor.RGB(0x50A1D6) } }
+    
     var contactsTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     var contactsShortTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
 }
@@ -210,13 +213,16 @@ class AppTabBar {
     
     func applyAppearance(application: UIApplication) {
         var tabBar = UITabBar.appearance()
-        
         // TabBar Transculent
-        tabBar.translucent = isTransculent
-        
+        // Ignore for iOS7
+        if (isiOS8) {
+            tabBar.translucent = isTransculent
+        }
+        NSLog("Appearance 3")
         // TabBar Background color
         tabBar.barTintColor = backgroundColor;
 
+        NSLog("Appearance 4")
         // TabBar Shadow
         if (barShadow != nil) {
             tabBar.shadowImage = UIImage(named: barShadow!);
@@ -224,10 +230,13 @@ class AppTabBar {
             tabBar.shadowImage = nil
         }
         
+        NSLog("Appearance 5")
         var tabBarItem = UITabBarItem.appearance()
         // TabBar Unselected Text
+        NSLog("Appearance 6")
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: unselectedTextColor], forState: UIControlState.Normal)
         // TabBar Selected Text
+        NSLog("Appearance 7")
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: selectedTextColor], forState: UIControlState.Selected)
     }
 }
@@ -253,19 +262,27 @@ class AppNavigationBar {
         }
         
         var navAppearance = UINavigationBar.appearance();
+        
         // NavigationBar Icon
         navAppearance.tintColor = titleColor;
+        
         // NavigationBar Text
         navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: titleColor];
+        
         // NavigationBar Background
         navAppearance.barTintColor = barColor;
+        
         navAppearance.setBackgroundImage(Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 1)), forBarMetrics: UIBarMetrics.Default)
-//        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
+        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
         // Small hack for correct background color
         UISearchBar.appearance().backgroundColor = barColor
         
         // NavigationBar Transculency
-        navAppearance.translucent = isTransculent;
+        // Ignore for iOS7
+        if (isiOS8) {
+            navAppearance.translucent = isTransculent;
+        }
+        
         // NavigationBar Shadow
         if (shadowImage == nil) {
             navAppearance.shadowImage = UIImage()

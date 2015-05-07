@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/AvatarImage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -34,16 +32,12 @@ __attribute__((unused)) static void AMAvatarImage_init(AMAvatarImage *self);
 
 __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURNS_RETAINED;
 
-
-#line 15
 @implementation AMAvatarImage
 
 + (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMAvatarImage_fromBytesWithByteArray_(data);
 }
 
-
-#line 25
 - (instancetype)initWithInt:(jint)width
                     withInt:(jint)height
         withAMFileReference:(AMFileReference *)fileReference {
@@ -51,15 +45,11 @@ __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURN
   return self;
 }
 
-
-#line 31
 - (instancetype)init {
   AMAvatarImage_init(self);
   return self;
 }
 
-
-#line 35
 - (jint)getWidth {
   return width_;
 }
@@ -72,26 +62,16 @@ __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURN
   return fileReference_;
 }
 
-
-#line 48
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  
-#line 52
   AMAvatarImage *that = (AMAvatarImage *) check_class_cast(o, [AMAvatarImage class]);
-  
-#line 54
   if (height_ != ((AMAvatarImage *) nil_chk(that))->height_) return NO;
   if (width_ != that->width_) return NO;
   if (![((AMFileReference *) nil_chk(fileReference_)) isEqual:that->fileReference_]) return NO;
-  
-#line 58
   return YES;
 }
 
-
-#line 62
 - (NSUInteger)hash {
   jint result = width_;
   result = 31 * result + height_;
@@ -99,16 +79,12 @@ __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURN
   return result;
 }
 
-
-#line 70
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   width_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   height_ = [values getIntWithInt:2];
   fileReference_ = AMFileReference_fromBytesWithByteArray_([values getBytesWithInt:3]);
 }
 
-
-#line 77
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:width_];
   [writer writeIntWithInt:2 withInt:height_];
@@ -117,28 +93,18 @@ __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURN
 
 @end
 
-
-#line 17
 AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data) {
   AMAvatarImage_initialize();
-  
-#line 18
   return ((AMAvatarImage *) BSBser_parseWithBSBserObject_withByteArray_(new_AMAvatarImage_init(), data));
 }
 
-
-#line 25
 void AMAvatarImage_initWithInt_withInt_withAMFileReference_(AMAvatarImage *self, jint width, jint height, AMFileReference *fileReference) {
   (void) BSBserObject_init(self);
-  
-#line 26
   self->width_ = width;
   self->height_ = height;
   self->fileReference_ = fileReference;
 }
 
-
-#line 25
 AMAvatarImage *new_AMAvatarImage_initWithInt_withInt_withAMFileReference_(jint width, jint height, AMFileReference *fileReference) {
   AMAvatarImage *self = [AMAvatarImage alloc];
   AMAvatarImage_initWithInt_withInt_withAMFileReference_(self, width, height, fileReference);
@@ -149,8 +115,6 @@ void AMAvatarImage_init(AMAvatarImage *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 31
 AMAvatarImage *new_AMAvatarImage_init() {
   AMAvatarImage *self = [AMAvatarImage alloc];
   AMAvatarImage_init(self);

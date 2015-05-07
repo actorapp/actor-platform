@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Nat224.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
@@ -19,20 +17,14 @@
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
 
-
-#line 7
 @implementation OrgBouncycastleMathRawNat224
 
-
-#line 11
 + (jint)addWithIntArray:(IOSIntArray *)x
            withIntArray:(IOSIntArray *)y
            withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_addWithIntArray_withIntArray_withIntArray_(x, y, z);
 }
 
-
-#line 38
 + (jint)addWithIntArray:(IOSIntArray *)x
                 withInt:(jint)xOff
            withIntArray:(IOSIntArray *)y
@@ -42,16 +34,12 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_addWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, z, zOff);
 }
 
-
-#line 65
 + (jint)addBothToWithIntArray:(IOSIntArray *)x
                  withIntArray:(IOSIntArray *)y
                  withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_addBothToWithIntArray_withIntArray_withIntArray_(x, y, z);
 }
 
-
-#line 92
 + (jint)addBothToWithIntArray:(IOSIntArray *)x
                       withInt:(jint)xOff
                  withIntArray:(IOSIntArray *)y
@@ -61,15 +49,11 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_addBothToWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, z, zOff);
 }
 
-
-#line 119
 + (jint)addToWithIntArray:(IOSIntArray *)x
              withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_addToWithIntArray_withIntArray_(x, z);
 }
 
-
-#line 146
 + (jint)addToWithIntArray:(IOSIntArray *)x
                   withInt:(jint)xOff
              withIntArray:(IOSIntArray *)z
@@ -78,8 +62,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_addToWithIntArray_withInt_withIntArray_withInt_withInt_(x, xOff, z, zOff, cIn);
 }
 
-
-#line 173
 + (jint)addToEachOtherWithIntArray:(IOSIntArray *)u
                            withInt:(jint)uOff
                       withIntArray:(IOSIntArray *)v
@@ -87,27 +69,19 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_addToEachOtherWithIntArray_withInt_withIntArray_withInt_(u, uOff, v, vOff);
 }
 
-
-#line 207
 + (void)copy__WithIntArray:(IOSIntArray *)x
               withIntArray:(IOSIntArray *)z {
   OrgBouncycastleMathRawNat224_copy__WithIntArray_withIntArray_(x, z);
 }
 
-
-#line 218
 + (IOSIntArray *)create {
   return OrgBouncycastleMathRawNat224_create();
 }
 
-
-#line 223
 + (IOSIntArray *)createExt {
   return OrgBouncycastleMathRawNat224_createExt();
 }
 
-
-#line 228
 + (jboolean)diffWithIntArray:(IOSIntArray *)x
                      withInt:(jint)xOff
                 withIntArray:(IOSIntArray *)y
@@ -117,35 +91,25 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_diffWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, z, zOff);
 }
 
-
-#line 242
 + (jboolean)eqWithIntArray:(IOSIntArray *)x
               withIntArray:(IOSIntArray *)y {
   return OrgBouncycastleMathRawNat224_eqWithIntArray_withIntArray_(x, y);
 }
 
-
-#line 254
 + (IOSIntArray *)fromBigIntegerWithJavaMathBigInteger:(JavaMathBigInteger *)x {
   return OrgBouncycastleMathRawNat224_fromBigIntegerWithJavaMathBigInteger_(x);
 }
 
-
-#line 271
 + (jint)getBitWithIntArray:(IOSIntArray *)x
                    withInt:(jint)bit {
   return OrgBouncycastleMathRawNat224_getBitWithIntArray_withInt_(x, bit);
 }
 
-
-#line 286
 + (jboolean)gteWithIntArray:(IOSIntArray *)x
                withIntArray:(IOSIntArray *)y {
   return OrgBouncycastleMathRawNat224_gteWithIntArray_withIntArray_(x, y);
 }
 
-
-#line 300
 + (jboolean)gteWithIntArray:(IOSIntArray *)x
                     withInt:(jint)xOff
                withIntArray:(IOSIntArray *)y
@@ -153,28 +117,20 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_gteWithIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff);
 }
 
-
-#line 314
 + (jboolean)isOneWithIntArray:(IOSIntArray *)x {
   return OrgBouncycastleMathRawNat224_isOneWithIntArray_(x);
 }
 
-
-#line 330
 + (jboolean)isZeroWithIntArray:(IOSIntArray *)x {
   return OrgBouncycastleMathRawNat224_isZeroWithIntArray_(x);
 }
 
-
-#line 342
 + (void)mulWithIntArray:(IOSIntArray *)x
            withIntArray:(IOSIntArray *)y
            withIntArray:(IOSIntArray *)zz {
   OrgBouncycastleMathRawNat224_mulWithIntArray_withIntArray_withIntArray_(x, y, zz);
 }
 
-
-#line 406
 + (void)mulWithIntArray:(IOSIntArray *)x
                 withInt:(jint)xOff
            withIntArray:(IOSIntArray *)y
@@ -184,16 +140,12 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   OrgBouncycastleMathRawNat224_mulWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, zz, zzOff);
 }
 
-
-#line 471
 + (jint)mulAddToWithIntArray:(IOSIntArray *)x
                 withIntArray:(IOSIntArray *)y
                 withIntArray:(IOSIntArray *)zz {
   return OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withIntArray_withIntArray_(x, y, zz);
 }
 
-
-#line 513
 + (jint)mulAddToWithIntArray:(IOSIntArray *)x
                      withInt:(jint)xOff
                 withIntArray:(IOSIntArray *)y
@@ -203,8 +155,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, zz, zzOff);
 }
 
-
-#line 556
 + (jlong)mul33AddWithInt:(jint)w
             withIntArray:(IOSIntArray *)x
                  withInt:(jint)xOff
@@ -215,23 +165,17 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mul33AddWithInt_withIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(w, x, xOff, y, yOff, z, zOff);
 }
 
-
-#line 593
 + (jint)mulByWordWithInt:(jint)x
             withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_mulByWordWithInt_withIntArray_(x, z);
 }
 
-
-#line 620
 + (jint)mulByWordAddToWithInt:(jint)x
                  withIntArray:(IOSIntArray *)y
                  withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_mulByWordAddToWithInt_withIntArray_withIntArray_(x, y, z);
 }
 
-
-#line 647
 + (jint)mulWordAddToWithInt:(jint)x
                withIntArray:(IOSIntArray *)y
                     withInt:(jint)yOff
@@ -240,8 +184,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mulWordAddToWithInt_withIntArray_withInt_withIntArray_withInt_(x, y, yOff, z, zOff);
 }
 
-
-#line 674
 + (jint)mul33DWordAddWithInt:(jint)x
                     withLong:(jlong)y
                 withIntArray:(IOSIntArray *)z
@@ -249,8 +191,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mul33DWordAddWithInt_withLong_withIntArray_withInt_(x, y, z, zOff);
 }
 
-
-#line 697
 + (jint)mul33WordAddWithInt:(jint)x
                     withInt:(jint)y
                withIntArray:(IOSIntArray *)z
@@ -258,8 +198,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mul33WordAddWithInt_withInt_withIntArray_withInt_(x, y, z, zOff);
 }
 
-
-#line 715
 + (jint)mulWordDwordAddWithInt:(jint)x
                       withLong:(jlong)y
                   withIntArray:(IOSIntArray *)z
@@ -267,8 +205,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mulWordDwordAddWithInt_withLong_withIntArray_withInt_(x, y, z, zOff);
 }
 
-
-#line 731
 + (jint)mulWordWithInt:(jint)x
           withIntArray:(IOSIntArray *)y
           withIntArray:(IOSIntArray *)z
@@ -276,15 +212,11 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_mulWordWithInt_withIntArray_withIntArray_withInt_(x, y, z, zOff);
 }
 
-
-#line 745
 + (void)squareWithIntArray:(IOSIntArray *)x
               withIntArray:(IOSIntArray *)zz {
   OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(x, zz);
 }
 
-
-#line 884
 + (void)squareWithIntArray:(IOSIntArray *)x
                    withInt:(jint)xOff
               withIntArray:(IOSIntArray *)zz
@@ -292,16 +224,12 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withInt_(x, xOff, zz, zzOff);
 }
 
-
-#line 1023
 + (jint)subWithIntArray:(IOSIntArray *)x
            withIntArray:(IOSIntArray *)y
            withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_subWithIntArray_withIntArray_withIntArray_(x, y, z);
 }
 
-
-#line 1050
 + (jint)subWithIntArray:(IOSIntArray *)x
                 withInt:(jint)xOff
            withIntArray:(IOSIntArray *)y
@@ -311,23 +239,17 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_subWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, z, zOff);
 }
 
-
-#line 1077
 + (jint)subBothFromWithIntArray:(IOSIntArray *)x
                    withIntArray:(IOSIntArray *)y
                    withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_subBothFromWithIntArray_withIntArray_withIntArray_(x, y, z);
 }
 
-
-#line 1104
 + (jint)subFromWithIntArray:(IOSIntArray *)x
                withIntArray:(IOSIntArray *)z {
   return OrgBouncycastleMathRawNat224_subFromWithIntArray_withIntArray_(x, z);
 }
 
-
-#line 1131
 + (jint)subFromWithIntArray:(IOSIntArray *)x
                     withInt:(jint)xOff
                withIntArray:(IOSIntArray *)z
@@ -335,14 +257,10 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
   return OrgBouncycastleMathRawNat224_subFromWithIntArray_withInt_withIntArray_withInt_(x, xOff, z, zOff);
 }
 
-
-#line 1158
 + (JavaMathBigInteger *)toBigIntegerWithIntArray:(IOSIntArray *)x {
   return OrgBouncycastleMathRawNat224_toBigIntegerWithIntArray_(x);
 }
 
-
-#line 1172
 + (void)zeroWithIntArray:(IOSIntArray *)z {
   OrgBouncycastleMathRawNat224_zeroWithIntArray_(z);
 }
@@ -354,8 +272,6 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleMathRawNat224, M, jlong)
 
 @end
 
-
-#line 11
 jint OrgBouncycastleMathRawNat224_addWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *z) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong c = 0;
@@ -577,152 +493,96 @@ jboolean OrgBouncycastleMathRawNat224_diffWithIntArray_withInt_withIntArray_with
   OrgBouncycastleMathRawNat224_initialize();
   jboolean pos = OrgBouncycastleMathRawNat224_gteWithIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff);
   if (pos) {
-    
-#line 233
     OrgBouncycastleMathRawNat224_subWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, xOff, y, yOff, z, zOff);
   }
   else {
-    
-#line 237
     OrgBouncycastleMathRawNat224_subWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(y, yOff, x, xOff, z, zOff);
   }
   return pos;
 }
 
-
-#line 242
 jboolean OrgBouncycastleMathRawNat224_eqWithIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y) {
   OrgBouncycastleMathRawNat224_initialize();
   for (jint i = 6; i >= 0; --i) {
-    
-#line 246
     if (IOSIntArray_Get(nil_chk(x), i) != IOSIntArray_Get(nil_chk(y), i)) {
-      
-#line 248
       return NO;
     }
   }
   return YES;
 }
 
-
-#line 254
 IOSIntArray *OrgBouncycastleMathRawNat224_fromBigIntegerWithJavaMathBigInteger_(JavaMathBigInteger *x) {
   OrgBouncycastleMathRawNat224_initialize();
   if ([((JavaMathBigInteger *) nil_chk(x)) signum] < 0 || [x bitLength] > 224) {
-    
-#line 258
     @throw new_JavaLangIllegalArgumentException_init();
   }
-  
-#line 261
   IOSIntArray *z = OrgBouncycastleMathRawNat224_create();
   jint i = 0;
   while ([x signum] != 0) {
-    
-#line 265
     *IOSIntArray_GetRef(nil_chk(z), i++) = [x intValue];
     x = [x shiftRightWithInt:32];
   }
   return z;
 }
 
-
-#line 271
 jint OrgBouncycastleMathRawNat224_getBitWithIntArray_withInt_(IOSIntArray *x, jint bit) {
   OrgBouncycastleMathRawNat224_initialize();
   if (bit == 0) {
-    
-#line 275
     return IOSIntArray_Get(nil_chk(x), 0) & 1;
   }
   jint w = RShift32(bit, 5);
   if (w < 0 || w >= 7) {
-    
-#line 280
     return 0;
   }
   jint b = bit & 31;
   return (URShift32(IOSIntArray_Get(nil_chk(x), w), b)) & 1;
 }
 
-
-#line 286
 jboolean OrgBouncycastleMathRawNat224_gteWithIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y) {
   OrgBouncycastleMathRawNat224_initialize();
   for (jint i = 6; i >= 0; --i) {
-    
-#line 290
     jint x_i = IOSIntArray_Get(nil_chk(x), i) ^ JavaLangInteger_MIN_VALUE;
     jint y_i = IOSIntArray_Get(nil_chk(y), i) ^ JavaLangInteger_MIN_VALUE;
-    if (x_i < y_i)
-#line 293
-    return NO;
-    if (x_i > y_i)
-#line 295
-    return YES;
+    if (x_i < y_i) return NO;
+    if (x_i > y_i) return YES;
   }
   return YES;
 }
 
-
-#line 300
 jboolean OrgBouncycastleMathRawNat224_gteWithIntArray_withInt_withIntArray_withInt_(IOSIntArray *x, jint xOff, IOSIntArray *y, jint yOff) {
   OrgBouncycastleMathRawNat224_initialize();
   for (jint i = 6; i >= 0; --i) {
-    
-#line 304
     jint x_i = IOSIntArray_Get(nil_chk(x), xOff + i) ^ JavaLangInteger_MIN_VALUE;
     jint y_i = IOSIntArray_Get(nil_chk(y), yOff + i) ^ JavaLangInteger_MIN_VALUE;
-    if (x_i < y_i)
-#line 307
-    return NO;
-    if (x_i > y_i)
-#line 309
-    return YES;
+    if (x_i < y_i) return NO;
+    if (x_i > y_i) return YES;
   }
   return YES;
 }
 
-
-#line 314
 jboolean OrgBouncycastleMathRawNat224_isOneWithIntArray_(IOSIntArray *x) {
   OrgBouncycastleMathRawNat224_initialize();
   if (IOSIntArray_Get(nil_chk(x), 0) != 1) {
-    
-#line 318
     return NO;
   }
   for (jint i = 1; i < 7; ++i) {
-    
-#line 322
     if (IOSIntArray_Get(x, i) != 0) {
-      
-#line 324
       return NO;
     }
   }
   return YES;
 }
 
-
-#line 330
 jboolean OrgBouncycastleMathRawNat224_isZeroWithIntArray_(IOSIntArray *x) {
   OrgBouncycastleMathRawNat224_initialize();
   for (jint i = 0; i < 7; ++i) {
-    
-#line 334
     if (IOSIntArray_Get(nil_chk(x), i) != 0) {
-      
-#line 336
       return NO;
     }
   }
   return YES;
 }
 
-
-#line 342
 void OrgBouncycastleMathRawNat224_mulWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *zz) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong y_0 = IOSIntArray_Get(nil_chk(y), 0) & OrgBouncycastleMathRawNat224_M;
@@ -733,8 +593,6 @@ void OrgBouncycastleMathRawNat224_mulWithIntArray_withIntArray_withIntArray_(IOS
   jlong y_5 = IOSIntArray_Get(y, 5) & OrgBouncycastleMathRawNat224_M;
   jlong y_6 = IOSIntArray_Get(y, 6) & OrgBouncycastleMathRawNat224_M;
   {
-    
-#line 353
     jlong c = 0, x_0 = IOSIntArray_Get(nil_chk(x), 0) & OrgBouncycastleMathRawNat224_M;
     c += x_0 * y_0;
     *IOSIntArray_GetRef(nil_chk(zz), 0) = (jint) c;
@@ -759,11 +617,7 @@ void OrgBouncycastleMathRawNat224_mulWithIntArray_withIntArray_withIntArray_(IOS
     URShiftAssignLong(&c, 32);
     *IOSIntArray_GetRef(zz, 7) = (jint) c;
   }
-  
-#line 378
   for (jint i = 1; i < 7; ++i) {
-    
-#line 380
     jlong c = 0, x_i = IOSIntArray_Get(x, i) & OrgBouncycastleMathRawNat224_M;
     c += x_i * y_0 + (IOSIntArray_Get(zz, i + 0) & OrgBouncycastleMathRawNat224_M);
     *IOSIntArray_GetRef(zz, i + 0) = (jint) c;
@@ -790,8 +644,6 @@ void OrgBouncycastleMathRawNat224_mulWithIntArray_withIntArray_withIntArray_(IOS
   }
 }
 
-
-#line 406
 void OrgBouncycastleMathRawNat224_mulWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(IOSIntArray *x, jint xOff, IOSIntArray *y, jint yOff, IOSIntArray *zz, jint zzOff) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong y_0 = IOSIntArray_Get(nil_chk(y), yOff + 0) & OrgBouncycastleMathRawNat224_M;
@@ -802,8 +654,6 @@ void OrgBouncycastleMathRawNat224_mulWithIntArray_withInt_withIntArray_withInt_w
   jlong y_5 = IOSIntArray_Get(y, yOff + 5) & OrgBouncycastleMathRawNat224_M;
   jlong y_6 = IOSIntArray_Get(y, yOff + 6) & OrgBouncycastleMathRawNat224_M;
   {
-    
-#line 417
     jlong c = 0, x_0 = IOSIntArray_Get(nil_chk(x), xOff + 0) & OrgBouncycastleMathRawNat224_M;
     c += x_0 * y_0;
     *IOSIntArray_GetRef(nil_chk(zz), zzOff + 0) = (jint) c;
@@ -828,11 +678,7 @@ void OrgBouncycastleMathRawNat224_mulWithIntArray_withInt_withIntArray_withInt_w
     URShiftAssignLong(&c, 32);
     *IOSIntArray_GetRef(zz, zzOff + 7) = (jint) c;
   }
-  
-#line 442
   for (jint i = 1; i < 7; ++i) {
-    
-#line 444
     ++zzOff;
     jlong c = 0, x_i = IOSIntArray_Get(x, xOff + i) & OrgBouncycastleMathRawNat224_M;
     c += x_i * y_0 + (IOSIntArray_Get(zz, zzOff + 0) & OrgBouncycastleMathRawNat224_M);
@@ -860,8 +706,6 @@ void OrgBouncycastleMathRawNat224_mulWithIntArray_withInt_withIntArray_withInt_w
   }
 }
 
-
-#line 471
 jint OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *zz) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong y_0 = IOSIntArray_Get(nil_chk(y), 0) & OrgBouncycastleMathRawNat224_M;
@@ -871,12 +715,8 @@ jint OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withIntArray_withIntArray
   jlong y_4 = IOSIntArray_Get(y, 4) & OrgBouncycastleMathRawNat224_M;
   jlong y_5 = IOSIntArray_Get(y, 5) & OrgBouncycastleMathRawNat224_M;
   jlong y_6 = IOSIntArray_Get(y, 6) & OrgBouncycastleMathRawNat224_M;
-  
-#line 481
   jlong zc = 0;
   for (jint i = 0; i < 7; ++i) {
-    
-#line 484
     jlong c = 0, x_i = IOSIntArray_Get(nil_chk(x), i) & OrgBouncycastleMathRawNat224_M;
     c += x_i * y_0 + (IOSIntArray_Get(nil_chk(zz), i + 0) & OrgBouncycastleMathRawNat224_M);
     *IOSIntArray_GetRef(zz, i + 0) = (jint) c;
@@ -906,8 +746,6 @@ jint OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withIntArray_withIntArray
   return (jint) zc;
 }
 
-
-#line 513
 jint OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(IOSIntArray *x, jint xOff, IOSIntArray *y, jint yOff, IOSIntArray *zz, jint zzOff) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong y_0 = IOSIntArray_Get(nil_chk(y), yOff + 0) & OrgBouncycastleMathRawNat224_M;
@@ -917,12 +755,8 @@ jint OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withInt_withIntArray_with
   jlong y_4 = IOSIntArray_Get(y, yOff + 4) & OrgBouncycastleMathRawNat224_M;
   jlong y_5 = IOSIntArray_Get(y, yOff + 5) & OrgBouncycastleMathRawNat224_M;
   jlong y_6 = IOSIntArray_Get(y, yOff + 6) & OrgBouncycastleMathRawNat224_M;
-  
-#line 523
   jlong zc = 0;
   for (jint i = 0; i < 7; ++i) {
-    
-#line 526
     jlong c = 0, x_i = IOSIntArray_Get(nil_chk(x), xOff + i) & OrgBouncycastleMathRawNat224_M;
     c += x_i * y_0 + (IOSIntArray_Get(nil_chk(zz), zzOff + 0) & OrgBouncycastleMathRawNat224_M);
     *IOSIntArray_GetRef(zz, zzOff + 0) = (jint) c;
@@ -953,12 +787,8 @@ jint OrgBouncycastleMathRawNat224_mulAddToWithIntArray_withInt_withIntArray_with
   return (jint) zc;
 }
 
-
-#line 556
 jlong OrgBouncycastleMathRawNat224_mul33AddWithInt_withIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(jint w, IOSIntArray *x, jint xOff, IOSIntArray *y, jint yOff, IOSIntArray *z, jint zOff) {
   OrgBouncycastleMathRawNat224_initialize();
-  
-#line 560
   jlong c = 0, wVal = w & OrgBouncycastleMathRawNat224_M;
   jlong x0 = IOSIntArray_Get(nil_chk(x), xOff + 0) & OrgBouncycastleMathRawNat224_M;
   c += wVal * x0 + (IOSIntArray_Get(nil_chk(y), yOff + 0) & OrgBouncycastleMathRawNat224_M);
@@ -1075,8 +905,6 @@ jint OrgBouncycastleMathRawNat224_mulWordAddToWithInt_withIntArray_withInt_withI
 
 jint OrgBouncycastleMathRawNat224_mul33DWordAddWithInt_withLong_withIntArray_withInt_(jint x, jlong y, IOSIntArray *z, jint zOff) {
   OrgBouncycastleMathRawNat224_initialize();
-  
-#line 679
   jlong c = 0, xVal = x & OrgBouncycastleMathRawNat224_M;
   jlong y00 = y & OrgBouncycastleMathRawNat224_M;
   c += xVal * y00 + (IOSIntArray_Get(nil_chk(z), zOff + 0) & OrgBouncycastleMathRawNat224_M);
@@ -1095,12 +923,8 @@ jint OrgBouncycastleMathRawNat224_mul33DWordAddWithInt_withLong_withIntArray_wit
   return c == 0 ? 0 : OrgBouncycastleMathRawNat_incAtWithInt_withIntArray_withInt_withInt_(7, z, zOff, 4);
 }
 
-
-#line 697
 jint OrgBouncycastleMathRawNat224_mul33WordAddWithInt_withInt_withIntArray_withInt_(jint x, jint y, IOSIntArray *z, jint zOff) {
   OrgBouncycastleMathRawNat224_initialize();
-  
-#line 702
   jlong c = 0, xVal = x & OrgBouncycastleMathRawNat224_M, yVal = y & OrgBouncycastleMathRawNat224_M;
   c += yVal * xVal + (IOSIntArray_Get(nil_chk(z), zOff + 0) & OrgBouncycastleMathRawNat224_M);
   *IOSIntArray_GetRef(z, zOff + 0) = (jint) c;
@@ -1114,12 +938,8 @@ jint OrgBouncycastleMathRawNat224_mul33WordAddWithInt_withInt_withIntArray_withI
   return c == 0 ? 0 : OrgBouncycastleMathRawNat_incAtWithInt_withIntArray_withInt_withInt_(7, z, zOff, 3);
 }
 
-
-#line 715
 jint OrgBouncycastleMathRawNat224_mulWordDwordAddWithInt_withLong_withIntArray_withInt_(jint x, jlong y, IOSIntArray *z, jint zOff) {
   OrgBouncycastleMathRawNat224_initialize();
-  
-#line 718
   jlong c = 0, xVal = x & OrgBouncycastleMathRawNat224_M;
   c += xVal * (y & OrgBouncycastleMathRawNat224_M) + (IOSIntArray_Get(nil_chk(z), zOff + 0) & OrgBouncycastleMathRawNat224_M);
   *IOSIntArray_GetRef(z, zOff + 0) = (jint) c;
@@ -1133,15 +953,11 @@ jint OrgBouncycastleMathRawNat224_mulWordDwordAddWithInt_withLong_withIntArray_w
   return c == 0 ? 0 : OrgBouncycastleMathRawNat_incAtWithInt_withIntArray_withInt_withInt_(7, z, zOff, 3);
 }
 
-
-#line 731
 jint OrgBouncycastleMathRawNat224_mulWordWithInt_withIntArray_withIntArray_withInt_(jint x, IOSIntArray *y, IOSIntArray *z, jint zOff) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong c = 0, xVal = x & OrgBouncycastleMathRawNat224_M;
   jint i = 0;
   do {
-    
-#line 737
     c += xVal * (IOSIntArray_Get(nil_chk(y), i) & OrgBouncycastleMathRawNat224_M);
     *IOSIntArray_GetRef(nil_chk(z), zOff + i) = (jint) c;
     URShiftAssignLong(&c, 32);
@@ -1150,20 +966,14 @@ jint OrgBouncycastleMathRawNat224_mulWordWithInt_withIntArray_withIntArray_withI
   return (jint) c;
 }
 
-
-#line 745
 void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *zz) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong x_0 = IOSIntArray_Get(nil_chk(x), 0) & OrgBouncycastleMathRawNat224_M;
   jlong zz_1;
-  
-#line 750
   jint c = 0, w;
   {
     jint i = 6, j = 14;
     do {
-      
-#line 755
       jlong xVal = (IOSIntArray_Get(x, i--) & OrgBouncycastleMathRawNat224_M);
       jlong p = xVal * xVal;
       *IOSIntArray_GetRef(nil_chk(zz), --j) = (LShift32(c, 31)) | (jint) (URShift64(p, 33));
@@ -1172,29 +982,21 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
     }
     while (i > 0);
     {
-      
-#line 764
       jlong p = x_0 * x_0;
       zz_1 = ((LShift32(c, 31)) & OrgBouncycastleMathRawNat224_M) | (URShift64(p, 33));
       *IOSIntArray_GetRef(nil_chk(zz), 0) = (jint) p;
       c = (jint) (URShift64(p, 32)) & 1;
     }
   }
-  
-#line 771
   jlong x_1 = IOSIntArray_Get(x, 1) & OrgBouncycastleMathRawNat224_M;
   jlong zz_2 = IOSIntArray_Get(zz, 2) & OrgBouncycastleMathRawNat224_M;
   {
-    
-#line 775
     zz_1 += x_1 * x_0;
     w = (jint) zz_1;
     *IOSIntArray_GetRef(zz, 1) = (LShift32(w, 1)) | c;
     c = URShift32(w, 31);
     zz_2 += URShift64(zz_1, 32);
   }
-  
-#line 782
   jlong x_2 = IOSIntArray_Get(x, 2) & OrgBouncycastleMathRawNat224_M;
   jlong zz_3 = IOSIntArray_Get(zz, 3) & OrgBouncycastleMathRawNat224_M;
   jlong zz_4 = IOSIntArray_Get(zz, 4) & OrgBouncycastleMathRawNat224_M;
@@ -1207,8 +1009,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
     zz_4 += URShift64(zz_3, 32);
     zz_3 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 795
   jlong x_3 = IOSIntArray_Get(x, 3) & OrgBouncycastleMathRawNat224_M;
   jlong zz_5 = IOSIntArray_Get(zz, 5) & OrgBouncycastleMathRawNat224_M;
   jlong zz_6 = IOSIntArray_Get(zz, 6) & OrgBouncycastleMathRawNat224_M;
@@ -1223,8 +1023,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
     zz_6 += URShift64(zz_5, 32);
     zz_5 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 810
   jlong x_4 = IOSIntArray_Get(x, 4) & OrgBouncycastleMathRawNat224_M;
   jlong zz_7 = IOSIntArray_Get(zz, 7) & OrgBouncycastleMathRawNat224_M;
   jlong zz_8 = IOSIntArray_Get(zz, 8) & OrgBouncycastleMathRawNat224_M;
@@ -1241,8 +1039,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
     zz_8 += URShift64(zz_7, 32);
     zz_7 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 827
   jlong x_5 = IOSIntArray_Get(x, 5) & OrgBouncycastleMathRawNat224_M;
   jlong zz_9 = IOSIntArray_Get(zz, 9) & OrgBouncycastleMathRawNat224_M;
   jlong zz_10 = IOSIntArray_Get(zz, 10) & OrgBouncycastleMathRawNat224_M;
@@ -1261,8 +1057,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
     zz_10 += URShift64(zz_9, 32);
     zz_9 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 846
   jlong x_6 = IOSIntArray_Get(x, 6) & OrgBouncycastleMathRawNat224_M;
   jlong zz_11 = IOSIntArray_Get(zz, 11) & OrgBouncycastleMathRawNat224_M;
   jlong zz_12 = IOSIntArray_Get(zz, 12) & OrgBouncycastleMathRawNat224_M;
@@ -1278,8 +1072,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
     zz_11 += (URShift64(zz_10, 32)) + x_6 * x_5;
     zz_12 += URShift64(zz_11, 32);
   }
-  
-#line 862
   w = (jint) zz_7;
   *IOSIntArray_GetRef(zz, 7) = (LShift32(w, 1)) | c;
   c = URShift32(w, 31);
@@ -1302,20 +1094,14 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withIntArray_(IOSIntArray *
   *IOSIntArray_GetRef(zz, 13) = (LShift32(w, 1)) | c;
 }
 
-
-#line 884
 void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withInt_(IOSIntArray *x, jint xOff, IOSIntArray *zz, jint zzOff) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong x_0 = IOSIntArray_Get(nil_chk(x), xOff + 0) & OrgBouncycastleMathRawNat224_M;
   jlong zz_1;
-  
-#line 889
   jint c = 0, w;
   {
     jint i = 6, j = 14;
     do {
-      
-#line 894
       jlong xVal = (IOSIntArray_Get(x, xOff + i--) & OrgBouncycastleMathRawNat224_M);
       jlong p = xVal * xVal;
       *IOSIntArray_GetRef(nil_chk(zz), zzOff + --j) = (LShift32(c, 31)) | (jint) (URShift64(p, 33));
@@ -1324,29 +1110,21 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
     }
     while (i > 0);
     {
-      
-#line 903
       jlong p = x_0 * x_0;
       zz_1 = ((LShift32(c, 31)) & OrgBouncycastleMathRawNat224_M) | (URShift64(p, 33));
       *IOSIntArray_GetRef(nil_chk(zz), zzOff + 0) = (jint) p;
       c = (jint) (URShift64(p, 32)) & 1;
     }
   }
-  
-#line 910
   jlong x_1 = IOSIntArray_Get(x, xOff + 1) & OrgBouncycastleMathRawNat224_M;
   jlong zz_2 = IOSIntArray_Get(zz, zzOff + 2) & OrgBouncycastleMathRawNat224_M;
   {
-    
-#line 914
     zz_1 += x_1 * x_0;
     w = (jint) zz_1;
     *IOSIntArray_GetRef(zz, zzOff + 1) = (LShift32(w, 1)) | c;
     c = URShift32(w, 31);
     zz_2 += URShift64(zz_1, 32);
   }
-  
-#line 921
   jlong x_2 = IOSIntArray_Get(x, xOff + 2) & OrgBouncycastleMathRawNat224_M;
   jlong zz_3 = IOSIntArray_Get(zz, zzOff + 3) & OrgBouncycastleMathRawNat224_M;
   jlong zz_4 = IOSIntArray_Get(zz, zzOff + 4) & OrgBouncycastleMathRawNat224_M;
@@ -1359,8 +1137,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
     zz_4 += URShift64(zz_3, 32);
     zz_3 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 934
   jlong x_3 = IOSIntArray_Get(x, xOff + 3) & OrgBouncycastleMathRawNat224_M;
   jlong zz_5 = IOSIntArray_Get(zz, zzOff + 5) & OrgBouncycastleMathRawNat224_M;
   jlong zz_6 = IOSIntArray_Get(zz, zzOff + 6) & OrgBouncycastleMathRawNat224_M;
@@ -1375,8 +1151,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
     zz_6 += URShift64(zz_5, 32);
     zz_5 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 949
   jlong x_4 = IOSIntArray_Get(x, xOff + 4) & OrgBouncycastleMathRawNat224_M;
   jlong zz_7 = IOSIntArray_Get(zz, zzOff + 7) & OrgBouncycastleMathRawNat224_M;
   jlong zz_8 = IOSIntArray_Get(zz, zzOff + 8) & OrgBouncycastleMathRawNat224_M;
@@ -1393,8 +1167,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
     zz_8 += URShift64(zz_7, 32);
     zz_7 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 966
   jlong x_5 = IOSIntArray_Get(x, xOff + 5) & OrgBouncycastleMathRawNat224_M;
   jlong zz_9 = IOSIntArray_Get(zz, zzOff + 9) & OrgBouncycastleMathRawNat224_M;
   jlong zz_10 = IOSIntArray_Get(zz, zzOff + 10) & OrgBouncycastleMathRawNat224_M;
@@ -1413,8 +1185,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
     zz_10 += URShift64(zz_9, 32);
     zz_9 &= OrgBouncycastleMathRawNat224_M;
   }
-  
-#line 985
   jlong x_6 = IOSIntArray_Get(x, xOff + 6) & OrgBouncycastleMathRawNat224_M;
   jlong zz_11 = IOSIntArray_Get(zz, zzOff + 11) & OrgBouncycastleMathRawNat224_M;
   jlong zz_12 = IOSIntArray_Get(zz, zzOff + 12) & OrgBouncycastleMathRawNat224_M;
@@ -1430,8 +1200,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
     zz_11 += (URShift64(zz_10, 32)) + x_6 * x_5;
     zz_12 += URShift64(zz_11, 32);
   }
-  
-#line 1001
   w = (jint) zz_7;
   *IOSIntArray_GetRef(zz, zzOff + 7) = (LShift32(w, 1)) | c;
   c = URShift32(w, 31);
@@ -1454,8 +1222,6 @@ void OrgBouncycastleMathRawNat224_squareWithIntArray_withInt_withIntArray_withIn
   *IOSIntArray_GetRef(zz, zzOff + 13) = (LShift32(w, 1)) | c;
 }
 
-
-#line 1023
 jint OrgBouncycastleMathRawNat224_subWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *z) {
   OrgBouncycastleMathRawNat224_initialize();
   jlong c = 0;
@@ -1595,20 +1361,14 @@ JavaMathBigInteger *OrgBouncycastleMathRawNat224_toBigIntegerWithIntArray_(IOSIn
   OrgBouncycastleMathRawNat224_initialize();
   IOSByteArray *bs = [IOSByteArray newArrayWithLength:28];
   for (jint i = 0; i < 7; ++i) {
-    
-#line 1163
     jint x_i = IOSIntArray_Get(nil_chk(x), i);
     if (x_i != 0) {
-      
-#line 1166
       OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(x_i, bs, LShift32((6 - i), 2));
     }
   }
   return new_JavaMathBigInteger_initWithInt_withByteArray_(1, bs);
 }
 
-
-#line 1172
 void OrgBouncycastleMathRawNat224_zeroWithIntArray_(IOSIntArray *z) {
   OrgBouncycastleMathRawNat224_initialize();
   *IOSIntArray_GetRef(nil_chk(z), 0) = 0;

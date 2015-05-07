@@ -4,41 +4,29 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/IncorrectTypeException.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/IncorrectTypeException.h"
 #include "java/lang/RuntimeException.h"
 #include "java/lang/Throwable.h"
 
-
-#line 7
 @implementation BSIncorrectTypeException
 
-
-#line 8
 - (instancetype)init {
   BSIncorrectTypeException_init(self);
   return self;
 }
 
-
-#line 11
 - (instancetype)initWithNSString:(NSString *)detailMessage {
   BSIncorrectTypeException_initWithNSString_(self, detailMessage);
   return self;
 }
 
-
-#line 15
 - (instancetype)initWithNSString:(NSString *)detailMessage
            withJavaLangThrowable:(JavaLangThrowable *)throwable {
   BSIncorrectTypeException_initWithNSString_withJavaLangThrowable_(self, detailMessage, throwable);
   return self;
 }
 
-
-#line 19
 - (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)throwable {
   BSIncorrectTypeException_initWithJavaLangThrowable_(self, throwable);
   return self;
@@ -46,56 +34,40 @@
 
 @end
 
-
-#line 8
 void BSIncorrectTypeException_init(BSIncorrectTypeException *self) {
   (void) JavaLangRuntimeException_init(self);
 }
 
-
-#line 8
 BSIncorrectTypeException *new_BSIncorrectTypeException_init() {
   BSIncorrectTypeException *self = [BSIncorrectTypeException alloc];
   BSIncorrectTypeException_init(self);
   return self;
 }
 
-
-#line 11
 void BSIncorrectTypeException_initWithNSString_(BSIncorrectTypeException *self, NSString *detailMessage) {
   (void) JavaLangRuntimeException_initWithNSString_(self, detailMessage);
 }
 
-
-#line 11
 BSIncorrectTypeException *new_BSIncorrectTypeException_initWithNSString_(NSString *detailMessage) {
   BSIncorrectTypeException *self = [BSIncorrectTypeException alloc];
   BSIncorrectTypeException_initWithNSString_(self, detailMessage);
   return self;
 }
 
-
-#line 15
 void BSIncorrectTypeException_initWithNSString_withJavaLangThrowable_(BSIncorrectTypeException *self, NSString *detailMessage, JavaLangThrowable *throwable) {
   (void) JavaLangRuntimeException_initWithNSString_withJavaLangThrowable_(self, detailMessage, throwable);
 }
 
-
-#line 15
 BSIncorrectTypeException *new_BSIncorrectTypeException_initWithNSString_withJavaLangThrowable_(NSString *detailMessage, JavaLangThrowable *throwable) {
   BSIncorrectTypeException *self = [BSIncorrectTypeException alloc];
   BSIncorrectTypeException_initWithNSString_withJavaLangThrowable_(self, detailMessage, throwable);
   return self;
 }
 
-
-#line 19
 void BSIncorrectTypeException_initWithJavaLangThrowable_(BSIncorrectTypeException *self, JavaLangThrowable *throwable) {
   (void) JavaLangRuntimeException_initWithJavaLangThrowable_(self, throwable);
 }
 
-
-#line 19
 BSIncorrectTypeException *new_BSIncorrectTypeException_initWithJavaLangThrowable_(JavaLangThrowable *throwable) {
   BSIncorrectTypeException *self = [BSIncorrectTypeException alloc];
   BSIncorrectTypeException_initWithJavaLangThrowable_(self, throwable);

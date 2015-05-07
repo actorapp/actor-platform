@@ -4,41 +4,29 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ScaleYPointMap.java"
-
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/ec/ECFieldElement.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/ScaleYPointMap.h"
 
-
-#line 3
 @implementation OrgBouncycastleMathEcScaleYPointMap
 
-
-#line 7
 - (instancetype)initWithOrgBouncycastleMathEcECFieldElement:(OrgBouncycastleMathEcECFieldElement *)scale_ {
   OrgBouncycastleMathEcScaleYPointMap_initWithOrgBouncycastleMathEcECFieldElement_(self, scale_);
   return self;
 }
 
 - (OrgBouncycastleMathEcECPoint *)mapWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p {
-  
-#line 14
   return [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) scaleYWithOrgBouncycastleMathEcECFieldElement:scale__];
 }
 
 @end
 
-
-#line 7
 void OrgBouncycastleMathEcScaleYPointMap_initWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcScaleYPointMap *self, OrgBouncycastleMathEcECFieldElement *scale_) {
   (void) NSObject_init(self);
   self->scale__ = scale_;
 }
 
-
-#line 7
 OrgBouncycastleMathEcScaleYPointMap *new_OrgBouncycastleMathEcScaleYPointMap_initWithOrgBouncycastleMathEcECFieldElement_(OrgBouncycastleMathEcECFieldElement *scale_) {
   OrgBouncycastleMathEcScaleYPointMap *self = [OrgBouncycastleMathEcScaleYPointMap alloc];
   OrgBouncycastleMathEcScaleYPointMap_initWithOrgBouncycastleMathEcECFieldElement_(self, scale_);

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContactRecord.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,25 +28,15 @@
 J2OBJC_FIELD_SETTER(AMContactRecord, recordData_, NSString *)
 J2OBJC_FIELD_SETTER(AMContactRecord, recordTitle_, NSString *)
 
-jint AMContactRecord_TYPE_PHONE_ = 
-#line 17
-0;
-jint AMContactRecord_TYPE_EMAIL_ = 
-#line 18
-1;
+jint AMContactRecord_TYPE_PHONE_ = 0;
+jint AMContactRecord_TYPE_EMAIL_ = 1;
 
-
-#line 15
 @implementation AMContactRecord
 
-
-#line 20
 + (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMContactRecord_fromBytesWithByteArray_(data);
 }
 
-
-#line 30
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                     withInt:(jint)recordType
@@ -58,15 +46,11 @@ jint AMContactRecord_TYPE_EMAIL_ =
   return self;
 }
 
-
-#line 38
 - (instancetype)init {
   AMContactRecord_init(self);
   return self;
 }
 
-
-#line 42
 - (jint)getId {
   return id__;
 }
@@ -87,8 +71,6 @@ jint AMContactRecord_TYPE_EMAIL_ =
   return recordTitle_;
 }
 
-
-#line 63
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   accessHash_ = [values getLongWithInt:2];
@@ -97,8 +79,6 @@ jint AMContactRecord_TYPE_EMAIL_ =
   recordTitle_ = [values getStringWithInt:5];
 }
 
-
-#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:id__];
   [writer writeLongWithInt:2 withLong:accessHash_];
@@ -107,29 +87,19 @@ jint AMContactRecord_TYPE_EMAIL_ =
   [writer writeStringWithInt:5 withNSString:recordTitle_];
 }
 
-
-#line 81
 - (jlong)getEngineId {
   return id__;
 }
 
 @end
 
-
-#line 20
 AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data) {
   AMContactRecord_initialize();
-  
-#line 21
   return ((AMContactRecord *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContactRecord_init(), data));
 }
 
-
-#line 30
 void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMContactRecord *self, jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
   (void) BSBserObject_init(self);
-  
-#line 31
   self->id__ = id_;
   self->accessHash_ = accessHash;
   self->recordType_ = recordType;
@@ -137,22 +107,16 @@ void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMC
   self->recordTitle_ = recordTitle;
 }
 
-
-#line 30
 AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
   AMContactRecord *self = [AMContactRecord alloc];
   AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(self, id_, accessHash, recordType, recordData, recordTitle);
   return self;
 }
 
-
-#line 38
 void AMContactRecord_init(AMContactRecord *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 38
 AMContactRecord *new_AMContactRecord_init() {
   AMContactRecord *self = [AMContactRecord alloc];
   AMContactRecord_init(self);

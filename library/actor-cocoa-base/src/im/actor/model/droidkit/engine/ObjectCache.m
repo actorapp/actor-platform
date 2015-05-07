@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/ObjectCache.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/ObjectCache.h"
 #include "java/util/HashMap.h"
@@ -18,17 +16,11 @@
 
 @end
 
-
-#line 10
 @implementation DKObjectCache
 
-
-#line 15
 - (void)onObjectLoadedWithId:(id)key
                       withId:(id)value {
   @synchronized(self) {
-    
-#line 16
     if (lockLoading_) {
       return;
     }
@@ -42,66 +34,42 @@
   }
 }
 
-
-#line 28
 - (void)onObjectUpdatedWithId:(id)key
                        withId:(id)value {
   @synchronized(self) {
-    
-#line 29
     [((JavaUtilHashSet *) nil_chk(removedItems_)) removeWithId:key];
     (void) [((JavaUtilHashMap *) nil_chk(memoryCache_)) putWithId:key withId:value];
   }
 }
 
-
-#line 33
 - (void)removeObjectWithId:(id)key {
   @synchronized(self) {
-    
-#line 34
     (void) [((JavaUtilHashMap *) nil_chk(memoryCache_)) removeWithId:key];
     [((JavaUtilHashSet *) nil_chk(removedItems_)) addWithId:key];
   }
 }
 
-
-#line 38
 - (id)lookupWithId:(id)key {
   @synchronized(self) {
-    
-#line 39
     return [((JavaUtilHashMap *) nil_chk(memoryCache_)) getWithId:key];
   }
 }
 
-
-#line 42
 - (void)clear {
   @synchronized(self) {
-    
-#line 43
     [((JavaUtilHashMap *) nil_chk(memoryCache_)) clear];
     [((JavaUtilHashSet *) nil_chk(removedItems_)) clear];
   }
 }
 
-
-#line 47
 - (void)startLock {
   @synchronized(self) {
-    
-#line 48
     lockLoading_ = YES;
   }
 }
 
-
-#line 51
 - (void)stopLock {
   @synchronized(self) {
-    
-#line 52
     lockLoading_ = NO;
   }
 }
@@ -117,9 +85,7 @@ void DKObjectCache_init(DKObjectCache *self) {
   (void) NSObject_init(self);
   self->memoryCache_ = new_JavaUtilHashMap_init();
   self->removedItems_ = new_JavaUtilHashSet_init();
-  self->lockLoading_ =
-#line 13
-  NO;
+  self->lockLoading_ = NO;
 }
 
 DKObjectCache *new_DKObjectCache_init() {

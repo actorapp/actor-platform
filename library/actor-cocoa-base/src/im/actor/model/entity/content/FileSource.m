@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileSource.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,33 +21,23 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-
-#line 15
 @implementation AMFileSource
 
 + (AMFileSource *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMFileSource_fromBytesWithByteArray_(data);
 }
 
-
-#line 35
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-
-#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if ([self isKindOfClass:[AMFileLocalSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:1];
   }
-  else
-#line 43
-  if ([self isKindOfClass:[AMFileRemoteSource class]]) {
+  else if ([self isKindOfClass:[AMFileRemoteSource class]]) {
     [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:2];
   }
   else {
-    
-#line 46
     @throw new_JavaIoIOException_initWithNSString_(@"Invalid source type");
   }
 }
@@ -61,12 +49,8 @@
 
 @end
 
-
-#line 17
 AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data) {
   AMFileSource_initialize();
-  
-#line 18
   BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
   jint type = [reader getIntWithInt:1];
   switch (type) {

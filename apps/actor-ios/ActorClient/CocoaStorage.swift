@@ -8,8 +8,9 @@ class CocoaStorage : AMBaseAsyncStorageProvider {
     
     let dbPath: String;
     
-    init(dbPath: String) {
-        self.dbPath = dbPath;
+    override init() {
+        self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
+            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db");
     }
 
     override func createPreferencesStorage() -> DKPreferencesStorage! {

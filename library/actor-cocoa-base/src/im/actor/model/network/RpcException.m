@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/RpcException.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/RpcException.h"
@@ -26,12 +24,8 @@ J2OBJC_FIELD_SETTER(AMRpcException, tag_, NSString *)
 J2OBJC_FIELD_SETTER(AMRpcException, message_, NSString *)
 J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
 
-
-#line 7
 @implementation AMRpcException
 
-
-#line 14
 - (instancetype)initWithNSString:(NSString *)tag
                          withInt:(jint)code
                     withNSString:(NSString *)message
@@ -41,8 +35,6 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
   return self;
 }
 
-
-#line 22
 - (jboolean)isCanTryAgain {
   return canTryAgain_;
 }
@@ -59,20 +51,14 @@ J2OBJC_FIELD_SETTER(AMRpcException, relatedData_, IOSByteArray *)
   return code_;
 }
 
-
-#line 39
 - (NSString *)getMessage {
   return message_;
 }
 
 @end
 
-
-#line 14
 void AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(AMRpcException *self, NSString *tag, jint code, NSString *message, jboolean canTryAgain, IOSByteArray *relatedData) {
   (void) JavaLangException_init(self);
-  
-#line 15
   self->tag_ = tag;
   self->code_ = code;
   self->message_ = message;
@@ -80,8 +66,6 @@ void AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteAr
   self->relatedData_ = relatedData;
 }
 
-
-#line 14
 AMRpcException *new_AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(NSString *tag, jint code, NSString *message, jboolean canTryAgain, IOSByteArray *relatedData) {
   AMRpcException *self = [AMRpcException alloc];
   AMRpcException_initWithNSString_withInt_withNSString_withBoolean_withByteArray_(self, tag, code, message, canTryAgain, relatedData);

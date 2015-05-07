@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseEditGroupAvatar.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,18 +29,12 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, avatar_, ImActorModelApiAvatar *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteArray *)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseEditGroupAvatar
 
-
-#line 27
 + (ImActorModelApiRpcResponseEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(data);
 }
 
-
-#line 36
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                                       withInt:(jint)seq
                                 withByteArray:(IOSByteArray *)state
@@ -51,15 +43,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   return self;
 }
 
-
-#line 43
 - (instancetype)init {
   ImActorModelApiRpcResponseEditGroupAvatar_init(self);
   return self;
 }
 
-
-#line 47
 - (ImActorModelApiAvatar *)getAvatar {
   return self->avatar_;
 }
@@ -76,8 +64,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   return self->date_;
 }
 
-
-#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->avatar_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatar_init()];
   self->seq_ = [values getIntWithInt:2];
@@ -85,8 +71,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   self->date_ = [values getLongWithInt:4];
 }
 
-
-#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->avatar_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -100,59 +84,41 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditGroupAvatar, state_, IOSByteAr
   [writer writeLongWithInt:4 withLong:self->date_];
 }
 
-
-#line 86
 - (NSString *)description {
   NSString *res = @"tuple EditGroupAvatar{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 93
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseEditGroupAvatar_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseEditGroupAvatar *ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseEditGroupAvatar_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseEditGroupAvatar_init(), data));
 }
 
-
-#line 36
 void ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(ImActorModelApiRpcResponseEditGroupAvatar *self, ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state, jlong date) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 37
   self->avatar_ = avatar;
   self->seq_ = seq;
   self->state_ = state;
   self->date_ = date;
 }
 
-
-#line 36
 ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state, jlong date) {
   ImActorModelApiRpcResponseEditGroupAvatar *self = [ImActorModelApiRpcResponseEditGroupAvatar alloc];
   ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(self, avatar, seq, state, date);
   return self;
 }
 
-
-#line 43
 void ImActorModelApiRpcResponseEditGroupAvatar_init(ImActorModelApiRpcResponseEditGroupAvatar *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 43
 ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGroupAvatar_init() {
   ImActorModelApiRpcResponseEditGroupAvatar *self = [ImActorModelApiRpcResponseEditGroupAvatar alloc];
   ImActorModelApiRpcResponseEditGroupAvatar_init(self);

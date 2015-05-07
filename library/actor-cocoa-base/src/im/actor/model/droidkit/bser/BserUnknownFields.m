@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserUnknownFields.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserUnknownField.h"
@@ -22,20 +20,14 @@
 
 J2OBJC_FIELD_SETTER(BSBserUnknownFields, fields_, JavaUtilArrayList *)
 
-
-#line 9
 @implementation BSBserUnknownFields
 
-
-#line 13
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
      withByteArray:(IOSByteArray *)field {
   [((JavaUtilArrayList *) nil_chk(fields_)) addWithId:new_BSBserUnknownField_initWithInt_withInt_withByteArray_(id_, type, field)];
 }
 
-
-#line 17
 - (void)addWithInt:(jint)id_
            withInt:(jint)type
           withLong:(jlong)value {
