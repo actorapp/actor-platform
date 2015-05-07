@@ -103,6 +103,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_ListEngineComparator)
   AMBindedDisplayList *this$0_;
 }
 
+- (void)applyModificationWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification;
+
 - (void)onItemRemovedWithLong:(jlong)id_;
 
 - (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids;
@@ -123,11 +125,37 @@ J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_EngineListener)
 
 J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener, this$0_, AMBindedDisplayList *)
 
+__attribute__((unused)) static void AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *self, id<AMDisplayList_Modification> modification);
+
 __attribute__((unused)) static void AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(AMBindedDisplayList_EngineListener *self, AMBindedDisplayList *outer$);
 
 __attribute__((unused)) static AMBindedDisplayList_EngineListener *new_AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(AMBindedDisplayList *outer$) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_EngineListener)
+
+@interface AMBindedDisplayList_EngineListener_$1 : NSObject < JavaLangRunnable > {
+ @public
+  AMBindedDisplayList_EngineListener *this$0_;
+  id<AMDisplayList_Modification> val$modification_;
+}
+
+- (void)run;
+
+- (instancetype)initWithAMBindedDisplayList_EngineListener:(AMBindedDisplayList_EngineListener *)outer$
+                            withAMDisplayList_Modification:(id<AMDisplayList_Modification>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_EngineListener_$1)
+
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener_$1, this$0_, AMBindedDisplayList_EngineListener *)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener_$1, val$modification_, id<AMDisplayList_Modification>)
+
+__attribute__((unused)) static void AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener_$1 *self, AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0);
+
+__attribute__((unused)) static AMBindedDisplayList_EngineListener_$1 *new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_EngineListener_$1)
 
 typedef NS_ENUM(NSUInteger, AMBindedDisplayList_ListMode) {
   AMBindedDisplayList_ListMode_FORWARD = 0,
@@ -704,64 +732,38 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
 
 @implementation AMBindedDisplayList_EngineListener
 
+- (void)applyModificationWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification {
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+}
+
 - (void)onItemRemovedWithLong:(jlong)id_ {
   id<AMDisplayList_Modification> modification = AMDisplayModifications_removeWithLong_(id_);
-  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
-    [this$0_ editListWithAMDisplayList_Modification:modification];
-  }
-  else {
-    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
-  }
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
 }
 
 - (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids {
   id<AMDisplayList_Modification> modification = AMDisplayModifications_removeWithLongArray_(ids);
-  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
-    [this$0_ editListWithAMDisplayList_Modification:modification];
-  }
-  else {
-    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
-  }
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
 }
 
 - (void)addOrUpdateWithId:(BSBserObject<DKListEngineItem> *)item {
   id<AMDisplayList_Modification> modification = AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item);
-  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
-    [this$0_ editListWithAMDisplayList_Modification:modification];
-  }
-  else {
-    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
-  }
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
 }
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
   id<AMDisplayList_Modification> modification = AMDisplayModifications_addOrUpdateWithJavaUtilList_(items);
-  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
-    [this$0_ editListWithAMDisplayList_Modification:modification];
-  }
-  else {
-    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
-  }
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
 }
 
 - (void)onItemsReplacedWithJavaUtilList:(id<JavaUtilList>)items {
   id<AMDisplayList_Modification> modification = AMDisplayModifications_replaceWithJavaUtilList_(items);
-  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
-    [this$0_ editListWithAMDisplayList_Modification:modification];
-  }
-  else {
-    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
-  }
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
 }
 
 - (void)onListClear {
   id<AMDisplayList_Modification> modification = AMDisplayModifications_clear();
-  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
-    [this$0_ editListWithAMDisplayList_Modification:modification];
-  }
-  else {
-    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
-  }
+  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
@@ -770,6 +772,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
 }
 
 @end
+
+void AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *self, id<AMDisplayList_Modification> modification) {
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(self, modification));
+}
 
 void AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(AMBindedDisplayList_EngineListener *self, AMBindedDisplayList *outer$) {
   self->this$0_ = outer$;
@@ -783,6 +789,39 @@ AMBindedDisplayList_EngineListener *new_AMBindedDisplayList_EngineListener_initW
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_EngineListener)
+
+@implementation AMBindedDisplayList_EngineListener_$1
+
+- (void)run {
+  if ([((AMDisplayWindow *) nil_chk(this$0_->this$0_->window_)) isInited]) {
+    [this$0_->this$0_ editListWithAMDisplayList_Modification:val$modification_];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->this$0_->pendingModifications_)) addWithId:val$modification_];
+  }
+}
+
+- (instancetype)initWithAMBindedDisplayList_EngineListener:(AMBindedDisplayList_EngineListener *)outer$
+                            withAMDisplayList_Modification:(id<AMDisplayList_Modification>)capture$0 {
+  AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener_$1 *self, AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0) {
+  self->this$0_ = outer$;
+  self->val$modification_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMBindedDisplayList_EngineListener_$1 *new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0) {
+  AMBindedDisplayList_EngineListener_$1 *self = [AMBindedDisplayList_EngineListener_$1 alloc];
+  AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_EngineListener_$1)
 
 J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList_ListModeEnum)
 
