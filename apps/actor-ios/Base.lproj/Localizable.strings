@@ -98,6 +98,8 @@
 
 "ChatSend" = "Send";
 
+"ChatNoGroupAccess" = "You is not member";
+
 /*
  * Placeholders
  */
