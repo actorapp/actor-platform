@@ -58,13 +58,13 @@ object WsFrontend {
     Flow[Message]
       .collect {
         case BinaryMessage.Strict(msg) ⇒
-          system.log.debug("WS Receive {}", BitVector(msg.toByteBuffer).toHex)
+          //system.log.debug("WS Receive {}", BitVector(msg.toByteBuffer).toHex)
           msg
       }
       .via(mtProtoFlow)
       .map {
         case bs ⇒
-          system.log.debug("WS Send {}", BitVector(bs.toByteBuffer).toHex)
+          //system.log.debug("WS Send {}", BitVector(bs.toByteBuffer).toHex)
           BinaryMessage.Strict(bs)
       }
       .via(reportErrorsFlow)
