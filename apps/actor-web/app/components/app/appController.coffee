@@ -1,10 +1,14 @@
 class AppController
   isReady: false
+  @user: undefined
+  @info: undefined
 
   constructor: (@$rootScope, @$scope, @$timeout, @$mdSidenav, @$mdMedia, @actorService) ->
     console.log '[AW]AppController constructor'
-    @$timeout =>
-      @user = @actorService.getUser @actorService.getUid()
+
+    @$scope.$on 'actorReady', =>
+      console.log '[AW]AppController constructor'
+      @actorService.bindUser @actorService.getUid(), (user) => @renderMyInfo user
 
     @$scope.$on 'onConversationOpen', (event, peer) =>
       switch peer.type
@@ -21,6 +25,11 @@ class AppController
         when 'group'
           @actorService.unbindGroup peer.id, =>
             console.log '[AW]AppController unbindGroup: unbinded'
+
+  renderMyInfo: (info) =>
+    console.log '[AW]AppController renderMyInfo', info
+    @$timeout =>
+      @user = info
 
   renderPeerInfo: (info) =>
     console.log '[AW]AppController renderPeerInfo', info
