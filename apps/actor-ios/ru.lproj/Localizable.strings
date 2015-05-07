@@ -98,6 +98,8 @@
 
 "ChatSend" = "Отпр.";
 
+"ChatNoGroupAccess" = "Вы не состоите в группе";
+
 /*
  * Placeholders
  */
