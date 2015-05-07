@@ -159,27 +159,32 @@ class AAConversationController: EngineSlackListController {
             binder.bind(group.getAvatar(), closure: { (value: AMAvatar?) -> () in
                 self.avatarView.bind(group.getName().get() as! String, id: group.getId(), avatar: value)
             })
-            binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (value1:IOSIntArray?, value2:JavaUtilHashSet?, value3:JavaLangInteger?) -> () in
-                if (value1!.length() > 0) {
-                    self.subtitleView.textColor = Resources.PrimaryLightText
-                    if (value1!.length() == 1) {
-                        var uid = value1!.intAtIndex(0);
-                        var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
-                        self.subtitleView.text = MSG.getFormatter().formatTypingWithNSString(user.getName().get() as!String)
-                    } else {
-                        self.subtitleView.text = MSG.getFormatter().formatTypingWithInt(value1!.length());
-                    }
+            binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
+                if (members!.size() == 0) {
+                    self.subtitleView.textColor = Resources.SecondaryLightText
+                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
                 } else {
-                    var membersString = MSG.getFormatter().formatGroupMembersWithInt(value2!.size())
-                    if (value3 == nil || value3!.integerValue == 0) {
-                        self.subtitleView.textColor = Resources.SecondaryLightText
-                        self.subtitleView.text = membersString;
+                    if (typingValue!.length() > 0) {
+                        self.subtitleView.textColor = Resources.PrimaryLightText
+                        if (typingValue!.length() == 1) {
+                            var uid = typingValue!.intAtIndex(0);
+                            var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
+                            self.subtitleView.text = MSG.getFormatter().formatTypingWithNSString(user.getName().get() as!String)
+                        } else {
+                            self.subtitleView.text = MSG.getFormatter().formatTypingWithInt(typingValue!.length());
+                        }
                     } else {
-                        membersString = membersString + ", ";
-                        var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(value3!.intValue());
-                        var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
-                        self.subtitleView.attributedText = attributedString
+                        var membersString = MSG.getFormatter().formatGroupMembersWithInt(members!.size())
+                        if (onlineCount == nil || onlineCount!.integerValue == 0) {
+                            self.subtitleView.textColor = Resources.SecondaryLightText
+                            self.subtitleView.text = membersString;
+                        } else {
+                            membersString = membersString + ", ";
+                            var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(onlineCount!.intValue());
+                            var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
+                            attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
+                            self.subtitleView.attributedText = attributedString
+                        }
                     }
                 }
             })
