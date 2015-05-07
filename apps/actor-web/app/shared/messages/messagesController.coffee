@@ -20,14 +20,8 @@ class MessagesController
 
   renderMessages: (messages) ->
     console.log '[AW]MessagesController renderMessages', messages
-    for message in messages
-#        if message.content.content == 'photo'
-#          console.log '[AW]MessagesController renderMessages: message.content.preview:', message.content.preview
-      if message.content.content == 'text'
-        message.content.text = message.content.text.replace(/\n/g, '<br/>')
     @$timeout =>
       @list = messages
-#      @$rootScope.$broadcast 'renderMessages'
 
 MessagesController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
 
