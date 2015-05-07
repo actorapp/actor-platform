@@ -14,6 +14,25 @@
             <h3 layout="row" class="messages-list__item__body__title"
                 ng-hide="::message.content.content == 'service'">
                 <span flex>{{ ::message.sender.title }}</span>
+
+                <div class="messages-list__item__status">
+                    <md-icon md-svg-icon="assets/img/icons/ic_access_time_24px.svg"
+                             ng-if="::message.state == 'pending'"
+                             class="status status--penging"></md-icon>
+                    <md-icon md-svg-icon="assets/img/icons/ic_done_24px.svg"
+                             ng-if="::message.state == 'sent'"
+                             class="status status--sent"></md-icon>
+                    <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
+                             ng-if="::message.state == 'received'"
+                             class="status status--received"></md-icon>
+                    <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
+                             ng-if="::message.state == 'read'"
+                             class="status status--read"></md-icon>
+                    <md-icon md-svg-icon="assets/img/icons/ic_report_problem_24px.svg"
+                             ng-if="::message.state == 'error'"
+                             class="status status--error"></md-icon>
+                </div>
+
                 <time class="messages-list__item__body__timestamp">{{ ::message.date }}</time>
             </h3>
 
@@ -49,7 +68,7 @@
                ng-bind="::message.content.text"></p>
 
             <p class="unsupported" ng-if="::message.content.content == 'unsupported'">
-                Данный вид контента не поддерживается.
+                Данный вид контента на данный момент не поддерживается.
             </p>
 
         </div>
