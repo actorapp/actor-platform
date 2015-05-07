@@ -26,7 +26,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.push.{ ApplePushManagerConfig, ApplePushManager, SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
@@ -35,8 +35,8 @@ class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
 
-  val apnsConfig = serverConfig.getConfig("push.apns")
-  val gcmConfig = serverConfig.getConfig("push.gcm")
+  val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
+  val googlePushConfig = serverConfig.getConfig("push.google")
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
   val smsConfig = serverConfig.getConfig("sms")
@@ -53,18 +53,9 @@ class Main extends Bootable with DbInit with FlywayInit {
     val flyway = initFlyway(ds.ds)
     flyway.migrate()
 
-    implicit val gcmSender = new Sender(gcmConfig.getString("key"))
+    implicit val gcmSender = new Sender(googlePushConfig.getString("key"))
 
-    implicit val apnsManager = new PushManager[SimpleApnsPushNotification](
-      ApnsEnvironment.getProductionEnvironment,
-      SSLContextUtil.createDefaultSSLContext(apnsConfig.getString("cert.path"), apnsConfig.getString("cert.password")),
-      null,
-      null,
-      null,
-      new PushManagerConfiguration(),
-      "ActorPushManager"
-    )
-    apnsManager.start()
+    implicit val apnsManager = new ApplePushManager(applePushConfig)
 
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
