@@ -210,13 +210,16 @@ class AppTabBar {
     
     func applyAppearance(application: UIApplication) {
         var tabBar = UITabBar.appearance()
-        
         // TabBar Transculent
-        tabBar.translucent = isTransculent
-        
+        // Ignore for iOS7
+        if (isiOS8) {
+            tabBar.translucent = isTransculent
+        }
+        NSLog("Appearance 3")
         // TabBar Background color
         tabBar.barTintColor = backgroundColor;
 
+        NSLog("Appearance 4")
         // TabBar Shadow
         if (barShadow != nil) {
             tabBar.shadowImage = UIImage(named: barShadow!);
@@ -224,10 +227,13 @@ class AppTabBar {
             tabBar.shadowImage = nil
         }
         
+        NSLog("Appearance 5")
         var tabBarItem = UITabBarItem.appearance()
         // TabBar Unselected Text
+        NSLog("Appearance 6")
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: unselectedTextColor], forState: UIControlState.Normal)
         // TabBar Selected Text
+        NSLog("Appearance 7")
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: selectedTextColor], forState: UIControlState.Selected)
     }
 }
@@ -253,19 +259,27 @@ class AppNavigationBar {
         }
         
         var navAppearance = UINavigationBar.appearance();
+        
         // NavigationBar Icon
         navAppearance.tintColor = titleColor;
+        
         // NavigationBar Text
         navAppearance.titleTextAttributes = [NSForegroundColorAttributeName: titleColor];
+        
         // NavigationBar Background
         navAppearance.barTintColor = barColor;
+        
         navAppearance.setBackgroundImage(Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 1)), forBarMetrics: UIBarMetrics.Default)
-//        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
+        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
         // Small hack for correct background color
         UISearchBar.appearance().backgroundColor = barColor
         
         // NavigationBar Transculency
-        navAppearance.translucent = isTransculent;
+        // Ignore for iOS7
+        if (isiOS8) {
+            navAppearance.translucent = isTransculent;
+        }
+        
         // NavigationBar Shadow
         if (shadowImage == nil) {
             navAppearance.shadowImage = UIImage()
