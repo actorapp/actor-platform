@@ -22,7 +22,6 @@ import Foundation
         MainAppTheme.tab.applyAppearance(application)
         MainAppTheme.search.applyAppearance(application)
         
-        
         // Register notifications
         if application.respondsToSelector("registerUserNotificationSettings:") {
             let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
