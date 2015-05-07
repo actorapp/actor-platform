@@ -25,9 +25,11 @@ public class RequestCommitFileUpload extends Request<ResponseCommitFileUpload> {
     }
 
     private byte[] uploadKey;
+    private String fileName;
 
-    public RequestCommitFileUpload(byte[] uploadKey) {
+    public RequestCommitFileUpload(byte[] uploadKey, String fileName) {
         this.uploadKey = uploadKey;
+        this.fileName = fileName;
     }
 
     public RequestCommitFileUpload() {
@@ -38,9 +40,14 @@ public class RequestCommitFileUpload extends Request<ResponseCommitFileUpload> {
         return this.uploadKey;
     }
 
+    public String getFileName() {
+        return this.fileName;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.uploadKey = values.getBytes(1);
+        this.fileName = values.getString(2);
     }
 
     @Override
@@ -49,6 +56,10 @@ public class RequestCommitFileUpload extends Request<ResponseCommitFileUpload> {
             throw new IOException();
         }
         writer.writeBytes(1, this.uploadKey);
+        if (this.fileName == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.fileName);
     }
 
     @Override
