@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/ManagedNetworkProvider.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionCallback.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -53,12 +51,8 @@ __attribute__((unused)) static AMManagedNetworkProvider_$1 *new_AMManagedNetwork
 
 J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider_$1)
 
-
-#line 14
 @implementation AMManagedNetworkProvider
 
-
-#line 20
 - (instancetype)initWithAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)factory {
   AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(self, factory);
   return self;
@@ -71,11 +65,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider_$1)
             withEndpoint:(AMConnectionEndpoint *)endpoint
             withCallback:(id<AMConnectionCallback>)callback
       withCreateCallback:(id<AMCreateConnectionCallback>)createCallback {
-  AMManagedConnection *managedConnection = new_AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(connectionId, mtprotoVersion,
-#line 27
-  apiMajorVersion, apiMinorVersion, endpoint, callback, new_AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(self, createCallback),
-#line 43
-  factory_);
+  AMManagedConnection *managedConnection = new_AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, new_AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(self, createCallback), factory_);
   @synchronized(pendingConnections_) {
     [((JavaUtilArrayList *) nil_chk(pendingConnections_)) addWithId:managedConnection];
   }
@@ -83,18 +73,12 @@ J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider_$1)
 
 @end
 
-
-#line 20
 void AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory) {
   (void) NSObject_init(self);
   self->pendingConnections_ = new_JavaUtilArrayList_init();
-  
-#line 21
   self->factory_ = factory;
 }
 
-
-#line 20
 AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(id<AMAsyncConnectionFactory> factory) {
   AMManagedNetworkProvider *self = [AMManagedNetworkProvider alloc];
   AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(self, factory);
@@ -105,8 +89,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedNetworkProvider)
 
 @implementation AMManagedNetworkProvider_$1
 
-
-#line 29
 - (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection {
   [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreated:connection];
   @synchronized(this$0_->pendingConnections_) {
@@ -114,8 +96,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedNetworkProvider)
   }
 }
 
-
-#line 37
 - (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection {
   [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreateError];
   @synchronized(this$0_->pendingConnections_) {

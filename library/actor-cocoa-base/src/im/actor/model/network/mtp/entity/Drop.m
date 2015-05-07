@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Drop.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -14,27 +12,19 @@
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "java/io/IOException.h"
 
-
-#line 12
 @implementation MTDrop
 
-
-#line 20
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTDrop_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 24
 - (instancetype)initWithLong:(jlong)messageId
                 withNSString:(NSString *)message {
   MTDrop_initWithLong_withNSString_(self, messageId, message);
   return self;
 }
 
-
-#line 29
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -43,60 +33,42 @@
   return message_;
 }
 
-
-#line 38
 - (jbyte)getHeader {
   return MTDrop_HEADER;
 }
 
-
-#line 43
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoStringWithNSString:message_];
 }
 
-
-#line 49
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   message_ = [bs readProtoString];
 }
 
-
-#line 55
 - (NSString *)description {
   return JreStrcat("$$C", @"Drop[", message_, ']');
 }
 
 @end
 
-
-#line 20
 void MTDrop_initWithBSDataInput_(MTDrop *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 20
 MTDrop *new_MTDrop_initWithBSDataInput_(BSDataInput *stream) {
   MTDrop *self = [MTDrop alloc];
   MTDrop_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 24
 void MTDrop_initWithLong_withNSString_(MTDrop *self, jlong messageId, NSString *message) {
   (void) MTProtoStruct_init(self);
-  
-#line 25
   self->messageId_ = messageId;
   self->message_ = message;
 }
 
-
-#line 24
 MTDrop *new_MTDrop_initWithLong_withNSString_(jlong messageId, NSString *message) {
   MTDrop *self = [MTDrop alloc];
   MTDrop_initWithLong_withNSString_(self, messageId, message);

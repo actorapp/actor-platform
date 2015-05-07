@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Ping.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -21,81 +19,55 @@
 
 @end
 
-
-#line 13
 @implementation MTPing
 
-
-#line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTPing_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 23
 - (instancetype)initWithLong:(jlong)randomId {
   MTPing_initWithLong_(self, randomId);
   return self;
 }
 
-
-#line 27
 - (jlong)getRandomId {
   return randomId_;
 }
 
-
-#line 32
 - (jbyte)getHeader {
   return MTPing_HEADER;
 }
 
-
-#line 37
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:randomId_];
 }
 
-
-#line 42
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   randomId_ = [((BSDataInput *) nil_chk(bs)) readLong];
 }
 
-
-#line 47
 - (NSString *)description {
   return JreStrcat("$JC", @"Ping{", randomId_, '}');
 }
 
 @end
 
-
-#line 19
 void MTPing_initWithBSDataInput_(MTPing *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 19
 MTPing *new_MTPing_initWithBSDataInput_(BSDataInput *stream) {
   MTPing *self = [MTPing alloc];
   MTPing_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 23
 void MTPing_initWithLong_(MTPing *self, jlong randomId) {
   (void) MTProtoStruct_init(self);
-  
-#line 24
   self->randomId_ = randomId;
 }
 
-
-#line 23
 MTPing *new_MTPing_initWithLong_(jlong randomId) {
   MTPing *self = [MTPing alloc];
   MTPing_initWithLong_(self, randomId);

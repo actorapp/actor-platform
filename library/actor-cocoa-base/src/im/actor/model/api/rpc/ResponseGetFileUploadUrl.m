@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetFileUploadUrl.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, url_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, uploadKey_, IOSByteArray *)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseGetFileUploadUrl
 
-
-#line 27
 + (ImActorModelApiRpcResponseGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithNSString:(NSString *)url
                    withByteArray:(IOSByteArray *)uploadKey {
   ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(self, url, uploadKey);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcResponseGetFileUploadUrl_init(self);
   return self;
 }
 
-
-#line 43
 - (NSString *)getUrl {
   return self->url_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, uploadKey_, IOSB
   return self->uploadKey_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->url_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->uploadKey_ = [values getBytesWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->url_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -83,55 +67,39 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, uploadKey_, IOSB
   [writer writeBytesWithInt:2 withByteArray:self->uploadKey_];
 }
 
-
-#line 70
 - (NSString *)description {
   NSString *res = @"tuple GetFileUploadUrl{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 77
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetFileUploadUrl_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseGetFileUploadUrl *ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetFileUploadUrl_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseGetFileUploadUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetFileUploadUrl_init(), data));
 }
 
 void ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(ImActorModelApiRpcResponseGetFileUploadUrl *self, NSString *url, IOSByteArray *uploadKey) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 35
   self->url_ = url;
   self->uploadKey_ = uploadKey;
 }
 
-
-#line 34
 ImActorModelApiRpcResponseGetFileUploadUrl *new_ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(NSString *url, IOSByteArray *uploadKey) {
   ImActorModelApiRpcResponseGetFileUploadUrl *self = [ImActorModelApiRpcResponseGetFileUploadUrl alloc];
   ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(self, url, uploadKey);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcResponseGetFileUploadUrl_init(ImActorModelApiRpcResponseGetFileUploadUrl *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcResponseGetFileUploadUrl *new_ImActorModelApiRpcResponseGetFileUploadUrl_init() {
   ImActorModelApiRpcResponseGetFileUploadUrl *self = [ImActorModelApiRpcResponseGetFileUploadUrl alloc];
   ImActorModelApiRpcResponseGetFileUploadUrl_init(self);

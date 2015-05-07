@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserLeave.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,18 +25,12 @@
 
 @end
 
-
-#line 24
 @implementation ImActorModelApiUpdatesUpdateGroupUserLeave
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
-
-#line 36
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
@@ -47,15 +39,11 @@
   return self;
 }
 
-
-#line 43
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateGroupUserLeave_init(self);
   return self;
 }
 
-
-#line 47
 - (jint)getGroupId {
   return self->groupId_;
 }
@@ -72,8 +60,6 @@
   return self->date_;
 }
 
-
-#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:4];
@@ -81,8 +67,6 @@
   self->date_ = [values getLongWithInt:3];
 }
 
-
-#line 72
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->groupId_];
   [writer writeLongWithInt:4 withLong:self->rid_];
@@ -90,8 +74,6 @@
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
-
-#line 80
 - (NSString *)description {
   NSString *res = @"update GroupUserLeave{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groupId=", self->groupId_));
@@ -102,51 +84,35 @@
   return res;
 }
 
-
-#line 91
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateGroupUserLeave *ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateGroupUserLeave_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserLeave_init(), data));
 }
 
-
-#line 36
 void ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 37
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
   self->date_ = date;
 }
 
-
-#line 36
 ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) {
   ImActorModelApiUpdatesUpdateGroupUserLeave *self = [ImActorModelApiUpdatesUpdateGroupUserLeave alloc];
   ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
   return self;
 }
 
-
-#line 43
 void ImActorModelApiUpdatesUpdateGroupUserLeave_init(ImActorModelApiUpdatesUpdateGroupUserLeave *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 43
 ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_init() {
   ImActorModelApiUpdatesUpdateGroupUserLeave *self = [ImActorModelApiUpdatesUpdateGroupUserLeave alloc];
   ImActorModelApiUpdatesUpdateGroupUserLeave_init(self);

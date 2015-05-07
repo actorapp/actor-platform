@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/DialogHistory.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
@@ -30,12 +28,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, peer_, AMPee
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, content_, AMAbsContent *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, status_, AMMessageStateEnum *)
 
-
-#line 11
 @implementation ImActorModelModulesMessagesEntityDialogHistory
 
-
-#line 22
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)unreadCount
                       withLong:(jlong)sortDate
@@ -82,8 +76,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityDialogHistory, status_, AMM
 
 @end
 
-
-#line 22
 void ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(ImActorModelModulesMessagesEntityDialogHistory *self, AMPeer *peer, jint unreadCount, jlong sortDate, jlong rid, jlong date, jint senderId, AMAbsContent *content, AMMessageStateEnum *status) {
   (void) NSObject_init(self);
   self->peer_ = peer;
@@ -96,8 +88,6 @@ void ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withL
   self->status_ = status;
 }
 
-
-#line 22
 ImActorModelModulesMessagesEntityDialogHistory *new_ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(AMPeer *peer, jint unreadCount, jlong sortDate, jlong rid, jlong date, jint senderId, AMAbsContent *content, AMMessageStateEnum *status) {
   ImActorModelModulesMessagesEntityDialogHistory *self = [ImActorModelModulesMessagesEntityDialogHistory alloc];
   ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(self, peer, unreadCount, sortDate, rid, date, senderId, content, status);

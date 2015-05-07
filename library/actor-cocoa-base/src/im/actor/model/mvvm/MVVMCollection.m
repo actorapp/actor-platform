@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMCollection.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
@@ -154,12 +152,8 @@ __attribute__((unused)) static AMMVVMCollection_$3 *new_AMMVVMCollection_$3_init
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$3)
 
-
-#line 16
 @implementation AMMVVMCollection
 
-
-#line 22
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)collectionStorage {
   AMMVVMCollection_initWithDKKeyValueStorage_(self, collectionStorage);
   return self;
@@ -169,8 +163,6 @@ J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$3)
   return proxyKeyValueEngine_;
 }
 
-
-#line 32
 - (id)getWithLong:(jlong)id_ {
   if ([((JavaUtilHashMap *) nil_chk(values_)) getWithId:JavaLangLong_valueOfWithLong_(id_)] == nil) {
     id<DKKeyValueItem> res = [((AMMVVMCollection_ProxyKeyValueEngine *) nil_chk(proxyKeyValueEngine_)) getValueWithLong:id_];
@@ -178,102 +170,66 @@ J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$3)
       (void) [values_ putWithId:JavaLangLong_valueOfWithLong_(id_) withId:[self createNewWithDKKeyValueItem:res]];
     }
     else {
-      
-#line 38
       @throw new_JavaLangRuntimeException_initWithNSString_(JreStrcat("$J", @"Unable to find user #", id_));
     }
   }
   return [values_ getWithId:JavaLangLong_valueOfWithLong_(id_)];
 }
 
-
-#line 44
 - (void)notifyChangeWithJavaUtilList:(id<JavaUtilList>)items {
   AMMVVMCollection_notifyChangeWithJavaUtilList_(self, items);
 }
 
-
-#line 57
 - (void)notifyRemoveWithLongArray:(IOSLongArray *)ids {
   AMMVVMCollection_notifyRemoveWithLongArray_(self, ids);
 }
 
-
-#line 68
 - (void)notifyClear {
   AMMVVMCollection_notifyClear(self);
 }
 
 @end
 
-
-#line 22
 void AMMVVMCollection_initWithDKKeyValueStorage_(AMMVVMCollection *self, id<DKKeyValueStorage> collectionStorage) {
   (void) NSObject_init(self);
   self->values_ = new_JavaUtilHashMap_init();
-  
-#line 23
   self->collectionStorage_ = collectionStorage;
   self->proxyKeyValueEngine_ = new_AMMVVMCollection_ProxyKeyValueEngine_initWithAMMVVMCollection_(self);
 }
 
-
-#line 44
 void AMMVVMCollection_notifyChangeWithJavaUtilList_(AMMVVMCollection *self, id<JavaUtilList> items) {
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMMVVMCollection_$1_initWithAMMVVMCollection_withJavaUtilList_(self, items));
 }
 
-
-#line 57
 void AMMVVMCollection_notifyRemoveWithLongArray_(AMMVVMCollection *self, IOSLongArray *ids) {
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMMVVMCollection_$2_initWithAMMVVMCollection_withLongArray_(self, ids));
 }
 
-
-#line 68
 void AMMVVMCollection_notifyClear(AMMVVMCollection *self) {
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMMVVMCollection_$3_initWithAMMVVMCollection_(self));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
 
-
-#line 85
 @implementation AMMVVMCollection_ProxyKeyValueEngine
 
-
-#line 90
 - (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item {
   @synchronized(self) {
-    
-#line 91
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(item)) getEngineId]) withId:item];
-    
-#line 93
     JavaUtilArrayList *res = new_JavaUtilArrayList_init();
     [res addWithId:item];
     AMMVVMCollection_notifyChangeWithJavaUtilList_(this$0_, res);
-    
-#line 97
     IOSByteArray *data = [this$0_ serializeWithDKKeyValueItem:item];
     [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) addOrUpdateItemWithLong:[item getEngineId] withByteArray:data];
   }
 }
 
-
-#line 102
 - (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values {
   @synchronized(self) {
-    
-#line 103
     for (id<DKKeyValueItem> __strong t in nil_chk(values)) {
       (void) [((JavaUtilHashMap *) nil_chk(cache_)) putWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(t)) getEngineId]) withId:t];
     }
-    
-#line 107
     AMMVVMCollection_notifyChangeWithJavaUtilList_(this$0_, values);
-    
-#line 109
     JavaUtilArrayList *records = new_JavaUtilArrayList_init();
     for (id<DKKeyValueItem> __strong v in values) {
       [records addWithId:new_DKKeyValueRecord_initWithLong_withByteArray_([((id<DKKeyValueItem>) nil_chk(v)) getEngineId], [this$0_ serializeWithDKKeyValueItem:v])];
@@ -282,69 +238,43 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
   }
 }
 
-
-#line 117
 - (void)removeItemWithLong:(jlong)id_ {
   @synchronized(self) {
-    
-#line 118
     (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(id_)];
-    
-#line 120
     AMMVVMCollection_notifyRemoveWithLongArray_(this$0_, [IOSLongArray newArrayWithLongs:(jlong[]){ id_ } count:1]);
-    
-#line 122
     [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) removeItemWithLong:id_];
   }
 }
 
-
-#line 126
 - (void)removeItemsWithLongArray:(IOSLongArray *)ids {
   @synchronized(self) {
     {
-      IOSLongArray *a__ =
-#line 127
-      ids;
+      IOSLongArray *a__ = ids;
       jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
       jlong const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         jlong l = *b__++;
-        
-#line 128
         (void) [((JavaUtilHashMap *) nil_chk(cache_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
       }
     }
     AMMVVMCollection_notifyRemoveWithLongArray_(this$0_, ids);
-    
-#line 133
     [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) removeItemsWithLongArray:ids];
   }
 }
 
-
-#line 137
 - (void)clear {
   @synchronized(self) {
-    
-#line 138
     [((JavaUtilHashMap *) nil_chk(cache_)) clear];
     AMMVVMCollection_notifyClear(this$0_);
     [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) clear];
   }
 }
 
-
-#line 144
 - (id)getValueWithLong:(jlong)id_ {
   @synchronized(self) {
-    
-#line 145
     if ([((JavaUtilHashMap *) nil_chk(cache_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(id_)]) {
       return [cache_ getWithId:JavaLangLong_valueOfWithLong_(id_)];
     }
-    
-#line 149
     IOSByteArray *data = [((id<DKKeyValueStorage>) nil_chk(this$0_->collectionStorage_)) getValueWithLong:id_];
     if (data != nil) {
       id<DKKeyValueItem> res = [this$0_ deserializeWithByteArray:data];
@@ -352,8 +282,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection)
       return res;
     }
     else {
-      
-#line 155
       return nil;
     }
   }
@@ -382,8 +310,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_ProxyKeyValueEngine)
 
 @implementation AMMVVMCollection_$1
 
-
-#line 47
 - (void)run {
   for (id<DKKeyValueItem> __strong i in nil_chk(val$items_)) {
     if ([((JavaUtilHashMap *) nil_chk(this$0_->values_)) containsKeyWithId:JavaLangLong_valueOfWithLong_([((id<DKKeyValueItem>) nil_chk(i)) getEngineId])]) {
@@ -416,8 +342,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$1)
 
 @implementation AMMVVMCollection_$2
 
-
-#line 60
 - (void)run {
   {
     IOSLongArray *a__ = val$ids_;
@@ -425,8 +349,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$1)
     jlong const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jlong l = *b__++;
-      
-#line 62
       (void) [((JavaUtilHashMap *) nil_chk(this$0_->values_)) removeWithId:JavaLangLong_valueOfWithLong_(l)];
     }
   }
@@ -456,8 +378,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMMVVMCollection_$2)
 
 @implementation AMMVVMCollection_$3
 
-
-#line 71
 - (void)run {
   [((JavaUtilHashMap *) nil_chk(this$0_->values_)) clear];
 }

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/MTProto.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
@@ -43,12 +41,8 @@ J2OBJC_FIELD_SETTER(MTMTProto, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, sender_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
 
-
-#line 17
 @implementation MTMTProto
 
-
-#line 30
 - (instancetype)initWithLong:(jlong)authId
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
@@ -58,8 +52,6 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   return self;
 }
 
-
-#line 42
 - (id<AMNetworkProvider>)getNetworkProvider {
   return networkProvider_;
 }
@@ -96,15 +88,9 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
 
 @end
 
-
-#line 30
 void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {
   (void) NSObject_init(self);
-  self->actorPath_ =
-#line 28
-  @"mtproto";
-  
-#line 32
+  self->actorPath_ = @"mtproto";
   self->authId_ = authId;
   self->sessionId_ = sessionId;
   self->endpoints_ = endpoints;
@@ -115,8 +101,6 @@ void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withA
   self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
 }
 
-
-#line 30
 MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {
   MTMTProto *self = [MTMTProto alloc];
   MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(self, authId, sessionId, endpoints, callback, networkProvider);
