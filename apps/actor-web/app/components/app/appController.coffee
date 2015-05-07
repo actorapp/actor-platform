@@ -1,5 +1,4 @@
 class AppController
-  isReady: false
   user: undefined
   info: undefined
 
