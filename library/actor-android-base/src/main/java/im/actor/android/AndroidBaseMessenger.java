@@ -38,7 +38,6 @@ public class AndroidBaseMessenger extends BaseMessenger {
                                 onPhoneBookChanged();
                             }
                         });
-
         // TODO: Catch all network changes
     }
 
