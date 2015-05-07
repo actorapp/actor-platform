@@ -704,6 +704,7 @@
 		06BFDB511AB1AD3800F16E43 /* DialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFDB501AB1AD3800F16E43 /* DialogCell.swift */; };
 		06C65EA61AE7C0C40064BACE /* (null) in Sources */ = {isa = PBXBuildFile; };
 		06C97C9D1AF4225000E16F19 /* CocoaTcpConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06C97C9C1AF4225000E16F19 /* CocoaTcpConnection.swift */; };
+		06CC9B5F1AFAD80400377F67 /* GroupCreateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC9B5E1AFAD80400377F67 /* GroupCreateController.swift */; };
 		06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */; };
 		06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */; };
 		06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */; };
@@ -789,8 +790,8 @@
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
-		062774361AC070F700A4A8B3 /* SearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchSource.swift; sourceTree = "<group>"; };
-		062774381AC073D700A4A8B3 /* ContactsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsSource.swift; sourceTree = "<group>"; };
+		062774361AC070F700A4A8B3 /* SearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchSource.swift; path = ../../SearchSource.swift; sourceTree = "<group>"; };
+		062774381AC073D700A4A8B3 /* ContactsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsSource.swift; path = ../../ContactsSource.swift; sourceTree = "<group>"; };
 		062E01161AF7C0A60062215F /* AnalyticsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalyticsProvider.h; sourceTree = "<group>"; };
 		062E01171AF7C0A60062215F /* AnalyticsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalyticsProvider.m; sourceTree = "<group>"; };
 		062E01191AF7C0A60062215F /* MainThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainThread.h; sourceTree = "<group>"; };
@@ -2036,8 +2037,8 @@
 		065A51C51ABA0BA200B48088 /* ActorClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorClient.entitlements; sourceTree = "<group>"; };
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
 		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
-		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMembersController.swift; sourceTree = "<group>"; };
-		065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GroupMembersController.xib; sourceTree = "<group>"; };
+		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GroupMembersController.swift; path = ../GroupMembersController.swift; sourceTree = "<group>"; };
+		065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = GroupMembersController.xib; path = ../GroupMembersController.xib; sourceTree = "<group>"; };
 		0671444F1AB089B000364820 /* AABubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleCell.swift; sourceTree = "<group>"; };
 		067144511AB0947000364820 /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
@@ -2052,29 +2053,30 @@
 		0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAppearance+Swift.m"; sourceTree = "<group>"; };
 		0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarAppearance+Swift.m"; sourceTree = "<group>"; };
 		0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIBarAppearance+Swift.h"; sourceTree = "<group>"; };
-		0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
-		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactActionCell.swift; sourceTree = "<group>"; };
+		0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BasicCell.swift; path = ../../BasicCell.swift; sourceTree = "<group>"; };
+		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactActionCell.swift; path = ../../ContactActionCell.swift; sourceTree = "<group>"; };
 		0699D4D71ADDB4C70005AB9B /* CocoaLocale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLocale.swift; sourceTree = "<group>"; };
-		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseController.swift; sourceTree = "<group>"; };
-		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
-		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
+		069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsBaseController.swift; path = ../../ContactsBaseController.swift; sourceTree = "<group>"; };
+		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComposeController.swift; path = ../ComposeController.swift; sourceTree = "<group>"; };
+		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ComposeController.xib; path = ../ComposeController.xib; sourceTree = "<group>"; };
 		06A16C231ACA9F5700EA96BD /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABActionShit.h; sourceTree = "<group>"; };
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
 		06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
 		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaHttpProvider.swift; sourceTree = "<group>"; };
 		06A907D01AB7AE8200E087EA /* notification.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = notification.aiff; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
-		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineListController.swift; sourceTree = "<group>"; };
+		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabController.swift; path = ../MainTabController.swift; sourceTree = "<group>"; };
-		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineSlackListController.swift; sourceTree = "<group>"; };
-		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
+		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineSlackListController.swift; path = ../../EngineSlackListController.swift; sourceTree = "<group>"; };
+		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactCell.swift; path = ../../ContactCell.swift; sourceTree = "<group>"; };
 		06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonTable.swift; sourceTree = "<group>"; };
 		06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
 		06BC45161AB889110003F59E /* CircullarProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarProgress.swift; sourceTree = "<group>"; };
 		06BFDB501AB1AD3800F16E43 /* DialogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogCell.swift; sourceTree = "<group>"; };
 		06C97C9C1AF4225000E16F19 /* CocoaTcpConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaTcpConnection.swift; sourceTree = "<group>"; };
+		06CC9B5E1AFAD80400377F67 /* GroupCreateController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GroupCreateController.swift; path = ../GroupCreateController.swift; sourceTree = "<group>"; };
 		06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		06CCE9381AD4A67C00A17705 /* Pods-ActorApp.releasedev1.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev1.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev1.xcconfig"; sourceTree = "<group>"; };
 		06CCE9391AD4A67C00A17705 /* Pods-ActorApp.releasedev2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev2.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev2.xcconfig"; sourceTree = "<group>"; };
@@ -2158,6 +2160,7 @@
 		050E99B01ACB4D410052C06B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				06CC9B601AFAD81900377F67 /* Compose */,
 				0612BC901AE48FDB001EE387 /* Main */,
 				0603232A1ADF04E600C73C0F /* iPad */,
 				05E706441AD1F5FD009F09D8 /* Settings */,
@@ -2176,6 +2179,14 @@
 				050E99B81ACB4D410052C06B /* AATableViewController.swift */,
 				050E99BF1ACB510A0052C06B /* AAViewController.swift */,
 				0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */,
+				06ABC77A1AAF39B500C1B932 /* EngineListController.swift */,
+				06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */,
+				069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */,
+				06B356F51AB8C7BB00405472 /* ContactCell.swift */,
+				062774361AC070F700A4A8B3 /* SearchSource.swift */,
+				062774381AC073D700A4A8B3 /* ContactsSource.swift */,
+				0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */,
+				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -2226,6 +2237,13 @@
 		0541A0631ACDA7910028E983 /* Root */ = {
 			isa = PBXGroup;
 			children = (
+				2537F8691A9762DB004A02E9 /* ABPhoneField */,
+				06A16C231ACA9F5700EA96BD /* ABActionShit.h */,
+				06A16C241ACA9F5700EA96BD /* ABActionShit.m */,
+				06BC45161AB889110003F59E /* CircullarProgress.swift */,
+				0671592B1ABBC49D00D95719 /* CircullarNode.swift */,
+				06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */,
+				065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */,
 				0541A0641ACDA7A20028E983 /* AATableViewCell.swift */,
 				05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */,
 				05EDCD3A1ADDA97F00C57CEF /* AATitledCell.swift */,
@@ -4256,47 +4274,16 @@
 			name = Themes;
 			sourceTree = "<group>";
 		};
-		069FE6CA1AC017AA00C6C033 /* ScreensOld */ = {
+		06CC9B601AFAD81900377F67 /* Compose */ = {
 			isa = PBXGroup;
 			children = (
-				069FE6D21AC0203100C6C033 /* Common */,
-				069FE6D41AC0207A00C6C033 /* Views */,
+				06CC9B5E1AFAD80400377F67 /* GroupCreateController.swift */,
 				065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */,
 				065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */,
 				069FE6CD1AC01A6300C6C033 /* ComposeController.swift */,
 				069FE6CE1AC01A6300C6C033 /* ComposeController.xib */,
-				06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */,
 			);
-			name = ScreensOld;
-			sourceTree = "<group>";
-		};
-		069FE6D21AC0203100C6C033 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				06ABC77A1AAF39B500C1B932 /* EngineListController.swift */,
-				06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */,
-				069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */,
-				06B356F51AB8C7BB00405472 /* ContactCell.swift */,
-				062774361AC070F700A4A8B3 /* SearchSource.swift */,
-				062774381AC073D700A4A8B3 /* ContactsSource.swift */,
-				0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */,
-				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
-			);
-			name = Common;
-			sourceTree = "<group>";
-		};
-		069FE6D41AC0207A00C6C033 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				2537F8691A9762DB004A02E9 /* ABPhoneField */,
-				06A16C231ACA9F5700EA96BD /* ABActionShit.h */,
-				06A16C241ACA9F5700EA96BD /* ABActionShit.m */,
-				06BC45161AB889110003F59E /* CircullarProgress.swift */,
-				0671592B1ABBC49D00D95719 /* CircullarNode.swift */,
-				06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */,
-				065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */,
-			);
-			name = Views;
+			name = Compose;
 			sourceTree = "<group>";
 		};
 		06CCE9411AD4A68200A17705 /* Pods */ = {
@@ -4353,11 +4340,11 @@
 				05C890591AD71E7D002BD07A /* SearchSources */,
 				05B432941ACC08810073BA69 /* Views */,
 				050E99B01ACB4D410052C06B /* Screens */,
-				069FE6CA1AC017AA00C6C033 /* ScreensOld */,
 				2563889E1A99C09D00A5E0E3 /* Model */,
 				06E4842C1AB78D7E00AA272F /* Utils */,
 				0672D1FF1AE64C670001CD32 /* Themes */,
 				06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */,
+				06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */,
 				0603232D1ADF066500C73C0F /* App.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
 				06CCE9411AD4A68200A17705 /* Pods */,
@@ -4722,6 +4709,7 @@
 				062E08981AF7C0AB0062215F /* Mont256.m in Sources */,
 				062E06861AF7C0AB0062215F /* RequestRemoveContact.m in Sources */,
 				062E06D11AF7C0AB0062215F /* UpdateMessageSent.m in Sources */,
+				06CC9B5F1AFAD80400377F67 /* GroupCreateController.swift in Sources */,
 				0541A05E1ACDA7420028E983 /* AAConversationGroupInfoCell.swift in Sources */,
 				062E07E81AF7C0AB0062215F /* ActorApiCallback.m in Sources */,
 				06FCF1761AB60B0F00422FEC /* CocoaLogProvider.swift in Sources */,

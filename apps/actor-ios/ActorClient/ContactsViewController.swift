@@ -185,11 +185,6 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.show()
-        
-        var selected = tableView.indexPathForSelectedRow();
-        if (selected != nil){
-            tableView.deselectRowAtIndexPath(selected!, animated: true);
-        }
     }
     
     func showSmsInvitation() {
@@ -206,6 +201,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
                 showSmsInvitation()
             } else {
                 doAddContact()
+            }
+            var selected = tableView.indexPathForSelectedRow();
+            if (selected != nil){
+                tableView.deselectRowAtIndexPath(selected!, animated: true);
             }
             return
         }
@@ -235,7 +234,8 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
                 MainAppTheme.navigation.applyStatusBarFast()
             })
         } else {
-            UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK") // TODO: Show or not to show?
+             // TODO: Show or not to show?
+            UIAlertView(title: "Error", message: "Cannot send SMS", delegate: nil, cancelButtonTitle: "OK").show()
         }
     }
     
@@ -250,11 +250,9 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
 // MARK: MFMessageComposeViewController Delegate
 
 extension ContactsViewController: MFMessageComposeViewControllerDelegate {
-    
     func messageComposeViewController(controller: MFMessageComposeViewController!, didFinishWithResult result: MessageComposeResult) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
-    
 }
 
 // MARK: -

@@ -27,8 +27,6 @@ get{
         builder.setFileSystemProvider(CocoaFileSystem())
         builder.setDispatcherProvider(CocoaDispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
-        builder.setEnableNetworkLogging(true)
-        builder.setEnableFilesLoggingWithBoolean(true)
         
         // Connection
         var url = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
