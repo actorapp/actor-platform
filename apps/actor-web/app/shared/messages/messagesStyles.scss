@@ -65,8 +65,12 @@
             background-color: rgba($baseColor, .05);
             img
             {
+                margin-top: 6px;
                 max-width: 300px;
                 height: auto;
+                @media (max-width: 396px) {
+                    max-width: 100%;
+                }
             }
             &__original
             {
@@ -77,7 +81,7 @@
         {
             display: inline-block;
 
-            padding: 10px;
+            padding: 10px 10px 10px 6px;
 
             color: rgba(0,0,0,.5);
             border-radius: 4px;
