@@ -443,70 +443,54 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
     private class EngineListener implements ListEngineDisplayListener<T> {
 
+        private void applyModification(final Modification<T> modification){
+            MVVMEngine.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (window.isInited()) {
+                        // TODO: Check if message from window
+                        editList(modification);
+                    } else {
+                        pendingModifications.add(modification);
+                    }
+                }
+            });
+        }
+
         @Override
         public void onItemRemoved(long id) {
-            Modification<T> modification = DisplayModifications.remove(id);
-            if (window.isInited()) {
-                // TODO: Check if message from window
-                editList(modification);
-            } else {
-                pendingModifications.add(modification);
-            }
+            final Modification<T> modification = DisplayModifications.remove(id);
+            applyModification(modification);
         }
 
         @Override
         public void onItemsRemoved(long[] ids) {
             Modification<T> modification = DisplayModifications.remove(ids);
-            if (window.isInited()) {
-                // TODO: Check if message from window
-                editList(modification);
-            } else {
-                pendingModifications.add(modification);
-            }
+            applyModification(modification);
         }
 
         @Override
         public void addOrUpdate(T item) {
             Modification<T> modification = DisplayModifications.addOrUpdate(item);
-            if (window.isInited()) {
-                // TODO: Check if message from window
-                editList(modification);
-            } else {
-                pendingModifications.add(modification);
-            }
+            applyModification(modification);
         }
 
         @Override
         public void addOrUpdate(List<T> items) {
             Modification<T> modification = DisplayModifications.addOrUpdate(items);
-            if (window.isInited()) {
-                // TODO: Check if message from window
-                editList(modification);
-            } else {
-                pendingModifications.add(modification);
-            }
+            applyModification(modification);
         }
 
         @Override
         public void onItemsReplaced(List<T> items) {
             Modification<T> modification = DisplayModifications.replace(items);
-            if (window.isInited()) {
-                // TODO: Check if message from window
-                editList(modification);
-            } else {
-                pendingModifications.add(modification);
-            }
+            applyModification(modification);
         }
 
         @Override
         public void onListClear() {
             Modification<T> modification = DisplayModifications.clear();
-            if (window.isInited()) {
-                // TODO: Check if message from window
-                editList(modification);
-            } else {
-                pendingModifications.add(modification);
-            }
+            applyModification(modification);
         }
     }
 
