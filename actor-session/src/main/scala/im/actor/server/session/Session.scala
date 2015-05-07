@@ -210,7 +210,7 @@ class Session(
     publisher: ActorRef,
     reSender:  ActorRef
   ): Unit = {
-    log.debug("Session message {}", message)
+    //log.debug("Session message {}", message)
     message match {
       case HandleMessageBox(messageBoxBytes) ⇒
         withValidMessageBox(client, messageBoxBytes) { mb ⇒
