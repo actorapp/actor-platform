@@ -53,10 +53,15 @@
         float: right;
         width: 20px;
         height: 20px;
+        font-size: 12px;
+        font-weight: 500;
         text-align: center;
         border-radius: 100%;
         background-color: $baseColor;
         color: white;
+      }
+      &--highlighted {
+        color: darken(rgb(148,148,148),20);
       }
     }
   }
