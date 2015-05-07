@@ -18,7 +18,7 @@
             </h3>
 
             <p ng-if="::message.content.content == 'text'"
-               ng-bind-html="::message.content.text | linky | nl2br"></p>
+               ng-bind-html="::message.content.text | linky:'_blank' | nl2br"></p>
 
             <div ng-if="::message.content.content == 'document'"
                  class="messages-list__item__document">
