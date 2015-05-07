@@ -80,6 +80,10 @@
 
 "ComposeTitle" = "Новое сообщение";
 
+"CreateGroup" = "Новая группа";
+
+"CreateGroupTitle" = "Новая группа";
+
 /*
  * Privacy
  */
@@ -97,6 +101,8 @@
 "ChatPlaceholder" = "Введите текст...";
 
 "ChatSend" = "Отпр.";
+
+"ChatNoGroupAccess" = "Вы не состоите в группе";
 
 /*
  * Placeholders

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PendingMessagesStorage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,37 +26,27 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pendingMessages_, JavaUtilArrayList *)
 
-
-#line 15
 @implementation ImActorModelModulesMessagesEntityPendingMessagesStorage
 
 + (ImActorModelModulesMessagesEntityPendingMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(data);
 }
 
-
-#line 23
 - (JavaUtilArrayList *)getPendingMessages {
   return pendingMessages_;
 }
 
-
-#line 28
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   for (IOSByteArray * __strong data in nil_chk([((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1])) {
     @try {
       [((JavaUtilArrayList *) nil_chk(pendingMessages_)) addWithId:ImActorModelModulesMessagesEntityPendingMessage_fromBytesWithByteArray_(data)];
     }
-    @catch (
-#line 32
-    JavaIoIOException *e) {
+    @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
 }
 
-
-#line 39
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:pendingMessages_];
 }
@@ -70,12 +58,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPendingMessagesStorage, pen
 
 @end
 
-
-#line 17
 ImActorModelModulesMessagesEntityPendingMessagesStorage *ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityPendingMessagesStorage_initialize();
-  
-#line 18
   return ((ImActorModelModulesMessagesEntityPendingMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityPendingMessagesStorage_init(), data));
 }
 

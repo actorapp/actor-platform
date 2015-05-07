@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UploadFileVM.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Modules.h"
@@ -101,12 +99,8 @@ __attribute__((unused)) static AMUploadFileVM_$1 *new_AMUploadFileVM_$1_initWith
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_$1)
 
-
-#line 15
 @implementation AMUploadFileVM
 
-
-#line 29
 - (instancetype)initWithLong:(jlong)rid
   withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)vmCallback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
@@ -114,26 +108,18 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   return self;
 }
 
-
-#line 53
 - (void)onObjectReceivedWithId:(id)obj {
   if ([obj isKindOfClass:[AMUploadFileVM_NotUploading class]]) {
     [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onNotUploaded];
   }
-  else
-#line 56
-  if ([obj isKindOfClass:[AMUploadFileVM_Uploading class]]) {
+  else if ([obj isKindOfClass:[AMUploadFileVM_Uploading class]]) {
     [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onUploadingWithFloat:[((AMUploadFileVM_Uploading *) nil_chk(((AMUploadFileVM_Uploading *) check_class_cast(obj, [AMUploadFileVM_Uploading class])))) getProgress]];
   }
-  else
-#line 58
-  if ([obj isKindOfClass:[AMUploadFileVM_Uploaded class]]) {
+  else if ([obj isKindOfClass:[AMUploadFileVM_Uploaded class]]) {
     [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onUploaded];
   }
 }
 
-
-#line 68
 - (void)detach {
   [super detach];
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getFilesModule])) unbindUploadFileWithLong:rid_ withAMUploadFileCallback:callback_];
@@ -141,23 +127,15 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 @end
 
-
-#line 29
 void AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withImActorModelModulesModules_(AMUploadFileVM *self, jlong rid, id<AMUploadFileVMCallback> vmCallback, ImActorModelModulesModules *modules) {
   (void) AMAsyncVM_init(self);
-  
-#line 30
   self->rid_ = rid;
   self->modules_ = modules;
   self->vmCallback_ = vmCallback;
   self->callback_ = new_AMUploadFileVM_$1_initWithAMUploadFileVM_(self);
-  
-#line 49
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getFilesModule])) bindUploadFileWithLong:rid withAMUploadFileCallback:self->callback_];
 }
 
-
-#line 29
 AMUploadFileVM *new_AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withImActorModelModulesModules_(jlong rid, id<AMUploadFileVMCallback> vmCallback, ImActorModelModulesModules *modules) {
   AMUploadFileVM *self = [AMUploadFileVM alloc];
   AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withImActorModelModulesModules_(self, rid, vmCallback, modules);
@@ -166,8 +144,6 @@ AMUploadFileVM *new_AMUploadFileVM_initWithLong_withAMUploadFileVMCallback_withI
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUploadFileVM)
 
-
-#line 73
 @implementation AMUploadFileVM_NotUploading
 
 - (instancetype)initWithAMUploadFileVM:(AMUploadFileVM *)outer$ {
@@ -189,37 +165,25 @@ AMUploadFileVM_NotUploading *new_AMUploadFileVM_NotUploading_initWithAMUploadFil
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUploadFileVM_NotUploading)
 
-
-#line 77
 @implementation AMUploadFileVM_Uploading
 
-
-#line 80
 - (instancetype)initWithAMUploadFileVM:(AMUploadFileVM *)outer$
                              withFloat:(jfloat)progress {
   AMUploadFileVM_Uploading_initWithAMUploadFileVM_withFloat_(self, outer$, progress);
   return self;
 }
 
-
-#line 84
 - (jfloat)getProgress {
   return progress_;
 }
 
 @end
 
-
-#line 80
 void AMUploadFileVM_Uploading_initWithAMUploadFileVM_withFloat_(AMUploadFileVM_Uploading *self, AMUploadFileVM *outer$, jfloat progress) {
   (void) NSObject_init(self);
-  
-#line 81
   self->progress_ = progress;
 }
 
-
-#line 80
 AMUploadFileVM_Uploading *new_AMUploadFileVM_Uploading_initWithAMUploadFileVM_withFloat_(AMUploadFileVM *outer$, jfloat progress) {
   AMUploadFileVM_Uploading *self = [AMUploadFileVM_Uploading alloc];
   AMUploadFileVM_Uploading_initWithAMUploadFileVM_withFloat_(self, outer$, progress);
@@ -228,8 +192,6 @@ AMUploadFileVM_Uploading *new_AMUploadFileVM_Uploading_initWithAMUploadFileVM_wi
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUploadFileVM_Uploading)
 
-
-#line 89
 @implementation AMUploadFileVM_Uploaded
 
 - (instancetype)initWithAMUploadFileVM:(AMUploadFileVM *)outer$ {
@@ -253,20 +215,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUploadFileVM_Uploaded)
 
 @implementation AMUploadFileVM_$1
 
-
-#line 35
 - (void)onNotUploading {
   [this$0_ postWithId:new_AMUploadFileVM_NotUploading_initWithAMUploadFileVM_(this$0_)];
 }
 
-
-#line 40
 - (void)onUploadingWithFloat:(jfloat)progress {
   [this$0_ postWithId:new_AMUploadFileVM_Uploading_initWithAMUploadFileVM_withFloat_(this$0_, progress)];
 }
 
-
-#line 45
 - (void)onUploaded {
   [this$0_ postWithId:new_AMUploadFileVM_Uploaded_initWithAMUploadFileVM_(this$0_)];
 }

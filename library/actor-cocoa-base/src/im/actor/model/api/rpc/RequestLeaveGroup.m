@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLeaveGroup.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorModelApiGroupOutPeer *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestLeaveGroup
 
-
-#line 27
 + (ImActorModelApiRpcRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid {
   ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(self, groupPeer, rid);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestLeaveGroup_init(self);
   return self;
 }
 
-
-#line 43
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
   return self->rid_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -80,8 +64,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
   [writer writeLongWithInt:2 withLong:self->rid_];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"rpc LeaveGroup{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -90,47 +72,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
   return res;
 }
 
-
-#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLeaveGroup_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestLeaveGroup *ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLeaveGroup_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestLeaveGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLeaveGroup_init(), data));
 }
 
 void ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiRpcRequestLeaveGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid) {
   ImActorModelApiRpcRequestLeaveGroup *self = [ImActorModelApiRpcRequestLeaveGroup alloc];
   ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(self, groupPeer, rid);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestLeaveGroup_init(ImActorModelApiRpcRequestLeaveGroup *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_init() {
   ImActorModelApiRpcRequestLeaveGroup *self = [ImActorModelApiRpcRequestLeaveGroup alloc];
   ImActorModelApiRpcRequestLeaveGroup_init(self);

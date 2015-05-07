@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeToOnline.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -29,38 +27,26 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestSubscribeToOnline
 
-
-#line 27
 + (ImActorModelApiRpcRequestSubscribeToOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users {
   ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(self, users);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestSubscribeToOnline_init(self);
   return self;
 }
 
-
-#line 41
 - (id<JavaUtilList>)getUsers {
   return self->users_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -69,14 +55,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
 
-
-#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->users_];
 }
 
-
-#line 60
 - (NSString *)description {
   NSString *res = @"rpc SubscribeToOnline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"users=", [((id<JavaUtilList>) nil_chk(self->users_)) size]));
@@ -84,48 +66,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
   return res;
 }
 
-
-#line 68
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSubscribeToOnline_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestSubscribeToOnline *ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSubscribeToOnline_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestSubscribeToOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSubscribeToOnline_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToOnline *self, id<JavaUtilList> users) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 34
   self->users_ = users;
 }
 
-
-#line 33
 ImActorModelApiRpcRequestSubscribeToOnline *new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(id<JavaUtilList> users) {
   ImActorModelApiRpcRequestSubscribeToOnline *self = [ImActorModelApiRpcRequestSubscribeToOnline alloc];
   ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(self, users);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiRpcRequestSubscribeToOnline_init(ImActorModelApiRpcRequestSubscribeToOnline *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 37
 ImActorModelApiRpcRequestSubscribeToOnline *new_ImActorModelApiRpcRequestSubscribeToOnline_init() {
   ImActorModelApiRpcRequestSubscribeToOnline *self = [ImActorModelApiRpcRequestSubscribeToOnline alloc];
   ImActorModelApiRpcRequestSubscribeToOnline_init(self);

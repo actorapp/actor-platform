@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/concurrency/TimerCompat.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/concurrency/TimerActor.h"
@@ -46,67 +44,43 @@ J2OBJC_TYPE_LITERAL_HEADER(AMTimerCompat_$1)
 
 J2OBJC_INITIALIZED_DEFN(AMTimerCompat)
 
-
-#line 13
 @implementation AMTimerCompat
 
-
-#line 24
 - (instancetype)initWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   AMTimerCompat_initWithJavaLangRunnable_(self, runnable);
   return self;
 }
 
-
-#line 28
 - (void)cancel {
   @synchronized(self) {
-    
-#line 29
     [((DKActorRef *) nil_chk(AMTimerCompat_TIMER_ACTOR_)) sendWithId:new_AMTimerActor_Cancel_initWithAMTimerCompat_(self)];
   }
 }
 
-
-#line 32
 - (void)scheduleWithLong:(jlong)delay {
   @synchronized(self) {
-    
-#line 33
     [((DKActorRef *) nil_chk(AMTimerCompat_TIMER_ACTOR_)) sendWithId:new_AMTimerActor_Schedule_initWithAMTimerCompat_withLong_(self, delay)];
   }
 }
 
-
-#line 36
 - (void)invokeRun {
   [((id<JavaLangRunnable>) nil_chk(runnable_)) run];
 }
 
 + (void)initialize {
   if (self == [AMTimerCompat class]) {
-    AMTimerCompat_TIMER_ACTOR_ =
-#line 15
-    [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(AMTimerActor_class_(), new_AMTimerCompat_$1_init()) withNSString:
-#line 20
-    @"actor/global_timer"];
+    AMTimerCompat_TIMER_ACTOR_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(AMTimerActor_class_(), new_AMTimerCompat_$1_init()) withNSString:@"actor/global_timer"];
     J2OBJC_SET_INITIALIZED(AMTimerCompat)
   }
 }
 
 @end
 
-
-#line 24
 void AMTimerCompat_initWithJavaLangRunnable_(AMTimerCompat *self, id<JavaLangRunnable> runnable) {
   (void) NSObject_init(self);
-  
-#line 25
   self->runnable_ = runnable;
 }
 
-
-#line 24
 AMTimerCompat *new_AMTimerCompat_initWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMTimerCompat *self = [AMTimerCompat alloc];
   AMTimerCompat_initWithJavaLangRunnable_(self, runnable);
@@ -117,8 +91,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMTimerCompat)
 
 @implementation AMTimerCompat_$1
 
-
-#line 17
 - (AMTimerActor *)create {
   return new_AMTimerActor_init();
 }

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactsRemoved.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,50 +25,34 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiUpdatesUpdateContactsRemoved
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateContactsRemoved *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids {
   ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(self, uids);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateContactsRemoved_init(self);
   return self;
 }
 
-
-#line 41
 - (id<JavaUtilList>)getUids {
   return self->uids_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uids_ = [((BSBserValues *) nil_chk(values)) getRepeatedIntWithInt:1];
 }
 
-
-#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedIntWithInt:1 withJavaUtilList:self->uids_];
 }
 
-
-#line 56
 - (NSString *)description {
   NSString *res = @"update ContactsRemoved{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uids=", [((id<JavaUtilList>) nil_chk(self->uids_)) size]));
@@ -78,48 +60,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsRemoved, uids_, id<JavaU
   return res;
 }
 
-
-#line 64
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateContactsRemoved_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateContactsRemoved *ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactsRemoved_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateContactsRemoved *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactsRemoved_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(ImActorModelApiUpdatesUpdateContactsRemoved *self, id<JavaUtilList> uids) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 34
   self->uids_ = uids;
 }
 
-
-#line 33
 ImActorModelApiUpdatesUpdateContactsRemoved *new_ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(id<JavaUtilList> uids) {
   ImActorModelApiUpdatesUpdateContactsRemoved *self = [ImActorModelApiUpdatesUpdateContactsRemoved alloc];
   ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(self, uids);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiUpdatesUpdateContactsRemoved_init(ImActorModelApiUpdatesUpdateContactsRemoved *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 37
 ImActorModelApiUpdatesUpdateContactsRemoved *new_ImActorModelApiUpdatesUpdateContactsRemoved_init() {
   ImActorModelApiUpdatesUpdateContactsRemoved *self = [ImActorModelApiUpdatesUpdateContactsRemoved alloc];
   ImActorModelApiUpdatesUpdateContactsRemoved_init(self);

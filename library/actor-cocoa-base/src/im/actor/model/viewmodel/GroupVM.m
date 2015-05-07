@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/GroupVM.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/MainThreadProvider.h"
@@ -70,88 +68,60 @@ __attribute__((unused)) static AMGroupVM_$1 *new_AMGroupVM_$1_initWithAMGroupVM_
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM_$1)
 
-
-#line 22
 @implementation AMGroupVM
 
-
-#line 41
 - (instancetype)initWithAMGroup:(AMGroup *)rawObj {
   AMGroupVM_initWithAMGroup_(self, rawObj);
   return self;
 }
 
-
-#line 58
 - (jint)getId {
   return id__;
 }
 
-
-#line 67
 - (jlong)getHash {
   return hash__;
 }
 
-
-#line 76
 - (jint)getCreatorId {
   return creatorId_;
 }
 
-
-#line 85
 - (jint)getMembersCount {
   return [((JavaUtilHashSet *) nil_chk([((AMValueModel *) nil_chk(members_)) get])) size];
 }
 
-
-#line 94
 - (AMValueModel *)getName {
   return name_;
 }
 
-
-#line 103
 - (AMValueModel *)getAvatar {
   return avatar_;
 }
 
-
-#line 112
 - (AMValueModel *)isMember {
   return isMember__;
 }
 
-
-#line 121
 - (AMValueModel *)getMembers {
   return members_;
 }
 
-
-#line 130
 - (AMValueModel *)getPresence {
   return presence_;
 }
 
-
-#line 135
 - (void)updateValuesWithId:(AMGroup *)rawObj {
   jboolean isChanged = NO;
   isChanged |= [((AMValueModel *) nil_chk(name_)) changeWithId:[((AMGroup *) nil_chk(rawObj)) getTitle]];
   isChanged |= [((AMValueModel *) nil_chk(avatar_)) changeWithId:[rawObj getAvatar]];
   isChanged |= [((AMValueModel *) nil_chk(isMember__)) changeWithId:JavaLangBoolean_valueOfWithBoolean_([rawObj isMember])];
   isChanged |= [((AMValueModel *) nil_chk(members_)) changeWithId:new_JavaUtilHashSet_initWithJavaUtilCollection_([rawObj getMembers])];
-  
-#line 142
   if (isChanged) {
     AMGroupVM_notifyChange(self);
   }
 }
 
-
-#line 153
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
@@ -161,8 +131,6 @@ J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM_$1)
   [((id<AMModelChangedListener>) nil_chk(listener)) onChangedWithId:self];
 }
 
-
-#line 168
 - (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:listener];
@@ -174,13 +142,9 @@ J2OBJC_TYPE_LITERAL_HEADER(AMGroupVM_$1)
 
 @end
 
-
-#line 41
 void AMGroupVM_initWithAMGroup_(AMGroupVM *self, AMGroup *rawObj) {
   (void) AMBaseValueModel_initWithId_(self, rawObj);
   self->listeners_ = new_JavaUtilArrayList_init();
-  
-#line 43
   self->id__ = [((AMGroup *) nil_chk(rawObj)) getGroupId];
   self->hash__ = [rawObj getAccessHash];
   self->creatorId_ = [rawObj getAdminId];
@@ -191,16 +155,12 @@ void AMGroupVM_initWithAMGroup_(AMGroupVM *self, AMGroup *rawObj) {
   self->presence_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"group.", self->id__, @".presence"), JavaLangInteger_valueOfWithInt_(0));
 }
 
-
-#line 41
 AMGroupVM *new_AMGroupVM_initWithAMGroup_(AMGroup *rawObj) {
   AMGroupVM *self = [AMGroupVM alloc];
   AMGroupVM_initWithAMGroup_(self, rawObj);
   return self;
 }
 
-
-#line 173
 void AMGroupVM_notifyChange(AMGroupVM *self) {
   [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:new_AMGroupVM_$1_initWithAMGroupVM_(self)];
 }
@@ -209,19 +169,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroupVM)
 
 @implementation AMGroupVM_$1
 
-
-#line 176
 - (void)run {
   {
-    IOSObjectArray *a__ =
-#line 177
-    [((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:AMModelChangedListener_class_()]];
+    IOSObjectArray *a__ = [((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:AMModelChangedListener_class_()]];
     id<AMModelChangedListener> const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     id<AMModelChangedListener> const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       id<AMModelChangedListener> l = *b__++;
-      
-#line 178
       [((id<AMModelChangedListener>) nil_chk(l)) onChangedWithId:this$0_];
     }
   }

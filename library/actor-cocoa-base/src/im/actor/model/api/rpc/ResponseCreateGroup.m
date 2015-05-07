@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCreateGroup.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -34,18 +32,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, groupPeer_, ImActorMo
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseCreateGroup
 
-
-#line 27
 + (ImActorModelApiRpcResponseCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(data);
 }
 
-
-#line 37
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                             withInt:(jint)seq
                                       withByteArray:(IOSByteArray *)state
@@ -55,15 +47,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   return self;
 }
 
-
-#line 45
 - (instancetype)init {
   ImActorModelApiRpcResponseCreateGroup_init(self);
   return self;
 }
 
-
-#line 49
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
@@ -84,8 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   return self->date_;
 }
 
-
-#line 70
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->seq_ = [values getIntWithInt:3];
@@ -94,8 +80,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   self->date_ = [values getLongWithInt:6];
 }
 
-
-#line 79
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -110,37 +94,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCreateGroup, users_, id<JavaUtilLi
   [writer writeLongWithInt:6 withLong:self->date_];
 }
 
-
-#line 94
 - (NSString *)description {
   NSString *res = @"tuple CreateGroup{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 101
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseCreateGroup_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseCreateGroup *ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseCreateGroup_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseCreateGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseCreateGroup_init(), data));
 }
 
-
-#line 37
 void ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(ImActorModelApiRpcResponseCreateGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 38
   self->groupPeer_ = groupPeer;
   self->seq_ = seq;
   self->state_ = state;
@@ -148,22 +120,16 @@ void ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_w
   self->date_ = date;
 }
 
-
-#line 37
 ImActorModelApiRpcResponseCreateGroup *new_ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date) {
   ImActorModelApiRpcResponseCreateGroup *self = [ImActorModelApiRpcResponseCreateGroup alloc];
   ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(self, groupPeer, seq, state, users, date);
   return self;
 }
 
-
-#line 45
 void ImActorModelApiRpcResponseCreateGroup_init(ImActorModelApiRpcResponseCreateGroup *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 45
 ImActorModelApiRpcResponseCreateGroup *new_ImActorModelApiRpcResponseCreateGroup_init() {
   ImActorModelApiRpcResponseCreateGroup *self = [ImActorModelApiRpcResponseCreateGroup alloc];
   ImActorModelApiRpcResponseCreateGroup_init(self);

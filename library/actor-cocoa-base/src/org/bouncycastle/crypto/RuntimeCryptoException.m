@@ -4,25 +4,17 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/RuntimeCryptoException.java"
-
 #include "J2ObjC_source.h"
 #include "java/lang/RuntimeException.h"
 #include "org/bouncycastle/crypto/RuntimeCryptoException.h"
 
-
-#line 6
 @implementation OrgBouncycastleCryptoRuntimeCryptoException
 
-
-#line 12
 - (instancetype)init {
   OrgBouncycastleCryptoRuntimeCryptoException_init(self);
   return self;
 }
 
-
-#line 21
 - (instancetype)initWithNSString:(NSString *)message {
   OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(self, message);
   return self;
@@ -30,30 +22,20 @@
 
 @end
 
-
-#line 12
 void OrgBouncycastleCryptoRuntimeCryptoException_init(OrgBouncycastleCryptoRuntimeCryptoException *self) {
   (void) JavaLangRuntimeException_init(self);
 }
 
-
-#line 12
 OrgBouncycastleCryptoRuntimeCryptoException *new_OrgBouncycastleCryptoRuntimeCryptoException_init() {
   OrgBouncycastleCryptoRuntimeCryptoException *self = [OrgBouncycastleCryptoRuntimeCryptoException alloc];
   OrgBouncycastleCryptoRuntimeCryptoException_init(self);
   return self;
 }
 
-
-#line 21
 void OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(OrgBouncycastleCryptoRuntimeCryptoException *self, NSString *message) {
-  (void) JavaLangRuntimeException_initWithNSString_(self,
-#line 24
-  message);
+  (void) JavaLangRuntimeException_initWithNSString_(self, message);
 }
 
-
-#line 21
 OrgBouncycastleCryptoRuntimeCryptoException *new_OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(NSString *message) {
   OrgBouncycastleCryptoRuntimeCryptoException *self = [OrgBouncycastleCryptoRuntimeCryptoException alloc];
   OrgBouncycastleCryptoRuntimeCryptoException_initWithNSString_(self, message);

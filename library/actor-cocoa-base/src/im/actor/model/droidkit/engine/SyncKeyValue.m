@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/SyncKeyValue.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/KeyValueStorage.h"
@@ -20,61 +18,39 @@
 
 J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
 
-
-#line 7
 @implementation DKSyncKeyValue
 
-
-#line 11
 - (instancetype)initWithDKKeyValueStorage:(id<DKKeyValueStorage>)storage {
   DKSyncKeyValue_initWithDKKeyValueStorage_(self, storage);
   return self;
 }
 
-
-#line 15
 - (void)putWithLong:(jlong)key
       withByteArray:(IOSByteArray *)data {
   @synchronized(self) {
-    
-#line 16
     [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:key withByteArray:data];
   }
 }
 
-
-#line 19
 - (void)delete__WithLong:(jlong)key {
   @synchronized(self) {
-    
-#line 20
     [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:key];
   }
 }
 
-
-#line 23
 - (IOSByteArray *)getWithLong:(jlong)key {
   @synchronized(self) {
-    
-#line 24
     return [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithLong:key];
   }
 }
 
 @end
 
-
-#line 11
 void DKSyncKeyValue_initWithDKKeyValueStorage_(DKSyncKeyValue *self, id<DKKeyValueStorage> storage) {
   (void) NSObject_init(self);
-  
-#line 12
   self->storage_ = storage;
 }
 
-
-#line 11
 DKSyncKeyValue *new_DKSyncKeyValue_initWithDKKeyValueStorage_(id<DKKeyValueStorage> storage) {
   DKSyncKeyValue *self = [DKSyncKeyValue alloc];
   DKSyncKeyValue_initWithDKKeyValueStorage_(self, storage);

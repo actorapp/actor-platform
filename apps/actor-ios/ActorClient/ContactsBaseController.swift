@@ -57,7 +57,11 @@ class ContactsBaseController: EngineListController {
     
     override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
         var contact = item as! AMContact;
-        let isLast = tableView.numberOfSections() == 1 && indexPath.row == tableView.numberOfRowsInSection(indexPath.section)-1;
+        var isLast = false
+        if (indexPath.section == tableView.numberOfSections() - 1) {
+            isLast = indexPath.row == tableView.numberOfRowsInSection(indexPath.section)
+        }
+        tableView.numberOfSections() == 1 && indexPath.row == tableView.numberOfRowsInSection(indexPath.section) - 1;
         
         // Building short name
         var shortName : String? = nil;

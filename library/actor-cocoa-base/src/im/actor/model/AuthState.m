@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/AuthState.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/AuthState.h"
@@ -20,8 +18,6 @@ J2OBJC_INITIALIZED_DEFN(AMAuthStateEnum)
 
 AMAuthStateEnum *AMAuthStateEnum_values_[4];
 
-
-#line 10
 @implementation AMAuthStateEnum
 
 - (instancetype)initWithNSString:(NSString *)__name

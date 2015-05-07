@@ -4,75 +4,47 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/PrimeField.java"
-
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/field/PrimeField.h"
 
-
-#line 5
 @implementation OrgBouncycastleMathFieldPrimeField
 
-
-#line 9
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)characteristic {
   OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(self, characteristic);
   return self;
 }
 
 - (JavaMathBigInteger *)getCharacteristic {
-  
-#line 16
   return characteristic_;
 }
 
-
-#line 19
 - (jint)getDimension {
-  
-#line 21
   return 1;
 }
 
-
-#line 24
 - (jboolean)isEqual:(id)obj {
-  
-#line 26
   if (self == obj) {
-    
-#line 28
     return YES;
   }
   if (!([obj isKindOfClass:[OrgBouncycastleMathFieldPrimeField class]])) {
-    
-#line 32
     return NO;
   }
   OrgBouncycastleMathFieldPrimeField *other = (OrgBouncycastleMathFieldPrimeField *) check_class_cast(obj, [OrgBouncycastleMathFieldPrimeField class]);
   return [((JavaMathBigInteger *) nil_chk(characteristic_)) isEqual:((OrgBouncycastleMathFieldPrimeField *) nil_chk(other))->characteristic_];
 }
 
-
-#line 38
 - (NSUInteger)hash {
-  
-#line 40
   return ((jint) [((JavaMathBigInteger *) nil_chk(characteristic_)) hash]);
 }
 
 @end
 
-
-#line 9
 void OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(OrgBouncycastleMathFieldPrimeField *self, JavaMathBigInteger *characteristic) {
   (void) NSObject_init(self);
   self->characteristic_ = characteristic;
 }
 
-
-#line 9
 OrgBouncycastleMathFieldPrimeField *new_OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(JavaMathBigInteger *characteristic) {
   OrgBouncycastleMathFieldPrimeField *self = [OrgBouncycastleMathFieldPrimeField alloc];
   OrgBouncycastleMathFieldPrimeField_initWithJavaMathBigInteger_(self, characteristic);

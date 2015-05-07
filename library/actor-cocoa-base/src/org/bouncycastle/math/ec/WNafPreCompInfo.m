@@ -4,62 +4,34 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WNafPreCompInfo.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/WNafPreCompInfo.h"
 
-
-#line 7
 @implementation OrgBouncycastleMathEcWNafPreCompInfo
 
-
-#line 27
 - (IOSObjectArray *)getPreComp {
-  
-#line 29
   return preComp_;
 }
 
-
-#line 32
 - (void)setPreCompWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preComp {
-  
-#line 34
   self->preComp_ = preComp;
 }
 
-
-#line 37
 - (IOSObjectArray *)getPreCompNeg {
-  
-#line 39
   return preCompNeg_;
 }
 
-
-#line 42
 - (void)setPreCompNegWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preCompNeg {
-  
-#line 44
   self->preCompNeg_ = preCompNeg;
 }
 
-
-#line 47
 - (OrgBouncycastleMathEcECPoint *)getTwice {
-  
-#line 49
   return twice_;
 }
 
-
-#line 52
 - (void)setTwiceWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)twice {
-  
-#line 54
   self->twice_ = twice;
 }
 
@@ -72,15 +44,9 @@
 
 void OrgBouncycastleMathEcWNafPreCompInfo_init(OrgBouncycastleMathEcWNafPreCompInfo *self) {
   (void) NSObject_init(self);
-  self->preComp_ =
-#line 13
-  nil;
-  self->preCompNeg_ =
-#line 19
-  nil;
-  self->twice_ =
-#line 25
-  nil;
+  self->preComp_ = nil;
+  self->preCompNeg_ = nil;
+  self->twice_ = nil;
 }
 
 OrgBouncycastleMathEcWNafPreCompInfo *new_OrgBouncycastleMathEcWNafPreCompInfo_init() {

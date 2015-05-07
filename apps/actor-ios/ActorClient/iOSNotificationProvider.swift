@@ -20,7 +20,11 @@ import AVFoundation
     }
     
     func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint, withBoolean silentUpdate: Bool) {
-        
+        NSLog("Perform notification")
+        var localNotification =  UILocalNotification ()
+        localNotification.alertTitle = "New Message!"
+        localNotification.alertBody = "Message body"
+        UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
     }
     
     func hideAllNotifications() {

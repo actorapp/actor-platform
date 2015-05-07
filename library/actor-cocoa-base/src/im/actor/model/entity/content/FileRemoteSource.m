@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FileRemoteSource.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,55 +29,39 @@ __attribute__((unused)) static void AMFileRemoteSource_init(AMFileRemoteSource *
 
 __attribute__((unused)) static AMFileRemoteSource *new_AMFileRemoteSource_init() NS_RETURNS_RETAINED;
 
-
-#line 13
 @implementation AMFileRemoteSource
 
 + (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
   return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
 }
 
-
-#line 23
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference {
   AMFileRemoteSource_initWithAMFileReference_(self, fileReference);
   return self;
 }
 
-
-#line 27
 - (instancetype)init {
   AMFileRemoteSource_init(self);
   return self;
 }
 
-
-#line 31
 - (AMFileReference *)getFileReference {
   return fileReference_;
 }
 
-
-#line 36
 - (jint)getSize {
   return [((AMFileReference *) nil_chk(fileReference_)) getFileSize];
 }
 
-
-#line 41
 - (NSString *)getFileName {
   return [((AMFileReference *) nil_chk(fileReference_)) getFileName];
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   fileReference_ = AMFileReference_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
 }
 
-
-#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileReference_];
@@ -87,42 +69,28 @@ __attribute__((unused)) static AMFileRemoteSource *new_AMFileRemoteSource_init()
 
 @end
 
-
-#line 15
 AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
   AMFileRemoteSource_initialize();
-  
-#line 16
   AMFileRemoteSource *fileLocalSource = new_AMFileRemoteSource_init();
   [fileLocalSource parseWithBSBserValues:reader];
   return fileLocalSource;
 }
 
-
-#line 23
 void AMFileRemoteSource_initWithAMFileReference_(AMFileRemoteSource *self, AMFileReference *fileReference) {
   (void) AMFileSource_init(self);
-  
-#line 24
   self->fileReference_ = fileReference;
 }
 
-
-#line 23
 AMFileRemoteSource *new_AMFileRemoteSource_initWithAMFileReference_(AMFileReference *fileReference) {
   AMFileRemoteSource *self = [AMFileRemoteSource alloc];
   AMFileRemoteSource_initWithAMFileReference_(self, fileReference);
   return self;
 }
 
-
-#line 27
 void AMFileRemoteSource_init(AMFileRemoteSource *self) {
   (void) AMFileSource_init(self);
 }
 
-
-#line 27
 AMFileRemoteSource *new_AMFileRemoteSource_init() {
   AMFileRemoteSource *self = [AMFileRemoteSource alloc];
   AMFileRemoteSource_init(self);

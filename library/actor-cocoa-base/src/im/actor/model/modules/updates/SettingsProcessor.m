@@ -4,16 +4,12 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/SettingsProcessor.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/updates/SettingsProcessor.h"
 
-
-#line 10
 @implementation ImActorModelModulesUpdatesSettingsProcessor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
@@ -21,8 +17,6 @@
   return self;
 }
 
-
-#line 16
 - (void)onSettingsChangedWithNSString:(NSString *)key
                          withNSString:(NSString *)value {
   [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getPreferences])) putString:key withValue:value];
@@ -30,14 +24,10 @@
 
 @end
 
-
-#line 12
 void ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesSettingsProcessor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
 }
 
-
-#line 12
 ImActorModelModulesUpdatesSettingsProcessor *new_ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUpdatesSettingsProcessor *self = [ImActorModelModulesUpdatesSettingsProcessor alloc];
   ImActorModelModulesUpdatesSettingsProcessor_initWithImActorModelModulesModules_(self, modules);

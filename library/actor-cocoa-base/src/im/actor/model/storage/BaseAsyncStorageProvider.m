@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/storage/BaseAsyncStorageProvider.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/engine/AsyncListEngine.h"
@@ -22,12 +20,8 @@
 
 #pragma clang diagnostic ignored "-Wprotocol"
 
-
-#line 18
 @implementation AMBaseAsyncStorageProvider
 
-
-#line 21
 - (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
@@ -35,8 +29,6 @@
   return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMContact_get_CREATOR_());
 }
 
-
-#line 29
 - (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
@@ -44,8 +36,6 @@
   return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMDialog_get_CREATOR_());
 }
 
-
-#line 37
 - (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
                                withDKListStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
