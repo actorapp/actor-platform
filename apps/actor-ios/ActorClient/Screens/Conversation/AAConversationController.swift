@@ -366,15 +366,18 @@ class AAConversationController: EngineSlackListController {
         var bubbleCell = (cell as! AABubbleCell)
         
         var preferCompact = false
-        var isShowDate = false
+        var isShowDate = true
         if (indexPath.row > 0) {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
-            isShowDate = showDate(message, next: next)
-            if (isShowDate) {
-                isShowDate = true
-                preferCompact = false
-            }
+        }
+        if (indexPath.row + 1 < getDisplayList().getSize()) {
+            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
+            isShowDate = showDate(message, prev: prev)
+        }
+        if (isShowDate) {
+            isShowDate = true
+            preferCompact = false
         }
 
         bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate)
@@ -397,9 +400,9 @@ class AAConversationController: EngineSlackListController {
         return false
     }
     
-    func showDate(source:AMMessage, next: AMMessage) -> Bool {
+    func showDate(source:AMMessage, prev: AMMessage) -> Bool {
         var currentDate = source.getDate() / (1000 * 60 * 60 * 24)
-        var nextDate = next.getDate() / (1000 * 60 * 60 * 24)
+        var nextDate = prev.getDate() / (1000 * 60 * 60 * 24)
         return currentDate != nextDate
     }
     
@@ -422,15 +425,18 @@ class AAConversationController: EngineSlackListController {
         var message = objectAtIndexPath(indexPath) as! AMMessage;
         
         var preferCompact = false
-        var isShowDate = false
+        var isShowDate = true
         if (indexPath.row > 0) {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
-            isShowDate = showDate(message, next: next)
-            if (isShowDate) {
-                isShowDate = true
-                preferCompact = false
-            }
+        }
+        if (indexPath.row + 1 < getDisplayList().getSize()) {
+            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
+            isShowDate = showDate(message, prev: prev)
+        }
+        if (isShowDate) {
+            isShowDate = true
+            preferCompact = false
         }
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
