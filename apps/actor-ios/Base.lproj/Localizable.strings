@@ -80,6 +80,10 @@
 
 "ComposeTitle" = "New Message";
 
+"CreateGroup" = "Create Group";
+
+"CreateGroupTitle" = "Create Group";
+
 /*
  * Privacy
  */

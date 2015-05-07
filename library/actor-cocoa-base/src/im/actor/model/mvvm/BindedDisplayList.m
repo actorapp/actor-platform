@@ -25,6 +25,7 @@
 #include "java/lang/Runnable.h"
 #include "java/lang/RuntimeException.h"
 #include "java/lang/System.h"
+#include "java/util/ArrayList.h"
 #include "java/util/Collections.h"
 #include "java/util/Comparator.h"
 #include "java/util/List.h"
@@ -47,6 +48,7 @@
   NSString *query_;
   jboolean isLoadMoreForwardRequested_;
   jboolean isLoadMoreBackwardRequested_;
+  JavaUtilArrayList *pendingModifications_;
 }
 
 - (void)loadMoreForward;
@@ -65,6 +67,7 @@ J2OBJC_FIELD_SETTER(AMBindedDisplayList, bindHook_, id<AMBindedDisplayList_BindH
 J2OBJC_FIELD_SETTER(AMBindedDisplayList, stateModel_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMBindedDisplayList, mode_, AMBindedDisplayList_ListModeEnum *)
 J2OBJC_FIELD_SETTER(AMBindedDisplayList, query_, NSString *)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList, pendingModifications_, JavaUtilArrayList *)
 
 static NSString *AMBindedDisplayList_TAG_ = @"BindedDisplayList";
 J2OBJC_STATIC_FIELD_GETTER(AMBindedDisplayList, TAG_, NSString *)
@@ -472,6 +475,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
 
 - (void)initEmpty {
   AMMVVMEngine_checkMainThread();
+  [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
   mode_ = AMBindedDisplayList_ListModeEnum_get_FORWARD();
   query_ = nil;
   [self editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
@@ -493,6 +497,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
+  [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$2_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
@@ -513,6 +518,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   isLoadMoreBackwardRequested_ = NO;
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitBackward];
+  [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$3_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
@@ -531,6 +537,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   isLoadMoreBackwardRequested_ = NO;
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitCenter];
+  [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadCenterWithLong:centerSortKey withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$4_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
@@ -556,6 +563,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   isLoadMoreBackwardRequested_ = NO;
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
+  [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
@@ -595,6 +603,7 @@ void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_with
   self->currentGeneration_ = 0;
   self->isLoadMoreForwardRequested_ = NO;
   self->isLoadMoreBackwardRequested_ = NO;
+  self->pendingModifications_ = new_JavaUtilArrayList_init();
   self->bindHook_ = bindHook;
   self->isGlobalList__ = isGlobalList;
   self->pageSize_ = pageSize;
@@ -696,28 +705,63 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
 @implementation AMBindedDisplayList_EngineListener
 
 - (void)onItemRemovedWithLong:(jlong)id_ {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_removeWithLong_(id_)];
+  id<AMDisplayList_Modification> modification = AMDisplayModifications_removeWithLong_(id_);
+  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
+    [this$0_ editListWithAMDisplayList_Modification:modification];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
+  }
 }
 
 - (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_removeWithLongArray_(ids)];
+  id<AMDisplayList_Modification> modification = AMDisplayModifications_removeWithLongArray_(ids);
+  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
+    [this$0_ editListWithAMDisplayList_Modification:modification];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
+  }
 }
 
 - (void)addOrUpdateWithId:(BSBserObject<DKListEngineItem> *)item {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item)];
+  id<AMDisplayList_Modification> modification = AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item);
+  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
+    [this$0_ editListWithAMDisplayList_Modification:modification];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
+  }
 }
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
+  id<AMDisplayList_Modification> modification = AMDisplayModifications_addOrUpdateWithJavaUtilList_(items);
+  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
+    [this$0_ editListWithAMDisplayList_Modification:modification];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
+  }
 }
 
 - (void)onItemsReplacedWithJavaUtilList:(id<JavaUtilList>)items {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
+  id<AMDisplayList_Modification> modification = AMDisplayModifications_replaceWithJavaUtilList_(items);
+  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
+    [this$0_ editListWithAMDisplayList_Modification:modification];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
+  }
 }
 
 - (void)onListClear {
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
+  id<AMDisplayList_Modification> modification = AMDisplayModifications_clear();
+  if ([((AMDisplayWindow *) nil_chk(this$0_->window_)) isInited]) {
+    [this$0_ editListWithAMDisplayList_Modification:modification];
+  }
+  else {
+    [((JavaUtilArrayList *) nil_chk(this$0_->pendingModifications_)) addWithId:modification];
+  }
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
@@ -909,6 +953,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$1)
   else {
     [this$0_->window_ onForwardCompleted];
   }
+  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithAMDisplayList_Modification:m];
+  }
+  [this$0_->pendingModifications_ clear];
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
@@ -944,6 +992,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$2)
   else {
     [this$0_->window_ onBackwardCompleted];
   }
+  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithAMDisplayList_Modification:m];
+  }
+  [this$0_->pendingModifications_ clear];
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
@@ -980,6 +1032,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$3)
     [this$0_->window_ onForwardCompleted];
     [this$0_->window_ onBackwardCompleted];
   }
+  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithAMDisplayList_Modification:m];
+  }
+  [this$0_->pendingModifications_ clear];
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
@@ -1013,6 +1069,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$4)
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
   }
+  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithAMDisplayList_Modification:m];
+  }
+  [this$0_->pendingModifications_ clear];
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
