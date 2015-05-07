@@ -28,19 +28,19 @@
 
               <md-icon md-svg-icon="assets/img/icons/ic_access_time_24px.svg"
                        ng-if="::dialog.state == 'pending'"
-                       class="dialogs__body__message__icon dialogs__body__message__icon--penging"></md-icon>
+                       class="status status--penging"></md-icon>
               <md-icon md-svg-icon="assets/img/icons/ic_done_24px.svg"
                        ng-if="::dialog.state == 'sent'"
-                       class="dialogs__body__message__icon dialogs__body__message__icon--sent"></md-icon>
+                       class="status status--sent"></md-icon>
               <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
                        ng-if="::dialog.state == 'received'"
-                       class="dialogs__body__message__icon dialogs__body__message__icon--received"></md-icon>
+                       class="status status--received"></md-icon>
               <md-icon md-svg-icon="assets/img/icons/ic_done_all_24px.svg"
                        ng-if="::dialog.state == 'read'"
-                       class="dialogs__body__message__icon dialogs__body__message__icon--read"></md-icon>
+                       class="status status--read"></md-icon>
               <md-icon md-svg-icon="assets/img/icons/ic_report_problem_24px.svg"
                        ng-if="::dialog.state == 'error'"
-                       class="dialogs__body__message__icon dialogs__body__message__icon--error"></md-icon>
+                       class="status status--error"></md-icon>
 
               {{ ::dialog.text | truncate : 22 }}
 
