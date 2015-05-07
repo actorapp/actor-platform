@@ -93,10 +93,6 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return 0;
         }
         
-        if (section != 0) {
-            return 0;
-        }
-        
         return Int(displayList.getSize());
     }
     
