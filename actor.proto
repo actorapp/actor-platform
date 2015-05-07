@@ -180,12 +180,6 @@ enum Sex {
     FEMALE = 3;
 }
 
-enum UserState {
-    REGISTERED = 1;
-    EMAIL = 2;
-    DELETED = 3;
-}
-
 // Extendend phone information
 // id Phone id
 // accessHash Access hash of phone number
@@ -232,7 +226,6 @@ message User {
     optional Avatar avatar = 8;
     repeated int32 phones = 9;
     repeated int32 emails = 10;
-    required UserState userState = 11;
 }
 
 // API#0x60
@@ -355,15 +348,6 @@ message UpdateUserContactsChanged {
     required int32 uid = 1;
     repeated int32 phones = 2;
     repeated int32 emails = 3;
-}
-
-// API#0x64
-// Update about user state changed
-// uid user's id
-// state new user state
-message UpdateUserStateChanged {
-    required int32 uid = 1;
-    required UserState state = 2;
 }
 
 //////////////////////////////////////////////////////
@@ -551,6 +535,7 @@ message UpdateContactRegistered {
     required int32 uid = 1;
     required bool isSilent = 2;
     required int64 date = 3;
+    required int64 rid = 4;
 }
 
 // API#0x28
@@ -1304,6 +1289,7 @@ message ResponseGetFileUploadUrl {
 // Comminting uploaded file to storage
 message RequestCommitFileUpload {
     required bytes uploadKey = 1;
+    required string fileName = 2;
 }
 
 // API#0x8A
