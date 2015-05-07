@@ -1,5 +1,5 @@
 <div class="compose" ng-show="compose.isEnabled" ng-controller="composeController as compose">
-    <form name="composeForm" role="form" enter-submit="compose.sendMessage()">
+    <form name="composeForm" role="form" enter-submit="compose.sendMessage()" ng-submit="compose.sendMessage()">
 
         <textarea class="compose__message"
                   ng-model="compose.message"
