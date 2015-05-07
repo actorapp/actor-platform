@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/CryptoException.java"
-
 #include "J2ObjC_source.h"
 #include "java/lang/Exception.h"
 #include "java/lang/Throwable.h"
@@ -20,85 +18,55 @@
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoCryptoException, cause_, JavaLangThrowable *)
 
-
-#line 6
 @implementation OrgBouncycastleCryptoCryptoException
 
-
-#line 14
 - (instancetype)init {
   OrgBouncycastleCryptoCryptoException_init(self);
   return self;
 }
 
-
-#line 23
 - (instancetype)initWithNSString:(NSString *)message {
   OrgBouncycastleCryptoCryptoException_initWithNSString_(self, message);
   return self;
 }
 
-
-#line 35
 - (instancetype)initWithNSString:(NSString *)message
            withJavaLangThrowable:(JavaLangThrowable *)cause {
   OrgBouncycastleCryptoCryptoException_initWithNSString_withJavaLangThrowable_(self, message, cause);
   return self;
 }
 
-
-#line 44
 - (JavaLangThrowable *)getCause {
-  
-#line 46
   return cause_;
 }
 
 @end
 
-
-#line 14
 void OrgBouncycastleCryptoCryptoException_init(OrgBouncycastleCryptoCryptoException *self) {
   (void) JavaLangException_init(self);
 }
 
-
-#line 14
 OrgBouncycastleCryptoCryptoException *new_OrgBouncycastleCryptoCryptoException_init() {
   OrgBouncycastleCryptoCryptoException *self = [OrgBouncycastleCryptoCryptoException alloc];
   OrgBouncycastleCryptoCryptoException_init(self);
   return self;
 }
 
-
-#line 23
 void OrgBouncycastleCryptoCryptoException_initWithNSString_(OrgBouncycastleCryptoCryptoException *self, NSString *message) {
-  (void) JavaLangException_initWithNSString_(self,
-#line 26
-  message);
+  (void) JavaLangException_initWithNSString_(self, message);
 }
 
-
-#line 23
 OrgBouncycastleCryptoCryptoException *new_OrgBouncycastleCryptoCryptoException_initWithNSString_(NSString *message) {
   OrgBouncycastleCryptoCryptoException *self = [OrgBouncycastleCryptoCryptoException alloc];
   OrgBouncycastleCryptoCryptoException_initWithNSString_(self, message);
   return self;
 }
 
-
-#line 35
 void OrgBouncycastleCryptoCryptoException_initWithNSString_withJavaLangThrowable_(OrgBouncycastleCryptoCryptoException *self, NSString *message, JavaLangThrowable *cause) {
-  (void) JavaLangException_initWithNSString_(self,
-#line 39
-  message);
-  
-#line 41
+  (void) JavaLangException_initWithNSString_(self, message);
   self->cause_ = cause;
 }
 
-
-#line 35
 OrgBouncycastleCryptoCryptoException *new_OrgBouncycastleCryptoCryptoException_initWithNSString_withJavaLangThrowable_(NSString *message, JavaLangThrowable *cause) {
   OrgBouncycastleCryptoCryptoException *self = [OrgBouncycastleCryptoCryptoException alloc];
   OrgBouncycastleCryptoCryptoException_initWithNSString_withJavaLangThrowable_(self, message, cause);

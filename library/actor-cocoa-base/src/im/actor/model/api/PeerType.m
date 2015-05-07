@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/PeerType.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/PeerType.h"
@@ -28,12 +26,8 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelApiPeerTypeEnum)
 
 ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[4];
 
-
-#line 12
 @implementation ImActorModelApiPeerTypeEnum
 
-
-#line 21
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -41,8 +35,6 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[4];
   return self;
 }
 
-
-#line 25
 - (jint)getValue {
   return value_;
 }
@@ -82,63 +74,37 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NS
 
 + (void)initialize {
   if (self == [ImActorModelApiPeerTypeEnum class]) {
-    ImActorModelApiPeerTypeEnum_PRIVATE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(
-#line 14
-    1, @"PRIVATE", 0);
-    ImActorModelApiPeerTypeEnum_GROUP = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(
-#line 15
-    2, @"GROUP", 1);
-    ImActorModelApiPeerTypeEnum_EMAIL = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(
-#line 16
-    3, @"EMAIL", 2);
-    ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(
-#line 17
-    -1, @"UNSUPPORTED_VALUE", 3);
+    ImActorModelApiPeerTypeEnum_PRIVATE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(1, @"PRIVATE", 0);
+    ImActorModelApiPeerTypeEnum_GROUP = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(2, @"GROUP", 1);
+    ImActorModelApiPeerTypeEnum_EMAIL = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(3, @"EMAIL", 2);
+    ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 3);
     J2OBJC_SET_INITIALIZED(ImActorModelApiPeerTypeEnum)
   }
 }
 
 @end
 
-
-#line 21
 void ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiPeerTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  
-#line 22
   self->value_ = value;
 }
 
-
-#line 21
 ImActorModelApiPeerTypeEnum *new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   ImActorModelApiPeerTypeEnum *self = [ImActorModelApiPeerTypeEnum alloc];
   ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-
-#line 29
 ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint value) {
   ImActorModelApiPeerTypeEnum_initialize();
-  
-#line 30
   switch (value) {
     case 1:
-    
-#line 31
     return ImActorModelApiPeerTypeEnum_PRIVATE;
     case 2:
-    
-#line 32
     return ImActorModelApiPeerTypeEnum_GROUP;
     case 3:
-    
-#line 33
     return ImActorModelApiPeerTypeEnum_EMAIL;
     default:
-    
-#line 34
     return ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE;
   }
 }

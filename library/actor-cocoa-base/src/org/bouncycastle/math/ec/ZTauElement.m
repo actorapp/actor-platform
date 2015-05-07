@@ -4,18 +4,12 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZTauElement.java"
-
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/ec/ZTauElement.h"
 
-
-#line 13
 @implementation OrgBouncycastleMathEcZTauElement
 
-
-#line 32
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)u
                     withJavaMathBigInteger:(JavaMathBigInteger *)v {
   OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, u, v);
@@ -24,16 +18,12 @@
 
 @end
 
-
-#line 32
 void OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleMathEcZTauElement *self, JavaMathBigInteger *u, JavaMathBigInteger *v) {
   (void) NSObject_init(self);
   self->u_ = u;
   self->v_ = v;
 }
 
-
-#line 32
 OrgBouncycastleMathEcZTauElement *new_OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *u, JavaMathBigInteger *v) {
   OrgBouncycastleMathEcZTauElement *self = [OrgBouncycastleMathEcZTauElement alloc];
   OrgBouncycastleMathEcZTauElement_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, u, v);

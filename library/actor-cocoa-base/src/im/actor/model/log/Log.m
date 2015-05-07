@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/log/Log.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/LogProvider.h"
 #include "im/actor/model/log/Log.h"
@@ -15,12 +13,8 @@ static id<AMLogProvider> AMLog_log_;
 J2OBJC_STATIC_FIELD_GETTER(AMLog, log_, id<AMLogProvider>)
 J2OBJC_STATIC_FIELD_SETTER(AMLog, log_, id<AMLogProvider>)
 
-
-#line 9
 @implementation AMLog
 
-
-#line 13
 + (id<AMLogProvider>)getLog {
   return AMLog_getLog();
 }
@@ -34,22 +28,16 @@ J2OBJC_STATIC_FIELD_SETTER(AMLog, log_, id<AMLogProvider>)
   AMLog_wWithNSString_withNSString_(tag, message);
 }
 
-
-#line 27
 + (void)eWithNSString:(NSString *)tag
 withJavaLangThrowable:(JavaLangThrowable *)throwable {
   AMLog_eWithNSString_withJavaLangThrowable_(tag, throwable);
 }
 
-
-#line 33
 + (void)dWithNSString:(NSString *)tag
          withNSString:(NSString *)message {
   AMLog_dWithNSString_withNSString_(tag, message);
 }
 
-
-#line 39
 + (void)vWithNSString:(NSString *)tag
          withNSString:(NSString *)message {
   AMLog_vWithNSString_withNSString_(tag, message);
@@ -62,63 +50,39 @@ withJavaLangThrowable:(JavaLangThrowable *)throwable {
 
 @end
 
-
-#line 13
 id<AMLogProvider> AMLog_getLog() {
   AMLog_initialize();
-  
-#line 14
   return AMLog_log_;
 }
 
-
-#line 17
 void AMLog_setLogWithAMLogProvider_(id<AMLogProvider> log) {
   AMLog_initialize();
-  
-#line 18
   AMLog_log_ = log;
 }
 
-
-#line 21
 void AMLog_wWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
-  
-#line 22
   if (AMLog_log_ != nil) {
     [AMLog_log_ w:tag withMessage:message];
   }
 }
 
-
-#line 27
 void AMLog_eWithNSString_withJavaLangThrowable_(NSString *tag, JavaLangThrowable *throwable) {
   AMLog_initialize();
-  
-#line 28
   if (AMLog_log_ != nil) {
     [AMLog_log_ v:tag withError:throwable];
   }
 }
 
-
-#line 33
 void AMLog_dWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
-  
-#line 34
   if (AMLog_log_ != nil) {
     [AMLog_log_ d:tag withMessage:message];
   }
 }
 
-
-#line 39
 void AMLog_vWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
-  
-#line 40
   if (AMLog_log_ != nil) {
     [AMLog_log_ v:tag withMessage:message];
   }

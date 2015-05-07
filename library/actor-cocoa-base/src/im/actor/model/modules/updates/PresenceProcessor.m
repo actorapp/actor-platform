@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/PresenceProcessor.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -22,31 +20,21 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_, DKActorRef *)
 
-
-#line 14
 @implementation ImActorModelModulesUpdatesPresenceProcessor
 
-
-#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
-
-#line 24
 - (void)onUserOnlineWithInt:(jint)uid {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(uid)];
 }
 
-
-#line 29
 - (void)onUserOfflineWithInt:(jint)uid {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(uid)];
 }
 
-
-#line 34
 - (void)onUserLastSeenWithInt:(jint)uid
                      withLong:(jlong)date {
   [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(uid, date)];
@@ -59,15 +47,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_,
 
 @end
 
-
-#line 18
 void ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesPresenceProcessor *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->presenceActor_ = ImActorModelModulesPresencePresenceActor_getWithImActorModelModulesModules_(modules);
 }
 
-
-#line 18
 ImActorModelModulesUpdatesPresenceProcessor *new_ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesUpdatesPresenceProcessor *self = [ImActorModelModulesUpdatesPresenceProcessor alloc];
   ImActorModelModulesUpdatesPresenceProcessor_initWithImActorModelModulesModules_(self, modules);

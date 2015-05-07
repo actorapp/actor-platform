@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/DialogBuilder.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/ContentType.h"
@@ -39,26 +37,18 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, messageType_, AMContentTypeEnum *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, text_, NSString *)
 J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 
-
-#line 7
 @implementation AMDialogBuilder
 
-
-#line 21
 - (instancetype)init {
   AMDialogBuilder_init(self);
   return self;
 }
 
-
-#line 25
 - (instancetype)initWithAMDialog:(AMDialog *)dialog {
   AMDialogBuilder_initWithAMDialog_(self, dialog);
   return self;
 }
 
-
-#line 40
 - (AMDialogBuilder *)setPeerWithAMPeer:(AMPeer *)peer {
   self->peer_ = peer;
   return self;
@@ -125,32 +115,20 @@ J2OBJC_FIELD_SETTER(AMDialogBuilder, status_, AMMessageStateEnum *)
 
 @end
 
-
-#line 21
 void AMDialogBuilder_init(AMDialogBuilder *self) {
   (void) NSObject_init(self);
-  self->relatedUid_ =
-#line 19
-  0;
+  self->relatedUid_ = 0;
 }
 
-
-#line 21
 AMDialogBuilder *new_AMDialogBuilder_init() {
   AMDialogBuilder *self = [AMDialogBuilder alloc];
   AMDialogBuilder_init(self);
   return self;
 }
 
-
-#line 25
 void AMDialogBuilder_initWithAMDialog_(AMDialogBuilder *self, AMDialog *dialog) {
   (void) NSObject_init(self);
-  self->relatedUid_ =
-#line 19
-  0;
-  
-#line 26
+  self->relatedUid_ = 0;
   self->peer_ = [((AMDialog *) nil_chk(dialog)) getPeer];
   self->sortKey_ = [dialog getSortDate];
   self->dialogTitle_ = [dialog getDialogTitle];
@@ -165,8 +143,6 @@ void AMDialogBuilder_initWithAMDialog_(AMDialogBuilder *self, AMDialog *dialog) 
   self->relatedUid_ = [dialog getRelatedUid];
 }
 
-
-#line 25
 AMDialogBuilder *new_AMDialogBuilder_initWithAMDialog_(AMDialog *dialog) {
   AMDialogBuilder *self = [AMDialogBuilder alloc];
   AMDialogBuilder_initWithAMDialog_(self, dialog);

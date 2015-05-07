@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/Actor.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorContext.h"
@@ -34,19 +32,13 @@ __attribute__((unused)) static DKActorRef *DKActor_self__(DKActor *self);
 
 __attribute__((unused)) static DKActorRef *DKActor_sender(DKActor *self);
 
-
-#line 13
 @implementation DKActor
 
-
-#line 20
 - (instancetype)init {
   DKActor_init(self);
   return self;
 }
 
-
-#line 32
 - (void)initActorWithNSString:(NSString *)path
            withDKActorContext:(DKActorContext *)context
                 withDKMailbox:(DKMailbox *)mailbox {
@@ -55,73 +47,49 @@ __attribute__((unused)) static DKActorRef *DKActor_sender(DKActor *self);
   self->mailbox_ = mailbox;
 }
 
-
-#line 43
 - (DKActorSystem *)system {
   return DKActor_system(self);
 }
 
-
-#line 52
 - (DKActorRef *)self__ {
   return DKActor_self__(self);
 }
 
-
-#line 61
 - (DKActorContext *)context {
   return context__;
 }
 
-
-#line 70
 - (DKActorRef *)sender {
   return DKActor_sender(self);
 }
 
-
-#line 79
 - (NSString *)getPath {
   return path_;
 }
 
-
-#line 88
 - (DKMailbox *)getMailbox {
   return mailbox_;
 }
 
-
-#line 95
 - (void)preStart {
 }
 
-
-#line 104
 - (void)onReceiveWithId:(id)message {
   [self dropWithId:message];
 }
 
-
-#line 111
 - (void)postStop {
 }
 
-
-#line 118
 - (void)finallyStop {
 }
 
-
-#line 127
 - (void)replyWithId:(id)message {
   if ([((DKActorContext *) nil_chk(context__)) sender] != nil) {
     [((DKActorRef *) nil_chk([context__ sender])) sendWithId:message withDKActorRef:DKActor_self__(self)];
   }
 }
 
-
-#line 138
 - (void)dropWithId:(id)message {
   if ([((DKActorSystem *) nil_chk(DKActor_system(self))) getTraceInterface] != nil) {
     [((id<DKTraceInterface>) nil_chk([((DKActorSystem *) nil_chk(DKActor_system(self))) getTraceInterface])) onDropWithDKActorRef:DKActor_sender(self) withId:message withDKActor:self];
@@ -131,34 +99,24 @@ __attribute__((unused)) static DKActorRef *DKActor_sender(DKActor *self);
 
 @end
 
-
-#line 20
 void DKActor_init(DKActor *self) {
   (void) NSObject_init(self);
 }
 
-
-#line 20
 DKActor *new_DKActor_init() {
   DKActor *self = [DKActor alloc];
   DKActor_init(self);
   return self;
 }
 
-
-#line 43
 DKActorSystem *DKActor_system(DKActor *self) {
   return [((DKActorContext *) nil_chk(self->context__)) getSystem];
 }
 
-
-#line 52
 DKActorRef *DKActor_self__(DKActor *self) {
   return [((DKActorContext *) nil_chk(self->context__)) getSelf];
 }
 
-
-#line 70
 DKActorRef *DKActor_sender(DKActor *self) {
   return [((DKActorContext *) nil_chk(self->context__)) sender];
 }

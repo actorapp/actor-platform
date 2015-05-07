@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/digests/GeneralDigest.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/System.h"
@@ -30,19 +28,13 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoDigestsGeneralDigest, xBuf_, IOSByteArr
 
 J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsGeneralDigest, BYTE_LENGTH, jint)
 
-
-#line 11
 @implementation OrgBouncycastleCryptoDigestsGeneralDigest
 
-
-#line 24
 - (instancetype)init {
   OrgBouncycastleCryptoDigestsGeneralDigest_init(self);
   return self;
 }
 
-
-#line 34
 - (instancetype)initWithOrgBouncycastleCryptoDigestsGeneralDigest:(OrgBouncycastleCryptoDigestsGeneralDigest *)t {
   OrgBouncycastleCryptoDigestsGeneralDigest_initWithOrgBouncycastleCryptoDigestsGeneralDigest_(self, t);
   return self;
@@ -53,169 +45,87 @@ J2OBJC_STATIC_FIELD_GETTER(OrgBouncycastleCryptoDigestsGeneralDigest, BYTE_LENGT
   return self;
 }
 
-
-#line 46
 - (void)copyInWithOrgBouncycastleCryptoDigestsGeneralDigest:(OrgBouncycastleCryptoDigestsGeneralDigest *)t {
-  
-#line 48
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(((OrgBouncycastleCryptoDigestsGeneralDigest *) nil_chk(t))->xBuf_, 0, xBuf_, 0, ((IOSByteArray *) nil_chk(t->xBuf_))->size_);
-  
-#line 50
   xBufOff_ = t->xBufOff_;
   byteCount_ = t->byteCount_;
 }
 
-
-#line 54
 - (void)updateWithByte:(jbyte)inArg {
-  
-#line 57
   *IOSByteArray_GetRef(nil_chk(xBuf_), xBufOff_++) = inArg;
-  
-#line 59
   if (xBufOff_ == xBuf_->size_) {
-    
-#line 61
     [self processWordWithByteArray:xBuf_ withInt:0];
     xBufOff_ = 0;
   }
-  
-#line 65
   byteCount_++;
 }
 
-
-#line 68
 - (void)updateWithByteArray:(IOSByteArray *)inArg
                     withInt:(jint)inOff
                     withInt:(jint)len {
-  
-#line 76
   while ((xBufOff_ != 0) && (len > 0)) {
-    
-#line 78
     [self updateWithByte:IOSByteArray_Get(nil_chk(inArg), inOff)];
-    
-#line 80
     inOff++;
     len--;
   }
-  
-#line 87
   while (len > ((IOSByteArray *) nil_chk(xBuf_))->size_) {
-    
-#line 89
     [self processWordWithByteArray:inArg withInt:inOff];
-    
-#line 91
     inOff += xBuf_->size_;
     len -= xBuf_->size_;
     byteCount_ += xBuf_->size_;
   }
-  
-#line 99
   while (len > 0) {
-    
-#line 101
     [self updateWithByte:IOSByteArray_Get(nil_chk(inArg), inOff)];
-    
-#line 103
     inOff++;
     len--;
   }
 }
 
-
-#line 108
 - (void)finish {
-  
-#line 110
   jlong bitLength = (LShift64(byteCount_, 3));
-  
-#line 115
   [self updateWithByte:(jbyte) 128];
-  
-#line 117
   while (xBufOff_ != 0) {
-    
-#line 119
     [self updateWithByte:(jbyte) 0];
   }
-  
-#line 122
   [self processLengthWithLong:bitLength];
-  
-#line 124
   [self processBlock];
 }
 
-
-#line 127
 - (void)reset {
-  
-#line 129
   byteCount_ = 0;
-  
-#line 131
   xBufOff_ = 0;
   for (jint i = 0; i < ((IOSByteArray *) nil_chk(xBuf_))->size_; i++) {
-    
-#line 134
     *IOSByteArray_GetRef(xBuf_, i) = 0;
   }
 }
 
-
-#line 138
 - (void)populateStateWithByteArray:(IOSByteArray *)state {
-  
-#line 140
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(xBuf_, 0, state, 0, xBufOff_);
   OrgBouncycastleUtilPack_intToBigEndianWithInt_withByteArray_withInt_(xBufOff_, state, 4);
   OrgBouncycastleUtilPack_longToBigEndianWithLong_withByteArray_withInt_(byteCount_, state, 8);
 }
 
-
-#line 145
 - (jint)getByteLength {
-  
-#line 147
   return OrgBouncycastleCryptoDigestsGeneralDigest_BYTE_LENGTH;
 }
 
 @end
 
-
-#line 24
 void OrgBouncycastleCryptoDigestsGeneralDigest_init(OrgBouncycastleCryptoDigestsGeneralDigest *self) {
   (void) NSObject_init(self);
-  self->xBuf_ = [IOSByteArray newArrayWithLength:
-#line 16
-  4];
-  
-#line 26
+  self->xBuf_ = [IOSByteArray newArrayWithLength:4];
   self->xBufOff_ = 0;
 }
 
 void OrgBouncycastleCryptoDigestsGeneralDigest_initWithOrgBouncycastleCryptoDigestsGeneralDigest_(OrgBouncycastleCryptoDigestsGeneralDigest *self, OrgBouncycastleCryptoDigestsGeneralDigest *t) {
   (void) NSObject_init(self);
-  self->xBuf_ = [IOSByteArray newArrayWithLength:
-#line 16
-  4];
-  
-#line 36
+  self->xBuf_ = [IOSByteArray newArrayWithLength:4];
   [self copyInWithOrgBouncycastleCryptoDigestsGeneralDigest:t];
 }
 
-
-#line 39
 void OrgBouncycastleCryptoDigestsGeneralDigest_initWithByteArray_(OrgBouncycastleCryptoDigestsGeneralDigest *self, IOSByteArray *encodedState) {
   (void) NSObject_init(self);
-  self->xBuf_ = [IOSByteArray newArrayWithLength:
-#line 16
-  4];
-  
-#line 41
+  self->xBuf_ = [IOSByteArray newArrayWithLength:4];
   JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(encodedState, 0, self->xBuf_, 0, self->xBuf_->size_);
   self->xBufOff_ = OrgBouncycastleUtilPack_bigEndianToIntWithByteArray_withInt_(encodedState, 4);
   self->byteCount_ = OrgBouncycastleUtilPack_bigEndianToLongWithByteArray_withInt_(encodedState, 8);

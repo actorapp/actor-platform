@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/connection/AsyncConnection.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -26,20 +24,14 @@
 J2OBJC_FIELD_SETTER(AMAsyncConnection, connection_, id<AMAsyncConnectionInterface>)
 J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 
-
-#line 9
 @implementation AMAsyncConnection
 
-
-#line 13
 - (instancetype)initWithAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
               withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connection {
   AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(self, endpoint, connection);
   return self;
 }
 
-
-#line 24
 - (AMConnectionEndpoint *)getEndpoint {
   return endpoint_;
 }
@@ -58,12 +50,8 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 
 @end
 
-
-#line 13
 void AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection) {
   (void) NSObject_init(self);
-  
-#line 14
   self->connection_ = connection;
   self->endpoint_ = endpoint;
 }

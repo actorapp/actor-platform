@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/CursorReceiverActor.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestMessageReceived.h"
@@ -56,8 +54,6 @@ __attribute__((unused)) static ImActorModelModulesMessagesCursorReceiverActor_$1
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReceiverActor_$1)
 
-
-#line 15
 @implementation ImActorModelModulesMessagesCursorReceiverActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
@@ -68,40 +64,28 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReceiverActor_$1)
 - (void)performWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date {
   ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
-  
-#line 25
   if (outPeer == nil) {
     return;
   }
-  
-#line 29
   [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(outPeer, date) withAMRpcCallback:new_ImActorModelModulesMessagesCursorReceiverActor_$1_initWithImActorModelModulesMessagesCursorReceiverActor_withAMPeer_withLong_(self, peer, date)];
 }
 
-
-#line 43
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesCursorReceiverActor_MarkReceived class]]) {
     ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *received = (ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *) check_class_cast(message, [ImActorModelModulesMessagesCursorReceiverActor_MarkReceived class]);
     [self moveCursorWithAMPeer:[((ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *) nil_chk(received)) getPeer] withLong:[received getDate]];
   }
   else {
-    
-#line 48
     [super onReceiveWithId:message];
   }
 }
 
 @end
 
-
-#line 17
 void ImActorModelModulesMessagesCursorReceiverActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesCursorReceiverActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesMessagesCursorActor_initWithLong_withImActorModelModulesModules_(self, ImActorModelModulesUtilsModuleActor_CURSOR_RECEIVED, messenger);
 }
 
-
-#line 17
 ImActorModelModulesMessagesCursorReceiverActor *new_ImActorModelModulesMessagesCursorReceiverActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesMessagesCursorReceiverActor *self = [ImActorModelModulesMessagesCursorReceiverActor alloc];
   ImActorModelModulesMessagesCursorReceiverActor_initWithImActorModelModulesModules_(self, messenger);
@@ -110,20 +94,14 @@ ImActorModelModulesMessagesCursorReceiverActor *new_ImActorModelModulesMessagesC
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor)
 
-
-#line 52
 @implementation ImActorModelModulesMessagesCursorReceiverActor_MarkReceived
 
-
-#line 56
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)date {
   ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(self, peer, date);
   return self;
 }
 
-
-#line 61
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -134,18 +112,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor)
 
 @end
 
-
-#line 56
 void ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *self, AMPeer *peer, jlong date) {
   (void) NSObject_init(self);
-  
-#line 57
   self->peer_ = peer;
   self->date_ = date;
 }
 
-
-#line 56
 ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *new_ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(AMPeer *peer, jlong date) {
   ImActorModelModulesMessagesCursorReceiverActor_MarkReceived *self = [ImActorModelModulesMessagesCursorReceiverActor_MarkReceived alloc];
   ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(self, peer, date);
@@ -156,14 +128,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor_
 
 @implementation ImActorModelModulesMessagesCursorReceiverActor_$1
 
-
-#line 31
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
   [this$0_ onCompletedWithAMPeer:val$peer_ withLong:val$date_];
 }
 
-
-#line 36
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_ onErrorWithAMPeer:val$peer_ withLong:val$date_];
 }

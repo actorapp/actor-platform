@@ -4,14 +4,10 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/util/Integers.java"
-
 #include "J2ObjC_source.h"
 #include "java/lang/Integer.h"
 #include "org/bouncycastle/util/Integers.h"
 
-
-#line 3
 @implementation OrgBouncycastleUtilIntegers
 
 + (jint)rotateLeftWithInt:(jint)i
@@ -35,8 +31,6 @@
 
 @end
 
-
-#line 5
 jint OrgBouncycastleUtilIntegers_rotateLeftWithInt_withInt_(jint i, jint distance) {
   OrgBouncycastleUtilIntegers_initialize();
   return JavaLangInteger_rotateLeftWithInt_withInt_(i, distance);
