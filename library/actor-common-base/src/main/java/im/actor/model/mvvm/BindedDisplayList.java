@@ -4,6 +4,7 @@
 
 package im.actor.model.mvvm;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,6 +40,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private String query;
     private boolean isLoadMoreForwardRequested = false;
     private boolean isLoadMoreBackwardRequested = false;
+    private ArrayList<Modification<T>> pendingModifications = new ArrayList<Modification<T>>();
 
     public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
                              int pageSize, int loadGap, BindHook<T> bindHook) {
@@ -98,6 +100,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     public void initEmpty() {
         MVVMEngine.checkMainThread();
 
+        pendingModifications.clear();
         mode = ListMode.FORWARD;
         query = null;
 
@@ -129,6 +132,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         stateModel.change(State.LOADING_EMPTY);
         currentGeneration++;
         window.startInitForward();
+        pendingModifications.clear();
 
         // Log.d(TAG, "Starting load generation " + currentGeneration);
         listEngine.loadForward(pageSize, cover(new ListEngineDisplayLoadCallback<T>() {
@@ -145,6 +149,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 } else {
                     window.onForwardCompleted();
                 }
+                for (Modification<T> m : pendingModifications) {
+                    editList(m);
+                }
+                pendingModifications.clear();
             }
         }, currentGeneration));
     }
@@ -171,6 +179,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         isLoadMoreBackwardRequested = false;
         currentGeneration++;
         window.startInitBackward();
+        pendingModifications.clear();
 
         listEngine.loadBackward(pageSize, cover(new ListEngineDisplayLoadCallback<T>() {
             @Override
@@ -184,6 +193,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 } else {
                     window.onBackwardCompleted();
                 }
+                for (Modification<T> m : pendingModifications) {
+                    editList(m);
+                }
+                pendingModifications.clear();
             }
         }, currentGeneration));
     }
@@ -206,6 +219,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         isLoadMoreBackwardRequested = false;
         currentGeneration++;
         window.startInitCenter();
+        pendingModifications.clear();
 
         listEngine.loadCenter(centerSortKey, pageSize, cover(new ListEngineDisplayLoadCallback<T>() {
             @Override
@@ -220,6 +234,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     window.onForwardCompleted();
                     window.onBackwardCompleted();
                 }
+                for (Modification<T> m : pendingModifications) {
+                    editList(m);
+                }
+                pendingModifications.clear();
             }
         }, currentGeneration));
     }
@@ -251,6 +269,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         isLoadMoreBackwardRequested = false;
         currentGeneration++;
         window.startInitForward();
+        pendingModifications.clear();
 
         listEngine.loadForward(query, pageSize, cover(new ListEngineDisplayLoadCallback<T>() {
             @Override
@@ -264,6 +283,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 if (items.size() == 0) {
                     window.onForwardCompleted();
                 }
+                for (Modification<T> m : pendingModifications) {
+                    editList(m);
+                }
+                pendingModifications.clear();
             }
         }, currentGeneration));
     }
@@ -422,39 +445,68 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
         @Override
         public void onItemRemoved(long id) {
-            // TODO: Check if message from window
-            editList((Modification) DisplayModifications.remove(id));
+            Modification<T> modification = DisplayModifications.remove(id);
+            if (window.isInited()) {
+                // TODO: Check if message from window
+                editList(modification);
+            } else {
+                pendingModifications.add(modification);
+            }
         }
 
         @Override
         public void onItemsRemoved(long[] ids) {
-            // TODO: Check if message from window
-            editList((Modification) DisplayModifications.remove(ids));
+            Modification<T> modification = DisplayModifications.remove(ids);
+            if (window.isInited()) {
+                // TODO: Check if message from window
+                editList(modification);
+            } else {
+                pendingModifications.add(modification);
+            }
         }
 
         @Override
         public void addOrUpdate(T item) {
-            // TODO: Check if message from window
-            editList(DisplayModifications.addOrUpdate(item));
+            Modification<T> modification = DisplayModifications.addOrUpdate(item);
+            if (window.isInited()) {
+                // TODO: Check if message from window
+                editList(modification);
+            } else {
+                pendingModifications.add(modification);
+            }
         }
 
         @Override
         public void addOrUpdate(List<T> items) {
-            // TODO: Check if message from window
-            editList(DisplayModifications.addOrUpdate(items));
+            Modification<T> modification = DisplayModifications.addOrUpdate(items);
+            if (window.isInited()) {
+                // TODO: Check if message from window
+                editList(modification);
+            } else {
+                pendingModifications.add(modification);
+            }
         }
 
         @Override
         public void onItemsReplaced(List<T> items) {
-            // TODO: Check if message from window
-            editList((Modification) DisplayModifications.clear());
-            editList(DisplayModifications.addOrUpdate(items));
+            Modification<T> modification = DisplayModifications.replace(items);
+            if (window.isInited()) {
+                // TODO: Check if message from window
+                editList(modification);
+            } else {
+                pendingModifications.add(modification);
+            }
         }
 
         @Override
         public void onListClear() {
-            // TODO: Check if message from window
-            editList((Modification) DisplayModifications.clear());
+            Modification<T> modification = DisplayModifications.clear();
+            if (window.isInited()) {
+                // TODO: Check if message from window
+                editList(modification);
+            } else {
+                pendingModifications.add(modification);
+            }
         }
     }
 

@@ -14,7 +14,6 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     
     override init() {
         super.init(nibName: "ComposeController", bundle: nil)
-        
         self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
         self.extendedLayoutIncludesOpaqueBars = true
     }
@@ -41,25 +40,53 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-        header.addSubview(searchView!)
+//        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+//        header.addSubview(searchView!)
+//        
+//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+//        headerShadow.image = UIImage(named: "CardTop2");
+//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+//        header.addSubview(headerShadow);
         
-        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
-        tableView.tableHeaderView = header
+        tableView.tableHeaderView = searchView
  
         searchSource = ContactsSource(searchDisplay: searchDisplay!)
 
         super.viewDidLoad()
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (section == 1) {
+            return super.tableView(tableView, numberOfRowsInSection: section)
+        } else {
+            return 1
+        }
+    }
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if (indexPath.section == 1) {
+            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        } else {
+            let reuseId = "cell_invite";
+            var res = ContactActionCell(reuseIdentifier: reuseId)
+            res.bind("ic_add_user",
+                    actionTitle: NSLocalizedString("CreateGroup", comment: "Create Group"),
+                    isLast: false)
+            return res
+        }
+    }
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
-            var contact = objectAtIndexPath(indexPath) as! AMContact
-            navigateToMessagesWithPeerId(contact.getUid())
+            if (indexPath.section == 0) {
+                createGroup()
+            } else {
+                var contact = objectAtIndexPath(indexPath) as! AMContact
+                navigateToMessagesWithPeerId(contact.getUid())
+            }
         } else {
             var contact = searchSource!.objectAtIndexPath(indexPath) as! AMContact
             navigateToMessagesWithPeerId(contact.getUid())
@@ -70,10 +97,12 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     // MARK: Navigation
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
-        var conversationController = AAConversationController(peer: AMPeer.userWithInt(peerId))
-        conversationController.hidesBottomBarWhenPushed = true
-        navigationController!.pushViewController(conversationController, animated: true)
+        navigateNext(AAConversationController(peer: AMPeer.userWithInt(peerId)), removeCurrent: true)
         MainAppTheme.navigation.applyStatusBar()
     }
-
+    
+    func createGroup() {
+        navigateNext(GroupCreateController(), removeCurrent: true)
+        MainAppTheme.navigation.applyStatusBar()
+    }
 }
