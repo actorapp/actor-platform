@@ -57,7 +57,6 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence_$1)
 }
 
 - (void)run {
-  [((DKActorRef *) nil_chk(myPresence_)) sendWithId:new_ImActorModelModulesPresenceOwnPresenceActor_OnAppVisible_init()];
 }
 
 - (void)onAppVisible {
