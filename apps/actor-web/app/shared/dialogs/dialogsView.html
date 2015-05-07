@@ -24,7 +24,7 @@
                 <time class="dialogs__body__title__timestamp">{{ ::dialog.date }}</time>
             </h3>
 
-            <p class="dialogs__body__message" flex>
+            <p class="dialogs__body__message" flex ng-class="{'dialogs__body__message--highlighted': dialog.isHighlighted}">
 
               <md-icon md-svg-icon="assets/img/icons/ic_access_time_24px.svg"
                        ng-if="::dialog.state == 'pending'"
