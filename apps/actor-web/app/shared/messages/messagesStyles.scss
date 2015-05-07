@@ -56,30 +56,49 @@
 
         &__photo
         {
-            max-width: 150px;
-            height: auto;
-        }
-        &__document {
-            background-color: rgba($baseColor, .05);
+            position: relative;
+
             display: inline-block;
-            border-radius: 4px;
-            color: rgba(0,0,0,.5);
+
+            background-color: rgba($baseColor, .05);
+            img
+            {
+                max-width: 150px;
+                height: auto;
+            }
+            &__original
+            {
+                position: absolute;
+            }
+        }
+        &__document
+        {
+            display: inline-block;
+
             padding: 10px;
-            md-icon {
+
+            color: rgba(0,0,0,.5);
+            border-radius: 4px;
+            background-color: rgba($baseColor, .05);
+            md-icon
+            {
                 width: 20px;
                 height: 20px;
-                //float: left;
-                vertical-align: top;
             }
-            p {
+            p
+            {
                 font-size: 14px;
                 line-height: 20px;
+
                 margin: 0;
             }
-            a {
-                color: $baseColor;
+            a
+            {
                 text-decoration: none;
-                &:hover {
+
+                color: $baseColor;
+                &:hover
+                {
                     text-decoration: underline;
                 }
             }
