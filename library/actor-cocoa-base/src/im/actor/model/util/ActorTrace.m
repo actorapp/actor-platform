@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/ActorTrace.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -17,24 +15,16 @@
 
 #define AMActorTrace_PROCESS_THRESHOLD 300
 
-static NSString *AMActorTrace_TAG_ = 
-#line 18
-@"ACTOR_SYSTEM";
+static NSString *AMActorTrace_TAG_ = @"ACTOR_SYSTEM";
 J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, TAG_, NSString *)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 
-
-#line 16
 @implementation AMActorTrace
 
-
-#line 23
 - (void)onEnvelopeDeliveredWithDKEnvelope:(DKEnvelope *)envelope {
 }
 
-
-#line 28
 - (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
                                  withLong:(jlong)duration {
   if (duration > AMActorTrace_PROCESS_THRESHOLD) {
@@ -48,8 +38,6 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
   AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Drop: ", message));
 }
 
-
-#line 40
 - (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
                             withId:(id)message {
   AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$@", @"Dead Letter: ", message));

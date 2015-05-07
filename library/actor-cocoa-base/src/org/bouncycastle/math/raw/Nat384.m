@@ -4,16 +4,12 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Nat384.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/raw/Nat.h"
 #include "org/bouncycastle/math/raw/Nat192.h"
 #include "org/bouncycastle/math/raw/Nat384.h"
 
-
-#line 4
 @implementation OrgBouncycastleMathRawNat384
 
 + (void)mulWithIntArray:(IOSIntArray *)x
@@ -22,8 +18,6 @@
   OrgBouncycastleMathRawNat384_mulWithIntArray_withIntArray_withIntArray_(x, y, zz);
 }
 
-
-#line 25
 + (void)squareWithIntArray:(IOSIntArray *)x
               withIntArray:(IOSIntArray *)zz {
   OrgBouncycastleMathRawNat384_squareWithIntArray_withIntArray_(x, zz);
@@ -36,52 +30,32 @@
 
 @end
 
-
-#line 6
 void OrgBouncycastleMathRawNat384_mulWithIntArray_withIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *y, IOSIntArray *zz) {
   OrgBouncycastleMathRawNat384_initialize();
   OrgBouncycastleMathRawNat192_mulWithIntArray_withIntArray_withIntArray_(x, y, zz);
   OrgBouncycastleMathRawNat192_mulWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, 6, y, 6, zz, 12);
-  
-#line 11
   jint c18 = OrgBouncycastleMathRawNat192_addToEachOtherWithIntArray_withInt_withIntArray_withInt_(zz, 6, zz, 12);
   jint c12 = c18 + OrgBouncycastleMathRawNat192_addToWithIntArray_withInt_withIntArray_withInt_withInt_(zz, 0, zz, 6, 0);
   c18 += OrgBouncycastleMathRawNat192_addToWithIntArray_withInt_withIntArray_withInt_withInt_(zz, 18, zz, 12, c12);
-  
-#line 15
   IOSIntArray *dx = OrgBouncycastleMathRawNat192_create(), *dy = OrgBouncycastleMathRawNat192_create();
   jboolean neg = OrgBouncycastleMathRawNat192_diffWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, 6, x, 0, dx, 0) != OrgBouncycastleMathRawNat192_diffWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(y, 6, y, 0, dy, 0);
-  
-#line 18
   IOSIntArray *tt = OrgBouncycastleMathRawNat192_createExt();
   OrgBouncycastleMathRawNat192_mulWithIntArray_withIntArray_withIntArray_(dx, dy, tt);
-  
-#line 21
   c18 += neg ? OrgBouncycastleMathRawNat_addToWithInt_withIntArray_withInt_withIntArray_withInt_(12, tt, 0, zz, 6) : OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withInt_withIntArray_withInt_(12, tt, 0, zz, 6);
   OrgBouncycastleMathRawNat_addWordAtWithInt_withInt_withIntArray_withInt_(24, c18, zz, 18);
 }
 
-
-#line 25
 void OrgBouncycastleMathRawNat384_squareWithIntArray_withIntArray_(IOSIntArray *x, IOSIntArray *zz) {
   OrgBouncycastleMathRawNat384_initialize();
   OrgBouncycastleMathRawNat192_squareWithIntArray_withIntArray_(x, zz);
   OrgBouncycastleMathRawNat192_squareWithIntArray_withInt_withIntArray_withInt_(x, 6, zz, 12);
-  
-#line 30
   jint c18 = OrgBouncycastleMathRawNat192_addToEachOtherWithIntArray_withInt_withIntArray_withInt_(zz, 6, zz, 12);
   jint c12 = c18 + OrgBouncycastleMathRawNat192_addToWithIntArray_withInt_withIntArray_withInt_withInt_(zz, 0, zz, 6, 0);
   c18 += OrgBouncycastleMathRawNat192_addToWithIntArray_withInt_withIntArray_withInt_withInt_(zz, 18, zz, 12, c12);
-  
-#line 34
   IOSIntArray *dx = OrgBouncycastleMathRawNat192_create();
   OrgBouncycastleMathRawNat192_diffWithIntArray_withInt_withIntArray_withInt_withIntArray_withInt_(x, 6, x, 0, dx, 0);
-  
-#line 37
   IOSIntArray *tt = OrgBouncycastleMathRawNat192_createExt();
   OrgBouncycastleMathRawNat192_squareWithIntArray_withIntArray_(dx, tt);
-  
-#line 40
   c18 += OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withInt_withIntArray_withInt_(12, tt, 0, zz, 6);
   OrgBouncycastleMathRawNat_addWordAtWithInt_withInt_withIntArray_withInt_(24, c18, zz, 18);
 }

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Group.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
@@ -36,12 +34,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, title_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiGroup, avatar_, ImActorModelApiAvatar *)
 J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
 
-
-#line 23
 @implementation ImActorModelApiGroup
 
-
-#line 34
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
@@ -54,15 +48,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   return self;
 }
 
-
-#line 45
 - (instancetype)init {
   ImActorModelApiGroup_init(self);
   return self;
 }
 
-
-#line 49
 - (jint)getId {
   return self->id__;
 }
@@ -95,8 +85,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   return self->createDate_;
 }
 
-
-#line 82
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -112,8 +100,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   self->createDate_ = [values getLongWithInt:10];
 }
 
-
-#line 98
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
@@ -130,8 +116,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
   [writer writeLongWithInt:10 withLong:self->createDate_];
 }
 
-
-#line 115
 - (NSString *)description {
   NSString *res = @"struct Group{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
@@ -145,12 +129,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiGroup, members_, id<JavaUtilList>)
 
 @end
 
-
-#line 34
 void ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(ImActorModelApiGroup *self, jint id_, jlong accessHash, NSString *title, ImActorModelApiAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate) {
   (void) BSBserObject_init(self);
-  
-#line 35
   self->id__ = id_;
   self->accessHash_ = accessHash;
   self->title_ = title;
@@ -161,22 +141,16 @@ void ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiA
   self->createDate_ = createDate;
 }
 
-
-#line 34
 ImActorModelApiGroup *new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(jint id_, jlong accessHash, NSString *title, ImActorModelApiAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate) {
   ImActorModelApiGroup *self = [ImActorModelApiGroup alloc];
   ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(self, id_, accessHash, title, avatar, isMember, creatorUid, members, createDate);
   return self;
 }
 
-
-#line 45
 void ImActorModelApiGroup_init(ImActorModelApiGroup *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 45
 ImActorModelApiGroup *new_ImActorModelApiGroup_init() {
   ImActorModelApiGroup *self = [ImActorModelApiGroup alloc];
   ImActorModelApiGroup_init(self);

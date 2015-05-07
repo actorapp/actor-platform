@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserAvatarChanged.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImActorModelApiAvatar *)
 
-
-#line 24
 @implementation ImActorModelApiUpdatesUpdateUserAvatarChanged
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)uid
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(self, uid, avatar);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getUid {
   return self->uid_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
   return self->avatar_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->avatar_ = [values optObjWithInt:2 withBSBserObject:new_ImActorModelApiAvatar_init()];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   if (self->avatar_ != nil) {
@@ -79,8 +63,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
   }
 }
 
-
-#line 66
 - (NSString *)description {
   NSString *res = @"update UserAvatarChanged{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -89,47 +71,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, avatar_, ImAc
   return res;
 }
 
-
-#line 75
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserAvatarChanged_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateUserAvatarChanged *ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserAvatarChanged_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateUserAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserAvatarChanged_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(ImActorModelApiUpdatesUpdateUserAvatarChanged *self, jint uid, ImActorModelApiAvatar *avatar) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 35
   self->uid_ = uid;
   self->avatar_ = avatar;
 }
 
-
-#line 34
 ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(jint uid, ImActorModelApiAvatar *avatar) {
   ImActorModelApiUpdatesUpdateUserAvatarChanged *self = [ImActorModelApiUpdatesUpdateUserAvatarChanged alloc];
   ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(self, uid, avatar);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiUpdatesUpdateUserAvatarChanged_init(ImActorModelApiUpdatesUpdateUserAvatarChanged *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 39
 ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_init() {
   ImActorModelApiUpdatesUpdateUserAvatarChanged *self = [ImActorModelApiUpdatesUpdateUserAvatarChanged alloc];
   ImActorModelApiUpdatesUpdateUserAvatarChanged_init(self);

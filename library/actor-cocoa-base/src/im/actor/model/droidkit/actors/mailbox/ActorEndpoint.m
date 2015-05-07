@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/ActorEndpoint.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorScope.h"
 #include "im/actor/model/droidkit/actors/mailbox/ActorEndpoint.h"
@@ -25,12 +23,8 @@ J2OBJC_FIELD_SETTER(DKActorEndpoint, path_, NSString *)
 J2OBJC_FIELD_SETTER(DKActorEndpoint, mailbox_, DKMailbox *)
 J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
 
-
-#line 9
 @implementation DKActorEndpoint
 
-
-#line 15
 - (instancetype)initWithNSString:(NSString *)path {
   DKActorEndpoint_initWithNSString_(self, path);
   return self;
@@ -61,18 +55,12 @@ J2OBJC_FIELD_SETTER(DKActorEndpoint, scope_, DKActorScope *)
 
 @end
 
-
-#line 15
 void DKActorEndpoint_initWithNSString_(DKActorEndpoint *self, NSString *path) {
   (void) NSObject_init(self);
-  
-#line 16
   self->path_ = path;
   self->isDisconnected__ = NO;
 }
 
-
-#line 15
 DKActorEndpoint *new_DKActorEndpoint_initWithNSString_(NSString *path) {
   DKActorEndpoint *self = [DKActorEndpoint alloc];
   DKActorEndpoint_initWithNSString_(self, path);

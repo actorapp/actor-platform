@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/settings/entity/SettingsSyncState.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,29 +26,21 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingActions_, id<JavaUtilList>)
 
-
-#line 16
 @implementation ImActorModelModulesSettingsEntitySettingsSyncState
 
 + (ImActorModelModulesSettingsEntitySettingsSyncState *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesSettingsEntitySettingsSyncState_fromBytesWithByteArray_(data);
 }
 
-
-#line 24
 - (instancetype)init {
   ImActorModelModulesSettingsEntitySettingsSyncState_init(self);
   return self;
 }
 
-
-#line 27
 - (id<JavaUtilList>)getPendingActions {
   return pendingActions_;
 }
 
-
-#line 32
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> pending = [((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1];
   for (jint i = 0; i < [((id<JavaUtilList>) nil_chk(pending)) size]; i++) {
@@ -58,8 +48,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingA
   }
 }
 
-
-#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   for (ImActorModelModulesSettingsEntitySettingsSyncAction * __strong action in nil_chk(pendingActions_)) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:action];
@@ -68,24 +56,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsEntitySettingsSyncState, pendingA
 
 @end
 
-
-#line 18
 ImActorModelModulesSettingsEntitySettingsSyncState *ImActorModelModulesSettingsEntitySettingsSyncState_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesSettingsEntitySettingsSyncState_initialize();
-  
-#line 19
   return ((ImActorModelModulesSettingsEntitySettingsSyncState *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesSettingsEntitySettingsSyncState_init(), data));
 }
 
-
-#line 24
 void ImActorModelModulesSettingsEntitySettingsSyncState_init(ImActorModelModulesSettingsEntitySettingsSyncState *self) {
   (void) BSBserObject_init(self);
   self->pendingActions_ = new_JavaUtilArrayList_init();
 }
 
-
-#line 24
 ImActorModelModulesSettingsEntitySettingsSyncState *new_ImActorModelModulesSettingsEntitySettingsSyncState_init() {
   ImActorModelModulesSettingsEntitySettingsSyncState *self = [ImActorModelModulesSettingsEntitySettingsSyncState alloc];
   ImActorModelModulesSettingsEntitySettingsSyncState_init(self);

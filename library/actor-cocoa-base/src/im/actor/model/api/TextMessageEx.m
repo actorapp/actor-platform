@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessageEx.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -23,18 +21,12 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-
-#line 23
 @implementation ImActorModelApiTextMessageEx
 
-
-#line 24
 + (ImActorModelApiTextMessageEx *)fromBytesWithByteArray:(IOSByteArray *)src {
   return ImActorModelApiTextMessageEx_fromBytesWithByteArray_(src);
 }
 
-
-#line 34
 - (IOSByteArray *)buildContainer {
   BSDataOutput *res = new_BSDataOutput_init();
   BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(res);
@@ -50,19 +42,13 @@
 
 @end
 
-
-#line 24
 ImActorModelApiTextMessageEx *ImActorModelApiTextMessageEx_fromBytesWithByteArray_(IOSByteArray *src) {
   ImActorModelApiTextMessageEx_initialize();
-  
-#line 25
   BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     default:
-    
-#line 29
     return new_ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(key, content);
   }
 }

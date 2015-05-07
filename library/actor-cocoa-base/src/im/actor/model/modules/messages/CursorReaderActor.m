@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/CursorReaderActor.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/OutPeer.h"
 #include "im/actor/model/api/rpc/RequestMessageRead.h"
@@ -56,8 +54,6 @@ __attribute__((unused)) static ImActorModelModulesMessagesCursorReaderActor_$1 *
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReaderActor_$1)
 
-
-#line 15
 @implementation ImActorModelModulesMessagesCursorReaderActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
@@ -71,35 +67,25 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReaderActor_$1)
   if (outPeer == nil) {
     return;
   }
-  
-#line 28
   [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(outPeer, date) withAMRpcCallback:new_ImActorModelModulesMessagesCursorReaderActor_$1_initWithImActorModelModulesMessagesCursorReaderActor_withAMPeer_withLong_(self, peer, date)];
 }
 
-
-#line 44
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesCursorReaderActor_MarkRead class]]) {
     ImActorModelModulesMessagesCursorReaderActor_MarkRead *markRead = (ImActorModelModulesMessagesCursorReaderActor_MarkRead *) check_class_cast(message, [ImActorModelModulesMessagesCursorReaderActor_MarkRead class]);
     [self moveCursorWithAMPeer:[((ImActorModelModulesMessagesCursorReaderActor_MarkRead *) nil_chk(markRead)) getPeer] withLong:[markRead getDate]];
   }
   else {
-    
-#line 49
     [super onReceiveWithId:message];
   }
 }
 
 @end
 
-
-#line 17
 void ImActorModelModulesMessagesCursorReaderActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesCursorReaderActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesMessagesCursorActor_initWithLong_withImActorModelModulesModules_(self, ImActorModelModulesUtilsModuleActor_CURSOR_READ, messenger);
 }
 
-
-#line 17
 ImActorModelModulesMessagesCursorReaderActor *new_ImActorModelModulesMessagesCursorReaderActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesMessagesCursorReaderActor *self = [ImActorModelModulesMessagesCursorReaderActor alloc];
   ImActorModelModulesMessagesCursorReaderActor_initWithImActorModelModulesModules_(self, messenger);
@@ -108,20 +94,14 @@ ImActorModelModulesMessagesCursorReaderActor *new_ImActorModelModulesMessagesCur
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReaderActor)
 
-
-#line 53
 @implementation ImActorModelModulesMessagesCursorReaderActor_MarkRead
 
-
-#line 57
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)date {
   ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(self, peer, date);
   return self;
 }
 
-
-#line 62
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -132,18 +112,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReaderActor)
 
 @end
 
-
-#line 57
 void ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(ImActorModelModulesMessagesCursorReaderActor_MarkRead *self, AMPeer *peer, jlong date) {
   (void) NSObject_init(self);
-  
-#line 58
   self->peer_ = peer;
   self->date_ = date;
 }
 
-
-#line 57
 ImActorModelModulesMessagesCursorReaderActor_MarkRead *new_ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(AMPeer *peer, jlong date) {
   ImActorModelModulesMessagesCursorReaderActor_MarkRead *self = [ImActorModelModulesMessagesCursorReaderActor_MarkRead alloc];
   ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(self, peer, date);
@@ -154,14 +128,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReaderActor_Ma
 
 @implementation ImActorModelModulesMessagesCursorReaderActor_$1
 
-
-#line 30
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
   [this$0_ onCompletedWithAMPeer:val$peer_ withLong:val$date_];
 }
 
-
-#line 35
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_ onErrorWithAMPeer:val$peer_ withLong:val$date_];
 }

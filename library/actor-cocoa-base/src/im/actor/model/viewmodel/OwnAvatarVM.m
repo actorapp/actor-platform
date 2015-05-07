@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/OwnAvatarVM.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/ValueModel.h"
@@ -21,12 +19,8 @@
 
 J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
 
-
-#line 12
 @implementation AMOwnAvatarVM
 
-
-#line 21
 - (AMValueModel *)getUploadState {
   return uploadState_;
 }
@@ -40,9 +34,7 @@ J2OBJC_FIELD_SETTER(AMOwnAvatarVM, uploadState_, AMValueModel *)
 
 void AMOwnAvatarVM_init(AMOwnAvatarVM *self) {
   (void) NSObject_init(self);
-  self->uploadState_ = new_AMValueModel_initWithNSString_withId_(
-#line 14
-  @"avatar.my", new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO));
+  self->uploadState_ = new_AMValueModel_initWithNSString_withId_(@"avatar.my", new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO));
 }
 
 AMOwnAvatarVM *new_AMOwnAvatarVM_init() {

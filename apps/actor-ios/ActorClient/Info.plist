@@ -10,6 +10,8 @@
 	<string>${API_PUSH_ID}</string>
 	<key>API_URL</key>
 	<string>${API_URL}</string>
+	<key>API_URL2</key>
+	<string>${API_URL2}</string>
 	<key>APP_THEME</key>
 	<string>${APP_THEME}</string>
 	<key>CFBundleDevelopmentRegion</key>

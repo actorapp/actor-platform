@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/AvatarUploadState.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/viewmodel/AvatarUploadState.h"
 
@@ -19,44 +17,30 @@
 
 J2OBJC_FIELD_SETTER(AMAvatarUploadState, descriptor_, NSString *)
 
-
-#line 10
 @implementation AMAvatarUploadState
 
-
-#line 14
 - (instancetype)initWithNSString:(NSString *)descriptor
                      withBoolean:(jboolean)isUploading {
   AMAvatarUploadState_initWithNSString_withBoolean_(self, descriptor, isUploading);
   return self;
 }
 
-
-#line 24
 - (NSString *)getDescriptor {
   return descriptor_;
 }
 
-
-#line 33
 - (jboolean)isUploading {
   return isUploading__;
 }
 
 @end
 
-
-#line 14
 void AMAvatarUploadState_initWithNSString_withBoolean_(AMAvatarUploadState *self, NSString *descriptor, jboolean isUploading) {
   (void) NSObject_init(self);
-  
-#line 15
   self->descriptor_ = descriptor;
   self->isUploading__ = isUploading;
 }
 
-
-#line 14
 AMAvatarUploadState *new_AMAvatarUploadState_initWithNSString_withBoolean_(NSString *descriptor, jboolean isUploading) {
   AMAvatarUploadState *self = [AMAvatarUploadState alloc];
   AMAvatarUploadState_initWithNSString_withBoolean_(self, descriptor, isUploading);

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
 #include "im/actor/model/droidkit/actors/dispatch/DispatchResult.h"
@@ -23,12 +21,8 @@
 
 J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
 
-
-#line 11
 @implementation DKAbstractDispatchQueue
 
-
-#line 35
 - (void)notifyQueueChanged {
   id<DKQueueListener> lListener = listener_;
   if (lListener != nil) {
@@ -44,14 +38,10 @@ J2OBJC_FIELD_SETTER(DKAbstractDispatchQueue, listener_, id<DKQueueListener>)
   return DKDispatchResult_delayWithLong_(delay);
 }
 
-
-#line 55
 - (id<DKQueueListener>)getListener {
   return listener_;
 }
 
-
-#line 64
 - (void)setListenerWithDKQueueListener:(id<DKQueueListener>)listener {
   self->listener_ = listener;
 }

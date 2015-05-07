@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PeerType.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/PeerType.h"
@@ -20,8 +18,6 @@ J2OBJC_INITIALIZED_DEFN(AMPeerTypeEnum)
 
 AMPeerTypeEnum *AMPeerTypeEnum_values_[3];
 
-
-#line 7
 @implementation AMPeerTypeEnum
 
 - (instancetype)initWithNSString:(NSString *)__name

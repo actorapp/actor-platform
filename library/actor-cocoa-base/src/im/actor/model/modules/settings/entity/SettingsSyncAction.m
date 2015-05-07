@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/settings/entity/SettingsSyncAction.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,31 +31,23 @@ __attribute__((unused)) static void ImActorModelModulesSettingsEntitySettingsSyn
 
 __attribute__((unused)) static ImActorModelModulesSettingsEntitySettingsSyncAction *new_ImActorModelModulesSettingsEntitySettingsSyncAction_init() NS_RETURNS_RETAINED;
 
-
-#line 14
 @implementation ImActorModelModulesSettingsEntitySettingsSyncAction
 
 + (ImActorModelModulesSettingsEntitySettingsSyncAction *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesSettingsEntitySettingsSyncAction_fromBytesWithByteArray_(data);
 }
 
-
-#line 23
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
   ImActorModelModulesSettingsEntitySettingsSyncAction_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-
-#line 28
 - (instancetype)init {
   ImActorModelModulesSettingsEntitySettingsSyncAction_init(self);
   return self;
 }
 
-
-#line 32
 - (NSString *)getKey {
   return key_;
 }
@@ -66,15 +56,11 @@ __attribute__((unused)) static ImActorModelModulesSettingsEntitySettingsSyncActi
   return value_;
 }
 
-
-#line 41
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   key_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   value_ = [values optStringWithInt:2];
 }
 
-
-#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:key_];
   if (value_ != nil) {
@@ -84,39 +70,27 @@ __attribute__((unused)) static ImActorModelModulesSettingsEntitySettingsSyncActi
 
 @end
 
-
-#line 16
 ImActorModelModulesSettingsEntitySettingsSyncAction *ImActorModelModulesSettingsEntitySettingsSyncAction_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesSettingsEntitySettingsSyncAction_initialize();
-  
-#line 17
   return ((ImActorModelModulesSettingsEntitySettingsSyncAction *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesSettingsEntitySettingsSyncAction_init(), data));
 }
 
 void ImActorModelModulesSettingsEntitySettingsSyncAction_initWithNSString_withNSString_(ImActorModelModulesSettingsEntitySettingsSyncAction *self, NSString *key, NSString *value) {
   (void) BSBserObject_init(self);
-  
-#line 24
   self->key_ = key;
   self->value_ = value;
 }
 
-
-#line 23
 ImActorModelModulesSettingsEntitySettingsSyncAction *new_ImActorModelModulesSettingsEntitySettingsSyncAction_initWithNSString_withNSString_(NSString *key, NSString *value) {
   ImActorModelModulesSettingsEntitySettingsSyncAction *self = [ImActorModelModulesSettingsEntitySettingsSyncAction alloc];
   ImActorModelModulesSettingsEntitySettingsSyncAction_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-
-#line 28
 void ImActorModelModulesSettingsEntitySettingsSyncAction_init(ImActorModelModulesSettingsEntitySettingsSyncAction *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 28
 ImActorModelModulesSettingsEntitySettingsSyncAction *new_ImActorModelModulesSettingsEntitySettingsSyncAction_init() {
   ImActorModelModulesSettingsEntitySettingsSyncAction *self = [ImActorModelModulesSettingsEntitySettingsSyncAction alloc];
   ImActorModelModulesSettingsEntitySettingsSyncAction_init(self);
