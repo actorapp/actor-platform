@@ -211,3 +211,21 @@ md-list-item {
     right: 0 !important;
   }
 }
+
+
+.status {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  margin-top: -3px;
+  color: rgb(148,148,148);
+  &--penging {}
+  &--sent {}
+  &--received {}
+  &--read {
+    color: $baseColor;
+  }
+  &--error {
+    color: #962e00;
+  }
+}
