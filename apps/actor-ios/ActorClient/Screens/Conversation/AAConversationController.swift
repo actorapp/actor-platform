@@ -487,11 +487,11 @@ extension AAConversationController: ABActionShitDelegate {
             var pickerController = UIImagePickerController()
             pickerController.sourceType = (buttonIndex == 0 ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             pickerController.mediaTypes = [kUTTypeImage]
-            pickerController.view.backgroundColor = UIColor.blackColor()
-            pickerController.navigationBar.tintColor = Resources.TintColor
+            pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
             pickerController.delegate = self
-            pickerController.navigationBar.tintColor = UIColor.whiteColor()
-            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.presentViewController(pickerController, animated: true, completion: nil)
         }
     }
