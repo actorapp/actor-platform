@@ -8,6 +8,9 @@
       * { // TODO: fix it
         color: rgb(255,255,255) !important;
       }
+      .dialogs__body__message__counter {
+        background-color: lighten($baseColor, 15);
+      }
     }
     &:hover {
       background-color: rgba($baseColor, .05);
@@ -46,6 +49,15 @@
       font-weight: 400;
       line-height: 20px;
       margin: 4px 0 0;
+      &__counter {
+        float: right;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        border-radius: 100%;
+        background-color: $baseColor;
+        color: white;
+      }
     }
   }
 }
