@@ -3,25 +3,25 @@ class MessagesController
 
   constructor: (@$rootScope, @$scope, @$timeout, @actorService) ->
     console.log '[AW]MessagesController constructor'
-    @$scope.$on 'onConversationOpen', (event, peer) =>
-      console.log '[AW]MessagesController constructor: onConversationOpen fired.'
-      @bindChat peer
 
-  bindChat: (peer) ->
-    console.log '[AW]MessagesController getMessages'
-    console.log '[AW]MessagesController getMessages: peer:', peer
-    @actorService.bindChat peer, @renderMessages
+    @$scope.$on 'selectDialog', (event, peer) =>
+      console.log '[AW]MessagesController: selectDialog fired.', peer
+      if @actorService.currentPeer == peer
+        console.log '[AW]MessagesController selectDialog: this peer already selected.'
+        return
+      if @actorService.currentPeer
+        console.log '[AW]MessagesController selectDialog: conversation already opened: unbind...'
+        @actorService.unbindChat @actorService.currentPeer, =>
+          @actorService.onConversationClosed @actorService.currentPeer
 
-  renderMessages: (messages) =>
-    console.log '[AW]MessagesController renderMessages'
-    console.log '[AW]MessagesController renderMessages: messages:', messages
+      @actorService.bindChat peer, (messages) =>
+        @actorService.onConversationOpen peer
+        @renderMessages messages
+
+  renderMessages: (messages) ->
+    console.log '[AW]MessagesController renderMessages', messages
     @$timeout =>
-      for message in messages
-        if message.content.content == 'text'
-          message.content.text = message.content.text.replace(/\n/g, '<br/>')
       @list = messages
-      @$rootScope.$broadcast 'renderMessages'
-
 
 MessagesController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
 
