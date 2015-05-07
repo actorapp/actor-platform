@@ -20,8 +20,8 @@ cp BuildConfig/$PROVISION.mobileprovision build/Applications/ActorApp.app/embedd
 
 # Sign App
 # cd build/Applications
-codesign --force --sign '$3' --entitlements BuildConfig/$PROVISION.entitlements.plist build/Applications/ActorApp.app/Frameworks/*
-codesign --force --sign '$3' --entitlements BuildConfig/$PROVISION.entitlements.plist build/Applications/ActorApp.app
+codesign --force --sign "$3" --entitlements "BuildConfig/$PROVISION.entitlements.plist" build/Applications/ActorApp.app/Frameworks/*
+codesign --force --sign "$3" --entitlements "BuildConfig/$PROVISION.entitlements.plist" build/Applications/ActorApp.app
 # cd ../../
 echo "##teamcity[progressFinish 'Provision and Signing']"
 
