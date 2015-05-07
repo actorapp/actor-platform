@@ -8,7 +8,7 @@ class CocoaStorage : AMBaseAsyncStorageProvider {
     
     let dbPath: String;
     
-    init() {
+    override init() {
         self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
             .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db");
     }

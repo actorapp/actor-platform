@@ -26,7 +26,7 @@ get{
         builder.setNotificationProvider(iOSNotificationProvider())
         
         // Parameters
-        var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()
+        var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!
         var apiKey = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_KEY") as! String)
         var apiUrl = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
         var apiUrl2 = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL2") as! String
