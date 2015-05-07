@@ -61,7 +61,7 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
             transportPackageHeader.decode(buf).toEither match {
               case Right(headerRes) ⇒
                 if (headerRes.value.bodyLength <= MaxPackageLength) {
-                  system.log.debug("Transport package header {}", headerRes)
+                  //system.log.debug("Transport package header {}", headerRes)
                   doParse(AwaitPackageBody(headerRes.value), headerRes.remainder)(pSeq)
                 } else {
                   val message = "Transport package length is more than expected"
