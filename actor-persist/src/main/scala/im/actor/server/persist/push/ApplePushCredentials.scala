@@ -9,7 +9,7 @@ class ApplePushCredentialsTable(tag: Tag) extends Table[models.push.ApplePushCre
 
   def apnsKey = column[Int]("apns_key")
 
-  def token = column[String]("token")
+  def token = column[Array[Byte]]("token")
 
   def * = (authId, apnsKey, token) <> (models.push.ApplePushCredentials.tupled, models.push.ApplePushCredentials.unapply)
 }
@@ -17,7 +17,7 @@ class ApplePushCredentialsTable(tag: Tag) extends Table[models.push.ApplePushCre
 object ApplePushCredentials {
   val creds = TableQuery[ApplePushCredentialsTable]
 
-  def createOrUpdate(authId: Long, apnsKey: Int, token: String) =
+  def createOrUpdate(authId: Long, apnsKey: Int, token: Array[Byte]) =
     creds.insertOrUpdate(models.push.ApplePushCredentials(authId, apnsKey, token))
 
   def createOrUpdate(c: models.push.ApplePushCredentials) =

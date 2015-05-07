@@ -22,7 +22,7 @@ import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
@@ -42,20 +42,12 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
   implicit val db = initDb(ds)
   implicit val flowMaterializer = ActorFlowMaterializer()
 
-  val gcmConfig = system.settings.config.getConfig("push.gcm")
-  val apnsConfig = system.settings.config.getConfig("push.apns")
+  val gcmConfig = system.settings.config.getConfig("push.google")
+  val apnsConfig = system.settings.config.getConfig("push.apple")
 
   implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
-  implicit val apnsManager = new PushManager[SimpleApnsPushNotification](
-    ApnsEnvironment.getProductionEnvironment,
-    SSLContextUtil.createDefaultSSLContext(apnsConfig.getString("cert.path"), apnsConfig.getString("cert.password")),
-    null,
-    null,
-    null,
-    new PushManagerConfiguration(),
-    "ActorPushManager"
-  )
+  implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.fromConfig(apnsConfig))
 
   implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()

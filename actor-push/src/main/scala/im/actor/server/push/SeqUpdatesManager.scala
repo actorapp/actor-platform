@@ -17,7 +17,6 @@ import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ Kry
 import com.google.android.gcm.server.{ Message ⇒ GCMMessage, Sender ⇒ GCMSender }
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import com.relayrides.pushy.apns.{ PushManager ⇒ APNSPushManager }
-import scodec.bits.BitVector
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -112,12 +111,12 @@ object SeqUpdatesManager {
 
   def startRegion()(
     implicit
-    system:          ActorSystem,
-    gcmSender:       GCMSender,
-    apnsPushManager: APNSPushManager[SimpleApnsPushNotification],
-    db:              Database
+    system:           ActorSystem,
+    gcmSender:        GCMSender,
+    applePushManager: ApplePushManager,
+    db:               Database
   ): SeqUpdatesManagerRegion =
-    startRegion(Some(Props(classOf[SeqUpdatesManager], gcmSender, apnsPushManager, db)))
+    startRegion(Some(Props(classOf[SeqUpdatesManager], gcmSender, applePushManager, db)))
 
   def startRegionProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = startRegion(None)
 
@@ -366,9 +365,9 @@ object SeqUpdatesManager {
 }
 
 class SeqUpdatesManager(
-  gcmSender:       GCMSender,
-  apnsPushManager: APNSPushManager[SimpleApnsPushNotification],
-  db:              Database
+  gcmSender:        GCMSender,
+  applePushManager: ApplePushManager,
+  db:               Database
 ) extends PersistentActor with Stash with ActorLogging {
 
   import ShardRegion.Passivate
@@ -606,11 +605,8 @@ class SeqUpdatesManager(
 
     val payload = builder.buildWithDefaultMaximumLength()
 
-    BitVector.fromHex(creds.token) match { // TODO: #perf do it only once
-      case Some(tokenBits) ⇒
-        apnsPushManager.getQueue.put(new SimpleApnsPushNotification(tokenBits.toByteArray, payload))
-      case None ⇒
-        log.error("Cannot decode token from hex")
+    applePushManager.getInstance(creds.apnsKey) map { mgr ⇒
+      mgr.getQueue.put(new SimpleApnsPushNotification(creds.token, payload))
     }
   }
 }

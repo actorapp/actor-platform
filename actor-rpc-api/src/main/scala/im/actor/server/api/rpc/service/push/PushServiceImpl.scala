@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.push
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
+import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
@@ -46,14 +47,19 @@ class PushServiceImpl(
   }
 
   override def jhandleRegisterApplePush(apnsKey: Int, token: String, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val creds = models.push.ApplePushCredentials(clientData.authId, apnsKey, token)
+    BitVector.fromHex(token) match {
+      case Some(tokenBits) ⇒
+        val creds = models.push.ApplePushCredentials(clientData.authId, apnsKey, tokenBits.toByteArray)
 
-    val action = for {
-      _ ← persist.push.ApplePushCredentials.createOrUpdate(creds)
-    } yield (Ok(ResponseVoid))
+        val action = for {
+          _ ← persist.push.ApplePushCredentials.createOrUpdate(creds)
+        } yield (Ok(ResponseVoid))
 
-    setUpdatedApplePushCredentials(clientData.authId, Some(creds))
+        setUpdatedApplePushCredentials(clientData.authId, Some(creds))
 
-    db.run(action)
+        db.run(action)
+      case None ⇒
+        Future.successful(Error(RpcError(400, "WRONG_TOKEN", "Wrong APNS Token", false, None)))
+    }
   }
 }

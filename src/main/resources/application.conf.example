@@ -16,15 +16,19 @@ actor-server {
   }
 
   push {
-    gcm {
+    google {
       key = "AIzaSyCAFyk6KvcLGsI2gfoIe-ODBLjyyhch5s0"
     }
 
-    apns {
-      cert {
-        path = "/home/ubuntu/apns/certificate.pfx"
-        password = "Iashah4t"
-      }
+    apple {
+      certs = [
+        {
+          path = "/home/ubuntu/apns/certificate.pfx"
+          password = "Iashah4t"
+        }
+      ]
+
+      sandbox = true
     }
   }
 
