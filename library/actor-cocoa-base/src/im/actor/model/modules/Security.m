@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Security.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/rpc/RequestGetAuthSessions.h"
 #include "im/actor/model/api/rpc/RequestTerminateAllSessions.h"
@@ -304,45 +302,31 @@ __attribute__((unused)) static ImActorModelModulesSecurity_$3_$1_$2 *new_ImActor
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSecurity_$3_$1_$2)
 
-
-#line 20
 @implementation ImActorModelModulesSecurity
 
-
-#line 21
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesSecurity_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
-
-#line 25
 - (id<AMCommand>)loadSessions {
   return new_ImActorModelModulesSecurity_$1_initWithImActorModelModulesSecurity_(self);
 }
 
-
-#line 54
 - (id<AMCommand>)terminateAllSessions {
   return new_ImActorModelModulesSecurity_$2_initWithImActorModelModulesSecurity_(self);
 }
 
-
-#line 83
 - (id<AMCommand>)terminateSessionWithInt:(jint)id_ {
   return new_ImActorModelModulesSecurity_$3_initWithImActorModelModulesSecurity_withInt_(self, id_);
 }
 
 @end
 
-
-#line 21
 void ImActorModelModulesSecurity_initWithImActorModelModulesModules_(ImActorModelModulesSecurity *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
 }
 
-
-#line 21
 ImActorModelModulesSecurity *new_ImActorModelModulesSecurity_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesSecurity *self = [ImActorModelModulesSecurity alloc];
   ImActorModelModulesSecurity_initWithImActorModelModulesModules_(self, modules);
@@ -353,8 +337,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity)
 
 @implementation ImActorModelModulesSecurity_$1
 
-
-#line 28
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetAuthSessions_init() withAMRpcCallback:new_ImActorModelModulesSecurity_$1_$1_initWithImActorModelModulesSecurity_$1_withAMCommandCallback_(self, callback)];
 }
@@ -381,14 +363,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1)
 
 @implementation ImActorModelModulesSecurity_$1_$1
 
-
-#line 31
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetAuthSessions *)response {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(self, response)];
 }
 
-
-#line 41
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$1_$1_$2_initWithImActorModelModulesSecurity_$1_$1_withAMRpcException_(self, e)];
 }
@@ -417,8 +395,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1)
 
 @implementation ImActorModelModulesSecurity_$1_$1_$1
 
-
-#line 34
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:[((ImActorModelApiRpcResponseGetAuthSessions *) nil_chk(val$response_)) getUserAuths]];
 }
@@ -447,8 +423,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1_$1)
 
 @implementation ImActorModelModulesSecurity_$1_$1_$2
 
-
-#line 44
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
@@ -477,8 +451,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1_$2)
 
 @implementation ImActorModelModulesSecurity_$2
 
-
-#line 57
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestTerminateAllSessions_init() withAMRpcCallback:new_ImActorModelModulesSecurity_$2_$1_initWithImActorModelModulesSecurity_$2_withAMCommandCallback_(self, callback)];
 }
@@ -505,14 +477,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2)
 
 @implementation ImActorModelModulesSecurity_$2_$1
 
-
-#line 60
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$2_$1_$1_initWithImActorModelModulesSecurity_$2_$1_(self)];
 }
 
-
-#line 70
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$2_$1_$2_initWithImActorModelModulesSecurity_$2_$1_withAMRpcException_(self, e)];
 }
@@ -541,8 +509,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1)
 
 @implementation ImActorModelModulesSecurity_$2_$1_$1
 
-
-#line 63
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
@@ -569,8 +535,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1_$1)
 
 @implementation ImActorModelModulesSecurity_$2_$1_$2
 
-
-#line 73
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }
@@ -599,8 +563,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1_$2)
 
 @implementation ImActorModelModulesSecurity_$3
 
-
-#line 86
 - (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback {
   [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestTerminateSession_initWithInt_(val$id_) withAMRpcCallback:new_ImActorModelModulesSecurity_$3_$1_initWithImActorModelModulesSecurity_$3_withAMCommandCallback_(self, callback)];
 }
@@ -629,14 +591,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3)
 
 @implementation ImActorModelModulesSecurity_$3_$1
 
-
-#line 89
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$3_$1_$1_initWithImActorModelModulesSecurity_$3_$1_(self)];
 }
 
-
-#line 99
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$3_$1_$2_initWithImActorModelModulesSecurity_$3_$1_withAMRpcException_(self, e)];
 }
@@ -665,8 +623,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3_$1)
 
 @implementation ImActorModelModulesSecurity_$3_$1_$1
 
-
-#line 92
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResultWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
 }
@@ -693,8 +649,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3_$1_$1)
 
 @implementation ImActorModelModulesSecurity_$3_$1_$2
 
-
-#line 102
 - (void)run {
   [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onErrorWithJavaLangException:val$e_];
 }

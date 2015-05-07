@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseAuth.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,33 +28,23 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, user_, ImActorModelApiUser *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConfig *)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseAuth
 
-
-#line 27
 + (ImActorModelApiRpcResponseAuth *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)user
                   withImActorModelApiConfig:(ImActorModelApiConfig *)config {
   ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(self, user, config);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcResponseAuth_init(self);
   return self;
 }
 
-
-#line 43
 - (ImActorModelApiUser *)getUser {
   return self->user_;
 }
@@ -65,15 +53,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   return self->config_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->user_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:2 withBSBserObject:new_ImActorModelApiUser_init()];
   self->config_ = [values getObjWithInt:3 withBSBserObject:new_ImActorModelApiConfig_init()];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->user_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -85,8 +69,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   [writer writeObjectWithInt:3 withBSBserObject:self->config_];
 }
 
-
-#line 70
 - (NSString *)description {
   NSString *res = @"response Auth{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"user=", (self->user_ != nil ? @"set" : @"empty")));
@@ -95,47 +77,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
   return res;
 }
 
-
-#line 79
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseAuth_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseAuth *ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseAuth_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseAuth *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseAuth_init(), data));
 }
 
 void ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(ImActorModelApiRpcResponseAuth *self, ImActorModelApiUser *user, ImActorModelApiConfig *config) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 35
   self->user_ = user;
   self->config_ = config;
 }
 
-
-#line 34
 ImActorModelApiRpcResponseAuth *new_ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(ImActorModelApiUser *user, ImActorModelApiConfig *config) {
   ImActorModelApiRpcResponseAuth *self = [ImActorModelApiRpcResponseAuth alloc];
   ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(self, user, config);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcResponseAuth_init(ImActorModelApiRpcResponseAuth *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcResponseAuth *new_ImActorModelApiRpcResponseAuth_init() {
   ImActorModelApiRpcResponseAuth *self = [ImActorModelApiRpcResponseAuth alloc];
   ImActorModelApiRpcResponseAuth_init(self);

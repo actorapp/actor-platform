@@ -19,14 +19,6 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)onChatClosedWithAMPeer:(AMPeer *)peer;
-
-- (void)onChatOpenWithAMPeer:(AMPeer *)peer;
-
-- (void)onDialogsClosed;
-
-- (void)onDialogsOpen;
-
 - (void)onLoggedInWithNSString:(NSString *)deviceId
                        withInt:(jint)uid
          withJavaLangLongArray:(IOSObjectArray *)phoneNumbers
@@ -38,10 +30,6 @@
                            withNSString:(NSString *)userName;
 
 - (void)onLoggedOutWithNSString:(NSString *)deviceId;
-
-- (void)onProfileClosedWithInt:(jint)uid;
-
-- (void)onProfileOpenWithInt:(jint)uid;
 
 - (void)trackWithNSString:(NSString *)event;
 
@@ -58,9 +46,23 @@
 
 - (void)trackActionTryAgainWithNSString:(NSString *)action;
 
+- (void)trackAddContactPressed;
+
 - (void)trackAppHidden;
 
 - (void)trackAppVisible;
+
+- (void)trackAuthCodeClosed;
+
+- (void)trackAuthCodeOpen;
+
+- (void)trackAuthCodeTypeWithNSString:(NSString *)newValue;
+
+- (void)trackAuthCodeWrongNumber;
+
+- (void)trackAuthCodeWrongNumberCancel;
+
+- (void)trackAuthCodeWrongNumberChange;
 
 - (void)trackAuthCountryClosed;
 
@@ -74,9 +76,63 @@
 
 - (void)trackAuthPhoneTypeWithNSString:(NSString *)newValue;
 
+- (void)trackAuthSignupAvatarCanelled;
+
+- (void)trackAuthSignupAvatarDeleted;
+
+- (void)trackAuthSignupAvatarPicked;
+
+- (void)trackAuthSignupClosed;
+
+- (void)trackAuthSignupClosedNameTypeWithNSString:(NSString *)newValue;
+
+- (void)trackAuthSignupOpen;
+
+- (void)trackAuthSignupPressedAvatar;
+
+- (void)trackAuthSuccess;
+
+- (void)trackBackPressed;
+
+- (void)trackChatClosedWithAMPeer:(AMPeer *)peer;
+
+- (void)trackChatOpenWithAMPeer:(AMPeer *)peer;
+
 - (void)trackCodeRequest;
 
 - (void)trackCodeRequestWithLong:(jlong)phone;
+
+- (void)trackContactsClosed;
+
+- (void)trackContactsOpen;
+
+- (void)trackDialogsClosed;
+
+- (void)trackDialogsOpen;
+
+- (void)trackDocumentSendWithAMPeer:(AMPeer *)peer;
+
+- (void)trackInvitePressed;
+
+- (void)trackMainScreensClosed;
+
+- (void)trackMainScreensOpen;
+
+- (void)trackOwnProfileClosed;
+
+- (void)trackOwnProfileOpen;
+
+- (void)trackPhotoSendWithAMPeer:(AMPeer *)peer;
+
+- (void)trackProfileClosedWithInt:(jint)uid;
+
+- (void)trackProfileOpenWithInt:(jint)uid;
+
+- (void)trackTextSendWithAMPeer:(AMPeer *)peer;
+
+- (void)trackUpPressed;
+
+- (void)trackVideoSendWithAMPeer:(AMPeer *)peer;
 
 @end
 

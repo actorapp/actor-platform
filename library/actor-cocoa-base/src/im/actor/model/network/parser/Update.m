@@ -4,14 +4,10 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/Update.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 #include "im/actor/model/network/parser/Update.h"
 
-
-#line 7
 @implementation ImActorModelNetworkParserUpdate
 
 - (instancetype)init {

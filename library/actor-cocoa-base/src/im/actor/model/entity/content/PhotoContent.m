@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/PhotoContent.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,16 +26,12 @@
 
 @end
 
-
-#line 13
 @implementation AMPhotoContent
 
 + (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data {
   return AMPhotoContent_photoFromBytesWithByteArray_(data);
 }
 
-
-#line 22
 - (instancetype)initWithAMFileSource:(AMFileSource *)location
                         withNSString:(NSString *)mimetype
                         withNSString:(NSString *)name
@@ -48,15 +42,11 @@
   return self;
 }
 
-
-#line 28
 - (instancetype)init {
   AMPhotoContent_init(self);
   return self;
 }
 
-
-#line 32
 - (jint)getW {
   return w_;
 }
@@ -65,22 +55,16 @@
   return h_;
 }
 
-
-#line 41
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
   h_ = [values getIntWithInt:11];
 }
 
-
-#line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:w_];
@@ -89,12 +73,8 @@
 
 @end
 
-
-#line 15
 AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
   AMPhotoContent_initialize();
-  
-#line 16
   return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMPhotoContent_init(), data));
 }
 
@@ -104,8 +84,6 @@ void AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThu
   self->h_ = h;
 }
 
-
-#line 22
 AMPhotoContent *new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) {
   AMPhotoContent *self = [AMPhotoContent alloc];
   AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(self, location, mimetype, name, fastThumb, w, h);
@@ -116,8 +94,6 @@ void AMPhotoContent_init(AMPhotoContent *self) {
   (void) AMDocumentContent_init(self);
 }
 
-
-#line 28
 AMPhotoContent *new_AMPhotoContent_init() {
   AMPhotoContent *self = [AMPhotoContent alloc];
   AMPhotoContent_init(self);

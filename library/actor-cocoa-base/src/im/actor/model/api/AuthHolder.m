@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthHolder.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/AuthHolder.h"
@@ -28,12 +26,8 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelApiAuthHolderEnum)
 
 ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
 
-
-#line 12
 @implementation ImActorModelApiAuthHolderEnum
 
-
-#line 20
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -41,8 +35,6 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
   return self;
 }
 
-
-#line 24
 - (jint)getValue {
   return value_;
 }
@@ -82,56 +74,34 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString
 
 + (void)initialize {
   if (self == [ImActorModelApiAuthHolderEnum class]) {
-    ImActorModelApiAuthHolderEnum_THISDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(
-#line 14
-    1, @"THISDEVICE", 0);
-    ImActorModelApiAuthHolderEnum_OTHERDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(
-#line 15
-    2, @"OTHERDEVICE", 1);
-    ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(
-#line 16
-    -1, @"UNSUPPORTED_VALUE", 2);
+    ImActorModelApiAuthHolderEnum_THISDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(1, @"THISDEVICE", 0);
+    ImActorModelApiAuthHolderEnum_OTHERDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(2, @"OTHERDEVICE", 1);
+    ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
     J2OBJC_SET_INITIALIZED(ImActorModelApiAuthHolderEnum)
   }
 }
 
 @end
 
-
-#line 20
 void ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(ImActorModelApiAuthHolderEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  
-#line 21
   self->value_ = value;
 }
 
-
-#line 20
 ImActorModelApiAuthHolderEnum *new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   ImActorModelApiAuthHolderEnum *self = [ImActorModelApiAuthHolderEnum alloc];
   ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-
-#line 28
 ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value) {
   ImActorModelApiAuthHolderEnum_initialize();
-  
-#line 29
   switch (value) {
     case 1:
-    
-#line 30
     return ImActorModelApiAuthHolderEnum_THISDEVICE;
     case 2:
-    
-#line 31
     return ImActorModelApiAuthHolderEnum_OTHERDEVICE;
     default:
-    
-#line 32
     return ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE;
   }
 }

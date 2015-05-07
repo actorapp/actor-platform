@@ -22,7 +22,6 @@ import Foundation
         MainAppTheme.tab.applyAppearance(application)
         MainAppTheme.search.applyAppearance(application)
         
-        
         // Register notifications
         if application.respondsToSelector("registerUserNotificationSettings:") {
             let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
@@ -98,6 +97,8 @@ import Foundation
     
     func applicationWillEnterForeground(application: UIApplication) {
         MSG.onAppVisible();
+        // Hack for resync phone book
+        MSG.onPhoneBookChanged()
     }
 
     func applicationDidEnterBackground(application: UIApplication) {

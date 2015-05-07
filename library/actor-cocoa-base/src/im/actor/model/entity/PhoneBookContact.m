@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/PhoneBookContact.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/PhoneBookContact.h"
 #include "java/util/ArrayList.h"
@@ -24,12 +22,8 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, name_, NSString *)
 J2OBJC_FIELD_SETTER(AMPhoneBookContact, phones_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
 
-
-#line 9
 @implementation AMPhoneBookContact
 
-
-#line 16
 - (instancetype)initWithLong:(jlong)contactId
                 withNSString:(NSString *)name
        withJavaUtilArrayList:(JavaUtilArrayList *)phones
@@ -38,8 +32,6 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
   return self;
 }
 
-
-#line 23
 - (JavaUtilArrayList *)getPhones {
   return phones_;
 }
@@ -58,22 +50,16 @@ J2OBJC_FIELD_SETTER(AMPhoneBookContact, emails_, JavaUtilArrayList *)
 
 @end
 
-
-#line 16
 void AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(AMPhoneBookContact *self, jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) {
   (void) NSObject_init(self);
   self->phones_ = new_JavaUtilArrayList_init();
   self->emails_ = new_JavaUtilArrayList_init();
-  
-#line 17
   self->contactId_ = contactId;
   self->name_ = name;
   self->phones_ = phones;
   self->emails_ = emails;
 }
 
-
-#line 16
 AMPhoneBookContact *new_AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(jlong contactId, NSString *name, JavaUtilArrayList *phones, JavaUtilArrayList *emails) {
   AMPhoneBookContact *self = [AMPhoneBookContact alloc];
   AMPhoneBookContact_initWithLong_withNSString_withJavaUtilArrayList_withJavaUtilArrayList_(self, contactId, name, phones, emails);

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/ProtoStruct.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -17,8 +15,6 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-
-#line 12
 @implementation MTProtoStruct
 
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
@@ -26,15 +22,11 @@
   return self;
 }
 
-
-#line 18
 - (instancetype)init {
   MTProtoStruct_init(self);
   return self;
 }
 
-
-#line 24
 - (void)writeObjectWithBSDataOutput:(BSDataOutput *)bs {
   jbyte header = [self getHeader];
   if (header != 0) {
@@ -43,8 +35,6 @@
   [self writeBodyWithBSDataOutput:bs];
 }
 
-
-#line 33
 - (MTProtoObject *)readObjectWithBSDataInput:(BSDataInput *)bs {
   [self readBodyWithBSDataInput:bs];
   return self;
@@ -52,8 +42,6 @@
 
 @end
 
-
-#line 14
 void MTProtoStruct_initWithBSDataInput_(MTProtoStruct *self, BSDataInput *stream) {
   (void) MTProtoObject_initWithBSDataInput_(self, stream);
 }

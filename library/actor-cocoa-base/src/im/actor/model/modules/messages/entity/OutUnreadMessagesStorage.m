@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/OutUnreadMessagesStorage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,22 +26,16 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, messages_, JavaUtilArrayList *)
 
-
-#line 16
 @implementation ImActorModelModulesMessagesEntityOutUnreadMessagesStorage
 
 + (ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_fromBytesWithByteArray_(data);
 }
 
-
-#line 24
 - (JavaUtilArrayList *)getMessages {
   return messages_;
 }
 
-
-#line 29
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [((JavaUtilArrayList *) nil_chk(messages_)) clear];
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
@@ -54,8 +46,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
   [messages_ addAllWithJavaUtilCollection:[values getRepeatedObjWithInt:1 withJavaUtilList:tmp]];
 }
 
-
-#line 40
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:messages_];
 }
@@ -67,12 +57,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityOutUnreadMessagesStorage, m
 
 @end
 
-
-#line 18
 ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_initialize();
-  
-#line 19
   return ((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_init(), data));
 }
 

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcInternalError.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -22,27 +20,19 @@
 
 @end
 
-
-#line 13
 @implementation MTRpcInternalError
 
-
-#line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRpcInternalError_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 23
 - (instancetype)initWithBoolean:(jboolean)canTryAgain
                         withInt:(jint)tryAgainDelay {
   MTRpcInternalError_initWithBoolean_withInt_(self, canTryAgain, tryAgainDelay);
   return self;
 }
 
-
-#line 28
 - (jboolean)isCanTryAgain {
   return canTryAgain_;
 }
@@ -51,21 +41,15 @@
   return tryAgainDelay_;
 }
 
-
-#line 37
 - (jbyte)getHeader {
   return MTRpcInternalError_HEADER;
 }
 
-
-#line 42
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeProtoBoolWithBoolean:canTryAgain_];
   [bs writeIntWithInt:tryAgainDelay_];
 }
 
-
-#line 48
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   canTryAgain_ = [((BSDataInput *) nil_chk(bs)) readProtoBool];
   tryAgainDelay_ = [bs readInt];
@@ -73,32 +57,22 @@
 
 @end
 
-
-#line 19
 void MTRpcInternalError_initWithBSDataInput_(MTRpcInternalError *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 19
 MTRpcInternalError *new_MTRpcInternalError_initWithBSDataInput_(BSDataInput *stream) {
   MTRpcInternalError *self = [MTRpcInternalError alloc];
   MTRpcInternalError_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 23
 void MTRpcInternalError_initWithBoolean_withInt_(MTRpcInternalError *self, jboolean canTryAgain, jint tryAgainDelay) {
   (void) MTProtoStruct_init(self);
-  
-#line 24
   self->canTryAgain_ = canTryAgain;
   self->tryAgainDelay_ = tryAgainDelay;
 }
 
-
-#line 23
 MTRpcInternalError *new_MTRpcInternalError_initWithBoolean_withInt_(jboolean canTryAgain, jint tryAgainDelay) {
   MTRpcInternalError *self = [MTRpcInternalError alloc];
   MTRpcInternalError_initWithBoolean_withInt_(self, canTryAgain, tryAgainDelay);

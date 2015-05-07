@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupTitleChanged.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,16 +31,12 @@ __attribute__((unused)) static void AMServiceGroupTitleChanged_init(AMServiceGro
 
 __attribute__((unused)) static AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_init() NS_RETURNS_RETAINED;
 
-
-#line 13
 @implementation AMServiceGroupTitleChanged
 
 + (AMServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupTitleChanged_fromBytesWithByteArray_(data);
 }
 
-
-#line 21
 - (instancetype)initWithNSString:(NSString *)newTitle {
   AMServiceGroupTitleChanged_initWithNSString_(self, newTitle);
   return self;
@@ -53,27 +47,19 @@ __attribute__((unused)) static AMServiceGroupTitleChanged *new_AMServiceGroupTit
   return self;
 }
 
-
-#line 30
 - (NSString *)getNewTitle {
   return newTitle_;
 }
 
-
-#line 35
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
 }
 
-
-#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   newTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
-
-#line 46
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
@@ -81,38 +67,26 @@ __attribute__((unused)) static AMServiceGroupTitleChanged *new_AMServiceGroupTit
 
 @end
 
-
-#line 15
 AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupTitleChanged_initialize();
-  
-#line 16
   return ((AMServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupTitleChanged_init(), data));
 }
 
-
-#line 21
 void AMServiceGroupTitleChanged_initWithNSString_(AMServiceGroupTitleChanged *self, NSString *newTitle) {
   (void) AMServiceContent_initWithNSString_(self, @"Group theme changed");
   self->newTitle_ = newTitle;
 }
 
-
-#line 21
 AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_initWithNSString_(NSString *newTitle) {
   AMServiceGroupTitleChanged *self = [AMServiceGroupTitleChanged alloc];
   AMServiceGroupTitleChanged_initWithNSString_(self, newTitle);
   return self;
 }
 
-
-#line 26
 void AMServiceGroupTitleChanged_init(AMServiceGroupTitleChanged *self) {
   (void) AMServiceContent_init(self);
 }
 
-
-#line 26
 AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_init() {
   AMServiceGroupTitleChanged *self = [AMServiceGroupTitleChanged alloc];
   AMServiceGroupTitleChanged_init(self);

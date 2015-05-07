@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,27 +25,19 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, text_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, ImActorModelApiTextMessageEx *)
 
-
-#line 23
 @implementation ImActorModelApiTextMessage
 
-
-#line 28
 - (instancetype)initWithNSString:(NSString *)text
 withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
   ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(self, text, ext);
   return self;
 }
 
-
-#line 33
 - (instancetype)init {
   ImActorModelApiTextMessage_init(self);
   return self;
 }
 
-
-#line 37
 - (jint)getHeader {
   return 1;
 }
@@ -60,8 +50,6 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
   return self->ext_;
 }
 
-
-#line 50
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
@@ -69,8 +57,6 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
   }
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->text_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -81,8 +67,6 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
   }
 }
 
-
-#line 69
 - (NSString *)description {
   NSString *res = @"struct TextMessage{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
@@ -93,32 +77,22 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 
 @end
 
-
-#line 28
 void ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(ImActorModelApiTextMessage *self, NSString *text, ImActorModelApiTextMessageEx *ext) {
   (void) ImActorModelApiMessage_init(self);
-  
-#line 29
   self->text_ = text;
   self->ext_ = ext;
 }
 
-
-#line 28
 ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(NSString *text, ImActorModelApiTextMessageEx *ext) {
   ImActorModelApiTextMessage *self = [ImActorModelApiTextMessage alloc];
   ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(self, text, ext);
   return self;
 }
 
-
-#line 33
 void ImActorModelApiTextMessage_init(ImActorModelApiTextMessage *self) {
   (void) ImActorModelApiMessage_init(self);
 }
 
-
-#line 33
 ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_init() {
   ImActorModelApiTextMessage *self = [ImActorModelApiTextMessage alloc];
   ImActorModelApiTextMessage_init(self);

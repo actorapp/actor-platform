@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/mvvm/MVVMEngine.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
@@ -16,12 +14,8 @@ static id<AMMainThreadProvider> AMMVVMEngine_mainThreadProvider_;
 J2OBJC_STATIC_FIELD_GETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
 J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadProvider>)
 
-
-#line 12
 @implementation AMMVVMEngine
 
-
-#line 15
 + (void)init__WithAMMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider {
   AMMVVMEngine_init__WithAMMainThreadProvider_(mainThreadProvider);
 }
@@ -34,8 +28,6 @@ J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadPro
   AMMVVMEngine_checkMainThread();
 }
 
-
-#line 32
 + (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(runnable);
 }
@@ -47,30 +39,18 @@ J2OBJC_STATIC_FIELD_SETTER(AMMVVMEngine, mainThreadProvider_, id<AMMainThreadPro
 
 @end
 
-
-#line 15
 void AMMVVMEngine_init__WithAMMainThreadProvider_(id<AMMainThreadProvider> mainThreadProvider) {
   AMMVVMEngine_initialize();
-  
-#line 16
   AMMVVMEngine_mainThreadProvider_ = mainThreadProvider;
 }
 
-
-#line 19
 id<AMMainThreadProvider> AMMVVMEngine_getMainThreadProvider() {
   AMMVVMEngine_initialize();
-  
-#line 20
   return AMMVVMEngine_mainThreadProvider_;
 }
 
-
-#line 23
 void AMMVVMEngine_checkMainThread() {
   AMMVVMEngine_initialize();
-  
-#line 24
   if ([((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) isSingleThread]) {
     return;
   }
@@ -79,12 +59,8 @@ void AMMVVMEngine_checkMainThread() {
   }
 }
 
-
-#line 32
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMMVVMEngine_initialize();
-  
-#line 33
   [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) postToMainThread:runnable];
 }
 

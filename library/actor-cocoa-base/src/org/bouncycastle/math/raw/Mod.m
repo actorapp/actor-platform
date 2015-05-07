@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/raw/Mod.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
@@ -37,30 +35,22 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_inversionStepWithI
 
 __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(jint x);
 
-
-#line 5
 @implementation OrgBouncycastleMathRawMod
 
 + (jint)inverse32WithInt:(jint)d {
   return OrgBouncycastleMathRawMod_inverse32WithInt_(d);
 }
 
-
-#line 19
 + (void)invertWithIntArray:(IOSIntArray *)p
               withIntArray:(IOSIntArray *)x
               withIntArray:(IOSIntArray *)z {
   OrgBouncycastleMathRawMod_invertWithIntArray_withIntArray_withIntArray_(p, x, z);
 }
 
-
-#line 87
 + (IOSIntArray *)randomWithIntArray:(IOSIntArray *)p {
   return OrgBouncycastleMathRawMod_randomWithIntArray_(p);
 }
 
-
-#line 113
 + (void)addWithIntArray:(IOSIntArray *)p
            withIntArray:(IOSIntArray *)x
            withIntArray:(IOSIntArray *)y
@@ -68,8 +58,6 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
   OrgBouncycastleMathRawMod_addWithIntArray_withIntArray_withIntArray_withIntArray_(p, x, y, z);
 }
 
-
-#line 123
 + (void)subtractWithIntArray:(IOSIntArray *)p
                 withIntArray:(IOSIntArray *)x
                 withIntArray:(IOSIntArray *)y
@@ -77,8 +65,6 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
   OrgBouncycastleMathRawMod_subtractWithIntArray_withIntArray_withIntArray_withIntArray_(p, x, y, z);
 }
 
-
-#line 133
 + (void)inversionResultWithIntArray:(IOSIntArray *)p
                             withInt:(jint)ac
                        withIntArray:(IOSIntArray *)a
@@ -86,8 +72,6 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
   OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(p, ac, a, z);
 }
 
-
-#line 145
 + (jint)inversionStepWithIntArray:(IOSIntArray *)p
                      withIntArray:(IOSIntArray *)u
                           withInt:(jint)uLen
@@ -96,8 +80,6 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
   return OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(p, u, uLen, x, xc);
 }
 
-
-#line 185
 + (jint)getTrailingZeroesWithInt:(jint)x {
   return OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(x);
 }
@@ -109,103 +91,59 @@ __attribute__((unused)) static jint OrgBouncycastleMathRawMod_getTrailingZeroesW
 
 @end
 
-
-#line 7
 jint OrgBouncycastleMathRawMod_inverse32WithInt_(jint d) {
   OrgBouncycastleMathRawMod_initialize();
-  
-#line 10
   jint x = d;
   x *= 2 - d * x;
   x *= 2 - d * x;
   x *= 2 - d * x;
   x *= 2 - d * x;
-  
-#line 16
   return x;
 }
 
-
-#line 19
 void OrgBouncycastleMathRawMod_invertWithIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *z) {
   OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   if (OrgBouncycastleMathRawNat_isZeroWithInt_withIntArray_(len, x)) {
-    
-#line 24
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"'x' cannot be 0");
   }
   if (OrgBouncycastleMathRawNat_isOneWithInt_withIntArray_(len, x)) {
-    
-#line 28
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(x, 0, z, 0, len);
     return;
   }
-  
-#line 32
   IOSIntArray *u = OrgBouncycastleMathRawNat_copy__WithInt_withIntArray_(len, x);
   IOSIntArray *a = OrgBouncycastleMathRawNat_createWithInt_(len);
   *IOSIntArray_GetRef(nil_chk(a), 0) = 1;
   jint ac = 0;
-  
-#line 37
   if ((IOSIntArray_Get(nil_chk(u), 0) & 1) == 0) {
-    
-#line 39
     ac = OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(p, u, len, a, ac);
   }
   if (OrgBouncycastleMathRawNat_isOneWithInt_withIntArray_(len, u)) {
-    
-#line 43
     OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(p, ac, a, z);
     return;
   }
-  
-#line 47
   IOSIntArray *v = OrgBouncycastleMathRawNat_copy__WithInt_withIntArray_(len, p);
   IOSIntArray *b = OrgBouncycastleMathRawNat_createWithInt_(len);
   jint bc = 0;
-  
-#line 51
   jint uvLen = len;
-  
-#line 53
   for (; ; ) {
-    
-#line 55
     while (IOSIntArray_Get(u, uvLen - 1) == 0 && IOSIntArray_Get(nil_chk(v), uvLen - 1) == 0) {
-      
-#line 57
       --uvLen;
     }
-    
-#line 60
     if (OrgBouncycastleMathRawNat_gteWithInt_withIntArray_withIntArray_(uvLen, u, v)) {
-      
-#line 62
       OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withIntArray_(uvLen, v, u);
-      
-#line 64
       ac += OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withIntArray_(len, b, a) - bc;
       ac = OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(p, u, uvLen, a, ac);
       if (OrgBouncycastleMathRawNat_isOneWithInt_withIntArray_(uvLen, u)) {
-        
-#line 68
         OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(p, ac, a, z);
         return;
       }
     }
     else {
-      
-#line 74
       OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withIntArray_(uvLen, u, v);
-      
-#line 76
       bc += OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withIntArray_(len, a, b) - ac;
       bc = OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(p, v, uvLen, b, bc);
       if (OrgBouncycastleMathRawNat_isOneWithInt_withIntArray_(uvLen, v)) {
-        
-#line 80
         OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(p, bc, b, z);
         return;
       }
@@ -213,142 +151,88 @@ void OrgBouncycastleMathRawMod_invertWithIntArray_withIntArray_withIntArray_(IOS
   }
 }
 
-
-#line 87
 IOSIntArray *OrgBouncycastleMathRawMod_randomWithIntArray_(IOSIntArray *p) {
   OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   JavaUtilRandom *rand = new_JavaUtilRandom_init();
   IOSIntArray *s = OrgBouncycastleMathRawNat_createWithInt_(len);
-  
-#line 93
   jint m = IOSIntArray_Get(p, len - 1);
   m |= URShift32(m, 1);
   m |= URShift32(m, 2);
   m |= URShift32(m, 4);
   m |= URShift32(m, 8);
   m |= URShift32(m, 16);
-  
-#line 100
   do {
-    
-#line 102
     for (jint i = 0; i != len; i++) {
-      
-#line 104
       *IOSIntArray_GetRef(nil_chk(s), i) = [rand nextInt];
     }
     *IOSIntArray_GetRef(nil_chk(s), len - 1) &= m;
   }
   while (OrgBouncycastleMathRawNat_gteWithInt_withIntArray_withIntArray_(len, s, p));
-  
-#line 110
   return s;
 }
 
-
-#line 113
 void OrgBouncycastleMathRawMod_addWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *y, IOSIntArray *z) {
   OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   jint c = OrgBouncycastleMathRawNat_addWithInt_withIntArray_withIntArray_withIntArray_(len, x, y, z);
   if (c != 0) {
-    
-#line 119
     OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withIntArray_(len, p, z);
   }
 }
 
-
-#line 123
 void OrgBouncycastleMathRawMod_subtractWithIntArray_withIntArray_withIntArray_withIntArray_(IOSIntArray *p, IOSIntArray *x, IOSIntArray *y, IOSIntArray *z) {
   OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   jint c = OrgBouncycastleMathRawNat_subWithInt_withIntArray_withIntArray_withIntArray_(len, x, y, z);
   if (c != 0) {
-    
-#line 129
     OrgBouncycastleMathRawNat_addToWithInt_withIntArray_withIntArray_(len, p, z);
   }
 }
 
-
-#line 133
 void OrgBouncycastleMathRawMod_inversionResultWithIntArray_withInt_withIntArray_withIntArray_(IOSIntArray *p, jint ac, IOSIntArray *a, IOSIntArray *z) {
   OrgBouncycastleMathRawMod_initialize();
   if (ac < 0) {
-    
-#line 137
     OrgBouncycastleMathRawNat_addWithInt_withIntArray_withIntArray_withIntArray_(((IOSIntArray *) nil_chk(p))->size_, a, p, z);
   }
   else {
-    
-#line 141
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(a, 0, z, 0, ((IOSIntArray *) nil_chk(p))->size_);
   }
 }
 
-
-#line 145
 jint OrgBouncycastleMathRawMod_inversionStepWithIntArray_withIntArray_withInt_withIntArray_withInt_(IOSIntArray *p, IOSIntArray *u, jint uLen, IOSIntArray *x, jint xc) {
   OrgBouncycastleMathRawMod_initialize();
   jint len = ((IOSIntArray *) nil_chk(p))->size_;
   jint count = 0;
   while (IOSIntArray_Get(nil_chk(u), 0) == 0) {
-    
-#line 151
     OrgBouncycastleMathRawNat_shiftDownWordWithInt_withIntArray_withInt_(uLen, u, 0);
     count += 32;
   }
   {
-    
-#line 156
     jint zeroes = OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(IOSIntArray_Get(u, 0));
     if (zeroes > 0) {
-      
-#line 159
       OrgBouncycastleMathRawNat_shiftDownBitsWithInt_withIntArray_withInt_withInt_(uLen, u, zeroes, 0);
       count += zeroes;
     }
   }
-  
-#line 164
   for (jint i = 0; i < count; ++i) {
-    
-#line 166
     if ((IOSIntArray_Get(nil_chk(x), 0) & 1) != 0) {
-      
-#line 168
       if (xc < 0) {
-        
-#line 170
         xc += OrgBouncycastleMathRawNat_addToWithInt_withIntArray_withIntArray_(len, p, x);
       }
       else {
-        
-#line 174
         xc += OrgBouncycastleMathRawNat_subFromWithInt_withIntArray_withIntArray_(len, p, x);
       }
     }
-    
-#line 179
     OrgBouncycastleMathRawNat_shiftDownBitWithInt_withIntArray_withInt_(len, x, xc);
   }
-  
-#line 182
   return xc;
 }
 
-
-#line 185
 jint OrgBouncycastleMathRawMod_getTrailingZeroesWithInt_(jint x) {
   OrgBouncycastleMathRawMod_initialize();
-  
-#line 189
   jint count = 0;
   while ((x & 1) == 0) {
-    
-#line 192
     URShiftAssignInt(&x, 1);
     ++count;
   }

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/messages/StartActor.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/messages/StartActor.h"
 
@@ -23,19 +21,13 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelDroidkitActorsMessagesStartActor)
 
 ImActorModelDroidkitActorsMessagesStartActor *ImActorModelDroidkitActorsMessagesStartActor_INSTANCE_;
 
-
-#line 10
 @implementation ImActorModelDroidkitActorsMessagesStartActor
 
-
-#line 13
 - (instancetype)init {
   ImActorModelDroidkitActorsMessagesStartActor_init(self);
   return self;
 }
 
-
-#line 17
 - (NSString *)description {
   return @"StartActor";
 }
@@ -49,14 +41,10 @@ ImActorModelDroidkitActorsMessagesStartActor *ImActorModelDroidkitActorsMessages
 
 @end
 
-
-#line 13
 void ImActorModelDroidkitActorsMessagesStartActor_init(ImActorModelDroidkitActorsMessagesStartActor *self) {
   (void) NSObject_init(self);
 }
 
-
-#line 13
 ImActorModelDroidkitActorsMessagesStartActor *new_ImActorModelDroidkitActorsMessagesStartActor_init() {
   ImActorModelDroidkitActorsMessagesStartActor *self = [ImActorModelDroidkitActorsMessagesStartActor alloc];
   ImActorModelDroidkitActorsMessagesStartActor_init(self);

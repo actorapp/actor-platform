@@ -254,6 +254,18 @@
 
 - (void)trackActionTryAgainWithNSString:(NSString *)action;
 
+- (void)trackAuthCodeClosed;
+
+- (void)trackAuthCodeOpen;
+
+- (void)trackAuthCodeTypeWithNSString:(NSString *)newValue;
+
+- (void)trackAuthCodeWrongNumber;
+
+- (void)trackAuthCodeWrongNumberCancel;
+
+- (void)trackAuthCodeWrongNumberChange;
+
 - (void)trackAuthCountryClosed;
 
 - (void)trackAuthCountryOpen;
@@ -266,7 +278,51 @@
 
 - (void)trackAuthPhoneTypeWithNSString:(NSString *)newValue;
 
+- (void)trackAuthSignupAvatarCanelled;
+
+- (void)trackAuthSignupAvatarDeleted;
+
+- (void)trackAuthSignupAvatarPicked;
+
+- (void)trackAuthSignupClosed;
+
+- (void)trackAuthSignupClosedNameTypeWithNSString:(NSString *)newValue;
+
+- (void)trackAuthSignupOpen;
+
+- (void)trackAuthSignupPressedAvatar;
+
+- (void)trackAuthSuccess;
+
+- (void)trackBackPressed;
+
 - (void)trackCodeRequest;
+
+- (void)trackContactsClosed;
+
+- (void)trackContactsOpen;
+
+- (void)trackDialogsClosed;
+
+- (void)trackDialogsOpen;
+
+- (void)trackDocumentSendWithAMPeer:(AMPeer *)peer;
+
+- (void)trackMainScreensClosed;
+
+- (void)trackMainScreensOpen;
+
+- (void)trackOwnProfileClosed;
+
+- (void)trackOwnProfileOpen;
+
+- (void)trackPhotoSendWithAMPeer:(AMPeer *)peer;
+
+- (void)trackTextSendWithAMPeer:(AMPeer *)peer;
+
+- (void)trackUpPressed;
+
+- (void)trackVideoSendWithAMPeer:(AMPeer *)peer;
 
 - (void)unbindRawFile:(jlong)fileId
        withAutoCancel:(jboolean)isAutoCancel

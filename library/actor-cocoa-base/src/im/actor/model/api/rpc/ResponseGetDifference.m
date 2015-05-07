@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetDifference.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -45,18 +43,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, phones_, id<JavaUti
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, emails_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseGetDifference
 
-
-#line 27
 + (ImActorModelApiRpcResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(data);
 }
 
-
-#line 40
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
            withJavaUtilList:(id<JavaUtilList>)users
@@ -69,15 +61,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return self;
 }
 
-
-#line 51
 - (instancetype)init {
   ImActorModelApiRpcResponseGetDifference_init(self);
   return self;
 }
 
-
-#line 55
 - (jint)getSeq {
   return self->seq_;
 }
@@ -110,8 +98,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return self->needMore__;
 }
 
-
-#line 88
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -143,8 +129,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   self->needMore__ = [values getBoolWithInt:5];
 }
 
-
-#line 120
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
@@ -159,37 +143,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   [writer writeBoolWithInt:5 withBoolean:self->needMore__];
 }
 
-
-#line 135
 - (NSString *)description {
   NSString *res = @"tuple GetDifference{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 142
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetDifference_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetDifference_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetDifference_init(), data));
 }
 
-
-#line 40
 void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 41
   self->seq_ = seq;
   self->state_ = state;
   self->users_ = users;
@@ -200,22 +172,16 @@ void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaU
   self->needMore__ = needMore;
 }
 
-
-#line 40
 ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore) {
   ImActorModelApiRpcResponseGetDifference *self = [ImActorModelApiRpcResponseGetDifference alloc];
   ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, phones, emails, updates, needMore);
   return self;
 }
 
-
-#line 51
 void ImActorModelApiRpcResponseGetDifference_init(ImActorModelApiRpcResponseGetDifference *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 51
 ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_init() {
   ImActorModelApiRpcResponseGetDifference *self = [ImActorModelApiRpcResponseGetDifference alloc];
   ImActorModelApiRpcResponseGetDifference_init(self);

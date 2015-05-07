@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorScope.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -41,12 +39,8 @@ J2OBJC_FIELD_SETTER(DKActorScope, actor_, DKActor *)
 J2OBJC_FIELD_SETTER(DKActorScope, sender_, DKActorRef *)
 J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
 
-
-#line 15
 @implementation DKActorScope
 
-
-#line 33
 - (instancetype)initWithDKActorSystem:(DKActorSystem *)actorSystem
                         withDKMailbox:(DKMailbox *)mailbox
                 withDKActorDispatcher:(DKActorDispatcher *)dispatcher
@@ -57,8 +51,6 @@ J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
   return self;
 }
 
-
-#line 44
 - (DKActorEndpoint *)getEndpoint {
   return endpoint_;
 }
@@ -109,8 +101,6 @@ J2OBJC_FIELD_SETTER(DKActorScope, endpoint_, DKActorEndpoint *)
 
 @end
 
-
-#line 33
 void DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorScope *self, DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) {
   (void) NSObject_init(self);
   self->actorSystem_ = actorSystem;
@@ -122,8 +112,6 @@ void DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_with
   self->endpoint_ = endpoint;
 }
 
-
-#line 33
 DKActorScope *new_DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(DKActorSystem *actorSystem, DKMailbox *mailbox, DKActorDispatcher *dispatcher, NSString *path, DKProps *props, DKActorEndpoint *endpoint) {
   DKActorScope *self = [DKActorScope alloc];
   DKActorScope_initWithDKActorSystem_withDKMailbox_withDKActorDispatcher_withNSString_withDKProps_withDKActorEndpoint_(self, actorSystem, mailbox, dispatcher, path, props, endpoint);

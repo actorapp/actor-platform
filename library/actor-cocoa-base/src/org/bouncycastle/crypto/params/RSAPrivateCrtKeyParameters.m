@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/RSAPrivateCrtKeyParameters.java"
-
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/crypto/params/RSAKeyParameters.h"
@@ -30,12 +28,8 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, dP_, 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, dQ_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, qInv_, JavaMathBigInteger *)
 
-
-#line 5
 @implementation OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters
 
-
-#line 18
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)publicExponent
                     withJavaMathBigInteger:(JavaMathBigInteger *)privateExponent
@@ -48,64 +42,34 @@ J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters, qInv_
   return self;
 }
 
-
-#line 38
 - (JavaMathBigInteger *)getPublicExponent {
-  
-#line 40
   return e_;
 }
 
-
-#line 43
 - (JavaMathBigInteger *)getP {
-  
-#line 45
   return p_;
 }
 
-
-#line 48
 - (JavaMathBigInteger *)getQ {
-  
-#line 50
   return q_;
 }
 
-
-#line 53
 - (JavaMathBigInteger *)getDP {
-  
-#line 55
   return dP_;
 }
 
-
-#line 58
 - (JavaMathBigInteger *)getDQ {
-  
-#line 60
   return dQ_;
 }
 
-
-#line 63
 - (JavaMathBigInteger *)getQInv {
-  
-#line 65
   return qInv_;
 }
 
 @end
 
-
-#line 18
 void OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *self, JavaMathBigInteger *modulus, JavaMathBigInteger *publicExponent, JavaMathBigInteger *privateExponent, JavaMathBigInteger *p, JavaMathBigInteger *q, JavaMathBigInteger *dP, JavaMathBigInteger *dQ, JavaMathBigInteger *qInv) {
-  (void) OrgBouncycastleCryptoParamsRSAKeyParameters_initWithBoolean_withJavaMathBigInteger_withJavaMathBigInteger_(self,
-#line 28
-  YES, modulus, privateExponent);
-  
-#line 30
+  (void) OrgBouncycastleCryptoParamsRSAKeyParameters_initWithBoolean_withJavaMathBigInteger_withJavaMathBigInteger_(self, YES, modulus, privateExponent);
   self->e_ = publicExponent;
   self->p_ = p;
   self->q_ = q;
@@ -114,8 +78,6 @@ void OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigIn
   self->qInv_ = qInv;
 }
 
-
-#line 18
 OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *new_OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *publicExponent, JavaMathBigInteger *privateExponent, JavaMathBigInteger *p, JavaMathBigInteger *q, JavaMathBigInteger *dP, JavaMathBigInteger *dQ, JavaMathBigInteger *qInv) {
   OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *self = [OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters alloc];
   OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters_initWithJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, publicExponent, privateExponent, p, q, dP, dQ, qInv);

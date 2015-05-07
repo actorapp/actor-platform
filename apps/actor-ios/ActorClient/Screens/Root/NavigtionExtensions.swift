@@ -24,6 +24,7 @@ extension UIViewController {
 
 extension UIViewController {
     func navigateNext(controller: UIViewController, removeCurrent: Bool = false) {
+        controller.hidesBottomBarWhenPushed = true
         if (!removeCurrent) {
             self.navigationController!.pushViewController(controller, animated: true);
         } else {

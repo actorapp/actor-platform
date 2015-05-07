@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaThreadingProvider.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
@@ -21,8 +19,6 @@
 #include "java/lang/Runtime.h"
 #include "java/lang/System.h"
 
-
-#line 22
 @implementation AMJavaThreadingProvider
 
 - (instancetype)init {
@@ -34,44 +30,30 @@
   return JavaLangSystem_nanoTime() / 1000000;
 }
 
-
-#line 34
 - (jlong)getCurrentTime {
   return JavaLangSystem_currentTimeMillis();
 }
 
-
-#line 39
 - (jlong)getSyncedCurrentTime {
   return [self getCurrentTime];
 }
 
-
-#line 44
 - (jint)getCoresCount {
   return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
 }
 
-
-#line 49
 - (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value {
   return new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(value);
 }
 
-
-#line 54
 - (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value {
   return new_ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(value);
 }
 
-
-#line 59
 - (AMThreadLocalCompat *)createThreadLocal {
   return new_ImActorModelJvmThreadsJavaThreadLocal_init();
 }
 
-
-#line 64
 - (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
                                             withInt:(jint)threadsCount
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
@@ -79,8 +61,6 @@
   return new_ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(name, actorSystem, threadsCount, priority);
 }
 
-
-#line 69
 - (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                          withDKActorSystem:(DKActorSystem *)actorSystem {
@@ -89,14 +69,10 @@
 
 @end
 
-
-#line 24
 void AMJavaThreadingProvider_init(AMJavaThreadingProvider *self) {
   (void) NSObject_init(self);
 }
 
-
-#line 24
 AMJavaThreadingProvider *new_AMJavaThreadingProvider_init() {
   AMJavaThreadingProvider *self = [AMJavaThreadingProvider alloc];
   AMJavaThreadingProvider_init(self);
