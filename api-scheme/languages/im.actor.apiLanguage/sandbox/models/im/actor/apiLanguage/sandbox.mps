@@ -814,21 +814,6 @@
           <property role="2m7y0m" value="3" />
         </node>
       </node>
-      <node concept="2m488m" id="1ydqyopSCjD" role="2m5mJr">
-        <property role="TrG5h" value="UserState" />
-        <node concept="2m7y0F" id="1ydqyopSCjF" role="2m7ymf">
-          <property role="TrG5h" value="Registered" />
-          <property role="2m7y0m" value="1" />
-        </node>
-        <node concept="2m7y0F" id="1ydqyopSCm$" role="2m7ymf">
-          <property role="TrG5h" value="Email" />
-          <property role="2m7y0m" value="2" />
-        </node>
-        <node concept="2m7y0F" id="1ydqyopSCmB" role="2m7ymf">
-          <property role="TrG5h" value="Deleted" />
-          <property role="2m7y0m" value="3" />
-        </node>
-      </node>
       <node concept="2m5naR" id="1ydqyopRHjr" role="2m5mJr">
         <property role="TrG5h" value="Phone" />
         <node concept="NXeRC" id="1ydqyopRHKB" role="NXodf">
@@ -1039,13 +1024,6 @@
           <property role="TrG5h" value="emails" />
           <node concept="2m5nlk" id="1ydqyopRJAZ" role="2m7DVh">
             <node concept="2m5ndE" id="1ydqyopSLsc" role="3GJlyp" />
-          </node>
-        </node>
-        <node concept="2m7Kf5" id="1ydqyopSDhx" role="2m0hLx">
-          <property role="2m7DUN" value="11" />
-          <property role="TrG5h" value="userState" />
-          <node concept="3GJkcs" id="1ydqyopSDhZ" role="2m7DVh">
-            <ref role="3GJkik" node="1ydqyopSCjD" resolve="UserState" />
           </node>
         </node>
       </node>
@@ -1457,37 +1435,6 @@
         </node>
         <node concept="Nu42z" id="1ydqyopRK4D" role="NuuwV">
           <property role="Nu42W" value="56" />
-        </node>
-      </node>
-      <node concept="NpBTk" id="1ydqyopSG__" role="2m5mJr">
-        <property role="TrG5h" value="UserStateChanged" />
-        <node concept="NXeRC" id="1ydqyopSGCR" role="NXp_2">
-          <property role="NXePf" value="Update about user state changed" />
-        </node>
-        <node concept="NX1gA" id="1ydqyopSGCX" role="NXp_2">
-          <property role="NX6R2" value="user's id" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="1ydqyopSGC_" resolve="uid" />
-        </node>
-        <node concept="NX1gA" id="1ydqyopSGD5" role="NXp_2">
-          <property role="NX6R2" value="new user state" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="1ydqyopSGCG" resolve="state" />
-        </node>
-        <node concept="2m7Kf5" id="1ydqyopSGC_" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="uid" />
-          <node concept="2m5ndE" id="1ydqyopSGCD" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="1ydqyopSGCG" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="state" />
-          <node concept="3GJkcs" id="1ydqyopSGCM" role="2m7DVh">
-            <ref role="3GJkik" node="1ydqyopSCjD" resolve="UserState" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="1ydqyopSG_A" role="NuuwV">
-          <property role="Nu42W" value="64" />
         </node>
       </node>
     </node>
@@ -2145,6 +2092,13 @@
           <property role="TrG5h" value="date" />
           <node concept="wb0Ql" id="2vxDjotnO$1" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="gbd4oSmuIP" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="gbd4oSmuIZ" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
           </node>
         </node>
         <node concept="Nu42z" id="GBscvBBh2t" role="NuuwV">
@@ -5058,6 +5012,11 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="uploadKey" />
           <node concept="2m61tm" id="3MpuFr6xcSe" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2fcK_nBaSeD" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="fileName" />
+          <node concept="2m5ndX" id="2fcK_nBaSh$" role="2m7DVh" />
         </node>
         <node concept="Nu42z" id="3MpuFr6xcQR" role="NuuwV">
           <property role="Nu42W" value="7A" />
