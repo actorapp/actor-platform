@@ -20,6 +20,7 @@
   jint uid_;
   jboolean isSilent__;
   jlong date_;
+  jlong rid_;
 }
 
 @end
@@ -32,8 +33,9 @@
 
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
-                   withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
+                   withLong:(jlong)date
+                   withLong:(jlong)rid {
+  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
   return self;
 }
 
@@ -54,16 +56,22 @@
   return self->date_;
 }
 
+- (jlong)getRid {
+  return self->rid_;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->isSilent__ = [values getBoolWithInt:2];
   self->date_ = [values getLongWithInt:3];
+  self->rid_ = [values getLongWithInt:4];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeBoolWithInt:2 withBoolean:self->isSilent__];
   [writer writeLongWithInt:3 withLong:self->date_];
+  [writer writeLongWithInt:4 withLong:self->rid_];
 }
 
 - (NSString *)description {
@@ -86,16 +94,17 @@ ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateConta
   return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactRegistered_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date) {
+void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date, jlong rid) {
   (void) ImActorModelNetworkParserUpdate_init(self);
   self->uid_ = uid;
   self->isSilent__ = isSilent;
   self->date_ = date;
+  self->rid_ = rid;
 }
 
-ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(jint uid, jboolean isSilent, jlong date) {
+ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(jint uid, jboolean isSilent, jlong date, jlong rid) {
   ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
-  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
+  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
   return self;
 }
 

@@ -477,7 +477,7 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
     if (self->isWriteToDestProvider_) {
       [((id<AMOutputFile>) nil_chk(self->outputFile_)) close];
     }
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self->uploadConfig_) withAMRpcCallback:new_ImActorModelModulesFileUploadTask_$2_initWithImActorModelModulesFileUploadTask_(self)];
+    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(self->uploadConfig_, self->fileName_) withAMRpcCallback:new_ImActorModelModulesFileUploadTask_$2_initWithImActorModelModulesFileUploadTask_(self)];
     return;
   }
   if (self->nextBlock_ < self->blocksCount_ && self->uploadCount_ < ImActorModelModulesFileUploadTask_SIM_BLOCKS_COUNT) {

@@ -21,9 +21,12 @@
 
 - (instancetype)init;
 
-- (instancetype)initWithByteArray:(IOSByteArray *)uploadKey;
+- (instancetype)initWithByteArray:(IOSByteArray *)uploadKey
+                     withNSString:(NSString *)fileName;
 
 + (ImActorModelApiRpcRequestCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+- (NSString *)getFileName;
 
 - (jint)getHeaderKey;
 
@@ -43,9 +46,9 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestCommitFileUpload, HEADER, ji
 
 FOUNDATION_EXPORT ImActorModelApiRpcRequestCommitFileUpload *ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey);
+FOUNDATION_EXPORT void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey, NSString *fileName);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(IOSByteArray *uploadKey) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(IOSByteArray *uploadKey, NSString *fileName) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiRpcRequestCommitFileUpload_init(ImActorModelApiRpcRequestCommitFileUpload *self);
 

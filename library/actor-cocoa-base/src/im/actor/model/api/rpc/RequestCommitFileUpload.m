@@ -18,11 +18,13 @@
 @interface ImActorModelApiRpcRequestCommitFileUpload () {
  @public
   IOSByteArray *uploadKey_;
+  NSString *fileName_;
 }
 
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, fileName_, NSString *)
 
 @implementation ImActorModelApiRpcRequestCommitFileUpload
 
@@ -30,8 +32,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSBy
   return ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithByteArray:(IOSByteArray *)uploadKey {
-  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self, uploadKey);
+- (instancetype)initWithByteArray:(IOSByteArray *)uploadKey
+                     withNSString:(NSString *)fileName {
+  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(self, uploadKey, fileName);
   return self;
 }
 
@@ -44,8 +47,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSBy
   return self->uploadKey_;
 }
 
+- (NSString *)getFileName {
+  return self->fileName_;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uploadKey_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
+  self->fileName_ = [values getStringWithInt:2];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -53,6 +61,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSBy
     @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->uploadKey_];
+  if (self->fileName_ == nil) {
+    @throw new_JavaIoIOException_init();
+  }
+  [writer writeStringWithInt:2 withNSString:self->fileName_];
 }
 
 - (NSString *)description {
@@ -72,14 +84,15 @@ ImActorModelApiRpcRequestCommitFileUpload *ImActorModelApiRpcRequestCommitFileUp
   return ((ImActorModelApiRpcRequestCommitFileUpload *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestCommitFileUpload_init(), data));
 }
 
-void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey) {
+void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey, NSString *fileName) {
   (void) ImActorModelNetworkParserRequest_init(self);
   self->uploadKey_ = uploadKey;
+  self->fileName_ = fileName;
 }
 
-ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(IOSByteArray *uploadKey) {
+ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(IOSByteArray *uploadKey, NSString *fileName) {
   ImActorModelApiRpcRequestCommitFileUpload *self = [ImActorModelApiRpcRequestCommitFileUpload alloc];
-  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self, uploadKey);
+  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(self, uploadKey, fileName);
   return self;
 }
 
