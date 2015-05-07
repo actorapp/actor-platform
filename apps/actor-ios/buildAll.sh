@@ -11,7 +11,7 @@ baseVersion=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" Acto
 version=$baseVersion.$1
 echo "##teamcity[buildNumber '$version']"
 /usr/libexec/PlistBuddy -c "Set CFBundleShortVersionString $version" ActorClient/Info.plist
-/usr/libexec/PlistBuddy -c "Set CFBundleVersion %build.counter%" ActorClient/Info.plist
+/usr/libexec/PlistBuddy -c "Set CFBundleVersion $version" ActorClient/Info.plist
 echo "##teamcity[progressFinish 'Setting version number']"
 
 # Building Apps
