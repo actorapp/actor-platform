@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/BaseMessenger.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/BaseMessenger.h"
 #include "im/actor/model/Configuration.h"
@@ -26,12 +24,8 @@
 
 J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLists *)
 
-
-#line 20
 @implementation AMBaseMessenger
 
-
-#line 24
 - (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
   AMBaseMessenger_initWithAMConfiguration_(self, configuration);
   return self;
@@ -40,13 +34,9 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 - (AMConversationVM *)buildConversationVMWithAMPeer:(AMPeer *)peer
                             withAMBindedDisplayList:(AMBindedDisplayList *)displayList
                        withAMConversationVMCallback:(id<AMConversationVMCallback>)callback {
-  
-#line 31
   return new_AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(peer, callback, modules_, displayList);
 }
 
-
-#line 36
 - (AMBindedDisplayList *)getDialogsGlobalList {
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) getDialogsGlobalList];
 }
@@ -81,15 +71,11 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 
 @end
 
-
-#line 24
 void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration) {
   (void) AMMessenger_initWithAMConfiguration_(self, configuration);
   self->displayLists_ = new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self->modules_);
 }
 
-
-#line 24
 AMBaseMessenger *new_AMBaseMessenger_initWithAMConfiguration_(AMConfiguration *configuration) {
   AMBaseMessenger *self = [AMBaseMessenger alloc];
   AMBaseMessenger_initWithAMConfiguration_(self, configuration);

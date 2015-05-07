@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/PhoneToImport.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/PhoneToImport.h"
@@ -26,23 +24,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
 
 @implementation ImActorModelApiPhoneToImport
 
-
-#line 28
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)name {
   ImActorModelApiPhoneToImport_initWithLong_withNSString_(self, phoneNumber, name);
   return self;
 }
 
-
-#line 33
 - (instancetype)init {
   ImActorModelApiPhoneToImport_init(self);
   return self;
 }
 
-
-#line 37
 - (jlong)getPhoneNumber {
   return self->phoneNumber_;
 }
@@ -51,15 +43,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
   return self->name_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->phoneNumber_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->name_ = [values optStringWithInt:2];
 }
 
-
-#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->phoneNumber_];
   if (self->name_ != nil) {
@@ -67,8 +55,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
   }
 }
 
-
-#line 60
 - (NSString *)description {
   NSString *res = @"struct PhoneToImport{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"phoneNumber=", self->phoneNumber_));
@@ -79,32 +65,22 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
 
 @end
 
-
-#line 28
 void ImActorModelApiPhoneToImport_initWithLong_withNSString_(ImActorModelApiPhoneToImport *self, jlong phoneNumber, NSString *name) {
   (void) BSBserObject_init(self);
-  
-#line 29
   self->phoneNumber_ = phoneNumber;
   self->name_ = name;
 }
 
-
-#line 28
 ImActorModelApiPhoneToImport *new_ImActorModelApiPhoneToImport_initWithLong_withNSString_(jlong phoneNumber, NSString *name) {
   ImActorModelApiPhoneToImport *self = [ImActorModelApiPhoneToImport alloc];
   ImActorModelApiPhoneToImport_initWithLong_withNSString_(self, phoneNumber, name);
   return self;
 }
 
-
-#line 33
 void ImActorModelApiPhoneToImport_init(ImActorModelApiPhoneToImport *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 33
 ImActorModelApiPhoneToImport *new_ImActorModelApiPhoneToImport_init() {
   ImActorModelApiPhoneToImport *self = [ImActorModelApiPhoneToImport alloc];
   ImActorModelApiPhoneToImport_init(self);

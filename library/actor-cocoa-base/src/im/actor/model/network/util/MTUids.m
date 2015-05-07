@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/util/MTUids.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/network/util/MTUids.h"
@@ -16,12 +14,8 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkUtilMTUids, NEXT_ID_, AMAtomicLong
 
 J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkUtilMTUids)
 
-
-#line 10
 @implementation ImActorModelNetworkUtilMTUids
 
-
-#line 13
 + (jlong)nextId {
   return ImActorModelNetworkUtilMTUids_nextId();
 }
@@ -33,21 +27,15 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkUtilMTUids)
 
 + (void)initialize {
   if (self == [ImActorModelNetworkUtilMTUids class]) {
-    ImActorModelNetworkUtilMTUids_NEXT_ID_ = DKEnvironment_createAtomicLongWithLong_(
-#line 11
-    1);
+    ImActorModelNetworkUtilMTUids_NEXT_ID_ = DKEnvironment_createAtomicLongWithLong_(1);
     J2OBJC_SET_INITIALIZED(ImActorModelNetworkUtilMTUids)
   }
 }
 
 @end
 
-
-#line 13
 jlong ImActorModelNetworkUtilMTUids_nextId() {
   ImActorModelNetworkUtilMTUids_initialize();
-  
-#line 14
   return [((AMAtomicLongCompat *) nil_chk(ImActorModelNetworkUtilMTUids_NEXT_ID_)) getAndIncrement];
 }
 

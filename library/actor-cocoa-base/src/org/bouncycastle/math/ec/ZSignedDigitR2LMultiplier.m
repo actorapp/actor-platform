@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/ZSignedDigitR2LMultiplier.java"
-
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
 #include "org/bouncycastle/math/ec/AbstractECMultiplier.h"
@@ -13,38 +11,20 @@
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/ZSignedDigitR2LMultiplier.h"
 
-
-#line 5
 @implementation OrgBouncycastleMathEcZSignedDigitR2LMultiplier
 
-
-#line 10
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
-  
-#line 12
   OrgBouncycastleMathEcECPoint *R0 = [((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve])) getInfinity], *R1 = p;
-  
-#line 14
   jint n = [((JavaMathBigInteger *) nil_chk(k)) bitLength];
   jint s = [k getLowestSetBit];
-  
-#line 17
   R1 = [R1 timesPow2WithInt:s];
-  
-#line 19
   jint i = s;
   while (++i < n) {
-    
-#line 22
     R0 = [((OrgBouncycastleMathEcECPoint *) nil_chk(R0)) addWithOrgBouncycastleMathEcECPoint:[k testBitWithInt:i] ? R1 : [((OrgBouncycastleMathEcECPoint *) nil_chk(R1)) negate]];
     R1 = [((OrgBouncycastleMathEcECPoint *) nil_chk(R1)) twice];
   }
-  
-#line 26
   R0 = [((OrgBouncycastleMathEcECPoint *) nil_chk(R0)) addWithOrgBouncycastleMathEcECPoint:R1];
-  
-#line 28
   return R0;
 }
 

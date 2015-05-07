@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDetachEmail.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,29 +25,21 @@
 
 @implementation ImActorModelApiRpcRequestDetachEmail
 
-
-#line 27
 + (ImActorModelApiRpcRequestDetachEmail *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)email
                    withLong:(jlong)accessHash {
   ImActorModelApiRpcRequestDetachEmail_initWithInt_withLong_(self, email, accessHash);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestDetachEmail_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getEmail {
   return self->email_;
 }
@@ -58,69 +48,49 @@
   return self->accessHash_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->email_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->email_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
-
-#line 64
 - (NSString *)description {
   NSString *res = @"rpc DetachEmail{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 71
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestDetachEmail_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestDetachEmail *ImActorModelApiRpcRequestDetachEmail_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDetachEmail_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestDetachEmail *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestDetachEmail_init(), data));
 }
 
 void ImActorModelApiRpcRequestDetachEmail_initWithInt_withLong_(ImActorModelApiRpcRequestDetachEmail *self, jint email, jlong accessHash) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->email_ = email;
   self->accessHash_ = accessHash;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestDetachEmail *new_ImActorModelApiRpcRequestDetachEmail_initWithInt_withLong_(jint email, jlong accessHash) {
   ImActorModelApiRpcRequestDetachEmail *self = [ImActorModelApiRpcRequestDetachEmail alloc];
   ImActorModelApiRpcRequestDetachEmail_initWithInt_withLong_(self, email, accessHash);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestDetachEmail_init(ImActorModelApiRpcRequestDetachEmail *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestDetachEmail *new_ImActorModelApiRpcRequestDetachEmail_init() {
   ImActorModelApiRpcRequestDetachEmail *self = [ImActorModelApiRpcRequestDetachEmail alloc];
   ImActorModelApiRpcRequestDetachEmail_init(self);

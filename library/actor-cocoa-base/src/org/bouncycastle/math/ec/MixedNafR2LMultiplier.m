@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MixedNafR2LMultiplier.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalArgumentException.h"
@@ -16,12 +14,8 @@
 #include "org/bouncycastle/math/ec/MixedNafR2LMultiplier.h"
 #include "org/bouncycastle/math/ec/WNafUtil.h"
 
-
-#line 9
 @implementation OrgBouncycastleMathEcMixedNafR2LMultiplier
 
-
-#line 17
 - (instancetype)init {
   OrgBouncycastleMathEcMixedNafR2LMultiplier_init(self);
   return self;
@@ -35,103 +29,57 @@
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
-  
-#line 30
   OrgBouncycastleMathEcECCurve *curveOrig = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
-  
-#line 32
   OrgBouncycastleMathEcECCurve *curveAdd = [self configureCurveWithOrgBouncycastleMathEcECCurve:curveOrig withInt:additionCoord_];
   OrgBouncycastleMathEcECCurve *curveDouble = [self configureCurveWithOrgBouncycastleMathEcECCurve:curveOrig withInt:doublingCoord_];
-  
-#line 35
   IOSIntArray *naf = OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInteger_(k);
-  
-#line 37
   OrgBouncycastleMathEcECPoint *Ra = [((OrgBouncycastleMathEcECCurve *) nil_chk(curveAdd)) getInfinity];
   OrgBouncycastleMathEcECPoint *Td = [((OrgBouncycastleMathEcECCurve *) nil_chk(curveDouble)) importPointWithOrgBouncycastleMathEcECPoint:p];
-  
-#line 40
   jint zeroes = 0;
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(naf))->size_; ++i) {
-    
-#line 43
     jint ni = IOSIntArray_Get(naf, i);
     jint digit = RShift32(ni, 16);
     zeroes += ni & (jint) 0xFFFF;
-    
-#line 47
     Td = [((OrgBouncycastleMathEcECPoint *) nil_chk(Td)) timesPow2WithInt:zeroes];
-    
-#line 49
     OrgBouncycastleMathEcECPoint *Tj = [curveAdd importPointWithOrgBouncycastleMathEcECPoint:Td];
     if (digit < 0) {
-      
-#line 52
       Tj = [((OrgBouncycastleMathEcECPoint *) nil_chk(Tj)) negate];
     }
-    
-#line 55
     Ra = [((OrgBouncycastleMathEcECPoint *) nil_chk(Ra)) addWithOrgBouncycastleMathEcECPoint:Tj];
-    
-#line 57
     zeroes = 1;
   }
-  
-#line 60
   return [((OrgBouncycastleMathEcECCurve *) nil_chk(curveOrig)) importPointWithOrgBouncycastleMathEcECPoint:Ra];
 }
 
-
-#line 63
 - (OrgBouncycastleMathEcECCurve *)configureCurveWithOrgBouncycastleMathEcECCurve:(OrgBouncycastleMathEcECCurve *)c
                                                                          withInt:(jint)coord {
-  
-#line 65
   if ([((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getCoordinateSystem] == coord) {
-    
-#line 67
     return c;
   }
-  
-#line 70
   if (![c supportsCoordinateSystemWithInt:coord]) {
-    
-#line 72
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(JreStrcat("$I$", @"Coordinate system ", coord, @" not supported by this curve"));
   }
-  
-#line 75
   return [((OrgBouncycastleMathEcECCurve_Config *) nil_chk([((OrgBouncycastleMathEcECCurve_Config *) nil_chk([c configure])) setCoordinateSystemWithInt:coord])) create];
 }
 
 @end
 
-
-#line 17
 void OrgBouncycastleMathEcMixedNafR2LMultiplier_init(OrgBouncycastleMathEcMixedNafR2LMultiplier *self) {
-  (void) OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(self,
-#line 19
-  OrgBouncycastleMathEcECCurve_COORD_JACOBIAN, OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED);
+  (void) OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(self, OrgBouncycastleMathEcECCurve_COORD_JACOBIAN, OrgBouncycastleMathEcECCurve_COORD_JACOBIAN_MODIFIED);
 }
 
-
-#line 17
 OrgBouncycastleMathEcMixedNafR2LMultiplier *new_OrgBouncycastleMathEcMixedNafR2LMultiplier_init() {
   OrgBouncycastleMathEcMixedNafR2LMultiplier *self = [OrgBouncycastleMathEcMixedNafR2LMultiplier alloc];
   OrgBouncycastleMathEcMixedNafR2LMultiplier_init(self);
   return self;
 }
 
-
-#line 22
 void OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(OrgBouncycastleMathEcMixedNafR2LMultiplier *self, jint additionCoord, jint doublingCoord) {
   (void) OrgBouncycastleMathEcAbstractECMultiplier_init(self);
   self->additionCoord_ = additionCoord;
   self->doublingCoord_ = doublingCoord;
 }
 
-
-#line 22
 OrgBouncycastleMathEcMixedNafR2LMultiplier *new_OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(jint additionCoord, jint doublingCoord) {
   OrgBouncycastleMathEcMixedNafR2LMultiplier *self = [OrgBouncycastleMathEcMixedNafR2LMultiplier alloc];
   OrgBouncycastleMathEcMixedNafR2LMultiplier_initWithInt_withInt_(self, additionCoord, doublingCoord);

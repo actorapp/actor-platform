@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/updates/internal/UsersFounded.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
@@ -23,20 +21,14 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, commandCallback_, id<AMCommandCallback>)
 
-
-#line 13
 @implementation ImActorModelModulesUpdatesInternalUsersFounded
 
-
-#line 17
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                withAMCommandCallback:(id<AMCommandCallback>)commandCallback {
   ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(self, users, commandCallback);
   return self;
 }
 
-
-#line 22
 - (id<JavaUtilList>)getUsers {
   return users_;
 }
@@ -47,18 +39,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalUsersFounded, commandCallb
 
 @end
 
-
-#line 17
 void ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(ImActorModelModulesUpdatesInternalUsersFounded *self, id<JavaUtilList> users, id<AMCommandCallback> commandCallback) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
-  
-#line 18
   self->users_ = users;
   self->commandCallback_ = commandCallback;
 }
 
-
-#line 17
 ImActorModelModulesUpdatesInternalUsersFounded *new_ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(id<JavaUtilList> users, id<AMCommandCallback> commandCallback) {
   ImActorModelModulesUpdatesInternalUsersFounded *self = [ImActorModelModulesUpdatesInternalUsersFounded alloc];
   ImActorModelModulesUpdatesInternalUsersFounded_initWithJavaUtilList_withAMCommandCallback_(self, users, commandCallback);

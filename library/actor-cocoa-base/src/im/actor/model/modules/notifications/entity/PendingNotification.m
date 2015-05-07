@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/entity/PendingNotification.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,12 +28,8 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingNotification, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingNotification, content_, AMContentDescription *)
 
-
-#line 15
 @implementation ImActorModelModulesNotificationsEntityPendingNotification
 
-
-#line 21
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)date
@@ -44,15 +38,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingNotification, c
   return self;
 }
 
-
-#line 28
 - (instancetype)init {
   ImActorModelModulesNotificationsEntityPendingNotification_init(self);
   return self;
 }
 
-
-#line 31
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -69,8 +59,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingNotification, c
   return content_;
 }
 
-
-#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   sender_ = [values getIntWithInt:2];
@@ -78,8 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingNotification, c
   content_ = AMContentDescription_fromBytesWithByteArray_([values getBytesWithInt:5]);
 }
 
-
-#line 56
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeIntWithInt:2 withInt:sender_];
@@ -89,34 +75,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingNotification, c
 
 @end
 
-
-#line 21
 void ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(ImActorModelModulesNotificationsEntityPendingNotification *self, AMPeer *peer, jint sender, jlong date, AMContentDescription *content) {
   (void) BSBserObject_init(self);
-  
-#line 22
   self->peer_ = peer;
   self->sender_ = sender;
   self->date_ = date;
   self->content_ = content;
 }
 
-
-#line 21
 ImActorModelModulesNotificationsEntityPendingNotification *new_ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(AMPeer *peer, jint sender, jlong date, AMContentDescription *content) {
   ImActorModelModulesNotificationsEntityPendingNotification *self = [ImActorModelModulesNotificationsEntityPendingNotification alloc];
   ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(self, peer, sender, date, content);
   return self;
 }
 
-
-#line 28
 void ImActorModelModulesNotificationsEntityPendingNotification_init(ImActorModelModulesNotificationsEntityPendingNotification *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 28
 ImActorModelModulesNotificationsEntityPendingNotification *new_ImActorModelModulesNotificationsEntityPendingNotification_init() {
   ImActorModelModulesNotificationsEntityPendingNotification *self = [ImActorModelModulesNotificationsEntityPendingNotification alloc];
   ImActorModelModulesNotificationsEntityPendingNotification_init(self);

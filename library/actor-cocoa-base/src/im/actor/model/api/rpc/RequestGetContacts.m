@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetContacts.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,44 +24,30 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestGetContacts
 
-
-#line 27
 + (ImActorModelApiRpcRequestGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithNSString:(NSString *)contactsHash {
   ImActorModelApiRpcRequestGetContacts_initWithNSString_(self, contactsHash);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestGetContacts_init(self);
   return self;
 }
 
-
-#line 41
 - (NSString *)getContactsHash {
   return self->contactsHash_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->contactsHash_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
-
-#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->contactsHash_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -71,8 +55,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->contactsHash_];
 }
 
-
-#line 59
 - (NSString *)description {
   NSString *res = @"rpc GetContacts{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"contactsHash=", self->contactsHash_));
@@ -80,48 +62,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetContacts, contactsHash_, NSStrin
   return res;
 }
 
-
-#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetContacts_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestGetContacts *ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetContacts_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestGetContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetContacts_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiRpcRequestGetContacts_initWithNSString_(ImActorModelApiRpcRequestGetContacts *self, NSString *contactsHash) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 34
   self->contactsHash_ = contactsHash;
 }
 
-
-#line 33
 ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_initWithNSString_(NSString *contactsHash) {
   ImActorModelApiRpcRequestGetContacts *self = [ImActorModelApiRpcRequestGetContacts alloc];
   ImActorModelApiRpcRequestGetContacts_initWithNSString_(self, contactsHash);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiRpcRequestGetContacts_init(ImActorModelApiRpcRequestGetContacts *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 37
 ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_init() {
   ImActorModelApiRpcRequestGetContacts *self = [ImActorModelApiRpcRequestGetContacts alloc];
   ImActorModelApiRpcRequestGetContacts_init(self);

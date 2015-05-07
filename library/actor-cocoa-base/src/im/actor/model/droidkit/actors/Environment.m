@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/Environment.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/DispatcherProvider.h"
 #include "im/actor/model/ThreadingProvider.h"
@@ -27,12 +25,8 @@ static id<AMDispatcherProvider> DKEnvironment_dispatcherProvider_;
 J2OBJC_STATIC_FIELD_GETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherProvider>)
 J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherProvider>)
 
-
-#line 14
 @implementation DKEnvironment
 
-
-#line 18
 + (void)setThreadingProviderWithAMThreadingProvider:(id<AMThreadingProvider>)threadingProvider {
   DKEnvironment_setThreadingProviderWithAMThreadingProvider_(threadingProvider);
 }
@@ -45,16 +39,12 @@ J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherPr
   DKEnvironment_dispatchCallbackWithJavaLangRunnable_(runnable);
 }
 
-
-#line 33
 + (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
                                   withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
                                          withDKActorSystem:(DKActorSystem *)actorSystem {
   return DKEnvironment_createDefaultDispatcherWithNSString_withDKThreadPriorityEnum_withDKActorSystem_(name, priority, actorSystem);
 }
 
-
-#line 40
 + (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
                                             withInt:(jint)threadsCount
                            withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
@@ -66,32 +56,22 @@ J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherPr
   return DKEnvironment_getActorTime();
 }
 
-
-#line 54
 + (jlong)getCurrentTime {
   return DKEnvironment_getCurrentTime();
 }
 
-
-#line 61
 + (jlong)getCurrentSyncedTime {
   return DKEnvironment_getCurrentSyncedTime();
 }
 
-
-#line 68
 + (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)init_ {
   return DKEnvironment_createAtomicIntWithInt_(init_);
 }
 
-
-#line 75
 + (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)init_ {
   return DKEnvironment_createAtomicLongWithLong_(init_);
 }
 
-
-#line 82
 + (AMThreadLocalCompat *)createThreadLocal {
   return DKEnvironment_createThreadLocal();
 }
@@ -103,126 +83,82 @@ J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherPr
 
 @end
 
-
-#line 18
 void DKEnvironment_setThreadingProviderWithAMThreadingProvider_(id<AMThreadingProvider> threadingProvider) {
   DKEnvironment_initialize();
-  
-#line 19
   DKEnvironment_threadingProvider_ = threadingProvider;
 }
 
-
-#line 22
 void DKEnvironment_setDispatcherProviderWithAMDispatcherProvider_(id<AMDispatcherProvider> dispatcherProvider) {
   DKEnvironment_initialize();
-  
-#line 23
   DKEnvironment_dispatcherProvider_ = dispatcherProvider;
 }
 
-
-#line 26
 void DKEnvironment_dispatchCallbackWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   DKEnvironment_initialize();
-  
-#line 27
   if (DKEnvironment_dispatcherProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   [((id<AMDispatcherProvider>) nil_chk(DKEnvironment_dispatcherProvider_)) dispatchWithJavaLangRunnable:runnable];
 }
 
-
-#line 33
 DKActorDispatcher *DKEnvironment_createDefaultDispatcherWithNSString_withDKThreadPriorityEnum_withDKActorSystem_(NSString *name, DKThreadPriorityEnum *priority, DKActorSystem *actorSystem) {
   DKEnvironment_initialize();
-  
-#line 34
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) createDefaultDispatcherWithNSString:name withDKThreadPriorityEnum:priority withDKActorSystem:actorSystem];
 }
 
-
-#line 40
 DKActorDispatcher *DKEnvironment_createDispatcherWithNSString_withInt_withDKThreadPriorityEnum_withDKActorSystem_(NSString *name, jint threadsCount, DKThreadPriorityEnum *priority, DKActorSystem *actorSystem) {
   DKEnvironment_initialize();
-  
-#line 41
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) createDispatcherWithNSString:name withInt:threadsCount withDKThreadPriorityEnum:priority withDKActorSystem:actorSystem];
 }
 
-
-#line 47
 jlong DKEnvironment_getActorTime() {
   DKEnvironment_initialize();
-  
-#line 48
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) getActorTime];
 }
 
-
-#line 54
 jlong DKEnvironment_getCurrentTime() {
   DKEnvironment_initialize();
-  
-#line 55
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) getCurrentTime];
 }
 
-
-#line 61
 jlong DKEnvironment_getCurrentSyncedTime() {
   DKEnvironment_initialize();
-  
-#line 62
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) getSyncedCurrentTime];
 }
 
-
-#line 68
 AMAtomicIntegerCompat *DKEnvironment_createAtomicIntWithInt_(jint init_) {
   DKEnvironment_initialize();
-  
-#line 69
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) createAtomicIntWithInt:init_];
 }
 
-
-#line 75
 AMAtomicLongCompat *DKEnvironment_createAtomicLongWithLong_(jlong init_) {
   DKEnvironment_initialize();
-  
-#line 76
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) createAtomicLongWithLong:init_];
 }
 
-
-#line 82
 AMThreadLocalCompat *DKEnvironment_createThreadLocal() {
   DKEnvironment_initialize();
-  
-#line 83
   if (DKEnvironment_threadingProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }

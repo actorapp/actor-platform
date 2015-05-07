@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/UnsentMessage.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -22,27 +20,19 @@
 
 @end
 
-
-#line 12
 @implementation MTUnsentMessage
 
-
-#line 19
 - (instancetype)initWithLong:(jlong)messageId
                      withInt:(jint)len {
   MTUnsentMessage_initWithLong_withInt_(self, messageId, len);
   return self;
 }
 
-
-#line 24
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTUnsentMessage_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 28
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -51,60 +41,42 @@
   return len_;
 }
 
-
-#line 37
 - (jbyte)getHeader {
   return MTUnsentMessage_HEADER;
 }
 
-
-#line 42
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeIntWithInt:len_];
 }
 
-
-#line 48
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   len_ = [bs readInt];
 }
 
-
-#line 54
 - (NSString *)description {
   return JreStrcat("$JC", @"UnsentMessage[", messageId_, ']');
 }
 
 @end
 
-
-#line 19
 void MTUnsentMessage_initWithLong_withInt_(MTUnsentMessage *self, jlong messageId, jint len) {
   (void) MTProtoStruct_init(self);
-  
-#line 20
   self->messageId_ = messageId;
   self->len_ = len;
 }
 
-
-#line 19
 MTUnsentMessage *new_MTUnsentMessage_initWithLong_withInt_(jlong messageId, jint len) {
   MTUnsentMessage *self = [MTUnsentMessage alloc];
   MTUnsentMessage_initWithLong_withInt_(self, messageId, len);
   return self;
 }
 
-
-#line 24
 void MTUnsentMessage_initWithBSDataInput_(MTUnsentMessage *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 24
 MTUnsentMessage *new_MTUnsentMessage_initWithBSDataInput_(BSDataInput *stream) {
   MTUnsentMessage *self = [MTUnsentMessage alloc];
   MTUnsentMessage_initWithBSDataInput_(self, stream);
