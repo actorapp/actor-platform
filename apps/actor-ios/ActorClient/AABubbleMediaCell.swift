@@ -241,8 +241,12 @@ class AABubbleMediaCell : AABubbleCell {
     
     func hideProgress(selfGeneration: Int) {
         self.runOnUiThread(selfGeneration, closure: { () -> () in
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
                 self.circullarNode.alpha = 0
+            }, completion: { (val) -> Void in
+                if (val) {
+                    self.circullarNode.hidden = true
+                }
             })
         })
     }
@@ -250,6 +254,7 @@ class AABubbleMediaCell : AABubbleCell {
     func showProgress(value: Double, selfGeneration: Int) {
         self.circullarNode.postProgress(value, animated: true)
         self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.circullarNode.hidden = false
             UIView.animateWithDuration(0.3, animations: { () -> Void in
                 self.circullarNode.alpha = 1
             })

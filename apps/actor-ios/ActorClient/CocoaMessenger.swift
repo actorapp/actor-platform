@@ -24,6 +24,7 @@ get{
         builder.setFileSystemProvider(CocoaFileSystem())
         builder.setDispatcherProvider(CocoaDispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
+        builder.setEnableNetworkLogging(true)
         
         // Parameters
         var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!
