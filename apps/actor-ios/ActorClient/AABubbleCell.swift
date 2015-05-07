@@ -17,6 +17,7 @@ class AABubbleCell: UITableViewCell {
     static let bubbleBottom: CGFloat = 3
     static let bubbleBottomCompact: CGFloat = 0
     static let avatarPadding: CGFloat = 39
+    static let dateSize: CGFloat = 30
     
     // Cached bubble images
     private static var cacnedOutTextBg:UIImage? = nil;
@@ -44,13 +45,16 @@ class AABubbleCell: UITableViewCell {
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
     
+    private let dateText = UILabel()
+    private let dateBg = UIImageView()
+    
     // Layout
     var contentInsets : UIEdgeInsets = UIEdgeInsets()
     var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
     var fullContentInsets : UIEdgeInsets {
         get {
             return UIEdgeInsets(
-                top: contentInsets.top + bubbleInsets.top,
+                top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0),
                 left: contentInsets.left + bubbleInsets.left + (isGroup && !isOut ? AABubbleCell.avatarPadding : 0),
                 bottom: contentInsets.bottom + bubbleInsets.bottom,
                 right: contentInsets.right + bubbleInsets.right)
@@ -71,6 +75,7 @@ class AABubbleCell: UITableViewCell {
     var bindedMessage: AMMessage? = nil
     var bubbleType:BubbleType? = nil
     var isOut: Bool = false
+    var isShowDate: Bool = false
     
     // MARK: -
     // MARK: Constructors
@@ -79,10 +84,19 @@ class AABubbleCell: UITableViewCell {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseId);
         self.peer = peer
         self.isFullSize = isFullSize
+  
+        dateBg.image = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
+        dateText.font = UIFont(name: "HelveticaNeue-Medium", size: 12)!
+        dateText.textColor = UIColor.whiteColor()
+        dateText.contentMode = UIViewContentMode.Center
+        dateText.textAlignment = NSTextAlignment.Center
         
         bubble.userInteractionEnabled = true
+        
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
+        contentView.addSubview(dateBg)
+        contentView.addSubview(dateText)
         
         if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
             self.isGroup = true
@@ -102,7 +116,7 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Getters
 
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool) -> CGFloat {
         var content = message.getContent()!;
         
         // TODO: Add Docs and Media
@@ -125,6 +139,10 @@ class AABubbleCell: UITableViewCell {
         let isIn = message.getSenderId() != MSG.myUid()
         if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) {
             height += CGFloat(20.0)
+        }
+        
+        if (isShowDate) {
+            height += AABubbleCell.dateSize
         }
         
         return height
@@ -150,7 +168,7 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Bind
     
-    func performBind(message: AMMessage, isPreferCompact: Bool) {
+    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool) {
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
             reuse = true
@@ -171,6 +189,12 @@ class AABubbleCell: UITableViewCell {
                 }
             }
         }
+        
+        self.isShowDate = isShowDate
+        if (isShowDate) {
+            self.dateText.text = MSG.getFormatter().formatDateWithLong(message.getDate())
+        }
+        
         bind(message, reuse: reuse, isPreferCompact: isPreferCompact)
     }
     
@@ -274,15 +298,32 @@ class AABubbleCell: UITableViewCell {
             let startPadding: CGFloat = (!self.isOut && self.isGroup) ? AABubbleCell.avatarPadding : 0
             
             var cellMaxWidth = self.contentView.frame.size.width - endPadding - startPadding
-            
             self.layoutContent(cellMaxWidth, offsetX: startPadding)
+            self.layoutAnchor()
             if (!self.isOut && self.isGroup && !self.isFullSize) {
                 self.layoutAvatar()
             }
         }
     }
     
+    func layoutAnchor() {
+        if (isShowDate) {
+            dateText.frame = CGRectMake(0, 0, 1000, 1000)
+            dateText.sizeToFit()
+            dateText.frame = CGRectMake(
+                (self.contentView.frame.size.width-dateText.frame.width)/2, 8, dateText.frame.width, 18)
+            dateBg.frame = CGRectMake(dateText.frame.minX - 8, dateText.frame.minY, dateText.frame.width + 16, 18)
+            
+            dateText.hidden = false
+            dateBg.hidden = false
+        } else {
+            dateText.hidden = true
+            dateBg.hidden = true
+        }
+    }
+    
     func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
+        
     }
     
     func layoutAvatar() {
@@ -297,26 +338,30 @@ class AABubbleCell: UITableViewCell {
         let fullHeight = contentView.bounds.height
         let bubbleW = contentWidth + contentInsets.left + contentInsets.right
         let bubbleH = contentHeight + contentInsets.top + contentInsets.bottom
+        var topOffset = CGFloat(0)
+        if (isShowDate) {
+            topOffset = AABubbleCell.dateSize
+        }
         var bubbleFrame : CGRect!
         if (!isFullSize) {
             if (isOut) {
                 bubbleFrame = CGRect(
                     x: fullWidth - contentWidth - contentInsets.left - contentInsets.right - bubbleInsets.right,
-                    y: bubbleInsets.top,
+                    y: bubbleInsets.top + topOffset,
                     width: bubbleW,
                     height: bubbleH)
             } else {
                 let padding : CGFloat = isGroup ? AABubbleCell.avatarPadding : 0
                 bubbleFrame = CGRect(
                     x: bubbleInsets.left + padding,
-                    y: bubbleInsets.top,
+                    y: bubbleInsets.top + topOffset,
                     width: bubbleW,
                     height: bubbleH)
             }
         } else {
             bubbleFrame = CGRect(
                 x: (fullWidth - contentWidth - contentInsets.left - contentInsets.right)/2,
-                y: bubbleInsets.top,
+                y: bubbleInsets.top + topOffset,
                 width: bubbleW,
                 height: bubbleH)
         }
