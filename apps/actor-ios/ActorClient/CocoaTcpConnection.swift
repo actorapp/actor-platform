@@ -5,7 +5,7 @@
 import Foundation
 
 class CocoaNetworkProvider : AMManagedNetworkProvider {
-    init() {
+    override init() {
         super.init(AMAsyncConnectionFactory: CocoaTcpConnectionFactory())
     }
 }
