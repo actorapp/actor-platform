@@ -54,6 +54,9 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         super.viewWillLayoutSubviews()
         
         tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
+//        var insetSize = getStatusBarHeight() + getNavigationBarHeight()
+//        tableView.contentInset = UIEdgeInsetsMake(insetSize, 0, 0, 0)
+//        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(insetSize, 0, 0, 0)
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
