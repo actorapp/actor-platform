@@ -27,4 +27,7 @@ target 'ActorApp' do
 	pod 'HockeySDK'
 	pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
     pod 'JTSImageViewController'
+    
+    # Tracking
+    pod 'SplunkMint-iOS'
 end

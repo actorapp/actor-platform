@@ -4,6 +4,12 @@
 
 import Foundation
 
+class CocoaNetworkProvider : AMManagedNetworkProvider {
+    init() {
+        super.init(AMAsyncConnectionFactory: CocoaTcpConnectionFactory())
+    }
+}
+
 class CocoaTcpConnectionFactory: NSObject, AMAsyncConnectionFactory {
     func createConnectionWithInt(connectionId: jint, withAMConnectionEndpoint endpoint: AMConnectionEndpoint!, withAMAsyncConnectionInterface connectionInterface: AMAsyncConnectionInterface!) -> AMAsyncConnection! {
         return CocoaTcpConnection(connectionId: Int(connectionId), AMConnectionEndpoint: endpoint, withAMAsyncConnectionInterface: connectionInterface)
