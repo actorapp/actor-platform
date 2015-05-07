@@ -129,6 +129,9 @@ class AppList {
     var dialogText: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0) } }
     var dialogDate: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0x8A/255.0) } }
     
+    var unreadText: UIColor { get { return UIColor.whiteColor() } }
+    var unreadBg: UIColor { get { return UIColor.RGB(0x50A1D6) } }
+    
     var contactsTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     var contactsShortTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
 }
