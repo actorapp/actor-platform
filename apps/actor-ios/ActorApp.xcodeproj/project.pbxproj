@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 47;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -4526,7 +4526,7 @@
 				};
 			};
 			buildConfigurationList = 2537F8281A966B9D004A02E9 /* Build configuration list for PBXProject "ActorApp" */;
-			compatibilityVersion = "Xcode 6.3";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -5419,7 +5419,7 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 6;
+				API_PUSH_ID = 854416;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_THEME = actor;
@@ -5514,7 +5514,7 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 6;
+				API_PUSH_ID = 854416;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_THEME = actor;
@@ -5609,13 +5609,13 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 3;
+				API_PUSH_ID = 519459;
 				API_URL = "tls://front1-mtproto-api-rev2-dev1.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2-dev1.actor.im";
 				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.dev1;
+				BUNDLE_ID = im.actor.develop;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -5704,13 +5704,13 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 4;
+				API_PUSH_ID = 519459;
 				API_URL = "tls://front1-mtproto-api-rev2-dev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2-dev2.actor.im";
 				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.dev2;
+				BUNDLE_ID = im.actor.develop;
 				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -5799,7 +5799,7 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 5;
+				API_PUSH_ID = 525260;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_THEME = llectro;
@@ -5939,7 +5939,7 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 2;
+				API_PUSH_ID = 799938;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_THEME = actor;
@@ -5982,7 +5982,7 @@
 			buildSettings = {
 				API_ID = 2;
 				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
-				API_PUSH_ID = 6;
+				API_PUSH_ID = 632115;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_THEME = actor;
