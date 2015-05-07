@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/ActorRef.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -29,12 +27,8 @@ J2OBJC_FIELD_SETTER(DKActorRef, dispatcher_, DKActorDispatcher *)
 J2OBJC_FIELD_SETTER(DKActorRef, path_, NSString *)
 J2OBJC_FIELD_SETTER(DKActorRef, endpoint_, DKActorEndpoint *)
 
-
-#line 13
 @implementation DKActorRef
 
-
-#line 19
 - (NSString *)getPath {
   return path_;
 }
@@ -43,8 +37,6 @@ J2OBJC_FIELD_SETTER(DKActorRef, endpoint_, DKActorEndpoint *)
   return system__;
 }
 
-
-#line 35
 - (instancetype)initWithDKActorEndpoint:(DKActorEndpoint *)endpoint
                       withDKActorSystem:(DKActorSystem *)system
                   withDKActorDispatcher:(DKActorDispatcher *)dispatcher
@@ -53,70 +45,50 @@ J2OBJC_FIELD_SETTER(DKActorRef, endpoint_, DKActorEndpoint *)
   return self;
 }
 
-
-#line 47
 - (void)sendWithId:(id)message {
   [self sendWithId:message withDKActorRef:nil];
 }
 
-
-#line 57
 - (void)sendWithId:(id)message
     withDKActorRef:(DKActorRef *)sender {
   [self sendWithId:message withLong:0 withDKActorRef:sender];
 }
 
-
-#line 67
 - (void)sendWithId:(id)message
           withLong:(jlong)delay {
   [self sendWithId:message withLong:delay withDKActorRef:nil];
 }
 
-
-#line 78
 - (void)sendWithId:(id)message
           withLong:(jlong)delay
     withDKActorRef:(DKActorRef *)sender {
   [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
 }
 
-
-#line 87
 - (void)sendOnceWithId:(id)message {
   [self sendWithId:message withDKActorRef:nil];
 }
 
-
-#line 97
 - (void)sendOnceWithId:(id)message
         withDKActorRef:(DKActorRef *)sender {
   [self sendOnceWithId:message withLong:0 withDKActorRef:sender];
 }
 
-
-#line 107
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay {
   [self sendOnceWithId:message withLong:delay withDKActorRef:nil];
 }
 
-
-#line 118
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay
         withDKActorRef:(DKActorRef *)sender {
   [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
 }
 
-
-#line 127
 - (void)cancelMessageWithId:(id)message {
   [self cancelMessageWithId:message withDKActorRef:nil];
 }
 
-
-#line 137
 - (void)cancelMessageWithId:(id)message
              withDKActorRef:(DKActorRef *)sender {
   [((DKActorDispatcher *) nil_chk(dispatcher_)) cancelSendWithDKActorEndpoint:endpoint_ withId:message withDKActorRef:sender];
@@ -124,20 +96,14 @@ J2OBJC_FIELD_SETTER(DKActorRef, endpoint_, DKActorEndpoint *)
 
 @end
 
-
-#line 35
 void DKActorRef_initWithDKActorEndpoint_withDKActorSystem_withDKActorDispatcher_withNSString_(DKActorRef *self, DKActorEndpoint *endpoint, DKActorSystem *system, DKActorDispatcher *dispatcher, NSString *path) {
   (void) NSObject_init(self);
-  
-#line 36
   self->endpoint_ = endpoint;
   self->system__ = system;
   self->dispatcher_ = dispatcher;
   self->path_ = path;
 }
 
-
-#line 35
 DKActorRef *new_DKActorRef_initWithDKActorEndpoint_withDKActorSystem_withDKActorDispatcher_withNSString_(DKActorEndpoint *endpoint, DKActorSystem *system, DKActorDispatcher *dispatcher, NSString *path) {
   DKActorRef *self = [DKActorRef alloc];
   DKActorRef_initWithDKActorEndpoint_withDKActorSystem_withDKActorDispatcher_withNSString_(self, endpoint, system, dispatcher, path);

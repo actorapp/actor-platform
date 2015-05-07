@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/notifications/entity/PendingStorage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,29 +26,21 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifications_, id<JavaUtilList>)
 
-
-#line 16
 @implementation ImActorModelModulesNotificationsEntityPendingStorage
 
 + (ImActorModelModulesNotificationsEntityPendingStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesNotificationsEntityPendingStorage_fromBytesWithByteArray_(data);
 }
 
-
-#line 24
 - (instancetype)init {
   ImActorModelModulesNotificationsEntityPendingStorage_init(self);
   return self;
 }
 
-
-#line 28
 - (id<JavaUtilList>)getNotifications {
   return notifications_;
 }
 
-
-#line 33
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   jint count = [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1];
   if (count > 0) {
@@ -58,8 +48,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
     for (jint i = 0; i < count; i++) {
       [stubs addWithId:new_ImActorModelModulesNotificationsEntityPendingNotification_init()];
     }
-    
-#line 41
     notifications_ = [values getRepeatedObjWithInt:1 withJavaUtilList:stubs];
   }
 }
@@ -70,26 +58,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsEntityPendingStorage, notifi
 
 @end
 
-
-#line 18
 ImActorModelModulesNotificationsEntityPendingStorage *ImActorModelModulesNotificationsEntityPendingStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesNotificationsEntityPendingStorage_initialize();
-  
-#line 19
   return ((ImActorModelModulesNotificationsEntityPendingStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesNotificationsEntityPendingStorage_init(), data));
 }
 
-
-#line 24
 void ImActorModelModulesNotificationsEntityPendingStorage_init(ImActorModelModulesNotificationsEntityPendingStorage *self) {
   (void) BSBserObject_init(self);
-  
-#line 25
   self->notifications_ = new_JavaUtilArrayList_init();
 }
 
-
-#line 24
 ImActorModelModulesNotificationsEntityPendingStorage *new_ImActorModelModulesNotificationsEntityPendingStorage_init() {
   ImActorModelModulesNotificationsEntityPendingStorage *self = [ImActorModelModulesNotificationsEntityPendingStorage alloc];
   ImActorModelModulesNotificationsEntityPendingStorage_init(self);

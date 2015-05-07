@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/UnsentResponse.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -23,12 +21,8 @@
 
 @end
 
-
-#line 12
 @implementation MTUnsentResponse
 
-
-#line 20
 - (instancetype)initWithLong:(jlong)messageId
                     withLong:(jlong)responseMessageId
                      withInt:(jint)len {
@@ -36,8 +30,6 @@
   return self;
 }
 
-
-#line 26
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -59,57 +51,41 @@
   return MTUnsentResponse_HEADER;
 }
 
-
-#line 48
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeLongWithLong:responseMessageId_];
   [bs writeIntWithInt:len_];
 }
 
-
-#line 55
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   responseMessageId_ = [bs readLong];
   len_ = [bs readInt];
 }
 
-
-#line 62
 - (NSString *)description {
   return JreStrcat("$J$JC", @"UnsentResponse[", messageId_, @"->", responseMessageId_, ']');
 }
 
 @end
 
-
-#line 20
 void MTUnsentResponse_initWithLong_withLong_withInt_(MTUnsentResponse *self, jlong messageId, jlong responseMessageId, jint len) {
   (void) MTProtoStruct_init(self);
-  
-#line 21
   self->messageId_ = messageId;
   self->responseMessageId_ = responseMessageId;
   self->len_ = len;
 }
 
-
-#line 20
 MTUnsentResponse *new_MTUnsentResponse_initWithLong_withLong_withInt_(jlong messageId, jlong responseMessageId, jint len) {
   MTUnsentResponse *self = [MTUnsentResponse alloc];
   MTUnsentResponse_initWithLong_withLong_withInt_(self, messageId, responseMessageId, len);
   return self;
 }
 
-
-#line 38
 void MTUnsentResponse_initWithBSDataInput_(MTUnsentResponse *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 38
 MTUnsentResponse *new_MTUnsentResponse_initWithBSDataInput_(BSDataInput *stream) {
   MTUnsentResponse *self = [MTUnsentResponse alloc];
   MTUnsentResponse_initWithBSDataInput_(self, stream);

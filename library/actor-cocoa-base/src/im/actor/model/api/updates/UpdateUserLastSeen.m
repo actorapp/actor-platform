@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLastSeen.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,29 +25,21 @@
 
 @implementation ImActorModelApiUpdatesUpdateUserLastSeen
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date {
   ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserLastSeen_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getUid {
   return self->uid_;
 }
@@ -58,22 +48,16 @@
   return self->date_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->date_ = [values getLongWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeLongWithInt:2 withLong:self->date_];
 }
 
-
-#line 64
 - (NSString *)description {
   NSString *res = @"update UserLastSeen{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -82,47 +66,33 @@
   return res;
 }
 
-
-#line 73
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserLastSeen_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateUserLastSeen *ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserLastSeen_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateUserLastSeen *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserLastSeen_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(ImActorModelApiUpdatesUpdateUserLastSeen *self, jint uid, jlong date) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 35
   self->uid_ = uid;
   self->date_ = date;
 }
 
-
-#line 34
 ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) {
   ImActorModelApiUpdatesUpdateUserLastSeen *self = [ImActorModelApiUpdatesUpdateUserLastSeen alloc];
   ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiUpdatesUpdateUserLastSeen_init(ImActorModelApiUpdatesUpdateUserLastSeen *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 39
 ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_init() {
   ImActorModelApiUpdatesUpdateUserLastSeen *self = [ImActorModelApiUpdatesUpdateUserLastSeen alloc];
   ImActorModelApiUpdatesUpdateUserLastSeen_init(self);

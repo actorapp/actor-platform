@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/rpc/RpcFloodWait.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
@@ -21,75 +19,51 @@
 
 @end
 
-
-#line 13
 @implementation MTRpcFloodWait
 
-
-#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTRpcFloodWait_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 22
 - (instancetype)initWithInt:(jint)delay {
   MTRpcFloodWait_initWithInt_(self, delay);
   return self;
 }
 
-
-#line 26
 - (jint)getDelay {
   return delay_;
 }
 
-
-#line 31
 - (jbyte)getHeader {
   return MTRpcFloodWait_HEADER;
 }
 
-
-#line 36
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeIntWithInt:delay_];
 }
 
-
-#line 41
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   delay_ = [((BSDataInput *) nil_chk(bs)) readInt];
 }
 
 @end
 
-
-#line 18
 void MTRpcFloodWait_initWithBSDataInput_(MTRpcFloodWait *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 18
 MTRpcFloodWait *new_MTRpcFloodWait_initWithBSDataInput_(BSDataInput *stream) {
   MTRpcFloodWait *self = [MTRpcFloodWait alloc];
   MTRpcFloodWait_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 22
 void MTRpcFloodWait_initWithInt_(MTRpcFloodWait *self, jint delay) {
   (void) MTProtoStruct_init(self);
-  
-#line 23
   self->delay_ = delay;
 }
 
-
-#line 22
 MTRpcFloodWait *new_MTRpcFloodWait_initWithInt_(jint delay) {
   MTRpcFloodWait *self = [MTRpcFloodWait alloc];
   MTRpcFloodWait_initWithInt_(self, delay);

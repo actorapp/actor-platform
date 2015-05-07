@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetParameters.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -29,38 +27,26 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetParameters, parameters_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseGetParameters
 
-
-#line 27
 + (ImActorModelApiRpcResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)parameters {
   ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(self, parameters);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiRpcResponseGetParameters_init(self);
   return self;
 }
 
-
-#line 41
 - (id<JavaUtilList>)getParameters {
   return self->parameters_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _parameters = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -69,62 +55,42 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetParameters, parameters_, id<Jav
   self->parameters_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_parameters];
 }
 
-
-#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->parameters_];
 }
 
-
-#line 60
 - (NSString *)description {
   NSString *res = @"tuple GetParameters{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetParameters_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseGetParameters *ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetParameters_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetParameters_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(ImActorModelApiRpcResponseGetParameters *self, id<JavaUtilList> parameters) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 34
   self->parameters_ = parameters;
 }
 
-
-#line 33
 ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(id<JavaUtilList> parameters) {
   ImActorModelApiRpcResponseGetParameters *self = [ImActorModelApiRpcResponseGetParameters alloc];
   ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(self, parameters);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiRpcResponseGetParameters_init(ImActorModelApiRpcResponseGetParameters *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 37
 ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_init() {
   ImActorModelApiRpcResponseGetParameters *self = [ImActorModelApiRpcResponseGetParameters alloc];
   ImActorModelApiRpcResponseGetParameters_init(self);

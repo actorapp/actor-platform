@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Analytics.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/AnalyticsProvider.h"
@@ -27,59 +25,13 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnalyticsProvider>)
 
-static NSString *ImActorModelModulesAnalytics_EVENT_APP_VISIBLE_ = 
-#line 14
-@"App Visible";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, EVENT_APP_VISIBLE_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_EVENT_APP_HIDDEN_ = 
-#line 15
-@"App Hidden";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, EVENT_APP_HIDDEN_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_DIALOGS_OPEN_ = 
-#line 17
-@"Dialogs Open";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, DIALOGS_OPEN_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_DIALOGS_CLOSED_ = 
-#line 18
-@"Dialogs Closed";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, DIALOGS_CLOSED_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_CHAT_OPEN_ = 
-#line 20
-@"Chat Open";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, CHAT_OPEN_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_CHAT_CLOSED_ = 
-#line 21
-@"Chat Closed";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, CHAT_CLOSED_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_PROFILE_OPEN_ = 
-#line 23
-@"Profile Open";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, PROFILE_OPEN_, NSString *)
-
-static NSString *ImActorModelModulesAnalytics_PROFILE_CLOSED_ = 
-#line 24
-@"Profile Closed";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, PROFILE_CLOSED_, NSString *)
-
-
-#line 12
 @implementation ImActorModelModulesAnalytics
 
-
-#line 28
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
-
-#line 34
 - (void)onLoggedOutWithNSString:(NSString *)deviceId {
   if (analyticsProvider_ != nil) {
     [analyticsProvider_ onLoggedOutWithNSString:deviceId];
@@ -95,8 +47,6 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, PROFILE_CLOSED_, NSStri
   }
 }
 
-
-#line 46
 - (void)onLoggedInPerformedWithNSString:(NSString *)deviceId
                                 withInt:(jint)uid
                   withJavaLangLongArray:(IOSObjectArray *)phoneNumber
@@ -106,38 +56,84 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, PROFILE_CLOSED_, NSStri
   }
 }
 
-
-#line 52
-- (void)onDialogsOpen {
-  [self trackWithNSString:ImActorModelModulesAnalytics_DIALOGS_OPEN_];
+- (void)trackMainScreensOpen {
+  [self trackWithNSString:@"Main Screen Open"];
 }
 
-- (void)onDialogsClosed {
-  [self trackWithNSString:ImActorModelModulesAnalytics_DIALOGS_CLOSED_];
+- (void)trackMainScreensClosed {
+  [self trackWithNSString:@"Main Screen Closed"];
 }
 
-- (void)onChatOpenWithAMPeer:(AMPeer *)peer {
-  [self trackWithNSString:ImActorModelModulesAnalytics_CHAT_OPEN_ withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+- (void)trackOwnProfileOpen {
+  [self trackWithNSString:@"Own Profile Open"];
 }
 
-- (void)onChatClosedWithAMPeer:(AMPeer *)peer {
-  [self trackWithNSString:ImActorModelModulesAnalytics_CHAT_CLOSED_ withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+- (void)trackOwnProfileClosed {
+  [self trackWithNSString:@"Own Profile Closed"];
 }
 
-- (void)onProfileOpenWithInt:(jint)uid {
-  [self trackWithNSString:ImActorModelModulesAnalytics_PROFILE_OPEN_ withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Id", JreStrcat("I", uid) } count:2 type:NSString_class_()]];
+- (void)trackDialogsOpen {
+  [self trackWithNSString:@"Dialogs Open"];
 }
 
-- (void)onProfileClosedWithInt:(jint)uid {
-  [self trackWithNSString:ImActorModelModulesAnalytics_PROFILE_CLOSED_ withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Id", JreStrcat("I", uid) } count:2 type:NSString_class_()]];
+- (void)trackDialogsClosed {
+  [self trackWithNSString:@"Dialogs Closed"];
+}
+
+- (void)trackContactsOpen {
+  [self trackWithNSString:@"Contacts Open"];
+}
+
+- (void)trackTextSendWithAMPeer:(AMPeer *)peer {
+  [self trackWithNSString:@"Text Send" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+}
+
+- (void)trackPhotoSendWithAMPeer:(AMPeer *)peer {
+  [self trackWithNSString:@"Photo Send" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+}
+
+- (void)trackVideoSendWithAMPeer:(AMPeer *)peer {
+  [self trackWithNSString:@"Video Send" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+}
+
+- (void)trackDocumentSendWithAMPeer:(AMPeer *)peer {
+  [self trackWithNSString:@"Document Send" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+}
+
+- (void)trackContactsClosed {
+  [self trackWithNSString:@"Contacts Closed"];
+}
+
+- (void)trackChatOpenWithAMPeer:(AMPeer *)peer {
+  [self trackWithNSString:@"Chat Open" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+}
+
+- (void)trackChatClosedWithAMPeer:(AMPeer *)peer {
+  [self trackWithNSString:@"Chat Closed" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Type", [((AMPeerTypeEnum *) nil_chk([((AMPeer *) nil_chk(peer)) getPeerType])) description], @"Id", JreStrcat("I", [peer getPeerId]) } count:4 type:NSString_class_()]];
+}
+
+- (void)trackProfileOpenWithInt:(jint)uid {
+  [self trackWithNSString:@"Profile Open" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Id", JreStrcat("I", uid) } count:2 type:NSString_class_()]];
+}
+
+- (void)trackProfileClosedWithInt:(jint)uid {
+  [self trackWithNSString:@"Profile Closed" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Id", JreStrcat("I", uid) } count:2 type:NSString_class_()]];
+}
+
+- (void)trackInvitePressed {
+  [self trackWithNSString:@"Invite pressed"];
+}
+
+- (void)trackAddContactPressed {
+  [self trackWithNSString:@"Add contact pressed"];
 }
 
 - (void)trackAppVisible {
-  [self trackWithNSString:ImActorModelModulesAnalytics_EVENT_APP_VISIBLE_];
+  [self trackWithNSString:@"App Visible"];
 }
 
 - (void)trackAppHidden {
-  [self trackWithNSString:ImActorModelModulesAnalytics_EVENT_APP_HIDDEN_];
+  [self trackWithNSString:@"App Hidden"];
 }
 
 - (void)trackAuthPhoneOpen {
@@ -172,14 +168,76 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, PROFILE_CLOSED_, NSStri
   [self trackWithNSString:@"Auth: Code request" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Phone", JreStrcat("J", phone) } count:2 type:NSString_class_()]];
 }
 
+- (void)trackAuthCodeOpen {
+  [self trackWithNSString:@"Auth: Code Opened"];
+}
+
+- (void)trackAuthCodeClosed {
+  [self trackWithNSString:@"Auth: Code Closed"];
+}
+
+- (void)trackAuthCodeTypeWithNSString:(NSString *)newValue {
+  [self trackWithNSString:@"Auth: Code Typed" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Value", newValue } count:2 type:NSString_class_()]];
+}
+
+- (void)trackAuthCodeWrongNumber {
+  [self trackWithNSString:@"Auth: Wrong number pressed"];
+}
+
+- (void)trackAuthCodeWrongNumberCancel {
+  [self trackWithNSString:@"Auth: Wrong number cancel"];
+}
+
+- (void)trackAuthCodeWrongNumberChange {
+  [self trackWithNSString:@"Auth: Wrong number change number"];
+}
+
+- (void)trackAuthSignupOpen {
+  [self trackWithNSString:@"Auth: Signup Opened"];
+}
+
+- (void)trackAuthSignupClosed {
+  [self trackWithNSString:@"Auth: Signup Closed"];
+}
+
+- (void)trackAuthSignupClosedNameTypeWithNSString:(NSString *)newValue {
+  [self trackWithNSString:@"Auth: Name Typed" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Value", newValue } count:2 type:NSString_class_()]];
+}
+
+- (void)trackAuthSignupPressedAvatar {
+  [self trackWithNSString:@"Auth: Picking avatar"];
+}
+
+- (void)trackAuthSignupAvatarPicked {
+  [self trackWithNSString:@"Auth: Avatar picked"];
+}
+
+- (void)trackAuthSignupAvatarDeleted {
+  [self trackWithNSString:@"Auth: Avatar deleted"];
+}
+
+- (void)trackAuthSignupAvatarCanelled {
+  [self trackWithNSString:@"Auth: Avatar cancelled"];
+}
+
+- (void)trackAuthSuccess {
+  [self trackWithNSString:@"Auth: Completed"];
+}
+
+- (void)trackBackPressed {
+  [self trackWithNSString:@"Auth: Back pressed"];
+}
+
+- (void)trackUpPressed {
+  [self trackWithNSString:@"Auth: Up pressed"];
+}
+
 - (void)trackActionErrorWithNSString:(NSString *)action
                         withNSString:(NSString *)tag
                         withNSString:(NSString *)message {
   [self trackWithNSString:JreStrcat("$$", action, @" error") withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Tag", tag, @"Message", message } count:4 type:NSString_class_()]];
 }
 
-
-#line 120
 - (void)trackActionSuccessWithNSString:(NSString *)action {
   [self trackWithNSString:JreStrcat("$$", action, @" success")];
 }
@@ -211,17 +269,11 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAnalytics, PROFILE_CLOSED_, NSStri
 
 @end
 
-
-#line 28
 void ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(ImActorModelModulesAnalytics *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
-  
-#line 31
   self->analyticsProvider_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getAnalyticsProvider];
 }
 
-
-#line 28
 ImActorModelModulesAnalytics *new_ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesAnalytics *self = [ImActorModelModulesAnalytics alloc];
   ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(self, modules);

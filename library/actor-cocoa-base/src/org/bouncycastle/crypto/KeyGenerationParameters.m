@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/KeyGenerationParameters.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 #include "org/bouncycastle/crypto/KeyGenerationParameters.h"
@@ -20,44 +18,30 @@
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoKeyGenerationParameters, random_, id<BCRandomProvider>)
 
-
-#line 8
 @implementation OrgBouncycastleCryptoKeyGenerationParameters
 
-
-#line 19
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)random
                                  withInt:(jint)strength {
   OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(self, random, strength);
   return self;
 }
 
-
-#line 32
 - (id<BCRandomProvider>)getRandom {
   return random_;
 }
 
-
-#line 41
 - (jint)getStrength {
   return strength_;
 }
 
 @end
 
-
-#line 19
 void OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(OrgBouncycastleCryptoKeyGenerationParameters *self, id<BCRandomProvider> random, jint strength) {
   (void) NSObject_init(self);
-  
-#line 22
   self->random_ = random;
   self->strength_ = strength;
 }
 
-
-#line 19
 OrgBouncycastleCryptoKeyGenerationParameters *new_OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(id<BCRandomProvider> random, jint strength) {
   OrgBouncycastleCryptoKeyGenerationParameters *self = [OrgBouncycastleCryptoKeyGenerationParameters alloc];
   OrgBouncycastleCryptoKeyGenerationParameters_initWithBCRandomProvider_withInt_(self, random, strength);

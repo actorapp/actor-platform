@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/MailboxesQueue.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/dispatch/AbstractDispatchQueue.h"
 #include "im/actor/model/droidkit/actors/dispatch/DispatchResult.h"
@@ -24,19 +22,13 @@
 
 J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)
 
-
-#line 14
 @implementation DKMailboxesQueue
 
-
-#line 18
 - (instancetype)init {
   DKMailboxesQueue_init(self);
   return self;
 }
 
-
-#line 22
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *)getEnvelopeRoot {
   return envelopeRoot_;
 }
@@ -53,23 +45,17 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
   [super notifyQueueChanged];
 }
 
-
-#line 39
 - (DKDispatchResult *)dispatchWithLong:(jlong)time {
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *res = [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *) nil_chk(envelopeRoot_)) fetchCollectionWithLong:time];
   if (res == nil) {
     return [self delayWithLong:DKAbstractDispatchQueue_FOREVER];
   }
-  
-#line 45
   if ([((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *) nil_chk(res)) getEnvelope] != nil) {
     DKDispatchResult *result = [self resultWithId:[res getEnvelope]];
     [res recycle];
     return result;
   }
   else {
-    
-#line 50
     DKDispatchResult *result = [self delayWithLong:[res getDelay]];
     [res recycle];
     return result;
@@ -78,17 +64,11 @@ J2OBJC_FIELD_SETTER(DKMailboxesQueue, envelopeRoot_, ImActorModelDroidkitActorsM
 
 @end
 
-
-#line 18
 void DKMailboxesQueue_init(DKMailboxesQueue *self) {
   (void) DKAbstractDispatchQueue_init(self);
-  
-#line 19
   self->envelopeRoot_ = new_ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(self);
 }
 
-
-#line 18
 DKMailboxesQueue *new_DKMailboxesQueue_init() {
   DKMailboxesQueue *self = [DKMailboxesQueue alloc];
   DKMailboxesQueue_init(self);

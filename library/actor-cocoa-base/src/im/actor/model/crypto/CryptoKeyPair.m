@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/CryptoKeyPair.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/CryptoKeyPair.h"
@@ -21,20 +19,14 @@
 J2OBJC_FIELD_SETTER(AMCryptoKeyPair, publicKey_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(AMCryptoKeyPair, privateKey_, IOSByteArray *)
 
-
-#line 7
 @implementation AMCryptoKeyPair
 
-
-#line 11
 - (instancetype)initWithByteArray:(IOSByteArray *)publicKey
                     withByteArray:(IOSByteArray *)privateKey {
   AMCryptoKeyPair_initWithByteArray_withByteArray_(self, publicKey, privateKey);
   return self;
 }
 
-
-#line 16
 - (IOSByteArray *)getPublicKey {
   return publicKey_;
 }
@@ -45,18 +37,12 @@ J2OBJC_FIELD_SETTER(AMCryptoKeyPair, privateKey_, IOSByteArray *)
 
 @end
 
-
-#line 11
 void AMCryptoKeyPair_initWithByteArray_withByteArray_(AMCryptoKeyPair *self, IOSByteArray *publicKey, IOSByteArray *privateKey) {
   (void) NSObject_init(self);
-  
-#line 12
   self->publicKey_ = publicKey;
   self->privateKey_ = privateKey;
 }
 
-
-#line 11
 AMCryptoKeyPair *new_AMCryptoKeyPair_initWithByteArray_withByteArray_(IOSByteArray *publicKey, IOSByteArray *privateKey) {
   AMCryptoKeyPair *self = [AMCryptoKeyPair alloc];
   AMCryptoKeyPair_initWithByteArray_withByteArray_(self, publicKey, privateKey);

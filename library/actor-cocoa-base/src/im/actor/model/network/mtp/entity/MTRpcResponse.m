@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/MTRpcResponse.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -25,19 +23,13 @@
 
 J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
 
-
-#line 12
 @implementation MTMTRpcResponse
 
-
-#line 19
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTMTRpcResponse_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 23
 - (jlong)getMessageId {
   return messageId_;
 }
@@ -46,42 +38,30 @@ J2OBJC_FIELD_SETTER(MTMTRpcResponse, payload_, IOSByteArray *)
   return payload_;
 }
 
-
-#line 32
 - (jbyte)getHeader {
   return MTMTRpcResponse_HEADER;
 }
 
-
-#line 37
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   [((BSDataOutput *) nil_chk(bs)) writeLongWithLong:messageId_];
   [bs writeProtoBytesWithByteArray:payload_ withInt:0 withInt:((IOSByteArray *) nil_chk(payload_))->size_];
 }
 
-
-#line 43
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   messageId_ = [((BSDataInput *) nil_chk(bs)) readLong];
   payload_ = [bs readProtoBytes];
 }
 
-
-#line 49
 - (NSString *)description {
   return JreStrcat("$JC", @"ResponseBox [", messageId_, ']');
 }
 
 @end
 
-
-#line 19
 void MTMTRpcResponse_initWithBSDataInput_(MTMTRpcResponse *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 19
 MTMTRpcResponse *new_MTMTRpcResponse_initWithBSDataInput_(BSDataInput *stream) {
   MTMTRpcResponse *self = [MTMTRpcResponse alloc];
   MTMTRpcResponse_initWithBSDataInput_(self, stream);

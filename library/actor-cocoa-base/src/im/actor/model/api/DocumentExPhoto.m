@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExPhoto.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentEx.h"
@@ -22,27 +20,19 @@
 
 @end
 
-
-#line 23
 @implementation ImActorModelApiDocumentExPhoto
 
-
-#line 28
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h {
   ImActorModelApiDocumentExPhoto_initWithInt_withInt_(self, w, h);
   return self;
 }
 
-
-#line 33
 - (instancetype)init {
   ImActorModelApiDocumentExPhoto_init(self);
   return self;
 }
 
-
-#line 37
 - (jint)getHeader {
   return 1;
 }
@@ -55,22 +45,16 @@
   return self->h_;
 }
 
-
-#line 50
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
 }
 
-
-#line 56
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
 }
 
-
-#line 62
 - (NSString *)description {
   NSString *res = @"struct DocumentExPhoto{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
@@ -81,32 +65,22 @@
 
 @end
 
-
-#line 28
 void ImActorModelApiDocumentExPhoto_initWithInt_withInt_(ImActorModelApiDocumentExPhoto *self, jint w, jint h) {
   (void) ImActorModelApiDocumentEx_init(self);
-  
-#line 29
   self->w_ = w;
   self->h_ = h;
 }
 
-
-#line 28
 ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_initWithInt_withInt_(jint w, jint h) {
   ImActorModelApiDocumentExPhoto *self = [ImActorModelApiDocumentExPhoto alloc];
   ImActorModelApiDocumentExPhoto_initWithInt_withInt_(self, w, h);
   return self;
 }
 
-
-#line 33
 void ImActorModelApiDocumentExPhoto_init(ImActorModelApiDocumentExPhoto *self) {
   (void) ImActorModelApiDocumentEx_init(self);
 }
 
-
-#line 33
 ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_init() {
   ImActorModelApiDocumentExPhoto *self = [ImActorModelApiDocumentExPhoto alloc];
   ImActorModelApiDocumentExPhoto_init(self);
