@@ -15,9 +15,9 @@ trait HistoryImplicits {
         Message.parseFrom(in) match {
           case Right(messageContent) ⇒
             val state = if (model.userId == model.senderUserId) {
-              if (model.date.getMillis < lastReadAt.getMillis) {
+              if (model.date.getMillis <= lastReadAt.getMillis) {
                 Some(MessageState.Read)
-              } else if (model.date.getMillis < lastReceivedAt.getMillis) {
+              } else if (model.date.getMillis <= lastReceivedAt.getMillis) {
                 Some(MessageState.Received)
               } else {
                 Some(MessageState.Sent)
