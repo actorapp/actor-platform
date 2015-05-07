@@ -26,7 +26,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     }
     
     override func doConnect() {
-        NSLog("\(TAG) connecting...")
+//        NSLog("\(TAG) connecting...")
         gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0))
         var endpoint = getEndpoint()
         gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: Double(AMManagedConnection_CONNECTION_TIMEOUT) / 1000.0, error: nil)
@@ -35,7 +35,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     // Affer successful connection
     func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
         if (UInt(self.getEndpoint().getType().ordinal()) == AMConnectionEndpoint_Type.TCP_TLS.rawValue) {
-            NSLog("\(TAG) Starring TLS Session...")
+//            NSLog("\(TAG) Starring TLS Session...")
             sock.startTLS(nil)
         } else {
             startConnection()
@@ -44,7 +44,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     
     // After TLS successful
     func socketDidSecure(sock: GCDAsyncSocket!) {
-        NSLog("\(TAG) TLS Session started...")
+//        NSLog("\(TAG) TLS Session started...")
         startConnection()
     }
     
@@ -55,18 +55,18 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     
     // On connection closed
     func socketDidDisconnect(sock: GCDAsyncSocket!, withError err: NSError!) {
-        NSLog("\(TAG) Connection closed...")
+//        NSLog("\(TAG) Connection closed...")
         onClosed()
     }
     
     func socket(sock: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
         if (tag == READ_HEADER) {
-            NSLog("\(TAG) Header received")
+//            NSLog("\(TAG) Header received")
             self.header = data
             var size = data.readUInt32(5)
             gcdSocket?.readDataToLength(UInt(size + 4), withTimeout: -1, tag: READ_BODY)
         } else if (tag == READ_BODY) {
-            NSLog("\(TAG) Body received")
+//            NSLog("\(TAG) Body received")
             var package = NSMutableData()
             package.appendData(self.header!)
             package.appendData(data)
@@ -81,14 +81,14 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     
     override func doClose() {
         if (gcdSocket != nil) {
-            NSLog("\(TAG) Closing...")
+//            NSLog("\(TAG) Closing...")
             gcdSocket?.disconnect()
             gcdSocket = nil
         }
     }
     
     override func doSendWithByteArray(data: IOSByteArray!) {
-        NSLog("\(TAG) Sending package...")
+//        NSLog("\(TAG) Sending package...")
         gcdSocket?.writeData(data.toNSData(), withTimeout: -1, tag: 0)
     }
 }

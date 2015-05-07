@@ -98,6 +98,8 @@ import Foundation
     
     func applicationWillEnterForeground(application: UIApplication) {
         MSG.onAppVisible();
+        // Hack for resync phone book
+        MSG.onPhoneBookChanged()
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
