@@ -28,7 +28,21 @@ public class Replacer {
             }
         }
 
+        if (text.contains("drive.google.com")) {
+            if (!text.trim().contains(" ")) {
+                hackGoogleDrive(peer, text.trim());
+                return true;
+            }
+        }
+
         return false;
+    }
+
+    private void hackGoogleDrive(final Peer peer, final String text) {
+        String id = text.substring("https://drive.google.com/file/d/".length());
+        id = id.substring(0, id.indexOf("/"));
+        String url = "https://drive.google.com/uc?export=download&id=" + id;
+        hackImageUrl(peer, url, text);
     }
 
     private void hackDropBox(Peer peer, String text) {
