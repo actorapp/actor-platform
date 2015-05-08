@@ -14,7 +14,7 @@ get{
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
         builder.setNetworkProvider(CocoaNetworkProvider())
-        builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(CocoaHttpProvider())
+        builder.setHttpProvider(CocoaHttpProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
         builder.setStorageProvider(CocoaStorage())
         builder.setMainThreadProvider(CocoaMainThreadProvider())
@@ -24,7 +24,8 @@ get{
         builder.setFileSystemProvider(CocoaFileSystem())
         builder.setDispatcherProvider(CocoaDispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
-        builder.setEnableNetworkLogging(true)
+        builder.setAppCategory(AMAppCategoryEnum.values().objectAtIndex(AMAppCategory.IOS.rawValue) as! AMAppCategoryEnum)
+        builder.setDeviceCategory(AMDeviceCategoryEnum.values().objectAtIndex(AMDeviceCategory.MOBILE.rawValue) as! AMDeviceCategoryEnum)
         
         // Parameters
         var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!

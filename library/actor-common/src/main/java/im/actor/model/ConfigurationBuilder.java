@@ -42,15 +42,52 @@ public class ConfigurationBuilder {
 
     private ApiConfiguration apiConfiguration;
 
-    private HttpDownloaderProvider httpDownloaderProvider;
+    private HttpProvider httpProvider;
 
     private AnalyticsProvider analyticsProvider;
 
-    public ConfigurationBuilder setHttpDownloaderProvider(HttpDownloaderProvider httpDownloaderProvider) {
-        this.httpDownloaderProvider = httpDownloaderProvider;
+    private AppCategory appCategory = AppCategory.GENERIC;
+
+    private DeviceCategory deviceCategory = DeviceCategory.UNKNOWN;
+
+    /**
+     * Set App Type
+     * @param appCategory App Type
+     * @return this
+     */
+    public ConfigurationBuilder setAppCategory(AppCategory appCategory) {
+        this.appCategory = appCategory;
         return this;
     }
 
+    /**
+     * Setting Device Type
+     *
+     * @param deviceCategory Device Type
+     * @return this
+     */
+    public ConfigurationBuilder setDeviceCategory(DeviceCategory deviceCategory) {
+        this.deviceCategory = deviceCategory;
+        return this;
+    }
+
+    /**
+     * Set HTTP Provider
+     *
+     * @param httpProvider the HTTP Provider
+     * @return this
+     */
+    public ConfigurationBuilder setHttpProvider(HttpProvider httpProvider) {
+        this.httpProvider = httpProvider;
+        return this;
+    }
+
+    /**
+     * Set Analytics Provider
+     *
+     * @param analyticsProvider the Analytics Provicer
+     * @return this
+     */
     public ConfigurationBuilder setAnalyticsProvider(AnalyticsProvider analyticsProvider) {
         this.analyticsProvider = analyticsProvider;
         return this;
@@ -314,6 +351,6 @@ public class ConfigurationBuilder {
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
-                enableFilesLogging, httpDownloaderProvider, analyticsProvider);
+                enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory);
     }
 }
