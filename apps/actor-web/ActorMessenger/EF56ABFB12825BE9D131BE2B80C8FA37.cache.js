@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.ActorMessenger;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.7.0";
-var $strongName = '3C5C2DCD5D285F0D136F6903D7258E96';
+var $strongName = 'EF56ABFB12825BE9D131BE2B80C8FA37';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -14008,7 +14008,7 @@ function fromGroupVM(groupVM, messenger){
   var avatar, fileUrl, online, presence;
   online = dynamicCast(groupVM.presence.value_0, 28).value_0;
   presence = $formatGroupMembers(messenger.modules.i18nEngine, dynamicCast(groupVM.members.value_0, 34).map_0.size_0);
-  online > 0 && (presence = ', ' + $formatGroupOnline(messenger.modules.i18nEngine, online));
+  online > 0 && (presence += ', ' + $formatGroupOnline(messenger.modules.i18nEngine, online));
   fileUrl = null;
   avatar = dynamicCast(groupVM.avatar.value_0, 41);
   !!avatar && !!avatar.smallImage && (fileUrl = $getFileUrl(messenger, avatar.smallImage.fileReference));
