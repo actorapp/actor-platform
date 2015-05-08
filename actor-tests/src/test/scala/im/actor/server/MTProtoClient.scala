@@ -4,14 +4,13 @@ import java.net.InetSocketAddress
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.util.Random
 
 import akka.actor._
 import akka.io.{ IO, Tcp }
 import akka.pattern.{ ask, gracefulStop }
 import akka.util.{ ByteString, Timeout }
 import scodec.bits.BitVector
-import scodec.{ Attempt, DecodeResult, codecs => C }
+import scodec.{ Attempt, DecodeResult, codecs ⇒ C }
 
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
@@ -73,7 +72,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
   import MTProtoClientActor._
 
   def receive: Receive = {
-    case MTConnect(remote) =>
+    case MTConnect(remote) ⇒
       val caller = sender()
 
       IO(Tcp) ! Connect(remote)
@@ -81,7 +80,7 @@ class MTProtoClientActor extends Actor with ActorLogging {
   }
 
   def connecting(caller: ActorRef): Receive = {
-    case Connected(_, _) =>
+    case Connected(_, _) ⇒
       val connection = sender()
       connection ! Register(self)
 
@@ -90,27 +89,27 @@ class MTProtoClientActor extends Actor with ActorLogging {
   }
 
   def handshaking(caller: ActorRef, connection: ActorRef, buffer: BitVector): Receive = {
-    case Received(bs) =>
+    case Received(bs) ⇒
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
       TransportPackageCodec.decode(newBuffer) match {
-        case Attempt.Successful(DecodeResult(TransportPackage(_, hs: HandshakeResponse), remainder)) =>
+        case Attempt.Successful(DecodeResult(TransportPackage(_, hs: HandshakeResponse), remainder)) ⇒
           caller ! MTConnected
           context.become(receiving(connection, remainder, Seq.empty, Seq.empty), discardOld = true)
-        case Attempt.Successful(unmatched) =>
+        case Attempt.Successful(unmatched) ⇒
           log.error("Unmatched {}", unmatched)
           self ! PoisonPill
-        case Attempt.Failure(_) =>
+        case Attempt.Failure(_) ⇒
           context.become(handshaking(caller, connection, newBuffer), discardOld = true)
       }
-    case CommandFailed(cmd) =>
+    case CommandFailed(cmd) ⇒
       log.error("Command failed while handshaking {}", cmd)
   }
 
   def receiving(connection: ActorRef, buffer: BitVector, tps: Seq[TransportPackage], consumers: Seq[ActorRef]): Receive = {
-    case Send(p) =>
+    case Send(p) ⇒
       send(connection, p)
-    case GetTransportPackage =>
+    case GetTransportPackage ⇒
       if (tps.isEmpty || !consumers.isEmpty) {
         context.become(receiving(connection, buffer, tps, consumers :+ sender()), discardOld = true)
       } else {
@@ -118,33 +117,33 @@ class MTProtoClientActor extends Actor with ActorLogging {
 
         context.become(receiving(connection, buffer, tps.tail, consumers), discardOld = true)
       }
-    case Received(bs) =>
+    case Received(bs) ⇒
       log.debug("Received {}", bs)
       val newBuffer = buffer ++ BitVector(bs.asByteBuffer)
 
       transportPackageList.decode(newBuffer).recover {
-        case _ => DecodeResult(Seq.empty, newBuffer)
+        case _ ⇒ DecodeResult(Seq.empty, newBuffer)
       } match {
-        case Attempt.Successful(DecodeResult(decodedTps, remainder)) =>
+        case Attempt.Successful(DecodeResult(decodedTps, remainder)) ⇒
           val decodedTpsWithoutAcks = decodedTps filterNot (_.body.isInstanceOf[Ack])
 
           if (!consumers.isEmpty) {
             val newTps = tps ++ decodedTpsWithoutAcks
 
             newTps match {
-              case tp :: tps =>
+              case tp :: tps ⇒
                 consumers.head ! Some(tp)
                 context.become(receiving(connection, buffer, tps, consumers.tail), discardOld = true)
-              case Nil =>
+              case Nil ⇒
             }
           } else {
             context.become(receiving(connection, buffer, tps ++ decodedTpsWithoutAcks, consumers), discardOld = true)
           }
-        case Attempt.Failure(e) => // should never happen
+        case Attempt.Failure(e) ⇒ // should never happen
           log.error("Failed to decode TransportPackage: {}", e)
           throw new Exception("Failed to decode TransportPackage")
       }
-    case CommandFailed(w: Write) =>
+    case CommandFailed(w: Write) ⇒
       log.error("Failed to write {}", w.data)
   }
 
