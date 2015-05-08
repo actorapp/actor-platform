@@ -61,7 +61,7 @@ class GroupsServiceImpl(bucketName: String)(
                 groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
                 _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
                 seqstate ← broadcastClientUpdate(update, None)
-                _ <- HistoryUtils.writeHistoryMessage(
+                _ ← HistoryUtils.writeHistoryMessage(
                   models.Peer.privat(client.userId),
                   models.Peer.group(fullGroup.id),
                   date,
@@ -95,7 +95,7 @@ class GroupsServiceImpl(bucketName: String)(
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
           seqstate ← broadcastClientUpdate(update, None)
-          _ <- HistoryUtils.writeHistoryMessage(
+          _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(fullGroup.id),
             date,
@@ -122,7 +122,7 @@ class GroupsServiceImpl(bucketName: String)(
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Kicked))
-          _ <- HistoryUtils.writeHistoryMessage(
+          _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(fullGroup.id),
             date,
@@ -146,13 +146,13 @@ class GroupsServiceImpl(bucketName: String)(
         val date = new DateTime
 
         val update = UpdateGroupUserLeave(fullGroup.id, client.userId, date.getMillis, randomId)
-        val serviceMessage =  ServiceMessages.userLeft(client.userId)
+        val serviceMessage = ServiceMessages.userLeft(client.userId)
 
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           _ ← persist.GroupUser.delete(fullGroup.id, client.userId)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Left))
-          _ <- HistoryUtils.writeHistoryMessage(
+          _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(fullGroup.id),
             date,
@@ -193,7 +193,7 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           _ ← persist.Group.create(group, randomId)
           _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
-          _ <- HistoryUtils.writeHistoryMessage(
+          _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(group.id),
             dateTime,
@@ -248,7 +248,7 @@ class GroupsServiceImpl(bucketName: String)(
                 // TODO: #perf the following broadcasts do update serializing per each user
                 _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added))))
                 seqstate ← broadcastClientUpdate(userAddedUpdate, None)
-                _ <- HistoryUtils.writeHistoryMessage(
+                _ ← HistoryUtils.writeHistoryMessage(
                   models.Peer.privat(client.userId),
                   models.Peer.group(fullGroup.id),
                   date,
@@ -282,7 +282,7 @@ class GroupsServiceImpl(bucketName: String)(
 
         for {
           _ ← persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)
-          _ <- HistoryUtils.writeHistoryMessage(
+          _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(fullGroup.id),
             date,
