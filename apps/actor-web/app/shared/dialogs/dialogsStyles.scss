@@ -3,6 +3,7 @@
 .dialogs {
   padding: 0;
   &__item {
+    cursor: pointer;
     &--selected {
       background-color: $baseColor !important;
       * { // TODO: fix it
