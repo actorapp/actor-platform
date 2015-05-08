@@ -4,15 +4,17 @@
 
 import Foundation
 
-class GroupCreateController: UIViewController {
+class GroupCreateController: AAViewController {
+
     private var addPhotoButton = UIButton()
     private var avatarImageView = UIImageView()
     private var groupName = UITextField()
-    private var titleLabel = UILabel()
-    
-    init(){
+    private var groupNameFieldSeparator = UIView()
+
+    override init(){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = NSLocalizedString("CreateGroupTitle", comment: "Compose Title")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -26,7 +28,7 @@ class GroupCreateController: UIViewController {
         view.addSubview(addPhotoButton)
         view.addSubview(avatarImageView)
         view.addSubview(groupName)
-        view.addSubview(titleLabel)
+        view.addSubview(groupNameFieldSeparator)
         
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 110, height: 110), false, 0.0);
         var context = UIGraphicsGetCurrentContext();
@@ -41,22 +43,60 @@ class GroupCreateController: UIViewController {
         addPhotoButton.exclusiveTouch = true
         addPhotoButton.setBackgroundImage(buttonImage, forState: UIControlState.Normal)
         
-        titleLabel.backgroundColor = UIColor.clearColor()
-        titleLabel.textColor = UIColor.blackColor()
-        titleLabel.textAlignment = NSTextAlignment.Center
-        titleLabel.font = isIPad
-            ? UIFont(name: "HelveticaNeue-Thin", size: 50.0)
-            : UIFont(name: "HelveticaNeue-Light", size: 30.0)
-        titleLabel.text = NSLocalizedString("AuthProfileTitle", comment: "Title")
-
+        var addPhotoLabelFirst = UILabel()
+        addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
+        addPhotoLabelFirst.font = UIFont.systemFontOfSize(15.0)
+        addPhotoLabelFirst.backgroundColor = UIColor.clearColor()
+        addPhotoLabelFirst.textColor = UIColor.RGB(0xd9d9d9)
+        addPhotoLabelFirst.sizeToFit()
+        
+        var addPhotoLabelSecond = UILabel()
+        addPhotoLabelSecond.text = NSLocalizedString("AuthProfileAddPhoto2", comment: "Title")
+        addPhotoLabelSecond.font = UIFont.systemFontOfSize(15.0)
+        addPhotoLabelSecond.backgroundColor = UIColor.clearColor()
+        addPhotoLabelSecond.textColor = UIColor.RGB(0xd9d9d9)
+        addPhotoLabelSecond.sizeToFit()
+        
+        addPhotoButton.addSubview(addPhotoLabelFirst)
+        addPhotoButton.addSubview(addPhotoLabelSecond)
+        
+        addPhotoLabelFirst.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelFirst.frame.size.width) / 2, 22, addPhotoLabelFirst.frame.size.width, addPhotoLabelFirst.frame.size.height));
+        addPhotoLabelSecond.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelSecond.frame.size.width) / 2, 22 + 22, addPhotoLabelSecond.frame.size.width, addPhotoLabelSecond.frame.size.height));
+        
+        groupName.backgroundColor = UIColor.whiteColor()
+        groupName.font = UIFont.systemFontOfSize(20)
+        groupName.keyboardType = UIKeyboardType.Default
+        groupName.returnKeyType = UIReturnKeyType.Next
+        groupName.placeholder = NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title")
+        // groupName.delegate = self
+        groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        groupName.autocapitalizationType = UITextAutocapitalizationType.Words
+        
+        groupNameFieldSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        avatarImageView.frame = CGRectMake(24, 24, 64, 64)
+        let screenSize = UIScreen.mainScreen().bounds.size
+        
+        avatarImageView.frame = CGRectMake((screenSize.width - 48)/2, 24, 80, 80)
         addPhotoButton.frame = avatarImageView.frame
         
-        titleLabel.frame = CGRectMake(80, 24, 320, 64)
+        groupName.frame = CGRectMake(24, 126, screenSize.width - 48, 56.0)
+        groupNameFieldSeparator.frame = CGRectMake(24, 182, screenSize.width - 48, retinaPixel)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        groupName.becomeFirstResponder()
+    }
+    
+    func doNext() {
+        if (groupName.text.trim().size() == 0) {
+            shakeView(groupName, originalX: groupName.frame.origin.x)
+            return
+        }
     }
 }
