@@ -18,7 +18,7 @@ public class JsGroup extends JavaScriptObject {
         int online = groupVM.getPresence().get();
         String presence = messenger.getFormatter().formatGroupMembers(groupVM.getMembersCount());
         if (online > 0) {
-            presence = ", " + messenger.getFormatter().formatGroupOnline(online);
+            presence += ", " + messenger.getFormatter().formatGroupOnline(online);
         }
         String fileUrl = null;
         Avatar avatar = groupVM.getAvatar().get();

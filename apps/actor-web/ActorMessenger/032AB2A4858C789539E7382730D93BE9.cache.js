@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.ActorMessenger;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.7.0";
-var $strongName = '4A7204D9BE6EA94741337128FE635AC4';
+var $strongName = '032AB2A4858C789539E7382730D93BE9';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -1076,22 +1076,8 @@ function format(template, args){
   return builder.string;
 }
 
-function isOrHasChildImpl(parent_0, child){
-  if (parent_0.nodeType != 1 && parent_0.nodeType != 9) {
-    return parent_0 == child;
-  }
-  if (child.nodeType != 1) {
-    child = child.parentNode;
-    if (!child) {
-      return false;
-    }
-  }
-  if (parent_0.nodeType == 9) {
-    return parent_0 === child || parent_0.body && parent_0.body.contains(child);
-  }
-   else {
-    return parent_0 === child || parent_0.contains(child);
-  }
+function $isOrHasChild(parent_0, child){
+  return parent_0.contains(child);
 }
 
 function fireNativeEvent(){
@@ -2519,7 +2505,7 @@ _.onBrowserEvent = function onBrowserEvent(event_0){
     case 16:
     case 32:
       related = event_0.relatedTarget;
-      if (!!related && isOrHasChildImpl(this.element, related)) {
+      if (!!related && $isOrHasChild(this.element, related)) {
         return;
       }
 
@@ -2722,8 +2708,8 @@ function buildListParamMap(queryString){
 }
 
 function ensureListParameterMap(){
-  var currentQueryString, href_0, hashLoc, questionLoc;
-  currentQueryString = (href_0 = $wnd.location.href , hashLoc = href_0.indexOf('#') , hashLoc >= 0 && (href_0 = href_0.substring(0, hashLoc)) , questionLoc = href_0.indexOf('?') , questionLoc > 0?href_0.substring(questionLoc):'');
+  var currentQueryString;
+  currentQueryString = $wnd.location.search;
   if (!listParamMap || !$equals_3(cachedQueryString, currentQueryString)) {
     listParamMap = buildListParamMap(currentQueryString);
     cachedQueryString = currentQueryString;
@@ -2799,7 +2785,7 @@ function $clinit_DOMImplStandard(){
 function assertCompileTimeUserAgent(){
   var runtimeValue;
   runtimeValue = $getRuntimeValue();
-  if (!$equals_3('ie10', runtimeValue)) {
+  if (!$equals_3('safari', runtimeValue)) {
     throw new UserAgentAsserter$UserAgentAssertionError(runtimeValue);
   }
 }
@@ -2815,7 +2801,7 @@ var Ljava_lang_Error_2_classLit = createForClass('java.lang', 'Error', 367, Ljav
 defineClass(55, 367, $intern_1);
 var Ljava_lang_AssertionError_2_classLit = createForClass('java.lang', 'AssertionError', 55, Ljava_lang_Error_2_classLit);
 function UserAgentAsserter$UserAgentAssertionError(runtimeValue){
-  Error_0.call(this, '' + ('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (ie10) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.'), instanceOf('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (ie10) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13)?dynamicCast('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (ie10) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13):null);
+  Error_0.call(this, '' + ('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (safari) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.'), instanceOf('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (safari) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13)?dynamicCast('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (safari) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13):null);
 }
 
 defineClass(497, 55, $intern_1, UserAgentAsserter$UserAgentAssertionError);
@@ -14008,7 +13994,7 @@ function fromGroupVM(groupVM, messenger){
   var avatar, fileUrl, online, presence;
   online = dynamicCast(groupVM.presence.value_0, 28).value_0;
   presence = $formatGroupMembers(messenger.modules.i18nEngine, dynamicCast(groupVM.members.value_0, 34).map_0.size_0);
-  online > 0 && (presence = ', ' + $formatGroupOnline(messenger.modules.i18nEngine, online));
+  online > 0 && (presence += ', ' + $formatGroupOnline(messenger.modules.i18nEngine, online));
   fileUrl = null;
   avatar = dynamicCast(groupVM.avatar.value_0, 41);
   !!avatar && !!avatar.smallImage && (fileUrl = $getFileUrl(messenger, avatar.smallImage.fileReference));
@@ -15995,7 +15981,7 @@ function $onLoggedIn_0(this$static){
   $section(timing, 'Groups');
   this$static.groups = new Groups(this$static);
   $section(timing, 'Search');
-  this$static.search = new SearchModule(this$static);
+  this$static.search_0 = new SearchModule(this$static);
   $section(timing, 'Security');
   this$static.security = new Security(this$static);
   $section(timing, 'Messages');
@@ -16023,7 +16009,7 @@ function $onLoggedIn_0(this$static){
   $section(timing, 'Files');
   $run_2(this$static.filesModule);
   $section(timing, 'Search');
-  $run_5(this$static.search);
+  $run_5(this$static.search_0);
   $section(timing, 'Notifications');
   $run_4(this$static.notifications);
   $section(timing, 'AppState');
@@ -16959,7 +16945,7 @@ function $updateEngineList(this$static){
     userModel = (checkCriticalElement(userModel$iterator.i < userModel$iterator.this$01.size_1()) , dynamicCast(userModel$iterator.this$01.get_1(userModel$iterator.last = userModel$iterator.i++), 11));
     sorted[sindex++] = valueOf(userModel.uid);
   }
-  $onContactsChanged(this$static.modules.search, sorted);
+  $onContactsChanged(this$static.modules.search_0, sorted);
   $onContactsUpdate(this$static.modules.appStateModule, this$static.modules.contacts.contacts.storage.index_0.array.length == 0);
 }
 
@@ -18183,7 +18169,7 @@ function $addOrUpdateItem_2(this$static, dialog){
   $addOrUpdateItem_1(this$static.dialogs, dialog);
   d = new ArrayList;
   setCheck(d.array, d.array.length, dialog);
-  $onDialogsChanged(this$static.modules.search, d);
+  $onDialogsChanged(this$static.modules.search_0, d);
 }
 
 function $buildPeerDesc(this$static, peer){
@@ -18251,7 +18237,7 @@ function $onHistoryLoaded_0(this$static, history_0){
     $add_0(updated, new Dialog_1(dialogHistory.peer, dialogHistory.sortDate, peerDesc.title_0, peerDesc.avatar, dialogHistory.unreadCount, dialogHistory.rid, description.contentType, description.text_0, dialogHistory.status_0, dialogHistory.senderId, dialogHistory.date, description.relatedUser));
   }
   $addOrUpdateItems_0(this$static.dialogs, updated);
-  $onDialogsChanged(this$static.modules.search, updated);
+  $onDialogsChanged(this$static.modules.search_0, updated);
   $send_1(this$static.modules.appStateModule.listStatesActor, new ListsStatesActor$OnDialogsLoaded);
   $notifyState(this$static);
 }
@@ -20165,7 +20151,7 @@ _.onReceive = function onReceive_21(message){
 }
 ;
 _.preStart = function preStart_14(){
-  this.listEngine = this.modules.search.searchList;
+  this.listEngine = this.modules.search_0.searchList;
 }
 ;
 var Lim_actor_model_modules_search_SearchActor_2_classLit = createForClass('im.actor.model.modules.search', 'SearchActor', 697, Lim_actor_model_modules_utils_ModuleActor_2_classLit);
@@ -28943,7 +28929,7 @@ var I_classLit = createForPrimitive('int', 'I'), Z_classLit = createForPrimitive
 var $entry = registerEntry();
 var gwtOnLoad = gwtOnLoad = gwtOnLoad_0;
 addInitFunctions(init);
-setGwtProperty('permProps', [[['locale', 'default'], ['user.agent', 'ie10']]]);
+setGwtProperty('permProps', [[['locale', 'default'], ['user.agent', 'safari']]]);
 $sendStats('moduleStartup', 'moduleEvalEnd');
 gwtOnLoad(__gwtModuleFunction.__errFn, __gwtModuleFunction.__moduleName, __gwtModuleFunction.__moduleBase, __gwtModuleFunction.__softPermutationId,__gwtModuleFunction.__computePropValue);
 $sendStats('moduleStartup', 'end');
