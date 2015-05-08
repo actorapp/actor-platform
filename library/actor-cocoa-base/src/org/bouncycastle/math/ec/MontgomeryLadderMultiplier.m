@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/MontgomeryLadderMultiplier.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
@@ -14,24 +12,14 @@
 #include "org/bouncycastle/math/ec/ECPoint.h"
 #include "org/bouncycastle/math/ec/MontgomeryLadderMultiplier.h"
 
-
-#line 5
 @implementation OrgBouncycastleMathEcMontgomeryLadderMultiplier
 
-
-#line 10
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
-  
-#line 12
   IOSObjectArray *R = [IOSObjectArray newArrayWithObjects:(id[]){ [((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve])) getInfinity], p } count:2 type:OrgBouncycastleMathEcECPoint_class_()];
-  
-#line 14
   jint n = [((JavaMathBigInteger *) nil_chk(k)) bitLength];
   jint i = n;
   while (--i >= 0) {
-    
-#line 18
     jint b = [k testBitWithInt:i] ? 1 : 0;
     jint bp = 1 - b;
     (void) IOSObjectArray_Set(R, bp, [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(R, bp))) addWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(R, b)]);

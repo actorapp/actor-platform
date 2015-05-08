@@ -29,7 +29,7 @@ public class Presence extends BaseModule {
     }
 
     public void run() {
-        myPresence.send(new OwnPresenceActor.OnAppVisible());
+        // myPresence.send(new OwnPresenceActor.OnAppVisible());
     }
 
     public void onAppVisible() {

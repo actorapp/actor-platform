@@ -5,12 +5,15 @@ import UIKit;
 
 class DialogCell: UITableViewCell {
     
-    let avatarView = AAAvatarView(frameSize: 48, type: AAAvatarType.Rounded);
-    let titleView: UILabel = UILabel();
-    let messageView: UILabel = UILabel();
-    let dateView: UILabel = UILabel();
-    let statusView: UIImageView = UIImageView();
-    let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor);
+    let avatarView = AAAvatarView(frameSize: 48, type: AAAvatarType.Rounded)
+    let titleView: UILabel = UILabel()
+    let messageView: UILabel = UILabel()
+    let dateView: UILabel = UILabel()
+    let statusView: UIImageView = UIImageView()
+    let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor)
+    
+    let unreadView: UILabel = UILabel()
+    let unreadViewBg: UIImageView = UIImageView()
     
     var bindedFile: jlong? = nil;
     var avatarCallback: CocoaDownloadCallback? = nil;
@@ -32,12 +35,22 @@ class DialogCell: UITableViewCell {
         dateView.textAlignment = NSTextAlignment.Right;
         statusView.contentMode = UIViewContentMode.Center;
         
+        unreadView.font = UIFont(name: "HelveticaNeue", size: 14);
+        unreadView.textColor = MainAppTheme.list.unreadText
+        unreadView.textAlignment = .Center
+        
+        unreadViewBg.image =
+            Imaging.imageWithColor(MainAppTheme.list.unreadBg, size: CGSizeMake(18, 18))
+            .roundImage(18).resizableImageWithCapInsets(UIEdgeInsetsMake(9, 9, 9, 9))
+        
         self.contentView.addSubview(avatarView)
         self.contentView.addSubview(titleView)
         self.contentView.addSubview(messageView)
         self.contentView.addSubview(dateView)
         self.contentView.addSubview(statusView)
         self.contentView.addSubview(separatorView)
+        self.contentView.addSubview(unreadViewBg)
+        self.contentView.addSubview(unreadView)
         
         var selectedView = UIView()
         selectedView.backgroundColor = MainAppTheme.list.bgSelectedColor
@@ -70,6 +83,15 @@ class DialogCell: UITableViewCell {
             self.dateView.hidden = false;
         } else {
             self.dateView.hidden = true;
+        }
+        
+        if (dialog.getUnreadCount() != 0) {
+            unreadView.text = "\(dialog.getUnreadCount())"
+            unreadView.hidden = false
+            unreadViewBg.hidden = false
+        } else {
+            unreadView.hidden = true
+            unreadViewBg.hidden = true
         }
         
         var messageState = UInt(dialog.getStatus().ordinal());
@@ -118,9 +140,21 @@ class DialogCell: UITableViewCell {
             messagePadding = 22;
             statusView.frame = CGRectMake(leftPadding, 44, 20, 18);
         }
-        messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding, 18);
+        
+        var unreadPadding = CGFloat(0)
+        if (!self.unreadView.hidden) {
+            unreadView.frame = CGRectMake(0, 0, 1000, 1000)
+            unreadView.sizeToFit()
+            let unreadW = max(unreadView.frame.width + 8, 18)
+            unreadView.frame = CGRectMake(width - padding - unreadW, 44, unreadW, 18)
+            unreadViewBg.frame = unreadView.frame
+            unreadPadding = unreadW
+        }
+
+        messageView.frame = CGRectMake(leftPadding+messagePadding, 44, width - leftPadding - /*paddingRight*/padding - messagePadding - unreadPadding, 18);
         
         dateView.frame = CGRectMake(width - /*width*/60 - /*paddingRight*/padding , 18, 60, 18);
         separatorView.frame = CGRectMake(leftPadding, 75.5, width, 0.5);
-    }
+        
+           }
 }

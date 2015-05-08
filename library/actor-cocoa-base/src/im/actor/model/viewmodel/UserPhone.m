@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/UserPhone.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/viewmodel/UserPhone.h"
@@ -20,66 +18,42 @@
 
 J2OBJC_FIELD_SETTER(AMUserPhone, title_, NSString *)
 
-
-#line 10
 @implementation AMUserPhone
 
-
-#line 21
 - (instancetype)initWithLong:(jlong)phone
                 withNSString:(NSString *)title {
   AMUserPhone_initWithLong_withNSString_(self, phone, title);
   return self;
 }
 
-
-#line 31
 - (jlong)getPhone {
   return phone_;
 }
 
-
-#line 40
 - (NSString *)getTitle {
   return title_;
 }
 
-
-#line 45
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  
-#line 49
   AMUserPhone *userPhone = (AMUserPhone *) check_class_cast(o, [AMUserPhone class]);
-  
-#line 51
   if (phone_ != ((AMUserPhone *) nil_chk(userPhone))->phone_) return NO;
-  
-#line 53
   return YES;
 }
 
-
-#line 57
 - (NSUInteger)hash {
   return (jint) (phone_ ^ (URShift64(phone_, 32)));
 }
 
 @end
 
-
-#line 21
 void AMUserPhone_initWithLong_withNSString_(AMUserPhone *self, jlong phone, NSString *title) {
   (void) NSObject_init(self);
-  
-#line 22
   self->phone_ = phone;
   self->title_ = title;
 }
 
-
-#line 21
 AMUserPhone *new_AMUserPhone_initWithLong_withNSString_(jlong phone, NSString *title) {
   AMUserPhone *self = [AMUserPhone alloc];
   AMUserPhone_initWithLong_withNSString_(self, phone, title);

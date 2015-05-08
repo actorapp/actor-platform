@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/SearchModule.java"
-
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
@@ -56,27 +54,17 @@ __attribute__((unused)) static ImActorModelModulesSearchModule_$1 *new_ImActorMo
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchModule_$1)
 
-
-#line 19
 @implementation ImActorModelModulesSearchModule
 
-
-#line 24
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
-
-#line 30
 - (void)run {
-  actorRef_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesSearchSearchActor_class_(), new_ImActorModelModulesSearchModule_$1_initWithImActorModelModulesSearchModule_(self)) withNSString:
-#line 36
-  @"actor/search"];
+  actorRef_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesSearchSearchActor_class_(), new_ImActorModelModulesSearchModule_$1_initWithImActorModelModulesSearchModule_(self)) withNSString:@"actor/search"];
 }
 
-
-#line 39
 - (id<DKListEngine>)getSearchList {
   return searchList_;
 }
@@ -95,17 +83,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchModule_$1)
 
 @end
 
-
-#line 24
 void ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesSearchModule *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
-  
-#line 27
   self->searchList_ = [((id<AMStorageProvider>) nil_chk([self storage])) createSearchListWithDKListStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createListWithName:ImActorModelModulesBaseModule_get_STORAGE_SEARCH_()]];
 }
 
-
-#line 24
 ImActorModelModulesSearchModule *new_ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesSearchModule *self = [ImActorModelModulesSearchModule alloc];
   ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(self, modules);
@@ -116,8 +98,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchModule)
 
 @implementation ImActorModelModulesSearchModule_$1
 
-
-#line 33
 - (ImActorModelModulesSearchSearchActor *)create {
   return new_ImActorModelModulesSearchSearchActor_initWithImActorModelModulesModules_([this$0_ modules]);
 }

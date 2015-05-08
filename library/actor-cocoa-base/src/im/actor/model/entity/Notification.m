@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Notification.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/ContentDescription.h"
 #include "im/actor/model/entity/Notification.h"
@@ -23,12 +21,8 @@
 J2OBJC_FIELD_SETTER(AMNotification, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 
-
-#line 7
 @implementation AMNotification
 
-
-#line 12
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
       withAMContentDescription:(AMContentDescription *)contentDescription {
@@ -36,8 +30,6 @@ J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
   return self;
 }
 
-
-#line 18
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -52,19 +44,13 @@ J2OBJC_FIELD_SETTER(AMNotification, contentDescription_, AMContentDescription *)
 
 @end
 
-
-#line 12
 void AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMNotification *self, AMPeer *peer, jint sender, AMContentDescription *contentDescription) {
   (void) NSObject_init(self);
-  
-#line 13
   self->peer_ = peer;
   self->sender_ = sender;
   self->contentDescription_ = contentDescription;
 }
 
-
-#line 12
 AMNotification *new_AMNotification_initWithAMPeer_withInt_withAMContentDescription_(AMPeer *peer, jint sender, AMContentDescription *contentDescription) {
   AMNotification *self = [AMNotification alloc];
   AMNotification_initWithAMPeer_withInt_withAMContentDescription_(self, peer, sender, contentDescription);

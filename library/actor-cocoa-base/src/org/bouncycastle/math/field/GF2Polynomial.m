@@ -4,76 +4,48 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/field/GF2Polynomial.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/field/GF2Polynomial.h"
 #include "org/bouncycastle/util/Arrays.h"
 
-
-#line 5
 @implementation OrgBouncycastleMathFieldGF2Polynomial
 
-
-#line 9
 - (instancetype)initWithIntArray:(IOSIntArray *)exponents {
   OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(self, exponents);
   return self;
 }
 
 - (jint)getDegree {
-  
-#line 16
   return IOSIntArray_Get(exponents_, ((IOSIntArray *) nil_chk(exponents_))->size_ - 1);
 }
 
-
-#line 19
 - (IOSIntArray *)getExponentsPresent {
-  
-#line 21
   return OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents_);
 }
 
-
-#line 24
 - (jboolean)isEqual:(id)obj {
-  
-#line 26
   if (self == obj) {
-    
-#line 28
     return YES;
   }
   if (!([obj isKindOfClass:[OrgBouncycastleMathFieldGF2Polynomial class]])) {
-    
-#line 32
     return NO;
   }
   OrgBouncycastleMathFieldGF2Polynomial *other = (OrgBouncycastleMathFieldGF2Polynomial *) check_class_cast(obj, [OrgBouncycastleMathFieldGF2Polynomial class]);
   return OrgBouncycastleUtilArrays_areEqualWithIntArray_withIntArray_(exponents_, ((OrgBouncycastleMathFieldGF2Polynomial *) nil_chk(other))->exponents_);
 }
 
-
-#line 38
 - (NSUInteger)hash {
-  
-#line 40
   return OrgBouncycastleUtilArrays_hashCodeWithIntArray_(exponents_);
 }
 
 @end
 
-
-#line 9
 void OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(OrgBouncycastleMathFieldGF2Polynomial *self, IOSIntArray *exponents) {
   (void) NSObject_init(self);
   self->exponents_ = OrgBouncycastleUtilArrays_cloneWithIntArray_(exponents);
 }
 
-
-#line 9
 OrgBouncycastleMathFieldGF2Polynomial *new_OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(IOSIntArray *exponents) {
   OrgBouncycastleMathFieldGF2Polynomial *self = [OrgBouncycastleMathFieldGF2Polynomial alloc];
   OrgBouncycastleMathFieldGF2Polynomial_initWithIntArray_(self, exponents);

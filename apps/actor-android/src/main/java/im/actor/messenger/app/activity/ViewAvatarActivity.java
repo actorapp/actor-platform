@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,6 +86,11 @@ public class ViewAvatarActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(false);
+
+        if (savedInstanceState != null) {
+            externalFile = savedInstanceState.getString("externalFile", null);
+            avatarPath = savedInstanceState.getString("avatarPath", null);
+        }
 
         if (peer.getPeerType() == PeerType.PRIVATE) {
             if (peer.getPeerId() == myUid()) {
@@ -326,6 +332,17 @@ public class ViewAvatarActivity extends BaseActivity {
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 messenger().changeGroupAvatar(peer.getPeerId(), avatarPath);
             }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        if (avatarPath != null) {
+            outState.putString("avatarPath", avatarPath);
+        }
+        if (externalFile != null) {
+            outState.putString("externalFile", externalFile);
         }
     }
 

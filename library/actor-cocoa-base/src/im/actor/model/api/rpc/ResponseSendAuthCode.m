@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSendAuthCode.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,33 +25,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseSendAuthCode
 
-
-#line 27
 + (ImActorModelApiRpcResponseSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithNSString:(NSString *)smsHash
                      withBoolean:(jboolean)isRegistered {
   ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcResponseSendAuthCode_init(self);
   return self;
 }
 
-
-#line 43
 - (NSString *)getSmsHash {
   return self->smsHash_;
 }
@@ -62,15 +50,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
   return self->isRegistered__;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->smsHash_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->isRegistered__ = [values getBoolWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->smsHash_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -79,55 +63,39 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
   [writer writeBoolWithInt:2 withBoolean:self->isRegistered__];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"tuple SendAuthCode{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 74
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSendAuthCode_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseSendAuthCode *ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSendAuthCode_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSendAuthCode_init(), data));
 }
 
 void ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(ImActorModelApiRpcResponseSendAuthCode *self, NSString *smsHash, jboolean isRegistered) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 35
   self->smsHash_ = smsHash;
   self->isRegistered__ = isRegistered;
 }
 
-
-#line 34
 ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(NSString *smsHash, jboolean isRegistered) {
   ImActorModelApiRpcResponseSendAuthCode *self = [ImActorModelApiRpcResponseSendAuthCode alloc];
   ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcResponseSendAuthCode_init(ImActorModelApiRpcResponseSendAuthCode *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_init() {
   ImActorModelApiRpcResponseSendAuthCode *self = [ImActorModelApiRpcResponseSendAuthCode alloc];
   ImActorModelApiRpcResponseSendAuthCode_init(self);

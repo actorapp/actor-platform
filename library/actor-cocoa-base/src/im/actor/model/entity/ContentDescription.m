@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/ContentDescription.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -50,8 +48,6 @@ __attribute__((unused)) static void AMContentDescription_init(AMContentDescripti
 
 __attribute__((unused)) static AMContentDescription *new_AMContentDescription_init() NS_RETURNS_RETAINED;
 
-
-#line 27
 @implementation AMContentDescription
 
 + (AMContentDescription *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -62,8 +58,6 @@ __attribute__((unused)) static AMContentDescription *new_AMContentDescription_in
   return AMContentDescription_fromContentWithAMAbsContent_(msg);
 }
 
-
-#line 76
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
                              withNSString:(NSString *)text
                                   withInt:(jint)relatedUser
@@ -72,30 +66,22 @@ __attribute__((unused)) static AMContentDescription *new_AMContentDescription_in
   return self;
 }
 
-
-#line 85
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType
                              withNSString:(NSString *)text {
   AMContentDescription_initWithAMContentTypeEnum_withNSString_(self, contentType, text);
   return self;
 }
 
-
-#line 89
 - (instancetype)initWithAMContentTypeEnum:(AMContentTypeEnum *)contentType {
   AMContentDescription_initWithAMContentTypeEnum_(self, contentType);
   return self;
 }
 
-
-#line 93
 - (instancetype)init {
   AMContentDescription_init(self);
   return self;
 }
 
-
-#line 97
 - (AMContentTypeEnum *)getContentType {
   return contentType_;
 }
@@ -112,8 +98,6 @@ __attribute__((unused)) static AMContentDescription *new_AMContentDescription_in
   return isSilent__;
 }
 
-
-#line 114
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   contentType_ = AMContentTypeEnum_fromValueWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   text_ = [values getStringWithInt:2];
@@ -122,8 +106,6 @@ __attribute__((unused)) static AMContentDescription *new_AMContentDescription_in
   isEncrypted_ = [values getBoolWithInt:5];
 }
 
-
-#line 123
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((AMContentTypeEnum *) nil_chk(contentType_)) getValue]];
   [writer writeStringWithInt:2 withNSString:text_];
@@ -134,100 +116,56 @@ __attribute__((unused)) static AMContentDescription *new_AMContentDescription_in
 
 @end
 
-
-#line 29
 AMContentDescription *AMContentDescription_fromBytesWithByteArray_(IOSByteArray *data) {
   AMContentDescription_initialize();
-  
-#line 30
   return ((AMContentDescription *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContentDescription_init(), data));
 }
 
-
-#line 33
 AMContentDescription *AMContentDescription_fromContentWithAMAbsContent_(AMAbsContent *msg) {
   AMContentDescription_initialize();
-  
-#line 34
   if ([msg isKindOfClass:[AMTextContent class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum_get_TEXT(),
-#line 36
-    [((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(msg, [AMTextContent class])))) getText]);
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum_get_TEXT(), [((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(msg, [AMTextContent class])))) getText]);
   }
-  else
-#line 37
-  if ([msg isKindOfClass:[AMPhotoContent class]]) {
+  else if ([msg isKindOfClass:[AMPhotoContent class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_DOCUMENT_PHOTO());
   }
-  else
-#line 39
-  if ([msg isKindOfClass:[AMVideoContent class]]) {
+  else if ([msg isKindOfClass:[AMVideoContent class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_DOCUMENT_VIDEO());
   }
-  else
-#line 41
-  if ([msg isKindOfClass:[AMDocumentContent class]]) {
+  else if ([msg isKindOfClass:[AMDocumentContent class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_DOCUMENT());
   }
-  else
-#line 43
-  if ([msg isKindOfClass:[AMServiceUserRegistered class]]) {
+  else if ([msg isKindOfClass:[AMServiceUserRegistered class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_REGISTERED());
   }
-  else
-#line 45
-  if ([msg isKindOfClass:[AMServiceGroupAvatarChanged class]]) {
+  else if ([msg isKindOfClass:[AMServiceGroupAvatarChanged class]]) {
     if ([((AMServiceGroupAvatarChanged *) nil_chk(((AMServiceGroupAvatarChanged *) check_class_cast(msg, [AMServiceGroupAvatarChanged class])))) getNewAvatar] == nil) {
       return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_AVATAR_REMOVED());
     }
     else {
-      
-#line 49
       return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_AVATAR());
     }
   }
-  else
-#line 51
-  if ([msg isKindOfClass:[AMServiceGroupTitleChanged class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum_get_SERVICE_TITLE(),
-#line 53
-    [((AMServiceGroupTitleChanged *) nil_chk(((AMServiceGroupTitleChanged *) check_class_cast(msg, [AMServiceGroupTitleChanged class])))) getNewTitle]);
+  else if ([msg isKindOfClass:[AMServiceGroupTitleChanged class]]) {
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum_get_SERVICE_TITLE(), [((AMServiceGroupTitleChanged *) nil_chk(((AMServiceGroupTitleChanged *) check_class_cast(msg, [AMServiceGroupTitleChanged class])))) getNewTitle]);
   }
-  else
-#line 54
-  if ([msg isKindOfClass:[AMServiceGroupCreated class]]) {
+  else if ([msg isKindOfClass:[AMServiceGroupCreated class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_CREATED());
   }
-  else
-#line 56
-  if ([msg isKindOfClass:[AMServiceGroupUserAdded class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_ADD(), @"",
-#line 58
-    [((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(msg, [AMServiceGroupUserAdded class])))) getAddedUid], NO);
+  else if ([msg isKindOfClass:[AMServiceGroupUserAdded class]]) {
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_ADD(), @"", [((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(msg, [AMServiceGroupUserAdded class])))) getAddedUid], NO);
   }
-  else
-#line 59
-  if ([msg isKindOfClass:[AMServiceGroupUserKicked class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_KICK(), @"",
-#line 61
-    [((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(msg, [AMServiceGroupUserKicked class])))) getKickedUid], NO);
+  else if ([msg isKindOfClass:[AMServiceGroupUserKicked class]]) {
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_KICK(), @"", [((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(msg, [AMServiceGroupUserKicked class])))) getKickedUid], NO);
   }
-  else
-#line 62
-  if ([msg isKindOfClass:[AMServiceGroupUserLeave class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_LEAVE(), @"",
-#line 64
-    0, YES);
+  else if ([msg isKindOfClass:[AMServiceGroupUserLeave class]]) {
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_LEAVE(), @"", 0, YES);
   }
   else {
-    
-#line 66
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_UNKNOWN_CONTENT());
   }
 }
 
-
-#line 76
 void AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentDescription *self, AMContentTypeEnum *contentType, NSString *text, jint relatedUser, jboolean isSilent) {
   (void) BSBserObject_init(self);
   self->contentType_ = contentType;
@@ -237,50 +175,36 @@ void AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoo
   self->isEncrypted_ = NO;
 }
 
-
-#line 76
 AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum *contentType, NSString *text, jint relatedUser, jboolean isSilent) {
   AMContentDescription *self = [AMContentDescription alloc];
   AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, text, relatedUser, isSilent);
   return self;
 }
 
-
-#line 85
 void AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentDescription *self, AMContentTypeEnum *contentType, NSString *text) {
   (void) AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, text, 0, NO);
 }
 
-
-#line 85
 AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_withNSString_(AMContentTypeEnum *contentType, NSString *text) {
   AMContentDescription *self = [AMContentDescription alloc];
   AMContentDescription_initWithAMContentTypeEnum_withNSString_(self, contentType, text);
   return self;
 }
 
-
-#line 89
 void AMContentDescription_initWithAMContentTypeEnum_(AMContentDescription *self, AMContentTypeEnum *contentType) {
   (void) AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(self, contentType, @"", 0, NO);
 }
 
-
-#line 89
 AMContentDescription *new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum *contentType) {
   AMContentDescription *self = [AMContentDescription alloc];
   AMContentDescription_initWithAMContentTypeEnum_(self, contentType);
   return self;
 }
 
-
-#line 93
 void AMContentDescription_init(AMContentDescription *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 93
 AMContentDescription *new_AMContentDescription_init() {
   AMContentDescription *self = [AMContentDescription alloc];
   AMContentDescription_init(self);

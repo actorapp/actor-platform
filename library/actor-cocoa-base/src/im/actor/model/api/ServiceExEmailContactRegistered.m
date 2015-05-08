@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExEmailContactRegistered.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -21,26 +19,18 @@
 
 @end
 
-
-#line 23
 @implementation ImActorModelApiServiceExEmailContactRegistered
 
-
-#line 27
 - (instancetype)initWithInt:(jint)uid {
   ImActorModelApiServiceExEmailContactRegistered_initWithInt_(self, uid);
   return self;
 }
 
-
-#line 31
 - (instancetype)init {
   ImActorModelApiServiceExEmailContactRegistered_init(self);
   return self;
 }
 
-
-#line 35
 - (jint)getHeader {
   return 7;
 }
@@ -49,20 +39,14 @@
   return self->uid_;
 }
 
-
-#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
-
-#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 
-
-#line 54
 - (NSString *)description {
   NSString *res = @"struct ServiceExEmailContactRegistered{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -72,31 +56,21 @@
 
 @end
 
-
-#line 27
 void ImActorModelApiServiceExEmailContactRegistered_initWithInt_(ImActorModelApiServiceExEmailContactRegistered *self, jint uid) {
   (void) ImActorModelApiServiceEx_init(self);
-  
-#line 28
   self->uid_ = uid;
 }
 
-
-#line 27
 ImActorModelApiServiceExEmailContactRegistered *new_ImActorModelApiServiceExEmailContactRegistered_initWithInt_(jint uid) {
   ImActorModelApiServiceExEmailContactRegistered *self = [ImActorModelApiServiceExEmailContactRegistered alloc];
   ImActorModelApiServiceExEmailContactRegistered_initWithInt_(self, uid);
   return self;
 }
 
-
-#line 31
 void ImActorModelApiServiceExEmailContactRegistered_init(ImActorModelApiServiceExEmailContactRegistered *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
-
-#line 31
 ImActorModelApiServiceExEmailContactRegistered *new_ImActorModelApiServiceExEmailContactRegistered_init() {
   ImActorModelApiServiceExEmailContactRegistered *self = [ImActorModelApiServiceExEmailContactRegistered alloc];
   ImActorModelApiServiceExEmailContactRegistered_init(self);

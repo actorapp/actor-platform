@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/User.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
@@ -41,12 +39,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, avatar_, ImActorModelApiAvatar *)
 J2OBJC_FIELD_SETTER(ImActorModelApiUser, phones_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
 
-
-#line 23
 @implementation ImActorModelApiUser
 
-
-#line 36
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name
@@ -61,15 +55,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   return self;
 }
 
-
-#line 49
 - (instancetype)init {
   ImActorModelApiUser_init(self);
   return self;
 }
 
-
-#line 53
 - (jint)getId {
   return self->id__;
 }
@@ -110,8 +100,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   return self->emails_;
 }
 
-
-#line 94
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -128,8 +116,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   self->emails_ = [values getRepeatedIntWithInt:10];
 }
 
-
-#line 111
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->id__];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
@@ -152,8 +138,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   [writer writeRepeatedIntWithInt:10 withJavaUtilList:self->emails_];
 }
 
-
-#line 134
 - (NSString *)description {
   NSString *res = @"struct User{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"id=", self->id__));
@@ -170,12 +154,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
 
 @end
 
-
-#line 36
 void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(ImActorModelApiUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   (void) BSBserObject_init(self);
-  
-#line 37
   self->id__ = id_;
   self->accessHash_ = accessHash;
   self->name_ = name;
@@ -188,22 +168,16 @@ void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImAc
   self->emails_ = emails;
 }
 
-
-#line 36
 ImActorModelApiUser *new_ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   ImActorModelApiUser *self = [ImActorModelApiUser alloc];
   ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(self, id_, accessHash, name, localName, sex, keyHashes, phone, avatar, phones, emails);
   return self;
 }
 
-
-#line 49
 void ImActorModelApiUser_init(ImActorModelApiUser *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 49
 ImActorModelApiUser *new_ImActorModelApiUser_init() {
   ImActorModelApiUser *self = [ImActorModelApiUser alloc];
   ImActorModelApiUser_init(self);
