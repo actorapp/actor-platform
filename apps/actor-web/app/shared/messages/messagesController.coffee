@@ -11,14 +11,11 @@ class MessagesController
         return
       if @actorService.currentPeer
         console.log '[AW]MessagesController selectDialog: conversation already opened: unbind...'
-        @actorService.unbindChat @actorService.currentPeer, =>
-          @actorService.onConversationClosed @actorService.currentPeer
+        @actorService.unbindChat @actorService.currentPeer, @renderMessages
 
-      @actorService.bindChat peer, (messages) =>
-        @actorService.onConversationOpen peer
-        @renderMessages messages
+      @actorService.bindChat peer, @renderMessages
 
-  renderMessages: (messages) ->
+  renderMessages: (messages) =>
     console.log '[AW]MessagesController renderMessages', messages
     @$timeout =>
       @list = messages
