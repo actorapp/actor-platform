@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.ActorMessenger;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.7.0";
-var $strongName = 'FE30B2EB6E83799B86A009F2C4311486';
+var $strongName = 'B3EDC37E90D889E5E9C52CBF3F266D55';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -1076,8 +1076,32 @@ function format(template, args){
   return builder.string;
 }
 
+function $eventGetRelatedTarget(evt){
+  var relatedTarget = evt.relatedTarget;
+  if (!relatedTarget) {
+    return null;
+  }
+  try {
+    var nodeName = relatedTarget.nodeName;
+    return relatedTarget;
+  }
+   catch (e) {
+    return null;
+  }
+}
+
 function $isOrHasChild(parent_0, child){
-  return parent_0.contains(child);
+  return parent_0 === child || !!(parent_0.compareDocumentPosition(child) & 16);
+}
+
+function $toString(elem){
+  var doc = elem.ownerDocument;
+  var temp = elem.cloneNode(true);
+  var tempDiv = doc.createElement('DIV');
+  tempDiv.appendChild(temp);
+  outer = tempDiv.innerHTML;
+  temp.innerHTML = '';
+  return outer;
 }
 
 function fireNativeEvent(){
@@ -2329,7 +2353,7 @@ var Lcom_google_gwt_logging_impl_FormatterImpl_2_classLit = createForClass('com.
 function $format_0(this$static, event_0){
   var message, date, s;
   message = new StringBuilder;
-  $append_1(message, (date = new Date_1(event_0.millis) , s = new StringBuilder , $append_1(s, $toString_2(date)) , s.string += ' ' , $append_1(s, event_0.loggerName) , s.string += '\n' , s.string += 'SEVERE' , s.string += ': ' , s.string));
+  $append_1(message, (date = new Date_1(event_0.millis) , s = new StringBuilder , $append_1(s, $toString_3(date)) , s.string += ' ' , $append_1(s, event_0.loggerName) , s.string += '\n' , s.string += 'SEVERE' , s.string += ': ' , s.string));
   $append_1(message, event_0.msg);
   this$static.showStackTraces && !!event_0.thrown && $printStackTrace(event_0.thrown, new StackTracePrintStream(message));
   return message.string;
@@ -2494,7 +2518,7 @@ _.toString$ = function toString_3(){
   if (!this.element) {
     return '(null handle)';
   }
-  return ($clinit_DOM() , this.element).outerHTML;
+  return $toString(($clinit_DOM() , this.element));
 }
 ;
 var Lcom_google_gwt_user_client_ui_UIObject_2_classLit = createForClass('com.google.gwt.user.client.ui', 'UIObject', 852, Ljava_lang_Object_2_classLit);
@@ -2504,7 +2528,7 @@ _.onBrowserEvent = function onBrowserEvent(event_0){
   switch ($clinit_DOM() , $eventGetTypeInt(event_0.type)) {
     case 16:
     case 32:
-      related = event_0.relatedTarget;
+      related = $eventGetRelatedTarget(event_0);
       if (!!related && $isOrHasChild(this.element, related)) {
         return;
       }
@@ -2604,7 +2628,7 @@ function create_2(length_0){
 
 function $clinit_DOM(){
   $clinit_DOM = emptyMethod;
-  $clinit_DOMImplStandard();
+  $clinit_DOMImplMozilla();
 }
 
 var currentEvent = null, sCaptureElem;
@@ -2780,12 +2804,30 @@ function $eventGetTypeInt(eventType){
 
 function $clinit_DOMImplStandard(){
   $clinit_DOMImplStandard = emptyMethod;
+  captureEventDispatchers = {click:dispatchCapturedMouseEvent, dblclick:dispatchCapturedMouseEvent, mousedown:dispatchCapturedMouseEvent, mouseup:dispatchCapturedMouseEvent, mousemove:dispatchCapturedMouseEvent, mouseover:dispatchCapturedMouseEvent, mouseout:dispatchCapturedMouseEvent, mousewheel:dispatchCapturedMouseEvent, keydown:dispatchCapturedEvent, keyup:dispatchCapturedEvent, keypress:dispatchCapturedEvent, touchstart:dispatchCapturedMouseEvent, touchend:dispatchCapturedMouseEvent, touchmove:dispatchCapturedMouseEvent, touchcancel:dispatchCapturedMouseEvent, gesturestart:dispatchCapturedMouseEvent, gestureend:dispatchCapturedMouseEvent, gesturechange:dispatchCapturedMouseEvent};
+}
+
+function dispatchCapturedEvent(evt){
+  $clinit_DOM();
+}
+
+function dispatchCapturedMouseEvent(evt){
+  $clinit_DOMImplStandard();
+  $clinit_DOM();
+  return;
+}
+
+var captureEventDispatchers;
+function $clinit_DOMImplMozilla(){
+  $clinit_DOMImplMozilla = emptyMethod;
+  $clinit_DOMImplStandard();
+  captureEventDispatchers['DOMMouseScroll'] = dispatchCapturedMouseEvent;
 }
 
 function assertCompileTimeUserAgent(){
   var runtimeValue;
   runtimeValue = $getRuntimeValue();
-  if (!$equals_3('safari', runtimeValue)) {
+  if (!$equals_3('gecko1_8', runtimeValue)) {
     throw new UserAgentAsserter$UserAgentAssertionError(runtimeValue);
   }
 }
@@ -2801,7 +2843,7 @@ var Ljava_lang_Error_2_classLit = createForClass('java.lang', 'Error', 367, Ljav
 defineClass(55, 367, $intern_1);
 var Ljava_lang_AssertionError_2_classLit = createForClass('java.lang', 'AssertionError', 55, Ljava_lang_Error_2_classLit);
 function UserAgentAsserter$UserAgentAssertionError(runtimeValue){
-  Error_0.call(this, '' + ('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (safari) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.'), instanceOf('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (safari) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13)?dynamicCast('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (safari) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13):null);
+  Error_0.call(this, '' + ('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.'), instanceOf('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13)?dynamicCast('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13):null);
 }
 
 defineClass(497, 55, $intern_1, UserAgentAsserter$UserAgentAssertionError);
@@ -2851,7 +2893,7 @@ function $compareTo(this$static, other){
   return this$static.ordinal - other.ordinal;
 }
 
-function $toString(this$static){
+function $toString_0(this$static){
   return this$static.name_0 != null?this$static.name_0:'' + this$static.ordinal;
 }
 
@@ -2874,7 +2916,7 @@ _.hashCode$ = function hashCode_1(){
 }
 ;
 _.toString$ = function toString_4(){
-  return $toString(this);
+  return $toString_0(this);
 }
 ;
 _.ordinal = 0;
@@ -3081,12 +3123,12 @@ function $loadDraft(this$static, peer){
 }
 
 function $onConversationClosed(this$static, peer){
-  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString(peer.peerType), 'Id', peer.peerId + '']));
+  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString_0(peer.peerType), 'Id', peer.peerId + '']));
   !!this$static.modules.presence && $onConversationClose(this$static.modules.notifications, peer);
 }
 
 function $onConversationOpen(this$static, peer){
-  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString(peer.peerType), 'Id', peer.peerId + '']));
+  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString_0(peer.peerType), 'Id', peer.peerId + '']));
   if (this$static.modules.presence) {
     $subscribe_1(this$static.modules.presence, peer);
     $onConversationOpen_0(this$static.modules.notifications, peer);
@@ -13994,7 +14036,7 @@ function fromGroupVM(groupVM, messenger){
   var avatar, fileUrl, online, presence;
   online = dynamicCast(groupVM.presence.value_0, 28).value_0;
   presence = $formatGroupMembers(messenger.modules.i18nEngine, dynamicCast(groupVM.members.value_0, 34).map_0.size_0);
-  online > 0 && (presence = ', ' + $formatGroupOnline(messenger.modules.i18nEngine, online));
+  online > 0 && (presence += ', ' + $formatGroupOnline(messenger.modules.i18nEngine, online));
   fileUrl = null;
   avatar = dynamicCast(groupVM.avatar.value_0, 41);
   !!avatar && !!avatar.smallImage && (fileUrl = $getFileUrl(messenger, avatar.smallImage.fileReference));
@@ -16826,12 +16868,12 @@ function $onContactsLoaded(this$static, result){
     return;
   }
   this$static.ENABLE_LOG && d_0('ContactsServerSync', 'Sync received ' + result.users.array.length + ' contacts');
-  outer: for (uid$array = dynamicCast($toArray_0(this$static.contacts, initDim(Ljava_lang_Integer_2_classLit, $intern_30, 28, this$static.contacts.array.length, 0, 1)), 98) , uid$index = 0 , uid$max = uid$array.length; uid$index < uid$max; ++uid$index) {
+  outer_0: for (uid$array = dynamicCast($toArray_0(this$static.contacts, initDim(Ljava_lang_Integer_2_classLit, $intern_30, 28, this$static.contacts.array.length, 0, 1)), 98) , uid$index = 0 , uid$max = uid$array.length; uid$index < uid$max; ++uid$index) {
     uid = uid$array[uid$index];
     for (u$iterator0 = new AbstractList$IteratorImpl(result.users); u$iterator0.i < u$iterator0.this$01.size_1();) {
       u = (checkCriticalElement(u$iterator0.i < u$iterator0.this$01.size_1()) , dynamicCast(u$iterator0.this$01.get_1(u$iterator0.last = u$iterator0.i++), 63));
       if (u.id_0 == uid.value_0) {
-        continue outer;
+        continue outer_0;
       }
     }
     this$static.ENABLE_LOG && !!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'ContactsServerSync' + ':' + ('Removing: #' + uid));
@@ -25899,7 +25941,7 @@ function $containsAll(this$static, c){
   checkNotNull(c);
   for (e$iterator = c.iterator(); e$iterator.hasNext();) {
     e = e$iterator.next();
-    if (!this$static.contains_0(e)) {
+    if (!this$static.contains(e)) {
       return false;
     }
   }
@@ -25918,7 +25960,7 @@ function $toArray(this$static, a){
   return a;
 }
 
-function $toString_0(this$static){
+function $toString_1(this$static){
   var comma, e, e$iterator, sb;
   sb = new StringBuilder_1('[');
   comma = false;
@@ -25932,7 +25974,7 @@ function $toString_0(this$static){
 }
 
 defineClass(827, 1, {});
-_.contains_0 = function contains(o){
+_.contains = function contains(o){
   return $advanceToFind(this, o, false);
 }
 ;
@@ -25946,7 +25988,7 @@ _.removeAll = function removeAll(c){
   changed = false;
   for (iter = this.iterator(); iter.hasNext();) {
     o = iter.next();
-    if (c.contains_0(o)) {
+    if (c.contains(o)) {
       iter.remove_0();
       changed = true;
     }
@@ -25963,7 +26005,7 @@ _.toArray_0 = function toArray_0(a){
 }
 ;
 _.toString$ = function toString_185(){
-  return $toString_0(this);
+  return $toString_1(this);
 }
 ;
 var Ljava_util_AbstractCollection_2_classLit = createForClass('java.util', 'AbstractCollection', 827, Ljava_lang_Object_2_classLit);
@@ -25993,7 +26035,7 @@ function $implFindEntry(this$static, key){
   return null;
 }
 
-function $toString_1(this$static, o){
+function $toString_2(this$static, o){
   return o === this$static?'(this Map)':'' + o;
 }
 
@@ -26066,9 +26108,9 @@ _.toString$ = function toString_186(){
   for (entry$iterator = this.entrySet_0().iterator(); entry$iterator.hasNext();) {
     entry = dynamicCast(entry$iterator.next(), 24);
     comma?(sb.string += ', ' , sb):(comma = true);
-    $append_1(sb, $toString_1(this, entry.getKey()));
+    $append_1(sb, $toString_2(this, entry.getKey()));
     sb.string += '=';
-    $append_1(sb, $toString_1(this, entry.getValue()));
+    $append_1(sb, $toString_2(this, entry.getValue()));
   }
   sb.string += '}';
   return sb.string;
@@ -26181,7 +26223,7 @@ _.removeAll = function removeAll_0(c){
   if (size_0 < c.size_1()) {
     for (iter = this.iterator(); iter.hasNext();) {
       o = iter.next();
-      c.contains_0(o) && iter.remove_0();
+      c.contains(o) && iter.remove_0();
     }
   }
    else {
@@ -26206,7 +26248,7 @@ function AbstractHashMap$EntrySet(this$0){
 }
 
 defineClass(457, 828, $intern_41, AbstractHashMap$EntrySet);
-_.contains_0 = function contains_0(o){
+_.contains = function contains_0(o){
   return $contains(this, o);
 }
 ;
@@ -26374,7 +26416,7 @@ function AbstractMap$1(this$0){
 }
 
 defineClass(58, 828, $intern_41, AbstractMap$1);
-_.contains_0 = function contains_1(key){
+_.contains = function contains_1(key){
   return $containsKey(this.this$01, key);
 }
 ;
@@ -26430,7 +26472,7 @@ function AbstractMap$2(this$0){
 }
 
 defineClass(67, 827, {}, AbstractMap$2);
-_.contains_0 = function contains_2(value_0){
+_.contains = function contains_2(value_0){
   return this.this$01.containsValue(value_0);
 }
 ;
@@ -26586,7 +26628,7 @@ function AbstractNavigableMap$EntrySet(this$0){
 }
 
 defineClass(482, 828, $intern_41, AbstractNavigableMap$EntrySet);
-_.contains_0 = function contains_3(o){
+_.contains = function contains_3(o){
   return instanceOf(o, 24) && $containsEntry_0(this.this$01, dynamicCast(o, 24));
 }
 ;
@@ -26705,7 +26747,7 @@ _.add_1 = function add_7(o){
   return $add_0(this, o);
 }
 ;
-_.contains_0 = function contains_4(o){
+_.contains = function contains_4(o){
   return $indexOf_0(this, o, 0) != -1;
 }
 ;
@@ -26873,8 +26915,8 @@ _.add_1 = function add_8(o){
   throw new UnsupportedOperationException;
 }
 ;
-_.contains_0 = function contains_5(o){
-  return this.coll.contains_0(o);
+_.contains = function contains_5(o){
+  return this.coll.contains(o);
 }
 ;
 _.iterator = function iterator_5(){
@@ -26992,8 +27034,8 @@ function Collections$UnmodifiableMap$UnmodifiableEntrySet(s){
 }
 
 defineClass(507, 506, $intern_41, Collections$UnmodifiableMap$UnmodifiableEntrySet);
-_.contains_0 = function contains_6(o){
-  return this.coll.contains_0(o);
+_.contains = function contains_6(o){
+  return this.coll.contains(o);
 }
 ;
 _.iterator = function iterator_6(){
@@ -27115,7 +27157,7 @@ function $compareTo_5(this$static, other){
   return compare_6(fromDouble(this$static.jsdate.getTime()), fromDouble(other.jsdate.getTime()));
 }
 
-function $toString_2(this$static){
+function $toString_3(this$static){
   var hourOffset, minuteOffset, offset;
   offset = -this$static.jsdate.getTimezoneOffset();
   hourOffset = (offset >= 0?'+':'') + ~~(offset / 60);
@@ -27151,7 +27193,7 @@ _.hashCode$ = function hashCode_35(){
 }
 ;
 _.toString$ = function toString_193(){
-  return $toString_2(this);
+  return $toString_3(this);
 }
 ;
 var Ljava_util_Date_2_classLit = createForClass('java.util', 'Date', 7, Ljava_lang_Object_2_classLit);
@@ -27208,7 +27250,7 @@ function HashSet_0(c){
 }
 
 defineClass(34, 828, {3:1, 34:1, 99:1}, HashSet, HashSet_0);
-_.contains_0 = function contains_7(o){
+_.contains = function contains_7(o){
   return $contains_0(this, o);
 }
 ;
@@ -27225,7 +27267,7 @@ _.size_1 = function size_10(){
 }
 ;
 _.toString$ = function toString_194(){
-  return $toString_0(new AbstractMap$1(this.map_0));
+  return $toString_1(new AbstractMap$1(this.map_0));
 }
 ;
 var Ljava_util_HashSet_2_classLit = createForClass('java.util', 'HashSet', 34, Ljava_util_AbstractSet_2_classLit);
@@ -28929,7 +28971,7 @@ var I_classLit = createForPrimitive('int', 'I'), Z_classLit = createForPrimitive
 var $entry = registerEntry();
 var gwtOnLoad = gwtOnLoad = gwtOnLoad_0;
 addInitFunctions(init);
-setGwtProperty('permProps', [[['locale', 'default'], ['user.agent', 'safari']]]);
+setGwtProperty('permProps', [[['locale', 'default'], ['user.agent', 'gecko1_8']]]);
 $sendStats('moduleStartup', 'moduleEvalEnd');
 gwtOnLoad(__gwtModuleFunction.__errFn, __gwtModuleFunction.__moduleName, __gwtModuleFunction.__moduleBase, __gwtModuleFunction.__softPermutationId,__gwtModuleFunction.__computePropValue);
 $sendStats('moduleStartup', 'end');
