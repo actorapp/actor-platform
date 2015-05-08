@@ -27,7 +27,6 @@ import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.images.JsImageResize;
 import im.actor.model.js.images.JsResizeListener;
 import im.actor.model.js.providers.JsFileSystemProvider;
-import im.actor.model.js.providers.JsHttpProvider;
 import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
@@ -56,7 +55,6 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setFileSystemProvider(provider);
-        configuration.setHttpDownloaderProvider(new JsHttpProvider());
 
         configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
         configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
