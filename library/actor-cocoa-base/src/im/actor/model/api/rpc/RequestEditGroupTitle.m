@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupTitle.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,18 +28,12 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, groupPeer_, ImActorModelApiGroupOutPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestEditGroupTitle
 
-
-#line 27
 + (ImActorModelApiRpcRequestEditGroupTitle *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(data);
 }
 
-
-#line 35
 - (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
                                            withLong:(jlong)rid
                                        withNSString:(NSString *)title {
@@ -49,15 +41,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   return self;
 }
 
-
-#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestEditGroupTitle_init(self);
   return self;
 }
 
-
-#line 45
 - (ImActorModelApiGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
@@ -70,16 +58,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   return self->title_;
 }
 
-
-#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
   self->title_ = [values getStringWithInt:3];
 }
 
-
-#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->groupPeer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -92,8 +76,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   [writer writeStringWithInt:3 withNSString:self->title_];
 }
 
-
-#line 78
 - (NSString *)description {
   NSString *res = @"rpc EditGroupTitle{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"groupPeer=", self->groupPeer_));
@@ -103,36 +85,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupTitle, title_, NSString *)
   return res;
 }
 
-
-#line 88
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestEditGroupTitle_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestEditGroupTitle *ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestEditGroupTitle_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestEditGroupTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditGroupTitle_init(), data));
 }
 
-
-#line 35
 void ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(ImActorModelApiRpcRequestEditGroupTitle *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, NSString *title) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 36
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
   self->title_ = title;
 }
 
-
-#line 35
 ImActorModelApiRpcRequestEditGroupTitle *new_ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, NSString *title) {
   ImActorModelApiRpcRequestEditGroupTitle *self = [ImActorModelApiRpcRequestEditGroupTitle alloc];
   ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(self, groupPeer, rid, title);
@@ -143,8 +113,6 @@ void ImActorModelApiRpcRequestEditGroupTitle_init(ImActorModelApiRpcRequestEditG
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 41
 ImActorModelApiRpcRequestEditGroupTitle *new_ImActorModelApiRpcRequestEditGroupTitle_init() {
   ImActorModelApiRpcRequestEditGroupTitle *self = [ImActorModelApiRpcRequestEditGroupTitle alloc];
   ImActorModelApiRpcRequestEditGroupTitle_init(self);

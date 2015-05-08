@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCommitFileUpload.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -20,107 +18,88 @@
 @interface ImActorModelApiRpcRequestCommitFileUpload () {
  @public
   IOSByteArray *uploadKey_;
+  NSString *fileName_;
 }
 
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, uploadKey_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestCommitFileUpload, fileName_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestCommitFileUpload
 
-
-#line 27
 + (ImActorModelApiRpcRequestCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
-- (instancetype)initWithByteArray:(IOSByteArray *)uploadKey {
-  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self, uploadKey);
+- (instancetype)initWithByteArray:(IOSByteArray *)uploadKey
+                     withNSString:(NSString *)fileName {
+  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(self, uploadKey, fileName);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestCommitFileUpload_init(self);
   return self;
 }
 
-
-#line 41
 - (IOSByteArray *)getUploadKey {
   return self->uploadKey_;
 }
 
-
-#line 46
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->uploadKey_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
+- (NSString *)getFileName {
+  return self->fileName_;
 }
 
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  self->uploadKey_ = [((BSBserValues *) nil_chk(values)) getBytesWithInt:1];
+  self->fileName_ = [values getStringWithInt:2];
+}
 
-#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->uploadKey_ == nil) {
     @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:1 withByteArray:self->uploadKey_];
+  if (self->fileName_ == nil) {
+    @throw new_JavaIoIOException_init();
+  }
+  [writer writeStringWithInt:2 withNSString:self->fileName_];
 }
 
-
-#line 59
 - (NSString *)description {
   NSString *res = @"rpc CommitFileUpload{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 66
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestCommitFileUpload_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestCommitFileUpload *ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestCommitFileUpload_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestCommitFileUpload *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestCommitFileUpload_init(), data));
 }
 
-
-#line 33
-void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey) {
+void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey, NSString *fileName) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 34
   self->uploadKey_ = uploadKey;
+  self->fileName_ = fileName;
 }
 
-
-#line 33
-ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(IOSByteArray *uploadKey) {
+ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(IOSByteArray *uploadKey, NSString *fileName) {
   ImActorModelApiRpcRequestCommitFileUpload *self = [ImActorModelApiRpcRequestCommitFileUpload alloc];
-  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self, uploadKey);
+  ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(self, uploadKey, fileName);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiRpcRequestCommitFileUpload_init(ImActorModelApiRpcRequestCommitFileUpload *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 37
 ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_init() {
   ImActorModelApiRpcRequestCommitFileUpload *self = [ImActorModelApiRpcRequestCommitFileUpload alloc];
   ImActorModelApiRpcRequestCommitFileUpload_init(self);

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/HistoryMessage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,12 +29,8 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, message_, ImActorModelApiMessage *)
 J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, state_, ImActorModelApiMessageStateEnum *)
 
-
-#line 23
 @implementation ImActorModelApiHistoryMessage
 
-
-#line 31
 - (instancetype)initWithInt:(jint)senderUid
                    withLong:(jlong)rid
                    withLong:(jlong)date
@@ -46,15 +40,11 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiHistoryMessage_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getSenderUid {
   return self->senderUid_;
 }
@@ -75,8 +65,6 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   return self->state_;
 }
 
-
-#line 64
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->senderUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:2];
@@ -88,8 +76,6 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   }
 }
 
-
-#line 76
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->senderUid_];
   [writer writeLongWithInt:2 withLong:self->rid_];
@@ -97,8 +83,6 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  
-#line 84
   [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:6 withInt:[self->state_ getValue]];
@@ -117,12 +101,8 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
 
 @end
 
-
-#line 31
 void ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiHistoryMessage *self, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
   (void) BSBserObject_init(self);
-  
-#line 32
   self->senderUid_ = senderUid;
   self->rid_ = rid;
   self->date_ = date;
@@ -130,22 +110,16 @@ void ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorMode
   self->state_ = state;
 }
 
-
-#line 31
 ImActorModelApiHistoryMessage *new_ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
   ImActorModelApiHistoryMessage *self = [ImActorModelApiHistoryMessage alloc];
   ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, senderUid, rid, date, message, state);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiHistoryMessage_init(ImActorModelApiHistoryMessage *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 39
 ImActorModelApiHistoryMessage *new_ImActorModelApiHistoryMessage_init() {
   ImActorModelApiHistoryMessage *self = [ImActorModelApiHistoryMessage alloc];
   ImActorModelApiHistoryMessage_init(self);

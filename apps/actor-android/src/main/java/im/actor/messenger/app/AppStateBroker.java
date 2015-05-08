@@ -3,7 +3,6 @@ package im.actor.messenger.app;
 import com.droidkit.actors.typed.TypedActor;
 
 import im.actor.messenger.app.util.Logger;
-import im.actor.model.AuthState;
 
 /**
  * Created by ex3ndr on 06.09.14.
@@ -17,9 +16,11 @@ public class AppStateBroker extends TypedActor<AppStateInterface> implements App
         return HOLDER.get();
     }
 
-    private static final int CLOSE_TIMEOUT = 300;
+    private static final int CLOSE_TIMEOUT = 1000;
 
     private boolean isAppOpen = false;
+    private boolean isScreenVisible = true;
+
     private int activityCount = 0;
 
     private static final String TAG = "AppStateBroker";
@@ -43,6 +44,46 @@ public class AppStateBroker extends TypedActor<AppStateInterface> implements App
     public void onActivityOpen() {
         Logger.d(TAG, "Activity open");
         activityCount++;
+        if (isScreenVisible) {
+            onAppProbablyOpened();
+        }
+    }
+
+    @Override
+    public void onActivityClose() {
+        Logger.d(TAG, "Activity close");
+        activityCount--;
+
+        if (activityCount == 0) {
+            onAppProbablyClosed();
+        }
+    }
+
+    @Override
+    public void onScreenOn() {
+        Logger.d(TAG, "Screen On");
+
+        isScreenVisible = true;
+        if (activityCount > 0) {
+            onAppProbablyOpened();
+        }
+    }
+
+    @Override
+    public void onScreenOff() {
+        Logger.d(TAG, "Screen Off");
+
+        isScreenVisible = false;
+        onAppProbablyClosed();
+    }
+
+    private void onAppProbablyClosed() {
+        if (isAppOpen) {
+            self().sendOnce(new CloseApp(), CLOSE_TIMEOUT);
+        }
+    }
+
+    private void onAppProbablyOpened() {
         if (!isAppOpen) {
             isAppOpen = true;
             onAppOpened();
@@ -50,29 +91,14 @@ public class AppStateBroker extends TypedActor<AppStateInterface> implements App
         self().sendOnce(new CloseApp(), 24 * 60 * 60 * 1000); // Far away
     }
 
-    @Override
-    public void onActivityClose() {
-        Logger.d(TAG, "Activity close");
-        activityCount--;
-        if (isAppOpen) {
-            if (activityCount == 0) {
-                self().sendOnce(new CloseApp(), CLOSE_TIMEOUT);
-            }
-        }
-    }
-
     private void onAppOpened() {
         Logger.d(TAG, "App open");
-        if (Core.messenger().getAuthState() == AuthState.LOGGED_IN) {
-            Core.messenger().onAppVisible();
-        }
+        Core.messenger().onAppVisible();
     }
 
     private void onAppClosed() {
         Logger.d(TAG, "App closed");
-        if (Core.messenger().getAuthState() == AuthState.LOGGED_IN) {
-            Core.messenger().onAppHidden();
-        }
+        Core.messenger().onAppHidden();
     }
 
     private static class CloseApp {

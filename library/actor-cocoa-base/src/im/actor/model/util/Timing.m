@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/Timing.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorTime.h"
 #include "im/actor/model/log/Log.h"
@@ -23,27 +21,19 @@
 J2OBJC_FIELD_SETTER(AMTiming, sectionName_, NSString *)
 J2OBJC_FIELD_SETTER(AMTiming, TAG_, NSString *)
 
-
-#line 13
 @implementation AMTiming
 
-
-#line 23
 - (instancetype)initWithNSString:(NSString *)tag {
   AMTiming_initWithNSString_(self, tag);
   return self;
 }
 
-
-#line 32
 - (void)sectionWithNSString:(NSString *)sectionName {
   [self end];
   self->sectionName_ = sectionName;
   self->sectionStart_ = DKActorTime_currentTime();
 }
 
-
-#line 41
 - (void)end {
   if (self->sectionName_ != nil) {
     AMLog_dWithNSString_withNSString_(TAG_, JreStrcat("$$J$", self->sectionName_, @" loaded in ", (DKActorTime_currentTime() - sectionStart_), @" ms"));
@@ -53,17 +43,11 @@ J2OBJC_FIELD_SETTER(AMTiming, TAG_, NSString *)
 
 @end
 
-
-#line 23
 void AMTiming_initWithNSString_(AMTiming *self, NSString *tag) {
   (void) NSObject_init(self);
-  
-#line 24
   self->TAG_ = tag;
 }
 
-
-#line 23
 AMTiming *new_AMTiming_initWithNSString_(NSString *tag) {
   AMTiming *self = [AMTiming alloc];
   AMTiming_initWithNSString_(self, tag);

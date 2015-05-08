@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/engines/RSACoreEngine.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/System.h"
@@ -27,192 +25,102 @@
 
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoEnginesRSACoreEngine, key_, OrgBouncycastleCryptoParamsRSAKeyParameters *)
 
-
-#line 14
 @implementation OrgBouncycastleCryptoEnginesRSACoreEngine
 
-
-#line 24
 - (void)init__WithBoolean:(jboolean)forEncryption
 withOrgBouncycastleCryptoParamsParametersWithRandom:(OrgBouncycastleCryptoParamsParametersWithRandom *)param {
-  
-#line 27
   key_ = (OrgBouncycastleCryptoParamsRSAKeyParameters *) check_class_cast([((OrgBouncycastleCryptoParamsParametersWithRandom *) nil_chk(param)) getParameters], [OrgBouncycastleCryptoParamsRSAKeyParameters class]);
-  
-#line 29
   self->forEncryption_ = forEncryption;
 }
 
-
-#line 39
 - (jint)getInputBlockSize {
   jint bitSize = [((JavaMathBigInteger *) nil_chk([((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getModulus])) bitLength];
-  
-#line 42
   if (forEncryption_) {
     return (bitSize + 7) / 8 - 1;
   }
   else {
-    
-#line 45
     return (bitSize + 7) / 8;
   }
 }
 
-
-#line 56
 - (jint)getOutputBlockSize {
   jint bitSize = [((JavaMathBigInteger *) nil_chk([((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getModulus])) bitLength];
-  
-#line 59
   if (forEncryption_) {
     return (bitSize + 7) / 8;
   }
   else {
-    
-#line 62
     return (bitSize + 7) / 8 - 1;
   }
 }
 
-
-#line 66
 - (JavaMathBigInteger *)convertInputWithByteArray:(IOSByteArray *)inArg
                                           withInt:(jint)inOff
                                           withInt:(jint)inLen {
-  
-#line 70
   if (inLen > ([self getInputBlockSize] + 1)) {
     @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input too large for RSA cipher.");
   }
-  else
-#line 72
-  if (inLen == ([self getInputBlockSize] + 1) && !forEncryption_) {
+  else if (inLen == ([self getInputBlockSize] + 1) && !forEncryption_) {
     @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input too large for RSA cipher.");
   }
-  
-#line 76
   IOSByteArray *block;
-  
-#line 78
   if (inOff != 0 || inLen != ((IOSByteArray *) nil_chk(inArg))->size_) {
     block = [IOSByteArray newArrayWithLength:inLen];
-    
-#line 81
     JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(inArg, inOff, block, 0, inLen);
   }
   else {
-    
-#line 83
     block = inArg;
   }
-  
-#line 86
   JavaMathBigInteger *res = new_JavaMathBigInteger_initWithInt_withByteArray_(1, block);
   if ([res compareToWithId:[((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getModulus]] >= 0) {
     @throw new_OrgBouncycastleCryptoDataLengthException_initWithNSString_(@"input too large for RSA cipher.");
   }
-  
-#line 91
   return res;
 }
 
-
-#line 94
 - (IOSByteArray *)convertOutputWithJavaMathBigInteger:(JavaMathBigInteger *)result {
-  
-#line 96
   IOSByteArray *output = [((JavaMathBigInteger *) nil_chk(result)) toByteArray];
-  
-#line 98
   if (forEncryption_) {
     if (IOSByteArray_Get(nil_chk(output), 0) == 0 && output->size_ > [self getOutputBlockSize]) {
-      
-#line 101
       IOSByteArray *tmp = [IOSByteArray newArrayWithLength:output->size_ - 1];
-      
-#line 103
       JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(output, 1, tmp, 0, tmp->size_);
-      
-#line 105
       return tmp;
     }
-    
-#line 108
     if (output->size_ < [self getOutputBlockSize]) {
-      
-#line 110
       IOSByteArray *tmp = [IOSByteArray newArrayWithLength:[self getOutputBlockSize]];
-      
-#line 112
       JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(output, 0, tmp, tmp->size_ - output->size_, output->size_);
-      
-#line 114
       return tmp;
     }
   }
   else {
-    
-#line 117
     if (IOSByteArray_Get(nil_chk(output), 0) == 0) {
-      
-#line 119
       IOSByteArray *tmp = [IOSByteArray newArrayWithLength:output->size_ - 1];
-      
-#line 121
       JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(output, 1, tmp, 0, tmp->size_);
-      
-#line 123
       return tmp;
     }
   }
-  
-#line 127
   return output;
 }
 
-
-#line 130
 - (JavaMathBigInteger *)processBlockWithJavaMathBigInteger:(JavaMathBigInteger *)input {
   if ([key_ isKindOfClass:[OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]]) {
-    
-#line 137
     OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *crtKey = (OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) check_class_cast(key_, [OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters class]);
-    
-#line 139
     JavaMathBigInteger *p = [((OrgBouncycastleCryptoParamsRSAPrivateCrtKeyParameters *) nil_chk(crtKey)) getP];
     JavaMathBigInteger *q = [crtKey getQ];
     JavaMathBigInteger *dP = [crtKey getDP];
     JavaMathBigInteger *dQ = [crtKey getDQ];
     JavaMathBigInteger *qInv = [crtKey getQInv];
-    
-#line 145
     JavaMathBigInteger *mP, *mQ, *h, *m;
-    
-#line 148
     mP = [((JavaMathBigInteger *) nil_chk(([((JavaMathBigInteger *) nil_chk(input)) remainderWithJavaMathBigInteger:p]))) modPowWithJavaMathBigInteger:dP withJavaMathBigInteger:p];
-    
-#line 151
     mQ = [((JavaMathBigInteger *) nil_chk(([input remainderWithJavaMathBigInteger:q]))) modPowWithJavaMathBigInteger:dQ withJavaMathBigInteger:q];
-    
-#line 154
     h = [((JavaMathBigInteger *) nil_chk(mP)) subtractWithJavaMathBigInteger:mQ];
     h = [((JavaMathBigInteger *) nil_chk(h)) multiplyWithJavaMathBigInteger:qInv];
     h = [((JavaMathBigInteger *) nil_chk(h)) modWithJavaMathBigInteger:p];
-    
-#line 159
     m = [((JavaMathBigInteger *) nil_chk(h)) multiplyWithJavaMathBigInteger:q];
     m = [((JavaMathBigInteger *) nil_chk(m)) addWithJavaMathBigInteger:mQ];
-    
-#line 162
     return m;
   }
   else {
-    
-#line 164
-    return [((JavaMathBigInteger *) nil_chk(input)) modPowWithJavaMathBigInteger:
-#line 165
-    [((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getExponent] withJavaMathBigInteger:[key_ getModulus]];
+    return [((JavaMathBigInteger *) nil_chk(input)) modPowWithJavaMathBigInteger:[((OrgBouncycastleCryptoParamsRSAKeyParameters *) nil_chk(key_)) getExponent] withJavaMathBigInteger:[key_ getModulus]];
   }
 }
 

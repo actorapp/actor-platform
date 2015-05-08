@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserAdded.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,16 +29,12 @@ __attribute__((unused)) static void AMServiceGroupUserAdded_init(AMServiceGroupU
 
 __attribute__((unused)) static AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_init() NS_RETURNS_RETAINED;
 
-
-#line 13
 @implementation AMServiceGroupUserAdded
 
 + (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupUserAdded_fromBytesWithByteArray_(data);
 }
 
-
-#line 21
 - (instancetype)initWithInt:(jint)addedUid {
   AMServiceGroupUserAdded_initWithInt_(self, addedUid);
   return self;
@@ -51,27 +45,19 @@ __attribute__((unused)) static AMServiceGroupUserAdded *new_AMServiceGroupUserAd
   return self;
 }
 
-
-#line 30
 - (jint)getAddedUid {
   return addedUid_;
 }
 
-
-#line 35
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
 }
 
-
-#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
 }
 
-
-#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:addedUid_];
@@ -79,38 +65,26 @@ __attribute__((unused)) static AMServiceGroupUserAdded *new_AMServiceGroupUserAd
 
 @end
 
-
-#line 15
 AMServiceGroupUserAdded *AMServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserAdded_initialize();
-  
-#line 16
   return ((AMServiceGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserAdded_init(), data));
 }
 
-
-#line 21
 void AMServiceGroupUserAdded_initWithInt_(AMServiceGroupUserAdded *self, jint addedUid) {
   (void) AMServiceContent_initWithNSString_(self, @"Member added");
   self->addedUid_ = addedUid;
 }
 
-
-#line 21
 AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_initWithInt_(jint addedUid) {
   AMServiceGroupUserAdded *self = [AMServiceGroupUserAdded alloc];
   AMServiceGroupUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
-
-#line 26
 void AMServiceGroupUserAdded_init(AMServiceGroupUserAdded *self) {
   (void) AMServiceContent_init(self);
 }
 
-
-#line 26
 AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_init() {
   AMServiceGroupUserAdded *self = [AMServiceGroupUserAdded alloc];
   AMServiceGroupUserAdded_init(self);

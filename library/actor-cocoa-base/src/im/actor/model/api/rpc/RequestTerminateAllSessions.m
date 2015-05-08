@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTerminateAllSessions.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -17,18 +15,12 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestTerminateAllSessions
 
-
-#line 27
 + (ImActorModelApiRpcRequestTerminateAllSessions *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestTerminateAllSessions_fromBytesWithByteArray_(data);
 }
 
-
-#line 32
 - (instancetype)init {
   ImActorModelApiRpcRequestTerminateAllSessions_init(self);
   return self;
@@ -37,44 +29,30 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-
-#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
-
-#line 45
 - (NSString *)description {
   NSString *res = @"rpc TerminateAllSessions{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestTerminateAllSessions_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestTerminateAllSessions *ImActorModelApiRpcRequestTerminateAllSessions_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestTerminateAllSessions_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestTerminateAllSessions *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestTerminateAllSessions_init(), data));
 }
 
-
-#line 32
 void ImActorModelApiRpcRequestTerminateAllSessions_init(ImActorModelApiRpcRequestTerminateAllSessions *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 32
 ImActorModelApiRpcRequestTerminateAllSessions *new_ImActorModelApiRpcRequestTerminateAllSessions_init() {
   ImActorModelApiRpcRequestTerminateAllSessions *self = [ImActorModelApiRpcRequestTerminateAllSessions alloc];
   ImActorModelApiRpcRequestTerminateAllSessions_init(self);

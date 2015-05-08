@@ -9,17 +9,14 @@ private var holder:CocoaMessenger?;
 var MSG : CocoaMessenger {
 get{
     if (holder == nil){
-        var dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
-            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db");
-    
-
+        
         // Providers
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
-        builder.setNetworkProvider(AMManagedNetworkProvider(AMAsyncConnectionFactory: CocoaTcpConnectionFactory()))
+        builder.setNetworkProvider(CocoaNetworkProvider())
         builder.setHttpDownloaderProviderWithAMHttpDownloaderProvider(CocoaHttpProvider())
         builder.setThreadingProvider(AMCocoaThreadingProvider())
-        builder.setStorageProvider(CocoaStorage(dbPath: dbPath))
+        builder.setStorageProvider(CocoaStorage())
         builder.setMainThreadProvider(CocoaMainThreadProvider())
         builder.setLocaleProvider(CocoaLocale())
         builder.setPhoneBookProvider(PhoneBookProvider())
@@ -28,17 +25,21 @@ get{
         builder.setDispatcherProvider(CocoaDispatcherProvider())
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setEnableNetworkLogging(true)
-        builder.setEnableFilesLoggingWithBoolean(true)
         
-        // Connection
-        var url = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
-        NSLog("url: \(url)")
-        builder.addEndpoint(url);
+        // Parameters
+        var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!
+        var apiKey = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_KEY") as! String)
+        var apiUrl = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
+        var apiUrl2 = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL2") as! String
+        var deviceKey = NSUUID().UUIDString
+        var deviceName = UIDevice.currentDevice().name
+        var appTitle = "Actor iOS"
         
-        var deviceKey = NSUUID().UUIDString;
-        
-        builder.setApiConfiguration(AMApiConfiguration(NSString: "Actor iOS", withInt: 1, withNSString: "???", withNSString: "My Device", withNSString: deviceKey))
+        builder.addEndpoint(apiUrl);
+        builder.addEndpoint(apiUrl2);
+        builder.setApiConfiguration(AMApiConfiguration(NSString: appTitle, withInt: jint(apiId), withNSString: apiKey, withNSString: deviceName, withNSString: deviceKey))
 
+        // Creating messenger
         holder = CocoaMessenger(AMConfiguration: builder.build());
     }
     return holder!;
@@ -53,8 +54,6 @@ get{
         var resized = image.resizeOptimize(1200 * 1200);
         
         var thumbData = UIImageJPEGRepresentation(thumb, 0.55);
-        
-        NSLog("Thumb size \(thumbData.length), \(thumb.size.width * thumb.scale)x\(thumb.size.height * thumb.scale)");
         
         var descriptor = "/tmp/"+NSUUID().UUIDString
         var path = CocoaFiles.pathFromDescriptor(descriptor);

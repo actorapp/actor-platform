@@ -41,23 +41,23 @@ task copyAppBootstrap {
         }
 
         exec {
-            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron.app", "${buildDir}/electron/Actor.app"
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/0.25.2/Electron.app", "${buildDir}/electron/Actor.app"
         }
 
         exec {
-            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron-linux-x64", "${buildDir}/electron/Actor-linux-x64"
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/0.25.2/Electron-linux-x64", "${buildDir}/electron/Actor-linux-x64"
         }
 
         exec {
-            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron-linux-ia32", "${buildDir}/electron/Actor-linux-ia32"
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/0.25.2/Electron-linux-ia32", "${buildDir}/electron/Actor-linux-ia32"
         }
 
         exec {
-            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron-windows-x64", "${buildDir}/electron/Actor-windows-x64"
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/0.25.2/Electron-windows-x64", "${buildDir}/electron/Actor-windows-x64"
         }
 
         exec {
-            commandLine 'cp', '-R', "${properties.get("electronDir")}/Electron-windows-ia32", "${buildDir}/electron/Actor-windows-ia32"
+            commandLine 'cp', '-R', "${properties.get("electronDir")}/0.25.2/Electron-windows-ia32", "${buildDir}/electron/Actor-windows-ia32"
         }
     }
 }

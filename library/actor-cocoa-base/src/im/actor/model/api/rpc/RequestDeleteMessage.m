@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDeleteMessage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,33 +28,23 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, peer_, ImActorModelApiOutPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilList>)
 
-
-#line 19
 @implementation ImActorModelApiRpcRequestDeleteMessage
 
-
-#line 22
 + (ImActorModelApiRpcRequestDeleteMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(data);
 }
 
-
-#line 29
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                               withJavaUtilList:(id<JavaUtilList>)rids {
   ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(self, peer, rids);
   return self;
 }
 
-
-#line 34
 - (instancetype)init {
   ImActorModelApiRpcRequestDeleteMessage_init(self);
   return self;
 }
 
-
-#line 38
 - (ImActorModelApiOutPeer *)getPeer {
   return self->peer_;
 }
@@ -65,15 +53,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
   return self->rids_;
 }
 
-
-#line 47
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
   self->rids_ = [values getRepeatedLongWithInt:3];
 }
 
-
-#line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -82,8 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
   [writer writeRepeatedLongWithInt:3 withJavaUtilList:self->rids_];
 }
 
-
-#line 62
 - (NSString *)description {
   NSString *res = @"rpc DeleteMessage{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -92,47 +74,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteMessage, rids_, id<JavaUtilLi
   return res;
 }
 
-
-#line 71
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestDeleteMessage_HEADER;
 }
 
 @end
 
-
-#line 22
 ImActorModelApiRpcRequestDeleteMessage *ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestDeleteMessage_initialize();
-  
-#line 23
   return ((ImActorModelApiRpcRequestDeleteMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestDeleteMessage_init(), data));
 }
 
 void ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(ImActorModelApiRpcRequestDeleteMessage *self, ImActorModelApiOutPeer *peer, id<JavaUtilList> rids) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 30
   self->peer_ = peer;
   self->rids_ = rids;
 }
 
-
-#line 29
 ImActorModelApiRpcRequestDeleteMessage *new_ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(ImActorModelApiOutPeer *peer, id<JavaUtilList> rids) {
   ImActorModelApiRpcRequestDeleteMessage *self = [ImActorModelApiRpcRequestDeleteMessage alloc];
   ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(self, peer, rids);
   return self;
 }
 
-
-#line 34
 void ImActorModelApiRpcRequestDeleteMessage_init(ImActorModelApiRpcRequestDeleteMessage *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 34
 ImActorModelApiRpcRequestDeleteMessage *new_ImActorModelApiRpcRequestDeleteMessage_init() {
   ImActorModelApiRpcRequestDeleteMessage *self = [ImActorModelApiRpcRequestDeleteMessage alloc];
   ImActorModelApiRpcRequestDeleteMessage_init(self);

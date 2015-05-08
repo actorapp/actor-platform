@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedTitle.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -23,26 +21,18 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
-
-#line 23
 @implementation ImActorModelApiServiceExChangedTitle
 
-
-#line 27
 - (instancetype)initWithNSString:(NSString *)title {
   ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
-
-#line 31
 - (instancetype)init {
   ImActorModelApiServiceExChangedTitle_init(self);
   return self;
 }
 
-
-#line 35
 - (jint)getHeader {
   return 5;
 }
@@ -51,14 +41,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
   return self->title_;
 }
 
-
-#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->title_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
-
-#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->title_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -66,8 +52,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->title_];
 }
 
-
-#line 57
 - (NSString *)description {
   NSString *res = @"struct ServiceExChangedTitle{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"title=", self->title_));
@@ -77,31 +61,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 @end
 
-
-#line 27
 void ImActorModelApiServiceExChangedTitle_initWithNSString_(ImActorModelApiServiceExChangedTitle *self, NSString *title) {
   (void) ImActorModelApiServiceEx_init(self);
-  
-#line 28
   self->title_ = title;
 }
 
-
-#line 27
 ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_initWithNSString_(NSString *title) {
   ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
   ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
-
-#line 31
 void ImActorModelApiServiceExChangedTitle_init(ImActorModelApiServiceExChangedTitle *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
-
-#line 31
 ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_init() {
   ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
   ImActorModelApiServiceExChangedTitle_init(self);

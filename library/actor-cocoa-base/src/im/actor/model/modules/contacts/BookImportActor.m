@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/contacts/BookImportActor.java"
-
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -70,9 +68,7 @@
 J2OBJC_FIELD_SETTER(ImActorModelModulesContactsBookImportActor, importingPhones_, JavaUtilHashSet *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesContactsBookImportActor, importingEmails_, JavaUtilHashSet *)
 
-static NSString *ImActorModelModulesContactsBookImportActor_TAG_ = 
-#line 32
-@"ContactsImport";
+static NSString *ImActorModelModulesContactsBookImportActor_TAG_ = @"ContactsImport";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesContactsBookImportActor, TAG_, NSString *)
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesContactsBookImportActor, MAX_IMPORT_SIZE, jint)
@@ -164,19 +160,13 @@ __attribute__((unused)) static ImActorModelModulesContactsBookImportActor_$2 *ne
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsBookImportActor_$2)
 
-
-#line 30
 @implementation ImActorModelModulesContactsBookImportActor
 
-
-#line 43
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesContactsBookImportActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 49
 - (void)preStart {
   [super preStart];
   [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelModulesContactsBookImportActor_PerformSync_init()];
@@ -186,21 +176,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsBookImportActor_$2)
   ImActorModelModulesContactsBookImportActor_performSync(self);
 }
 
-
-#line 78
 - (void)onPhoneBookLoadedWithJavaUtilList:(id<JavaUtilList>)phoneBook {
   ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilList_(self, phoneBook);
 }
 
-
-#line 152
 - (void)performImportWithJavaUtilArrayList:(JavaUtilArrayList *)phoneToImportsPart
                      withJavaUtilArrayList:(JavaUtilArrayList *)emailToImportsPart {
   ImActorModelModulesContactsBookImportActor_performImportWithJavaUtilArrayList_withJavaUtilArrayList_(self, phoneToImportsPart, emailToImportsPart);
 }
 
-
-#line 215
 - (jboolean)isImportedWithLong:(jlong)phone {
   return ImActorModelModulesContactsBookImportActor_isImportedWithLong_(self, phone);
 }
@@ -221,50 +205,34 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsBookImportActor_$2)
   ImActorModelModulesContactsBookImportActor_markImported(self);
 }
 
-
-#line 236
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesContactsBookImportActor_PerformSync class]]) {
     ImActorModelModulesContactsBookImportActor_performSync(self);
   }
-  else
-#line 239
-  if ([message isKindOfClass:[ImActorModelModulesContactsBookImportActor_PhoneBookLoaded class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesContactsBookImportActor_PhoneBookLoaded class]]) {
     ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilList_(self, [((ImActorModelModulesContactsBookImportActor_PhoneBookLoaded *) nil_chk(((ImActorModelModulesContactsBookImportActor_PhoneBookLoaded *) check_class_cast(message, [ImActorModelModulesContactsBookImportActor_PhoneBookLoaded class])))) getPhoneBook]);
   }
   else {
-    
-#line 242
     [self dropWithId:message];
   }
 }
 
 @end
 
-
-#line 43
 void ImActorModelModulesContactsBookImportActor_initWithImActorModelModulesModules_(ImActorModelModulesContactsBookImportActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
   self->importingPhones_ = new_JavaUtilHashSet_init();
   self->importingEmails_ = new_JavaUtilHashSet_init();
-  self->isSyncInProgress_ =
-#line 41
-  NO;
-  
-#line 45
+  self->isSyncInProgress_ = NO;
   self->ENABLE_LOG_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getConfiguration])) isEnableContactsLogging];
 }
 
-
-#line 43
 ImActorModelModulesContactsBookImportActor *new_ImActorModelModulesContactsBookImportActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesContactsBookImportActor *self = [ImActorModelModulesContactsBookImportActor alloc];
   ImActorModelModulesContactsBookImportActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 54
 void ImActorModelModulesContactsBookImportActor_performSync(ImActorModelModulesContactsBookImportActor *self) {
   if (self->ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, @"Checking sync...");
@@ -279,20 +247,14 @@ void ImActorModelModulesContactsBookImportActor_performSync(ImActorModelModulesC
   if (self->ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, @"Starting book loading...");
   }
-  
-#line 69
   [((id<AMPhoneBookProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getPhoneBookProvider])) loadPhoneBookWithAMPhoneBookProvider_Callback:new_ImActorModelModulesContactsBookImportActor_$1_initWithImActorModelModulesContactsBookImportActor_(self)];
 }
 
-
-#line 78
 void ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilList_(ImActorModelModulesContactsBookImportActor *self, id<JavaUtilList> phoneBook) {
   self->isSyncInProgress_ = NO;
   if (self->ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, @"Book load completed");
   }
-  
-#line 84
   JavaUtilArrayList *phoneToImports = new_JavaUtilArrayList_init();
   JavaUtilArrayList *emailToImports = new_JavaUtilArrayList_init();
   for (AMPhoneBookContact * __strong record in nil_chk(phoneBook)) {
@@ -306,8 +268,6 @@ void ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilLis
       [self->importingPhones_ addWithId:JavaLangLong_valueOfWithLong_([phone getNumber])];
       [phoneToImports addWithId:new_ImActorModelApiPhoneToImport_initWithLong_withNSString_([phone getNumber], [record getName])];
     }
-    
-#line 98
     for (AMPhoneBookEmail * __strong email in nil_chk([record getEmails])) {
       if (ImActorModelModulesContactsBookImportActor_isImportedWithNSString_(self, [((NSString *) nil_chk([((AMPhoneBookEmail *) nil_chk(email)) getEmail])) lowercaseString])) {
         continue;
@@ -319,8 +279,6 @@ void ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilLis
       [emailToImports addWithId:new_ImActorModelApiEmailToImport_initWithNSString_withNSString_([((NSString *) nil_chk([email getEmail])) lowercaseString], [record getName])];
     }
   }
-  
-#line 110
   if ([phoneToImports size] == 0 && [emailToImports size] == 0) {
     if (self->ENABLE_LOG_) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, @"No new contacts found");
@@ -329,14 +287,10 @@ void ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilLis
     return;
   }
   else {
-    
-#line 117
     if (self->ENABLE_LOG_) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, JreStrcat("$I$", @"Founded new ", ([phoneToImports size] + [emailToImports size]), @" contact records"));
     }
   }
-  
-#line 122
   JavaUtilArrayList *phoneToImportsPart = new_JavaUtilArrayList_init();
   JavaUtilArrayList *emailToImportsPart = new_JavaUtilArrayList_init();
   jint count = 0;
@@ -350,8 +304,6 @@ void ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilLis
       count = 0;
     }
   }
-  
-#line 136
   for (ImActorModelApiEmailToImport * __strong emailToImport in emailToImports) {
     [emailToImportsPart addWithId:emailToImport];
     count++;
@@ -362,36 +314,20 @@ void ImActorModelModulesContactsBookImportActor_onPhoneBookLoadedWithJavaUtilLis
       count = 0;
     }
   }
-  
-#line 147
   if (count > 0) {
     ImActorModelModulesContactsBookImportActor_performImportWithJavaUtilArrayList_withJavaUtilArrayList_(self, phoneToImportsPart, emailToImportsPart);
   }
 }
 
-
-#line 152
 void ImActorModelModulesContactsBookImportActor_performImportWithJavaUtilArrayList_withJavaUtilArrayList_(ImActorModelModulesContactsBookImportActor *self, JavaUtilArrayList *phoneToImportsPart, JavaUtilArrayList *emailToImportsPart) {
-  
-#line 155
   if (self->ENABLE_LOG_) {
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, JreStrcat("$I$I$", @"Performing import part with ", [((JavaUtilArrayList *) nil_chk(phoneToImportsPart)) size], @" phones and ",
-#line 157
-    [((JavaUtilArrayList *) nil_chk(emailToImportsPart)) size], @" emails"));
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_TAG_, JreStrcat("$I$I$", @"Performing import part with ", [((JavaUtilArrayList *) nil_chk(phoneToImportsPart)) size], @" phones and ", [((JavaUtilArrayList *) nil_chk(emailToImportsPart)) size], @" emails"));
   }
-  
-#line 160
   IOSObjectArray *phones = [phoneToImportsPart toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(phoneToImportsPart)) size] type:ImActorModelApiPhoneToImport_class_()]];
   IOSObjectArray *emailToImports = [emailToImportsPart toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(emailToImportsPart)) size] type:ImActorModelApiEmailToImport_class_()]];
-  
-#line 163
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_((id<JavaUtilList>) check_protocol_cast([phoneToImportsPart clone], @protocol(JavaUtilList)),
-#line 164
-  (id<JavaUtilList>) check_protocol_cast([emailToImportsPart clone], @protocol(JavaUtilList))) withAMRpcCallback:new_ImActorModelModulesContactsBookImportActor_$2_initWithImActorModelModulesContactsBookImportActor_withImActorModelApiPhoneToImportArray_withImActorModelApiEmailToImportArray_(self, phones, emailToImports)];
+  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_((id<JavaUtilList>) check_protocol_cast([phoneToImportsPart clone], @protocol(JavaUtilList)), (id<JavaUtilList>) check_protocol_cast([emailToImportsPart clone], @protocol(JavaUtilList))) withAMRpcCallback:new_ImActorModelModulesContactsBookImportActor_$2_initWithImActorModelModulesContactsBookImportActor_withImActorModelApiPhoneToImportArray_withImActorModelApiEmailToImportArray_(self, phones, emailToImports)];
 }
 
-
-#line 215
 jboolean ImActorModelModulesContactsBookImportActor_isImportedWithLong_(ImActorModelModulesContactsBookImportActor *self, jlong phone) {
   return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:JreStrcat("$J", @"book_phone_", phone) withDefault:NO];
 }
@@ -414,8 +350,6 @@ void ImActorModelModulesContactsBookImportActor_markImported(ImActorModelModules
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor)
 
-
-#line 246
 @implementation ImActorModelModulesContactsBookImportActor_PerformSync
 
 - (instancetype)init {
@@ -437,36 +371,24 @@ ImActorModelModulesContactsBookImportActor_PerformSync *new_ImActorModelModulesC
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_PerformSync)
 
-
-#line 250
 @implementation ImActorModelModulesContactsBookImportActor_PhoneBookLoaded
 
-
-#line 253
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)phoneBook {
   ImActorModelModulesContactsBookImportActor_PhoneBookLoaded_initWithJavaUtilList_(self, phoneBook);
   return self;
 }
 
-
-#line 257
 - (id<JavaUtilList>)getPhoneBook {
   return phoneBook_;
 }
 
 @end
 
-
-#line 253
 void ImActorModelModulesContactsBookImportActor_PhoneBookLoaded_initWithJavaUtilList_(ImActorModelModulesContactsBookImportActor_PhoneBookLoaded *self, id<JavaUtilList> phoneBook) {
   (void) NSObject_init(self);
-  
-#line 254
   self->phoneBook_ = phoneBook;
 }
 
-
-#line 253
 ImActorModelModulesContactsBookImportActor_PhoneBookLoaded *new_ImActorModelModulesContactsBookImportActor_PhoneBookLoaded_initWithJavaUtilList_(id<JavaUtilList> phoneBook) {
   ImActorModelModulesContactsBookImportActor_PhoneBookLoaded *self = [ImActorModelModulesContactsBookImportActor_PhoneBookLoaded alloc];
   ImActorModelModulesContactsBookImportActor_PhoneBookLoaded_initWithJavaUtilList_(self, phoneBook);
@@ -477,8 +399,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_Phon
 
 @implementation ImActorModelModulesContactsBookImportActor_$1
 
-
-#line 72
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)contacts {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesContactsBookImportActor_PhoneBookLoaded_initWithJavaUtilList_(contacts)];
 }
@@ -505,8 +425,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_$1)
 
 @implementation ImActorModelModulesContactsBookImportActor_$2
 
-
-#line 166
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseImportContacts *)response {
   {
     IOSObjectArray *a__ = val$phones_;
@@ -514,8 +432,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_$1)
     ImActorModelApiPhoneToImport * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelApiPhoneToImport *phoneToImport = *b__++;
-      
-#line 168
       ImActorModelModulesContactsBookImportActor_markImportedWithLong_(this$0_, [((ImActorModelApiPhoneToImport *) nil_chk(phoneToImport)) getPhoneNumber]);
       [((JavaUtilHashSet *) nil_chk(this$0_->importingPhones_)) removeWithId:JavaLangLong_valueOfWithLong_([phoneToImport getPhoneNumber])];
     }
@@ -526,8 +442,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_$1)
     ImActorModelApiEmailToImport * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelApiEmailToImport *emailToImport = *b__++;
-      
-#line 172
       ImActorModelModulesContactsBookImportActor_markImportedWithNSString_(this$0_, [((ImActorModelApiEmailToImport *) nil_chk(emailToImport)) getEmail]);
       [((JavaUtilHashSet *) nil_chk(this$0_->importingEmails_)) removeWithId:[emailToImport getEmail]];
     }
@@ -535,41 +449,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_$1)
   if ([((JavaUtilHashSet *) nil_chk(this$0_->importingEmails_)) size] == 0 && [((JavaUtilHashSet *) nil_chk(this$0_->importingPhones_)) size] == 0) {
     ImActorModelModulesContactsBookImportActor_markImported(this$0_);
   }
-  
-#line 180
   if ([((id<JavaUtilList>) nil_chk([((ImActorModelApiRpcResponseImportContacts *) nil_chk(response)) getUsers])) size] == 0) {
     if (this$0_->ENABLE_LOG_) {
       AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_get_TAG_(), @"Import success, but no new contacts found");
     }
     return;
   }
-  
-#line 187
   if (this$0_->ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_get_TAG_(), JreStrcat("$I$", @"Import success with ", [((id<JavaUtilList>) nil_chk([response getUsers])) size], @" new contacts"));
   }
-  
-#line 191
   JavaUtilArrayList *uids = new_JavaUtilArrayList_init();
   for (ImActorModelApiUser * __strong u in nil_chk([response getUsers])) {
     [uids addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUser *) nil_chk(u)) getId])];
   }
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(
-#line 196
-  [response getSeq], [response getState],
-#line 197
-  ImActorModelApiUpdatesUpdateContactsAdded_HEADER,
-#line 198
-  [new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(uids) toByteArray],
-#line 199
-  [response getUsers], new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init())];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_([response getSeq], [response getState], ImActorModelApiUpdatesUpdateContactsAdded_HEADER, [new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(uids) toByteArray], [response getUsers], new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init())];
 }
 
-
-#line 205
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
-  
-#line 207
   if (this$0_->ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsBookImportActor_get_TAG_(), @"Import failure");
   }

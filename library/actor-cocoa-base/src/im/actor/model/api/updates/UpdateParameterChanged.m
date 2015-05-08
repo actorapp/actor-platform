@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateParameterChanged.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, key_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, value_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiUpdatesUpdateParameterChanged
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateParameterChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
   ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateParameterChanged_init(self);
   return self;
 }
 
-
-#line 43
 - (NSString *)getKey {
   return self->key_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, value_, NSStri
   return self->value_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->key_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->value_ = [values optStringWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->key_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -82,55 +66,39 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, value_, NSStri
   }
 }
 
-
-#line 69
 - (NSString *)description {
   NSString *res = @"update ParameterChanged{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateParameterChanged_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateParameterChanged *ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateParameterChanged_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateParameterChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateParameterChanged_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(ImActorModelApiUpdatesUpdateParameterChanged *self, NSString *key, NSString *value) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 35
   self->key_ = key;
   self->value_ = value;
 }
 
-
-#line 34
 ImActorModelApiUpdatesUpdateParameterChanged *new_ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(NSString *key, NSString *value) {
   ImActorModelApiUpdatesUpdateParameterChanged *self = [ImActorModelApiUpdatesUpdateParameterChanged alloc];
   ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiUpdatesUpdateParameterChanged_init(ImActorModelApiUpdatesUpdateParameterChanged *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 39
 ImActorModelApiUpdatesUpdateParameterChanged *new_ImActorModelApiUpdatesUpdateParameterChanged_init() {
   ImActorModelApiUpdatesUpdateParameterChanged *self = [ImActorModelApiUpdatesUpdateParameterChanged alloc];
   ImActorModelApiUpdatesUpdateParameterChanged_init(self);

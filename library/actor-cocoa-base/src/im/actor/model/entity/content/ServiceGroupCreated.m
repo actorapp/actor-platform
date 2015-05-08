@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupCreated.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,16 +31,12 @@ __attribute__((unused)) static void AMServiceGroupCreated_init(AMServiceGroupCre
 
 __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_init() NS_RETURNS_RETAINED;
 
-
-#line 13
 @implementation AMServiceGroupCreated
 
 + (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupCreated_fromBytesWithByteArray_(data);
 }
 
-
-#line 21
 - (instancetype)initWithNSString:(NSString *)groupTitle {
   AMServiceGroupCreated_initWithNSString_(self, groupTitle);
   return self;
@@ -53,27 +47,19 @@ __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_
   return self;
 }
 
-
-#line 30
 - (NSString *)getGroupTitle {
   return groupTitle_;
 }
 
-
-#line 35
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
 }
 
-
-#line 40
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
   groupTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
 }
 
-
-#line 46
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [super serializeWithBSBserWriter:writer];
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
@@ -81,38 +67,26 @@ __attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_
 
 @end
 
-
-#line 15
 AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupCreated_initialize();
-  
-#line 16
   return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupCreated_init(), data));
 }
 
-
-#line 21
 void AMServiceGroupCreated_initWithNSString_(AMServiceGroupCreated *self, NSString *groupTitle) {
   (void) AMServiceContent_initWithNSString_(self, JreStrcat("$$$", @"Group '", groupTitle, @"' created"));
   self->groupTitle_ = groupTitle;
 }
 
-
-#line 21
 AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *groupTitle) {
   AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
   AMServiceGroupCreated_initWithNSString_(self, groupTitle);
   return self;
 }
 
-
-#line 26
 void AMServiceGroupCreated_init(AMServiceGroupCreated *self) {
   (void) AMServiceContent_init(self);
 }
 
-
-#line 26
 AMServiceGroupCreated *new_AMServiceGroupCreated_init() {
   AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
   AMServiceGroupCreated_init(self);
