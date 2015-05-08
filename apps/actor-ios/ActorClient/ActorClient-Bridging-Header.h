@@ -17,6 +17,7 @@
 #import <HockeySDK/HockeySDK.h>
 #import <AddressBook/AddressBook.h>
 #import "JTSImageViewController/JTSImageViewController.h"
+#import <SplunkMint-iOS/SplunkMint-iOS.h>
 #import "SVProgressHUD.h"
 #import "MMAnonymousClass.h"
 
