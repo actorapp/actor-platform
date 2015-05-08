@@ -14,9 +14,9 @@ gulp.task 'coffee', ->
   gulp.src ['./app/**/*.coffee']
     .pipe sourcemaps.init()
       .pipe coffee({ bare: true }).on('error', gutil.log)
-#      .pipe uglify()
+      .pipe uglify()
       .pipe concat 'app.js'
-    .pipe sourcemaps.write()
+    .pipe sourcemaps.write './'
     .pipe gulp.dest './dist/assets/js/'
     .pipe connect.reload()
 
@@ -27,7 +27,7 @@ gulp.task 'sass', ->
       .pipe autoprefixer()
       .pipe concat 'styles.css'
       .pipe minifycss()
-    .pipe sourcemaps.write()
+    .pipe sourcemaps.write './'
     .pipe gulp.dest './dist/assets/css/'
     .pipe connect.reload()
 
@@ -51,10 +51,13 @@ gulp.task 'assets', ->
 gulp.task 'usemin', ->
   gulp.src ['./index.html']
     .pipe usemin
-#      js: [uglify()]
-#      css: [autoprefixer(), minifycss()]
-      js: []
-      css: []
+      js: [
+        sourcemaps.init {loadMaps: true}
+        'concat'
+        uglify()
+        sourcemaps.write './'
+      ]
+      css: [autoprefixer(), minifycss()]
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
