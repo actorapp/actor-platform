@@ -8,7 +8,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/FileSystemProvider.h"
-#include "im/actor/model/HttpDownloaderProvider.h"
+#include "im/actor/model/HttpProvider.h"
 #include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/api/rpc/RequestGetFileUrl.h"
 #include "im/actor/model/api/rpc/ResponseGetFileUrl.h"
@@ -35,7 +35,7 @@
   AMFileReference *fileReference_;
   DKActorRef *manager_;
   id<AMFileSystemProvider> fileSystemProvider_;
-  id<AMHttpDownloaderProvider> downloaderProvider_;
+  id<AMHttpProvider> downloaderProvider_;
   id<AMFileSystemReference> destReference_;
   id<AMOutputFile> outputFile_;
   jboolean isCompleted_;
@@ -70,7 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, TAG_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileReference_, AMFileReference *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileSystemProvider_, id<AMFileSystemProvider>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, downloaderProvider_, id<AMHttpDownloaderProvider>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, downloaderProvider_, id<AMHttpProvider>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, destReference_, id<AMFileSystemReference>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, outputFile_, id<AMOutputFile>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileUrl_, NSString *)
@@ -209,7 +209,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadTask_$2_$2)
     }
     return;
   }
-  downloaderProvider_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getHttpDownloaderProvider];
+  downloaderProvider_ = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getHttpProvider];
   if (downloaderProvider_ == nil) {
     ImActorModelModulesFileDownloadTask_reportError(self);
     if (LOG_) {
@@ -357,7 +357,7 @@ void ImActorModelModulesFileDownloadTask_checkQueue(ImActorModelModulesFileDownl
 }
 
 void ImActorModelModulesFileDownloadTask_downloadPartWithInt_withInt_(ImActorModelModulesFileDownloadTask *self, jint blockIndex, jint fileOffset) {
-  [((id<AMHttpDownloaderProvider>) nil_chk(self->downloaderProvider_)) downloadPartWithNSString:self->fileUrl_ withInt:fileOffset withInt:self->blockSize_ withInt:[((AMFileReference *) nil_chk(self->fileReference_)) getFileSize] withImActorModelHttpFileDownloadCallback:new_ImActorModelModulesFileDownloadTask_$2_initWithImActorModelModulesFileDownloadTask_withInt_withInt_(self, blockIndex, fileOffset)];
+  [((id<AMHttpProvider>) nil_chk(self->downloaderProvider_)) getMethodWithNSString:self->fileUrl_ withInt:fileOffset withInt:self->blockSize_ withInt:[((AMFileReference *) nil_chk(self->fileReference_)) getFileSize] withImActorModelHttpFileDownloadCallback:new_ImActorModelModulesFileDownloadTask_$2_initWithImActorModelModulesFileDownloadTask_withInt_withInt_(self, blockIndex, fileOffset)];
 }
 
 void ImActorModelModulesFileDownloadTask_reportError(ImActorModelModulesFileDownloadTask *self) {

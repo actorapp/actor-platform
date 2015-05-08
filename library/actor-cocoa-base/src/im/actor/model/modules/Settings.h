@@ -43,6 +43,9 @@
 
 - (jboolean)isVibrationEnabled;
 
+- (void)onUpdatedSettingWithNSString:(NSString *)key
+                        withNSString:(NSString *)value;
+
 - (void)run;
 
 @end
