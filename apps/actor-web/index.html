@@ -56,25 +56,10 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
 <script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 <!-- endbuild -->
 
 <script src="assets/js/app.js"></script>
 
-<script>
-        function sendFile() {
-            var files = document.getElementById('files').files;
-            if (!files.length) {
-                alert('Please select a file!');
-                return;
-            }
-            var file = files[0];
-            console.log('[AW]ActorService sendFile');
-
-            var scope = angular.element(document.getElementById("composeControllerWrap")).scope();
-            scope.$apply(function () {
-                scope.compose.sendFileMessage(file);
-            });
-        }
-    </script>
 </body>
 </html>

@@ -23,15 +23,13 @@ class ActorService
   setLoggedIn: () =>
     console.log '[AW]ActorService setLoggedIn'
 #    @isLoggedIn = true
+    @$rootScope.$broadcast 'actorLoggedIn'
     @$rootScope.$state.go 'im'
-#    @$rootScope.$broadcast 'actorLoggedIn'
   setLoggedOut: () =>
     console.log '[AW]ActorService setLoggedOut'
     localStorage.clear()
     location.reload()
-#    @isLoggedIn = false
-#    @$rootScope.$state.go 'login'
-#    @$rootScope.$broadcast 'actorLoggedOut'
+    @$rootScope.$broadcast 'actorLoggedOut'
   setCurrentPeer: (peer) ->
     console.log '[AW]ActorService setCurrentPeer', peer
     @currentPeer = peer
@@ -112,28 +110,33 @@ class ActorService
   sendCode: (code) ->
     console.log '[AW]ActorService sendCode'
     @messenger.sendCode code, (state) =>
-      console.log '[AW]ActorService sendCode: state:', state
+      console.log '[AW]ActorService sendCode: ok:', state
       switch state
         when 'logged_in'
           @setLoggedIn()
         when 'signup'
           @$rootScope.$broadcast 'actorSignUp'
     , (tag, message, canTryAgain, state) ->
-      console.log '[AW]ActorService sendCode: error: state:', state
+      console.log '[AW]ActorService sendCode: error:', state
+      switch state
+        when 'code'
+          console.log '[AW]ActorService sendCode: wrong code'
 
 
-  sendFile: ->
-    console.log '[AW]ActorService sendFile'
+  sendFile: (peer, file) ->
+    console.log '[AW]ActorService sendFile', file
+    @messenger.sendFile peer, file
   sendMessage: (peer, message) ->
-    console.log '[AW]ActorService sendMessage'
-    console.log '[AW]ActorService sendMessage: message:', message
+    console.log '[AW]ActorService sendMessage', message
     message = message.replace /^\s+|\s+$/g, ''
     if message.length > 0
       console.log '[AW]ActorService sendMessage: message:', message.length
     # console.log '[AW]ActorService sendMessage: peer:', peer
       @messenger.sendMessage peer, message
-  sendPhoto: ->
-    console.log '[AW]ActorService sendPhoto'
+  sendPhoto: (peer, file) ->
+    console.log '[AW]ActorService sendPhoto', file
+    @messenger.sendPhoto peer, file
+
 
   # Events
   onChatEnd: ->

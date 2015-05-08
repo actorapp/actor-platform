@@ -9,12 +9,14 @@
 #include "J2ObjC_header.h"
 
 @class AMApiConfiguration;
+@class AMAppCategoryEnum;
 @class AMConfiguration;
+@class AMDeviceCategoryEnum;
 @protocol AMAnalyticsProvider;
 @protocol AMCryptoProvider;
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
-@protocol AMHttpDownloaderProvider;
+@protocol AMHttpProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -38,7 +40,11 @@
 
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 
+- (AMConfigurationBuilder *)setAppCategory:(AMAppCategoryEnum *)appCategory;
+
 - (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
+
+- (AMConfigurationBuilder *)setDeviceCategory:(AMDeviceCategoryEnum *)deviceCategory;
 
 - (AMConfigurationBuilder *)setDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider;
 
@@ -50,7 +56,7 @@
 
 - (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
 
-- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider;
+- (AMConfigurationBuilder *)setHttpProvider:(id<AMHttpProvider>)httpProvider;
 
 - (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 
