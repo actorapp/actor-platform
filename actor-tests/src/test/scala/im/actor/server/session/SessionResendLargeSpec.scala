@@ -56,13 +56,12 @@ class SessionResendLargeSpec extends BaseSessionSpec(
         case UnsentResponse(_, rqMessageId, length) if rqMessageId == requestMessageId && length > 0 ⇒
       }
 
-      sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), RequestResend(messageBox.body.asInstanceOf[UnsentResponse].messageId))
+      val msgId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, msgId, RequestResend(messageBox.body.asInstanceOf[UnsentResponse].messageId))
 
-      expectRpcResult(sendAckAt = None) should matchPattern {
+      expectRpcResult(sendAckAt = None, expectAckFor = Set(msgId)) should matchPattern {
         case RpcOk(ResponseSendAuthCode(_, _)) ⇒
       }
-
-      expectMessageAck(authId, sessionId)
 
       expectNoMsg(6.seconds)
     }

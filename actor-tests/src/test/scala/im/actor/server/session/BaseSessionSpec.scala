@@ -66,26 +66,36 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
     UpdateBoxCodec.decode(expectMessageBox(authId, sessionId).body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[WeakUpdate]
   }
 
-  protected def expectRpcResult(sendAckAt: Option[Duration] = Some(0.seconds))(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
-    Option(probe.receiveOne(5.seconds)) match {
-      case Some(MTPackage(authId, sessionId, mbBytes)) ⇒
-        val mb = MessageBoxCodec.decode(mbBytes).require.value
-        mb.body match {
-          case RpcResponseBox(messageId, rpcResultBytes) ⇒
-            sendAckAt map { delay ⇒
-              Future {
-                blocking {
-                  Thread.sleep(delay.toMillis)
-                  sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, MessageAck(Vector(messageId)))
-                }
+  protected def expectRpcResult(sendAckAt: Option[Duration] = Some(0.seconds), expectAckFor: Set[Long] = Set.empty)(implicit probe: TestProbe, sessionRegion: SessionRegion): RpcResult = {
+    val messages = probe.receiveN(1 + expectAckFor.size).toSet
+
+    if (messages.size != expectAckFor.size + 1) {
+      fail(s"Expected response and acks for ${expectAckFor.mkString(",")}, got: ${messages.mkString(",")}")
+    } else {
+      val (rest, ackIds) = messages.foldLeft(Vector.empty[(Long, Long, ProtoMessage)], Set.empty[Long]) {
+        case ((rest, ackIds), MTPackage(authId, sessionId, mbBytes)) ⇒
+          MessageBoxCodec.decode(mbBytes).require.value.body match {
+            case MessageAck(ids) ⇒ (rest, ackIds ++ ids)
+            case x               ⇒ (rest :+ ((authId, sessionId, x)), ackIds)
+          }
+      }
+
+      ackIds shouldEqual expectAckFor
+
+      rest match {
+        case Vector((authId, sessionId, RpcResponseBox(messageId, rpcResultBytes))) ⇒
+          sendAckAt map { delay ⇒
+            Future {
+              blocking {
+                Thread.sleep(delay.toMillis)
+                sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, MessageAck(Vector(messageId)))
               }
             }
+          }
 
-            RpcResultCodec.decode(rpcResultBytes).require.value
-          case msg ⇒ throw new Exception(s"Expected RpcResponseBox but got $msg")
-        }
-      case Some(msg) ⇒ throw new Exception(s"Expected MTPackage but got $msg")
-      case None      ⇒ throw new Exception("No rpc response")
+          RpcResultCodec.decode(rpcResultBytes).require.value
+        case unexpected ⇒ throw new Exception(s"Expected RpcResponseBox but got $unexpected")
+      }
     }
   }
 
