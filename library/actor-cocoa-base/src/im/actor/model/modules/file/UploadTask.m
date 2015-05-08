@@ -8,7 +8,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/FileSystemProvider.h"
-#include "im/actor/model/HttpDownloaderProvider.h"
+#include "im/actor/model/HttpProvider.h"
 #include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/api/rpc/RequestCommitFileUpload.h"
 #include "im/actor/model/api/rpc/RequestGetFileUploadPartUrl.h"
@@ -45,7 +45,7 @@
   NSString *descriptor_;
   jboolean isWriteToDestProvider_;
   id<AMFileSystemProvider> fileSystemProvider_;
-  id<AMHttpDownloaderProvider> downloaderProvider_;
+  id<AMHttpProvider> downloaderProvider_;
   id<AMFileSystemReference> srcReference_;
   id<AMInputFile> inputFile_;
   id<AMFileSystemReference> destReference_;
@@ -84,7 +84,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, TAG_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, fileName_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, descriptor_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, fileSystemProvider_, id<AMFileSystemProvider>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, downloaderProvider_, id<AMHttpDownloaderProvider>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, downloaderProvider_, id<AMHttpProvider>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, srcReference_, id<AMFileSystemReference>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, inputFile_, id<AMInputFile>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, destReference_, id<AMFileSystemReference>)
@@ -346,7 +346,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     return;
   }
   isWriteToDestProvider_ = [((id<AMFileSystemProvider>) nil_chk(fileSystemProvider_)) isFsPersistent];
-  downloaderProvider_ = [((AMConfiguration *) nil_chk([self config])) getHttpDownloaderProvider];
+  downloaderProvider_ = [((AMConfiguration *) nil_chk([self config])) getHttpProvider];
   if (downloaderProvider_ == nil) {
     if (LOG_) {
       AMLog_wWithNSString_withNSString_(TAG_, @"HTTP support is not available");
@@ -477,7 +477,7 @@ void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadT
     if (self->isWriteToDestProvider_) {
       [((id<AMOutputFile>) nil_chk(self->outputFile_)) close];
     }
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_(self->uploadConfig_) withAMRpcCallback:new_ImActorModelModulesFileUploadTask_$2_initWithImActorModelModulesFileUploadTask_(self)];
+    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(self->uploadConfig_, self->fileName_) withAMRpcCallback:new_ImActorModelModulesFileUploadTask_$2_initWithImActorModelModulesFileUploadTask_(self)];
     return;
   }
   if (self->nextBlock_ < self->blocksCount_ && self->uploadCount_ < ImActorModelModulesFileUploadTask_SIM_BLOCKS_COUNT) {
@@ -731,7 +731,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_$3_$2)
 @implementation ImActorModelModulesFileUploadTask_$4
 
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUploadPartUrl *)response {
-  [((id<AMHttpDownloaderProvider>) nil_chk(this$0_->downloaderProvider_)) uploadPartWithNSString:[((ImActorModelApiRpcResponseGetFileUploadPartUrl *) nil_chk(response)) getUrl] withByteArray:val$data_ withImActorModelHttpFileUploadCallback:new_ImActorModelModulesFileUploadTask_$4_$1_initWithImActorModelModulesFileUploadTask_$4_(self)];
+  [((id<AMHttpProvider>) nil_chk(this$0_->downloaderProvider_)) putMethodWithNSString:[((ImActorModelApiRpcResponseGetFileUploadPartUrl *) nil_chk(response)) getUrl] withByteArray:val$data_ withImActorModelHttpFileUploadCallback:new_ImActorModelModulesFileUploadTask_$4_$1_initWithImActorModelModulesFileUploadTask_$4_(self)];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {

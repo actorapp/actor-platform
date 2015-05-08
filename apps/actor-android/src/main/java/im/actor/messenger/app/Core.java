@@ -25,6 +25,8 @@ import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
 import im.actor.messenger.app.service.KeepAliveService;
 import im.actor.model.ApiConfiguration;
+import im.actor.model.AppCategory;
+import im.actor.model.DeviceCategory;
 import im.actor.model.android.AndroidMessenger;
 import im.actor.model.android.providers.AndroidNotifications;
 import im.actor.model.android.providers.AndroidPhoneBook;
@@ -122,6 +124,8 @@ public class Core {
         builder.setEnableNetworkLogging(true);
         builder.setEnableFilesLogging(true);
         builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), "b2b7a96c3f1e131cf170029f97b2c7c2"));
+        builder.setDeviceCategory(DeviceCategory.MOBILE);
+        builder.setAppCategory(AppCategory.ANDROID);
 
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,
