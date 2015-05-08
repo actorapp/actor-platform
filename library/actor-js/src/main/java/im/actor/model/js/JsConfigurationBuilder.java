@@ -4,9 +4,12 @@
 
 package im.actor.model.js;
 
+import im.actor.model.AppCategory;
 import im.actor.model.ConfigurationBuilder;
+import im.actor.model.DeviceCategory;
 import im.actor.model.js.providers.JsCryptoProvider;
 import im.actor.model.js.providers.JsDispatcherProvider;
+import im.actor.model.js.providers.JsHttpProvider;
 import im.actor.model.js.providers.JsLocaleProvider;
 import im.actor.model.js.providers.JsLogProvider;
 import im.actor.model.js.providers.JsMainThreadProvider;
@@ -28,5 +31,8 @@ public class JsConfigurationBuilder extends ConfigurationBuilder {
         setPhoneBookProvider(new JsPhoneBookProvider());
         setStorage(new JsStorageProvider());
         setNotificationProvider(new JsNotificationsProvider());
+        setHttpProvider(new JsHttpProvider());
+        setAppCategory(AppCategory.WEB);
+        setDeviceCategory(DeviceCategory.DESKTOP);
     }
 }

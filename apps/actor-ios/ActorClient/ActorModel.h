@@ -38,7 +38,9 @@
 #import "im/actor/model/DispatcherProvider.h"
 #import "im/actor/model/LocaleProvider.h"
 #import "im/actor/model/PhoneBookProvider.h"
-#import "im/actor/model/HttpDownloaderProvider.h"
+#import "im/actor/model/HttpProvider.h"
+#import "im/actor/model/AppCategory.h"
+#import "im/actor/model/DeviceCategory.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
