@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/engine/KeyValueRecord.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/KeyValueRecord.h"
@@ -20,20 +18,14 @@
 
 J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 
-
-#line 7
 @implementation DKKeyValueRecord
 
-
-#line 11
 - (instancetype)initWithLong:(jlong)id_
                withByteArray:(IOSByteArray *)data {
   DKKeyValueRecord_initWithLong_withByteArray_(self, id_, data);
   return self;
 }
 
-
-#line 16
 - (jlong)getId {
   return id__;
 }
@@ -44,18 +36,12 @@ J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 
 @end
 
-
-#line 11
 void DKKeyValueRecord_initWithLong_withByteArray_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data) {
   (void) NSObject_init(self);
-  
-#line 12
   self->id__ = id_;
   self->data_ = data;
 }
 
-
-#line 11
 DKKeyValueRecord *new_DKKeyValueRecord_initWithLong_withByteArray_(jlong id_, IOSByteArray *data) {
   DKKeyValueRecord *self = [DKKeyValueRecord alloc];
   DKKeyValueRecord_initWithLong_withByteArray_(self, id_, data);

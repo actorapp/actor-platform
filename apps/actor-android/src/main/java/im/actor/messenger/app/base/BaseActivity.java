@@ -1,7 +1,8 @@
 package im.actor.messenger.app.base;
 
 import android.app.ProgressDialog;
-import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,13 +23,21 @@ import static im.actor.messenger.app.AppStateBroker.stateBroker;
 /**
  * Created by ex3ndr on 29.12.14.
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
     private final ActorBinder BINDER = new ActorBinder();
+
+    private boolean isResumed = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        notifyOnResume();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        stateBroker().onActivityOpen();
+        notifyOnResume();
     }
 
     public void bind(final TextView textView, ValueModel<String> value) {
@@ -68,8 +77,42 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stateBroker().onActivityClose();
         BINDER.unbindAll();
+        notifyOnPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        notifyOnPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        notifyOnPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        notifyOnPause();
+    }
+
+    private void notifyOnResume() {
+        if (isResumed) {
+            return;
+        }
+        isResumed = true;
+        stateBroker().onActivityOpen();
+    }
+
+    private void notifyOnPause() {
+        if (!isResumed) {
+            return;
+        }
+        isResumed = false;
+        stateBroker().onActivityClose();
     }
 
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {

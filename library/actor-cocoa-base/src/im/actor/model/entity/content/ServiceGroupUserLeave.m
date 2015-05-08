@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceGroupUserLeave.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -16,18 +14,12 @@
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "java/io/IOException.h"
 
-
-#line 11
 @implementation AMServiceGroupUserLeave
 
-
-#line 14
 + (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
-
-#line 19
 - (AMAbsContent_ContentTypeEnum *)getContentType {
   return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
 }
@@ -39,23 +31,15 @@
 
 @end
 
-
-#line 14
 AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceGroupUserLeave_initialize();
-  
-#line 15
   return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserLeave_init(), data));
 }
 
-
-#line 23
 void AMServiceGroupUserLeave_init(AMServiceGroupUserLeave *self) {
   (void) AMServiceContent_initWithNSString_(self, @"User leave");
 }
 
-
-#line 23
 AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_init() {
   AMServiceGroupUserLeave *self = [AMServiceGroupUserLeave alloc];
   AMServiceGroupUserLeave_init(self);

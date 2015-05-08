@@ -39,6 +39,11 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Disable transparency for iOS7
+        if (!isiOS8) {
+            tabBar.translucent = false
+        }
+        
         appEmptyContainer.hidden = true
         appIsEmptyPlaceholder.hidden = true
         appIsEmptyPlaceholder.setImage(
@@ -76,6 +81,13 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
                 contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
+
+                if (!isiOS8) {
+                    contactsNavigation.navigationBar.translucent = false
+                    dialogsNavigation.navigationBar.translucent = false
+                    settingsNavigation.navigationBar.translucent = false
+                }
+                
                 viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
                 
                 selectedIndex = 1;

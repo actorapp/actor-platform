@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSetOnline.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,29 +25,21 @@
 
 @implementation ImActorModelApiRpcRequestSetOnline
 
-
-#line 27
 + (ImActorModelApiRpcRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithBoolean:(jboolean)isOnline
                        withLong:(jlong)timeout {
   ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(self, isOnline, timeout);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestSetOnline_init(self);
   return self;
 }
 
-
-#line 43
 - (jboolean)isOnline {
   return self->isOnline__;
 }
@@ -58,22 +48,16 @@
   return self->timeout_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->isOnline__ = [((BSBserValues *) nil_chk(values)) getBoolWithInt:1];
   self->timeout_ = [values getLongWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeBoolWithInt:1 withBoolean:self->isOnline__];
   [writer writeLongWithInt:2 withLong:self->timeout_];
 }
 
-
-#line 64
 - (NSString *)description {
   NSString *res = @"rpc SetOnline{";
   res = JreStrcat("$$", res, JreStrcat("$Z", @"isOnline=", self->isOnline__));
@@ -82,47 +66,33 @@
   return res;
 }
 
-
-#line 73
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSetOnline_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestSetOnline *ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSetOnline_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestSetOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSetOnline_init(), data));
 }
 
 void ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(ImActorModelApiRpcRequestSetOnline *self, jboolean isOnline, jlong timeout) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->isOnline__ = isOnline;
   self->timeout_ = timeout;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(jboolean isOnline, jlong timeout) {
   ImActorModelApiRpcRequestSetOnline *self = [ImActorModelApiRpcRequestSetOnline alloc];
   ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(self, isOnline, timeout);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestSetOnline_init(ImActorModelApiRpcRequestSetOnline *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_init() {
   ImActorModelApiRpcRequestSetOnline *self = [ImActorModelApiRpcRequestSetOnline alloc];
   ImActorModelApiRpcRequestSetOnline_init(self);

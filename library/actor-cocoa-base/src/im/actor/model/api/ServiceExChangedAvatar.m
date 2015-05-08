@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedAvatar.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
@@ -26,22 +24,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
 
 @implementation ImActorModelApiServiceExChangedAvatar
 
-
-#line 27
 - (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
   ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(self, avatar);
   return self;
 }
 
-
-#line 31
 - (instancetype)init {
   ImActorModelApiServiceExChangedAvatar_init(self);
   return self;
 }
 
-
-#line 35
 - (jint)getHeader {
   return 6;
 }
@@ -50,22 +42,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   return self->avatar_;
 }
 
-
-#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->avatar_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatar_init()];
 }
 
-
-#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->avatar_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->avatar_];
   }
 }
 
-
-#line 56
 - (NSString *)description {
   NSString *res = @"struct ServiceExChangedAvatar{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
@@ -75,31 +61,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
 
 @end
 
-
-#line 27
 void ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiServiceExChangedAvatar *self, ImActorModelApiAvatar *avatar) {
   (void) ImActorModelApiServiceEx_init(self);
-  
-#line 28
   self->avatar_ = avatar;
 }
 
-
-#line 27
 ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) {
   ImActorModelApiServiceExChangedAvatar *self = [ImActorModelApiServiceExChangedAvatar alloc];
   ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(self, avatar);
   return self;
 }
 
-
-#line 31
 void ImActorModelApiServiceExChangedAvatar_init(ImActorModelApiServiceExChangedAvatar *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
-
-#line 31
 ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_init() {
   ImActorModelApiServiceExChangedAvatar *self = [ImActorModelApiServiceExChangedAvatar alloc];
   ImActorModelApiServiceExChangedAvatar_init(self);

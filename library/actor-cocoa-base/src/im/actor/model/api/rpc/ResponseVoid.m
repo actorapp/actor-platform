@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseVoid.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -17,18 +15,12 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseVoid
 
-
-#line 27
 + (ImActorModelApiRpcResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(data);
 }
 
-
-#line 32
 - (instancetype)init {
   ImActorModelApiRpcResponseVoid_init(self);
   return self;
@@ -37,44 +29,30 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-
-#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
-
-#line 45
 - (NSString *)description {
   NSString *res = @"response Void{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseVoid_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseVoid_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseVoid *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseVoid_init(), data));
 }
 
-
-#line 32
 void ImActorModelApiRpcResponseVoid_init(ImActorModelApiRpcResponseVoid *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 32
 ImActorModelApiRpcResponseVoid *new_ImActorModelApiRpcResponseVoid_init() {
   ImActorModelApiRpcResponseVoid *self = [ImActorModelApiRpcResponseVoid alloc];
   ImActorModelApiRpcResponseVoid_init(self);

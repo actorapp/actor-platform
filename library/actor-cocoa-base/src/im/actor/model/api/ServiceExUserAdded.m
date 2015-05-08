@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserAdded.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -21,26 +19,18 @@
 
 @end
 
-
-#line 23
 @implementation ImActorModelApiServiceExUserAdded
 
-
-#line 27
 - (instancetype)initWithInt:(jint)addedUid {
   ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
-
-#line 31
 - (instancetype)init {
   ImActorModelApiServiceExUserAdded_init(self);
   return self;
 }
 
-
-#line 35
 - (jint)getHeader {
   return 1;
 }
@@ -49,20 +39,14 @@
   return self->addedUid_;
 }
 
-
-#line 44
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
-
-#line 49
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->addedUid_];
 }
 
-
-#line 54
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"addedUid=", self->addedUid_));
@@ -72,31 +56,21 @@
 
 @end
 
-
-#line 27
 void ImActorModelApiServiceExUserAdded_initWithInt_(ImActorModelApiServiceExUserAdded *self, jint addedUid) {
   (void) ImActorModelApiServiceEx_init(self);
-  
-#line 28
   self->addedUid_ = addedUid;
 }
 
-
-#line 27
 ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_initWithInt_(jint addedUid) {
   ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
   ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
-
-#line 31
 void ImActorModelApiServiceExUserAdded_init(ImActorModelApiServiceExUserAdded *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
-
-#line 31
 ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_init() {
   ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
   ImActorModelApiServiceExUserAdded_init(self);

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterApplePush.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,33 +25,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestRegisterApplePush
 
-
-#line 27
 + (ImActorModelApiRpcRequestRegisterApplePush *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)apnsKey
                withNSString:(NSString *)token {
   ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestRegisterApplePush_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getApnsKey {
   return self->apnsKey_;
 }
@@ -62,15 +50,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
   return self->token_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->apnsKey_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->token_ = [values getStringWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->apnsKey_];
   if (self->token_ == nil) {
@@ -79,55 +63,39 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
   [writer writeStringWithInt:2 withNSString:self->token_];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"rpc RegisterApplePush{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 74
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestRegisterApplePush_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestRegisterApplePush *ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestRegisterApplePush_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestRegisterApplePush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRegisterApplePush_init(), data));
 }
 
 void ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(ImActorModelApiRpcRequestRegisterApplePush *self, jint apnsKey, NSString *token) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->apnsKey_ = apnsKey;
   self->token_ = token;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(jint apnsKey, NSString *token) {
   ImActorModelApiRpcRequestRegisterApplePush *self = [ImActorModelApiRpcRequestRegisterApplePush alloc];
   ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestRegisterApplePush_init(ImActorModelApiRpcRequestRegisterApplePush *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_init() {
   ImActorModelApiRpcRequestRegisterApplePush *self = [ImActorModelApiRpcRequestRegisterApplePush alloc];
   ImActorModelApiRpcRequestRegisterApplePush_init(self);

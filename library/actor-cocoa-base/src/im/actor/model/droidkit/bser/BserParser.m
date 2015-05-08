@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/BserParser.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -34,26 +32,18 @@ __attribute__((unused)) static void BSBserParser_init(BSBserParser *self);
 
 __attribute__((unused)) static BSBserParser *new_BSBserParser_init() NS_RETURNS_RETAINED;
 
-
-#line 18
 @implementation BSBserParser
 
-
-#line 19
 + (ImActorModelDroidkitBserUtilSparseArray *)deserializeWithBSDataInput:(BSDataInput *)is {
   return BSBserParser_deserializeWithBSDataInput_(is);
 }
 
-
-#line 43
 + (void)putWithInt:(jint)id_
             withId:(id)res
 withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)hashMap {
   BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, res, hashMap);
 }
 
-
-#line 58
 - (instancetype)init {
   BSBserParser_init(self);
   return self;
@@ -61,62 +51,40 @@ withImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseA
 
 @end
 
-
-#line 19
 ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithBSDataInput_(BSDataInput *is) {
   BSBserParser_initialize();
-  
-#line 20
   ImActorModelDroidkitBserUtilSparseArray *hashMap = new_ImActorModelDroidkitBserUtilSparseArray_init();
   while (![((BSDataInput *) nil_chk(is)) isEOF]) {
     jint currentTag = (jint) [is readByte];
-    
-#line 24
     jint id_ = RShift32(currentTag, 3);
     jint type = currentTag & (jint) 0x7;
-    
-#line 27
     if (type == BSWireTypes_TYPE_VARINT) {
       BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, JavaLangLong_valueOfWithLong_([is readVarInt]), hashMap);
     }
-    else
-#line 29
-    if (type == BSWireTypes_TYPE_LENGTH_DELIMITED) {
+    else if (type == BSWireTypes_TYPE_LENGTH_DELIMITED) {
       jint size = (jint) [is readVarInt];
       BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, [is readBytesWithInt:size], hashMap);
     }
-    else
-#line 32
-    if (type == BSWireTypes_TYPE_64BIT) {
+    else if (type == BSWireTypes_TYPE_64BIT) {
       BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, JavaLangLong_valueOfWithLong_([is readLong]), hashMap);
     }
-    else
-#line 34
-    if (type == BSWireTypes_TYPE_32BIT) {
+    else if (type == BSWireTypes_TYPE_32BIT) {
       BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, JavaLangLong_valueOfWithLong_([is readUInt]), hashMap);
     }
     else {
-      
-#line 37
       @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I", @"Unknown Wire Type #", type));
     }
   }
   return hashMap;
 }
 
-
-#line 43
 void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(jint id_, id res, ImActorModelDroidkitBserUtilSparseArray *hashMap) {
   BSBserParser_initialize();
-  
-#line 44
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(hashMap)) getWithInt:id_] != nil) {
     if ([JavaUtilList_class_() isInstance:[hashMap getWithInt:id_]]) {
       [((id<JavaUtilList>) nil_chk(((id<JavaUtilList>) check_protocol_cast([hashMap getWithInt:id_], @protocol(JavaUtilList))))) addWithId:res];
     }
     else {
-      
-#line 48
       JavaUtilArrayList *list = new_JavaUtilArrayList_init();
       [list addWithId:[hashMap getWithInt:id_]];
       [list addWithId:res];
@@ -124,20 +92,14 @@ void BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_
     }
   }
   else {
-    
-#line 54
     [hashMap putWithInt:id_ withId:res];
   }
 }
 
-
-#line 58
 void BSBserParser_init(BSBserParser *self) {
   (void) NSObject_init(self);
 }
 
-
-#line 58
 BSBserParser *new_BSBserParser_init() {
   BSBserParser *self = [BSBserParser alloc];
   BSBserParser_init(self);

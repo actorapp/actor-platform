@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Typing.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -59,19 +57,13 @@ __attribute__((unused)) static ImActorModelModulesTyping_$1 *new_ImActorModelMod
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTyping_$1)
 
-
-#line 20
 @implementation ImActorModelModulesTyping
 
-
-#line 26
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesTyping_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 37
 - (AMGroupTypingVM *)getGroupTypingWithInt:(jint)gid {
   @synchronized(groups_) {
     if (![((JavaUtilHashMap *) nil_chk(groups_)) containsKeyWithId:JavaLangInteger_valueOfWithInt_(gid)]) {
@@ -96,22 +88,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTyping_$1)
 
 @end
 
-
-#line 26
 void ImActorModelModulesTyping_initWithImActorModelModulesModules_(ImActorModelModulesTyping *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, messenger);
   self->uids_ = new_JavaUtilHashMap_init();
   self->groups_ = new_JavaUtilHashMap_init();
-  
-#line 28
-  self->ownTypingActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesTypingOwnTypingActor_class_(), new_ImActorModelModulesTyping_$1_initWithImActorModelModulesModules_(messenger)) withNSString:
-#line 33
-  @"actor/typing/own"];
+  self->ownTypingActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesTypingOwnTypingActor_class_(), new_ImActorModelModulesTyping_$1_initWithImActorModelModulesModules_(messenger)) withNSString:@"actor/typing/own"];
   self->typingActor_ = ImActorModelModulesTypingTypingActor_getWithImActorModelModulesModules_(messenger);
 }
 
-
-#line 26
 ImActorModelModulesTyping *new_ImActorModelModulesTyping_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesTyping *self = [ImActorModelModulesTyping alloc];
   ImActorModelModulesTyping_initWithImActorModelModulesModules_(self, messenger);
@@ -122,8 +106,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTyping)
 
 @implementation ImActorModelModulesTyping_$1
 
-
-#line 30
 - (ImActorModelModulesTypingOwnTypingActor *)create {
   return new_ImActorModelModulesTypingOwnTypingActor_initWithImActorModelModulesModules_(val$messenger_);
 }

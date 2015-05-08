@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/base/FatSeqUpdate.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -45,18 +43,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, groups_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, phones_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiBaseFatSeqUpdate
 
-
-#line 27
 + (ImActorModelApiBaseFatSeqUpdate *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(data);
 }
 
-
-#line 40
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state
                     withInt:(jint)updateHeader
@@ -69,15 +61,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   return self;
 }
 
-
-#line 51
 - (instancetype)init {
   ImActorModelApiBaseFatSeqUpdate_init(self);
   return self;
 }
 
-
-#line 55
 - (jint)getSeq {
   return self->seq_;
 }
@@ -110,8 +98,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   return self->emails_;
 }
 
-
-#line 88
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -139,8 +125,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   self->emails_ = [values getRepeatedObjWithInt:8 withJavaUtilList:_emails];
 }
 
-
-#line 116
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
@@ -158,8 +142,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   [writer writeRepeatedObjWithInt:8 withJavaUtilList:self->emails_];
 }
 
-
-#line 134
 - (NSString *)description {
   NSString *res = @"update box FatSeqUpdate{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
@@ -172,29 +154,19 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   return res;
 }
 
-
-#line 147
 - (jint)getHeaderKey {
   return ImActorModelApiBaseFatSeqUpdate_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiBaseFatSeqUpdate_initialize();
-  
-#line 28
   return ((ImActorModelApiBaseFatSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseFatSeqUpdate_init(), data));
 }
 
-
-#line 40
 void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiBaseFatSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   (void) ImActorModelNetworkParserRpcScope_init(self);
-  
-#line 41
   self->seq_ = seq;
   self->state_ = state;
   self->updateHeader_ = updateHeader;
@@ -205,22 +177,16 @@ void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteA
   self->emails_ = emails;
 }
 
-
-#line 40
 ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) {
   ImActorModelApiBaseFatSeqUpdate *self = [ImActorModelApiBaseFatSeqUpdate alloc];
   ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(self, seq, state, updateHeader, update, users, groups, phones, emails);
   return self;
 }
 
-
-#line 51
 void ImActorModelApiBaseFatSeqUpdate_init(ImActorModelApiBaseFatSeqUpdate *self) {
   (void) ImActorModelNetworkParserRpcScope_init(self);
 }
 
-
-#line 51
 ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_init() {
   ImActorModelApiBaseFatSeqUpdate *self = [ImActorModelApiBaseFatSeqUpdate alloc];
   ImActorModelApiBaseFatSeqUpdate_init(self);

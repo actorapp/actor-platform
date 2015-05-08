@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeToGroupOnline.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -29,38 +27,26 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id<JavaUtilList>)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestSubscribeToGroupOnline
 
-
-#line 27
 + (ImActorModelApiRpcRequestSubscribeToGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups {
   ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(self, groups);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestSubscribeToGroupOnline_init(self);
   return self;
 }
 
-
-#line 41
 - (id<JavaUtilList>)getGroups {
   return self->groups_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
@@ -69,14 +55,10 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
   self->groups_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_groups];
 }
 
-
-#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeRepeatedObjWithInt:1 withJavaUtilList:self->groups_];
 }
 
-
-#line 60
 - (NSString *)description {
   NSString *res = @"rpc SubscribeToGroupOnline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"groups=", [((id<JavaUtilList>) nil_chk(self->groups_)) size]));
@@ -84,48 +66,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, groups_, id
   return res;
 }
 
-
-#line 68
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestSubscribeToGroupOnline *ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSubscribeToGroupOnline_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestSubscribeToGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSubscribeToGroupOnline_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToGroupOnline *self, id<JavaUtilList> groups) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 34
   self->groups_ = groups;
 }
 
-
-#line 33
 ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(id<JavaUtilList> groups) {
   ImActorModelApiRpcRequestSubscribeToGroupOnline *self = [ImActorModelApiRpcRequestSubscribeToGroupOnline alloc];
   ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(self, groups);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiRpcRequestSubscribeToGroupOnline_init(ImActorModelApiRpcRequestSubscribeToGroupOnline *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 37
 ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_init() {
   ImActorModelApiRpcRequestSubscribeToGroupOnline *self = [ImActorModelApiRpcRequestSubscribeToGroupOnline alloc];
   ImActorModelApiRpcRequestSubscribeToGroupOnline_init(self);

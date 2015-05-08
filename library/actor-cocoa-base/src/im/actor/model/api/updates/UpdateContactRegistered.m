@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactRegistered.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -22,38 +20,30 @@
   jint uid_;
   jboolean isSilent__;
   jlong date_;
+  jlong rid_;
 }
 
 @end
 
-
-#line 24
 @implementation ImActorModelApiUpdatesUpdateContactRegistered
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(data);
 }
 
-
-#line 35
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
-                   withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
+                   withLong:(jlong)date
+                   withLong:(jlong)rid {
+  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
   return self;
 }
 
-
-#line 41
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateContactRegistered_init(self);
   return self;
 }
 
-
-#line 45
 - (jint)getUid {
   return self->uid_;
 }
@@ -66,24 +56,24 @@
   return self->date_;
 }
 
+- (jlong)getRid {
+  return self->rid_;
+}
 
-#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->isSilent__ = [values getBoolWithInt:2];
   self->date_ = [values getLongWithInt:3];
+  self->rid_ = [values getLongWithInt:4];
 }
 
-
-#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeBoolWithInt:2 withBoolean:self->isSilent__];
   [writer writeLongWithInt:3 withLong:self->date_];
+  [writer writeLongWithInt:4 withLong:self->rid_];
 }
 
-
-#line 72
 - (NSString *)description {
   NSString *res = @"update ContactRegistered{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -93,39 +83,28 @@
   return res;
 }
 
-
-#line 82
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateContactRegistered_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactRegistered_init(), data));
 }
 
-
-#line 35
-void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date) {
+void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date, jlong rid) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 36
   self->uid_ = uid;
   self->isSilent__ = isSilent;
   self->date_ = date;
+  self->rid_ = rid;
 }
 
-
-#line 35
-ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(jint uid, jboolean isSilent, jlong date) {
+ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(jint uid, jboolean isSilent, jlong date, jlong rid) {
   ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
-  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(self, uid, isSilent, date);
+  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
   return self;
 }
 
@@ -133,8 +112,6 @@ void ImActorModelApiUpdatesUpdateContactRegistered_init(ImActorModelApiUpdatesUp
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 41
 ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_init() {
   ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
   ImActorModelApiUpdatesUpdateContactRegistered_init(self);

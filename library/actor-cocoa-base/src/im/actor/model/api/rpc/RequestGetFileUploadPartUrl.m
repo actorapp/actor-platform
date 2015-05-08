@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetFileUploadPartUrl.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -29,18 +27,12 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, IOSByteArray *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestGetFileUploadPartUrl
 
-
-#line 27
 + (ImActorModelApiRpcRequestGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(data);
 }
 
-
-#line 35
 - (instancetype)initWithInt:(jint)partNumber
                     withInt:(jint)partSize
               withByteArray:(IOSByteArray *)uploadKey {
@@ -48,15 +40,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
   return self;
 }
 
-
-#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestGetFileUploadPartUrl_init(self);
   return self;
 }
 
-
-#line 45
 - (jint)getPartNumber {
   return self->partNumber_;
 }
@@ -69,16 +57,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
   return self->uploadKey_;
 }
 
-
-#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->partNumber_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->partSize_ = [values getIntWithInt:2];
   self->uploadKey_ = [values getBytesWithInt:3];
 }
 
-
-#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->partNumber_];
   [writer writeIntWithInt:2 withInt:self->partSize_];
@@ -88,8 +72,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
   [writer writeBytesWithInt:3 withByteArray:self->uploadKey_];
 }
 
-
-#line 75
 - (NSString *)description {
   NSString *res = @"rpc GetFileUploadPartUrl{";
   res = JreStrcat("$$", res, JreStrcat("$$", @"uploadKey=", BSUtils_byteArrayToStringCompactWithByteArray_(self->uploadKey_)));
@@ -97,36 +79,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
   return res;
 }
 
-
-#line 83
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetFileUploadPartUrl_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestGetFileUploadPartUrl *ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetFileUploadPartUrl_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init(), data));
 }
 
-
-#line 35
 void ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(ImActorModelApiRpcRequestGetFileUploadPartUrl *self, jint partNumber, jint partSize, IOSByteArray *uploadKey) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 36
   self->partNumber_ = partNumber;
   self->partSize_ = partSize;
   self->uploadKey_ = uploadKey;
 }
 
-
-#line 35
 ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(jint partNumber, jint partSize, IOSByteArray *uploadKey) {
   ImActorModelApiRpcRequestGetFileUploadPartUrl *self = [ImActorModelApiRpcRequestGetFileUploadPartUrl alloc];
   ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
@@ -137,8 +107,6 @@ void ImActorModelApiRpcRequestGetFileUploadPartUrl_init(ImActorModelApiRpcReques
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 41
 ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init() {
   ImActorModelApiRpcRequestGetFileUploadPartUrl *self = [ImActorModelApiRpcRequestGetFileUploadPartUrl alloc];
   ImActorModelApiRpcRequestGetFileUploadPartUrl_init(self);

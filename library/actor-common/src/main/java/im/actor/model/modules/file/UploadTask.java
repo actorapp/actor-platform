@@ -189,7 +189,7 @@ public class UploadTask extends ModuleActor {
                 outputFile.close();
             }
 
-            request(new RequestCommitFileUpload(uploadConfig), new RpcCallback<ResponseCommitFileUpload>() {
+            request(new RequestCommitFileUpload(uploadConfig, fileName), new RpcCallback<ResponseCommitFileUpload>() {
                 @Override
                 public void onResult(ResponseCommitFileUpload response) {
                     if (LOG) {
