@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetParameters.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -17,18 +15,12 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestGetParameters
 
-
-#line 27
 + (ImActorModelApiRpcRequestGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(data);
 }
 
-
-#line 32
 - (instancetype)init {
   ImActorModelApiRpcRequestGetParameters_init(self);
   return self;
@@ -37,44 +29,30 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-
-#line 41
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
-
-#line 45
 - (NSString *)description {
   NSString *res = @"rpc GetParameters{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 52
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestGetParameters_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestGetParameters *ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestGetParameters_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetParameters_init(), data));
 }
 
-
-#line 32
 void ImActorModelApiRpcRequestGetParameters_init(ImActorModelApiRpcRequestGetParameters *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 32
 ImActorModelApiRpcRequestGetParameters *new_ImActorModelApiRpcRequestGetParameters_init() {
   ImActorModelApiRpcRequestGetParameters *self = [ImActorModelApiRpcRequestGetParameters alloc];
   ImActorModelApiRpcRequestGetParameters_init(self);

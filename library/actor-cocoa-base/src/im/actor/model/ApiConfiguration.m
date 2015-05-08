@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/ApiConfiguration.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/ApiConfiguration.h"
 
@@ -25,12 +23,8 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, appKey_, NSString *)
 J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceTitle_, NSString *)
 J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
 
-
-#line 10
 @implementation AMApiConfiguration
 
-
-#line 29
 - (instancetype)initWithNSString:(NSString *)appTitle
                          withInt:(jint)appId
                     withNSString:(NSString *)appKey
@@ -40,44 +34,30 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
   return self;
 }
 
-
-#line 42
 - (NSString *)getAppTitle {
   return appTitle_;
 }
 
-
-#line 51
 - (jint)getAppId {
   return appId_;
 }
 
-
-#line 60
 - (NSString *)getAppKey {
   return appKey_;
 }
 
-
-#line 69
 - (NSString *)getDeviceTitle {
   return deviceTitle_;
 }
 
-
-#line 78
 - (NSString *)getDeviceString {
   return deviceString_;
 }
 
 @end
 
-
-#line 29
 void AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(AMApiConfiguration *self, NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) {
   (void) NSObject_init(self);
-  
-#line 30
   self->appTitle_ = appTitle;
   self->appId_ = appId;
   self->appKey_ = appKey;
@@ -85,8 +65,6 @@ void AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withN
   self->deviceString_ = deviceString;
 }
 
-
-#line 29
 AMApiConfiguration *new_AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) {
   AMApiConfiguration *self = [AMApiConfiguration alloc];
   AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(self, appTitle, appId, appKey, deviceTitle, deviceString);

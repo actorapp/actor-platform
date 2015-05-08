@@ -5,10 +5,6 @@ xcodeproj 'ActorApp.xcodeproj'
 target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
-	# ABPhoneField dependency
-	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
-	#pod 'SHSPhoneComponent'
-
 	# Model
 	pod 'MMMutableMethods', :git => 'https://github.com/k06a/MMMutableMethods', :branch => 'dev', :tag => '0.0.7'
 	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
@@ -25,6 +21,10 @@ target 'ActorApp' do
 	pod 'PHFComposeBarView'
 	pod 'DZNPhotoPickerController'
 	pod 'HockeySDK'
+	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
 	pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
     pod 'JTSImageViewController'
+    
+    # Tracking
+    pod 'SplunkMint-iOS'
 end

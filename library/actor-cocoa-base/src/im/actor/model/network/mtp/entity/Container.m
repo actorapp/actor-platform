@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/mtp/entity/Container.java"
-
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
@@ -25,64 +23,44 @@
 
 J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
 
-
-#line 12
 @implementation MTContainer
 
-
-#line 18
 - (instancetype)initWithBSDataInput:(BSDataInput *)stream {
   MTContainer_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 22
 - (instancetype)initWithMTProtoMessageArray:(IOSObjectArray *)messages {
   MTContainer_initWithMTProtoMessageArray_(self, messages);
   return self;
 }
 
-
-#line 26
 - (IOSObjectArray *)getMessages {
   return messages_;
 }
 
-
-#line 31
 - (jbyte)getHeader {
   return MTContainer_HEADER;
 }
 
-
-#line 36
 - (void)writeBodyWithBSDataOutput:(BSDataOutput *)bs {
   if (messages_ != nil && messages_->size_ > 0) {
     [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:messages_->size_];
     {
-      IOSObjectArray *a__ =
-#line 39
-      messages_;
+      IOSObjectArray *a__ = messages_;
       MTProtoMessage * const *b__ = a__->buffer_;
       MTProtoMessage * const *e__ = b__ + a__->size_;
       while (b__ < e__) {
         MTProtoMessage *m = *b__++;
-        
-#line 40
         [((MTProtoMessage *) nil_chk(m)) writeObjectWithBSDataOutput:bs];
       }
     }
   }
   else {
-    
-#line 43
     [((BSDataOutput *) nil_chk(bs)) writeVarIntWithLong:0];
   }
 }
 
-
-#line 48
 - (void)readBodyWithBSDataInput:(BSDataInput *)bs {
   jint size = (jint) [((BSDataInput *) nil_chk(bs)) readVarInt];
   messages_ = [IOSObjectArray newArrayWithLength:size type:MTProtoMessage_class_()];
@@ -91,39 +69,27 @@ J2OBJC_FIELD_SETTER(MTContainer, messages_, IOSObjectArray *)
   }
 }
 
-
-#line 57
 - (NSString *)description {
   return JreStrcat("$I$", @"Conatiner[", ((IOSObjectArray *) nil_chk(messages_))->size_, @" items]");
 }
 
 @end
 
-
-#line 18
 void MTContainer_initWithBSDataInput_(MTContainer *self, BSDataInput *stream) {
   (void) MTProtoStruct_initWithBSDataInput_(self, stream);
 }
 
-
-#line 18
 MTContainer *new_MTContainer_initWithBSDataInput_(BSDataInput *stream) {
   MTContainer *self = [MTContainer alloc];
   MTContainer_initWithBSDataInput_(self, stream);
   return self;
 }
 
-
-#line 22
 void MTContainer_initWithMTProtoMessageArray_(MTContainer *self, IOSObjectArray *messages) {
   (void) MTProtoStruct_init(self);
-  
-#line 23
   self->messages_ = messages;
 }
 
-
-#line 22
 MTContainer *new_MTContainer_initWithMTProtoMessageArray_(IOSObjectArray *messages) {
   MTContainer *self = [MTContainer alloc];
   MTContainer_initWithMTProtoMessageArray_(self, messages);

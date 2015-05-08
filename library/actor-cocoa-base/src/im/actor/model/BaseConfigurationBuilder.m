@@ -4,20 +4,14 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/BaseConfigurationBuilder.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/BaseConfigurationBuilder.h"
 #include "im/actor/model/ConfigurationBuilder.h"
 #include "im/actor/model/jvm/JavaCryptoProvider.h"
 #include "im/actor/model/jvm/JavaThreadingProvider.h"
 
-
-#line 10
 @implementation AMBaseConfigurationBuilder
 
-
-#line 11
 - (instancetype)init {
   AMBaseConfigurationBuilder_init(self);
   return self;
@@ -25,18 +19,12 @@
 
 @end
 
-
-#line 11
 void AMBaseConfigurationBuilder_init(AMBaseConfigurationBuilder *self) {
   (void) AMConfigurationBuilder_init(self);
-  
-#line 12
   (void) [self setCryptoProvider:new_AMJavaCryptoProvider_init()];
   (void) [self setThreadingProvider:new_AMJavaThreadingProvider_init()];
 }
 
-
-#line 11
 AMBaseConfigurationBuilder *new_AMBaseConfigurationBuilder_init() {
   AMBaseConfigurationBuilder *self = [AMBaseConfigurationBuilder alloc];
   AMBaseConfigurationBuilder_init(self);

@@ -2,6 +2,7 @@ angular
   .module 'actorWeb', [
     'ui.router'
     'ngMaterial'
-    'ngStorage'
+    'ngSanitize'
+#    'ngStorage'
     'luegg.directives'
   ]

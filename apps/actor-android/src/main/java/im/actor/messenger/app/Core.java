@@ -2,9 +2,14 @@ package im.actor.messenger.app;
 
 import android.app.ActivityManager;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.display.DisplayManager;
 import android.os.Build;
+import android.os.PowerManager;
+import android.view.Display;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.splunk.mint.Mint;
@@ -131,6 +136,43 @@ public class Core {
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
+
+        // Screen changes
+        IntentFilter screenFilter = new IntentFilter();
+        screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        screenFilter.addAction(Intent.ACTION_SCREEN_ON);
+        application.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                    AppStateBroker.stateBroker().onScreenOn();
+                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                    AppStateBroker.stateBroker().onScreenOff();
+                }
+            }
+        }, screenFilter);
+        if (isScreenOn(application)) {
+            AppStateBroker.stateBroker().onScreenOn();
+        } else {
+            AppStateBroker.stateBroker().onScreenOff();
+        }
+    }
+
+    public boolean isScreenOn(Context context) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+            boolean screenOn = false;
+            for (Display display : dm.getDisplays()) {
+                if (display.getState() != Display.STATE_OFF) {
+                    screenOn = true;
+                }
+            }
+            return screenOn;
+        } else {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            //noinspection deprecation
+            return pm.isScreenOn();
+        }
     }
 
     public static int myUid() {

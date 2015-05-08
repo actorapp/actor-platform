@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/encoding/PKS8RsaPrivateKey.java"
-
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
@@ -32,32 +30,22 @@
 J2OBJC_FIELD_SETTER(BCPKS8RsaPrivateKey, modulus_, JavaMathBigInteger *)
 J2OBJC_FIELD_SETTER(BCPKS8RsaPrivateKey, exponent_, JavaMathBigInteger *)
 
-static NSString *BCPKS8RsaPrivateKey_ALGO_ = 
-#line 20
-@"1.2.840.113549.1.1.1";
+static NSString *BCPKS8RsaPrivateKey_ALGO_ = @"1.2.840.113549.1.1.1";
 J2OBJC_STATIC_FIELD_GETTER(BCPKS8RsaPrivateKey, ALGO_, NSString *)
 
-
-#line 18
 @implementation BCPKS8RsaPrivateKey
 
-
-#line 25
 - (instancetype)initWithJavaMathBigInteger:(JavaMathBigInteger *)modulus
                     withJavaMathBigInteger:(JavaMathBigInteger *)exponent {
   BCPKS8RsaPrivateKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, exponent);
   return self;
 }
 
-
-#line 30
 - (instancetype)initWithByteArray:(IOSByteArray *)encoded {
   BCPKS8RsaPrivateKey_initWithByteArray_(self, encoded);
   return self;
 }
 
-
-#line 88
 - (JavaMathBigInteger *)getModulus {
   return modulus_;
 }
@@ -67,60 +55,36 @@ J2OBJC_STATIC_FIELD_GETTER(BCPKS8RsaPrivateKey, ALGO_, NSString *)
 }
 
 - (IOSByteArray *)serialize {
-  return [new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Integer_initWithInt_(
-#line 98
-  0), new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1ObjectIdentifier_initWithNSString_(
-#line 100
-  BCPKS8RsaPrivateKey_ALGO_), new_BCASN1Null_init() } count:2 type:BCASN1Primitive_class_()]), new_BCASN1OctetString_initWithByteArray_(
-#line 103
-  [new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Integer_init(), new_BCASN1Integer_initWithJavaMathBigInteger_(
-#line 105
-  modulus_), new_BCASN1Integer_init(), new_BCASN1Integer_initWithJavaMathBigInteger_(
-#line 107
-  exponent_), new_BCASN1Integer_init(), new_BCASN1Integer_init(), new_BCASN1Integer_init(), new_BCASN1Integer_init(), new_BCASN1Integer_init() } count:9 type:BCASN1Primitive_class_()]) serialize]) } count:3 type:BCASN1Primitive_class_()]) serialize];
+  return [new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Integer_initWithInt_(0), new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1ObjectIdentifier_initWithNSString_(BCPKS8RsaPrivateKey_ALGO_), new_BCASN1Null_init() } count:2 type:BCASN1Primitive_class_()]), new_BCASN1OctetString_initWithByteArray_([new_BCASN1Sequence_initWithBCASN1PrimitiveArray_([IOSObjectArray newArrayWithObjects:(id[]){ new_BCASN1Integer_init(), new_BCASN1Integer_initWithJavaMathBigInteger_(modulus_), new_BCASN1Integer_init(), new_BCASN1Integer_initWithJavaMathBigInteger_(exponent_), new_BCASN1Integer_init(), new_BCASN1Integer_init(), new_BCASN1Integer_init(), new_BCASN1Integer_init(), new_BCASN1Integer_init() } count:9 type:BCASN1Primitive_class_()]) serialize]) } count:3 type:BCASN1Primitive_class_()]) serialize];
 }
 
 @end
 
-
-#line 25
 void BCPKS8RsaPrivateKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(BCPKS8RsaPrivateKey *self, JavaMathBigInteger *modulus, JavaMathBigInteger *exponent) {
   (void) NSObject_init(self);
-  
-#line 26
   self->modulus_ = modulus;
   self->exponent_ = exponent;
 }
 
-
-#line 25
 BCPKS8RsaPrivateKey *new_BCPKS8RsaPrivateKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(JavaMathBigInteger *modulus, JavaMathBigInteger *exponent) {
   BCPKS8RsaPrivateKey *self = [BCPKS8RsaPrivateKey alloc];
   BCPKS8RsaPrivateKey_initWithJavaMathBigInteger_withJavaMathBigInteger_(self, modulus, exponent);
   return self;
 }
 
-
-#line 30
 void BCPKS8RsaPrivateKey_initWithByteArray_(BCPKS8RsaPrivateKey *self, IOSByteArray *encoded) {
   (void) NSObject_init(self);
-  
-#line 31
   BCASN1Primitive *root = BCASN1_readObjectWithByteArray_(encoded);
   if (!([root isKindOfClass:[BCASN1Sequence class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   BCASN1Sequence *sequence = (BCASN1Sequence *) check_class_cast(root, [BCASN1Sequence class]);
-  
-#line 37
   if (!([[((BCASN1Sequence *) nil_chk(sequence)) getWithInt:0] isKindOfClass:[BCASN1Integer class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
   if ([((JavaMathBigInteger *) nil_chk([((BCASN1Integer *) nil_chk(((BCASN1Integer *) check_class_cast([sequence getWithInt:0], [BCASN1Integer class])))) asBigInteger])) intValue] != 0) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
-  
-#line 44
   if (!([[sequence getWithInt:1] isKindOfClass:[BCASN1Sequence class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
@@ -128,28 +92,18 @@ void BCPKS8RsaPrivateKey_initWithByteArray_(BCPKS8RsaPrivateKey *self, IOSByteAr
   if (!([[((BCASN1Sequence *) nil_chk(algoHeader)) getWithInt:0] isKindOfClass:[BCASN1ObjectIdentifier class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
-  
-#line 52
   BCASN1ObjectIdentifier *algo = (BCASN1ObjectIdentifier *) check_class_cast([algoHeader getWithInt:0], [BCASN1ObjectIdentifier class]);
   if (![((NSString *) nil_chk([((BCASN1ObjectIdentifier *) nil_chk(algo)) getIdentifier])) isEqual:BCPKS8RsaPrivateKey_ALGO_]) {
     @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$$", @"Incorrect type of header: ", [algo getIdentifier]));
   }
-  
-#line 57
   if (!([[sequence getWithInt:2] isKindOfClass:[BCASN1OctetString class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
-  
-#line 61
   IOSByteArray *contents = [((BCASN1OctetString *) nil_chk(((BCASN1OctetString *) check_class_cast([sequence getWithInt:2], [BCASN1OctetString class])))) getData];
   BCASN1Primitive *keyRoot = BCASN1_readObjectWithByteArray_(contents);
-  
-#line 64
   if (!([keyRoot isKindOfClass:[BCASN1Sequence class]])) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
-  
-#line 68
   BCASN1Sequence *keySequence = (BCASN1Sequence *) check_class_cast(keyRoot, [BCASN1Sequence class]);
   if ([((BCASN1Sequence *) nil_chk(keySequence)) size] != 9) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
@@ -159,22 +113,14 @@ void BCPKS8RsaPrivateKey_initWithByteArray_(BCPKS8RsaPrivateKey *self, IOSByteAr
       @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
     }
   }
-  
-#line 78
   jint keyVersion = [((JavaMathBigInteger *) nil_chk([((BCASN1Integer *) nil_chk(((BCASN1Integer *) check_class_cast([keySequence getWithInt:0], [BCASN1Integer class])))) asBigInteger])) intValue];
-  
-#line 80
   if (keyVersion != 0 && keyVersion != 1) {
     @throw new_JavaIoIOException_initWithNSString_(@"Incorrect type of sequence");
   }
-  
-#line 84
   self->modulus_ = [((BCASN1Integer *) nil_chk(((BCASN1Integer *) check_class_cast([keySequence getWithInt:1], [BCASN1Integer class])))) asBigInteger];
   self->exponent_ = [((BCASN1Integer *) nil_chk(((BCASN1Integer *) check_class_cast([keySequence getWithInt:3], [BCASN1Integer class])))) asBigInteger];
 }
 
-
-#line 30
 BCPKS8RsaPrivateKey *new_BCPKS8RsaPrivateKey_initWithByteArray_(IOSByteArray *encoded) {
   BCPKS8RsaPrivateKey *self = [BCPKS8RsaPrivateKey alloc];
   BCPKS8RsaPrivateKey_initWithByteArray_(self, encoded);

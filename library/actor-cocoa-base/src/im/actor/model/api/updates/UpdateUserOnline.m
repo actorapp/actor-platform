@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserOnline.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,50 +22,34 @@
 
 @end
 
-
-#line 24
 @implementation ImActorModelApiUpdatesUpdateUserOnline
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithInt:(jint)uid {
   ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(self, uid);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserOnline_init(self);
   return self;
 }
 
-
-#line 41
 - (jint)getUid {
   return self->uid_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
 }
 
-
-#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
 }
 
-
-#line 56
 - (NSString *)description {
   NSString *res = @"update UserOnline{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -75,48 +57,32 @@
   return res;
 }
 
-
-#line 64
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserOnline_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateUserOnline *ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserOnline_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateUserOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserOnline_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(ImActorModelApiUpdatesUpdateUserOnline *self, jint uid) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 34
   self->uid_ = uid;
 }
 
-
-#line 33
 ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(jint uid) {
   ImActorModelApiUpdatesUpdateUserOnline *self = [ImActorModelApiUpdatesUpdateUserOnline alloc];
   ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(self, uid);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiUpdatesUpdateUserOnline_init(ImActorModelApiUpdatesUpdateUserOnline *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 37
 ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_init() {
   ImActorModelApiUpdatesUpdateUserOnline *self = [ImActorModelApiUpdatesUpdateUserOnline alloc];
   ImActorModelApiUpdatesUpdateUserOnline_init(self);

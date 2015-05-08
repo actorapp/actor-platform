@@ -4,16 +4,12 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/ThreadLocalCompat.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/util/ThreadLocalCompat.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-
-#line 10
 @implementation AMThreadLocalCompat
 
 - (instancetype)init {

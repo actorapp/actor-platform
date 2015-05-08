@@ -18,3 +18,15 @@ class Utils: NSObject {
     }
     
 }
+
+extension UIViewController {
+    
+    func getNavigationBarHeight() -> CGFloat {
+        return navigationController!.navigationBar.frame.height
+    }
+    
+    func getStatusBarHeight() -> CGFloat {
+        let statusBarSize = UIApplication.sharedApplication().statusBarFrame.size
+        return min(statusBarSize.width, statusBarSize.height)
+    }
+}

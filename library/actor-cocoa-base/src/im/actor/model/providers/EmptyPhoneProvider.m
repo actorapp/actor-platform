@@ -4,15 +4,11 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/providers/EmptyPhoneProvider.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/PhoneBookProvider.h"
 #include "im/actor/model/providers/EmptyPhoneProvider.h"
 #include "java/util/ArrayList.h"
 
-
-#line 15
 @implementation ImActorModelProvidersEmptyPhoneProvider
 
 - (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback {

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/crypto/asn1/ASN1Primitive.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/crypto/asn1/ASN1Primitive.h"
@@ -14,12 +12,8 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-
-#line 9
 @implementation BCASN1Primitive
 
-
-#line 13
 - (IOSByteArray *)serialize {
   BSDataOutput *res = new_BSDataOutput_init();
   [self serializeWithBSDataOutput:res];

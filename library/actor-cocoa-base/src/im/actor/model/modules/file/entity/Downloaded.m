@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/file/entity/Downloaded.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,16 +31,12 @@ __attribute__((unused)) static void ImActorModelModulesFileEntityDownloaded_init
 
 __attribute__((unused)) static ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_init() NS_RETURNS_RETAINED;
 
-
-#line 15
 @implementation ImActorModelModulesFileEntityDownloaded
 
 + (ImActorModelModulesFileEntityDownloaded *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesFileEntityDownloaded_fromBytesWithByteArray_(data);
 }
 
-
-#line 25
 - (instancetype)initWithLong:(jlong)fileId
                      withInt:(jint)fileSize
                 withNSString:(NSString *)descriptor {
@@ -50,15 +44,11 @@ __attribute__((unused)) static ImActorModelModulesFileEntityDownloaded *new_ImAc
   return self;
 }
 
-
-#line 31
 - (instancetype)init {
   ImActorModelModulesFileEntityDownloaded_init(self);
   return self;
 }
 
-
-#line 35
 - (jlong)getFileId {
   return fileId_;
 }
@@ -71,52 +61,36 @@ __attribute__((unused)) static ImActorModelModulesFileEntityDownloaded *new_ImAc
   return descriptor_;
 }
 
-
-#line 48
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   fileSize_ = [values getIntWithInt:2];
   descriptor_ = [values getStringWithInt:3];
 }
 
-
-#line 55
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
   [writer writeIntWithInt:2 withInt:fileSize_];
   [writer writeStringWithInt:3 withNSString:descriptor_];
 }
 
-
-#line 62
 - (jlong)getEngineId {
   return fileId_;
 }
 
 @end
 
-
-#line 17
 ImActorModelModulesFileEntityDownloaded *ImActorModelModulesFileEntityDownloaded_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesFileEntityDownloaded_initialize();
-  
-#line 18
   return ((ImActorModelModulesFileEntityDownloaded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesFileEntityDownloaded_init(), data));
 }
 
-
-#line 25
 void ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(ImActorModelModulesFileEntityDownloaded *self, jlong fileId, jint fileSize, NSString *descriptor) {
   (void) BSBserObject_init(self);
-  
-#line 26
   self->fileId_ = fileId;
   self->fileSize_ = fileSize;
   self->descriptor_ = descriptor;
 }
 
-
-#line 25
 ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(jlong fileId, jint fileSize, NSString *descriptor) {
   ImActorModelModulesFileEntityDownloaded *self = [ImActorModelModulesFileEntityDownloaded alloc];
   ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_(self, fileId, fileSize, descriptor);
@@ -127,8 +101,6 @@ void ImActorModelModulesFileEntityDownloaded_init(ImActorModelModulesFileEntityD
   (void) BSBserObject_init(self);
 }
 
-
-#line 31
 ImActorModelModulesFileEntityDownloaded *new_ImActorModelModulesFileEntityDownloaded_init() {
   ImActorModelModulesFileEntityDownloaded *self = [ImActorModelModulesFileEntityDownloaded alloc];
   ImActorModelModulesFileEntityDownloaded_init(self);

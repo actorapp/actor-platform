@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestMessageRead.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApiOutPeer *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestMessageRead
 
-
-#line 27
 + (ImActorModelApiRpcRequestMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)date {
   ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestMessageRead_init(self);
   return self;
 }
 
-
-#line 43
 - (ImActorModelApiOutPeer *)getPeer {
   return self->peer_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApi
   return self->date_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
   self->date_ = [values getLongWithInt:3];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -80,8 +64,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApi
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"rpc MessageRead{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -90,47 +72,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApi
   return res;
 }
 
-
-#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestMessageRead_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestMessageRead *ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestMessageRead_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestMessageRead *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestMessageRead_init(), data));
 }
 
 void ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiRpcRequestMessageRead *self, ImActorModelApiOutPeer *peer, jlong date) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->peer_ = peer;
   self->date_ = date;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestMessageRead *new_ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiOutPeer *peer, jlong date) {
   ImActorModelApiRpcRequestMessageRead *self = [ImActorModelApiRpcRequestMessageRead alloc];
   ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestMessageRead_init(ImActorModelApiRpcRequestMessageRead *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestMessageRead *new_ImActorModelApiRpcRequestMessageRead_init() {
   ImActorModelApiRpcRequestMessageRead *self = [ImActorModelApiRpcRequestMessageRead alloc];
   ImActorModelApiRpcRequestMessageRead_init(self);
