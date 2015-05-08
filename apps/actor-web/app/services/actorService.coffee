@@ -161,8 +161,9 @@ class ActorService
     console.log '[AW]ActorService onDialogsEnd'
   onDialogsOpen: ->
     console.log '[AW]ActorService onDialogsOpen'
-  onMessageShown: ->
+  onMessageShown: (peer, sortKey, isOut) ->
     console.log '[AW]ActorService onMessageShown'
+    @messenger.onMessageShown peer, sortKey, isOut
   onProfileClosed: ->
     console.log '[AW]ActorService onProfileClosed'
   onProfileOpen: ->
