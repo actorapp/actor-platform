@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Member.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Member.h"
@@ -23,12 +21,8 @@
 
 @end
 
-
-#line 23
 @implementation ImActorModelApiMember
 
-
-#line 29
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
@@ -36,15 +30,11 @@
   return self;
 }
 
-
-#line 35
 - (instancetype)init {
   ImActorModelApiMember_init(self);
   return self;
 }
 
-
-#line 39
 - (jint)getUid {
   return self->uid_;
 }
@@ -57,24 +47,18 @@
   return self->date_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->inviterUid_ = [values getIntWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
 
-
-#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->inviterUid_];
   [writer writeLongWithInt:3 withLong:self->date_];
 }
 
-
-#line 66
 - (NSString *)description {
   NSString *res = @"struct Member{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -86,19 +70,13 @@
 
 @end
 
-
-#line 29
 void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date) {
   (void) BSBserObject_init(self);
-  
-#line 30
   self->uid_ = uid;
   self->inviterUid_ = inviterUid;
   self->date_ = date;
 }
 
-
-#line 29
 ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
   ImActorModelApiMember *self = [ImActorModelApiMember alloc];
   ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
@@ -109,8 +87,6 @@ void ImActorModelApiMember_init(ImActorModelApiMember *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 35
 ImActorModelApiMember *new_ImActorModelApiMember_init() {
   ImActorModelApiMember *self = [ImActorModelApiMember alloc];
   ImActorModelApiMember_init(self);

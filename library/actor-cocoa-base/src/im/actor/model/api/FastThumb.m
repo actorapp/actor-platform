@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FastThumb.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,12 +25,8 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
 
-
-#line 23
 @implementation ImActorModelApiFastThumb
 
-
-#line 29
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)thumb {
@@ -40,15 +34,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   return self;
 }
 
-
-#line 35
 - (instancetype)init {
   ImActorModelApiFastThumb_init(self);
   return self;
 }
 
-
-#line 39
 - (jint)getW {
   return self->w_;
 }
@@ -61,16 +51,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   return self->thumb_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->thumb_ = [values getBytesWithInt:3];
 }
 
-
-#line 59
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
@@ -80,8 +66,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   [writer writeBytesWithInt:3 withByteArray:self->thumb_];
 }
 
-
-#line 69
 - (NSString *)description {
   NSString *res = @"struct FastThumb{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"w=", self->w_));
@@ -93,19 +77,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
 
 @end
 
-
-#line 29
 void ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(ImActorModelApiFastThumb *self, jint w, jint h, IOSByteArray *thumb) {
   (void) BSBserObject_init(self);
-  
-#line 30
   self->w_ = w;
   self->h_ = h;
   self->thumb_ = thumb;
 }
 
-
-#line 29
 ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) {
   ImActorModelApiFastThumb *self = [ImActorModelApiFastThumb alloc];
   ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
@@ -116,8 +94,6 @@ void ImActorModelApiFastThumb_init(ImActorModelApiFastThumb *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 35
 ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_init() {
   ImActorModelApiFastThumb *self = [ImActorModelApiFastThumb alloc];
   ImActorModelApiFastThumb_init(self);

@@ -4,40 +4,41 @@
 
 html {
   background-color: $bodyColor;
-  background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
-  background-repeat: no-repeat;
-  background-size: 100% 300px;
 }
 body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   padding: 24px;
   transition: padding 0.4s cubic-bezier(.25,.8,.25,1);
-  background-color: transparent;
   text-rendering: optimizeLegibility;
+  background-color: $bodyColor;
+  background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 300px;
   @media (max-height: 600px) {
-    padding-top: 0;
-    padding-bottom: 0;
-    .main {
-      border-radius: 0;
-    }
+    padding: 0;
   }
   @media (max-width: 1024px) {
     padding: 0;
   }
 }
-.main {
-  position: relative;
-  overflow: hidden;
-  margin: 0 auto;
-  border-radius: 4px;
-  background: rgb(255, 255, 255);
-  box-shadow: 0 1px 1px rgba(97, 127, 152, .2), 1px 0 0 rgba(97, 127, 152, .1), -1px 0 0 rgba(97, 127, 152, .1);
-  @media (max-width: 1024px) {
-    overflow: visible;
-    width: 100%;
-    border-radius: 0;
+
+.splash-screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f00;
+  z-index: 1000;
+  background-color: $baseColor;
+  background-repeat: no-repeat;
+  background-size: 100% 300px;
+  img {
+    width: 96px;
+    height: auto;
   }
 }
+
 md-toolbar.md-default-theme {
   min-height: 56px;
   border-bottom: 1px solid rgb(239,239,239);
@@ -208,5 +209,23 @@ md-list-item {
   margin-right: 0;
   &:after {
     right: 0 !important;
+  }
+}
+
+
+.status {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  margin-top: -3px;
+  color: rgb(148,148,148);
+  &--penging {}
+  &--sent {}
+  &--received {}
+  &--read {
+    color: $baseColor;
+  }
+  &--error {
+    color: #962e00;
   }
 }

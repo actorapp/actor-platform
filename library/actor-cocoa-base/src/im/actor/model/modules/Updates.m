@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/Updates.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -47,27 +45,17 @@ __attribute__((unused)) static ImActorModelModulesUpdates_$1 *new_ImActorModelMo
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates_$1)
 
-
-#line 14
 @implementation ImActorModelModulesUpdates
 
-
-#line 18
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesUpdates_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 22
 - (void)run {
-  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), new_ImActorModelModulesUpdates_$1_initWithImActorModelModulesUpdates_(self)) withNSString:
-#line 28
-  @"actor/updates"];
+  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), new_ImActorModelModulesUpdates_$1_initWithImActorModelModulesUpdates_(self)) withNSString:@"actor/updates"];
 }
 
-
-#line 31
 - (void)onNewSessionCreated {
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:new_ImActorModelModulesUpdatesSequenceActor_Invalidate_init()];
 }
@@ -82,14 +70,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates_$1)
 
 @end
 
-
-#line 18
 void ImActorModelModulesUpdates_initWithImActorModelModulesModules_(ImActorModelModulesUpdates *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, messenger);
 }
 
-
-#line 18
 ImActorModelModulesUpdates *new_ImActorModelModulesUpdates_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesUpdates *self = [ImActorModelModulesUpdates alloc];
   ImActorModelModulesUpdates_initWithImActorModelModulesModules_(self, messenger);
@@ -100,8 +84,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdates)
 
 @implementation ImActorModelModulesUpdates_$1
 
-
-#line 25
 - (ImActorModelModulesUpdatesSequenceActor *)create {
   return new_ImActorModelModulesUpdatesSequenceActor_initWithImActorModelModulesModules_([this$0_ modules]);
 }

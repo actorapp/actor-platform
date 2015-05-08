@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/UnreadMessagesStorage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,16 +29,12 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unreadMessages_, JavaUtilHashMap *)
 
-
-#line 18
 @implementation ImActorModelModulesMessagesEntityUnreadMessagesStorage
 
 + (ImActorModelModulesMessagesEntityUnreadMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(data);
 }
 
-
-#line 26
 - (JavaUtilHashSet *)getUnreadWithAMPeer:(AMPeer *)peer {
   if (![((JavaUtilHashMap *) nil_chk(unreadMessages_)) containsKeyWithId:peer]) {
     (void) [unreadMessages_ putWithId:peer withId:new_JavaUtilHashSet_init()];
@@ -48,8 +42,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unre
   return [unreadMessages_ getWithId:peer];
 }
 
-
-#line 34
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> data = [((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1];
   for (IOSByteArray * __strong d in nil_chk(data)) {
@@ -57,16 +49,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unre
       ImActorModelModulesMessagesEntityUnreadMessage *u = ImActorModelModulesMessagesEntityUnreadMessage_fromBytesWithByteArray_(d);
       [((JavaUtilHashSet *) nil_chk([self getUnreadWithAMPeer:[((ImActorModelModulesMessagesEntityUnreadMessage *) nil_chk(u)) getPeer]])) addWithId:u];
     }
-    @catch (
-#line 40
-    JavaIoIOException *e) {
+    @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
 }
 
-
-#line 47
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   for (AMPeer * __strong peer in nil_chk([((JavaUtilHashMap *) nil_chk(unreadMessages_)) keySet])) {
     for (ImActorModelModulesMessagesEntityUnreadMessage * __strong u in nil_chk([unreadMessages_ getWithId:peer])) {
@@ -82,12 +70,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityUnreadMessagesStorage, unre
 
 @end
 
-
-#line 20
 ImActorModelModulesMessagesEntityUnreadMessagesStorage *ImActorModelModulesMessagesEntityUnreadMessagesStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityUnreadMessagesStorage_initialize();
-  
-#line 21
   return ((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityUnreadMessagesStorage_init(), data));
 }
 

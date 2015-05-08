@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/BaseModule.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/CryptoProvider.h"
@@ -56,53 +54,25 @@ __attribute__((unused)) static ImActorModelModulesBaseModule_$1 *new_ImActorMode
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesBaseModule_$1)
 
-NSString *ImActorModelModulesBaseModule_STORAGE_DIALOGS_ = 
-#line 22
-@"dialogs";
-NSString *ImActorModelModulesBaseModule_STORAGE_USERS_ = 
-#line 23
-@"users";
-NSString *ImActorModelModulesBaseModule_STORAGE_GROUPS_ = 
-#line 24
-@"groups";
-NSString *ImActorModelModulesBaseModule_STORAGE_DOWNLOADS_ = 
-#line 25
-@"downloads";
-NSString *ImActorModelModulesBaseModule_STORAGE_CONTACTS_ = 
-#line 26
-@"contacts";
-NSString *ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_ = 
-#line 27
-@"notifications";
-NSString *ImActorModelModulesBaseModule_STORAGE_SEARCH_ = 
-#line 28
-@"search";
-NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = 
-#line 30
-@"chat_";
-NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_MEDIA_PREFIX_ = 
-#line 31
-@"chat_media_";
-NSString *ImActorModelModulesBaseModule_STORAGE_PENDING_ = 
-#line 32
-@"chat_pending";
-NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = 
-#line 33
-@"chat_cursor";
+NSString *ImActorModelModulesBaseModule_STORAGE_DIALOGS_ = @"dialogs";
+NSString *ImActorModelModulesBaseModule_STORAGE_USERS_ = @"users";
+NSString *ImActorModelModulesBaseModule_STORAGE_GROUPS_ = @"groups";
+NSString *ImActorModelModulesBaseModule_STORAGE_DOWNLOADS_ = @"downloads";
+NSString *ImActorModelModulesBaseModule_STORAGE_CONTACTS_ = @"contacts";
+NSString *ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_ = @"notifications";
+NSString *ImActorModelModulesBaseModule_STORAGE_SEARCH_ = @"search";
+NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = @"chat_";
+NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_MEDIA_PREFIX_ = @"chat_media_";
+NSString *ImActorModelModulesBaseModule_STORAGE_PENDING_ = @"chat_pending";
+NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
 
-
-#line 20
 @implementation ImActorModelModulesBaseModule
 
-
-#line 37
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
-
-#line 41
 - (ImActorModelModulesModules *)modules {
   return modules__;
 }
@@ -164,14 +134,10 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ =
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback];
 }
 
-
-#line 101
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request {
   [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:new_ImActorModelModulesBaseModule_$1_init()];
 }
 
-
-#line 115
 - (id<DKKeyValueEngine>)users {
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsers];
 }
@@ -182,17 +148,11 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ =
 
 @end
 
-
-#line 37
 void ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(ImActorModelModulesBaseModule *self, ImActorModelModulesModules *modules) {
   (void) NSObject_init(self);
-  
-#line 38
   self->modules__ = modules;
 }
 
-
-#line 37
 ImActorModelModulesBaseModule *new_ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesBaseModule *self = [ImActorModelModulesBaseModule alloc];
   ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
@@ -203,13 +163,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 
 @implementation ImActorModelModulesBaseModule_$1
 
-
-#line 104
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
 }
 
-
-#line 109
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
 }
 

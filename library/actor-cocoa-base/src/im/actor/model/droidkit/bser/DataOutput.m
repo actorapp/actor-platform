@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/bser/DataOutput.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,34 +26,22 @@ J2OBJC_FIELD_SETTER(BSDataOutput, data_, IOSByteArray *)
 
 __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *self, jint size);
 
-
-#line 9
 @implementation BSDataOutput
 
-
-#line 13
 - (instancetype)init {
   BSDataOutput_init(self);
   return self;
 }
 
-
-#line 17
 - (void)expandWithInt:(jint)size {
   BSDataOutput_expandWithInt_(self, size);
 }
 
-
-#line 25
 - (void)writeLongWithLong:(jlong)v {
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 8) {
     BSDataOutput_expandWithInt_(self, offset_ + 8);
   }
-  
-#line 30
   v = v & (jint) 0xFFFFFFFF;
-  
-#line 32
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 56)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 48)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 40)) & (jint) 0xFF);
@@ -66,22 +52,16 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) (v & (jint) 0xFF);
 }
 
-
-#line 42
 - (void)writeIntWithInt:(jint)v {
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 4) {
     BSDataOutput_expandWithInt_(self, offset_ + 4);
   }
-  
-#line 47
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 24)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 16)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 8)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) (v & (jint) 0xFF);
 }
 
-
-#line 53
 - (void)writeByteWithByte:(jbyte)v {
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 1) {
     BSDataOutput_expandWithInt_(self, offset_ + 1);
@@ -107,13 +87,9 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
     [self writeByteWithInt:(jint) ((v & (jint) 0x7f) | (jint) 0x80)];
     URShiftAssignLong(&v, 7);
   }
-  
-#line 79
   [self writeByteWithInt:(jint) (v & (jint) 0x7f)];
 }
 
-
-#line 82
 - (void)writeProtoBytesWithByteArray:(IOSByteArray *)v
                              withInt:(jint)ofs
                              withInt:(jint)len {
@@ -121,8 +97,6 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   [self writeBytesWithByteArray:v withInt:ofs withInt:len];
 }
 
-
-#line 87
 - (void)writeBytesWithByteArray:(IOSByteArray *)v {
   [self writeBytesWithByteArray:v withInt:0 withInt:((IOSByteArray *) nil_chk(v))->size_];
 }
@@ -142,8 +116,6 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   if (ofs + len > ((IOSByteArray *) nil_chk(v))->size_) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Inconsistent sizes");
   }
-  
-#line 105
   if (((IOSByteArray *) nil_chk(data_))->size_ < offset_ + v->size_) {
     BSDataOutput_expandWithInt_(self, offset_ + v->size_);
   }
@@ -152,30 +124,22 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   }
 }
 
-
-#line 113
 - (void)writeProtoLongsWithLongArray:(IOSLongArray *)values {
   if (((IOSLongArray *) nil_chk(values))->size_ > BSLimits_MAX_PROTO_REPEATED) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(JreStrcat("$I", @"Values can't be more than ", BSLimits_MAX_PROTO_REPEATED));
   }
   [self writeVarIntWithLong:values->size_];
   {
-    IOSLongArray *a__ =
-#line 118
-    values;
+    IOSLongArray *a__ = values;
     jlong const *b__ = a__->buffer_;
     jlong const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       jlong l = *b__++;
-      
-#line 119
       [self writeLongWithLong:l];
     }
   }
 }
 
-
-#line 123
 - (void)writeProtoStringWithNSString:(NSString *)value {
   IOSByteArray *data = [((NSString *) nil_chk(value)) getBytesWithCharsetName:@"UTF-8"];
   [self writeProtoBytesWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
@@ -197,48 +161,32 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   if (length > 127) {
     jint size = 1;
     jint val = length;
-    
-#line 145
     while ((URShiftAssignInt(&val, 8)) != 0) {
       size++;
     }
-    
-#line 149
     [self writeByteWithInt:(size | (jint) 0x80) & (jint) 0xFF];
-    
-#line 151
     for (jint i = (size - 1) * 8; i >= 0; i -= 8) {
       [self writeByteWithInt:(RShift32(length, i)) & (jint) 0xFF];
     }
   }
   else {
-    
-#line 155
     [self writeByteWithInt:length & (jint) 0xFF];
   }
 }
 
 @end
 
-
-#line 13
 void BSDataOutput_init(BSDataOutput *self) {
   (void) NSObject_init(self);
-  self->data_ = [IOSByteArray newArrayWithLength:
-#line 10
-  16];
+  self->data_ = [IOSByteArray newArrayWithLength:16];
 }
 
-
-#line 13
 BSDataOutput *new_BSDataOutput_init() {
   BSDataOutput *self = [BSDataOutput alloc];
   BSDataOutput_init(self);
   return self;
 }
 
-
-#line 17
 void BSDataOutput_expandWithInt_(BSDataOutput *self, jint size) {
   IOSByteArray *nData = [IOSByteArray newArrayWithLength:size];
   for (jint i = 0; i < self->offset_; i++) {

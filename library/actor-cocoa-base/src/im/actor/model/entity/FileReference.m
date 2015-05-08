@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/FileReference.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -34,16 +32,12 @@ __attribute__((unused)) static void AMFileReference_init(AMFileReference *self);
 
 __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RETURNS_RETAINED;
 
-
-#line 14
 @implementation AMFileReference
 
 + (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMFileReference_fromBytesWithByteArray_(data);
 }
 
-
-#line 25
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
@@ -52,15 +46,11 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
   return self;
 }
 
-
-#line 32
 - (instancetype)init {
   AMFileReference_init(self);
   return self;
 }
 
-
-#line 36
 - (jint)getFileSize {
   return fileSize_;
 }
@@ -77,30 +67,18 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
   return fileName_;
 }
 
-
-#line 53
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  
-#line 57
   AMFileReference *that = (AMFileReference *) check_class_cast(o, [AMFileReference class]);
-  
-#line 59
   if (fileId_ != ((AMFileReference *) nil_chk(that))->fileId_) return NO;
-  
-#line 61
   return YES;
 }
 
-
-#line 65
 - (NSUInteger)hash {
   return (jint) (fileId_ ^ (URShift64(fileId_, 32)));
 }
 
-
-#line 70
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   accessHash_ = [values getLongWithInt:2];
@@ -108,8 +86,6 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
   fileName_ = [values getStringWithInt:4];
 }
 
-
-#line 78
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
   [writer writeLongWithInt:2 withLong:accessHash_];
@@ -119,43 +95,29 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
 
 @end
 
-
-#line 16
 AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data) {
   AMFileReference_initialize();
-  
-#line 17
   return ((AMFileReference *) BSBser_parseWithBSBserObject_withByteArray_(new_AMFileReference_init(), data));
 }
 
-
-#line 25
 void AMFileReference_initWithLong_withLong_withInt_withNSString_(AMFileReference *self, jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) {
   (void) BSBserObject_init(self);
-  
-#line 26
   self->fileId_ = fileId;
   self->accessHash_ = accessHash;
   self->fileSize_ = fileSize;
   self->fileName_ = fileName;
 }
 
-
-#line 25
 AMFileReference *new_AMFileReference_initWithLong_withLong_withInt_withNSString_(jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) {
   AMFileReference *self = [AMFileReference alloc];
   AMFileReference_initWithLong_withLong_withInt_withNSString_(self, fileId, accessHash, fileSize, fileName);
   return self;
 }
 
-
-#line 32
 void AMFileReference_init(AMFileReference *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 32
 AMFileReference *new_AMFileReference_init() {
   AMFileReference *self = [AMFileReference alloc];
   AMFileReference_init(self);

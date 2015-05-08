@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/entity/PlainCursorsStorage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -30,16 +28,12 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursorsStorage, cursors_, JavaUtilHashMap *)
 
-
-#line 17
 @implementation ImActorModelModulesMessagesEntityPlainCursorsStorage
 
 + (ImActorModelModulesMessagesEntityPlainCursorsStorage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(data);
 }
 
-
-#line 25
 - (ImActorModelModulesMessagesEntityPlainCursor *)getCursorWithAMPeer:(AMPeer *)peer {
   if (![((JavaUtilHashMap *) nil_chk(cursors_)) containsKeyWithId:peer]) {
     (void) [cursors_ putWithId:peer withId:new_ImActorModelModulesMessagesEntityPlainCursor_initWithAMPeer_withLong_withLong_(peer, 0, 0)];
@@ -55,24 +49,18 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursorsStorage, cursor
   return [((JavaUtilHashMap *) nil_chk(cursors_)) values];
 }
 
-
-#line 41
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   for (IOSByteArray * __strong data in nil_chk([((BSBserValues *) nil_chk(values)) getRepeatedBytesWithInt:1])) {
     @try {
       ImActorModelModulesMessagesEntityPlainCursor *plainCursor = ImActorModelModulesMessagesEntityPlainCursor_fromBytesWithByteArray_(data);
       (void) [((JavaUtilHashMap *) nil_chk(cursors_)) putWithId:[((ImActorModelModulesMessagesEntityPlainCursor *) nil_chk(plainCursor)) getPeer] withId:plainCursor];
     }
-    @catch (
-#line 46
-    JavaIoIOException *e) {
+    @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
 }
 
-
-#line 53
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   for (ImActorModelModulesMessagesEntityPlainCursor * __strong cursor in nil_chk([((JavaUtilHashMap *) nil_chk(cursors_)) values])) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:cursor];
@@ -86,12 +74,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityPlainCursorsStorage, cursor
 
 @end
 
-
-#line 19
 ImActorModelModulesMessagesEntityPlainCursorsStorage *ImActorModelModulesMessagesEntityPlainCursorsStorage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelModulesMessagesEntityPlainCursorsStorage_initialize();
-  
-#line 20
   return ((ImActorModelModulesMessagesEntityPlainCursorsStorage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelModulesMessagesEntityPlainCursorsStorage_init(), data));
 }
 

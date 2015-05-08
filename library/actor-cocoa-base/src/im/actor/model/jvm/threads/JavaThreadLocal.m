@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaThreadLocal.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/jvm/threads/JavaThreadLocal.h"
 #include "im/actor/model/util/ThreadLocalCompat.h"
@@ -20,24 +18,16 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelJvmThreadsJavaThreadLocal, tThreadLocal_, JavaLangThreadLocal *)
 
-
-#line 9
 @implementation ImActorModelJvmThreadsJavaThreadLocal
 
-
-#line 13
 - (id)get {
   return [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) get];
 }
 
-
-#line 18
 - (void)setWithId:(id)v {
   [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) setWithId:v];
 }
 
-
-#line 23
 - (void)remove {
   [((JavaLangThreadLocal *) nil_chk(tThreadLocal_)) remove];
 }

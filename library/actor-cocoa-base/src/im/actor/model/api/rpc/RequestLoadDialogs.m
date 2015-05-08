@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadDialogs.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,29 +25,21 @@
 
 @implementation ImActorModelApiRpcRequestLoadDialogs
 
-
-#line 27
 + (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit {
   ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcRequestLoadDialogs_init(self);
   return self;
 }
 
-
-#line 43
 - (jlong)getMinDate {
   return self->minDate_;
 }
@@ -58,22 +48,16 @@
   return self->limit_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->minDate_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->limit_ = [values getIntWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->minDate_];
   [writer writeIntWithInt:2 withInt:self->limit_];
 }
 
-
-#line 64
 - (NSString *)description {
   NSString *res = @"rpc LoadDialogs{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"minDate=", self->minDate_));
@@ -82,47 +66,33 @@
   return res;
 }
 
-
-#line 73
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestLoadDialogs_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestLoadDialogs_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLoadDialogs_init(), data));
 }
 
 void ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(ImActorModelApiRpcRequestLoadDialogs *self, jlong minDate, jint limit) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 35
   self->minDate_ = minDate;
   self->limit_ = limit;
 }
 
-
-#line 34
 ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) {
   ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
   ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcRequestLoadDialogs_init(ImActorModelApiRpcRequestLoadDialogs *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_init() {
   ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
   ImActorModelApiRpcRequestLoadDialogs_init(self);

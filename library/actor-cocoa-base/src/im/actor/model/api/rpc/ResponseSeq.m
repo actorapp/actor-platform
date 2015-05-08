@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSeq.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -28,33 +26,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseSeq
 
-
-#line 27
 + (ImActorModelApiRpcResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state {
   ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcResponseSeq_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getSeq {
   return self->seq_;
 }
@@ -63,15 +51,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
   return self->state_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->seq_];
   if (self->state_ == nil) {
@@ -80,8 +64,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
   [writer writeBytesWithInt:2 withByteArray:self->state_];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"response Seq{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"seq=", self->seq_));
@@ -90,47 +72,33 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
   return res;
 }
 
-
-#line 76
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseSeq_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseSeq *ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseSeq_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseSeq *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSeq_init(), data));
 }
 
 void ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(ImActorModelApiRpcResponseSeq *self, jint seq, IOSByteArray *state) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 35
   self->seq_ = seq;
   self->state_ = state;
 }
 
-
-#line 34
 ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(jint seq, IOSByteArray *state) {
   ImActorModelApiRpcResponseSeq *self = [ImActorModelApiRpcResponseSeq alloc];
   ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcResponseSeq_init(ImActorModelApiRpcResponseSeq *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_init() {
   ImActorModelApiRpcResponseSeq *self = [ImActorModelApiRpcResponseSeq alloc];
   ImActorModelApiRpcResponseSeq_init(self);

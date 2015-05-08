@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/AppStateModule.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -50,25 +48,17 @@ __attribute__((unused)) static ImActorModelModulesAppStateModule_$1 *new_ImActor
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule_$1)
 
-
-#line 15
 @implementation ImActorModelModulesAppStateModule
 
-
-#line 19
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(self, modules);
   return self;
 }
 
 - (void)run {
-  listStatesActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesStateListsStatesActor_class_(), new_ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(self)) withNSString:
-#line 30
-  @"actor/app/state"];
+  listStatesActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesStateListsStatesActor_class_(), new_ImActorModelModulesAppStateModule_$1_initWithImActorModelModulesAppStateModule_(self)) withNSString:@"actor/app/state"];
 }
 
-
-#line 33
 - (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty {
   [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnDialogsChanged_initWithBoolean_(isEmpty)];
 }
@@ -95,15 +85,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule_$1)
 
 @end
 
-
-#line 19
 void ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesAppStateModule *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->appStateVM_ = new_AMAppStateVM_initWithImActorModelModulesModules_(modules);
 }
 
-
-#line 19
 ImActorModelModulesAppStateModule *new_ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
   ImActorModelModulesAppStateModule *self = [ImActorModelModulesAppStateModule alloc];
   ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(self, modules);
@@ -114,8 +100,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAppStateModule)
 
 @implementation ImActorModelModulesAppStateModule_$1
 
-
-#line 27
 - (ImActorModelModulesStateListsStatesActor *)create {
   return new_ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_([this$0_ modules]);
 }
