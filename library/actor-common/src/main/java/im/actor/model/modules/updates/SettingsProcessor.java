@@ -14,6 +14,6 @@ public class SettingsProcessor extends BaseModule {
     }
 
     public void onSettingsChanged(String key, String value) {
-        modules().getPreferences().putString(key, value);
+        modules().getSettings().onUpdatedSetting(key, value);
     }
 }

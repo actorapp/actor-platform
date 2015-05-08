@@ -5,7 +5,7 @@
 package im.actor.model.modules.file;
 
 import im.actor.model.FileSystemProvider;
-import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.HttpProvider;
 import im.actor.model.api.FileLocation;
 import im.actor.model.api.rpc.RequestGetFileUrl;
 import im.actor.model.api.rpc.ResponseGetFileUrl;
@@ -30,7 +30,7 @@ public class DownloadTask extends ModuleActor {
     private FileReference fileReference;
     private ActorRef manager;
     private FileSystemProvider fileSystemProvider;
-    private HttpDownloaderProvider downloaderProvider;
+    private HttpProvider downloaderProvider;
 
     private FileSystemReference destReference;
     private OutputFile outputFile;
@@ -68,7 +68,7 @@ public class DownloadTask extends ModuleActor {
             return;
         }
 
-        downloaderProvider = modules().getConfiguration().getHttpDownloaderProvider();
+        downloaderProvider = modules().getConfiguration().getHttpProvider();
         if (downloaderProvider == null) {
             reportError();
             if (LOG) {
@@ -190,7 +190,7 @@ public class DownloadTask extends ModuleActor {
     }
 
     private void downloadPart(final int blockIndex, final int fileOffset) {
-        downloaderProvider.downloadPart(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
+        downloaderProvider.getMethod(fileUrl, fileOffset, blockSize, fileReference.getFileSize(), new FileDownloadCallback() {
             @Override
             public void onDownloaded(final byte[] data) {
                 self().send(new Runnable() {

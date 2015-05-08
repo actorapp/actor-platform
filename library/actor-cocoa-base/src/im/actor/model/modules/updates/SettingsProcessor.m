@@ -5,9 +5,9 @@
 
 
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Settings.h"
 #include "im/actor/model/modules/updates/SettingsProcessor.h"
 
 @implementation ImActorModelModulesUpdatesSettingsProcessor
@@ -19,7 +19,7 @@
 
 - (void)onSettingsChangedWithNSString:(NSString *)key
                          withNSString:(NSString *)value {
-  [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getPreferences])) putString:key withValue:value];
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) onUpdatedSettingWithNSString:key withNSString:value];
 }
 
 @end

@@ -8,12 +8,14 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/AnalyticsProvider.h"
 #include "im/actor/model/ApiConfiguration.h"
+#include "im/actor/model/AppCategory.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/ConfigurationBuilder.h"
 #include "im/actor/model/CryptoProvider.h"
+#include "im/actor/model/DeviceCategory.h"
 #include "im/actor/model/DispatcherProvider.h"
 #include "im/actor/model/FileSystemProvider.h"
-#include "im/actor/model/HttpDownloaderProvider.h"
+#include "im/actor/model/HttpProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogProvider.h"
 #include "im/actor/model/MainThreadProvider.h"
@@ -45,8 +47,10 @@
   id<AMNotificationProvider> notificationProvider_;
   id<AMDispatcherProvider> dispatcherProvider_;
   AMApiConfiguration *apiConfiguration_;
-  id<AMHttpDownloaderProvider> httpDownloaderProvider_;
+  id<AMHttpProvider> httpProvider_;
   id<AMAnalyticsProvider> analyticsProvider_;
+  AMAppCategoryEnum *appCategory_;
+  AMDeviceCategoryEnum *deviceCategory_;
 }
 
 @end
@@ -64,13 +68,25 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, fileSystemProvider_, id<AMFileSystem
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, notificationProvider_, id<AMNotificationProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, dispatcherProvider_, id<AMDispatcherProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, apiConfiguration_, AMApiConfiguration *)
-J2OBJC_FIELD_SETTER(AMConfigurationBuilder, httpDownloaderProvider_, id<AMHttpDownloaderProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, httpProvider_, id<AMHttpProvider>)
 J2OBJC_FIELD_SETTER(AMConfigurationBuilder, analyticsProvider_, id<AMAnalyticsProvider>)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, appCategory_, AMAppCategoryEnum *)
+J2OBJC_FIELD_SETTER(AMConfigurationBuilder, deviceCategory_, AMDeviceCategoryEnum *)
 
 @implementation AMConfigurationBuilder
 
-- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider {
-  self->httpDownloaderProvider_ = httpDownloaderProvider;
+- (AMConfigurationBuilder *)setAppCategory:(AMAppCategoryEnum *)appCategory {
+  self->appCategory_ = appCategory;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setDeviceCategory:(AMDeviceCategoryEnum *)deviceCategory {
+  self->deviceCategory_ = deviceCategory;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setHttpProvider:(id<AMHttpProvider>)httpProvider {
+  self->httpProvider_ = httpProvider;
   return self;
 }
 
@@ -227,7 +243,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, analyticsProvider_, id<AMAnalyticsPr
   if (dispatcherProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Dispatcher Provider not set");
   }
-  return new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(networkProvider_, [endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]], threadingProvider_, mainThreadProvider_, enginesFactory_, log_, localeProvider_, phoneBookProvider_, cryptoProvider_, fileSystemProvider_, notificationProvider_, dispatcherProvider_, apiConfiguration_, enableContactsLogging_, enableNetworkLogging_, enableFilesLogging_, httpDownloaderProvider_, analyticsProvider_);
+  return new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_(networkProvider_, [endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]], threadingProvider_, mainThreadProvider_, enginesFactory_, log_, localeProvider_, phoneBookProvider_, cryptoProvider_, fileSystemProvider_, notificationProvider_, dispatcherProvider_, apiConfiguration_, enableContactsLogging_, enableNetworkLogging_, enableFilesLogging_, httpProvider_, analyticsProvider_, deviceCategory_, appCategory_);
 }
 
 - (instancetype)init {
@@ -243,6 +259,8 @@ void AMConfigurationBuilder_init(AMConfigurationBuilder *self) {
   self->enableContactsLogging_ = NO;
   self->enableNetworkLogging_ = NO;
   self->enableFilesLogging_ = NO;
+  self->appCategory_ = AMAppCategoryEnum_get_GENERIC();
+  self->deviceCategory_ = AMDeviceCategoryEnum_get_UNKNOWN();
 }
 
 AMConfigurationBuilder *new_AMConfigurationBuilder_init() {
