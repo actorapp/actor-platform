@@ -23,6 +23,7 @@ public class BaseMessenger extends Messenger {
 
     public BaseMessenger(Configuration configuration) {
         super(configuration);
+        
         displayLists = new DisplayLists(modules);
     }
 

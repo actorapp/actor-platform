@@ -5,7 +5,7 @@
 package im.actor.model.modules.file;
 
 import im.actor.model.FileSystemProvider;
-import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.HttpProvider;
 import im.actor.model.api.rpc.RequestCommitFileUpload;
 import im.actor.model.api.rpc.RequestGetFileUploadPartUrl;
 import im.actor.model.api.rpc.RequestGetFileUploadUrl;
@@ -40,7 +40,7 @@ public class UploadTask extends ModuleActor {
 
     private boolean isWriteToDestProvider = false;
     private FileSystemProvider fileSystemProvider;
-    private HttpDownloaderProvider downloaderProvider;
+    private HttpProvider downloaderProvider;
 
     private FileSystemReference srcReference;
     private InputFile inputFile;
@@ -82,7 +82,7 @@ public class UploadTask extends ModuleActor {
         }
         isWriteToDestProvider = fileSystemProvider.isFsPersistent();
 
-        downloaderProvider = config().getHttpDownloaderProvider();
+        downloaderProvider = config().getHttpProvider();
         if (downloaderProvider == null) {
             if (LOG) {
                 Log.w(TAG, "HTTP support is not available");
@@ -291,7 +291,7 @@ public class UploadTask extends ModuleActor {
                 new RpcCallback<ResponseGetFileUploadPartUrl>() {
                     @Override
                     public void onResult(ResponseGetFileUploadPartUrl response) {
-                        downloaderProvider.uploadPart(response.getUrl(), data, new FileUploadCallback() {
+                        downloaderProvider.putMethod(response.getUrl(), data, new FileUploadCallback() {
                             @Override
                             public void onUploaded() {
                                 self().send(new Runnable() {
