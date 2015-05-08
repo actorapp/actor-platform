@@ -1,5 +1,6 @@
 class MessagesController
-  list: null
+  list: []
+  messageDebounce: 1000 # time in ms after which the message is considered read
 
   constructor: (@$rootScope, @$scope, @$timeout, @actorService) ->
     console.log '[AW]MessagesController constructor'
@@ -19,6 +20,10 @@ class MessagesController
     console.log '[AW]MessagesController renderMessages', messages
     @$timeout =>
       @list = messages
+
+  setViewed: (sortKey, isOut) ->
+    console.log '[AW]MessagesController setViewed', sortKey, isOut
+    @actorService.onMessageShown @actorService.currentPeer, sortKey, isOut
 
 MessagesController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
 
