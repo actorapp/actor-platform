@@ -6,6 +6,8 @@
     <inherits name="org.bouncycastle.BouncyCastle" />
     <inherits name="com.google.gwt.storage.Storage" />
     <inherits name="com.google.gwt.resources.Resources" />
+    <inherits name="com.google.gwt.http.HTTP"/>
+
     <set-property name="ClientBundle.enableInlining" value="true" />
 
     <inherits name='org.timepedia.exporter.Exporter' />
