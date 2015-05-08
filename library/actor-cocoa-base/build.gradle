@@ -27,9 +27,11 @@ task j2objc(dependsOn: ['copySources']) {
 
         exec {
 
-            executable "${properties.get("j2objcDir")}/j2objc"
+            executable "${properties.get("j2objcDir")}/0.9.7/j2objc"
 
-            args "-use-arc", "--strip-reflection", "-g"
+            args "-use-arc", "--strip-reflection"
+
+            // args "-g"
 
             args "-d", "${projectDir}/src/"
 

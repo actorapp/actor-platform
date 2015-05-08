@@ -25,7 +25,8 @@ class AAUserInfoCell: AATableViewCell {
         
         selectionStyle = UITableViewCellSelectionStyle.None
         userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage())
-        userAvatarView.backgroundColor = UIColor(patternImage: UIImage(named: "bg_gplay")!.tintBgImage(MainAppTheme.chat.profileBgTint))
+        //userAvatarView.backgroundColor = UIColor(patternImage: UIImage(named: "bg_gplay")!.tintBgImage(MainAppTheme.chat.profileBgTint))
+        userAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
         contentView.addSubview(userAvatarView)
         
         usernameLabel = UILabel()

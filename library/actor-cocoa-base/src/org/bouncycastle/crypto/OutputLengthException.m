@@ -4,18 +4,12 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/OutputLengthException.java"
-
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/DataLengthException.h"
 #include "org/bouncycastle/crypto/OutputLengthException.h"
 
-
-#line 3
 @implementation OrgBouncycastleCryptoOutputLengthException
 
-
-#line 6
 - (instancetype)initWithNSString:(NSString *)msg {
   OrgBouncycastleCryptoOutputLengthException_initWithNSString_(self, msg);
   return self;
@@ -23,16 +17,10 @@
 
 @end
 
-
-#line 6
 void OrgBouncycastleCryptoOutputLengthException_initWithNSString_(OrgBouncycastleCryptoOutputLengthException *self, NSString *msg) {
-  (void) OrgBouncycastleCryptoDataLengthException_initWithNSString_(self,
-#line 8
-  msg);
+  (void) OrgBouncycastleCryptoDataLengthException_initWithNSString_(self, msg);
 }
 
-
-#line 6
 OrgBouncycastleCryptoOutputLengthException *new_OrgBouncycastleCryptoOutputLengthException_initWithNSString_(NSString *msg) {
   OrgBouncycastleCryptoOutputLengthException *self = [OrgBouncycastleCryptoOutputLengthException alloc];
   OrgBouncycastleCryptoOutputLengthException_initWithNSString_(self, msg);

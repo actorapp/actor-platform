@@ -4,45 +4,25 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointPreCompInfo.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/math/ec/FixedPointPreCompInfo.h"
 
-
-#line 6
 @implementation OrgBouncycastleMathEcFixedPointPreCompInfo
 
-
-#line 21
 - (IOSObjectArray *)getPreComp {
-  
-#line 23
   return preComp_;
 }
 
-
-#line 26
 - (void)setPreCompWithOrgBouncycastleMathEcECPointArray:(IOSObjectArray *)preComp {
-  
-#line 28
   self->preComp_ = preComp;
 }
 
-
-#line 31
 - (jint)getWidth {
-  
-#line 33
   return width_;
 }
 
-
-#line 36
 - (void)setWidthWithInt:(jint)width {
-  
-#line 38
   self->width_ = width;
 }
 
@@ -55,12 +35,8 @@
 
 void OrgBouncycastleMathEcFixedPointPreCompInfo_init(OrgBouncycastleMathEcFixedPointPreCompInfo *self) {
   (void) NSObject_init(self);
-  self->preComp_ =
-#line 12
-  nil;
-  self->width_ =
-#line 19
-  -1;
+  self->preComp_ = nil;
+  self->width_ = -1;
 }
 
 OrgBouncycastleMathEcFixedPointPreCompInfo *new_OrgBouncycastleMathEcFixedPointPreCompInfo_init() {

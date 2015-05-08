@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserPhoneAdded.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,29 +25,21 @@
 
 @implementation ImActorModelApiUpdatesUpdateUserPhoneAdded
 
-
-#line 27
 + (ImActorModelApiUpdatesUpdateUserPhoneAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiUpdatesUpdateUserPhoneAdded_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)phoneId {
   ImActorModelApiUpdatesUpdateUserPhoneAdded_initWithInt_withInt_(self, uid, phoneId);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiUpdatesUpdateUserPhoneAdded_init(self);
   return self;
 }
 
-
-#line 43
 - (jint)getUid {
   return self->uid_;
 }
@@ -58,22 +48,16 @@
   return self->phoneId_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->phoneId_ = [values getIntWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->phoneId_];
 }
 
-
-#line 64
 - (NSString *)description {
   NSString *res = @"update UserPhoneAdded{";
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
@@ -82,47 +66,33 @@
   return res;
 }
 
-
-#line 73
 - (jint)getHeaderKey {
   return ImActorModelApiUpdatesUpdateUserPhoneAdded_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiUpdatesUpdateUserPhoneAdded *ImActorModelApiUpdatesUpdateUserPhoneAdded_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiUpdatesUpdateUserPhoneAdded_initialize();
-  
-#line 28
   return ((ImActorModelApiUpdatesUpdateUserPhoneAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserPhoneAdded_init(), data));
 }
 
 void ImActorModelApiUpdatesUpdateUserPhoneAdded_initWithInt_withInt_(ImActorModelApiUpdatesUpdateUserPhoneAdded *self, jint uid, jint phoneId) {
   (void) ImActorModelNetworkParserUpdate_init(self);
-  
-#line 35
   self->uid_ = uid;
   self->phoneId_ = phoneId;
 }
 
-
-#line 34
 ImActorModelApiUpdatesUpdateUserPhoneAdded *new_ImActorModelApiUpdatesUpdateUserPhoneAdded_initWithInt_withInt_(jint uid, jint phoneId) {
   ImActorModelApiUpdatesUpdateUserPhoneAdded *self = [ImActorModelApiUpdatesUpdateUserPhoneAdded alloc];
   ImActorModelApiUpdatesUpdateUserPhoneAdded_initWithInt_withInt_(self, uid, phoneId);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiUpdatesUpdateUserPhoneAdded_init(ImActorModelApiUpdatesUpdateUserPhoneAdded *self) {
   (void) ImActorModelNetworkParserUpdate_init(self);
 }
 
-
-#line 39
 ImActorModelApiUpdatesUpdateUserPhoneAdded *new_ImActorModelApiUpdatesUpdateUserPhoneAdded_init() {
   ImActorModelApiUpdatesUpdateUserPhoneAdded *self = [ImActorModelApiUpdatesUpdateUserPhoneAdded alloc];
   ImActorModelApiUpdatesUpdateUserPhoneAdded_init(self);

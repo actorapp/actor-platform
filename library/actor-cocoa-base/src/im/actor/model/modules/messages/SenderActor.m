@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/messages/SenderActor.java"
-
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
@@ -91,9 +89,7 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesSenderActor, pendingMessages_, ImActorModelModulesMessagesEntityPendingMessagesStorage *)
 
-static NSString *ImActorModelModulesMessagesSenderActor_PREFERENCES_ = 
-#line 45
-@"sender_pending";
+static NSString *ImActorModelModulesMessagesSenderActor_PREFERENCES_ = @"sender_pending";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesSenderActor, PREFERENCES_, NSString *)
 
 __attribute__((unused)) static void ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(ImActorModelModulesMessagesSenderActor *self, jlong rid, NSString *descriptor, NSString *fileName);
@@ -229,12 +225,8 @@ __attribute__((unused)) static ImActorModelModulesMessagesSenderActor_$1 *new_Im
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
 
-
-#line 43
 @implementation ImActorModelModulesMessagesSenderActor
 
-
-#line 49
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
@@ -247,45 +239,27 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
     @try {
       pendingMessages_ = ImActorModelModulesMessagesEntityPendingMessagesStorage_fromBytesWithByteArray_(p);
     }
-    @catch (
-#line 60
-    JavaIoIOException *e) {
+    @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     }
   }
-  
-#line 65
   jboolean isChanged = NO;
   {
-    IOSObjectArray *a__ =
-#line 66
-    [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(pendingMessages_)) getPendingMessages])) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityPendingMessage_class_()]];
+    IOSObjectArray *a__ = [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(pendingMessages_)) getPendingMessages])) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityPendingMessage_class_()]];
     ImActorModelModulesMessagesEntityPendingMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityPendingMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelModulesMessagesEntityPendingMessage *pending = *b__++;
-      
-#line 67
       if ([[((ImActorModelModulesMessagesEntityPendingMessage *) nil_chk(pending)) getContent] isKindOfClass:[AMTextContent class]]) {
         ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(self, [pending getPeer], [pending getRid], [pending getContent]);
       }
-      else
-#line 69
-      if ([[pending getContent] isKindOfClass:[AMDocumentContent class]]) {
+      else if ([[pending getContent] isKindOfClass:[AMDocumentContent class]]) {
         AMDocumentContent *documentContent = (AMDocumentContent *) check_class_cast([pending getContent], [AMDocumentContent class]);
         if ([[((AMDocumentContent *) nil_chk(documentContent)) getSource] isKindOfClass:[AMFileLocalSource class]]) {
-          if ([((AMConfiguration *) nil_chk([self config])) getFileSystemProvider] != nil &&
-#line 73
-          [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getFileSystemProvider])) isFsPersistent]) {
-            ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(self, [pending getRid],
-#line 75
-            [((AMFileLocalSource *) nil_chk(((AMFileLocalSource *) check_class_cast([documentContent getSource], [AMFileLocalSource class])))) getFileDescriptor],
-#line 76
-            [((AMFileLocalSource *) nil_chk(((AMFileLocalSource *) check_class_cast([documentContent getSource], [AMFileLocalSource class])))) getFileName]);
+          if ([((AMConfiguration *) nil_chk([self config])) getFileSystemProvider] != nil && [((id<AMFileSystemProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getFileSystemProvider])) isFsPersistent]) {
+            ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(self, [pending getRid], [((AMFileLocalSource *) nil_chk(((AMFileLocalSource *) check_class_cast([documentContent getSource], [AMFileLocalSource class])))) getFileDescriptor], [((AMFileLocalSource *) nil_chk(((AMFileLocalSource *) check_class_cast([documentContent getSource], [AMFileLocalSource class])))) getFileName]);
           }
           else {
-            
-#line 78
             id<JavaUtilList> rids = new_JavaUtilArrayList_init();
             [rids addWithId:JavaLangLong_valueOfWithLong_([pending getRid])];
             [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:[pending getPeer]])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessagesDeleted_initWithJavaUtilList_(rids)];
@@ -294,11 +268,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
           }
         }
         else {
-          
-#line 85
-          ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(self, [pending getPeer], [pending getRid],
-#line 86
-          [pending getContent]);
+          ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(self, [pending getPeer], [pending getRid], [pending getContent]);
         }
       }
     }
@@ -308,55 +278,33 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
   }
 }
 
-
-#line 98
 - (void)doSendTextWithAMPeer:(AMPeer *)peer
                 withNSString:(NSString *)text {
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   jlong date = DKEnvironment_getCurrentTime();
-  
-#line 102
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, [self myUid], AMMessageStateEnum_get_PENDING(), new_AMTextContent_initWithNSString_(text));
   [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:peer])) sendWithId:message];
-  
-#line 105
   [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(pendingMessages_)) getPendingMessages])) addWithId:new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(peer, rid, new_AMTextContent_initWithNSString_(text))];
   ImActorModelModulesMessagesSenderActor_savePending(self);
-  
-#line 108
   ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(self, peer, rid, new_AMTextContent_initWithNSString_(text));
 }
 
-
-#line 113
 - (void)doSendDocumentWithAMPeer:(AMPeer *)peer
                     withNSString:(NSString *)fileName
                     withNSString:(NSString *)mimeType
                          withInt:(jint)fileSize
                  withAMFastThumb:(AMFastThumb *)fastThumb
                     withNSString:(NSString *)descriptor {
-  
-#line 115
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   jlong date = DKEnvironment_getCurrentTime();
-  AMDocumentContent *documentContent = new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(new_AMFileLocalSource_initWithNSString_withInt_withNSString_(
-#line 118
-  fileName, fileSize, descriptor),
-#line 119
-  mimeType, fileName, fastThumb);
+  AMDocumentContent *documentContent = new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(new_AMFileLocalSource_initWithNSString_withInt_withNSString_(fileName, fileSize, descriptor), mimeType, fileName, fastThumb);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, [self myUid], AMMessageStateEnum_get_PENDING(), documentContent);
   [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:peer])) sendWithId:message];
-  
-#line 123
   [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(pendingMessages_)) getPendingMessages])) addWithId:new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(peer, rid, documentContent)];
   ImActorModelModulesMessagesSenderActor_savePending(self);
-  
-#line 126
   ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(self, rid, descriptor, fileName);
 }
 
-
-#line 129
 - (void)doSendPhotoWithAMPeer:(AMPeer *)peer
               withAMFastThumb:(AMFastThumb *)fastThumb
                  withNSString:(NSString *)descriptor
@@ -364,30 +312,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
                       withInt:(jint)fileSize
                       withInt:(jint)w
                       withInt:(jint)h {
-  
-#line 131
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   jlong date = DKEnvironment_getCurrentTime();
-  AMPhotoContent *photoContent = new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(new_AMFileLocalSource_initWithNSString_withInt_withNSString_(
-#line 134
-  fileName, fileSize, descriptor), @"image/jpeg", fileName,
-#line 135
-  fastThumb, w, h);
-  
-#line 137
+  AMPhotoContent *photoContent = new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(new_AMFileLocalSource_initWithNSString_withInt_withNSString_(fileName, fileSize, descriptor), @"image/jpeg", fileName, fastThumb, w, h);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, [self myUid], AMMessageStateEnum_get_PENDING(), photoContent);
   [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:peer])) sendWithId:message];
-  
-#line 140
   [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(pendingMessages_)) getPendingMessages])) addWithId:new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(peer, rid, photoContent)];
   ImActorModelModulesMessagesSenderActor_savePending(self);
-  
-#line 143
   ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(self, rid, descriptor, fileName);
 }
 
-
-#line 146
 - (void)doSendVideoWithAMPeer:(AMPeer *)peer
                  withNSString:(NSString *)fileName
                       withInt:(jint)w
@@ -396,73 +330,47 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
               withAMFastThumb:(AMFastThumb *)fastThumb
                  withNSString:(NSString *)descriptor
                       withInt:(jint)fileSize {
-  
-#line 148
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   jlong date = DKEnvironment_getCurrentTime();
-  AMVideoContent *videoContent = new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(new_AMFileLocalSource_initWithNSString_withInt_withNSString_(
-#line 151
-  fileName, fileSize, descriptor), @"video/mp4", fileName,
-#line 152
-  fastThumb, duration, w, h);
-  
-#line 154
+  AMVideoContent *videoContent = new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(new_AMFileLocalSource_initWithNSString_withInt_withNSString_(fileName, fileSize, descriptor), @"video/mp4", fileName, fastThumb, duration, w, h);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, [self myUid], AMMessageStateEnum_get_PENDING(), videoContent);
   [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:peer])) sendWithId:message];
-  
-#line 157
   [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(pendingMessages_)) getPendingMessages])) addWithId:new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_(peer, rid, videoContent)];
   ImActorModelModulesMessagesSenderActor_savePending(self);
-  
-#line 160
   ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(self, rid, descriptor, fileName);
 }
 
-
-#line 163
 - (void)performUploadFileWithLong:(jlong)rid
                      withNSString:(NSString *)descriptor
                      withNSString:(NSString *)fileName {
   ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(self, rid, descriptor, fileName);
 }
 
-
-#line 167
 - (void)onFileUploadedWithLong:(jlong)rid
            withAMFileReference:(AMFileReference *)fileReference {
   ImActorModelModulesMessagesSenderActor_onFileUploadedWithLong_withAMFileReference_(self, rid, fileReference);
 }
 
-
-#line 200
 - (void)onFileUploadErrorWithLong:(jlong)rid {
   ImActorModelModulesMessagesSenderActor_onFileUploadErrorWithLong_(self, rid);
 }
 
-
-#line 211
 - (void)performSendContentWithAMPeer:(AMPeer *)peer
                             withLong:(jlong)rid
                     withAMAbsContent:(AMAbsContent *)content {
   ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(self, peer, rid, content);
 }
 
-
-#line 273
 - (void)onSentWithAMPeer:(AMPeer *)peer
                 withLong:(jlong)rid {
   ImActorModelModulesMessagesSenderActor_onSentWithAMPeer_withLong_(self, peer, rid);
 }
 
-
-#line 283
 - (void)onErrorWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)rid {
   ImActorModelModulesMessagesSenderActor_onErrorWithAMPeer_withLong_(self, peer, rid);
 }
 
-
-#line 294
 - (void)savePending {
   ImActorModelModulesMessagesSenderActor_savePending(self);
 }
@@ -471,90 +379,56 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
   return ImActorModelModulesMessagesSenderActor_findPendingWithLong_(self, rid);
 }
 
-
-#line 310
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendText class]]) {
     ImActorModelModulesMessagesSenderActor_SendText *sendText = (ImActorModelModulesMessagesSenderActor_SendText *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_SendText class]);
     [self doSendTextWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendText *) nil_chk(sendText)) getPeer] withNSString:[sendText getText]];
   }
-  else
-#line 314
-  if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_MessageSent class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_MessageSent class]]) {
     ImActorModelModulesMessagesSenderActor_MessageSent *messageSent = (ImActorModelModulesMessagesSenderActor_MessageSent *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_MessageSent class]);
     ImActorModelModulesMessagesSenderActor_onSentWithAMPeer_withLong_(self, [((ImActorModelModulesMessagesSenderActor_MessageSent *) nil_chk(messageSent)) getPeer], [messageSent getRid]);
   }
-  else
-#line 317
-  if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_MessageError class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_MessageError class]]) {
     ImActorModelModulesMessagesSenderActor_MessageError *messageError = (ImActorModelModulesMessagesSenderActor_MessageError *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_MessageError class]);
     ImActorModelModulesMessagesSenderActor_onErrorWithAMPeer_withLong_(self, [((ImActorModelModulesMessagesSenderActor_MessageError *) nil_chk(messageError)) getPeer], [messageError getRid]);
   }
-  else
-#line 320
-  if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendDocument class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendDocument class]]) {
     ImActorModelModulesMessagesSenderActor_SendDocument *sendDocument = (ImActorModelModulesMessagesSenderActor_SendDocument *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_SendDocument class]);
-    [self doSendDocumentWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendDocument *) nil_chk(sendDocument)) getPeer] withNSString:[sendDocument getFileName] withNSString:[sendDocument getMimeType] withInt:
-#line 323
-    [sendDocument getFileSize] withAMFastThumb:[sendDocument getFastThumb] withNSString:[sendDocument getDescriptor]];
+    [self doSendDocumentWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendDocument *) nil_chk(sendDocument)) getPeer] withNSString:[sendDocument getFileName] withNSString:[sendDocument getMimeType] withInt:[sendDocument getFileSize] withAMFastThumb:[sendDocument getFastThumb] withNSString:[sendDocument getDescriptor]];
   }
-  else
-#line 324
-  if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadCompleted class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadCompleted class]]) {
     ImActorModelModulesFileUploadManager_UploadCompleted *uploadCompleted = (ImActorModelModulesFileUploadManager_UploadCompleted *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadCompleted class]);
     ImActorModelModulesMessagesSenderActor_onFileUploadedWithLong_withAMFileReference_(self, [((ImActorModelModulesFileUploadManager_UploadCompleted *) nil_chk(uploadCompleted)) getRid], [uploadCompleted getFileReference]);
   }
-  else
-#line 327
-  if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadError class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesFileUploadManager_UploadError class]]) {
     ImActorModelModulesFileUploadManager_UploadError *uploadError = (ImActorModelModulesFileUploadManager_UploadError *) check_class_cast(message, [ImActorModelModulesFileUploadManager_UploadError class]);
     ImActorModelModulesMessagesSenderActor_onFileUploadErrorWithLong_(self, [((ImActorModelModulesFileUploadManager_UploadError *) nil_chk(uploadError)) getRid]);
   }
-  else
-#line 330
-  if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendPhoto class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendPhoto class]]) {
     ImActorModelModulesMessagesSenderActor_SendPhoto *sendPhoto = (ImActorModelModulesMessagesSenderActor_SendPhoto *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_SendPhoto class]);
-    [self doSendPhotoWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendPhoto *) nil_chk(sendPhoto)) getPeer] withAMFastThumb:[sendPhoto getFastThumb] withNSString:
-#line 333
-    [sendPhoto getDescriptor] withNSString:[sendPhoto getFileName] withInt:[sendPhoto getFileSize] withInt:
-#line 334
-    [sendPhoto getW] withInt:[sendPhoto getH]];
+    [self doSendPhotoWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendPhoto *) nil_chk(sendPhoto)) getPeer] withAMFastThumb:[sendPhoto getFastThumb] withNSString:[sendPhoto getDescriptor] withNSString:[sendPhoto getFileName] withInt:[sendPhoto getFileSize] withInt:[sendPhoto getW] withInt:[sendPhoto getH]];
   }
-  else
-#line 335
-  if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendVideo class]]) {
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendVideo class]]) {
     ImActorModelModulesMessagesSenderActor_SendVideo *sendVideo = (ImActorModelModulesMessagesSenderActor_SendVideo *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_SendVideo class]);
-    [self doSendVideoWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendVideo *) nil_chk(sendVideo)) getPeer] withNSString:[sendVideo getFileName] withInt:
-#line 338
-    [sendVideo getW] withInt:[sendVideo getH] withInt:[sendVideo getDuration] withAMFastThumb:
-#line 339
-    [sendVideo getFastThumb] withNSString:[sendVideo getDescriptor] withInt:[sendVideo getFileSize]];
+    [self doSendVideoWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendVideo *) nil_chk(sendVideo)) getPeer] withNSString:[sendVideo getFileName] withInt:[sendVideo getW] withInt:[sendVideo getH] withInt:[sendVideo getDuration] withAMFastThumb:[sendVideo getFastThumb] withNSString:[sendVideo getDescriptor] withInt:[sendVideo getFileSize]];
   }
   else {
-    
-#line 341
     [self dropWithId:message];
   }
 }
 
 @end
 
-
-#line 49
 void ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesSenderActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
 }
 
-
-#line 49
 ImActorModelModulesMessagesSenderActor *new_ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesMessagesSenderActor *self = [ImActorModelModulesMessagesSenderActor alloc];
   ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
 }
 
-
-#line 163
 void ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(ImActorModelModulesMessagesSenderActor *self, jlong rid, NSString *descriptor, NSString *fileName) {
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) requestUploadWithLong:rid withNSString:descriptor withNSString:fileName withDKActorRef:[self self__]];
 }
@@ -564,140 +438,70 @@ void ImActorModelModulesMessagesSenderActor_onFileUploadedWithLong_withAMFileRef
   if (msg == nil) {
     return;
   }
-  
-#line 173
   [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(self->pendingMessages_)) getPendingMessages])) removeWithId:msg];
-  
-#line 175
   AMAbsContent *nContent;
   if ([[((ImActorModelModulesMessagesEntityPendingMessage *) nil_chk(msg)) getContent] isKindOfClass:[AMPhotoContent class]]) {
     AMPhotoContent *basePhotoContent = (AMPhotoContent *) check_class_cast([msg getContent], [AMPhotoContent class]);
-    nContent = new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(new_AMFileRemoteSource_initWithAMFileReference_(fileReference), [((AMPhotoContent *) nil_chk(basePhotoContent)) getMimetype],
-#line 179
-    [basePhotoContent getName], [basePhotoContent getFastThumb], [basePhotoContent getW],
-#line 180
-    [basePhotoContent getH]);
+    nContent = new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(new_AMFileRemoteSource_initWithAMFileReference_(fileReference), [((AMPhotoContent *) nil_chk(basePhotoContent)) getMimetype], [basePhotoContent getName], [basePhotoContent getFastThumb], [basePhotoContent getW], [basePhotoContent getH]);
   }
-  else
-#line 181
-  if ([[msg getContent] isKindOfClass:[AMVideoContent class]]) {
+  else if ([[msg getContent] isKindOfClass:[AMVideoContent class]]) {
     AMVideoContent *baseVideoContent = (AMVideoContent *) check_class_cast([msg getContent], [AMVideoContent class]);
-    nContent = new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(new_AMFileRemoteSource_initWithAMFileReference_(fileReference), [((AMVideoContent *) nil_chk(baseVideoContent)) getMimetype],
-#line 184
-    [baseVideoContent getName], [baseVideoContent getFastThumb], [baseVideoContent getDuration],
-#line 185
-    [baseVideoContent getW], [baseVideoContent getH]);
+    nContent = new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(new_AMFileRemoteSource_initWithAMFileReference_(fileReference), [((AMVideoContent *) nil_chk(baseVideoContent)) getMimetype], [baseVideoContent getName], [baseVideoContent getFastThumb], [baseVideoContent getDuration], [baseVideoContent getW], [baseVideoContent getH]);
   }
-  else
-#line 186
-  if ([[msg getContent] isKindOfClass:[AMDocumentContent class]]) {
+  else if ([[msg getContent] isKindOfClass:[AMDocumentContent class]]) {
     AMDocumentContent *baseDocContent = (AMDocumentContent *) check_class_cast([msg getContent], [AMDocumentContent class]);
-    nContent = new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(new_AMFileRemoteSource_initWithAMFileReference_(fileReference), [((AMDocumentContent *) nil_chk(baseDocContent)) getMimetype],
-#line 189
-    [baseDocContent getName], [baseDocContent getFastThumb]);
+    nContent = new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(new_AMFileRemoteSource_initWithAMFileReference_(fileReference), [((AMDocumentContent *) nil_chk(baseDocContent)) getMimetype], [baseDocContent getName], [baseDocContent getFastThumb]);
   }
   else {
-    
-#line 191
     return;
   }
-  
-#line 194
   [((JavaUtilArrayList *) nil_chk([self->pendingMessages_ getPendingMessages])) addWithId:new_ImActorModelModulesMessagesEntityPendingMessage_initWithAMPeer_withLong_withAMAbsContent_([msg getPeer], [msg getRid], nContent)];
   [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:[msg getPeer]])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageContentUpdated_initWithLong_withAMAbsContent_([msg getRid], nContent)];
-  
-#line 197
   ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(self, [msg getPeer], rid, nContent);
 }
 
-
-#line 200
 void ImActorModelModulesMessagesSenderActor_onFileUploadErrorWithLong_(ImActorModelModulesMessagesSenderActor *self, jlong rid) {
   ImActorModelModulesMessagesEntityPendingMessage *msg = ImActorModelModulesMessagesSenderActor_findPendingWithLong_(self, rid);
   if (msg == nil) {
     return;
   }
-  
-#line 206
   [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_([((ImActorModelModulesMessagesEntityPendingMessage *) nil_chk(msg)) getPeer], [msg getRid])];
 }
 
-
-#line 211
 void ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesSenderActor *self, AMPeer *peer, jlong rid, AMAbsContent *content) {
   ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   ImActorModelApiPeer *apiPeer = [self buildApiPeerWithAMPeer:peer];
   if (outPeer == nil || apiPeer == nil) {
     return;
   }
-  
-#line 218
   ImActorModelApiMessage *message;
   if ([content isKindOfClass:[AMTextContent class]]) {
     message = new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_([((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(content, [AMTextContent class])))) getText], nil);
   }
-  else
-#line 221
-  if ([content isKindOfClass:[AMDocumentContent class]]) {
+  else if ([content isKindOfClass:[AMDocumentContent class]]) {
     AMDocumentContent *documentContent = (AMDocumentContent *) check_class_cast(content, [AMDocumentContent class]);
-    
-#line 224
     AMFileRemoteSource *source = (AMFileRemoteSource *) check_class_cast([((AMDocumentContent *) nil_chk(documentContent)) getSource], [AMFileRemoteSource class]);
-    
-#line 226
     ImActorModelApiDocumentEx *documentEx = nil;
-    
-#line 228
     if ([content isKindOfClass:[AMPhotoContent class]]) {
       AMPhotoContent *photoContent = (AMPhotoContent *) check_class_cast(content, [AMPhotoContent class]);
       documentEx = new_ImActorModelApiDocumentExPhoto_initWithInt_withInt_([((AMPhotoContent *) nil_chk(photoContent)) getW], [photoContent getH]);
     }
-    else
-#line 231
-    if ([content isKindOfClass:[AMVideoContent class]]) {
+    else if ([content isKindOfClass:[AMVideoContent class]]) {
       AMVideoContent *videoContent = (AMVideoContent *) check_class_cast(content, [AMVideoContent class]);
       documentEx = new_ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_([((AMVideoContent *) nil_chk(videoContent)) getW], [videoContent getH], [videoContent getDuration]);
     }
-    
-#line 236
     ImActorModelApiFastThumb *fastThumb = nil;
     if ([documentContent getFastThumb] != nil) {
-      fastThumb = new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(
-#line 239
-      [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getW],
-#line 240
-      [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getH],
-#line 241
-      [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getImage]);
+      fastThumb = new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_([((AMFastThumb *) nil_chk([documentContent getFastThumb])) getW], [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getH], [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getImage]);
     }
-    
-#line 244
-    message = new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_([((AMFileReference *) nil_chk([((AMFileRemoteSource *) nil_chk(source)) getFileReference])) getFileId],
-#line 245
-    [((AMFileReference *) nil_chk([source getFileReference])) getAccessHash],
-#line 246
-    [((AMFileReference *) nil_chk([source getFileReference])) getFileSize],
-#line 247
-    nil, nil, nil,
-#line 248
-    [((AMFileReference *) nil_chk([source getFileReference])) getFileName],
-#line 249
-    [documentContent getMimetype],
-#line 250
-    fastThumb, documentEx);
+    message = new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_([((AMFileReference *) nil_chk([((AMFileRemoteSource *) nil_chk(source)) getFileReference])) getFileId], [((AMFileReference *) nil_chk([source getFileReference])) getAccessHash], [((AMFileReference *) nil_chk([source getFileReference])) getFileSize], nil, nil, nil, [((AMFileReference *) nil_chk([source getFileReference])) getFileName], [documentContent getMimetype], fastThumb, documentEx);
   }
   else {
-    
-#line 252
     return;
   }
-  
-#line 255
   [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(outPeer, rid, message) withAMRpcCallback:new_ImActorModelModulesMessagesSenderActor_$1_initWithImActorModelModulesMessagesSenderActor_withAMPeer_withLong_withImActorModelApiPeer_(self, peer, rid, apiPeer)];
 }
 
-
-#line 273
 void ImActorModelModulesMessagesSenderActor_onSentWithAMPeer_withLong_(ImActorModelModulesMessagesSenderActor *self, AMPeer *peer, jlong rid) {
   for (ImActorModelModulesMessagesEntityPendingMessage * __strong pending in nil_chk([((ImActorModelModulesMessagesEntityPendingMessagesStorage *) nil_chk(self->pendingMessages_)) getPendingMessages])) {
     if ([((ImActorModelModulesMessagesEntityPendingMessage *) nil_chk(pending)) getRid] == rid && [((AMPeer *) nil_chk([pending getPeer])) isEqual:peer]) {
@@ -734,12 +538,8 @@ ImActorModelModulesMessagesEntityPendingMessage *ImActorModelModulesMessagesSend
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor)
 
-
-#line 345
 @implementation ImActorModelModulesMessagesSenderActor_SendDocument
 
-
-#line 353
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
@@ -776,8 +576,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor)
 
 @end
 
-
-#line 353
 void ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSString_withNSString_withInt_withNSString_withAMFastThumb_(ImActorModelModulesMessagesSenderActor_SendDocument *self, AMPeer *peer, NSString *fileName, NSString *mimeType, jint fileSize, NSString *descriptor, AMFastThumb *fastThumb) {
   (void) NSObject_init(self);
   self->peer_ = peer;
@@ -788,8 +586,6 @@ void ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSSt
   self->fileSize_ = fileSize;
 }
 
-
-#line 353
 ImActorModelModulesMessagesSenderActor_SendDocument *new_ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSString_withNSString_withInt_withNSString_withAMFastThumb_(AMPeer *peer, NSString *fileName, NSString *mimeType, jint fileSize, NSString *descriptor, AMFastThumb *fastThumb) {
   ImActorModelModulesMessagesSenderActor_SendDocument *self = [ImActorModelModulesMessagesSenderActor_SendDocument alloc];
   ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSString_withNSString_withInt_withNSString_withAMFastThumb_(self, peer, fileName, mimeType, fileSize, descriptor, fastThumb);
@@ -798,12 +594,8 @@ ImActorModelModulesMessagesSenderActor_SendDocument *new_ImActorModelModulesMess
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendDocument)
 
-
-#line 388
 @implementation ImActorModelModulesMessagesSenderActor_SendPhoto
 
-
-#line 397
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                withAMFastThumb:(AMFastThumb *)fastThumb
                   withNSString:(NSString *)descriptor
@@ -845,8 +637,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendDocu
 
 @end
 
-
-#line 397
 void ImActorModelModulesMessagesSenderActor_SendPhoto_initWithAMPeer_withAMFastThumb_withNSString_withNSString_withInt_withInt_withInt_(ImActorModelModulesMessagesSenderActor_SendPhoto *self, AMPeer *peer, AMFastThumb *fastThumb, NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h) {
   (void) NSObject_init(self);
   self->peer_ = peer;
@@ -858,8 +648,6 @@ void ImActorModelModulesMessagesSenderActor_SendPhoto_initWithAMPeer_withAMFastT
   self->h_ = h;
 }
 
-
-#line 397
 ImActorModelModulesMessagesSenderActor_SendPhoto *new_ImActorModelModulesMessagesSenderActor_SendPhoto_initWithAMPeer_withAMFastThumb_withNSString_withNSString_withInt_withInt_withInt_(AMPeer *peer, AMFastThumb *fastThumb, NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h) {
   ImActorModelModulesMessagesSenderActor_SendPhoto *self = [ImActorModelModulesMessagesSenderActor_SendPhoto alloc];
   ImActorModelModulesMessagesSenderActor_SendPhoto_initWithAMPeer_withAMFastThumb_withNSString_withNSString_withInt_withInt_withInt_(self, peer, fastThumb, descriptor, fileName, fileSize, w, h);
@@ -868,12 +656,8 @@ ImActorModelModulesMessagesSenderActor_SendPhoto *new_ImActorModelModulesMessage
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendPhoto)
 
-
-#line 437
 @implementation ImActorModelModulesMessagesSenderActor_SendVideo
 
-
-#line 447
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)fileName
                        withInt:(jint)w
@@ -920,8 +704,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendPhot
 
 @end
 
-
-#line 447
 void ImActorModelModulesMessagesSenderActor_SendVideo_initWithAMPeer_withNSString_withInt_withInt_withInt_withAMFastThumb_withNSString_withInt_(ImActorModelModulesMessagesSenderActor_SendVideo *self, AMPeer *peer, NSString *fileName, jint w, jint h, jint duration, AMFastThumb *fastThumb, NSString *descriptor, jint fileSize) {
   (void) NSObject_init(self);
   self->peer_ = peer;
@@ -934,8 +716,6 @@ void ImActorModelModulesMessagesSenderActor_SendVideo_initWithAMPeer_withNSStrin
   self->fileSize_ = fileSize;
 }
 
-
-#line 447
 ImActorModelModulesMessagesSenderActor_SendVideo *new_ImActorModelModulesMessagesSenderActor_SendVideo_initWithAMPeer_withNSString_withInt_withInt_withInt_withAMFastThumb_withNSString_withInt_(AMPeer *peer, NSString *fileName, jint w, jint h, jint duration, AMFastThumb *fastThumb, NSString *descriptor, jint fileSize) {
   ImActorModelModulesMessagesSenderActor_SendVideo *self = [ImActorModelModulesMessagesSenderActor_SendVideo alloc];
   ImActorModelModulesMessagesSenderActor_SendVideo_initWithAMPeer_withNSString_withInt_withInt_withInt_withAMFastThumb_withNSString_withInt_(self, peer, fileName, w, h, duration, fastThumb, descriptor, fileSize);
@@ -944,20 +724,14 @@ ImActorModelModulesMessagesSenderActor_SendVideo *new_ImActorModelModulesMessage
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendVideo)
 
-
-#line 492
 @implementation ImActorModelModulesMessagesSenderActor_SendText
 
-
-#line 496
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)text {
   ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(self, peer, text);
   return self;
 }
 
-
-#line 501
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -968,18 +742,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendVide
 
 @end
 
-
-#line 496
 void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text) {
   (void) NSObject_init(self);
-  
-#line 497
   self->peer_ = peer;
   self->text_ = text;
 }
 
-
-#line 496
 ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(AMPeer *peer, NSString *text) {
   ImActorModelModulesMessagesSenderActor_SendText *self = [ImActorModelModulesMessagesSenderActor_SendText alloc];
   ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(self, peer, text);
@@ -988,20 +756,14 @@ ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessages
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendText)
 
-
-#line 510
 @implementation ImActorModelModulesMessagesSenderActor_MessageSent
 
-
-#line 514
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid {
   ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(self, peer, rid);
   return self;
 }
 
-
-#line 519
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -1012,18 +774,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendText
 
 @end
 
-
-#line 514
 void ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(ImActorModelModulesMessagesSenderActor_MessageSent *self, AMPeer *peer, jlong rid) {
   (void) NSObject_init(self);
-  
-#line 515
   self->peer_ = peer;
   self->rid_ = rid;
 }
 
-
-#line 514
 ImActorModelModulesMessagesSenderActor_MessageSent *new_ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) {
   ImActorModelModulesMessagesSenderActor_MessageSent *self = [ImActorModelModulesMessagesSenderActor_MessageSent alloc];
   ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(self, peer, rid);
@@ -1032,20 +788,14 @@ ImActorModelModulesMessagesSenderActor_MessageSent *new_ImActorModelModulesMessa
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_MessageSent)
 
-
-#line 528
 @implementation ImActorModelModulesMessagesSenderActor_MessageError
 
-
-#line 532
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)rid {
   ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(self, peer, rid);
   return self;
 }
 
-
-#line 537
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -1056,18 +806,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_MessageS
 
 @end
 
-
-#line 532
 void ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(ImActorModelModulesMessagesSenderActor_MessageError *self, AMPeer *peer, jlong rid) {
   (void) NSObject_init(self);
-  
-#line 533
   self->peer_ = peer;
   self->rid_ = rid;
 }
 
-
-#line 532
 ImActorModelModulesMessagesSenderActor_MessageError *new_ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) {
   ImActorModelModulesMessagesSenderActor_MessageError *self = [ImActorModelModulesMessagesSenderActor_MessageError alloc];
   ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(self, peer, rid);
@@ -1078,21 +822,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_MessageE
 
 @implementation ImActorModelModulesMessagesSenderActor_$1
 
-
-#line 258
 - (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeqDate *)response {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(val$peer_, val$rid_)];
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeqDate *) nil_chk(response)) getSeq],
-#line 261
-  [response getState],
-#line 262
-  ImActorModelApiUpdatesUpdateMessageSent_HEADER,
-#line 263
-  [new_ImActorModelApiUpdatesUpdateMessageSent_initWithImActorModelApiPeer_withLong_withLong_(val$apiPeer_, val$rid_, [response getDate]) toByteArray])];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeqDate *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateMessageSent_HEADER, [new_ImActorModelApiUpdatesUpdateMessageSent_initWithImActorModelApiPeer_withLong_withLong_(val$apiPeer_, val$rid_, [response getDate]) toByteArray])];
 }
 
-
-#line 267
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesMessagesSenderActor_MessageError_initWithAMPeer_withLong_(val$peer_, val$rid_)];
 }

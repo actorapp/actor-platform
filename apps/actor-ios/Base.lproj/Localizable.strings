@@ -80,6 +80,10 @@
 
 "ComposeTitle" = "New Message";
 
+"CreateGroup" = "Create Group";
+
+"CreateGroupTitle" = "Create Group";
+
 /*
  * Privacy
  */
@@ -97,6 +101,8 @@
 "ChatPlaceholder" = "Enter text...";
 
 "ChatSend" = "Send";
+
+"ChatNoGroupAccess" = "You is not member";
 
 /*
  * Placeholders

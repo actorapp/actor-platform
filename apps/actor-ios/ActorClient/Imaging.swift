@@ -117,6 +117,19 @@ extension UIImage {
 
 class Imaging {
     
+    class func roundedImage(color: UIColor, size: CGSize, radius: CGFloat) -> UIImage {
+        var rect = CGRectMake(0, 0, size.width, size.height)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        var path = UIBezierPath(roundedRect: CGRectMake(0, 0, size.width, size.height), cornerRadius: radius)
+        color.setFill()
+        path.fill()
+        var image: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image
+            .resizableImageWithCapInsets(UIEdgeInsetsMake(radius, radius, radius, radius))
+    }
+    
     class func imageWithColor(color: UIColor, size: CGSize) -> UIImage {
         var rect = CGRectMake(0, 0, size.width, size.height)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)

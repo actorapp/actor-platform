@@ -54,6 +54,9 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         super.viewWillLayoutSubviews()
         
         tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
+//        var insetSize = getStatusBarHeight() + getNavigationBarHeight()
+//        tableView.contentInset = UIEdgeInsetsMake(insetSize, 0, 0, 0)
+//        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(insetSize, 0, 0, 0)
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -98,15 +101,15 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-        header.addSubview(searchView!)
+//        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+//        header.addSubview(searchView!)
+//        
+//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+//        headerShadow.image = UIImage(named: "CardTop2");
+//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+//        header.addSubview(headerShadow);
         
-        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-        headerShadow.image = UIImage(named: "CardTop2");
-        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-        header.addSubview(headerShadow);
-        
-        tableView.tableHeaderView = header
+        tableView.tableHeaderView = searchView
         
         searchSource = AADialogsListSearchSource(searchDisplay: searchDisplay!)
         

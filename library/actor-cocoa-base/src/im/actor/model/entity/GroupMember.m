@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/GroupMember.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -26,16 +24,12 @@
 
 @end
 
-
-#line 14
 @implementation AMGroupMember
 
 + (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMGroupMember_fromBytesWithByteArray_(data);
 }
 
-
-#line 28
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)inviteDate
@@ -49,8 +43,6 @@
   return self;
 }
 
-
-#line 40
 - (jint)getUid {
   return uid_;
 }
@@ -67,8 +59,6 @@
   return isAdministrator__;
 }
 
-
-#line 57
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   inviterUid_ = [values getIntWithInt:2];
@@ -76,8 +66,6 @@
   isAdministrator__ = [values getBoolWithInt:4];
 }
 
-
-#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
   [writer writeIntWithInt:2 withInt:inviterUid_];
@@ -85,41 +73,25 @@
   [writer writeBoolWithInt:4 withBoolean:isAdministrator__];
 }
 
-
-#line 73
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
-  
-#line 77
   AMGroupMember *member = (AMGroupMember *) check_class_cast(o, [AMGroupMember class]);
-  
-#line 79
   if (uid_ != ((AMGroupMember *) nil_chk(member))->uid_) return NO;
-  
-#line 81
   return YES;
 }
 
-
-#line 85
 - (NSUInteger)hash {
   return uid_;
 }
 
 @end
 
-
-#line 16
 AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data) {
   AMGroupMember_initialize();
-  
-#line 17
   return ((AMGroupMember *) BSBser_parseWithBSBserObject_withByteArray_(new_AMGroupMember_init(), data));
 }
 
-
-#line 28
 void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self, jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
@@ -128,22 +100,16 @@ void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self
   self->isAdministrator__ = isAdministrator;
 }
 
-
-#line 28
 AMGroupMember *new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_(jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
   AMGroupMember *self = [AMGroupMember alloc];
   AMGroupMember_initWithInt_withInt_withLong_withBoolean_(self, uid, inviterUid, inviteDate, isAdministrator);
   return self;
 }
 
-
-#line 36
 void AMGroupMember_init(AMGroupMember *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 36
 AMGroupMember *new_AMGroupMember_init() {
   AMGroupMember *self = [AMGroupMember alloc];
   AMGroupMember_init(self);

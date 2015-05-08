@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestClearChat.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,44 +25,30 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestClearChat, peer_, ImActorModelApiOutPeer *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestClearChat
 
-
-#line 27
 + (ImActorModelApiRpcRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(data);
 }
 
-
-#line 33
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer {
   ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(self, peer);
   return self;
 }
 
-
-#line 37
 - (instancetype)init {
   ImActorModelApiRpcRequestClearChat_init(self);
   return self;
 }
 
-
-#line 41
 - (ImActorModelApiOutPeer *)getPeer {
   return self->peer_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
 }
 
-
-#line 51
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -72,8 +56,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestClearChat, peer_, ImActorModelApiOu
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->peer_];
 }
 
-
-#line 59
 - (NSString *)description {
   NSString *res = @"rpc ClearChat{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
@@ -81,48 +63,32 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestClearChat, peer_, ImActorModelApiOu
   return res;
 }
 
-
-#line 67
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestClearChat_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestClearChat *ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestClearChat_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestClearChat *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestClearChat_init(), data));
 }
 
-
-#line 33
 void ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestClearChat *self, ImActorModelApiOutPeer *peer) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 34
   self->peer_ = peer;
 }
 
-
-#line 33
 ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) {
   ImActorModelApiRpcRequestClearChat *self = [ImActorModelApiRpcRequestClearChat alloc];
   ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(self, peer);
   return self;
 }
 
-
-#line 37
 void ImActorModelApiRpcRequestClearChat_init(ImActorModelApiRpcRequestClearChat *self) {
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 37
 ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_init() {
   ImActorModelApiRpcRequestClearChat *self = [ImActorModelApiRpcRequestClearChat alloc];
   ImActorModelApiRpcRequestClearChat_init(self);

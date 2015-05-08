@@ -23,13 +23,16 @@
 
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
-                   withLong:(jlong)date;
+                   withLong:(jlong)date
+                   withLong:(jlong)rid;
 
 + (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
 - (jint)getHeaderKey;
+
+- (jlong)getRid;
 
 - (jint)getUid;
 
@@ -49,9 +52,9 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateContactRegistered, HEADER
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date);
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date, jlong rid);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_(jint uid, jboolean isSilent, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(jint uid, jboolean isSilent, jlong date, jlong rid) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactRegistered_init(ImActorModelApiUpdatesUpdateContactRegistered *self);
 

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/NafR2LMultiplier.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "java/math/BigInteger.h"
@@ -15,37 +13,21 @@
 #include "org/bouncycastle/math/ec/NafR2LMultiplier.h"
 #include "org/bouncycastle/math/ec/WNafUtil.h"
 
-
-#line 8
 @implementation OrgBouncycastleMathEcNafR2LMultiplier
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
-  
-#line 12
   IOSIntArray *naf = OrgBouncycastleMathEcWNafUtil_generateCompactNafWithJavaMathBigInteger_(k);
-  
-#line 14
   OrgBouncycastleMathEcECPoint *R0 = [((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve])) getInfinity], *R1 = p;
-  
-#line 16
   jint zeroes = 0;
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(naf))->size_; ++i) {
-    
-#line 19
     jint ni = IOSIntArray_Get(naf, i);
     jint digit = RShift32(ni, 16);
     zeroes += ni & (jint) 0xFFFF;
-    
-#line 23
     R1 = [R1 timesPow2WithInt:zeroes];
     R0 = [((OrgBouncycastleMathEcECPoint *) nil_chk(R0)) addWithOrgBouncycastleMathEcECPoint:digit < 0 ? [((OrgBouncycastleMathEcECPoint *) nil_chk(R1)) negate] : R1];
-    
-#line 26
     zeroes = 1;
   }
-  
-#line 29
   return R0;
 }
 
