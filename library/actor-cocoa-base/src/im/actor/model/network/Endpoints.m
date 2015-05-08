@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/Endpoints.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -21,19 +19,13 @@
 
 J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
 
-
-#line 7
 @implementation AMEndpoints
 
-
-#line 11
 - (instancetype)initWithAMConnectionEndpointArray:(IOSObjectArray *)endpoints {
   AMEndpoints_initWithAMConnectionEndpointArray_(self, endpoints);
   return self;
 }
 
-
-#line 15
 - (AMConnectionEndpoint *)fetchEndpoint {
   roundRobin_ = (roundRobin_ + 1) % ((IOSObjectArray *) nil_chk(endpoints_))->size_;
   return IOSObjectArray_Get(endpoints_, roundRobin_);
@@ -41,20 +33,12 @@ J2OBJC_FIELD_SETTER(AMEndpoints, endpoints_, IOSObjectArray *)
 
 @end
 
-
-#line 11
 void AMEndpoints_initWithAMConnectionEndpointArray_(AMEndpoints *self, IOSObjectArray *endpoints) {
   (void) NSObject_init(self);
-  self->roundRobin_ =
-#line 8
-  0;
-  
-#line 12
+  self->roundRobin_ = 0;
   self->endpoints_ = endpoints;
 }
 
-
-#line 11
 AMEndpoints *new_AMEndpoints_initWithAMConnectionEndpointArray_(IOSObjectArray *endpoints) {
   AMEndpoints *self = [AMEndpoints alloc];
   AMEndpoints_initWithAMConnectionEndpointArray_(self, endpoints);

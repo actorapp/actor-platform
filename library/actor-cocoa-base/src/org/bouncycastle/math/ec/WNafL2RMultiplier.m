@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/WNafL2RMultiplier.java"
-
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -19,97 +17,49 @@
 #include "org/bouncycastle/math/ec/WNafPreCompInfo.h"
 #include "org/bouncycastle/math/ec/WNafUtil.h"
 
-
-#line 9
 @implementation OrgBouncycastleMathEcWNafL2RMultiplier
 
-
-#line 18
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
-  
-#line 21
   jint width = JavaLangMath_maxWithInt_withInt_(2, JavaLangMath_minWithInt_withInt_(16, [self getWindowSizeWithInt:[((JavaMathBigInteger *) nil_chk(k)) bitLength]]));
-  
-#line 23
   OrgBouncycastleMathEcWNafPreCompInfo *wnafPreCompInfo = OrgBouncycastleMathEcWNafUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_withBoolean_(p, width, YES);
   IOSObjectArray *preComp = [((OrgBouncycastleMathEcWNafPreCompInfo *) nil_chk(wnafPreCompInfo)) getPreComp];
   IOSObjectArray *preCompNeg = [wnafPreCompInfo getPreCompNeg];
-  
-#line 27
   IOSIntArray *wnaf = OrgBouncycastleMathEcWNafUtil_generateCompactWindowNafWithInt_withJavaMathBigInteger_(width, k);
-  
-#line 29
   OrgBouncycastleMathEcECPoint *R = [((OrgBouncycastleMathEcECCurve *) nil_chk([((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve])) getInfinity];
-  
-#line 31
   jint i = ((IOSIntArray *) nil_chk(wnaf))->size_;
-  
-#line 37
   if (i > 1) {
-    
-#line 39
     jint wi = IOSIntArray_Get(wnaf, --i);
     jint digit = RShift32(wi, 16), zeroes = wi & (jint) 0xFFFF;
-    
-#line 42
     jint n = JavaLangMath_absWithInt_(digit);
     IOSObjectArray *table = digit < 0 ? preCompNeg : preComp;
-    
-#line 46
     if ((LShift32(n, 2)) < (LShift32(1, width))) {
-      
-#line 48
       jint highest = IOSByteArray_Get(nil_chk(OrgBouncycastleMathEcLongArray_get_bitLengths_()), n);
-      
-#line 51
       jint scale_ = width - highest;
       jint lowBits = n ^ (LShift32(1, (highest - 1)));
-      
-#line 54
       jint i1 = ((LShift32(1, (width - 1))) - 1);
       jint i2 = (LShift32(lowBits, scale_)) + 1;
       R = [((OrgBouncycastleMathEcECPoint *) nil_chk(IOSObjectArray_Get(table, URShift32(i1, 1)))) addWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(table, URShift32(i2, 1))];
-      
-#line 58
       zeroes -= scale_;
     }
     else {
-      
-#line 64
       R = IOSObjectArray_Get(table, URShift32(n, 1));
     }
-    
-#line 67
     R = [((OrgBouncycastleMathEcECPoint *) nil_chk(R)) timesPow2WithInt:zeroes];
   }
-  
-#line 70
   while (i > 0) {
-    
-#line 72
     jint wi = IOSIntArray_Get(wnaf, --i);
     jint digit = RShift32(wi, 16), zeroes = wi & (jint) 0xFFFF;
-    
-#line 75
     jint n = JavaLangMath_absWithInt_(digit);
     IOSObjectArray *table = digit < 0 ? preCompNeg : preComp;
     OrgBouncycastleMathEcECPoint *r = IOSObjectArray_Get(table, URShift32(n, 1));
-    
-#line 79
     R = [((OrgBouncycastleMathEcECPoint *) nil_chk(R)) twicePlusWithOrgBouncycastleMathEcECPoint:r];
     R = [((OrgBouncycastleMathEcECPoint *) nil_chk(R)) timesPow2WithInt:zeroes];
   }
-  
-#line 83
   return R;
 }
 
-
-#line 92
 - (jint)getWindowSizeWithInt:(jint)bits {
-  
-#line 94
   return OrgBouncycastleMathEcWNafUtil_getWindowSizeWithInt_(bits);
 }
 

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/JavaRandomProvider.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/jvm/JavaRandomProvider.h"
@@ -21,12 +19,8 @@
 
 J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
 
-
-#line 15
 @implementation AMJavaRandomProvider
 
-
-#line 19
 - (IOSByteArray *)randomBytesWithInt:(jint)length {
   IOSByteArray *res = [IOSByteArray newArrayWithLength:length];
   @synchronized(random_) {
@@ -35,30 +29,22 @@ J2OBJC_FIELD_SETTER(AMJavaRandomProvider, random_, JavaSecuritySecureRandom *)
   return res;
 }
 
-
-#line 28
 - (jint)randomIntWithInt:(jint)maxValue {
   @synchronized(random_) {
     return [((JavaSecuritySecureRandom *) nil_chk(random_)) nextIntWithInt:maxValue];
   }
 }
 
-
-#line 35
 - (void)nextBytesWithByteArray:(IOSByteArray *)data {
   @synchronized(random_) {
     [((JavaSecuritySecureRandom *) nil_chk(random_)) nextBytesWithByteArray:data];
   }
 }
 
-
-#line 42
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits {
   return new_JavaMathBigInteger_initWithInt_withJavaUtilRandom_(numBits, random_);
 }
 
-
-#line 47
 - (JavaMathBigInteger *)generateBigIntegerWithInt:(jint)numBits
                                           withInt:(jint)certanity {
   return new_JavaMathBigInteger_initWithInt_withInt_withJavaUtilRandom_(numBits, certanity, random_);

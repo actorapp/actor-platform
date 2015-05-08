@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetFileUrl.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -27,33 +25,23 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUrl, url_, NSString *)
 
-
-#line 24
 @implementation ImActorModelApiRpcResponseGetFileUrl
 
-
-#line 27
 + (ImActorModelApiRpcResponseGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcResponseGetFileUrl_fromBytesWithByteArray_(data);
 }
 
-
-#line 34
 - (instancetype)initWithNSString:(NSString *)url
                          withInt:(jint)timeout {
   ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(self, url, timeout);
   return self;
 }
 
-
-#line 39
 - (instancetype)init {
   ImActorModelApiRpcResponseGetFileUrl_init(self);
   return self;
 }
 
-
-#line 43
 - (NSString *)getUrl {
   return self->url_;
 }
@@ -62,15 +50,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUrl, url_, NSString *)
   return self->timeout_;
 }
 
-
-#line 52
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->url_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   self->timeout_ = [values getIntWithInt:2];
 }
 
-
-#line 58
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->url_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -79,55 +63,39 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUrl, url_, NSString *)
   [writer writeIntWithInt:2 withInt:self->timeout_];
 }
 
-
-#line 67
 - (NSString *)description {
   NSString *res = @"tuple GetFileUrl{";
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
-
-#line 74
 - (jint)getHeaderKey {
   return ImActorModelApiRpcResponseGetFileUrl_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcResponseGetFileUrl *ImActorModelApiRpcResponseGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcResponseGetFileUrl_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcResponseGetFileUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetFileUrl_init(), data));
 }
 
 void ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(ImActorModelApiRpcResponseGetFileUrl *self, NSString *url, jint timeout) {
   (void) ImActorModelNetworkParserResponse_init(self);
-  
-#line 35
   self->url_ = url;
   self->timeout_ = timeout;
 }
 
-
-#line 34
 ImActorModelApiRpcResponseGetFileUrl *new_ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(NSString *url, jint timeout) {
   ImActorModelApiRpcResponseGetFileUrl *self = [ImActorModelApiRpcResponseGetFileUrl alloc];
   ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(self, url, timeout);
   return self;
 }
 
-
-#line 39
 void ImActorModelApiRpcResponseGetFileUrl_init(ImActorModelApiRpcResponseGetFileUrl *self) {
   (void) ImActorModelNetworkParserResponse_init(self);
 }
 
-
-#line 39
 ImActorModelApiRpcResponseGetFileUrl *new_ImActorModelApiRpcResponseGetFileUrl_init() {
   ImActorModelApiRpcResponseGetFileUrl *self = [ImActorModelApiRpcResponseGetFileUrl alloc];
   ImActorModelApiRpcResponseGetFileUrl_init(self);

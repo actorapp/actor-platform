@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserLeft.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -14,35 +12,23 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-
-#line 23
 @implementation ImActorModelApiServiceExUserLeft
 
-
-#line 26
 - (instancetype)init {
   ImActorModelApiServiceExUserLeft_init(self);
   return self;
 }
 
-
-#line 30
 - (jint)getHeader {
   return 3;
 }
 
-
-#line 35
 - (void)parseWithBSBserValues:(BSBserValues *)values {
 }
 
-
-#line 39
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
 }
 
-
-#line 43
 - (NSString *)description {
   NSString *res = @"struct ServiceExUserLeft{";
   res = JreStrcat("$C", res, '}');
@@ -51,14 +37,10 @@
 
 @end
 
-
-#line 26
 void ImActorModelApiServiceExUserLeft_init(ImActorModelApiServiceExUserLeft *self) {
   (void) ImActorModelApiServiceEx_init(self);
 }
 
-
-#line 26
 ImActorModelApiServiceExUserLeft *new_ImActorModelApiServiceExUserLeft_init() {
   ImActorModelApiServiceExUserLeft *self = [ImActorModelApiServiceExUserLeft alloc];
   ImActorModelApiServiceExUserLeft_init(self);

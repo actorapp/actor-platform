@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FileLocation.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/FileLocation.h"
@@ -22,27 +20,19 @@
 
 @end
 
-
-#line 23
 @implementation ImActorModelApiFileLocation
 
-
-#line 28
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash {
   ImActorModelApiFileLocation_initWithLong_withLong_(self, fileId, accessHash);
   return self;
 }
 
-
-#line 33
 - (instancetype)init {
   ImActorModelApiFileLocation_init(self);
   return self;
 }
 
-
-#line 37
 - (jlong)getFileId {
   return self->fileId_;
 }
@@ -51,22 +41,16 @@
   return self->accessHash_;
 }
 
-
-#line 46
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
 }
 
-
-#line 52
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
 }
 
-
-#line 58
 - (NSString *)description {
   NSString *res = @"struct FileLocation{";
   res = JreStrcat("$$", res, JreStrcat("$J", @"fileId=", self->fileId_));
@@ -76,32 +60,22 @@
 
 @end
 
-
-#line 28
 void ImActorModelApiFileLocation_initWithLong_withLong_(ImActorModelApiFileLocation *self, jlong fileId, jlong accessHash) {
   (void) BSBserObject_init(self);
-  
-#line 29
   self->fileId_ = fileId;
   self->accessHash_ = accessHash;
 }
 
-
-#line 28
 ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) {
   ImActorModelApiFileLocation *self = [ImActorModelApiFileLocation alloc];
   ImActorModelApiFileLocation_initWithLong_withLong_(self, fileId, accessHash);
   return self;
 }
 
-
-#line 33
 void ImActorModelApiFileLocation_init(ImActorModelApiFileLocation *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 33
 ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_init() {
   ImActorModelApiFileLocation *self = [ImActorModelApiFileLocation alloc];
   ImActorModelApiFileLocation_init(self);

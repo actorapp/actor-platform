@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TypingType.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/TypingType.h"
@@ -28,12 +26,8 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelApiTypingTypeEnum)
 
 ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_values_[2];
 
-
-#line 12
 @implementation ImActorModelApiTypingTypeEnum
 
-
-#line 19
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -41,8 +35,6 @@ ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_values_[2];
   return self;
 }
 
-
-#line 23
 - (jint)getValue {
   return value_;
 }
@@ -82,49 +74,31 @@ ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_valueOfWithNSString
 
 + (void)initialize {
   if (self == [ImActorModelApiTypingTypeEnum class]) {
-    ImActorModelApiTypingTypeEnum_TEXT = new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(
-#line 14
-    0, @"TEXT", 0);
-    ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(
-#line 15
-    -1, @"UNSUPPORTED_VALUE", 1);
+    ImActorModelApiTypingTypeEnum_TEXT = new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(0, @"TEXT", 0);
+    ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 1);
     J2OBJC_SET_INITIALIZED(ImActorModelApiTypingTypeEnum)
   }
 }
 
 @end
 
-
-#line 19
 void ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiTypingTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  
-#line 20
   self->value_ = value;
 }
 
-
-#line 19
 ImActorModelApiTypingTypeEnum *new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   ImActorModelApiTypingTypeEnum *self = [ImActorModelApiTypingTypeEnum alloc];
   ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-
-#line 27
 ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_parseWithInt_(jint value) {
   ImActorModelApiTypingTypeEnum_initialize();
-  
-#line 28
   switch (value) {
     case 0:
-    
-#line 29
     return ImActorModelApiTypingTypeEnum_TEXT;
     default:
-    
-#line 30
     return ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE;
   }
 }

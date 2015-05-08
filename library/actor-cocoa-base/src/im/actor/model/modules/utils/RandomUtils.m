@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/modules/utils/RandomUtils.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "java/util/Random.h"
@@ -15,12 +13,8 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUtilsRandomUtils, RANDOM_, JavaUti
 
 J2OBJC_INITIALIZED_DEFN(ImActorModelModulesUtilsRandomUtils)
 
-
-#line 9
 @implementation ImActorModelModulesUtilsRandomUtils
 
-
-#line 13
 + (jlong)nextRid {
   return ImActorModelModulesUtilsRandomUtils_nextRid();
 }
@@ -39,13 +33,9 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelModulesUtilsRandomUtils)
 
 @end
 
-
-#line 13
 jlong ImActorModelModulesUtilsRandomUtils_nextRid() {
   ImActorModelModulesUtilsRandomUtils_initialize();
   @synchronized(ImActorModelModulesUtilsRandomUtils_class_()) {
-    
-#line 14
     return [((JavaUtilRandom *) nil_chk(ImActorModelModulesUtilsRandomUtils_RANDOM_)) nextLong];
   }
 }

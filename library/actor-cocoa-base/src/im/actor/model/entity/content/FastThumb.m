@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/FastThumb.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -33,16 +31,12 @@ __attribute__((unused)) static void AMFastThumb_init(AMFastThumb *self);
 
 __attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RETAINED;
 
-
-#line 14
 @implementation AMFastThumb
 
 + (AMFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMFastThumb_fromBytesWithByteArray_(data);
 }
 
-
-#line 24
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)image {
@@ -50,15 +44,11 @@ __attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RE
   return self;
 }
 
-
-#line 30
 - (instancetype)init {
   AMFastThumb_init(self);
   return self;
 }
 
-
-#line 34
 - (jint)getW {
   return w_;
 }
@@ -71,16 +61,12 @@ __attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RE
   return image_;
 }
 
-
-#line 47
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   h_ = [values getIntWithInt:2];
   image_ = [values getBytesWithInt:3];
 }
 
-
-#line 54
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:w_];
   [writer writeIntWithInt:2 withInt:h_];
@@ -89,28 +75,18 @@ __attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RE
 
 @end
 
-
-#line 16
 AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
   AMFastThumb_initialize();
-  
-#line 17
   return ((AMFastThumb *) BSBser_parseWithBSBserObject_withByteArray_(new_AMFastThumb_init(), data));
 }
 
-
-#line 24
 void AMFastThumb_initWithInt_withInt_withByteArray_(AMFastThumb *self, jint w, jint h, IOSByteArray *image) {
   (void) BSBserObject_init(self);
-  
-#line 25
   self->w_ = w;
   self->h_ = h;
   self->image_ = image;
 }
 
-
-#line 24
 AMFastThumb *new_AMFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *image) {
   AMFastThumb *self = [AMFastThumb alloc];
   AMFastThumb_initWithInt_withInt_withByteArray_(self, w, h, image);
@@ -121,8 +97,6 @@ void AMFastThumb_init(AMFastThumb *self) {
   (void) BSBserObject_init(self);
 }
 
-
-#line 30
 AMFastThumb *new_AMFastThumb_init() {
   AMFastThumb *self = [AMFastThumb alloc];
   AMFastThumb_init(self);

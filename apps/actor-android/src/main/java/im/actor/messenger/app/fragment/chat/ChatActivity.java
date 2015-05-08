@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
@@ -35,7 +36,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
@@ -103,6 +103,10 @@ public class ChatActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle saveInstance) {
         super.onCreate(saveInstance);
+
+        if (saveInstance != null) {
+            fileName = saveInstance.getString("pending_file_name", null);
+        }
 
         keyboardUtils = new KeyboardHelper(this);
 
@@ -323,7 +327,7 @@ public class ChatActivity extends BaseActivity {
         emojiKeyboard.setOnEmojiClickListener(new OnEmojiClickListener() {
             @Override
             public void onEmojiClicked(long smileId) {
-                String smile =  null;
+                String smile = null;
                 char a = (char) (smileId & 0xFFFFFFFF);
                 char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
                 char c = (char) ((smileId >> 32) & 0xFFFFFFFF);
@@ -666,6 +670,14 @@ public class ChatActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        if (fileName != null) {
+            outState.putString("pending_file_name", fileName);
+        }
     }
 
     @Override

@@ -4,17 +4,11 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/util/JavaUtil.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/util/JavaUtil.h"
 
-
-#line 10
 @implementation AMJavaUtil
 
-
-#line 19
 + (jboolean)equalsEWithId:(id)a
                    withId:(id)b {
   return AMJavaUtil_equalsEWithId_withId_(a, b);
@@ -27,12 +21,8 @@
 
 @end
 
-
-#line 19
 jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {
   AMJavaUtil_initialize();
-  
-#line 20
   if (a == nil && b == nil) {
     return YES;
   }

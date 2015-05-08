@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/droidkit/actors/mailbox/Envelope.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorScope.h"
@@ -29,12 +27,8 @@ J2OBJC_FIELD_SETTER(DKEnvelope, sender_, DKActorRef *)
 J2OBJC_FIELD_SETTER(DKEnvelope, mailbox_, DKMailbox *)
 J2OBJC_FIELD_SETTER(DKEnvelope, scope_, DKActorScope *)
 
-
-#line 14
 @implementation DKEnvelope
 
-
-#line 28
 - (instancetype)initWithId:(id)message
           withDKActorScope:(DKActorScope *)scope
              withDKMailbox:(DKMailbox *)mailbox
@@ -47,20 +41,14 @@ J2OBJC_FIELD_SETTER(DKEnvelope, scope_, DKActorScope *)
   return scope_;
 }
 
-
-#line 45
 - (id)getMessage {
   return message_;
 }
 
-
-#line 54
 - (DKMailbox *)getMailbox {
   return mailbox_;
 }
 
-
-#line 63
 - (DKActorRef *)getSender {
   return sender_;
 }
@@ -69,20 +57,14 @@ J2OBJC_FIELD_SETTER(DKEnvelope, scope_, DKActorScope *)
   return sendTime_;
 }
 
-
-#line 72
 - (NSString *)description {
   return JreStrcat("C@$$C", '{', message_, @" -> ", [((DKActorScope *) nil_chk(scope_)) getPath], '}');
 }
 
 @end
 
-
-#line 28
 void DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(DKEnvelope *self, id message, DKActorScope *scope, DKMailbox *mailbox, DKActorRef *sender) {
   (void) NSObject_init(self);
-  
-#line 29
   self->scope_ = scope;
   self->message_ = message;
   self->sender_ = sender;
@@ -90,8 +72,6 @@ void DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(DKEnve
   self->sendTime_ = DKActorTime_currentTime();
 }
 
-
-#line 28
 DKEnvelope *new_DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(id message, DKActorScope *scope, DKMailbox *mailbox, DKActorRef *sender) {
   DKEnvelope *self = [DKEnvelope alloc];
   DKEnvelope_initWithId_withDKActorScope_withDKMailbox_withDKActorRef_(self, message, scope, mailbox, sender);

@@ -4,19 +4,13 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/jvm/threads/JavaAtomicLong.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/jvm/threads/JavaAtomicLong.h"
 #include "im/actor/model/util/AtomicLongCompat.h"
 #include "java/util/concurrent/atomic/AtomicLong.h"
 
-
-#line 11
 @implementation ImActorModelJvmThreadsJavaAtomicLong
 
-
-#line 14
 - (instancetype)initWithLong:(jlong)value {
   ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(self, value);
   return self;
@@ -26,37 +20,25 @@
   return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) get];
 }
 
-
-#line 24
 - (jlong)incrementAndGet {
   return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) incrementAndGet];
 }
 
-
-#line 29
 - (jlong)getAndIncrement {
   return [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) getAndIncrement];
 }
 
-
-#line 34
 - (void)setWithLong:(jlong)v {
   [((JavaUtilConcurrentAtomicAtomicLong *) nil_chk(atomicLong_)) setWithLong:v];
 }
 
 @end
 
-
-#line 14
 void ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(ImActorModelJvmThreadsJavaAtomicLong *self, jlong value) {
   (void) AMAtomicLongCompat_init(self);
-  
-#line 15
   self->atomicLong_ = new_JavaUtilConcurrentAtomicAtomicLong_initWithLong_(value);
 }
 
-
-#line 14
 ImActorModelJvmThreadsJavaAtomicLong *new_ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(jlong value) {
   ImActorModelJvmThreadsJavaAtomicLong *self = [ImActorModelJvmThreadsJavaAtomicLong alloc];
   ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(self, value);
