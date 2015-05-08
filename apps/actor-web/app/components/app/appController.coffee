@@ -9,18 +9,16 @@ class AppController
     @$scope.$on 'onConversationOpen', (event, peer) =>
       switch peer.type
         when 'user'
-          @actorService.bindUser peer.id, (info) => @renderPeerInfo info
+          @actorService.bindUser peer.id, @renderPeerInfo
         when 'group'
-          @actorService.bindGroup peer.id, (info) => @renderPeerInfo info
+          @actorService.bindGroup peer.id, @renderPeerInfo
 
     @$scope.$on 'onConversationClosed', (event, peer) =>
       switch peer.type
         when 'user'
-          @actorService.unbindUser peer.id, =>
-            console.log '[AW]AppController unbindUser: unbinded'
+          @actorService.unbindUser peer.id, @renderPeerInfo
         when 'group'
-          @actorService.unbindGroup peer.id, =>
-            console.log '[AW]AppController unbindGroup: unbinded'
+          @actorService.unbindGroup peer.id, @renderPeerInfo
 
   renderMyInfo: (info) =>
     console.log '[AW]AppController renderMyInfo', info
