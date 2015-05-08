@@ -4,14 +4,14 @@
             <md-icon md-svg-icon="assets/img/icons/ic_menu_24px.svg"></md-icon>
         </md-button>
 
-        <div class="info info--padded-left" layout="row" ng-if="::app.info">
-          <div class="info__avatar avatar avatar--small avatar--{{::app.info.placeholder}}">
-              <img ng-src="{{::app.info.avatar}}" alt="{{app.info.name}}" ng-if="::app.info.avatar" />
-              <span ng-bind="::app.info.name|limitTo:1"></span>
+        <div class="info info--padded-left" layout="row" ng-if="app.info">
+          <div class="info__avatar avatar avatar--small avatar--{{app.info.placeholder}}">
+              <img ng-src="{{app.info.avatar}}" alt="{{app.info.name}}" ng-if="app.info.avatar" />
+              <span ng-bind="app.info.name|limitTo:1"></span>
           </div>
           <div class="info__body" flex>
-            <p class="info__name">{{::app.info.name}}</p>
-            <p class="info__presence">{{::app.info.presence}}</p>
+            <p class="info__name">{{app.info.name}}</p>
+            <p class="info__presence">{{app.info.presence}}</p>
           </div>
         </div>
 

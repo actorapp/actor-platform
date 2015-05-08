@@ -6,6 +6,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/AppCategory.h"
+#include "im/actor/model/Configuration.h"
+#include "im/actor/model/DeviceCategory.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -21,6 +24,13 @@
 
 @interface ImActorModelModulesSettings () {
  @public
+  NSString *STORAGE_PREFIX_;
+  NSString *KEY_NOTIFICATION_TONES_;
+  NSString *KEY_CHAT_SEND_BY_ENTER_;
+  NSString *KEY_NOTIFICATION_SOUND_;
+  NSString *KEY_NOTIFICATION_VIBRATION_;
+  NSString *KEY_NOTIFICATION_TEXT_;
+  NSString *KEY_NOTIFICATION_CHAT_PREFIX_;
   DKActorRef *settingsSync_;
 }
 
@@ -29,36 +39,34 @@
 - (jboolean)loadValueWithNSString:(NSString *)key
                       withBoolean:(jboolean)defaultVal;
 
-- (void)saveValueWithNSString:(NSString *)key
-                  withBoolean:(jboolean)val;
+- (void)changeValueWithNSString:(NSString *)key
+                    withBoolean:(jboolean)val;
+
+- (void)writeValueWithNSString:(NSString *)key
+                  withNSString:(NSString *)val;
+
+- (NSString *)readValueWithNSString:(NSString *)key;
 
 @end
 
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, STORAGE_PREFIX_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TONES_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_CHAT_SEND_BY_ENTER_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_SOUND_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_VIBRATION_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_PREFIX_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, settingsSync_, DKActorRef *)
-
-static NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_ = @"app.tones_enabled";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TONES_, NSString *)
-
-static NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_ = @"sync.notification.sound.enabled";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_SOUND_, NSString *)
-
-static NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_ = @"sync.notification.vibration.enabled";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_VIBRATION_, NSString *)
-
-static NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_ = @"sync.notification.show_text";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
-
-static NSString *ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_ = @"sync.notification.chat.";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_, NSString *)
-
-static NSString *ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_ = @"app.send_by_enter";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettings, KEY_CHAT_SEND_BY_ENTER_, NSString *)
 
 __attribute__((unused)) static NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesSettings *self, AMPeer *peer);
 
 __attribute__((unused)) static jboolean ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean defaultVal);
 
-__attribute__((unused)) static void ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean val);
+__attribute__((unused)) static void ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean val);
+
+__attribute__((unused)) static void ImActorModelModulesSettings_writeValueWithNSString_withNSString_(ImActorModelModulesSettings *self, NSString *key, NSString *val);
+
+__attribute__((unused)) static NSString *ImActorModelModulesSettings_readValueWithNSString_(ImActorModelModulesSettings *self, NSString *key);
 
 @interface ImActorModelModulesSettings_$1 : NSObject < DKActorCreator > {
  @public
@@ -92,53 +100,58 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   settingsSync_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesSettingsSettingsSyncActor_class_(), new_ImActorModelModulesSettings_$1_initWithImActorModelModulesSettings_(self)) withNSString:@"actor/settings"];
 }
 
+- (void)onUpdatedSettingWithNSString:(NSString *)key
+                        withNSString:(NSString *)value {
+  ImActorModelModulesSettings_writeValueWithNSString_withNSString_(self, key, value);
+}
+
 - (jboolean)isConversationTonesEnabled {
-  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_, YES);
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_TONES_, YES);
 }
 
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_TONES_, val);
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_TONES_, val);
 }
 
 - (jboolean)isNotificationSoundEnabled {
-  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_, YES);
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_SOUND_, YES);
 }
 
 - (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_SOUND_, val);
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_SOUND_, val);
 }
 
 - (jboolean)isVibrationEnabled {
-  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_, YES);
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_VIBRATION_, YES);
 }
 
 - (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_VIBRATION_, val);
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_VIBRATION_, val);
 }
 
 - (jboolean)isShowNotificationsText {
-  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_, YES);
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_TEXT_, YES);
 }
 
 - (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_NOTIFICATION_TEXT_, val);
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_NOTIFICATION_TEXT_, val);
 }
 
 - (jboolean)isSendByEnterEnabled {
-  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_, YES);
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_CHAT_SEND_BY_ENTER_, YES);
 }
 
 - (void)changeSendByEnterWithBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, ImActorModelModulesSettings_KEY_CHAT_SEND_BY_ENTER_, val);
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_CHAT_SEND_BY_ENTER_, val);
 }
 
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer {
-  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, JreStrcat("$$$", ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".enabled"), YES);
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, JreStrcat("$$$", KEY_NOTIFICATION_CHAT_PREFIX_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".enabled"), YES);
 }
 
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, JreStrcat("$$$", ImActorModelModulesSettings_KEY_NOTIFICATION_CHAT_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".enabled"), val);
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, JreStrcat("$$$", KEY_NOTIFICATION_CHAT_PREFIX_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".enabled"), val);
 }
 
 - (NSString *)getChatKeyWithAMPeer:(AMPeer *)peer {
@@ -150,15 +163,60 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, key, defaultVal);
 }
 
-- (void)saveValueWithNSString:(NSString *)key
-                  withBoolean:(jboolean)val {
-  ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(self, key, val);
+- (void)changeValueWithNSString:(NSString *)key
+                    withBoolean:(jboolean)val {
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, key, val);
+}
+
+- (void)writeValueWithNSString:(NSString *)key
+                  withNSString:(NSString *)val {
+  ImActorModelModulesSettings_writeValueWithNSString_withNSString_(self, key, val);
+}
+
+- (NSString *)readValueWithNSString:(NSString *)key {
+  return ImActorModelModulesSettings_readValueWithNSString_(self, key);
 }
 
 @end
 
 void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesSettings *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
+  self->STORAGE_PREFIX_ = @"app.tones_enabled";
+  NSString *configKey;
+  switch ([[((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getAppCategory] ordinal]) {
+    case AMAppCategory_ANDROID:
+    configKey = @"android";
+    break;
+    case AMAppCategory_IOS:
+    configKey = @"ios";
+    break;
+    case AMAppCategory_WEB:
+    configKey = @"web";
+    break;
+    default:
+    case AMAppCategory_GENERIC:
+    configKey = @"generic";
+    break;
+  }
+  NSString *deviceTypeKey;
+  switch ([[((AMConfiguration *) nil_chk([modules getConfiguration])) getDeviceCategory] ordinal]) {
+    case AMDeviceCategory_DESKTOP:
+    deviceTypeKey = @"desktop";
+    break;
+    case AMDeviceCategory_MOBILE:
+    deviceTypeKey = @"mobile";
+    break;
+    default:
+    case AMDeviceCategory_UNKNOWN:
+    deviceTypeKey = @"generic";
+    break;
+  }
+  self->KEY_NOTIFICATION_TONES_ = JreStrcat("$$$", @"app.", configKey, @".tones_enabled");
+  self->KEY_CHAT_SEND_BY_ENTER_ = JreStrcat("$$$", @"app.", configKey, @".send_by_enter");
+  self->KEY_NOTIFICATION_SOUND_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.sound.enabled");
+  self->KEY_NOTIFICATION_VIBRATION_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.vibration.enabled");
+  self->KEY_NOTIFICATION_TEXT_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.show_text");
+  self->KEY_NOTIFICATION_CHAT_PREFIX_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.chat.");
 }
 
 ImActorModelModulesSettings *new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
@@ -180,22 +238,30 @@ NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesS
 }
 
 jboolean ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean defaultVal) {
-  NSString *sValue = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getString:key];
+  NSString *sValue = ImActorModelModulesSettings_readValueWithNSString_(self, key);
   if ([@"true" isEqual:sValue]) {
     return YES;
   }
   else if ([@"false" isEqual:sValue]) {
-    return YES;
+    return NO;
   }
   else {
     return defaultVal;
   }
 }
 
-void ImActorModelModulesSettings_saveValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean val) {
+void ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean val) {
   NSString *sVal = val ? @"true" : @"false";
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putString:key withValue:sVal];
+  ImActorModelModulesSettings_writeValueWithNSString_withNSString_(self, key, sVal);
   [((DKActorRef *) nil_chk(self->settingsSync_)) sendWithId:new_ImActorModelModulesSettingsSettingsSyncActor_ChangeSettings_initWithNSString_withNSString_(key, sVal)];
+}
+
+void ImActorModelModulesSettings_writeValueWithNSString_withNSString_(ImActorModelModulesSettings *self, NSString *key, NSString *val) {
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putString:JreStrcat("$$", self->STORAGE_PREFIX_, key) withValue:val];
+}
+
+NSString *ImActorModelModulesSettings_readValueWithNSString_(ImActorModelModulesSettings *self, NSString *key) {
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getString:JreStrcat("$$", self->STORAGE_PREFIX_, key)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSettings)

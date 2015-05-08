@@ -13,12 +13,12 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.HttpProvider;
 import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.http.FileUploadCallback;
 import im.actor.model.log.Log;
 
-public class AndroidHttpSupport implements HttpDownloaderProvider {
+public class AndroidHttpSupport implements HttpProvider {
 
     private static final String TAG = "AndroidHTTP";
 
@@ -27,7 +27,7 @@ public class AndroidHttpSupport implements HttpDownloaderProvider {
     private final MediaType MEDIA_TYPE = MediaType.parse("application/octet-stream");
 
     @Override
-    public void downloadPart(String url, int startOffset, int size, int totalSize, final FileDownloadCallback callback) {
+    public void getMethod(String url, int startOffset, int size, int totalSize, final FileDownloadCallback callback) {
         final Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Range", "bytes=" + startOffset + "-" + (startOffset + size))
@@ -54,7 +54,7 @@ public class AndroidHttpSupport implements HttpDownloaderProvider {
     }
 
     @Override
-    public void uploadPart(String url, byte[] contents, final FileUploadCallback callback) {
+    public void putMethod(String url, byte[] contents, final FileUploadCallback callback) {
         final Request request = new Request.Builder()
                 .url(url)
                 .method("PUT", RequestBody.create(MEDIA_TYPE, contents))
