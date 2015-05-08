@@ -4,33 +4,23 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/InvalidCipherTextException.java"
-
 #include "J2ObjC_source.h"
 #include "java/lang/Throwable.h"
 #include "org/bouncycastle/crypto/CryptoException.h"
 #include "org/bouncycastle/crypto/InvalidCipherTextException.h"
 
-
-#line 7
 @implementation OrgBouncycastleCryptoInvalidCipherTextException
 
-
-#line 13
 - (instancetype)init {
   OrgBouncycastleCryptoInvalidCipherTextException_init(self);
   return self;
 }
 
-
-#line 22
 - (instancetype)initWithNSString:(NSString *)message {
   OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(self, message);
   return self;
 }
 
-
-#line 34
 - (instancetype)initWithNSString:(NSString *)message
            withJavaLangThrowable:(JavaLangThrowable *)cause {
   OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_withJavaLangThrowable_(self, message, cause);
@@ -39,46 +29,30 @@
 
 @end
 
-
-#line 13
 void OrgBouncycastleCryptoInvalidCipherTextException_init(OrgBouncycastleCryptoInvalidCipherTextException *self) {
   (void) OrgBouncycastleCryptoCryptoException_init(self);
 }
 
-
-#line 13
 OrgBouncycastleCryptoInvalidCipherTextException *new_OrgBouncycastleCryptoInvalidCipherTextException_init() {
   OrgBouncycastleCryptoInvalidCipherTextException *self = [OrgBouncycastleCryptoInvalidCipherTextException alloc];
   OrgBouncycastleCryptoInvalidCipherTextException_init(self);
   return self;
 }
 
-
-#line 22
 void OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(OrgBouncycastleCryptoInvalidCipherTextException *self, NSString *message) {
-  (void) OrgBouncycastleCryptoCryptoException_initWithNSString_(self,
-#line 25
-  message);
+  (void) OrgBouncycastleCryptoCryptoException_initWithNSString_(self, message);
 }
 
-
-#line 22
 OrgBouncycastleCryptoInvalidCipherTextException *new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(NSString *message) {
   OrgBouncycastleCryptoInvalidCipherTextException *self = [OrgBouncycastleCryptoInvalidCipherTextException alloc];
   OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_(self, message);
   return self;
 }
 
-
-#line 34
 void OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_withJavaLangThrowable_(OrgBouncycastleCryptoInvalidCipherTextException *self, NSString *message, JavaLangThrowable *cause) {
-  (void) OrgBouncycastleCryptoCryptoException_initWithNSString_withJavaLangThrowable_(self,
-#line 38
-  message, cause);
+  (void) OrgBouncycastleCryptoCryptoException_initWithNSString_withJavaLangThrowable_(self, message, cause);
 }
 
-
-#line 34
 OrgBouncycastleCryptoInvalidCipherTextException *new_OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_withJavaLangThrowable_(NSString *message, JavaLangThrowable *cause) {
   OrgBouncycastleCryptoInvalidCipherTextException *self = [OrgBouncycastleCryptoInvalidCipherTextException alloc];
   OrgBouncycastleCryptoInvalidCipherTextException_initWithNSString_withJavaLangThrowable_(self, message, cause);

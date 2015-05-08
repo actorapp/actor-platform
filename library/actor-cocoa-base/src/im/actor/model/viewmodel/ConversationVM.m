@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/viewmodel/ConversationVM.java"
-
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/Peer.h"
@@ -62,12 +60,8 @@ __attribute__((unused)) static AMConversationVM_$1 *new_AMConversationVM_$1_init
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConversationVM_$1)
 
-
-#line 13
 @implementation AMConversationVM
 
-
-#line 18
 - (instancetype)initWithAMPeer:(AMPeer *)peer
   withAMConversationVMCallback:(id<AMConversationVMCallback>)callback
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules
@@ -76,33 +70,21 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules
   return self;
 }
 
-
-#line 64
 - (void)release__ {
   [((AMBindedDisplayList *) nil_chk(displayList_)) removeListenerWithAMDisplayList_Listener:listener_];
 }
 
 @end
 
-
-#line 18
 void AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(AMConversationVM *self, AMPeer *peer, id<AMConversationVMCallback> callback, ImActorModelModulesModules *modules, AMBindedDisplayList *displayList) {
   (void) NSObject_init(self);
-  self->isLoaded_ =
-#line 16
-  NO;
-  
-#line 19
+  self->isLoaded_ = NO;
   self->displayList_ = displayList;
   self->listener_ = new_AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(self, displayList, modules, peer, callback);
-  
-#line 60
   [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListenerWithAMDisplayList_Listener:self->listener_];
   [self->listener_ onCollectionChanged];
 }
 
-
-#line 18
 AMConversationVM *new_AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(AMPeer *peer, id<AMConversationVMCallback> callback, ImActorModelModulesModules *modules, AMBindedDisplayList *displayList) {
   AMConversationVM *self = [AMConversationVM alloc];
   AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorModelModulesModules_withAMBindedDisplayList_(self, peer, callback, modules, displayList);
@@ -113,30 +95,18 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
 
 @implementation AMConversationVM_$1
 
-
-#line 22
 - (void)onCollectionChanged {
   if (this$0_->isLoaded_) {
     return;
   }
-  
-#line 27
   if ([((AMBindedDisplayList *) nil_chk(val$displayList_)) getSize] == 0) {
     return;
   }
-  
-#line 31
   this$0_->isLoaded_ = YES;
   jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(val$modules_)) getMessagesModule])) loadReadStateWithAMPeer:val$peer_];
-  
-#line 34
   if (lastRead == 0) {
-    
-#line 36
     return;
   }
-  
-#line 39
   jint index = -1;
   jlong unread = -1;
   for (jint i = [val$displayList_ getSize] - 1; i >= 0; i--) {
@@ -150,14 +120,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
       break;
     }
   }
-  
-#line 53
   if (index >= 0) {
     [((id<AMConversationVMCallback>) nil_chk(val$callback_)) onLoadedWithLong:unread withInt:index];
   }
   else {
-    
-#line 56
     [((id<AMConversationVMCallback>) nil_chk(val$callback_)) onLoadedWithLong:0 withInt:0];
   }
 }

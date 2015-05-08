@@ -19,6 +19,7 @@
 #import "java/util/HashSet.h"
 #import "java/util/Map.h"
 #import "java/util/HashMap.h"
+#import "java/math/BigInteger.h"
 
 // Messenger
 

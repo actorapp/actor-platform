@@ -113,9 +113,11 @@ class CircullarNode: ASDisplayNode {
             rawValue = startRawValue + (endRawValue - startRawValue) * p;
         }
 
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 16 * Int64(NSEC_PER_MSEC)), dispatch_get_main_queue(), {
-            self.setNeedsDisplay()
-        });
+        if (!self.hidden) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 16 * Int64(NSEC_PER_MSEC)), dispatch_get_main_queue(), {
+                self.setNeedsDisplay()
+            });
+        }
         return [rawValue, now];
     }
 }

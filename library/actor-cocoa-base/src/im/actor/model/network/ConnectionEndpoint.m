@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/ConnectionEndpoint.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/network/ConnectionEndpoint.h"
@@ -28,12 +26,8 @@ __attribute__((unused)) static void AMConnectionEndpoint_TypeEnum_initWithNSStri
 
 __attribute__((unused)) static AMConnectionEndpoint_TypeEnum *new_AMConnectionEndpoint_TypeEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
-
-#line 7
 @implementation AMConnectionEndpoint
 
-
-#line 12
 - (instancetype)initWithNSString:(NSString *)host
                          withInt:(jint)port
 withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
@@ -41,8 +35,6 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
   return self;
 }
 
-
-#line 18
 - (AMConnectionEndpoint_TypeEnum *)getType {
   return type_;
 }
@@ -57,19 +49,13 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
 
 @end
 
-
-#line 12
 void AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
   (void) NSObject_init(self);
-  
-#line 13
   self->host_ = host;
   self->port_ = port;
   self->type_ = type;
 }
 
-
-#line 12
 AMConnectionEndpoint *new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
   AMConnectionEndpoint *self = [AMConnectionEndpoint alloc];
   AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(self, host, port, type);
@@ -82,8 +68,6 @@ J2OBJC_INITIALIZED_DEFN(AMConnectionEndpoint_TypeEnum)
 
 AMConnectionEndpoint_TypeEnum *AMConnectionEndpoint_TypeEnum_values_[4];
 
-
-#line 30
 @implementation AMConnectionEndpoint_TypeEnum
 
 - (instancetype)initWithNSString:(NSString *)__name

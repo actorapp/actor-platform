@@ -159,27 +159,32 @@ class AAConversationController: EngineSlackListController {
             binder.bind(group.getAvatar(), closure: { (value: AMAvatar?) -> () in
                 self.avatarView.bind(group.getName().get() as! String, id: group.getId(), avatar: value)
             })
-            binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (value1:IOSIntArray?, value2:JavaUtilHashSet?, value3:JavaLangInteger?) -> () in
-                if (value1!.length() > 0) {
-                    self.subtitleView.textColor = Resources.PrimaryLightText
-                    if (value1!.length() == 1) {
-                        var uid = value1!.intAtIndex(0);
-                        var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
-                        self.subtitleView.text = MSG.getFormatter().formatTypingWithNSString(user.getName().get() as!String)
-                    } else {
-                        self.subtitleView.text = MSG.getFormatter().formatTypingWithInt(value1!.length());
-                    }
+            binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
+                if (members!.size() == 0) {
+                    self.subtitleView.textColor = Resources.SecondaryLightText
+                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
                 } else {
-                    var membersString = MSG.getFormatter().formatGroupMembersWithInt(value2!.size())
-                    if (value3 == nil || value3!.integerValue == 0) {
-                        self.subtitleView.textColor = Resources.SecondaryLightText
-                        self.subtitleView.text = membersString;
+                    if (typingValue!.length() > 0) {
+                        self.subtitleView.textColor = Resources.PrimaryLightText
+                        if (typingValue!.length() == 1) {
+                            var uid = typingValue!.intAtIndex(0);
+                            var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
+                            self.subtitleView.text = MSG.getFormatter().formatTypingWithNSString(user.getName().get() as!String)
+                        } else {
+                            self.subtitleView.text = MSG.getFormatter().formatTypingWithInt(typingValue!.length());
+                        }
                     } else {
-                        membersString = membersString + ", ";
-                        var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(value3!.intValue());
-                        var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
-                        self.subtitleView.attributedText = attributedString
+                        var membersString = MSG.getFormatter().formatGroupMembersWithInt(members!.size())
+                        if (onlineCount == nil || onlineCount!.integerValue == 0) {
+                            self.subtitleView.textColor = Resources.SecondaryLightText
+                            self.subtitleView.text = membersString;
+                        } else {
+                            membersString = membersString + ", ";
+                            var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(onlineCount!.intValue());
+                            var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
+                            attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
+                            self.subtitleView.attributedText = attributedString
+                        }
                     }
                 }
             })
@@ -366,12 +371,21 @@ class AAConversationController: EngineSlackListController {
         var bubbleCell = (cell as! AABubbleCell)
         
         var preferCompact = false
+        var isShowDate = true
         if (indexPath.row > 0) {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
         }
+        if (indexPath.row + 1 < getDisplayList().getSize()) {
+            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
+            isShowDate = showDate(message, prev: prev)
+        }
+        if (isShowDate) {
+            isShowDate = true
+            preferCompact = false
+        }
 
-        bubbleCell.performBind(message, isPreferCompact: preferCompact)
+        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate)
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {
@@ -389,6 +403,12 @@ class AAConversationController: EngineSlackListController {
         }
         
         return false
+    }
+    
+    func showDate(source:AMMessage, prev: AMMessage) -> Bool {
+        var currentDate = source.getDate() / (1000 * 60 * 60 * 24)
+        var nextDate = prev.getDate() / (1000 * 60 * 60 * 24)
+        return currentDate != nextDate
     }
     
     override func getDisplayList() -> AMBindedDisplayList {
@@ -410,13 +430,22 @@ class AAConversationController: EngineSlackListController {
         var message = objectAtIndexPath(indexPath) as! AMMessage;
         
         var preferCompact = false
+        var isShowDate = true
         if (indexPath.row > 0) {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
         }
+        if (indexPath.row + 1 < getDisplayList().getSize()) {
+            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
+            isShowDate = showDate(message, prev: prev)
+        }
+        if (isShowDate) {
+            isShowDate = true
+            preferCompact = false
+        }
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
-        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact);
+        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate);
     }
     
     // MARK: -
@@ -487,11 +516,11 @@ extension AAConversationController: ABActionShitDelegate {
             var pickerController = UIImagePickerController()
             pickerController.sourceType = (buttonIndex == 0 ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             pickerController.mediaTypes = [kUTTypeImage]
-            pickerController.view.backgroundColor = UIColor.blackColor()
-            pickerController.navigationBar.tintColor = Resources.TintColor
+            pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
             pickerController.delegate = self
-            pickerController.navigationBar.tintColor = UIColor.whiteColor()
-            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.presentViewController(pickerController, animated: true, completion: nil)
         }
     }

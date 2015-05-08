@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/crypto/params/ParametersWithSBox.java"
-
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "org/bouncycastle/crypto/CipherParameters.h"
@@ -22,48 +20,30 @@
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSBox, parameters_, id<OrgBouncycastleCryptoCipherParameters>)
 J2OBJC_FIELD_SETTER(OrgBouncycastleCryptoParamsParametersWithSBox, sBox_, IOSByteArray *)
 
-
-#line 5
 @implementation OrgBouncycastleCryptoParamsParametersWithSBox
 
-
-#line 11
 - (instancetype)initWithOrgBouncycastleCryptoCipherParameters:(id<OrgBouncycastleCryptoCipherParameters>)parameters
                                                 withByteArray:(IOSByteArray *)sBox {
   OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(self, parameters, sBox);
   return self;
 }
 
-
-#line 19
 - (IOSByteArray *)getSBox {
-  
-#line 21
   return sBox_;
 }
 
-
-#line 24
 - (id<OrgBouncycastleCryptoCipherParameters>)getParameters {
-  
-#line 26
   return parameters_;
 }
 
 @end
 
-
-#line 11
 void OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(OrgBouncycastleCryptoParamsParametersWithSBox *self, id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *sBox) {
   (void) NSObject_init(self);
-  
-#line 15
   self->parameters_ = parameters;
   self->sBox_ = sBox;
 }
 
-
-#line 11
 OrgBouncycastleCryptoParamsParametersWithSBox *new_OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(id<OrgBouncycastleCryptoCipherParameters> parameters, IOSByteArray *sBox) {
   OrgBouncycastleCryptoParamsParametersWithSBox *self = [OrgBouncycastleCryptoParamsParametersWithSBox alloc];
   OrgBouncycastleCryptoParamsParametersWithSBox_initWithOrgBouncycastleCryptoCipherParameters_withByteArray_(self, parameters, sBox);

@@ -3,7 +3,7 @@ var __gwtModuleFunction = $wnd.ActorMessenger;
 var $sendStats = __gwtModuleFunction.__sendStats;
 $sendStats('moduleStartup', 'moduleEvalStart');
 var $gwt_version = "2.7.0";
-var $strongName = 'DFF968103B4896DFD74916B49A788EFD';
+var $strongName = '4A7204D9BE6EA94741337128FE635AC4';
 var $gwt = {};
 var $doc = $wnd.document;
 var $moduleName, $moduleBase;
@@ -22,7 +22,7 @@ var $stats = $wnd.__gwtStatsEvent ? function(a) {
 return $wnd.__gwtStatsEvent && $wnd.__gwtStatsEvent(a);
 } : null;
 var $sessionId = $wnd.__gwtStatsSessionId ? $wnd.__gwtStatsSessionId : null;
-var $intern_0 = 2147483647, $intern_1 = {3:1, 13:1}, $intern_2 = {3:1, 14:1, 13:1}, $intern_3 = {3:1, 6:1, 811:1}, $intern_4 = {3:1}, $intern_5 = 65535, $intern_6 = {3:1, 6:1}, $intern_7 = 4194303, $intern_8 = 1048575, $intern_9 = 524288, $intern_10 = 4194304, $intern_11 = 17592186044416, $intern_12 = -9223372036854775808, $intern_13 = {3:1, 6:1, 492:1}, $intern_14 = {456:1}, $intern_15 = 32768, $intern_16 = 65536, $intern_17 = 1048576, $intern_18 = 16777216, $intern_19 = 67108864, $intern_20 = {4:1}, $intern_21 = {94:1, 4:1}, $intern_22 = {54:1, 4:1}, $intern_23 = {33:1, 3:1}, $intern_24 = {23:1, 3:1}, $intern_25 = {4:1, 164:1}, $intern_26 = 1073741824, $intern_27 = {21:1}, $intern_28 = {454:1}, $intern_29 = {3:1, 234:1, 6:1}, $intern_30 = {3:1, 98:1, 6:1}, $intern_31 = {366:1, 3:1, 6:1}, $intern_32 = {455:1, 3:1, 6:1}, $intern_33 = {36:1}, $intern_34 = 5.9604644775390625E-8, $intern_35 = {494:1, 3:1, 6:1}, $intern_36 = -2147483648, $intern_37 = 1.52587890625E-5, $intern_38 = 9.5367431640625E-7, $intern_39 = 2.220446049250313E-16, $intern_40 = {163:1}, $intern_41 = {99:1}, $intern_42 = {127:1, 24:1}, $intern_43 = {3:1, 50:1, 453:1}, $intern_44 = {3:1, 163:1}, $intern_45 = 15525485, $intern_46 = {3:1, 32:1, 18:1, 80:1};
+var $intern_0 = 2147483647, $intern_1 = {3:1, 13:1}, $intern_2 = {3:1, 14:1, 13:1}, $intern_3 = {3:1, 6:1, 811:1}, $intern_4 = {3:1}, $intern_5 = 65535, $intern_6 = {3:1, 6:1}, $intern_7 = 4194303, $intern_8 = 1048575, $intern_9 = 524288, $intern_10 = 4194304, $intern_11 = 17592186044416, $intern_12 = -9223372036854775808, $intern_13 = {3:1, 6:1, 492:1}, $intern_14 = {456:1}, $intern_15 = 32768, $intern_16 = 65536, $intern_17 = 1048576, $intern_18 = 16777216, $intern_19 = 67108864, $intern_20 = {4:1}, $intern_21 = {94:1, 4:1}, $intern_22 = {54:1, 4:1}, $intern_23 = {33:1, 3:1}, $intern_24 = {23:1, 3:1}, $intern_25 = {4:1, 164:1}, $intern_26 = 1073741824, $intern_27 = {21:1}, $intern_28 = {454:1}, $intern_29 = {3:1, 233:1, 6:1}, $intern_30 = {3:1, 98:1, 6:1}, $intern_31 = {366:1, 3:1, 6:1}, $intern_32 = {455:1, 3:1, 6:1}, $intern_33 = {36:1}, $intern_34 = 5.9604644775390625E-8, $intern_35 = {494:1, 3:1, 6:1}, $intern_36 = -2147483648, $intern_37 = 1.52587890625E-5, $intern_38 = 9.5367431640625E-7, $intern_39 = 2.220446049250313E-16, $intern_40 = {163:1}, $intern_41 = {99:1}, $intern_42 = {127:1, 24:1}, $intern_43 = {3:1, 50:1, 453:1}, $intern_44 = {3:1, 163:1}, $intern_45 = 15525485, $intern_46 = {3:1, 32:1, 18:1, 80:1};
 var _, initFnList_0, prototypesByTypeId_0 = {}, permutationId = -1;
 function typeMarkerFn(){
 }
@@ -1076,32 +1076,22 @@ function format(template, args){
   return builder.string;
 }
 
-function $eventGetRelatedTarget(evt){
-  var relatedTarget = evt.relatedTarget;
-  if (!relatedTarget) {
-    return null;
+function isOrHasChildImpl(parent_0, child){
+  if (parent_0.nodeType != 1 && parent_0.nodeType != 9) {
+    return parent_0 == child;
   }
-  try {
-    var nodeName = relatedTarget.nodeName;
-    return relatedTarget;
+  if (child.nodeType != 1) {
+    child = child.parentNode;
+    if (!child) {
+      return false;
+    }
   }
-   catch (e) {
-    return null;
+  if (parent_0.nodeType == 9) {
+    return parent_0 === child || parent_0.body && parent_0.body.contains(child);
   }
-}
-
-function $isOrHasChild(parent_0, child){
-  return parent_0 === child || !!(parent_0.compareDocumentPosition(child) & 16);
-}
-
-function $toString(elem){
-  var doc = elem.ownerDocument;
-  var temp = elem.cloneNode(true);
-  var tempDiv = doc.createElement('DIV');
-  tempDiv.appendChild(temp);
-  outer = tempDiv.innerHTML;
-  temp.innerHTML = '';
-  return outer;
+   else {
+    return parent_0 === child || parent_0.contains(child);
+  }
 }
 
 function fireNativeEvent(){
@@ -1247,10 +1237,10 @@ function $identifyAbutStart(this$static){
   abut = false;
   len = this$static.patternParts.array.length;
   for (i_0 = 0; i_0 < len; i_0++) {
-    if ($isNumeric(dynamicCast($get_3(this$static.patternParts, i_0), 194))) {
-      if (!abut && i_0 + 1 < len && $isNumeric(dynamicCast($get_3(this$static.patternParts, i_0 + 1), 194))) {
+    if ($isNumeric(dynamicCast($get_3(this$static.patternParts, i_0), 193))) {
+      if (!abut && i_0 + 1 < len && $isNumeric(dynamicCast($get_3(this$static.patternParts, i_0 + 1), 193))) {
         abut = true;
-        dynamicCast($get_3(this$static.patternParts, i_0), 194).abutStart = true;
+        dynamicCast($get_3(this$static.patternParts, i_0), 193).abutStart = true;
       }
     }
      else {
@@ -1573,10 +1563,10 @@ function DateTimeFormat$PatternPart(txt, cnt){
   this.abutStart = false;
 }
 
-defineClass(194, 1, {194:1}, DateTimeFormat$PatternPart);
+defineClass(193, 1, {193:1}, DateTimeFormat$PatternPart);
 _.abutStart = false;
 _.count = 0;
-var Lcom_google_gwt_i18n_shared_DateTimeFormat$PatternPart_2_classLit = createForClass('com.google.gwt.i18n.shared', 'DateTimeFormat/PatternPart', 194, Ljava_lang_Object_2_classLit);
+var Lcom_google_gwt_i18n_shared_DateTimeFormat$PatternPart_2_classLit = createForClass('com.google.gwt.i18n.shared', 'DateTimeFormat/PatternPart', 193, Ljava_lang_Object_2_classLit);
 function cloneSubrange(array, toIndex){
   var result;
   result = array.slice(0, toIndex);
@@ -2353,7 +2343,7 @@ var Lcom_google_gwt_logging_impl_FormatterImpl_2_classLit = createForClass('com.
 function $format_0(this$static, event_0){
   var message, date, s;
   message = new StringBuilder;
-  $append_1(message, (date = new Date_1(event_0.millis) , s = new StringBuilder , $append_1(s, $toString_3(date)) , s.string += ' ' , $append_1(s, event_0.loggerName) , s.string += '\n' , s.string += 'SEVERE' , s.string += ': ' , s.string));
+  $append_1(message, (date = new Date_1(event_0.millis) , s = new StringBuilder , $append_1(s, $toString_2(date)) , s.string += ' ' , $append_1(s, event_0.loggerName) , s.string += '\n' , s.string += 'SEVERE' , s.string += ': ' , s.string));
   $append_1(message, event_0.msg);
   this$static.showStackTraces && !!event_0.thrown && $printStackTrace(event_0.thrown, new StackTracePrintStream(message));
   return message.string;
@@ -2518,7 +2508,7 @@ _.toString$ = function toString_3(){
   if (!this.element) {
     return '(null handle)';
   }
-  return $toString(($clinit_DOM() , this.element));
+  return ($clinit_DOM() , this.element).outerHTML;
 }
 ;
 var Lcom_google_gwt_user_client_ui_UIObject_2_classLit = createForClass('com.google.gwt.user.client.ui', 'UIObject', 852, Ljava_lang_Object_2_classLit);
@@ -2528,8 +2518,8 @@ _.onBrowserEvent = function onBrowserEvent(event_0){
   switch ($clinit_DOM() , $eventGetTypeInt(event_0.type)) {
     case 16:
     case 32:
-      related = $eventGetRelatedTarget(event_0);
-      if (!!related && $isOrHasChild(this.element, related)) {
+      related = event_0.relatedTarget;
+      if (!!related && isOrHasChildImpl(this.element, related)) {
         return;
       }
 
@@ -2628,7 +2618,7 @@ function create_2(length_0){
 
 function $clinit_DOM(){
   $clinit_DOM = emptyMethod;
-  $clinit_DOMImplMozilla();
+  $clinit_DOMImplStandard();
 }
 
 var currentEvent = null, sCaptureElem;
@@ -2732,8 +2722,8 @@ function buildListParamMap(queryString){
 }
 
 function ensureListParameterMap(){
-  var currentQueryString;
-  currentQueryString = $wnd.location.search;
+  var currentQueryString, href_0, hashLoc, questionLoc;
+  currentQueryString = (href_0 = $wnd.location.href , hashLoc = href_0.indexOf('#') , hashLoc >= 0 && (href_0 = href_0.substring(0, hashLoc)) , questionLoc = href_0.indexOf('?') , questionLoc > 0?href_0.substring(questionLoc):'');
   if (!listParamMap || !$equals_3(cachedQueryString, currentQueryString)) {
     listParamMap = buildListParamMap(currentQueryString);
     cachedQueryString = currentQueryString;
@@ -2804,30 +2794,12 @@ function $eventGetTypeInt(eventType){
 
 function $clinit_DOMImplStandard(){
   $clinit_DOMImplStandard = emptyMethod;
-  captureEventDispatchers = {click:dispatchCapturedMouseEvent, dblclick:dispatchCapturedMouseEvent, mousedown:dispatchCapturedMouseEvent, mouseup:dispatchCapturedMouseEvent, mousemove:dispatchCapturedMouseEvent, mouseover:dispatchCapturedMouseEvent, mouseout:dispatchCapturedMouseEvent, mousewheel:dispatchCapturedMouseEvent, keydown:dispatchCapturedEvent, keyup:dispatchCapturedEvent, keypress:dispatchCapturedEvent, touchstart:dispatchCapturedMouseEvent, touchend:dispatchCapturedMouseEvent, touchmove:dispatchCapturedMouseEvent, touchcancel:dispatchCapturedMouseEvent, gesturestart:dispatchCapturedMouseEvent, gestureend:dispatchCapturedMouseEvent, gesturechange:dispatchCapturedMouseEvent};
-}
-
-function dispatchCapturedEvent(evt){
-  $clinit_DOM();
-}
-
-function dispatchCapturedMouseEvent(evt){
-  $clinit_DOMImplStandard();
-  $clinit_DOM();
-  return;
-}
-
-var captureEventDispatchers;
-function $clinit_DOMImplMozilla(){
-  $clinit_DOMImplMozilla = emptyMethod;
-  $clinit_DOMImplStandard();
-  captureEventDispatchers['DOMMouseScroll'] = dispatchCapturedMouseEvent;
 }
 
 function assertCompileTimeUserAgent(){
   var runtimeValue;
   runtimeValue = $getRuntimeValue();
-  if (!$equals_3('gecko1_8', runtimeValue)) {
+  if (!$equals_3('ie10', runtimeValue)) {
     throw new UserAgentAsserter$UserAgentAssertionError(runtimeValue);
   }
 }
@@ -2843,7 +2815,7 @@ var Ljava_lang_Error_2_classLit = createForClass('java.lang', 'Error', 367, Ljav
 defineClass(55, 367, $intern_1);
 var Ljava_lang_AssertionError_2_classLit = createForClass('java.lang', 'AssertionError', 55, Ljava_lang_Error_2_classLit);
 function UserAgentAsserter$UserAgentAssertionError(runtimeValue){
-  Error_0.call(this, '' + ('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.'), instanceOf('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13)?dynamicCast('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13):null);
+  Error_0.call(this, '' + ('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (ie10) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.'), instanceOf('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (ie10) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13)?dynamicCast('Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (ie10) does not match the runtime user.agent value (' + runtimeValue + ').\n' + 'Expect more errors.', 13):null);
 }
 
 defineClass(497, 55, $intern_1, UserAgentAsserter$UserAgentAssertionError);
@@ -2893,7 +2865,7 @@ function $compareTo(this$static, other){
   return this$static.ordinal - other.ordinal;
 }
 
-function $toString_0(this$static){
+function $toString(this$static){
   return this$static.name_0 != null?this$static.name_0:'' + this$static.ordinal;
 }
 
@@ -2916,7 +2888,7 @@ _.hashCode$ = function hashCode_1(){
 }
 ;
 _.toString$ = function toString_4(){
-  return $toString_0(this);
+  return $toString(this);
 }
 ;
 _.ordinal = 0;
@@ -3123,12 +3095,12 @@ function $loadDraft(this$static, peer){
 }
 
 function $onConversationClosed(this$static, peer){
-  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString_0(peer.peerType), 'Id', peer.peerId + '']));
+  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString(peer.peerType), 'Id', peer.peerId + '']));
   !!this$static.modules.presence && $onConversationClose(this$static.modules.notifications, peer);
 }
 
 function $onConversationOpen(this$static, peer){
-  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString_0(peer.peerType), 'Id', peer.peerId + '']));
+  $track(initValues(getClassLiteralForArray(Ljava_lang_String_2_classLit, 1), $intern_6, 2, 4, ['Type', $toString(peer.peerType), 'Id', peer.peerId + '']));
   if (this$static.modules.presence) {
     $subscribe_1(this$static.modules.presence, peer);
     $onConversationOpen_0(this$static.modules.notifications, peer);
@@ -3203,13 +3175,13 @@ function parse_0(value_0){
 
 function values_1(){
   $clinit_AuthHolder();
-  return initValues(getClassLiteralForArray(Lim_actor_model_api_AuthHolder_2_classLit, 1), $intern_6, 231, 0, [THISDEVICE, OTHERDEVICE, UNSUPPORTED_VALUE]);
+  return initValues(getClassLiteralForArray(Lim_actor_model_api_AuthHolder_2_classLit, 1), $intern_6, 230, 0, [THISDEVICE, OTHERDEVICE, UNSUPPORTED_VALUE]);
 }
 
-defineClass(231, 18, {231:1, 3:1, 32:1, 18:1}, AuthHolder);
+defineClass(230, 18, {230:1, 3:1, 32:1, 18:1}, AuthHolder);
 _.value_0 = 0;
 var OTHERDEVICE, THISDEVICE, UNSUPPORTED_VALUE;
-var Lim_actor_model_api_AuthHolder_2_classLit = createForEnum('im.actor.model.api', 'AuthHolder', 231, Ljava_lang_Enum_2_classLit, values_1);
+var Lim_actor_model_api_AuthHolder_2_classLit = createForEnum('im.actor.model.api', 'AuthHolder', 230, Ljava_lang_Enum_2_classLit, values_1);
 function $toByteArray(this$static){
   var outputStream, writer;
   outputStream = new DataOutput;
@@ -3353,7 +3325,7 @@ var Lim_actor_model_api_AvatarImage_2_classLit = createForClass('im.actor.model.
 function Config(){
 }
 
-defineClass(230, 4, {230:1, 4:1}, Config);
+defineClass(229, 4, {229:1, 4:1}, Config);
 _.parse_0 = function parse_4(values){
   this.maxGroupSize = convertInt($getLong(values, 1));
 }
@@ -3371,7 +3343,7 @@ _.toString$ = function toString_8(){
 }
 ;
 _.maxGroupSize = 0;
-var Lim_actor_model_api_Config_2_classLit = createForClass('im.actor.model.api', 'Config', 230, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_api_Config_2_classLit = createForClass('im.actor.model.api', 'Config', 229, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function Dialog(){
 }
 
@@ -3489,7 +3461,7 @@ function DocumentExPhoto_0(w, h){
   this.h_0 = h;
 }
 
-defineClass(211, 94, {94:1, 211:1, 4:1}, DocumentExPhoto, DocumentExPhoto_0);
+defineClass(210, 94, {94:1, 210:1, 4:1}, DocumentExPhoto, DocumentExPhoto_0);
 _.getHeader = function getHeader(){
   return 1;
 }
@@ -3515,7 +3487,7 @@ _.toString$ = function toString_11(){
 ;
 _.h_0 = 0;
 _.w = 0;
-var Lim_actor_model_api_DocumentExPhoto_2_classLit = createForClass('im.actor.model.api', 'DocumentExPhoto', 211, Lim_actor_model_api_DocumentEx_2_classLit);
+var Lim_actor_model_api_DocumentExPhoto_2_classLit = createForClass('im.actor.model.api', 'DocumentExPhoto', 210, Lim_actor_model_api_DocumentEx_2_classLit);
 function DocumentExUnsupported(key, content_0){
   this.key = key;
   this.content_0 = content_0;
@@ -3546,7 +3518,7 @@ function DocumentExVideo_0(w, h, duration){
   this.duration = duration;
 }
 
-defineClass(212, 94, {94:1, 212:1, 4:1}, DocumentExVideo, DocumentExVideo_0);
+defineClass(211, 94, {94:1, 211:1, 4:1}, DocumentExVideo, DocumentExVideo_0);
 _.getHeader = function getHeader_1(){
   return 2;
 }
@@ -3576,7 +3548,7 @@ _.toString$ = function toString_12(){
 _.duration = 0;
 _.h_0 = 0;
 _.w = 0;
-var Lim_actor_model_api_DocumentExVideo_2_classLit = createForClass('im.actor.model.api', 'DocumentExVideo', 212, Lim_actor_model_api_DocumentEx_2_classLit);
+var Lim_actor_model_api_DocumentExVideo_2_classLit = createForClass('im.actor.model.api', 'DocumentExVideo', 211, Lim_actor_model_api_DocumentEx_2_classLit);
 function DocumentExVoice(){
 }
 
@@ -3646,7 +3618,7 @@ function DocumentMessage_0(fileId, accessHash, fileSize, name_0, mimeType, thumb
   this.ext = ext;
 }
 
-defineClass(213, 93, {213:1, 93:1, 4:1}, DocumentMessage, DocumentMessage_0);
+defineClass(212, 93, {212:1, 93:1, 4:1}, DocumentMessage, DocumentMessage_0);
 _.getHeader = function getHeader_3(){
   return 3;
 }
@@ -3701,7 +3673,7 @@ _.toString$ = function toString_14(){
 _.accessHash = {l:0, m:0, h:0};
 _.fileId = {l:0, m:0, h:0};
 _.fileSize = 0;
-var Lim_actor_model_api_DocumentMessage_2_classLit = createForClass('im.actor.model.api', 'DocumentMessage', 213, Lim_actor_model_api_Message_2_classLit);
+var Lim_actor_model_api_DocumentMessage_2_classLit = createForClass('im.actor.model.api', 'DocumentMessage', 212, Lim_actor_model_api_Message_2_classLit);
 function Email(){
 }
 
@@ -3747,7 +3719,7 @@ function EmailToImport_0(email, name_0){
   this.name_0 = name_0;
 }
 
-defineClass(204, 4, {204:1, 4:1}, EmailToImport, EmailToImport_0);
+defineClass(203, 4, {203:1, 4:1}, EmailToImport, EmailToImport_0);
 _.parse_0 = function parse_13(values){
   this.email = convertString($getBytes(values, 1));
   this.name_0 = convertString($getBytes_0(values, 2));
@@ -3770,7 +3742,7 @@ _.toString$ = function toString_16(){
   return res;
 }
 ;
-var Lim_actor_model_api_EmailToImport_2_classLit = createForClass('im.actor.model.api', 'EmailToImport', 204, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_api_EmailToImport_2_classLit = createForClass('im.actor.model.api', 'EmailToImport', 203, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function $clinit_EncryptionType(){
   $clinit_EncryptionType = emptyMethod;
   NONE = new EncryptionType('NONE', 0, 0);
@@ -3877,7 +3849,7 @@ var Lim_actor_model_api_FileLocation_2_classLit = createForClass('im.actor.model
 function Group(){
 }
 
-defineClass(228, 4, {228:1, 4:1}, Group);
+defineClass(227, 4, {227:1, 4:1}, Group);
 _.parse_0 = function parse_17(values){
   var _members, i_0;
   this.id_0 = convertInt($getLong(values, 1));
@@ -3925,7 +3897,7 @@ _.createDate = {l:0, m:0, h:0};
 _.creatorUid = 0;
 _.id_0 = 0;
 _.isMember = false;
-var Lim_actor_model_api_Group_2_classLit = createForClass('im.actor.model.api', 'Group', 228, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_api_Group_2_classLit = createForClass('im.actor.model.api', 'Group', 227, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function GroupOutPeer(){
 }
 
@@ -3999,7 +3971,7 @@ var Lim_actor_model_api_HistoryMessage_2_classLit = createForClass('im.actor.mod
 function Member(){
 }
 
-defineClass(229, 4, {229:1, 4:1}, Member);
+defineClass(228, 4, {228:1, 4:1}, Member);
 _.parse_0 = function parse_20(values){
   this.uid = convertInt($getLong(values, 1));
   this.inviterUid = convertInt($getLong(values, 2));
@@ -4025,7 +3997,7 @@ _.toString$ = function toString_22(){
 _.date = {l:0, m:0, h:0};
 _.inviterUid = 0;
 _.uid = 0;
-var Lim_actor_model_api_Member_2_classLit = createForClass('im.actor.model.api', 'Member', 229, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_api_Member_2_classLit = createForClass('im.actor.model.api', 'Member', 228, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function $clinit_MessageState(){
   $clinit_MessageState = emptyMethod;
   SENT = new MessageState('SENT', 0, 1);
@@ -4258,7 +4230,7 @@ function PhoneToImport_0(phoneNumber, name_0){
   this.name_0 = name_0;
 }
 
-defineClass(203, 4, {203:1, 4:1}, PhoneToImport, PhoneToImport_0);
+defineClass(202, 4, {202:1, 4:1}, PhoneToImport, PhoneToImport_0);
 _.parse_0 = function parse_28(values){
   this.phoneNumber = $getLong(values, 1);
   this.name_0 = convertString($getBytes_0(values, 2));
@@ -4279,7 +4251,7 @@ _.toString$ = function toString_27(){
 }
 ;
 _.phoneNumber = {l:0, m:0, h:0};
-var Lim_actor_model_api_PhoneToImport_2_classLit = createForClass('im.actor.model.api', 'PhoneToImport', 203, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_api_PhoneToImport_2_classLit = createForClass('im.actor.model.api', 'PhoneToImport', 202, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function $buildContainer_1(this$static){
   var res, writer;
   res = new DataOutput;
@@ -4585,7 +4557,7 @@ function TextMessage_0(text_0){
   this.ext = null;
 }
 
-defineClass(210, 93, {93:1, 210:1, 4:1}, TextMessage, TextMessage_0);
+defineClass(209, 93, {93:1, 209:1, 4:1}, TextMessage, TextMessage_0);
 _.getHeader = function getHeader_14(){
   return 1;
 }
@@ -4612,7 +4584,7 @@ _.toString$ = function toString_36(){
   return res;
 }
 ;
-var Lim_actor_model_api_TextMessage_2_classLit = createForClass('im.actor.model.api', 'TextMessage', 210, Lim_actor_model_api_Message_2_classLit);
+var Lim_actor_model_api_TextMessage_2_classLit = createForClass('im.actor.model.api', 'TextMessage', 209, Lim_actor_model_api_Message_2_classLit);
 function $buildContainer_2(this$static){
   var res, writer;
   res = new DataOutput;
@@ -5054,11 +5026,11 @@ function $read(type_0, payload){
     case 11:
       return dynamicCast(parse_159(new RequestGetDifference, payload), 329);
     case 32:
-      return dynamicCast(parse_159(new RequestSubscribeToOnline, payload), 214);
+      return dynamicCast(parse_159(new RequestSubscribeToOnline, payload), 213);
     case 33:
       return dynamicCast(parse_159(new RequestSubscribeFromOnline, payload), 431);
     case 74:
-      return dynamicCast(parse_159(new RequestSubscribeToGroupOnline, payload), 215);
+      return dynamicCast(parse_159(new RequestSubscribeToGroupOnline, payload), 214);
     case 75:
       return dynamicCast(parse_159(new RequestSubscribeFromGroupOnline, payload), 432);
     case 2:
@@ -5118,7 +5090,7 @@ function $read_0(type_0, payload){
     case 16:
       return dynamicCast(parse_159(new UpdateUserAvatarChanged, payload), 151);
     case 32:
-      return dynamicCast(parse_159(new UpdateUserNameChanged, payload), 217);
+      return dynamicCast(parse_159(new UpdateUserNameChanged, payload), 216);
     case 51:
       return dynamicCast(parse_159(new UpdateUserLocalNameChanged, payload), 116);
     case 87:
@@ -5150,11 +5122,11 @@ function $read_0(type_0, payload){
     case 4:
       return dynamicCast(parse_159(new UpdateMessageSent, payload), 152);
     case 54:
-      return dynamicCast(parse_159(new UpdateMessageReceived, payload), 218);
+      return dynamicCast(parse_159(new UpdateMessageReceived, payload), 217);
     case 19:
-      return dynamicCast(parse_159(new UpdateMessageRead, payload), 219);
+      return dynamicCast(parse_159(new UpdateMessageRead, payload), 218);
     case 50:
-      return dynamicCast(parse_159(new UpdateMessageReadByMe, payload), 220);
+      return dynamicCast(parse_159(new UpdateMessageReadByMe, payload), 219);
     case 46:
       return dynamicCast(parse_159(new UpdateMessageDelete, payload), 153);
     case 47:
@@ -5172,19 +5144,19 @@ function $read_0(type_0, payload){
     case 44:
       return dynamicCast(parse_159(new UpdateGroupMembersUpdate, payload), 156);
     case 38:
-      return dynamicCast(parse_159(new UpdateGroupTitleChanged, payload), 221);
+      return dynamicCast(parse_159(new UpdateGroupTitleChanged, payload), 220);
     case 39:
       return dynamicCast(parse_159(new UpdateGroupAvatarChanged, payload), 157);
     case 6:
-      return dynamicCast(parse_159(new UpdateTyping, payload), 222);
+      return dynamicCast(parse_159(new UpdateTyping, payload), 221);
     case 7:
-      return dynamicCast(parse_159(new UpdateUserOnline, payload), 223);
+      return dynamicCast(parse_159(new UpdateUserOnline, payload), 222);
     case 8:
-      return dynamicCast(parse_159(new UpdateUserOffline, payload), 224);
+      return dynamicCast(parse_159(new UpdateUserOffline, payload), 223);
     case 9:
-      return dynamicCast(parse_159(new UpdateUserLastSeen, payload), 225);
+      return dynamicCast(parse_159(new UpdateUserLastSeen, payload), 224);
     case 33:
-      return dynamicCast(parse_159(new UpdateGroupOnline, payload), 226);
+      return dynamicCast(parse_159(new UpdateGroupOnline, payload), 225);
     case 131:
       return dynamicCast(parse_159(new UpdateParameterChanged, payload), 124);
     case 42:
@@ -5323,8 +5295,9 @@ var Lim_actor_model_api_rpc_RequestClearChat_2_classLit = createForClass('im.act
 function RequestCommitFileUpload(){
 }
 
-function RequestCommitFileUpload_0(uploadKey){
+function RequestCommitFileUpload_0(uploadKey, fileName){
   this.uploadKey = uploadKey;
+  this.fileName = fileName;
 }
 
 defineClass(337, 840, {337:1, 4:1}, RequestCommitFileUpload, RequestCommitFileUpload_0);
@@ -5334,6 +5307,7 @@ _.getHeaderKey = function getHeaderKey_7(){
 ;
 _.parse_0 = function parse_52(values){
   this.uploadKey = $getBytes(values, 1);
+  this.fileName = convertString($getBytes(values, 2));
 }
 ;
 _.serialize = function serialize_45(writer){
@@ -5341,6 +5315,10 @@ _.serialize = function serialize_45(writer){
     throw new IOException;
   }
   $writeBytes(writer, 1, this.uploadKey);
+  if (this.fileName == null) {
+    throw new IOException;
+  }
+  $writeString(writer, 2, this.fileName);
 }
 ;
 _.toString$ = function toString_47(){
@@ -6827,7 +6805,7 @@ function RequestSubscribeToGroupOnline_0(groups){
   this.groups = groups;
 }
 
-defineClass(215, 840, {215:1, 4:1}, RequestSubscribeToGroupOnline, RequestSubscribeToGroupOnline_0);
+defineClass(214, 840, {214:1, 4:1}, RequestSubscribeToGroupOnline, RequestSubscribeToGroupOnline_0);
 _.getHeaderKey = function getHeaderKey_50(){
   return 74;
 }
@@ -6853,7 +6831,7 @@ _.toString$ = function toString_90(){
   return res;
 }
 ;
-var Lim_actor_model_api_rpc_RequestSubscribeToGroupOnline_2_classLit = createForClass('im.actor.model.api.rpc', 'RequestSubscribeToGroupOnline', 215, Lim_actor_model_network_parser_Request_2_classLit);
+var Lim_actor_model_api_rpc_RequestSubscribeToGroupOnline_2_classLit = createForClass('im.actor.model.api.rpc', 'RequestSubscribeToGroupOnline', 214, Lim_actor_model_network_parser_Request_2_classLit);
 function RequestSubscribeToOnline(){
 }
 
@@ -6861,7 +6839,7 @@ function RequestSubscribeToOnline_0(users){
   this.users = users;
 }
 
-defineClass(214, 840, {214:1, 4:1}, RequestSubscribeToOnline, RequestSubscribeToOnline_0);
+defineClass(213, 840, {213:1, 4:1}, RequestSubscribeToOnline, RequestSubscribeToOnline_0);
 _.getHeaderKey = function getHeaderKey_51(){
   return 32;
 }
@@ -6887,7 +6865,7 @@ _.toString$ = function toString_91(){
   return res;
 }
 ;
-var Lim_actor_model_api_rpc_RequestSubscribeToOnline_2_classLit = createForClass('im.actor.model.api.rpc', 'RequestSubscribeToOnline', 214, Lim_actor_model_network_parser_Request_2_classLit);
+var Lim_actor_model_api_rpc_RequestSubscribeToOnline_2_classLit = createForClass('im.actor.model.api.rpc', 'RequestSubscribeToOnline', 213, Lim_actor_model_network_parser_Request_2_classLit);
 function RequestTerminateAllSessions(){
 }
 
@@ -7009,7 +6987,7 @@ _.getHeaderKey = function getHeaderKey_56(){
 ;
 _.parse_0 = function parse_101(values){
   this.user = dynamicCast($getObj(values, 2, new User), 63);
-  this.config = dynamicCast($getObj(values, 3, new Config), 230);
+  this.config = dynamicCast($getObj(values, 3, new Config), 229);
 }
 ;
 _.serialize = function serialize_94(writer){
@@ -7753,7 +7731,7 @@ _.getHeaderKey = function getHeaderKey_78(){
 }
 ;
 _.parse_0 = function parse_123(values){
-  this.config = dynamicCast($getObj(values, 1, new Config), 230);
+  this.config = dynamicCast($getObj(values, 1, new Config), 229);
 }
 ;
 _.serialize = function serialize_116(writer){
@@ -7784,12 +7762,14 @@ _.parse_0 = function parse_124(values){
   this.uid = convertInt($getLong(values, 1));
   this.isSilent = neq($getLong(values, 2), {l:0, m:0, h:0});
   this.date = $getLong(values, 3);
+  this.rid = $getLong(values, 4);
 }
 ;
 _.serialize = function serialize_117(writer){
   $writeInt(writer, 1, this.uid);
   $writeBool(writer, 2, this.isSilent);
   $writeLong(writer, 3, this.date);
+  $writeLong(writer, 4, this.rid);
 }
 ;
 _.toString$ = function toString_119(){
@@ -7804,6 +7784,7 @@ _.toString$ = function toString_119(){
 ;
 _.date = {l:0, m:0, h:0};
 _.isSilent = false;
+_.rid = {l:0, m:0, h:0};
 _.uid = 0;
 var Lim_actor_model_api_updates_UpdateContactRegistered_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateContactRegistered', 117, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateContactsAdded(){
@@ -8046,7 +8027,7 @@ var Lim_actor_model_api_updates_UpdateGroupMembersUpdate_2_classLit = createForC
 function UpdateGroupOnline(){
 }
 
-defineClass(226, 851, {226:1, 4:1}, UpdateGroupOnline);
+defineClass(225, 851, {225:1, 4:1}, UpdateGroupOnline);
 _.getHeaderKey = function getHeaderKey_87(){
   return 33;
 }
@@ -8072,11 +8053,11 @@ _.toString$ = function toString_127(){
 ;
 _.count = 0;
 _.groupId = 0;
-var Lim_actor_model_api_updates_UpdateGroupOnline_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateGroupOnline', 226, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateGroupOnline_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateGroupOnline', 225, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateGroupTitleChanged(){
 }
 
-defineClass(221, 851, {221:1, 4:1}, UpdateGroupTitleChanged);
+defineClass(220, 851, {220:1, 4:1}, UpdateGroupTitleChanged);
 _.getHeaderKey = function getHeaderKey_88(){
   return 38;
 }
@@ -8116,7 +8097,7 @@ _.date = {l:0, m:0, h:0};
 _.groupId = 0;
 _.rid = {l:0, m:0, h:0};
 _.uid = 0;
-var Lim_actor_model_api_updates_UpdateGroupTitleChanged_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateGroupTitleChanged', 221, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateGroupTitleChanged_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateGroupTitleChanged', 220, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateGroupUserAdded(){
 }
 
@@ -8324,7 +8305,7 @@ var Lim_actor_model_api_updates_UpdateMessageDelete_2_classLit = createForClass(
 function UpdateMessageRead(){
 }
 
-defineClass(219, 851, {219:1, 4:1}, UpdateMessageRead);
+defineClass(218, 851, {218:1, 4:1}, UpdateMessageRead);
 _.getHeaderKey = function getHeaderKey_94(){
   return 19;
 }
@@ -8356,11 +8337,11 @@ _.toString$ = function toString_134(){
 ;
 _.readDate = {l:0, m:0, h:0};
 _.startDate = {l:0, m:0, h:0};
-var Lim_actor_model_api_updates_UpdateMessageRead_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateMessageRead', 219, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateMessageRead_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateMessageRead', 218, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateMessageReadByMe(){
 }
 
-defineClass(220, 851, {220:1, 4:1}, UpdateMessageReadByMe);
+defineClass(219, 851, {219:1, 4:1}, UpdateMessageReadByMe);
 _.getHeaderKey = function getHeaderKey_95(){
   return 50;
 }
@@ -8388,11 +8369,11 @@ _.toString$ = function toString_135(){
 }
 ;
 _.startDate = {l:0, m:0, h:0};
-var Lim_actor_model_api_updates_UpdateMessageReadByMe_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateMessageReadByMe', 220, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateMessageReadByMe_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateMessageReadByMe', 219, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateMessageReceived(){
 }
 
-defineClass(218, 851, {218:1, 4:1}, UpdateMessageReceived);
+defineClass(217, 851, {217:1, 4:1}, UpdateMessageReceived);
 _.getHeaderKey = function getHeaderKey_96(){
   return 54;
 }
@@ -8424,7 +8405,7 @@ _.toString$ = function toString_136(){
 ;
 _.receivedDate = {l:0, m:0, h:0};
 _.startDate = {l:0, m:0, h:0};
-var Lim_actor_model_api_updates_UpdateMessageReceived_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateMessageReceived', 218, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateMessageReceived_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateMessageReceived', 217, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateMessageSent(){
 }
 
@@ -8566,7 +8547,7 @@ var Lim_actor_model_api_updates_UpdatePhoneTitleChanged_2_classLit = createForCl
 function UpdateTyping(){
 }
 
-defineClass(222, 851, {222:1, 4:1}, UpdateTyping);
+defineClass(221, 851, {221:1, 4:1}, UpdateTyping);
 _.getHeaderKey = function getHeaderKey_101(){
   return 6;
 }
@@ -8600,7 +8581,7 @@ _.toString$ = function toString_141(){
 }
 ;
 _.uid = 0;
-var Lim_actor_model_api_updates_UpdateTyping_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateTyping', 222, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateTyping_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateTyping', 221, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateUserAvatarChanged(){
 }
 
@@ -8730,7 +8711,7 @@ var Lim_actor_model_api_updates_UpdateUserEmailRemoved_2_classLit = createForCla
 function UpdateUserLastSeen(){
 }
 
-defineClass(225, 851, {225:1, 4:1}, UpdateUserLastSeen);
+defineClass(224, 851, {224:1, 4:1}, UpdateUserLastSeen);
 _.getHeaderKey = function getHeaderKey_106(){
   return 9;
 }
@@ -8756,7 +8737,7 @@ _.toString$ = function toString_146(){
 ;
 _.date = {l:0, m:0, h:0};
 _.uid = 0;
-var Lim_actor_model_api_updates_UpdateUserLastSeen_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserLastSeen', 225, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateUserLastSeen_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserLastSeen', 224, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateUserLocalNameChanged(){
 }
 
@@ -8789,7 +8770,7 @@ var Lim_actor_model_api_updates_UpdateUserLocalNameChanged_2_classLit = createFo
 function UpdateUserNameChanged(){
 }
 
-defineClass(217, 851, {217:1, 4:1}, UpdateUserNameChanged);
+defineClass(216, 851, {216:1, 4:1}, UpdateUserNameChanged);
 _.getHeaderKey = function getHeaderKey_108(){
   return 32;
 }
@@ -8817,11 +8798,11 @@ _.toString$ = function toString_148(){
 }
 ;
 _.uid = 0;
-var Lim_actor_model_api_updates_UpdateUserNameChanged_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserNameChanged', 217, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateUserNameChanged_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserNameChanged', 216, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateUserOffline(){
 }
 
-defineClass(224, 851, {224:1, 4:1}, UpdateUserOffline);
+defineClass(223, 851, {223:1, 4:1}, UpdateUserOffline);
 _.getHeaderKey = function getHeaderKey_109(){
   return 8;
 }
@@ -8843,11 +8824,11 @@ _.toString$ = function toString_149(){
 }
 ;
 _.uid = 0;
-var Lim_actor_model_api_updates_UpdateUserOffline_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserOffline', 224, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateUserOffline_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserOffline', 223, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateUserOnline(){
 }
 
-defineClass(223, 851, {223:1, 4:1}, UpdateUserOnline);
+defineClass(222, 851, {222:1, 4:1}, UpdateUserOnline);
 _.getHeaderKey = function getHeaderKey_110(){
   return 7;
 }
@@ -8869,7 +8850,7 @@ _.toString$ = function toString_150(){
 }
 ;
 _.uid = 0;
-var Lim_actor_model_api_updates_UpdateUserOnline_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserOnline', 223, Lim_actor_model_network_parser_Update_2_classLit);
+var Lim_actor_model_api_updates_UpdateUserOnline_2_classLit = createForClass('im.actor.model.api.updates', 'UpdateUserOnline', 222, Lim_actor_model_network_parser_Update_2_classLit);
 function UpdateUserPhoneAdded(){
 }
 
@@ -9095,8 +9076,8 @@ function ActorRef(endpoint, dispatcher, path){
   this.path = path;
 }
 
-defineClass(238, 1, {238:1}, ActorRef);
-var Lim_actor_model_droidkit_actors_ActorRef_2_classLit = createForClass('im.actor.model.droidkit.actors', 'ActorRef', 238, Ljava_lang_Object_2_classLit);
+defineClass(237, 1, {237:1}, ActorRef);
+var Lim_actor_model_droidkit_actors_ActorRef_2_classLit = createForClass('im.actor.model.droidkit.actors', 'ActorRef', 237, Ljava_lang_Object_2_classLit);
 function $setSender(this$static, sender){
   this$static.sender = sender;
 }
@@ -9300,7 +9281,7 @@ function DispatchResult(isResult, res, delay){
 function delay_0(delay){
   $clinit_DispatchResult();
   var result;
-  result = dynamicCast(FREE_RESULTS.obj, 206);
+  result = dynamicCast(FREE_RESULTS.obj, 205);
   if (result) {
     FREE_RESULTS.obj = null;
     $update(result, false, null, delay);
@@ -9314,7 +9295,7 @@ function delay_0(delay){
 function result_0(res){
   $clinit_DispatchResult();
   var result;
-  result = dynamicCast(FREE_RESULTS.obj, 206);
+  result = dynamicCast(FREE_RESULTS.obj, 205);
   if (result) {
     FREE_RESULTS.obj = null;
     $update(result, true, res, {l:0, m:0, h:0});
@@ -9325,11 +9306,11 @@ function result_0(res){
   return result;
 }
 
-defineClass(206, 1, {206:1}, DispatchResult);
+defineClass(205, 1, {205:1}, DispatchResult);
 _.delay = {l:0, m:0, h:0};
 _.isResult = false;
 var FREE_RESULTS;
-var Lim_actor_model_droidkit_actors_dispatch_DispatchResult_2_classLit = createForClass('im.actor.model.droidkit.actors.dispatch', 'DispatchResult', 206, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_droidkit_actors_dispatch_DispatchResult_2_classLit = createForClass('im.actor.model.droidkit.actors.dispatch', 'DispatchResult', 205, Ljava_lang_Object_2_classLit);
 function $cancelSend(endpoint, message){
   endpoint.isDisconnected || $unschedule(endpoint.mailbox, new Envelope(message, endpoint.scope_0, endpoint.mailbox, null));
 }
@@ -9790,7 +9771,7 @@ function EnvelopeRoot$FetchResult_0(envelope){
 function delay_2(delay){
   $clinit_EnvelopeRoot$FetchResult();
   var res;
-  res = dynamicCast(RESULT_CACHE_0.obj, 205);
+  res = dynamicCast(RESULT_CACHE_0.obj, 204);
   if (res) {
     RESULT_CACHE_0.obj = null;
     res.envelope = null;
@@ -9805,7 +9786,7 @@ function delay_2(delay){
 function envelope_1(envelope){
   $clinit_EnvelopeRoot$FetchResult();
   var res;
-  res = dynamicCast(RESULT_CACHE_0.obj, 205);
+  res = dynamicCast(RESULT_CACHE_0.obj, 204);
   if (res) {
     RESULT_CACHE_0.obj = null;
     res.envelope = envelope;
@@ -9817,10 +9798,10 @@ function envelope_1(envelope){
   return res;
 }
 
-defineClass(205, 1, {205:1}, EnvelopeRoot$FetchResult, EnvelopeRoot$FetchResult_0);
+defineClass(204, 1, {204:1}, EnvelopeRoot$FetchResult, EnvelopeRoot$FetchResult_0);
 _.delay = {l:0, m:0, h:0};
 var RESULT_CACHE_0;
-var Lim_actor_model_droidkit_actors_mailbox_collections_EnvelopeRoot$FetchResult_2_classLit = createForClass('im.actor.model.droidkit.actors.mailbox.collections', 'EnvelopeRoot/FetchResult', 205, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_droidkit_actors_mailbox_collections_EnvelopeRoot$FetchResult_2_classLit = createForClass('im.actor.model.droidkit.actors.mailbox.collections', 'EnvelopeRoot/FetchResult', 204, Ljava_lang_Object_2_classLit);
 function ScheduledEnvelope(key, time, envelope){
   this.key = key;
   this.time = time;
@@ -12545,7 +12526,7 @@ function JsFacade(){
   !!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'JsMessenger' + ':' + 'JsMessenger created');
 }
 
-defineClass(542, 1, {235:1}, JsFacade);
+defineClass(542, 1, {234:1}, JsFacade);
 _.bindChat_0 = function bindChat(peer, callback){
   if (!callback) {
     return;
@@ -13416,7 +13397,7 @@ function makeClosure(closure){
   return new AngularListCallbackExporterImpl_0(closure);
 }
 
-defineClass(170, 1, {857:1, 170:1, 235:1}, AngularListCallbackExporterImpl, AngularListCallbackExporterImpl_0);
+defineClass(170, 1, {857:1, 170:1, 234:1}, AngularListCallbackExporterImpl, AngularListCallbackExporterImpl_0);
 _.equals$ = function equals_6(obj){
   return obj != null && instanceOf(obj, 170) && this.jso == dynamicCast(obj, 170).jso;
 }
@@ -13743,7 +13724,7 @@ function makeClosure_0(closure){
   return new AngularValueCallbackExporterImpl_0(closure);
 }
 
-defineClass(171, 1, {858:1, 171:1, 235:1}, AngularValueCallbackExporterImpl, AngularValueCallbackExporterImpl_0);
+defineClass(171, 1, {858:1, 171:1, 234:1}, AngularValueCallbackExporterImpl, AngularValueCallbackExporterImpl_0);
 _.equals$ = function equals_7(obj){
   return obj != null && instanceOf(obj, 171) && this.jso == dynamicCast(obj, 171).jso;
 }
@@ -13855,7 +13836,7 @@ function makeClosure_1(closure){
   return new JsAuthErrorClosureExporterImpl_0(closure);
 }
 
-defineClass(172, 1, {172:1, 235:1}, JsAuthErrorClosureExporterImpl, JsAuthErrorClosureExporterImpl_0);
+defineClass(172, 1, {172:1, 234:1}, JsAuthErrorClosureExporterImpl, JsAuthErrorClosureExporterImpl_0);
 _.equals$ = function equals_8(obj){
   return obj != null && instanceOf(obj, 172) && this.jso == dynamicCast(obj, 172).jso;
 }
@@ -13916,7 +13897,7 @@ function makeClosure_2(closure){
   return new JsAuthSuccessClosureExporterImpl_0(closure);
 }
 
-defineClass(173, 1, {173:1, 235:1}, JsAuthSuccessClosureExporterImpl, JsAuthSuccessClosureExporterImpl_0);
+defineClass(173, 1, {173:1, 234:1}, JsAuthSuccessClosureExporterImpl, JsAuthSuccessClosureExporterImpl_0);
 _.equals$ = function equals_9(obj){
   return obj != null && instanceOf(obj, 173) && this.jso == dynamicCast(obj, 173).jso;
 }
@@ -13973,7 +13954,7 @@ function makeClosure_3(closure){
   return new JsClosureExporterImpl_0(closure);
 }
 
-defineClass(174, 1, {174:1, 235:1}, JsClosureExporterImpl, JsClosureExporterImpl_0);
+defineClass(174, 1, {174:1, 234:1}, JsClosureExporterImpl, JsClosureExporterImpl_0);
 _.callback_1 = function callback_0(){
   $invoke_3(this.jso);
 }
@@ -15272,7 +15253,7 @@ function $run_0(this$static){
       contactRecord.recordType == 0 && $add_0(records, valueOf_0(__parseAndValidateLong(contactRecord.recordData)));
     }
     hex(this$static.deviceHash);
-    dynamicCast($toArray_0(records, initDim(Ljava_lang_Long_2_classLit, $intern_29, 19, 0, 0, 1)), 234);
+    dynamicCast($toArray_0(records, initDim(Ljava_lang_Long_2_classLit, $intern_29, 19, 0, 0, 1)), 233);
   }
    else {
     this$static.state = ($clinit_AuthState() , AUTH_START);
@@ -15311,7 +15292,7 @@ _.run = function run_1(){
     contactRecord.recordType == 0 && $add_0(records, valueOf_0(__parseAndValidateLong(contactRecord.recordData)));
   }
   hex(this.this$01.deviceHash);
-  dynamicCast($toArray_0(records, initDim(Ljava_lang_Long_2_classLit, $intern_29, 19, 0, 0, 1)), 234);
+  dynamicCast($toArray_0(records, initDim(Ljava_lang_Long_2_classLit, $intern_29, 19, 0, 0, 1)), 233);
 }
 ;
 var Lim_actor_model_modules_Auth$1_2_classLit = createForClass('im.actor.model.modules', 'Auth/1', 605, Ljava_lang_Object_2_classLit);
@@ -15605,7 +15586,7 @@ function $assumeConvActor(this$static, peer){
 
 function $getConversationActor(this$static, peer){
   $assumeConvActor(this$static, peer);
-  return dynamicCast($get_2(this$static.conversationActors, peer), 238);
+  return dynamicCast($get_2(this$static.conversationActors, peer), 237);
 }
 
 function $getConversationEngine(this$static, peer){
@@ -15619,7 +15600,7 @@ function $getConversationEngine(this$static, peer){
 
 function $getConversationHistoryActor(this$static, peer){
   $assumeConvActor(this$static, peer);
-  return dynamicCast($get_2(this$static.conversationHistoryActors, peer), 238);
+  return dynamicCast($get_2(this$static.conversationHistoryActors, peer), 237);
 }
 
 function $getMediaEngine(this$static, peer){
@@ -16014,7 +15995,7 @@ function $onLoggedIn_0(this$static){
   $section(timing, 'Groups');
   this$static.groups = new Groups(this$static);
   $section(timing, 'Search');
-  this$static.search_0 = new SearchModule(this$static);
+  this$static.search = new SearchModule(this$static);
   $section(timing, 'Security');
   this$static.security = new Security(this$static);
   $section(timing, 'Messages');
@@ -16042,7 +16023,7 @@ function $onLoggedIn_0(this$static){
   $section(timing, 'Files');
   $run_2(this$static.filesModule);
   $section(timing, 'Search');
-  $run_5(this$static.search_0);
+  $run_5(this$static.search);
   $section(timing, 'Notifications');
   $run_4(this$static.notifications);
   $section(timing, 'AppState');
@@ -16054,7 +16035,6 @@ function $onLoggedIn_0(this$static){
   $section(timing, 'Updates');
   $run_7(this$static.updates);
   $section(timing, 'Presence');
-  $send_1(this$static.presence.myPresence, new OwnPresenceActor$OnAppVisible);
   $end(timing);
   if (this$static.isAppVisible) {
     $send_1(this$static.presence.myPresence, new OwnPresenceActor$OnAppVisible);
@@ -16708,7 +16688,7 @@ function $onPhoneBookLoaded(this$static, phoneBook){
   emailToImportsPart = new ArrayList;
   count = 0;
   for (phoneToImport$iterator = new AbstractList$IteratorImpl(phoneToImports); phoneToImport$iterator.i < phoneToImport$iterator.this$01.size_1();) {
-    phoneToImport = (checkCriticalElement(phoneToImport$iterator.i < phoneToImport$iterator.this$01.size_1()) , dynamicCast(phoneToImport$iterator.this$01.get_1(phoneToImport$iterator.last = phoneToImport$iterator.i++), 203));
+    phoneToImport = (checkCriticalElement(phoneToImport$iterator.i < phoneToImport$iterator.this$01.size_1()) , dynamicCast(phoneToImport$iterator.this$01.get_1(phoneToImport$iterator.last = phoneToImport$iterator.i++), 202));
     setCheck(phoneToImportsPart.array, phoneToImportsPart.array.length, phoneToImport);
     ++count;
     if (count >= 50) {
@@ -16719,7 +16699,7 @@ function $onPhoneBookLoaded(this$static, phoneBook){
     }
   }
   for (emailToImport$iterator = new AbstractList$IteratorImpl(emailToImports); emailToImport$iterator.i < emailToImport$iterator.this$01.size_1();) {
-    emailToImport = (checkCriticalElement(emailToImport$iterator.i < emailToImport$iterator.this$01.size_1()) , dynamicCast(emailToImport$iterator.this$01.get_1(emailToImport$iterator.last = emailToImport$iterator.i++), 204));
+    emailToImport = (checkCriticalElement(emailToImport$iterator.i < emailToImport$iterator.this$01.size_1()) , dynamicCast(emailToImport$iterator.this$01.get_1(emailToImport$iterator.last = emailToImport$iterator.i++), 203));
     setCheck(emailToImportsPart.array, emailToImportsPart.array.length, emailToImport);
     ++count;
     if (count >= 50) {
@@ -16735,8 +16715,8 @@ function $onPhoneBookLoaded(this$static, phoneBook){
 function $performImport(this$static, phoneToImportsPart, emailToImportsPart){
   var emailToImports, phones;
   this$static.ENABLE_LOG && d_0('ContactsImport', 'Performing import part with ' + phoneToImportsPart.array.length + ' phones and ' + emailToImportsPart.array.length + ' emails');
-  phones = dynamicCast($toArray_0(phoneToImportsPart, initDim(Lim_actor_model_api_PhoneToImport_2_classLit, {866:1, 3:1, 6:1}, 203, phoneToImportsPart.array.length, 0, 1)), 866);
-  emailToImports = dynamicCast($toArray_0(emailToImportsPart, initDim(Lim_actor_model_api_EmailToImport_2_classLit, {867:1, 3:1, 6:1}, 204, emailToImportsPart.array.length, 0, 1)), 867);
+  phones = dynamicCast($toArray_0(phoneToImportsPart, initDim(Lim_actor_model_api_PhoneToImport_2_classLit, {866:1, 3:1, 6:1}, 202, phoneToImportsPart.array.length, 0, 1)), 866);
+  emailToImports = dynamicCast($toArray_0(emailToImportsPart, initDim(Lim_actor_model_api_EmailToImport_2_classLit, {867:1, 3:1, 6:1}, 203, emailToImportsPart.array.length, 0, 1)), 867);
   $request_0(this$static, new RequestImportContacts_0(new ArrayList_0(phoneToImportsPart), new ArrayList_0(emailToImportsPart)), new BookImportActor$2(this$static, phones, emailToImports));
 }
 
@@ -16860,12 +16840,12 @@ function $onContactsLoaded(this$static, result){
     return;
   }
   this$static.ENABLE_LOG && d_0('ContactsServerSync', 'Sync received ' + result.users.array.length + ' contacts');
-  outer_0: for (uid$array = dynamicCast($toArray_0(this$static.contacts, initDim(Ljava_lang_Integer_2_classLit, $intern_30, 28, this$static.contacts.array.length, 0, 1)), 98) , uid$index = 0 , uid$max = uid$array.length; uid$index < uid$max; ++uid$index) {
+  outer: for (uid$array = dynamicCast($toArray_0(this$static.contacts, initDim(Ljava_lang_Integer_2_classLit, $intern_30, 28, this$static.contacts.array.length, 0, 1)), 98) , uid$index = 0 , uid$max = uid$array.length; uid$index < uid$max; ++uid$index) {
     uid = uid$array[uid$index];
     for (u$iterator0 = new AbstractList$IteratorImpl(result.users); u$iterator0.i < u$iterator0.this$01.size_1();) {
       u = (checkCriticalElement(u$iterator0.i < u$iterator0.this$01.size_1()) , dynamicCast(u$iterator0.this$01.get_1(u$iterator0.last = u$iterator0.i++), 63));
       if (u.id_0 == uid.value_0) {
-        continue outer_0;
+        continue outer;
       }
     }
     this$static.ENABLE_LOG && !!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'ContactsServerSync' + ':' + ('Removing: #' + uid));
@@ -16979,7 +16959,7 @@ function $updateEngineList(this$static){
     userModel = (checkCriticalElement(userModel$iterator.i < userModel$iterator.this$01.size_1()) , dynamicCast(userModel$iterator.this$01.get_1(userModel$iterator.last = userModel$iterator.i++), 11));
     sorted[sindex++] = valueOf(userModel.uid);
   }
-  $onContactsChanged(this$static.modules.search_0, sorted);
+  $onContactsChanged(this$static.modules.search, sorted);
   $onContactsUpdate(this$static.modules.appStateModule, this$static.modules.contacts.contacts.storage.index_0.array.length == 0);
 }
 
@@ -17105,7 +17085,7 @@ function $checkQueue(this$static){
   this$static.LOG && !!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'UploadManager' + ':' + '- Checking queue');
   activeUploads = 0;
   for (queueItem$iterator0 = new AbstractList$IteratorImpl(this$static.queue); queueItem$iterator0.i < queueItem$iterator0.this$01.size_1();) {
-    queueItem = (checkCriticalElement(queueItem$iterator0.i < queueItem$iterator0.this$01.size_1()) , dynamicCast(queueItem$iterator0.this$01.get_1(queueItem$iterator0.last = queueItem$iterator0.i++), 202));
+    queueItem = (checkCriticalElement(queueItem$iterator0.i < queueItem$iterator0.this$01.size_1()) , dynamicCast(queueItem$iterator0.this$01.get_1(queueItem$iterator0.last = queueItem$iterator0.i++), 201));
     queueItem.isStarted && ++activeUploads;
   }
   if (activeUploads >= 2) {
@@ -17114,7 +17094,7 @@ function $checkQueue(this$static){
   }
   pendingQueue = null;
   for (queueItem$iterator = new AbstractList$IteratorImpl(this$static.queue); queueItem$iterator.i < queueItem$iterator.this$01.size_1();) {
-    queueItem = (checkCriticalElement(queueItem$iterator.i < queueItem$iterator.this$01.size_1()) , dynamicCast(queueItem$iterator.this$01.get_1(queueItem$iterator.last = queueItem$iterator.i++), 202));
+    queueItem = (checkCriticalElement(queueItem$iterator.i < queueItem$iterator.this$01.size_1()) , dynamicCast(queueItem$iterator.this$01.get_1(queueItem$iterator.last = queueItem$iterator.i++), 201));
     if (!queueItem.isStarted && !queueItem.isStopped) {
       pendingQueue = queueItem;
       break;
@@ -17132,7 +17112,7 @@ function $checkQueue(this$static){
 function $findItem(this$static, rid){
   var q, q$iterator;
   for (q$iterator = new AbstractList$IteratorImpl(this$static.queue); q$iterator.i < q$iterator.this$01.size_1();) {
-    q = (checkCriticalElement(q$iterator.i < q$iterator.this$01.size_1()) , dynamicCast(q$iterator.this$01.get_1(q$iterator.last = q$iterator.i++), 202));
+    q = (checkCriticalElement(q$iterator.i < q$iterator.this$01.size_1()) , dynamicCast(q$iterator.this$01.get_1(q$iterator.last = q$iterator.i++), 201));
     if (eq(q.rid, rid)) {
       return q;
     }
@@ -17290,11 +17270,11 @@ function UploadManager$QueueItem(rid, fileDescriptor, fileName, requestActor){
   this.fileName = fileName;
 }
 
-defineClass(202, 1, {202:1}, UploadManager$QueueItem);
+defineClass(201, 1, {201:1}, UploadManager$QueueItem);
 _.isStarted = false;
 _.isStopped = false;
 _.rid = {l:0, m:0, h:0};
-var Lim_actor_model_modules_file_UploadManager$QueueItem_2_classLit = createForClass('im.actor.model.modules.file', 'UploadManager/QueueItem', 202, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_file_UploadManager$QueueItem_2_classLit = createForClass('im.actor.model.modules.file', 'UploadManager/QueueItem', 201, Ljava_lang_Object_2_classLit);
 function UploadManager$StartUpload(rid, fileDescriptor, fileName){
   this.rid = rid;
   this.fileDescriptor = fileDescriptor;
@@ -17357,7 +17337,7 @@ function $checkQueue_0(this$static){
       d_0(this$static.TAG, 'Closing files...');
     }
     this$static.isWriteToDestProvider && null.nullMethod();
-    $request_0(this$static, new RequestCommitFileUpload_0(this$static.uploadConfig), new UploadTask$2(this$static));
+    $request_0(this$static, new RequestCommitFileUpload_0(this$static.uploadConfig, this$static.fileName), new UploadTask$2(this$static));
     return;
   }
   this$static.nextBlock < this$static.blocksCount && this$static.uploadCount < 4 && $loadPart(this$static, this$static.nextBlock++);
@@ -17815,7 +17795,7 @@ _.onReceive = function onReceive_7(message){
     $onMessageError(this, messageError.rid);
   }
    else 
-    instanceOf(message, 260)?$onMessagePlainRead(this, dynamicCast(message, 260).date):instanceOf(message, 259)?$onMessagePlainReceived(this, dynamicCast(message, 259).date):instanceOf(message, 258)?$onHistoryLoaded(this, dynamicCast(message, 258).messages):instanceOf(message, 383)?($clear_1(this.messages) , $clear_1(this.media_0) , $send_1(this.dialogsActor, new DialogsActor$ChatClear(this.peer)) , undefined):instanceOf(message, 384)?($clear_1(this.messages) , $clear_1(this.media_0) , $send_1(this.dialogsActor, new DialogsActor$ChatDelete(this.peer)) , undefined):instanceOf(message, 193)?$onMessagesDeleted(this, dynamicCast(message, 193).rids):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
+    instanceOf(message, 260)?$onMessagePlainRead(this, dynamicCast(message, 260).date):instanceOf(message, 259)?$onMessagePlainReceived(this, dynamicCast(message, 259).date):instanceOf(message, 258)?$onHistoryLoaded(this, dynamicCast(message, 258).messages):instanceOf(message, 383)?($clear_1(this.messages) , $clear_1(this.media_0) , $send_1(this.dialogsActor, new DialogsActor$ChatClear(this.peer)) , undefined):instanceOf(message, 384)?($clear_1(this.messages) , $clear_1(this.media_0) , $send_1(this.dialogsActor, new DialogsActor$ChatDelete(this.peer)) , undefined):instanceOf(message, 192)?$onMessagesDeleted(this, dynamicCast(message, 192).rids):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
 }
 ;
 _.preStart = function preStart_4(){
@@ -17900,8 +17880,8 @@ function ConversationActor$MessagesDeleted(rids){
   this.rids = rids;
 }
 
-defineClass(193, 1, {193:1}, ConversationActor$MessagesDeleted);
-var Lim_actor_model_modules_messages_ConversationActor$MessagesDeleted_2_classLit = createForClass('im.actor.model.modules.messages', 'ConversationActor/MessagesDeleted', 193, Ljava_lang_Object_2_classLit);
+defineClass(192, 1, {192:1}, ConversationActor$MessagesDeleted);
+var Lim_actor_model_modules_messages_ConversationActor$MessagesDeleted_2_classLit = createForClass('im.actor.model.modules.messages', 'ConversationActor/MessagesDeleted', 192, Ljava_lang_Object_2_classLit);
 function $onLoadMore(this$static){
   if (this$static.historyLoaded) {
     return;
@@ -17938,11 +17918,11 @@ function ConversationHistoryActor(peer, modules){
 defineClass(578, 30, {}, ConversationHistoryActor);
 _.onReceive = function onReceive_8(message){
   var loadedMore;
-  if (instanceOf(message, 239)) {
+  if (instanceOf(message, 238)) {
     $onLoadMore(this);
   }
-   else if (instanceOf(message, 240)) {
-    loadedMore = dynamicCast(message, 240);
+   else if (instanceOf(message, 239)) {
+    loadedMore = dynamicCast(message, 239);
     $onLoadedMore(this, loadedMore.loaded, loadedMore.maxLoadedDate);
   }
    else {
@@ -17982,17 +17962,17 @@ var Lim_actor_model_modules_messages_ConversationHistoryActor$1_2_classLit = cre
 function ConversationHistoryActor$LoadMore(){
 }
 
-defineClass(239, 1, {239:1}, ConversationHistoryActor$LoadMore);
-var Lim_actor_model_modules_messages_ConversationHistoryActor$LoadMore_2_classLit = createForClass('im.actor.model.modules.messages', 'ConversationHistoryActor/LoadMore', 239, Ljava_lang_Object_2_classLit);
+defineClass(238, 1, {238:1}, ConversationHistoryActor$LoadMore);
+var Lim_actor_model_modules_messages_ConversationHistoryActor$LoadMore_2_classLit = createForClass('im.actor.model.modules.messages', 'ConversationHistoryActor/LoadMore', 238, Ljava_lang_Object_2_classLit);
 function ConversationHistoryActor$LoadedMore(loaded, maxLoadedDate){
   this.loaded = loaded;
   this.maxLoadedDate = maxLoadedDate;
 }
 
-defineClass(240, 1, {240:1}, ConversationHistoryActor$LoadedMore);
+defineClass(239, 1, {239:1}, ConversationHistoryActor$LoadedMore);
 _.loaded = 0;
 _.maxLoadedDate = {l:0, m:0, h:0};
-var Lim_actor_model_modules_messages_ConversationHistoryActor$LoadedMore_2_classLit = createForClass('im.actor.model.modules.messages', 'ConversationHistoryActor/LoadedMore', 240, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_messages_ConversationHistoryActor$LoadedMore_2_classLit = createForClass('im.actor.model.modules.messages', 'ConversationHistoryActor/LoadedMore', 239, Ljava_lang_Object_2_classLit);
 function $moveCursor(this$static, peer, date){
   var cursor;
   cursor = $getCursor(this$static.plainCursorsStorage, peer);
@@ -18203,7 +18183,7 @@ function $addOrUpdateItem_2(this$static, dialog){
   $addOrUpdateItem_1(this$static.dialogs, dialog);
   d = new ArrayList;
   setCheck(d.array, d.array.length, dialog);
-  $onDialogsChanged(this$static.modules.search_0, d);
+  $onDialogsChanged(this$static.modules.search, d);
 }
 
 function $buildPeerDesc(this$static, peer){
@@ -18271,7 +18251,7 @@ function $onHistoryLoaded_0(this$static, history_0){
     $add_0(updated, new Dialog_1(dialogHistory.peer, dialogHistory.sortDate, peerDesc.title_0, peerDesc.avatar, dialogHistory.unreadCount, dialogHistory.rid, description.contentType, description.text_0, dialogHistory.status_0, dialogHistory.senderId, dialogHistory.date, description.relatedUser));
   }
   $addOrUpdateItems_0(this$static.dialogs, updated);
-  $onDialogsChanged(this$static.modules.search_0, updated);
+  $onDialogsChanged(this$static.modules.search, updated);
   $send_1(this$static.modules.appStateModule.listStatesActor, new ListsStatesActor$OnDialogsLoaded);
   $notifyState(this$static);
 }
@@ -18524,11 +18504,11 @@ function DialogsHistoryActor(messenger){
 defineClass(571, 30, {}, DialogsHistoryActor);
 _.onReceive = function onReceive_13(message){
   var loaded;
-  if (instanceOf(message, 248)) {
+  if (instanceOf(message, 247)) {
     $onLoadMore_0(this);
   }
-   else if (instanceOf(message, 249)) {
-    loaded = dynamicCast(message, 249);
+   else if (instanceOf(message, 248)) {
+    loaded = dynamicCast(message, 248);
     $onLoadedMore_0(this, loaded.loaded, loaded.maxLoadedDate);
   }
    else {
@@ -18568,17 +18548,17 @@ var Lim_actor_model_modules_messages_DialogsHistoryActor$1_2_classLit = createFo
 function DialogsHistoryActor$LoadMore(){
 }
 
-defineClass(248, 1, {248:1}, DialogsHistoryActor$LoadMore);
-var Lim_actor_model_modules_messages_DialogsHistoryActor$LoadMore_2_classLit = createForClass('im.actor.model.modules.messages', 'DialogsHistoryActor/LoadMore', 248, Ljava_lang_Object_2_classLit);
+defineClass(247, 1, {247:1}, DialogsHistoryActor$LoadMore);
+var Lim_actor_model_modules_messages_DialogsHistoryActor$LoadMore_2_classLit = createForClass('im.actor.model.modules.messages', 'DialogsHistoryActor/LoadMore', 247, Ljava_lang_Object_2_classLit);
 function DialogsHistoryActor$LoadedMore(loaded, maxLoadedDate){
   this.loaded = loaded;
   this.maxLoadedDate = maxLoadedDate;
 }
 
-defineClass(249, 1, {249:1}, DialogsHistoryActor$LoadedMore);
+defineClass(248, 1, {248:1}, DialogsHistoryActor$LoadedMore);
 _.loaded = 0;
 _.maxLoadedDate = {l:0, m:0, h:0};
-var Lim_actor_model_modules_messages_DialogsHistoryActor$LoadedMore_2_classLit = createForClass('im.actor.model.modules.messages', 'DialogsHistoryActor/LoadedMore', 249, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_messages_DialogsHistoryActor$LoadedMore_2_classLit = createForClass('im.actor.model.modules.messages', 'DialogsHistoryActor/LoadedMore', 248, Ljava_lang_Object_2_classLit);
 function $performDelete(this$static, peer, rids){
   var apiPeer, outPeer;
   outPeer = $buidOutPeer(this$static, peer);
@@ -18606,7 +18586,7 @@ _.preStart = function preStart_9(){
   data_0 = $get_0(this.syncKeyValue, {l:3, m:0, h:0});
   if (data_0 != null) {
     try {
-      this.deleteStorage = dynamicCast(parse_159(new DeleteStorage, data_0), 209);
+      this.deleteStorage = dynamicCast(parse_159(new DeleteStorage, data_0), 208);
     }
      catch ($e0) {
       $e0 = wrap($e0);
@@ -18624,7 +18604,7 @@ _.preStart = function preStart_9(){
   }
   for (peer$iterator = $iterator(new AbstractMap$1(this.deleteStorage.pendingDeletions)); $hasNext(peer$iterator.val$outerIter2);) {
     peer = dynamicCast($next_1(peer$iterator), 20);
-    delete_$ = dynamicCast($get_2(this.deleteStorage.pendingDeletions, peer), 208);
+    delete_$ = dynamicCast($get_2(this.deleteStorage.pendingDeletions, peer), 207);
     delete_$.rids.array.length > 0 && $performDelete(this, peer, delete_$.rids);
   }
 }
@@ -18632,7 +18612,7 @@ _.preStart = function preStart_9(){
 var Lim_actor_model_modules_messages_MessageDeleteActor_2_classLit = createForClass('im.actor.model.modules.messages', 'MessageDeleteActor', 576, Lim_actor_model_modules_utils_ModuleActor_2_classLit);
 function $onResult_20(this$static, response){
   if ($containsKey(this$static.this$01.deleteStorage.pendingDeletions, this$static.val$peer2)) {
-    dynamicCast($get_2(this$static.this$01.deleteStorage.pendingDeletions, this$static.val$peer2), 208).rids.removeAll(this$static.val$rids3);
+    dynamicCast($get_2(this$static.this$01.deleteStorage.pendingDeletions, this$static.val$peer2), 207).rids.removeAll(this$static.val$rids3);
     $saveStorage(this$static.this$01);
   }
   $onUpdateReceived_0(this$static.this$01.modules.updates, new SeqUpdate_0(response.seq, response.state, 46, $toByteArray(new UpdateMessageDelete_0(this$static.val$apiPeer4, this$static.val$rids3))));
@@ -18735,12 +18715,12 @@ _.onReceive = function onReceive_15(message){
     messageRead = dynamicCast(message, 133);
     $onMessageRead(this, messageRead.peer, messageRead.sortingDate);
   }
-   else if (instanceOf(message, 250)) {
-    readByMe = dynamicCast(message, 250);
+   else if (instanceOf(message, 249)) {
+    readByMe = dynamicCast(message, 249);
     $onMessageReadByMe(this, readByMe.peer, readByMe.sortDate);
   }
-   else if (instanceOf(message, 251)) {
-    deleted = dynamicCast(message, 251);
+   else if (instanceOf(message, 250)) {
+    deleted = dynamicCast(message, 250);
     $onMessageDelete(this, deleted.peer, deleted.rids);
   }
    else {
@@ -18775,8 +18755,8 @@ function OwnReadActor$MessageDeleted(peer, rids){
   this.rids = rids;
 }
 
-defineClass(251, 1, {251:1}, OwnReadActor$MessageDeleted);
-var Lim_actor_model_modules_messages_OwnReadActor$MessageDeleted_2_classLit = createForClass('im.actor.model.modules.messages', 'OwnReadActor/MessageDeleted', 251, Ljava_lang_Object_2_classLit);
+defineClass(250, 1, {250:1}, OwnReadActor$MessageDeleted);
+var Lim_actor_model_modules_messages_OwnReadActor$MessageDeleted_2_classLit = createForClass('im.actor.model.modules.messages', 'OwnReadActor/MessageDeleted', 250, Ljava_lang_Object_2_classLit);
 function OwnReadActor$MessageRead(peer, sortingDate){
   this.peer = peer;
   this.sortingDate = sortingDate;
@@ -18790,9 +18770,9 @@ function OwnReadActor$MessageReadByMe(peer, sortDate){
   this.sortDate = sortDate;
 }
 
-defineClass(250, 1, {250:1}, OwnReadActor$MessageReadByMe);
+defineClass(249, 1, {249:1}, OwnReadActor$MessageReadByMe);
 _.sortDate = {l:0, m:0, h:0};
-var Lim_actor_model_modules_messages_OwnReadActor$MessageReadByMe_2_classLit = createForClass('im.actor.model.modules.messages', 'OwnReadActor/MessageReadByMe', 250, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_messages_OwnReadActor$MessageReadByMe_2_classLit = createForClass('im.actor.model.modules.messages', 'OwnReadActor/MessageReadByMe', 249, Ljava_lang_Object_2_classLit);
 function OwnReadActor$NewMessage(peer, rid, sortingDate){
   this.peer = peer;
   this.rid = rid;
@@ -18949,8 +18929,8 @@ function SenderActor(messenger){
 defineClass(575, 30, {}, SenderActor);
 _.onReceive = function onReceive_16(message){
   var messageError, messageSent, sendDocument, sendPhoto, sendText, uploadCompleted, uploadError;
-  if (instanceOf(message, 255)) {
-    sendText = dynamicCast(message, 255);
+  if (instanceOf(message, 254)) {
+    sendText = dynamicCast(message, 254);
     $doSendText(this, sendText.peer, sendText.text_0);
   }
    else if (instanceOf(message, 188)) {
@@ -18961,8 +18941,8 @@ _.onReceive = function onReceive_16(message){
     messageError = dynamicCast(message, 189);
     $onError_4(this, messageError.peer, messageError.rid);
   }
-   else if (instanceOf(message, 253)) {
-    sendDocument = dynamicCast(message, 253);
+   else if (instanceOf(message, 252)) {
+    sendDocument = dynamicCast(message, 252);
     $doSendDocument(this, sendDocument.peer, sendDocument.fileName, sendDocument.mimeType, sendDocument.fileSize, sendDocument.fastThumb, sendDocument.descriptor);
   }
    else if (instanceOf(message, 88)) {
@@ -18973,8 +18953,8 @@ _.onReceive = function onReceive_16(message){
     uploadError = dynamicCast(message, 89);
     $onFileUploadError(this, uploadError.rid);
   }
-   else if (instanceOf(message, 254)) {
-    sendPhoto = dynamicCast(message, 254);
+   else if (instanceOf(message, 253)) {
+    sendPhoto = dynamicCast(message, 253);
     $doSendPhoto(this, sendPhoto.peer, sendPhoto.fastThumb, sendPhoto.descriptor, sendPhoto.fileName, sendPhoto.fileSize, sendPhoto.w, sendPhoto.h_0);
   }
    else {
@@ -19073,9 +19053,9 @@ function SenderActor$SendDocument(peer, fileName, mimeType, fileSize, descriptor
   this.fileSize = fileSize;
 }
 
-defineClass(253, 1, {253:1}, SenderActor$SendDocument);
+defineClass(252, 1, {252:1}, SenderActor$SendDocument);
 _.fileSize = 0;
-var Lim_actor_model_modules_messages_SenderActor$SendDocument_2_classLit = createForClass('im.actor.model.modules.messages', 'SenderActor/SendDocument', 253, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_messages_SenderActor$SendDocument_2_classLit = createForClass('im.actor.model.modules.messages', 'SenderActor/SendDocument', 252, Ljava_lang_Object_2_classLit);
 function SenderActor$SendPhoto(peer, fastThumb, descriptor, fileName, fileSize, w, h){
   this.peer = peer;
   this.fastThumb = fastThumb;
@@ -19086,22 +19066,22 @@ function SenderActor$SendPhoto(peer, fastThumb, descriptor, fileName, fileSize, 
   this.h_0 = h;
 }
 
-defineClass(254, 1, {254:1}, SenderActor$SendPhoto);
+defineClass(253, 1, {253:1}, SenderActor$SendPhoto);
 _.fileSize = 0;
 _.h_0 = 0;
 _.w = 0;
-var Lim_actor_model_modules_messages_SenderActor$SendPhoto_2_classLit = createForClass('im.actor.model.modules.messages', 'SenderActor/SendPhoto', 254, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_messages_SenderActor$SendPhoto_2_classLit = createForClass('im.actor.model.modules.messages', 'SenderActor/SendPhoto', 253, Ljava_lang_Object_2_classLit);
 function SenderActor$SendText(peer, text_0){
   this.peer = peer;
   this.text_0 = text_0;
 }
 
-defineClass(255, 1, {255:1}, SenderActor$SendText);
-var Lim_actor_model_modules_messages_SenderActor$SendText_2_classLit = createForClass('im.actor.model.modules.messages', 'SenderActor/SendText', 255, Ljava_lang_Object_2_classLit);
+defineClass(254, 1, {254:1}, SenderActor$SendText);
+var Lim_actor_model_modules_messages_SenderActor$SendText_2_classLit = createForClass('im.actor.model.modules.messages', 'SenderActor/SendText', 254, Ljava_lang_Object_2_classLit);
 function Delete(){
 }
 
-defineClass(208, 4, {4:1, 208:1}, Delete);
+defineClass(207, 4, {4:1, 207:1}, Delete);
 _.parse_0 = function parse_190(values){
   this.peer = fromBytes_6($getBytes(values, 1));
   this.rids = $getRepeatedLong(values, 2);
@@ -19112,12 +19092,12 @@ _.serialize = function serialize_185(writer){
   $writeRepeatedLong(writer, 2, this.rids);
 }
 ;
-var Lim_actor_model_modules_messages_entity_Delete_2_classLit = createForClass('im.actor.model.modules.messages.entity', 'Delete', 208, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_modules_messages_entity_Delete_2_classLit = createForClass('im.actor.model.modules.messages.entity', 'Delete', 207, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function DeleteStorage(){
   this.pendingDeletions = new HashMap;
 }
 
-defineClass(209, 4, {4:1, 209:1}, DeleteStorage);
+defineClass(208, 4, {4:1, 208:1}, DeleteStorage);
 _.parse_0 = function parse_191(values){
   var count, d, d$iterator, i_0, tmp;
   $reset(this.pendingDeletions);
@@ -19127,7 +19107,7 @@ _.parse_0 = function parse_191(values){
     $add_0(tmp, new Delete);
   }
   for (d$iterator = new AbstractList$IteratorImpl($getRepeatedObj(values, 1, tmp)); d$iterator.i < d$iterator.this$01.size_1();) {
-    d = (checkCriticalElement(d$iterator.i < d$iterator.this$01.size_1()) , dynamicCast(d$iterator.this$01.get_1(d$iterator.last = d$iterator.i++), 208));
+    d = (checkCriticalElement(d$iterator.i < d$iterator.this$01.size_1()) , dynamicCast(d$iterator.this$01.get_1(d$iterator.last = d$iterator.i++), 207));
     $put_1(this.pendingDeletions, d.peer, d);
   }
 }
@@ -19136,7 +19116,7 @@ _.serialize = function serialize_186(writer){
   $writeRepeatedObj(writer, 1, new ArrayList_0(new AbstractMap$2(this.pendingDeletions)));
 }
 ;
-var Lim_actor_model_modules_messages_entity_DeleteStorage_2_classLit = createForClass('im.actor.model.modules.messages.entity', 'DeleteStorage', 209, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_modules_messages_entity_DeleteStorage_2_classLit = createForClass('im.actor.model.modules.messages.entity', 'DeleteStorage', 208, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function DialogHistory(peer, unreadCount, sortDate, rid, date, senderId, content_0, status_0){
   this.peer = peer;
   this.unreadCount = unreadCount;
@@ -19182,8 +19162,8 @@ function convert_6(location_0, fileName, size_0){
 
 function convert_7(content_0){
   var avatar, documentMessage, ex, exUserKicked, fastThumb, fileReference, message, mimeType, name_0, photo, source, title_0, userAdded, video;
-  if (instanceOf(content_0, 210)) {
-    message = dynamicCast(content_0, 210);
+  if (instanceOf(content_0, 209)) {
+    message = dynamicCast(content_0, 209);
     return new TextContent_0(message.text_0);
   }
    else if (instanceOf(content_0, 358)) {
@@ -19208,19 +19188,19 @@ function convert_7(content_0){
      else 
       return instanceOf(ex, 450)?new ServiceGroupUserLeave:instanceOf(ex, 451)?new ServiceGroupCreated_0(''):new ServiceContent_0(message.text_0);
   }
-   else if (instanceOf(content_0, 213)) {
-    documentMessage = dynamicCast(content_0, 213);
+   else if (instanceOf(content_0, 212)) {
+    documentMessage = dynamicCast(content_0, 212);
     mimeType = documentMessage.mimeType;
     name_0 = documentMessage.name_0;
     fastThumb = convert_5(documentMessage.thumb);
     fileReference = new FileReference_0(documentMessage.fileId, documentMessage.accessHash, documentMessage.fileSize, documentMessage.name_0);
     source = new FileRemoteSource_0(fileReference);
-    if (instanceOf(documentMessage.ext, 211)) {
-      photo = dynamicCast(documentMessage.ext, 211);
+    if (instanceOf(documentMessage.ext, 210)) {
+      photo = dynamicCast(documentMessage.ext, 210);
       return new PhotoContent_0(source, mimeType, name_0, fastThumb, photo.w, photo.h_0);
     }
-     else if (instanceOf(documentMessage.ext, 212)) {
-      video = dynamicCast(documentMessage.ext, 212);
+     else if (instanceOf(documentMessage.ext, 211)) {
+      video = dynamicCast(documentMessage.ext, 211);
       return new VideoContent_0(source, mimeType, name_0, fastThumb, video.duration, video.w, video.h_0);
     }
      else {
@@ -19285,7 +19265,7 @@ function convert_13(members, admin){
   var m, m$iterator, res;
   res = new ArrayList;
   for (m$iterator = new AbstractList$IteratorImpl(members); m$iterator.i < m$iterator.this$01.size_1();) {
-    m = (checkCriticalElement(m$iterator.i < m$iterator.this$01.size_1()) , dynamicCast(m$iterator.this$01.get_1(m$iterator.last = m$iterator.i++), 229));
+    m = (checkCriticalElement(m$iterator.i < m$iterator.this$01.size_1()) , dynamicCast(m$iterator.this$01.get_1(m$iterator.last = m$iterator.i++), 228));
     $add_0(res, new GroupMember_0(m.uid, m.inviterUid, m.date, m.uid == admin));
   }
   return res;
@@ -19614,6 +19594,10 @@ function $performNotification(this$static, isSilentUpdate){
     }
     setCheck(destNotifications.array, destNotifications.array.length, pendingNotification);
   }
+  if (destNotifications.array.length == 0) {
+    $hideAllNotifications(this$static.modules.configuration.notificationProvider);
+    return;
+  }
   res = new ArrayList;
   for (p$iterator0 = new AbstractList$IteratorImpl(destNotifications); p$iterator0.i < p$iterator0.this$01.size_1();) {
     p_0 = (checkCriticalElement(p$iterator0.i < p$iterator0.this$01.size_1()) , dynamicCast(p$iterator0.this$01.get_1(p$iterator0.last = p$iterator0.i++), 102));
@@ -19637,16 +19621,16 @@ function NotificationsActor(messenger){
 defineClass(618, 30, {}, NotificationsActor);
 _.onReceive = function onReceive_17(message){
   var newMessage, read;
-  if (instanceOf(message, 241)) {
-    newMessage = dynamicCast(message, 241);
+  if (instanceOf(message, 240)) {
+    newMessage = dynamicCast(message, 240);
     $onNewMessage(this, newMessage.peer, newMessage.sender, newMessage.sortDate, newMessage.contentDescription);
   }
-   else if (instanceOf(message, 242)) {
-    read = dynamicCast(message, 242);
+   else if (instanceOf(message, 241)) {
+    read = dynamicCast(message, 241);
     $onMessagesRead(this, read.peer, read.fromDate);
   }
    else 
-    instanceOf(message, 243)?$onConversationVisible(this, dynamicCast(message, 243).peer):instanceOf(message, 244)?$onConversationHidden(this, dynamicCast(message, 244).peer):instanceOf(message, 246)?undefined:instanceOf(message, 245)?$hideAllNotifications(this.modules.configuration.notificationProvider):instanceOf(message, 377)?(this.isDialogsVisible = true , $hideAllNotifications(this.modules.configuration.notificationProvider)):instanceOf(message, 378)?(this.isDialogsVisible = false):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
+    instanceOf(message, 242)?$onConversationVisible(this, dynamicCast(message, 242).peer):instanceOf(message, 243)?$onConversationHidden(this, dynamicCast(message, 243).peer):instanceOf(message, 245)?undefined:instanceOf(message, 244)?$hideAllNotifications(this.modules.configuration.notificationProvider):instanceOf(message, 377)?(this.isDialogsVisible = true , $hideAllNotifications(this.modules.configuration.notificationProvider)):instanceOf(message, 378)?(this.isDialogsVisible = false):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
 }
 ;
 _.preStart = function preStart_12(){
@@ -19676,9 +19660,9 @@ function NotificationsActor$MessagesRead(peer, fromDate){
   this.fromDate = fromDate;
 }
 
-defineClass(242, 1, {242:1}, NotificationsActor$MessagesRead);
+defineClass(241, 1, {241:1}, NotificationsActor$MessagesRead);
 _.fromDate = {l:0, m:0, h:0};
-var Lim_actor_model_modules_notifications_NotificationsActor$MessagesRead_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/MessagesRead', 242, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_notifications_NotificationsActor$MessagesRead_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/MessagesRead', 241, Ljava_lang_Object_2_classLit);
 function NotificationsActor$NewMessage(peer, sender, sortDate, contentDescription){
   this.peer = peer;
   this.sender = sender;
@@ -19686,32 +19670,32 @@ function NotificationsActor$NewMessage(peer, sender, sortDate, contentDescriptio
   this.contentDescription = contentDescription;
 }
 
-defineClass(241, 1, {241:1}, NotificationsActor$NewMessage);
+defineClass(240, 1, {240:1}, NotificationsActor$NewMessage);
 _.sender = 0;
 _.sortDate = {l:0, m:0, h:0};
-var Lim_actor_model_modules_notifications_NotificationsActor$NewMessage_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/NewMessage', 241, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_notifications_NotificationsActor$NewMessage_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/NewMessage', 240, Ljava_lang_Object_2_classLit);
 function NotificationsActor$OnAppHidden(){
 }
 
-defineClass(246, 1, {246:1}, NotificationsActor$OnAppHidden);
-var Lim_actor_model_modules_notifications_NotificationsActor$OnAppHidden_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnAppHidden', 246, Ljava_lang_Object_2_classLit);
+defineClass(245, 1, {245:1}, NotificationsActor$OnAppHidden);
+var Lim_actor_model_modules_notifications_NotificationsActor$OnAppHidden_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnAppHidden', 245, Ljava_lang_Object_2_classLit);
 function NotificationsActor$OnAppVisible(){
 }
 
-defineClass(245, 1, {245:1}, NotificationsActor$OnAppVisible);
-var Lim_actor_model_modules_notifications_NotificationsActor$OnAppVisible_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnAppVisible', 245, Ljava_lang_Object_2_classLit);
+defineClass(244, 1, {244:1}, NotificationsActor$OnAppVisible);
+var Lim_actor_model_modules_notifications_NotificationsActor$OnAppVisible_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnAppVisible', 244, Ljava_lang_Object_2_classLit);
 function NotificationsActor$OnConversationHidden(peer){
   this.peer = peer;
 }
 
-defineClass(244, 1, {244:1}, NotificationsActor$OnConversationHidden);
-var Lim_actor_model_modules_notifications_NotificationsActor$OnConversationHidden_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnConversationHidden', 244, Ljava_lang_Object_2_classLit);
+defineClass(243, 1, {243:1}, NotificationsActor$OnConversationHidden);
+var Lim_actor_model_modules_notifications_NotificationsActor$OnConversationHidden_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnConversationHidden', 243, Ljava_lang_Object_2_classLit);
 function NotificationsActor$OnConversationVisible(peer){
   this.peer = peer;
 }
 
-defineClass(243, 1, {243:1}, NotificationsActor$OnConversationVisible);
-var Lim_actor_model_modules_notifications_NotificationsActor$OnConversationVisible_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnConversationVisible', 243, Ljava_lang_Object_2_classLit);
+defineClass(242, 1, {242:1}, NotificationsActor$OnConversationVisible);
+var Lim_actor_model_modules_notifications_NotificationsActor$OnConversationVisible_2_classLit = createForClass('im.actor.model.modules.notifications', 'NotificationsActor/OnConversationVisible', 242, Ljava_lang_Object_2_classLit);
 function NotificationsActor$OnDialogsHidden(){
 }
 
@@ -19778,7 +19762,7 @@ function OwnPresenceActor(messenger){
 
 defineClass(615, 30, {}, OwnPresenceActor);
 _.onReceive = function onReceive_18(message){
-  instanceOf(message, 191)?(this.isVisible = true , $sendOnce(this.context.actorScope.actorRef, new OwnPresenceActor$PerformOnline)):instanceOf(message, 382)?(this.isVisible = false , $sendOnce(this.context.actorScope.actorRef, new OwnPresenceActor$PerformOnline)):instanceOf(message, 192)?($request_0(this, new RequestSetOnline_0(this.isVisible), new OwnPresenceActor$1) , this.isVisible && $sendOnce_0(this.context.actorScope.actorRef, new OwnPresenceActor$PerformOnline, {l:60000, m:0, h:0})):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
+  instanceOf(message, 256)?(this.isVisible = true , $sendOnce(this.context.actorScope.actorRef, new OwnPresenceActor$PerformOnline)):instanceOf(message, 382)?(this.isVisible = false , $sendOnce(this.context.actorScope.actorRef, new OwnPresenceActor$PerformOnline)):instanceOf(message, 191)?($request_0(this, new RequestSetOnline_0(this.isVisible), new OwnPresenceActor$1) , this.isVisible && $sendOnce_0(this.context.actorScope.actorRef, new OwnPresenceActor$PerformOnline, {l:60000, m:0, h:0})):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
 }
 ;
 _.isVisible = false;
@@ -19803,13 +19787,13 @@ var Lim_actor_model_modules_presence_OwnPresenceActor$OnAppHidden_2_classLit = c
 function OwnPresenceActor$OnAppVisible(){
 }
 
-defineClass(191, 1, {191:1}, OwnPresenceActor$OnAppVisible);
-var Lim_actor_model_modules_presence_OwnPresenceActor$OnAppVisible_2_classLit = createForClass('im.actor.model.modules.presence', 'OwnPresenceActor/OnAppVisible', 191, Ljava_lang_Object_2_classLit);
+defineClass(256, 1, {256:1}, OwnPresenceActor$OnAppVisible);
+var Lim_actor_model_modules_presence_OwnPresenceActor$OnAppVisible_2_classLit = createForClass('im.actor.model.modules.presence', 'OwnPresenceActor/OnAppVisible', 256, Ljava_lang_Object_2_classLit);
 function OwnPresenceActor$PerformOnline(){
 }
 
-defineClass(192, 1, {192:1}, OwnPresenceActor$PerformOnline);
-var Lim_actor_model_modules_presence_OwnPresenceActor$PerformOnline_2_classLit = createForClass('im.actor.model.modules.presence', 'OwnPresenceActor/PerformOnline', 192, Ljava_lang_Object_2_classLit);
+defineClass(191, 1, {191:1}, OwnPresenceActor$PerformOnline);
+var Lim_actor_model_modules_presence_OwnPresenceActor$PerformOnline_2_classLit = createForClass('im.actor.model.modules.presence', 'OwnPresenceActor/PerformOnline', 191, Ljava_lang_Object_2_classLit);
 function $onGroupOnline(this$static, gid, count){
   var vm;
   vm = dynamicCast($get_1(this$static.modules.groups.collection, fromInt(gid)), 85);
@@ -19915,7 +19899,7 @@ _.onReceive = function onReceive_19(message){
     $onGroupOnline(this, groupOnline.gid, groupOnline.count);
   }
    else 
-    instanceOf(message, 247)?$subscribe_2(this, dynamicCast(message, 247).peer):instanceOf(message, 379)?$onNewSessionCreated_0(this):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
+    instanceOf(message, 246)?$subscribe_2(this, dynamicCast(message, 246).peer):instanceOf(message, 379)?$onNewSessionCreated_0(this):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
 }
 ;
 var Lim_actor_model_modules_presence_PresenceActor_2_classLit = createForClass('im.actor.model.modules.presence', 'PresenceActor', 657, Lim_actor_model_modules_utils_ModuleActor_2_classLit);
@@ -19990,8 +19974,8 @@ function PresenceActor$Subscribe(peer){
   this.peer = peer;
 }
 
-defineClass(247, 1, {247:1}, PresenceActor$Subscribe);
-var Lim_actor_model_modules_presence_PresenceActor$Subscribe_2_classLit = createForClass('im.actor.model.modules.presence', 'PresenceActor/Subscribe', 247, Ljava_lang_Object_2_classLit);
+defineClass(246, 1, {246:1}, PresenceActor$Subscribe);
+var Lim_actor_model_modules_presence_PresenceActor$Subscribe_2_classLit = createForClass('im.actor.model.modules.presence', 'PresenceActor/Subscribe', 246, Ljava_lang_Object_2_classLit);
 function PresenceActor$UserLastSeen(uid, date){
   this.uid = uid;
   this.date = date;
@@ -20181,7 +20165,7 @@ _.onReceive = function onReceive_21(message){
 }
 ;
 _.preStart = function preStart_14(){
-  this.listEngine = this.modules.search_0.searchList;
+  this.listEngine = this.modules.search.searchList;
 }
 ;
 var Lim_actor_model_modules_search_SearchActor_2_classLit = createForClass('im.actor.model.modules.search', 'SearchActor', 697, Lim_actor_model_modules_utils_ModuleActor_2_classLit);
@@ -20230,7 +20214,7 @@ _.preStart = function preStart_15(){
     }
   }
   for (action$iterator = new AbstractList$IteratorImpl(this.syncState.pendingActions); action$iterator.i < action$iterator.this$01.size_1();) {
-    action = (checkCriticalElement(action$iterator.i < action$iterator.this$01.size_1()) , dynamicCast(action$iterator.this$01.get_1(action$iterator.last = action$iterator.i++), 207));
+    action = (checkCriticalElement(action$iterator.i < action$iterator.this$01.size_1()) , dynamicCast(action$iterator.this$01.get_1(action$iterator.last = action$iterator.i++), 206));
     $request_0(this, new RequestEditParameter_0(action.key, action.value_0), new SettingsSyncActor$2(this, action));
   }
   $getBool(this.modules.preferences, 'settings_sync_state_loaded', false) || $request_0(this, new RequestGetParameters, new SettingsSyncActor$1(this));
@@ -20283,10 +20267,10 @@ function SettingsSyncAction(){
 }
 
 function fromBytes_8(data_0){
-  return dynamicCast(parse_159(new SettingsSyncAction, data_0), 207);
+  return dynamicCast(parse_159(new SettingsSyncAction, data_0), 206);
 }
 
-defineClass(207, 4, {4:1, 207:1}, SettingsSyncAction);
+defineClass(206, 4, {4:1, 206:1}, SettingsSyncAction);
 _.parse_0 = function parse_202(values){
   this.key = convertString($getBytes(values, 1));
   this.value_0 = convertString($getBytes_0(values, 2));
@@ -20297,7 +20281,7 @@ _.serialize = function serialize_197(writer){
   this.value_0 != null && $writeString(writer, 2, this.value_0);
 }
 ;
-var Lim_actor_model_modules_settings_entity_SettingsSyncAction_2_classLit = createForClass('im.actor.model.modules.settings.entity', 'SettingsSyncAction', 207, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
+var Lim_actor_model_modules_settings_entity_SettingsSyncAction_2_classLit = createForClass('im.actor.model.modules.settings.entity', 'SettingsSyncAction', 206, Lim_actor_model_droidkit_bser_BserObject_2_classLit);
 function SettingsSyncState(){
   this.pendingActions = new ArrayList;
 }
@@ -20314,7 +20298,7 @@ _.parse_0 = function parse_203(values){
 _.serialize = function serialize_198(writer){
   var action, action$iterator;
   for (action$iterator = new AbstractList$IteratorImpl(this.pendingActions); action$iterator.i < action$iterator.this$01.size_1();) {
-    action = (checkCriticalElement(action$iterator.i < action$iterator.this$01.size_1()) , dynamicCast(action$iterator.this$01.get_1(action$iterator.last = action$iterator.i++), 207));
+    action = (checkCriticalElement(action$iterator.i < action$iterator.this$01.size_1()) , dynamicCast(action$iterator.this$01.get_1(action$iterator.last = action$iterator.i++), 206));
     $writeObject(writer, 1, action);
   }
 }
@@ -20386,7 +20370,7 @@ function OwnTypingActor(messenger){
 
 defineClass(621, 30, {}, OwnTypingActor);
 _.onReceive = function onReceive_24(message){
-  instanceOf(message, 252)?$onTyping_1(this, dynamicCast(message, 252).peer):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
+  instanceOf(message, 251)?$onTyping_1(this, dynamicCast(message, 251).peer):(!!this.context.actorScope.actorSystem.traceInterface && !!log_2 && warn($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[W] ' + 'ACTOR_SYSTEM' + ':' + ('Drop: ' + message)) , $reply(this, new DeadLetter(message)));
 }
 ;
 _.lastTypingTime = {l:0, m:0, h:0};
@@ -20395,8 +20379,8 @@ function OwnTypingActor$Typing(peer){
   this.peer = peer;
 }
 
-defineClass(252, 1, {252:1}, OwnTypingActor$Typing);
-var Lim_actor_model_modules_typing_OwnTypingActor$Typing_2_classLit = createForClass('im.actor.model.modules.typing', 'OwnTypingActor/Typing', 252, Ljava_lang_Object_2_classLit);
+defineClass(251, 1, {251:1}, OwnTypingActor$Typing);
+var Lim_actor_model_modules_typing_OwnTypingActor$Typing_2_classLit = createForClass('im.actor.model.modules.typing', 'OwnTypingActor/Typing', 251, Ljava_lang_Object_2_classLit);
 function $groupTyping(this$static, gid, uid, type_0){
   var i_0, ids, ids2, set_0, src_0;
   if (type_0 != ($clinit_TypingType() , TEXT)) {
@@ -20476,12 +20460,12 @@ function TypingActor(messenger){
 defineClass(724, 30, {}, TypingActor);
 _.onReceive = function onReceive_25(message){
   var typing;
-  if (instanceOf(message, 200)) {
-    typing = dynamicCast(message, 200);
+  if (instanceOf(message, 199)) {
+    typing = dynamicCast(message, 199);
     $privateTyping(this, typing.uid, typing.type_0);
   }
-   else if (instanceOf(message, 201)) {
-    typing = dynamicCast(message, 201);
+   else if (instanceOf(message, 200)) {
+    typing = dynamicCast(message, 200);
     $groupTyping(this, typing.gid, typing.uid, typing.type_0);
   }
    else if (instanceOf(message, 138)) {
@@ -20537,14 +20521,14 @@ function TypingActor$GroupTyping(gid, uid, type_0){
   this.type_0 = type_0;
 }
 
-defineClass(201, 1, {201:1}, TypingActor$GroupTyping);
+defineClass(200, 1, {200:1}, TypingActor$GroupTyping);
 _.equals$ = function equals_16(o){
   var that;
   if (this === o)
     return true;
   if (o == null || Lim_actor_model_modules_typing_TypingActor$GroupTyping_2_classLit != getClass__Ljava_lang_Class___devirtual$(o))
     return false;
-  that = dynamicCast(o, 201);
+  that = dynamicCast(o, 200);
   if (this.gid != that.gid)
     return false;
   if (this.type_0 != that.type_0)
@@ -20564,20 +20548,20 @@ _.hashCode$ = function hashCode_12(){
 ;
 _.gid = 0;
 _.uid = 0;
-var Lim_actor_model_modules_typing_TypingActor$GroupTyping_2_classLit = createForClass('im.actor.model.modules.typing', 'TypingActor/GroupTyping', 201, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_typing_TypingActor$GroupTyping_2_classLit = createForClass('im.actor.model.modules.typing', 'TypingActor/GroupTyping', 200, Ljava_lang_Object_2_classLit);
 function TypingActor$PrivateTyping(uid, type_0){
   this.uid = uid;
   this.type_0 = type_0;
 }
 
-defineClass(200, 1, {200:1}, TypingActor$PrivateTyping);
+defineClass(199, 1, {199:1}, TypingActor$PrivateTyping);
 _.equals$ = function equals_17(o){
   var that;
   if (this === o)
     return true;
   if (o == null || Lim_actor_model_modules_typing_TypingActor$PrivateTyping_2_classLit != getClass__Ljava_lang_Class___devirtual$(o))
     return false;
-  that = dynamicCast(o, 200);
+  that = dynamicCast(o, 199);
   if (this.type_0 != that.type_0)
     return false;
   if (this.uid != that.uid)
@@ -20593,7 +20577,7 @@ _.hashCode$ = function hashCode_13(){
 }
 ;
 _.uid = 0;
-var Lim_actor_model_modules_typing_TypingActor$PrivateTyping_2_classLit = createForClass('im.actor.model.modules.typing', 'TypingActor/PrivateTyping', 200, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_modules_typing_TypingActor$PrivateTyping_2_classLit = createForClass('im.actor.model.modules.typing', 'TypingActor/PrivateTyping', 199, Ljava_lang_Object_2_classLit);
 function TypingActor$StopGroupTyping(gid, uid){
   this.gid = gid;
   this.uid = uid;
@@ -20666,7 +20650,7 @@ function $applyGroups(this$static, updated, forced){
   var batch, group, group$iterator, saved, upd;
   batch = new ArrayList;
   for (group$iterator = new AbstractList$IteratorImpl(updated); group$iterator.i < group$iterator.this$01.size_1();) {
-    group = (checkCriticalElement(group$iterator.i < group$iterator.this$01.size_1()) , dynamicCast(group$iterator.this$01.get_1(group$iterator.last = group$iterator.i++), 228));
+    group = (checkCriticalElement(group$iterator.i < group$iterator.this$01.size_1()) , dynamicCast(group$iterator.this$01.get_1(group$iterator.last = group$iterator.i++), 227));
     saved = dynamicCast($getValue_2(this$static.modules.groups.groups, fromInt(group.id_0)), 22);
     if (!saved) {
       $add_0(batch, new Group_1(group.id_0, group.accessHash, group.title_0, convert_3(group.avatar), convert_13(group.members, group.creatorUid), group.creatorUid, group.isMember));
@@ -20731,7 +20715,7 @@ function $onMembersUpdated(this$static, groupId, members){
   if (group) {
     group = new Group_1(group.groupId, group.accessHash, group.title_0, group.avatar, new ArrayList, group.adminId, group.isMember);
     for (m$iterator = new AbstractList$IteratorImpl(members); m$iterator.i < m$iterator.this$01.size_1();) {
-      m = (checkCriticalElement(m$iterator.i < m$iterator.this$01.size_1()) , dynamicCast(m$iterator.this$01.get_1(m$iterator.last = m$iterator.i++), 229));
+      m = (checkCriticalElement(m$iterator.i < m$iterator.this$01.size_1()) , dynamicCast(m$iterator.this$01.get_1(m$iterator.last = m$iterator.i++), 228));
       group = $addMember(group, m.uid, m.inviterUid, m.date, m.uid == group.adminId);
     }
     $addOrUpdateItem_3(this$static.modules.groups.groups, group);
@@ -21298,11 +21282,11 @@ function $processInternalUpdate(this$static, update){
     $applyRelated(this$static, historyLoaded.loadHistory.users, new ArrayList, false);
     $onMessagesLoaded(this$static.messagesProcessor, historyLoaded.peer, historyLoaded.loadHistory);
   }
-   else if (instanceOf(update, 227)) {
+   else if (instanceOf(update, 226)) {
     users = new ArrayList;
-    $add_0(users, dynamicCast(update, 227).auth.user);
+    $add_0(users, dynamicCast(update, 226).auth.user);
     $applyRelated(this$static, users, new ArrayList, true);
-    $runOnUiThread(dynamicCast(update, 227).runnable);
+    $runOnUiThread(dynamicCast(update, 226).runnable);
   }
    else if (instanceOf(update, 355)) {
     contactsLoaded = dynamicCast(update, 355);
@@ -21314,8 +21298,8 @@ function $processInternalUpdate(this$static, update){
 function $processUpdate(this$static, update){
   var avatarChanged, chatClear, chatDelete, contactsAdded, contactsRemoved, groupInvite, groupOnline, i_0, lastSeen, leave, localNameChanged, message, messageDelete, messageRead, messageReadByMe, messageSent, offline, received, registered, res, titleChanged, typing, userAdded, userKick, userNameChanged, userOnline;
   !!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'Updates' + ':' + (update + ''));
-  if (instanceOf(update, 217)) {
-    userNameChanged = dynamicCast(update, 217);
+  if (instanceOf(update, 216)) {
+    userNameChanged = dynamicCast(update, 216);
     $onUserNameChanged(this$static.usersProcessor, userNameChanged.uid, userNameChanged.name_0);
   }
    else if (instanceOf(update, 116)) {
@@ -21331,16 +21315,16 @@ function $processUpdate(this$static, update){
     $onMessage_0(this$static.messagesProcessor, message.peer, message.senderUid, message.date, message.rid, message.message_0);
     $onMessage_2(this$static.typingProcessor, message.peer, message.senderUid);
   }
-   else if (instanceOf(update, 219)) {
-    messageRead = dynamicCast(update, 219);
+   else if (instanceOf(update, 218)) {
+    messageRead = dynamicCast(update, 218);
     $onMessageRead_0(this$static.messagesProcessor, messageRead.peer, messageRead.startDate);
   }
-   else if (instanceOf(update, 220)) {
-    messageReadByMe = dynamicCast(update, 220);
+   else if (instanceOf(update, 219)) {
+    messageReadByMe = dynamicCast(update, 219);
     $onMessageReadByMe_0(this$static.messagesProcessor, messageReadByMe.peer, messageReadByMe.startDate);
   }
-   else if (instanceOf(update, 218)) {
-    received = dynamicCast(update, 218);
+   else if (instanceOf(update, 217)) {
+    received = dynamicCast(update, 217);
     $onMessageReceived(this$static.messagesProcessor, received.peer, received.startDate);
   }
    else if (instanceOf(update, 153)) {
@@ -21363,28 +21347,28 @@ function $processUpdate(this$static, update){
     registered = dynamicCast(update, 117);
     registered.isSilent || $onUserRegistered(this$static.messagesProcessor, registered.uid, registered.date);
   }
-   else if (instanceOf(update, 223)) {
-    userOnline = dynamicCast(update, 223);
+   else if (instanceOf(update, 222)) {
+    userOnline = dynamicCast(update, 222);
     $onUserOnline_0(this$static.presenceProcessor, userOnline.uid);
   }
-   else if (instanceOf(update, 224)) {
-    offline = dynamicCast(update, 224);
+   else if (instanceOf(update, 223)) {
+    offline = dynamicCast(update, 223);
     $onUserOffline_0(this$static.presenceProcessor, offline.uid);
   }
-   else if (instanceOf(update, 225)) {
-    lastSeen = dynamicCast(update, 225);
+   else if (instanceOf(update, 224)) {
+    lastSeen = dynamicCast(update, 224);
     $onUserLastSeen_0(this$static.presenceProcessor, lastSeen.uid, lastSeen.date);
   }
-   else if (instanceOf(update, 226)) {
-    groupOnline = dynamicCast(update, 226);
+   else if (instanceOf(update, 225)) {
+    groupOnline = dynamicCast(update, 225);
     $onGroupOnline_0(this$static.presenceProcessor, groupOnline.groupId, groupOnline.count);
   }
-   else if (instanceOf(update, 222)) {
-    typing = dynamicCast(update, 222);
+   else if (instanceOf(update, 221)) {
+    typing = dynamicCast(update, 221);
     $onTyping_2(this$static.typingProcessor, typing.peer, typing.uid, typing.typingType);
   }
-   else if (instanceOf(update, 221)) {
-    titleChanged = dynamicCast(update, 221);
+   else if (instanceOf(update, 220)) {
+    titleChanged = dynamicCast(update, 220);
     $onTitleChanged(this$static.groupsProcessor, titleChanged.groupId, titleChanged.rid, titleChanged.uid, titleChanged.title_0, titleChanged.date, false);
   }
    else if (instanceOf(update, 157)) {
@@ -21545,8 +21529,8 @@ function LoggedIn(auth, runnable){
   this.runnable = runnable;
 }
 
-defineClass(227, 92, {92:1, 227:1}, LoggedIn);
-var Lim_actor_model_modules_updates_internal_LoggedIn_2_classLit = createForClass('im.actor.model.modules.updates.internal', 'LoggedIn', 227, Lim_actor_model_modules_updates_internal_InternalUpdate_2_classLit);
+defineClass(226, 92, {92:1, 226:1}, LoggedIn);
+var Lim_actor_model_modules_updates_internal_LoggedIn_2_classLit = createForClass('im.actor.model.modules.updates.internal', 'LoggedIn', 226, Lim_actor_model_modules_updates_internal_InternalUpdate_2_classLit);
 function MessagesHistoryLoaded(peer, loadHistory){
   this.peer = peer;
   this.loadHistory = loadHistory;
@@ -21812,7 +21796,7 @@ function $createMtProto(this$static, key){
   $saveAuthKey(this$static.keyStorage, key);
   this$static.proto = new MTProto(key, $nextLong(new Random), this$static.endpoints, new ApiBroker$3(this$static), this$static.networkProvider);
   for (holder$iterator = $iterator_0(new AbstractMap$2(this$static.requests)); holder$iterator.val$outerIter2.hasNext();) {
-    holder = dynamicCast($next_2(holder$iterator), 199);
+    holder = dynamicCast($next_2(holder$iterator), 198);
     holder.protoId = $sendRpcMessage(this$static.proto, holder.message_0);
     $put_1(this$static.idMap, valueOf_0(holder.protoId), valueOf_0(holder.publicId));
   }
@@ -21820,7 +21804,7 @@ function $createMtProto(this$static, key){
 
 function $forceResend(this$static, randomId){
   var holder;
-  holder = dynamicCast($get_2(this$static.requests, valueOf_0(randomId)), 199);
+  holder = dynamicCast($get_2(this$static.requests, valueOf_0(randomId)), 198);
   if (holder) {
     if (neq(holder.protoId, {l:0, m:0, h:0})) {
       $remove_0(this$static.idMap, valueOf_0(holder.protoId));
@@ -21865,7 +21849,7 @@ function $processResponse(this$static, mid, content_0){
     return;
   }
   if ($containsKey(this$static.requests, valueOf_0(rid))) {
-    holder = dynamicCast($get_2(this$static.requests, valueOf_0(rid)), 199);
+    holder = dynamicCast($get_2(this$static.requests, valueOf_0(rid)), 198);
   }
    else {
     return;
@@ -21965,7 +21949,7 @@ function ApiBroker(endpoints, keyStorage, callback, networkProvider){
 defineClass(681, 837, {}, ApiBroker);
 _.onReceive = function onReceive_27(message){
   var $tmp;
-  instanceOf(message, 268)?(!!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'ApiBroker' + ':' + 'Creating auth key...') , requestAuthId(this.endpoints, this.networkProvider, new ApiBroker$2(this))):instanceOf(message, 196)?$createMtProto(this, dynamicCast(message, 196).authId):instanceOf(message, 195)?$performRequest(this, ($tmp = NEXT_RPC_ID.value_0 , NEXT_RPC_ID.value_0 = add_0(NEXT_RPC_ID.value_0, {l:1, m:0, h:0}) , $tmp), dynamicCast(message, 195).message_0, dynamicCast(message, 195).callback_0):instanceOf(message, 197)?$processResponse(this, dynamicCast(message, 197).responseId, dynamicCast(message, 197).data_0):instanceOf(message, 198)?$forceResend(this, dynamicCast(message, 198).id_0):instanceOf(message, 269) && $processUpdate_0(this, dynamicCast(message, 269).data_0);
+  instanceOf(message, 268)?(!!log_2 && log_1($format(($clinit_JsLogProvider() , dateTimeFormat), new Date_0, null) + '[D] ' + 'ApiBroker' + ':' + 'Creating auth key...') , requestAuthId(this.endpoints, this.networkProvider, new ApiBroker$2(this))):instanceOf(message, 195)?$createMtProto(this, dynamicCast(message, 195).authId):instanceOf(message, 194)?$performRequest(this, ($tmp = NEXT_RPC_ID.value_0 , NEXT_RPC_ID.value_0 = add_0(NEXT_RPC_ID.value_0, {l:1, m:0, h:0}) , $tmp), dynamicCast(message, 194).message_0, dynamicCast(message, 194).callback_0):instanceOf(message, 196)?$processResponse(this, dynamicCast(message, 196).responseId, dynamicCast(message, 196).data_0):instanceOf(message, 197)?$forceResend(this, dynamicCast(message, 197).id_0):instanceOf(message, 269) && $processUpdate_0(this, dynamicCast(message, 269).data_0);
 }
 ;
 _.preStart = function preStart_17(){
@@ -22031,31 +22015,31 @@ function ApiBroker$ForceResend(id_0){
   this.id_0 = id_0;
 }
 
-defineClass(198, 1, {198:1}, ApiBroker$ForceResend);
+defineClass(197, 1, {197:1}, ApiBroker$ForceResend);
 _.id_0 = {l:0, m:0, h:0};
-var Lim_actor_model_network_api_ApiBroker$ForceResend_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/ForceResend', 198, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_network_api_ApiBroker$ForceResend_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/ForceResend', 197, Ljava_lang_Object_2_classLit);
 function ApiBroker$InitMTProto(authId){
   this.authId = authId;
 }
 
-defineClass(196, 1, {196:1}, ApiBroker$InitMTProto);
+defineClass(195, 1, {195:1}, ApiBroker$InitMTProto);
 _.authId = {l:0, m:0, h:0};
-var Lim_actor_model_network_api_ApiBroker$InitMTProto_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/InitMTProto', 196, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_network_api_ApiBroker$InitMTProto_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/InitMTProto', 195, Ljava_lang_Object_2_classLit);
 function ApiBroker$PerformRequest(message, callback){
   this.message_0 = message;
   this.callback_0 = callback;
 }
 
-defineClass(195, 1, {195:1}, ApiBroker$PerformRequest);
-var Lim_actor_model_network_api_ApiBroker$PerformRequest_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/PerformRequest', 195, Ljava_lang_Object_2_classLit);
+defineClass(194, 1, {194:1}, ApiBroker$PerformRequest);
+var Lim_actor_model_network_api_ApiBroker$PerformRequest_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/PerformRequest', 194, Ljava_lang_Object_2_classLit);
 function ApiBroker$ProtoResponse(responseId, data_0){
   this.responseId = responseId;
   this.data_0 = data_0;
 }
 
-defineClass(197, 1, {197:1}, ApiBroker$ProtoResponse);
+defineClass(196, 1, {196:1}, ApiBroker$ProtoResponse);
 _.responseId = {l:0, m:0, h:0};
-var Lim_actor_model_network_api_ApiBroker$ProtoResponse_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/ProtoResponse', 197, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_network_api_ApiBroker$ProtoResponse_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/ProtoResponse', 196, Ljava_lang_Object_2_classLit);
 function ApiBroker$ProtoUpdate(data_0){
   this.data_0 = data_0;
 }
@@ -22073,10 +22057,10 @@ function ApiBroker$RequestHolder(publicId, message, callback){
   this.callback_0 = callback;
 }
 
-defineClass(199, 1, {199:1}, ApiBroker$RequestHolder);
+defineClass(198, 1, {198:1}, ApiBroker$RequestHolder);
 _.protoId = {l:0, m:0, h:0};
 _.publicId = {l:0, m:0, h:0};
-var Lim_actor_model_network_api_ApiBroker$RequestHolder_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/RequestHolder', 199, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_network_api_ApiBroker$RequestHolder_2_classLit = createForClass('im.actor.model.network.api', 'ApiBroker/RequestHolder', 198, Ljava_lang_Object_2_classLit);
 function $clinit_ManagedConnection(){
   $clinit_ManagedConnection = emptyMethod;
   RANDOM_0 = new Random;
@@ -22847,8 +22831,8 @@ function $onReceive_1(this$static, message){
       $send_1(this$static.sender, new SenderActor$ForgetMessage(responseBox.messageId));
       $onRpcResponse(this$static.proto.callback_0, responseBox.messageId, responseBox.payload);
     }
-     else if (instanceOf(obj, 232)) {
-      ack = dynamicCast(obj, 232);
+     else if (instanceOf(obj, 231)) {
+      ack = dynamicCast(obj, 231);
       for (ackMsgId$array = ack.messagesIds , ackMsgId$index = 0 , ackMsgId$max = ackMsgId$array.length; ackMsgId$index < ackMsgId$max; ++ackMsgId$index) {
         ackMsgId = ackMsgId$array[ackMsgId$index];
         $send_1(this$static.sender, new SenderActor$ForgetMessage(ackMsgId));
@@ -22858,8 +22842,8 @@ function $onReceive_1(this$static, message){
       box = dynamicCast(obj, 364);
       $onUpdate(this$static.proto.callback_0, box.payload);
     }
-     else if (instanceOf(obj, 233)) {
-      unsent = dynamicCast(obj, 233);
+     else if (instanceOf(obj, 232)) {
+      unsent = dynamicCast(obj, 232);
       if ($indexOf_0(this$static.receivedMessages, valueOf_0(unsent.responseMessageId), 0) == -1) {
         disableConfirm = true;
         $send_1(this$static.sender, new SenderActor$SendMessage(($clinit_MTUids() , $tmp = NEXT_ID_0.value_0 , NEXT_ID_0.value_0 = add_0(NEXT_ID_0.value_0, {l:1, m:0, h:0}) , $tmp), $toByteArray_1(new RequestResend(unsent.messageId))));
@@ -22921,7 +22905,7 @@ var Lim_actor_model_network_mtp_actors_ReceiverActor$1_2_classLit = createForCla
 function $buildAck(this$static){
   var i_0, ids, ids2;
   ids = initDim(J_classLit, $intern_4, 0, this$static.confirm_0.map_0.size_0, 6, 1);
-  ids2 = dynamicCast($toArray(this$static.confirm_0, initDim(Ljava_lang_Long_2_classLit, $intern_29, 19, this$static.confirm_0.map_0.size_0, 0, 1)), 234);
+  ids2 = dynamicCast($toArray(this$static.confirm_0, initDim(Ljava_lang_Long_2_classLit, $intern_29, 19, this$static.confirm_0.map_0.size_0, 0, 1)), 233);
   for (i_0 = 0; i_0 < ids.length; i_0++) {
     ids[i_0] = ids2[i_0].value_0;
   }
@@ -23012,9 +22996,9 @@ _.onReceive = function onReceive_30(message){
     d_0('ProtoSender', 'Received ForgetMessage #' + toString_2(dynamicCast(message, 115).mid));
     $remove_0(this.unsentPackages, valueOf_0(dynamicCast(message, 115).mid));
   }
-   else if (instanceOf(message, 216)) {
-    d_0('ProtoSender', 'Confirming message #' + toString_2(dynamicCast(message, 216).mid));
-    $add_1(this.confirm_0, valueOf_0(dynamicCast(message, 216).mid));
+   else if (instanceOf(message, 215)) {
+    d_0('ProtoSender', 'Confirming message #' + toString_2(dynamicCast(message, 215).mid));
+    $add_1(this.confirm_0, valueOf_0(dynamicCast(message, 215).mid));
     this.confirm_0.map_0.size_0 >= 10?$sendOnce(this.context.actorScope.actorRef, new SenderActor$ForceAck):this.confirm_0.map_0.size_0 == 1 && $sendOnce_0(this.context.actorScope.actorRef, new SenderActor$ForceAck, {l:10000, m:0, h:0});
   }
    else if (instanceOf(message, 334)) {
@@ -23063,9 +23047,9 @@ function SenderActor$ConfirmMessage(rid){
   this.mid = rid;
 }
 
-defineClass(216, 1, {216:1}, SenderActor$ConfirmMessage);
+defineClass(215, 1, {215:1}, SenderActor$ConfirmMessage);
 _.mid = {l:0, m:0, h:0};
-var Lim_actor_model_network_mtp_actors_SenderActor$ConfirmMessage_2_classLit = createForClass('im.actor.model.network.mtp.actors', 'SenderActor/ConfirmMessage', 216, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_network_mtp_actors_SenderActor$ConfirmMessage_2_classLit = createForClass('im.actor.model.network.mtp.actors', 'SenderActor/ConfirmMessage', 215, Ljava_lang_Object_2_classLit);
 function SenderActor$ConnectionCreated(){
 }
 
@@ -23286,7 +23270,7 @@ function MessageAck_0(messagesIds){
   this.messagesIds = messagesIds;
 }
 
-defineClass(232, 53, {232:1, 36:1}, MessageAck, MessageAck_0);
+defineClass(231, 53, {231:1, 36:1}, MessageAck, MessageAck_0);
 _.getHeader_0 = function getHeader_20(){
   return 6;
 }
@@ -23303,7 +23287,7 @@ _.writeBody = function writeBody_4(bs){
   $writeProtoLongs(bs, this.messagesIds);
 }
 ;
-var Lim_actor_model_network_mtp_entity_MessageAck_2_classLit = createForClass('im.actor.model.network.mtp.entity', 'MessageAck', 232, Lim_actor_model_network_mtp_entity_ProtoStruct_2_classLit);
+var Lim_actor_model_network_mtp_entity_MessageAck_2_classLit = createForClass('im.actor.model.network.mtp.entity', 'MessageAck', 231, Lim_actor_model_network_mtp_entity_ProtoStruct_2_classLit);
 function NewSessionCreated(stream){
   ProtoStruct.call(this, stream);
 }
@@ -23504,7 +23488,7 @@ function UnsentResponse(stream){
   ProtoStruct.call(this, stream);
 }
 
-defineClass(233, 53, {36:1, 233:1}, UnsentResponse);
+defineClass(232, 53, {36:1, 232:1}, UnsentResponse);
 _.getHeader_0 = function getHeader_26(){
   return 8;
 }
@@ -23528,7 +23512,7 @@ _.writeBody = function writeBody_10(bs){
 _.len = 0;
 _.messageId = {l:0, m:0, h:0};
 _.responseMessageId = {l:0, m:0, h:0};
-var Lim_actor_model_network_mtp_entity_UnsentResponse_2_classLit = createForClass('im.actor.model.network.mtp.entity', 'UnsentResponse', 233, Lim_actor_model_network_mtp_entity_ProtoStruct_2_classLit);
+var Lim_actor_model_network_mtp_entity_UnsentResponse_2_classLit = createForClass('im.actor.model.network.mtp.entity', 'UnsentResponse', 232, Lim_actor_model_network_mtp_entity_ProtoStruct_2_classLit);
 function Push(stream){
   ProtoStruct.call(this, stream);
 }
@@ -23866,9 +23850,9 @@ function Timing(tag){
   this.TAG = tag;
 }
 
-defineClass(256, 1, {}, Timing);
+defineClass(255, 1, {}, Timing);
 _.sectionStart = {l:0, m:0, h:0};
-var Lim_actor_model_util_Timing_2_classLit = createForClass('im.actor.model.util', 'Timing', 256, Ljava_lang_Object_2_classLit);
+var Lim_actor_model_util_Timing_2_classLit = createForClass('im.actor.model.util', 'Timing', 255, Ljava_lang_Object_2_classLit);
 function $onContactsChanged_1(this$static, isEmpty){
   if (dynamicCast(this$static.isContactsEmpty.value_0, 65).value_0 != isEmpty) {
     $putBool(this$static.modules.preferences, 'app.contacts.empty', isEmpty);
@@ -25929,7 +25913,7 @@ function $containsAll(this$static, c){
   checkNotNull(c);
   for (e$iterator = c.iterator(); e$iterator.hasNext();) {
     e = e$iterator.next();
-    if (!this$static.contains(e)) {
+    if (!this$static.contains_0(e)) {
       return false;
     }
   }
@@ -25948,7 +25932,7 @@ function $toArray(this$static, a){
   return a;
 }
 
-function $toString_1(this$static){
+function $toString_0(this$static){
   var comma, e, e$iterator, sb;
   sb = new StringBuilder_1('[');
   comma = false;
@@ -25962,7 +25946,7 @@ function $toString_1(this$static){
 }
 
 defineClass(827, 1, {});
-_.contains = function contains(o){
+_.contains_0 = function contains(o){
   return $advanceToFind(this, o, false);
 }
 ;
@@ -25976,7 +25960,7 @@ _.removeAll = function removeAll(c){
   changed = false;
   for (iter = this.iterator(); iter.hasNext();) {
     o = iter.next();
-    if (c.contains(o)) {
+    if (c.contains_0(o)) {
       iter.remove_0();
       changed = true;
     }
@@ -25993,7 +25977,7 @@ _.toArray_0 = function toArray_0(a){
 }
 ;
 _.toString$ = function toString_185(){
-  return $toString_1(this);
+  return $toString_0(this);
 }
 ;
 var Ljava_util_AbstractCollection_2_classLit = createForClass('java.util', 'AbstractCollection', 827, Ljava_lang_Object_2_classLit);
@@ -26023,7 +26007,7 @@ function $implFindEntry(this$static, key){
   return null;
 }
 
-function $toString_2(this$static, o){
+function $toString_1(this$static, o){
   return o === this$static?'(this Map)':'' + o;
 }
 
@@ -26096,9 +26080,9 @@ _.toString$ = function toString_186(){
   for (entry$iterator = this.entrySet_0().iterator(); entry$iterator.hasNext();) {
     entry = dynamicCast(entry$iterator.next(), 24);
     comma?(sb.string += ', ' , sb):(comma = true);
-    $append_1(sb, $toString_2(this, entry.getKey()));
+    $append_1(sb, $toString_1(this, entry.getKey()));
     sb.string += '=';
-    $append_1(sb, $toString_2(this, entry.getValue()));
+    $append_1(sb, $toString_1(this, entry.getValue()));
   }
   sb.string += '}';
   return sb.string;
@@ -26211,7 +26195,7 @@ _.removeAll = function removeAll_0(c){
   if (size_0 < c.size_1()) {
     for (iter = this.iterator(); iter.hasNext();) {
       o = iter.next();
-      c.contains(o) && iter.remove_0();
+      c.contains_0(o) && iter.remove_0();
     }
   }
    else {
@@ -26236,7 +26220,7 @@ function AbstractHashMap$EntrySet(this$0){
 }
 
 defineClass(457, 828, $intern_41, AbstractHashMap$EntrySet);
-_.contains = function contains_0(o){
+_.contains_0 = function contains_0(o){
   return $contains(this, o);
 }
 ;
@@ -26404,7 +26388,7 @@ function AbstractMap$1(this$0){
 }
 
 defineClass(58, 828, $intern_41, AbstractMap$1);
-_.contains = function contains_1(key){
+_.contains_0 = function contains_1(key){
   return $containsKey(this.this$01, key);
 }
 ;
@@ -26460,7 +26444,7 @@ function AbstractMap$2(this$0){
 }
 
 defineClass(67, 827, {}, AbstractMap$2);
-_.contains = function contains_2(value_0){
+_.contains_0 = function contains_2(value_0){
   return this.this$01.containsValue(value_0);
 }
 ;
@@ -26544,8 +26528,8 @@ function AbstractMap$SimpleEntry(key, value_0){
   AbstractMap$AbstractEntry.call(this, key, value_0);
 }
 
-defineClass(236, 127, {127:1, 236:1, 24:1}, AbstractMap$SimpleEntry);
-var Ljava_util_AbstractMap$SimpleEntry_2_classLit = createForClass('java.util', 'AbstractMap/SimpleEntry', 236, Ljava_util_AbstractMap$AbstractEntry_2_classLit);
+defineClass(235, 127, {127:1, 235:1, 24:1}, AbstractMap$SimpleEntry);
+var Ljava_util_AbstractMap$SimpleEntry_2_classLit = createForClass('java.util', 'AbstractMap/SimpleEntry', 235, Ljava_util_AbstractMap$AbstractEntry_2_classLit);
 function AbstractMap$SimpleImmutableEntry(entry){
   AbstractMap$AbstractEntry.call(this, entry.key, entry.value_0);
 }
@@ -26616,7 +26600,7 @@ function AbstractNavigableMap$EntrySet(this$0){
 }
 
 defineClass(482, 828, $intern_41, AbstractNavigableMap$EntrySet);
-_.contains = function contains_3(o){
+_.contains_0 = function contains_3(o){
   return instanceOf(o, 24) && $containsEntry_0(this.this$01, dynamicCast(o, 24));
 }
 ;
@@ -26735,7 +26719,7 @@ _.add_1 = function add_7(o){
   return $add_0(this, o);
 }
 ;
-_.contains = function contains_4(o){
+_.contains_0 = function contains_4(o){
   return $indexOf_0(this, o, 0) != -1;
 }
 ;
@@ -26903,8 +26887,8 @@ _.add_1 = function add_8(o){
   throw new UnsupportedOperationException;
 }
 ;
-_.contains = function contains_5(o){
-  return this.coll.contains(o);
+_.contains_0 = function contains_5(o){
+  return this.coll.contains_0(o);
 }
 ;
 _.iterator = function iterator_5(){
@@ -27022,8 +27006,8 @@ function Collections$UnmodifiableMap$UnmodifiableEntrySet(s){
 }
 
 defineClass(507, 506, $intern_41, Collections$UnmodifiableMap$UnmodifiableEntrySet);
-_.contains = function contains_6(o){
-  return this.coll.contains(o);
+_.contains_0 = function contains_6(o){
+  return this.coll.contains_0(o);
 }
 ;
 _.iterator = function iterator_6(){
@@ -27145,7 +27129,7 @@ function $compareTo_5(this$static, other){
   return compare_6(fromDouble(this$static.jsdate.getTime()), fromDouble(other.jsdate.getTime()));
 }
 
-function $toString_3(this$static){
+function $toString_2(this$static){
   var hourOffset, minuteOffset, offset;
   offset = -this$static.jsdate.getTimezoneOffset();
   hourOffset = (offset >= 0?'+':'') + ~~(offset / 60);
@@ -27181,7 +27165,7 @@ _.hashCode$ = function hashCode_35(){
 }
 ;
 _.toString$ = function toString_193(){
-  return $toString_3(this);
+  return $toString_2(this);
 }
 ;
 var Ljava_util_Date_2_classLit = createForClass('java.util', 'Date', 7, Ljava_lang_Object_2_classLit);
@@ -27238,7 +27222,7 @@ function HashSet_0(c){
 }
 
 defineClass(34, 828, {3:1, 34:1, 99:1}, HashSet, HashSet_0);
-_.contains = function contains_7(o){
+_.contains_0 = function contains_7(o){
   return $contains_0(this, o);
 }
 ;
@@ -27255,7 +27239,7 @@ _.size_1 = function size_10(){
 }
 ;
 _.toString$ = function toString_194(){
-  return $toString_1(new AbstractMap$1(this.map_0));
+  return $toString_0(new AbstractMap$1(this.map_0));
 }
 ;
 var Ljava_util_HashSet_2_classLit = createForClass('java.util', 'HashSet', 34, Ljava_util_AbstractSet_2_classLit);
@@ -28094,7 +28078,7 @@ function TreeMap$Node(key, value_0){
   this.isRed = true;
 }
 
-defineClass(147, 236, {127:1, 236:1, 24:1, 147:1}, TreeMap$Node);
+defineClass(147, 235, {127:1, 235:1, 24:1, 147:1}, TreeMap$Node);
 _.isRed = false;
 var Ljava_util_TreeMap$Node_2_classLit = createForClass('java.util', 'TreeMap/Node', 147, Ljava_util_AbstractMap$SimpleEntry_2_classLit);
 function TreeMap$State(){
@@ -28322,7 +28306,7 @@ function $addLoggerImpl(this$static, logger){
 
 function $ensureLogger(this$static, name_0){
   var logger, newLogger, name_1, parentName;
-  logger = dynamicCast($getStringValue(this$static.loggerMap, name_0), 237);
+  logger = dynamicCast($getStringValue(this$static.loggerMap, name_0), 236);
   if (!logger) {
     newLogger = new Logger(name_0);
     name_1 = newLogger.impl.name_0;
@@ -28388,8 +28372,8 @@ function getLogger(name_0){
   return $ensureLogger(getLogManager(), name_0);
 }
 
-defineClass(237, 1, {237:1}, Logger);
-var Ljava_util_logging_Logger_2_classLit = createForClass('java.util.logging', 'Logger', 237, Ljava_lang_Object_2_classLit);
+defineClass(236, 1, {236:1}, Logger);
+var Ljava_util_logging_Logger_2_classLit = createForClass('java.util.logging', 'Logger', 236, Ljava_lang_Object_2_classLit);
 function $finish(this$static){
   var bitLength;
   bitLength = shl(this$static.byteCount, 3);
@@ -28856,7 +28840,7 @@ function isAssignableToClass(o, clazz){
   if (Ljava_lang_Object_2_classLit == clazz) {
     return true;
   }
-  if (Lorg_timepedia_exporter_client_Exportable_2_classLit == clazz && o != null && (!isJavaString(o) && !hasTypeMarker(o) || canCast(o, 235))) {
+  if (Lorg_timepedia_exporter_client_Exportable_2_classLit == clazz && o != null && (!isJavaString(o) && !hasTypeMarker(o) || canCast(o, 234))) {
     return true;
   }
   if (o != null) {
@@ -28959,7 +28943,7 @@ var I_classLit = createForPrimitive('int', 'I'), Z_classLit = createForPrimitive
 var $entry = registerEntry();
 var gwtOnLoad = gwtOnLoad = gwtOnLoad_0;
 addInitFunctions(init);
-setGwtProperty('permProps', [[['locale', 'default'], ['user.agent', 'gecko1_8']]]);
+setGwtProperty('permProps', [[['locale', 'default'], ['user.agent', 'ie10']]]);
 $sendStats('moduleStartup', 'moduleEvalEnd');
 gwtOnLoad(__gwtModuleFunction.__errFn, __gwtModuleFunction.__moduleName, __gwtModuleFunction.__moduleBase, __gwtModuleFunction.__softPermutationId,__gwtModuleFunction.__computePropValue);
 $sendStats('moduleStartup', 'end');

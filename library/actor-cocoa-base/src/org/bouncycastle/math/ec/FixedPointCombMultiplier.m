@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/org/bouncycastle/math/ec/FixedPointCombMultiplier.java"
-
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "java/lang/IllegalStateException.h"
@@ -17,70 +15,36 @@
 #include "org/bouncycastle/math/ec/FixedPointPreCompInfo.h"
 #include "org/bouncycastle/math/ec/FixedPointUtil.h"
 
-
-#line 5
 @implementation OrgBouncycastleMathEcFixedPointCombMultiplier
 
 - (OrgBouncycastleMathEcECPoint *)multiplyPositiveWithOrgBouncycastleMathEcECPoint:(OrgBouncycastleMathEcECPoint *)p
                                                             withJavaMathBigInteger:(JavaMathBigInteger *)k {
-  
-#line 9
   OrgBouncycastleMathEcECCurve *c = [((OrgBouncycastleMathEcECPoint *) nil_chk(p)) getCurve];
   jint size = OrgBouncycastleMathEcFixedPointUtil_getCombSizeWithOrgBouncycastleMathEcECCurve_(c);
-  
-#line 12
   if ([((JavaMathBigInteger *) nil_chk(k)) bitLength] > size) {
-    
-#line 20
     @throw new_JavaLangIllegalStateException_initWithNSString_(@"fixed-point comb doesn't support scalars larger than the curve order");
   }
-  
-#line 23
   jint minWidth = [self getWidthForCombSizeWithInt:size];
-  
-#line 25
   OrgBouncycastleMathEcFixedPointPreCompInfo *info = OrgBouncycastleMathEcFixedPointUtil_precomputeWithOrgBouncycastleMathEcECPoint_withInt_(p, minWidth);
   IOSObjectArray *lookupTable = [((OrgBouncycastleMathEcFixedPointPreCompInfo *) nil_chk(info)) getPreComp];
   jint width = [info getWidth];
-  
-#line 29
   jint d = (size + width - 1) / width;
-  
-#line 31
   OrgBouncycastleMathEcECPoint *R = [((OrgBouncycastleMathEcECCurve *) nil_chk(c)) getInfinity];
-  
-#line 33
   jint top = d * width - 1;
   for (jint i = 0; i < d; ++i) {
-    
-#line 36
     jint index = 0;
-    
-#line 38
     for (jint j = top - i; j >= 0; j -= d) {
-      
-#line 40
       LShiftAssignInt(&index, 1);
       if ([k testBitWithInt:j]) {
-        
-#line 43
         index |= 1;
       }
     }
-    
-#line 47
     R = [((OrgBouncycastleMathEcECPoint *) nil_chk(R)) twicePlusWithOrgBouncycastleMathEcECPoint:IOSObjectArray_Get(nil_chk(lookupTable), index)];
   }
-  
-#line 50
   return R;
 }
 
-
-#line 53
 - (jint)getWidthForCombSizeWithInt:(jint)combSize {
-  
-#line 55
   return combSize > 257 ? 6 : 5;
 }
 

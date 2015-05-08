@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/content/ServiceUserRegistered.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -15,8 +13,6 @@
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "java/io/IOException.h"
 
-
-#line 11
 @implementation AMServiceUserRegistered
 
 + (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
@@ -30,23 +26,15 @@
 
 @end
 
-
-#line 13
 AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
   AMServiceUserRegistered_initialize();
-  
-#line 14
   return ((AMServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceUserRegistered_init(), data));
 }
 
-
-#line 17
 void AMServiceUserRegistered_init(AMServiceUserRegistered *self) {
   (void) AMServiceContent_initWithNSString_(self, @"User registered");
 }
 
-
-#line 17
 AMServiceUserRegistered *new_AMServiceUserRegistered_init() {
   AMServiceUserRegistered *self = [AMServiceUserRegistered alloc];
   AMServiceUserRegistered_init(self);

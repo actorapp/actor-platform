@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSendMessage.java"
-
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -31,18 +29,12 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, peer_, ImActorModelApiOutPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModelApiMessage *)
 
-
-#line 24
 @implementation ImActorModelApiRpcRequestSendMessage
 
-
-#line 27
 + (ImActorModelApiRpcRequestSendMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
   return ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(data);
 }
 
-
-#line 35
 - (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
                                       withLong:(jlong)rid
                     withImActorModelApiMessage:(ImActorModelApiMessage *)message {
@@ -50,15 +42,11 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   return self;
 }
 
-
-#line 41
 - (instancetype)init {
   ImActorModelApiRpcRequestSendMessage_init(self);
   return self;
 }
 
-
-#line 45
 - (ImActorModelApiOutPeer *)getPeer {
   return self->peer_;
 }
@@ -71,16 +59,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   return self->message_;
 }
 
-
-#line 58
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
   self->rid_ = [values getLongWithInt:3];
   self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:4]);
 }
 
-
-#line 65
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->peer_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -90,8 +74,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  
-#line 75
   [writer writeBytesWithInt:4 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
 }
 
@@ -104,36 +86,24 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   return res;
 }
 
-
-#line 89
 - (jint)getHeaderKey {
   return ImActorModelApiRpcRequestSendMessage_HEADER;
 }
 
 @end
 
-
-#line 27
 ImActorModelApiRpcRequestSendMessage *ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(IOSByteArray *data) {
   ImActorModelApiRpcRequestSendMessage_initialize();
-  
-#line 28
   return ((ImActorModelApiRpcRequestSendMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendMessage_init(), data));
 }
 
-
-#line 35
 void ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(ImActorModelApiRpcRequestSendMessage *self, ImActorModelApiOutPeer *peer, jlong rid, ImActorModelApiMessage *message) {
   (void) ImActorModelNetworkParserRequest_init(self);
-  
-#line 36
   self->peer_ = peer;
   self->rid_ = rid;
   self->message_ = message;
 }
 
-
-#line 35
 ImActorModelApiRpcRequestSendMessage *new_ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(ImActorModelApiOutPeer *peer, jlong rid, ImActorModelApiMessage *message) {
   ImActorModelApiRpcRequestSendMessage *self = [ImActorModelApiRpcRequestSendMessage alloc];
   ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(self, peer, rid, message);
@@ -144,8 +114,6 @@ void ImActorModelApiRpcRequestSendMessage_init(ImActorModelApiRpcRequestSendMess
   (void) ImActorModelNetworkParserRequest_init(self);
 }
 
-
-#line 41
 ImActorModelApiRpcRequestSendMessage *new_ImActorModelApiRpcRequestSendMessage_init() {
   ImActorModelApiRpcRequestSendMessage *self = [ImActorModelApiRpcRequestSendMessage alloc];
   ImActorModelApiRpcRequestSendMessage_init(self);

@@ -4,8 +4,6 @@
 //
 
 
-#line 1 "/Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/entity/Sex.java"
-
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/entity/Sex.h"
@@ -27,12 +25,8 @@ J2OBJC_INITIALIZED_DEFN(AMSexEnum)
 
 AMSexEnum *AMSexEnum_values_[3];
 
-
-#line 7
 @implementation AMSexEnum
 
-
-#line 12
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
@@ -40,8 +34,6 @@ AMSexEnum *AMSexEnum_values_[3];
   return self;
 }
 
-
-#line 16
 - (jint)getValue {
   return value_;
 }
@@ -81,44 +73,28 @@ AMSexEnum *AMSexEnum_valueOfWithNSString_(NSString *name) {
 
 + (void)initialize {
   if (self == [AMSexEnum class]) {
-    AMSexEnum_UNKNOWN = new_AMSexEnum_initWithInt_withNSString_withInt_(
-#line 8
-    1, @"UNKNOWN", 0);
-    AMSexEnum_MALE = new_AMSexEnum_initWithInt_withNSString_withInt_(
-#line 8
-    2, @"MALE", 1);
-    AMSexEnum_FEMALE = new_AMSexEnum_initWithInt_withNSString_withInt_(
-#line 8
-    3, @"FEMALE", 2);
+    AMSexEnum_UNKNOWN = new_AMSexEnum_initWithInt_withNSString_withInt_(1, @"UNKNOWN", 0);
+    AMSexEnum_MALE = new_AMSexEnum_initWithInt_withNSString_withInt_(2, @"MALE", 1);
+    AMSexEnum_FEMALE = new_AMSexEnum_initWithInt_withNSString_withInt_(3, @"FEMALE", 2);
     J2OBJC_SET_INITIALIZED(AMSexEnum)
   }
 }
 
 @end
 
-
-#line 12
 void AMSexEnum_initWithInt_withNSString_withInt_(AMSexEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  
-#line 13
   self->value_ = value;
 }
 
-
-#line 12
 AMSexEnum *new_AMSexEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
   AMSexEnum *self = [AMSexEnum alloc];
   AMSexEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-
-#line 20
 AMSexEnum *AMSexEnum_fromValueWithInt_(jint value) {
   AMSexEnum_initialize();
-  
-#line 21
   switch (value) {
     default:
     case 1:
