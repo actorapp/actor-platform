@@ -10,18 +10,25 @@ import im.actor.model.FileSystemProvider;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
-import im.actor.model.js.providers.fs.JsFile;
+import im.actor.model.js.providers.fs.JsBlob;
+import im.actor.model.js.providers.fs.JsFileSystemReference;
 
 /**
  * Created by ex3ndr on 03.05.15.
  */
 public class JsFileSystemProvider implements FileSystemProvider {
 
-    private HashMap<String, JsFile> files = new HashMap<String, JsFile>();
+    private HashMap<String, JsBlob> files = new HashMap<String, JsBlob>();
 
-    public String registerUploadFile(JsFile file) {
-        String res = "upload://" + CryptoUtils.hex(CryptoUtils.randomBytes(16));
+    public String registerUploadFile(JsBlob file) {
+        String res = "file://" + CryptoUtils.hex(CryptoUtils.randomBytes(16));
         files.put(res, file);
+        return res;
+    }
+
+    public String registerMemoryFile(byte[] content) {
+        String res = "memory://" + CryptoUtils.hex(CryptoUtils.randomBytes(16));
+        files.put(res, JsBlob.createBlob(content));
         return res;
     }
 
