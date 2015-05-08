@@ -34,6 +34,10 @@ public class JsImageResize {
             canvas.height = height;
 
             var ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+
             ctx.drawImage(img, 0, 0, width, height);
 
             var compressedImage = canvas.toDataURL("image/jpeg", 0.55);
