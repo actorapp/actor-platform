@@ -122,6 +122,7 @@ class GroupsServiceImpl(bucketName: String)(
 
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
+          _ ← persist.GroupUser.delete(fullGroup.id, client.userId)
           (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Left))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
