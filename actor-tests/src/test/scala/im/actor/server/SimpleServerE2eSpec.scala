@@ -194,6 +194,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
 
   override def afterAll = {
     super.afterAll()
+    system.awaitTermination()
     ds.close()
   }
 }
