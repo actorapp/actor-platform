@@ -4,8 +4,6 @@ import java.net.InetSocketAddress
 
 import akka.stream.ActorFlowMaterializer
 import com.google.android.gcm.server.Sender
-import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
-import com.relayrides.pushy.apns.{ ApnsEnvironment, PushManager, PushManagerConfiguration }
 
 import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignUp, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs.RequestCodec
@@ -28,7 +26,7 @@ import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.util.testing._
 
-class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
+class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
   behavior of "Server"
 
   it should "connect and Handshake" in e1
@@ -176,8 +174,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit {
 
   private def receiveMTPackage()(implicit client: MTProtoClient): MTPackage = {
     val body = client.receiveTransportPackage() match {
-      case Some(TransportPackage(_, body)) => body
-      case None => throw new Exception("Transport package not received")
+      case Some(TransportPackage(_, body)) ⇒ body
+      case None                            ⇒ throw new Exception("Transport package not received")
     }
 
     body shouldBe a[MTPackage]
