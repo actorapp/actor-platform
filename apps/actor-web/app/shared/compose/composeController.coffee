@@ -7,14 +7,10 @@ class ComposeController
     console.log '[AW]ComposeController constructor'
     @$scope.$on 'onConversationOpen', =>
       console.log '[AW]ComposeController constructor: onConversationOpen fired.'
-      @enableCompose()
-
-  enableCompose: ->
-    console.log '[AW]ComposeController enableCompose'
-    @isEnabled = true
-    @draft = @actorService.loadDraft @actorService.currentPeer
-    console.log '[AW]ComposeController enableCompose: @draft:', @draft
-    @message = @draft if @draft
+      @$timeout =>
+        @message = @draft = @actorService.loadDraft @actorService.currentPeer
+        console.log '[AW]ComposeController constructor: @draft:', @draft
+        @isEnabled = true
 
   onTyping: ->
     console.log '[AW]ComposeController onTyping'
