@@ -9,7 +9,7 @@ class ComposeController
       console.log '[AW]ComposeController constructor: onConversationOpen fired.'
       @$timeout =>
         @message = @draft = @actorService.loadDraft @actorService.currentPeer
-        console.log '[AW]ComposeController constructor: @draft:', @draft
+        console.log '[AW]ComposeController constructor' #: @draft:', @draft
         @isEnabled = true
 
   onTyping: ->
@@ -18,7 +18,7 @@ class ComposeController
     @actorService.saveDraft @actorService.currentPeer, @message
 
   sendMessage: ->
-    console.log '[AW]ComposeController sendMessage', @message
+    console.log '[AW]ComposeController sendMessage' #, @message
     @actorService.sendMessage @actorService.currentPeer, @message
     @message = @draft = ''
     @actorService.saveDraft @actorService.currentPeer, @draft
@@ -35,20 +35,20 @@ class ComposeController
 
   fileSelected: ->
     files = document.getElementById('file').files
-    console.log '[AW]ComposeController fileSelected: files', files
+    console.log '[AW]ComposeController fileSelected: files' #, files
     @sendFile files[0]
 
   photoSelected: ->
     files = document.getElementById('photo').files
-    console.log '[AW]ComposeController photoSelected: files', files
+    console.log '[AW]ComposeController photoSelected: files' #, files
     @sendPhoto files[0]
 
   sendFile: (file) ->
-    console.log '[AW]ComposeController sendFile', file
+    console.log '[AW]ComposeController sendFile' #, file
     @actorService.sendFile @actorService.currentPeer, file
 
   sendPhoto: (file) ->
-    console.log '[AW]ComposeController sendPhoto', file
+    console.log '[AW]ComposeController sendPhoto' #, file
     @actorService.sendPhoto @actorService.currentPeer, file
 
 
