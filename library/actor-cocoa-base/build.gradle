@@ -9,7 +9,7 @@ task cleanDestSources(type: Delete) {
 // Copy sources from dependency projects
 // actor-common
 // actor-java-threads
-task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
+task copySources(type: Copy, dependsOn: ['cleanBuildSources', 'cleanDestSources']) {
     from fileTree("${projectDir}/../actor-common/src/main/java/")
     from fileTree("${projectDir}/../actor-common-base/src/main/java/")
     from fileTree("${projectDir}/../actor-bc/src/main/java/")

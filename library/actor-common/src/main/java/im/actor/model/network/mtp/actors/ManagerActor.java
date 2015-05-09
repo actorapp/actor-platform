@@ -99,25 +99,25 @@ public class ManagerActor extends Actor {
     }
 
     private void onConnectionCreated(int id, Connection connection) {
-        Log.d(TAG, "Connection #" + id + " created");
+        // Log.d(TAG, "Connection #" + id + " created");
 
         if (connection.isClosed()) {
-            Log.w(TAG, "Unable to register connection #" + id + ": already closed");
+            // Log.w(TAG, "Unable to register connection #" + id + ": already closed");
             return;
         }
 
         if (currentConnectionId == id) {
-            Log.w(TAG, "Unable to register connection #" + id + ": already have connection");
+            // Log.w(TAG, "Unable to register connection #" + id + ": already have connection");
             return;
         }
 
         if (currentConnection != null) {
             currentConnection.close();
-            Log.d(TAG, "Set connection #" + 0);
+            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
         }
 
-        Log.d(TAG, "Set connection #" + id);
+        // Log.d(TAG, "Set connection #" + id);
         currentConnectionId = id;
         currentConnection = connection;
 
@@ -130,7 +130,7 @@ public class ManagerActor extends Actor {
     }
 
     private void onConnectionCreateFailure() {
-        Log.w(TAG, "Connection create failure");
+        // Log.w(TAG, "Connection create failure");
 
         backoff.onFailure();
         isCheckingConnections = false;
@@ -141,12 +141,12 @@ public class ManagerActor extends Actor {
         Log.w(TAG, "Connection #" + id + " dies");
 
         if (currentConnectionId == id) {
-            Log.d(TAG, "Set connection #" + 0);
+            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
             currentConnection = null;
             requestCheckConnection();
         } else {
-            Log.w(TAG, "Unable to unregister connection #" + id + ": connection not found, expected: #"+currentConnectionId);
+            // Log.w(TAG, "Unable to unregister connection #" + id + ": connection not found, expected: #"+currentConnectionId);
         }
     }
 
@@ -245,7 +245,7 @@ public class ManagerActor extends Actor {
                 currentConnection.close();
                 currentConnection = null;
                 currentConnectionId = 0;
-                Log.d(TAG, "Set connection #" + 0);
+                // Log.d(TAG, "Set connection #" + 0);
             }
             checkConnection();
         }
@@ -257,7 +257,7 @@ public class ManagerActor extends Actor {
         // Cleanup bad connection
         if (currentConnection != null && currentConnection.isClosed()) {
             currentConnection = null;
-            Log.d(TAG, "Set connection #" + 0);
+            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
             checkConnection();
         }
