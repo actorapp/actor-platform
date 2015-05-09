@@ -20,6 +20,7 @@ import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
+import im.actor.api.rpc.peers.{ PeerType, Peer }
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.commons.serialization.TaggedFieldSerializable
@@ -43,7 +44,8 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   ) extends Message
 
   @SerialVersionUID(1L)
@@ -52,7 +54,8 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   ) extends Message
 
   @SerialVersionUID(1L)
@@ -131,9 +134,10 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
-    DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, userIds, groupIds, pushText))
+    DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, userIds, groupIds, pushText, originPeer))
   }
 
   def persistAndPushUpdate(authId: Long, update: api.Update, pushText: Option[String])(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
@@ -142,7 +146,7 @@ object SeqUpdatesManager {
 
     val (userIds, groupIds) = updateRefs(update)
 
-    persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText)
+    persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update))
   }
 
   def persistAndPushUpdates(authIds: Set[Long], update: api.Update, pushText: Option[String])(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
@@ -151,7 +155,7 @@ object SeqUpdatesManager {
 
     val (userIds, groupIds) = updateRefs(update)
 
-    DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText)))
+    DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update))))
   }
 
   def broadcastUpdateAll(
@@ -166,10 +170,16 @@ object SeqUpdatesManager {
     val serializedData = update.toByteArray
     val (refUserIds, refGroupIds) = updateRefs(update)
 
+    val originPeer = getOriginPeer(update)
+
     for {
       authIds ← p.AuthId.findIdByUserIds(userIds + client.userId)
-      seqstates ← DBIO.sequence(authIds.view.filterNot(_ == client.authId).map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds, pushText)))
-      seqstate ← persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds, pushText)
+      seqstates ← DBIO.sequence(
+        authIds.view
+          .filterNot(_ == client.authId)
+          .map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer))
+      )
+      seqstate ← persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds, pushText, originPeer)
     } yield (seqstate, seqstates)
   }
 
@@ -184,7 +194,7 @@ object SeqUpdatesManager {
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
-    broadcastUserUpdate(userId, header, serializedData, userIds, groupIds, pushText)
+    broadcastUserUpdate(userId, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update))
   }
 
   def broadcastUserUpdate(
@@ -193,40 +203,49 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   )(implicit
     region: SeqUpdatesManagerRegion,
     ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
     for {
       authIds ← p.AuthId.findIdByUserId(userId)
-      seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText)))
+      seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, originPeer)))
     } yield seqstates
   }
 
-  def broadcastClientUpdate(update: api.Update, pushText: Option[String])(implicit
+  def broadcastClientUpdate(update: api.Update, pushText: Option[String])(
+    implicit
     region: SeqUpdatesManagerRegion,
-                                                                          client: api.AuthorizedClientData,
-                                                                          ec:     ExecutionContext): DBIO[SequenceState] = {
+    client: api.AuthorizedClientData,
+    ec:     ExecutionContext
+  ): DBIO[SequenceState] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
+
+    val originPeer = getOriginPeer(update)
 
     for {
       otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText)))
-      ownseqstate ← persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds, pushText)
+      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer)))
+      ownseqstate ← persistAndPushUpdate(client.authId, header, serializedData, userIds, groupIds, pushText, originPeer)
     } yield ownseqstate
   }
 
-  def notifyClientUpdate(update: api.Update, pushText: Option[String])(implicit
+  def notifyClientUpdate(update: api.Update, pushText: Option[String])(
+    implicit
     region: SeqUpdatesManagerRegion,
-                                                                       client: api.AuthorizedClientData,
-                                                                       ec:     ExecutionContext): DBIO[Seq[SequenceState]] = {
+    client: api.AuthorizedClientData,
+    ec:     ExecutionContext
+  ): DBIO[Seq[SequenceState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
 
-    notifyClientUpdate(header, serializedData, userIds, groupIds, pushText)
+    val originPeer = getOriginPeer(update)
+
+    notifyClientUpdate(header, serializedData, userIds, groupIds, pushText, originPeer)
   }
 
   def notifyClientUpdate(
@@ -234,14 +253,15 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   )(implicit
     region: SeqUpdatesManagerRegion,
     client: api.AuthorizedClientData,
     ec:     ExecutionContext) = {
     for {
       otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText)))
+      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer)))
     } yield seqstates
   }
 
@@ -346,9 +366,10 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   )(implicit region: SeqUpdatesManagerRegion): Future[SequenceState] = {
-    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText)))(OperationTimeout).mapTo[SequenceState]
+    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer)))(OperationTimeout).mapTo[SequenceState]
   }
 
   private def pushUpdate(
@@ -357,9 +378,17 @@ object SeqUpdatesManager {
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   )(implicit region: SeqUpdatesManagerRegion): Unit = {
-    region.ref ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds, pushText))
+    region.ref ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds, pushText, originPeer))
+  }
+
+  private def getOriginPeer(update: api.Update): Option[Peer] = {
+    update match {
+      case u: UpdateMessage ⇒ Some(u.peer)
+      case _                ⇒ None
+    }
   }
 }
 
@@ -374,6 +403,8 @@ class SeqUpdatesManager(
   import SeqUpdatesManager._
 
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
+
+  implicit val ec: ExecutionContext = context.dispatcher
 
   // FIXME: move to props
   val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
@@ -393,12 +424,12 @@ class SeqUpdatesManager(
   def receiveInitialized: Receive = {
     case Envelope(_, GetSequenceState) ⇒
       sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
-    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds, pushText)) ⇒
-      pushUpdate(authId, header, updBytes, userIds, groupIds, pushText)
-    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText)) ⇒
+    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds, pushText, originPeer)) ⇒
+      pushUpdate(authId, header, updBytes, userIds, groupIds, pushText, originPeer)
+    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer)) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, { seqstate: SequenceState ⇒
+      pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, { seqstate: SequenceState ⇒
         replyTo ! seqstate
       })
     case Envelope(authId, Subscribe(consumer: ActorRef)) ⇒
@@ -490,9 +521,10 @@ class SeqUpdatesManager(
     serializedData: Array[Byte],
     userIds:        Set[Int],
     groupIds:       Set[Int],
-    pushText:       Option[String]
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
   ): Unit = {
-    pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, noop1)
+    pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, noop1)
   }
 
   private def pushUpdate(
@@ -502,6 +534,7 @@ class SeqUpdatesManager(
     userIds:        Set[Int],
     groupIds:       Set[Int],
     pushText:       Option[String],
+    originPeer:     Option[Peer],
     cb:             SequenceState ⇒ Unit
   ): Unit = {
     // TODO: #perf pinned dispatcher?
@@ -533,7 +566,7 @@ class SeqUpdatesManager(
               }
 
               appleCredsOpt foreach { creds ⇒
-                deliverApplePush(creds, authId, seqUpdate.seq, pushText)
+                deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer)
               }
             }
 
@@ -594,19 +627,68 @@ class SeqUpdatesManager(
     }
   }
 
-  private def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String]): Unit = {
+  private def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer]): Unit = {
     log.debug("Delivering apple push, authId: {}, seq: {}", authId, seq)
 
     val builder = new ApnsPayloadBuilder
 
-    textOpt foreach (builder.setAlertBody)
-    builder.addCustomProperty("seq", seq)
-    builder.setContentAvailable(true)
+    val action = (textOpt, originPeerOpt) match {
+      case (Some(text), Some(originPeer)) ⇒
+        p.AuthId.findUserId(authId) flatMap {
+          case Some(userId) ⇒
+            val peerStr = originPeer.`type` match {
+              case PeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
+              case PeerType.Group   ⇒ s"GROUP_${originPeer.id}"
+            }
+            val key = s"category.mobile.notification.chat.${peerStr}.enabled"
 
-    val payload = builder.buildWithDefaultMaximumLength()
+            p.configs.Parameter.findValue(userId, key) map {
+              case Some("true") ⇒
+                builder.setAlertBody(text)
+                builder
+              case Some("false") ⇒
+                builder
+              case _ ⇒
+                builder.setAlertBody(text)
+                builder
+            }
+          case None ⇒ DBIO.successful(builder) // TODO: fail?
+        }
+      case (Some(text), None) ⇒
+        builder.setAlertBody(text)
+        DBIO.successful(builder)
+      case _ ⇒ DBIO.successful(builder)
+    }
 
-    applePushManager.getInstance(creds.apnsKey) map { mgr ⇒
-      mgr.getQueue.put(new SimpleApnsPushNotification(creds.token, payload))
+    /*
+    textOpt match {
+      case Some(text) =>
+        val action = p.AuthId.findUserId(authId) flatMap {
+          case Some(userId) =>
+            for {
+              isMuted <- p.configs.Parameter.find(userId)
+            }
+            builder.setAlertBody(text)
+            Future.successful(builder)
+          case None =>
+            DBIO.successful(builder) // TODO: fail?
+        }
+
+        db.run(action)
+      case None =>
+        Future.successful(builder)
+    }
+     */
+
+    db.run(action) foreach { b ⇒
+      builder.addCustomProperty("seq", seq)
+      builder.setContentAvailable(true)
+
+      val payload = builder.buildWithDefaultMaximumLength()
+
+      applePushManager.getInstance(creds.apnsKey) map { mgr ⇒
+        mgr.getQueue.put(new SimpleApnsPushNotification(creds.token, payload))
+      }
     }
   }
 }

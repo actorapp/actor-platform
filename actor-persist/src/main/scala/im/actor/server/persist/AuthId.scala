@@ -1,5 +1,7 @@
 package im.actor.server.persist
 
+import scala.concurrent.ExecutionContext
+
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -37,6 +39,9 @@ object AuthId {
 
   def find(authId: Long) =
     byAuthIdNotDeleted(authId).result
+
+  def findUserId(authId: Long)(implicit ec: ExecutionContext) =
+    byAuthIdNotDeleted(authId).map(_.userId).result.headOption map (_.flatten)
 
   def findByUserId(userId: Int) =
     activeAuthIds.filter(a ⇒ a.userId === userId).result

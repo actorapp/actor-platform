@@ -63,6 +63,7 @@ private[messaging] trait MessagingHandlers {
               _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
               clientUser ← getClientUserUnsafe
               pushText ← getPushText(outUpdate.message, clientUser, outPeer.id)
+
               _ ← broadcastUserUpdate(outPeer.id, outUpdate, Some(pushText))
               _ ← DBIO.from(recordRelation(client.userId, outPeer.id))
               _ ← notifyClientUpdate(ownUpdate, None)
@@ -106,10 +107,10 @@ private[messaging] trait MessagingHandlers {
       seqstates ← DBIO.sequence(userIds.view.filterNot(_ == clientData.userId) map { userId ⇒
         for {
           pushText ← getPushText(update.message, clientUser, userId)
-          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText))
+          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(Peer(PeerType.Group, groupId)))
         } yield seqstates
       }) map (_.flatten)
-      selfseqstates ← notifyClientUpdate(updateHeader, updateData, updateUserIds, updateGroupIds, None)
+      selfseqstates ← notifyClientUpdate(updateHeader, updateData, updateUserIds, updateGroupIds, None, None)
     } yield seqstates ++ selfseqstates
   }
 
