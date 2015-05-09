@@ -18,8 +18,9 @@
 #import <AddressBook/AddressBook.h>
 #import "JTSImageViewController/JTSImageViewController.h"
 #import <SplunkMint-iOS/SplunkMint-iOS.h>
+#import <PEPhotoCropEditor/PECropView.h>
+#import <PEPhotoCropEditor/PECropViewController.h>
 #import "SVProgressHUD.h"
-#import "MMAnonymousClass.h"
 
 #import "ABPhoneField.h"
 

@@ -57,6 +57,7 @@
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0672D2011AE64CAB0001CD32 /* LlectroTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */; };
 		0672D2031AE676D60001CD32 /* AATableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2021AE676D60001CD32 /* AATableViewHeader.swift */; };
+		068198F21AFD7ED40095576A /* CropController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068198F11AFD7ED40095576A /* CropController.swift */; };
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
 		0699D4C11ADC80B20005AB9B /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4C01ADC80B20005AB9B /* AppTheme.swift */; };
 		0699D4C61ADC8D820005AB9B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
@@ -805,6 +806,8 @@
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
 		0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LlectroTheme.swift; sourceTree = "<group>"; };
 		0672D2021AE676D60001CD32 /* AATableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AATableViewHeader.swift; sourceTree = "<group>"; };
+		068198F01AFD7C3B0095576A /* ActorClient-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		068198F11AFD7ED40095576A /* CropController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CropController.swift; path = ../CropController.swift; sourceTree = "<group>"; };
 		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0699D4C01ADC80B20005AB9B /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		0699D4C51ADC8D670005AB9B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -2115,7 +2118,6 @@
 		2537F8491A966B9D004A02E9 /* ActorAppAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActorAppAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2537F84E1A966B9D004A02E9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2537F84F1A966B9D004A02E9 /* ActorClientTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ActorClientTests.m; sourceTree = "<group>"; };
-		2537F85A1A972CA0004A02E9 /* ActorApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ActorApp-Prefix.pch"; sourceTree = "<group>"; };
 		2537F8651A9753DD004A02E9 /* ABPhoneField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABPhoneField.h; sourceTree = "<group>"; };
 		2537F8661A9753DD004A02E9 /* ABPhoneField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABPhoneField.m; sourceTree = "<group>"; };
 		2537F86A1A9762F6004A02E9 /* PhoneFormats.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = PhoneFormats.dat; sourceTree = "<group>"; };
@@ -2125,7 +2127,6 @@
 		621432654C9C141E2C648B87 /* Pods-ActorApp.releasellectro.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasellectro.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasellectro.xcconfig"; sourceTree = "<group>"; };
 		83228B1B49BDB7F5D71E8D76 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		9AB684CC2BD8F95F4CCD9F14 /* Pods-ActorApp.releasedev1.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev1.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev1.xcconfig"; sourceTree = "<group>"; };
-		B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ActorClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		BE2E69EA7F7C74A0E35F50F5 /* Pods-ActorApp.releasedev2.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.releasedev2.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.releasedev2.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2190,6 +2191,7 @@
 				062774381AC073D700A4A8B3 /* ContactsSource.swift */,
 				0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */,
 				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
+				068198F11AFD7ED40095576A /* CropController.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -4366,11 +4368,10 @@
 		2537F8301A966B9D004A02E9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				068198F01AFD7C3B0095576A /* ActorClient-Bridging-Header.h */,
 				06A907D01AB7AE8200E087EA /* notification.aiff */,
-				2537F85A1A972CA0004A02E9 /* ActorApp-Prefix.pch */,
 				2537F8311A966B9D004A02E9 /* Info.plist */,
 				2537F8321A966B9D004A02E9 /* main.m */,
-				B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -5032,6 +5033,7 @@
 				06F2CAA41AFD2C680022268F /* DialogHistory.m in Sources */,
 				06F2CA171AFD2C680022268F /* Environment.m in Sources */,
 				06F2CAC81AFD2C680022268F /* ContactsProcessor.m in Sources */,
+				068198F21AFD7ED40095576A /* CropController.swift in Sources */,
 				06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */,
 				06F2CB681AFD2C680022268F /* ParametersWithSBox.m in Sources */,
 				06F2CB351AFD2C680022268F /* ConversationVM.m in Sources */,
@@ -5437,7 +5439,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5534,7 +5536,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5631,7 +5633,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5728,7 +5730,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5825,7 +5827,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -5967,7 +5969,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
@@ -6011,7 +6013,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				GCC_OPTIMIZATION_LEVEL = 1;
-				GCC_PREFIX_HEADER = "ActorClient/ActorApp-Prefix.pch";
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"${PODS_ROOT}/Headers/Public\"",
