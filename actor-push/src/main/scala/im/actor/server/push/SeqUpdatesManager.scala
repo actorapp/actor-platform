@@ -16,7 +16,6 @@ import akka.util.Timeout
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
 import com.google.android.gcm.server.{ Message ⇒ GCMMessage, Sender ⇒ GCMSender }
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
-import com.relayrides.pushy.apns.{ PushManager ⇒ APNSPushManager }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
