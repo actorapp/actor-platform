@@ -1,6 +1,7 @@
 package im.actor.server.api.rpc.service.sequence
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.Success
 
 import akka.actor.ActorSystem
 import slick.dbio
@@ -68,50 +69,54 @@ class SequenceServiceImpl(
 
   override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
-      // FIXME: #security check access hashes
-      val userIds = users.map(_.userId).toSet
-
-      sessionRegion.ref ! SessionMessage.envelope(
-        clientData.authId,
-        clientData.sessionId,
-        SessionMessage.SubscribeToOnline(userIds)
-      )
-
       DBIO.successful(Ok(ResponseVoid))
     }
 
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction)) andThen {
+      case Success(_) ⇒
+        // FIXME: #security check access hashes
+        val userIds = users.map(_.userId).toSet
+
+        sessionRegion.ref ! SessionMessage.envelope(
+          clientData.authId,
+          clientData.sessionId,
+          SessionMessage.SubscribeToOnline(userIds)
+        )
+    }
   }
 
   override def jhandleSubscribeFromOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
-      // FIXME: #security check access hashes
-      val userIds = users.map(_.userId).toSet
-
-      sessionRegion.ref ! SessionMessage.envelope(
-        clientData.authId,
-        clientData.sessionId,
-        SessionMessage.SubscribeFromOnline(userIds)
-      )
-
       DBIO.successful(Ok(ResponseVoid))
     }
 
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction)) andThen {
+      case Success(_) ⇒
+        // FIXME: #security check access hashes
+        val userIds = users.map(_.userId).toSet
+
+        sessionRegion.ref ! SessionMessage.envelope(
+          clientData.authId,
+          clientData.sessionId,
+          SessionMessage.SubscribeFromOnline(userIds)
+        )
+    }
   }
 
   override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    // FIXME: #security check access hashes
-    sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeFromGroupOnline(groups.map(_.groupId).toSet))
-
-    Future.successful(Ok(ResponseVoid))
+    Future.successful(Ok(ResponseVoid)) andThen {
+      case _ ⇒
+        // FIXME: #security check access hashes
+        sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeFromGroupOnline(groups.map(_.groupId).toSet))
+    }
   }
 
   override def jhandleSubscribeToGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    // FIXME: #security check access hashes
-    sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeToGroupOnline(groups.map(_.groupId).toSet))
-
-    Future.successful(Ok(ResponseVoid))
+    Future.successful(Ok(ResponseVoid)) andThen {
+      case _ ⇒
+        // FIXME: #security check access hashes
+        sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeToGroupOnline(groups.map(_.groupId).toSet))
+    }
   }
 
   private def extractDiff(updates: Seq[models.sequence.SeqUpdate]): (Vector[DifferenceUpdate], Set[Int], Set[Int]) = {
