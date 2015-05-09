@@ -23,7 +23,7 @@ trait BaseServiceSuite
   implicit val flowMaterializer = ActorFlowMaterializer()
 
   override implicit def patienceConfig: PatienceConfig =
-    new PatienceConfig(timeout = Span(5, Seconds))
+    new PatienceConfig(timeout = Span(10, Seconds))
 
   override def afterAll(): Unit = {
     super.afterAll()
