@@ -86,8 +86,6 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
             long sortKey = item.getEngineSort();
             for (int i = 0; i < values.size(); i++) {
                 if (values.get(i).getEngineId() == id) {
-                    long oldSort = values.get(i).getEngineSort();
-                    long newSort = item.getEngineSort();
                     values.remove(i);
                     remove(jsValues, i);
                     break;
