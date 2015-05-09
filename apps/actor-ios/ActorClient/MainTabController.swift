@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MessageUI
 
-class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDelegate {
+class MainTabController : UITabBarController, UITabBarDelegate {
     
     // MARK: -
     // MARK: Private vars
@@ -99,20 +99,20 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     // MARK: Methods
     
     func centerButtonTap() {
-        var actionShit = ABActionShit()
-        actionShit.buttonTitles = ["Add Contact", "Create group", "Write to..."];
-        actionShit.delegate = self
-        actionShit.showWithCompletion(nil)
+//        var actionShit = ABActionShit()
+//        actionShit.buttonTitles = ["Add Contact", "Create group", "Write to..."];
+//        actionShit.delegate = self
+//        actionShit.showWithCompletion(nil)
     }
     
     // MARK: -
     // MARK: ABActionShit Delegate
     
-    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
-        if (buttonIndex == 1) {
-            navigationController?.pushViewController(GroupMembersController(), animated: true)
-        }
-    }
+//    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
+//        if (buttonIndex == 1) {
+//            navigationController?.pushViewController(GroupMembersController(), animated: true)
+//        }
+//    }
     
     // MARK: -
     // MARK: Placeholder
