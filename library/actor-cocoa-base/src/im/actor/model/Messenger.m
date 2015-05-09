@@ -645,6 +645,9 @@ void AMMessenger_initWithAMConfiguration_(AMMessenger *self, AMConfiguration *co
   AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
   [timing sectionWithNSString:@"Actors"];
   [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithDKTraceInterface:new_AMActorTrace_init()];
+  if (![((id<AMMainThreadProvider>) nil_chk([configuration getMainThreadProvider])) isSingleThread]) {
+    [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
+  }
   [timing sectionWithNSString:@"Modules:Create"];
   self->modules_ = new_ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(self, configuration);
   [timing sectionWithNSString:@"Modules:Run"];
