@@ -12,7 +12,6 @@ import im.actor.model.entity.ContentType;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
-import im.actor.model.log.Log;
 
 /**
  * Created by ex3ndr on 22.02.15.
@@ -26,10 +25,10 @@ public class JsDialog extends JavaScriptObject implements Exportable {
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
                 if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.EMPTY) {
-                    showSender = src.getSenderId();
+                    showSender = true;
                 }
             }
-            
+
             String senderName = null;
             if (showSender) {
                 senderName = messenger.getUsers().get(src.getSenderId()).getName().get();
