@@ -8,18 +8,15 @@ import sbt._
 import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
-  val Organization = "Actor IM"
   val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.11.6"
 
   lazy val buildSettings =
     Defaults.coreDefaultSettings ++
       Seq(
-        organization := Organization,
         version := Version,
         scalaVersion := ScalaVersion,
         crossPaths := false,
-        organizationName := Organization,
         organizationHomepage := Some(url("https://actor.im"))
       )
 
