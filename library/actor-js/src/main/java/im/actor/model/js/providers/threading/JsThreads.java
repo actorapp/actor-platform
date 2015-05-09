@@ -4,65 +4,59 @@
 
 package im.actor.model.js.providers.threading;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Timer;
-
 import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatcher;
 import im.actor.model.droidkit.actors.dispatch.Dispatch;
 import im.actor.model.droidkit.actors.dispatch.DispatchResult;
+import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
+import im.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;
+import im.actor.model.log.Log;
 
 public class JsThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDispatcher<T, Q> {
 
-    private boolean isSchedulled = false;
+    private static final int ITERATION_COUNT_MAX = 10;
 
-    private Timer timer = new Timer() {
-        @Override
-        public void run() {
-            doIteration();
-        }
-    };
-    private Scheduler.ScheduledCommand scheduledCommand = new Scheduler.ScheduledCommand() {
-        @Override
-        public void execute() {
-            doIteration();
-        }
-    };
-    private Scheduler.RepeatingCommand repeatingCommand = new Scheduler.RepeatingCommand() {
-        @Override
-        public boolean execute() {
-            long delay = doIteration();
-            if (delay < 0) {
-                isSchedulled = true;
-                return true;
-            } else {
-
-                if (delay > 15000) {
-                    delay = 15000;
-                }
-                if (delay < 1) {
-                    delay = 1;
-                }
-
-                timer.schedule((int) delay);
-
-                isSchedulled = false;
-                return false;
-            }
-        }
-    };
+    private JsSecureInterval secureInterval;
+    private boolean isDoingIteration = false;
 
     protected JsThreads(Q queue, Dispatch<T> dispatch) {
         super(queue, dispatch);
+        secureInterval = JsSecureInterval.create(new Runnable() {
+            @Override
+            public void run() {
+                EnvelopeRoot envelopeRoot = ((MailboxesQueue) getQueue()).getEnvelopeRoot();
+                Log.d("JsThreads", "Do Perform schedule: " + envelopeRoot.getAllCount());
+                isDoingIteration = true;
+                long delay = -1;
+                int iteration = 0;
+                while (delay < 0 && iteration < ITERATION_COUNT_MAX) {
+                    delay = doIteration();
+                    iteration++;
+                }
+                isDoingIteration = false;
+                if (delay < 0) {
+                    Log.d("JsThreads", "Schedule again: " + envelopeRoot.getAllCount());
+                    secureInterval.scheduleNow();
+                } else {
+                    if (delay > 15000) {
+                        delay = 15000;
+                    }
+                    if (delay < 1) {
+                        delay = 1;
+                    }
+
+                    Log.d("JsThreads", "Schedule: " + envelopeRoot.getAllCount());
+                    secureInterval.schedule((int) delay);
+                }
+            }
+        });
     }
 
     @Override
     protected void notifyDispatcher() {
-        if (!isSchedulled) {
-            timer.cancel();
-            Scheduler.get().scheduleIncremental(repeatingCommand);
-            isSchedulled = true;
+        if (!isDoingIteration) {
+            secureInterval.scheduleNow();
         }
     }
 
