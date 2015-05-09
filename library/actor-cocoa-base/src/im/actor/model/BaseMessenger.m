@@ -8,6 +8,7 @@
 #include "im/actor/model/BaseMessenger.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/Messenger.h"
+#include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/DisplayLists.h"
 #include "im/actor/model/modules/Modules.h"
@@ -73,6 +74,7 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 
 void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration) {
   (void) AMMessenger_initWithAMConfiguration_(self, configuration);
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
   self->displayLists_ = new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self->modules_);
 }
 

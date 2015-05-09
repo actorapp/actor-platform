@@ -3,6 +3,6 @@ angular
     'ui.router'
     'ngMaterial'
     'ngSanitize'
-#    'ngStorage'
+    'angular-inview'
     'luegg.directives'
   ]
