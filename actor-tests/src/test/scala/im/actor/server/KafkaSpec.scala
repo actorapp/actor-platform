@@ -3,18 +3,19 @@ package im.actor.server
 import java.io.File
 
 import akka.persistence.kafka.server.TestServer
-import org.scalatest.{ Suite, BeforeAndAfterAll }
+import org.scalatest.Suite
 
-trait KafkaSpec extends BeforeAndAfterAll {
-  this: Suite ⇒
-
+object KafkaSpec {
   cleanData()
 
-  private val kafkaServer = new TestServer()
+  private var kafkaServer: TestServer = _
 
-  override def afterAll: Unit = {
-    super.afterAll()
-    kafkaServer.stop()
+  newServer()
+
+  private def newServer(): Unit = {
+    if (Option(kafkaServer) == None) {
+      kafkaServer = new TestServer()
+    }
   }
 
   private def cleanData(): Unit = {
@@ -22,5 +23,17 @@ trait KafkaSpec extends BeforeAndAfterAll {
     if (dataDirFile.exists()) {
       org.apache.commons.io.FileUtils.deleteDirectory(dataDirFile)
     }
+  }
+}
+
+trait KafkaSpec {
+  this: Suite ⇒
+
+  KafkaSpec.newServer()
+
+  protected def cleanKafka(): Unit = {
+    KafkaSpec.kafkaServer.stop()
+    KafkaSpec.cleanData()
+    KafkaSpec.newServer
   }
 }
