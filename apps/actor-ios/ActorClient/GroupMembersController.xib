@@ -18,15 +18,15 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="56" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="P85-30-rS5">
-                    <rect key="frame" x="0.0" y="52" width="375" height="551"/>
+                    <rect key="frame" x="0.0" y="48" width="375" height="551"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </tableView>
                 <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I1j-L9-ZPy">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="52"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="48"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="CardBottom3" translatesAutoresizingMaskIntoConstraints="NO" id="iQv-nJ-ra9">
-                    <rect key="frame" x="0.0" y="52" width="375" height="7"/>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="CardBottom2" translatesAutoresizingMaskIntoConstraints="NO" id="iQv-nJ-ra9">
+                    <rect key="frame" x="0.0" y="48" width="375" height="7"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -36,6 +36,6 @@
         </view>
     </objects>
     <resources>
-        <image name="CardBottom3" width="1" height="4"/>
+        <image name="CardBottom2" width="1" height="6"/>
     </resources>
 </document>

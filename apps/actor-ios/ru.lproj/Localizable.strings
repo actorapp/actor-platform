@@ -84,6 +84,8 @@
 
 "CreateGroupTitle" = "Новая группа";
 
+"CreateGroupNamePlaceholder" = "Введите название группы";
+
 /*
  * Privacy
  */
