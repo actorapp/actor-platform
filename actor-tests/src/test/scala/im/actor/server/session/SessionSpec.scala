@@ -29,6 +29,7 @@ class SessionSpec extends BaseSessionSpec {
   it should "subscribe to sequence updates" in sessions().e5
   it should "subscribe to weak updates" in sessions().e6
   it should "subscribe to presences" in sessions().e7
+  it should "React to SessionHello" in sessions().e8
 
   case class sessions() {
 
@@ -274,6 +275,24 @@ class SessionSpec extends BaseSessionSpec {
       val ub = expectWeakUpdate(authId, sessionId)
 
       ub.updateHeader should ===(UpdateUserOffline.header)
+    }
+
+    def e8() = {
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+      val messageId = Random.nextLong()
+
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello(authId, sessionId))
+      expectNewSession(authId, sessionId, messageId)
+      probe.receiveOne(1.second) // ack
+
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
+
+      // ack and response
+      probe.receiveOne(1.second)
+      probe.receiveOne(1.second)
+      probe.expectNoMsg()
     }
   }
 }

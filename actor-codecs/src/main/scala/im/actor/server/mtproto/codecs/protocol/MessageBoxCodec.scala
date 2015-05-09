@@ -13,6 +13,7 @@ object MessageBoxCodec extends Codec[MessageBox] {
     .\(Container.header) { case r: Container ⇒ r }(ContainerCodec)
     .\(MessageAck.header) { case r: MessageAck ⇒ r }(MessageAckCodec)
     .\(NewSession.header) { case r: NewSession ⇒ r }(NewSessionCodec)
+    .\(SessionHello.header) { case r: SessionHello ⇒ r }(SessionHelloCodec)
     .\(RequestAuthId.header) { case r: RequestAuthId ⇒ r }(RequestAuthIdCodec)
     .\(ResponseAuthId.header) { case r: ResponseAuthId ⇒ r }(ResponseAuthIdCodec)
     .\(RequestResend.header) { case r: RequestResend ⇒ r }(RequestResendCodec)

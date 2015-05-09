@@ -6,6 +6,7 @@ import scodec.codecs._
 package object protocol {
   val MessageAckCodec = longs.as[MessageAck]
   val NewSessionCodec = (int64 :: int64).as[NewSession]
+  val SessionHelloCodec = (int64 :: int64).as[SessionHello]
   val RequestAuthIdCodec = provide(RequestAuthId())
   val RequestResendCodec = int64.as[RequestResend]
   val ResponseAuthIdCodec = int64.as[ResponseAuthId]

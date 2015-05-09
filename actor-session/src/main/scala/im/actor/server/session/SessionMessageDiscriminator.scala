@@ -47,6 +47,8 @@ class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, Sessi
           ctx.emit(p.outIncomingAck)(MessageAck.incoming(m.messageIds))
         case HandleMessageBox(MessageBox(messageId, m: RequestResend), _) ⇒
           ctx.emit(p.outRequestResend)(m)
+        case HandleMessageBox(MessageBox(messageId, m: SessionHello), _) ⇒
+        // ignore
         case SendProtoMessage(message) ⇒
           ctx.emit(p.outProtoMessage)(message)
         case msg @ HandleSubscribe(command) ⇒
