@@ -25,7 +25,7 @@ class MTProtoClient(system: ActorSystem) {
 
   private val clientActor = system.actorOf(MTProtoClientActor.props)
 
-  def connectAndHandshake(remote: InetSocketAddress)(implicit timeout: Timeout = Timeout(5.seconds)) = {
+  def connectAndHandshake(remote: InetSocketAddress)(implicit timeout: Timeout = Timeout(10.seconds)) = {
     val res = Await.result(clientActor.ask(MTConnect(remote)), timeout.duration)
 
     if (res != MTConnected) {
@@ -33,7 +33,7 @@ class MTProtoClient(system: ActorSystem) {
     }
   }
 
-  def close()(implicit timeout: Timeout = Timeout(5.seconds)) = {
+  def close()(implicit timeout: Timeout = Timeout(10.seconds)) = {
     val stopped = Await.result(gracefulStop(clientActor, timeout.duration), timeout.duration)
 
     if (!stopped) {
@@ -45,7 +45,7 @@ class MTProtoClient(system: ActorSystem) {
     clientActor ! Send(tp)
   }
 
-  def receiveTransportPackage()(implicit timeout: Timeout = Timeout(5.seconds)): Option[TransportPackage] = {
+  def receiveTransportPackage()(implicit timeout: Timeout = Timeout(10.seconds)): Option[TransportPackage] = {
     Await.result(clientActor.ask(GetTransportPackage)(timeout).mapTo[Option[TransportPackage]], timeout.duration)
   }
 }
