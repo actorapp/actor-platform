@@ -16,6 +16,7 @@
 #include "im/actor/model/util/ThreadLocalCompat.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
+#include "java/util/Collection.h"
 #include "java/util/HashMap.h"
 #include "java/util/HashSet.h"
 #include "java/util/Iterator.h"
@@ -74,6 +75,16 @@ __attribute__((unused)) static ImActorModelDroidkitActorsMailboxCollectionsEnvel
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)queue {
   ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(self, queue);
   return self;
+}
+
+- (jint)getAllCount {
+  @synchronized(self) {
+    jint res = 0;
+    for (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection * __strong e in nil_chk([((JavaUtilHashMap *) nil_chk(collections_)) values])) {
+      res += [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(e)) getSize];
+    }
+    return res;
+  }
 }
 
 - (void)attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection {
