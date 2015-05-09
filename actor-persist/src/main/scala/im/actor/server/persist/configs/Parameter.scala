@@ -1,5 +1,7 @@
 package im.actor.server.persist.configs
 
+import scala.concurrent.ExecutionContext
+
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
@@ -22,4 +24,7 @@ object Parameter {
 
   def find(userId: Int) =
     parameters.filter(_.userId === userId).result
+
+  def findValue(userId: Int, key: String)(implicit ec: ExecutionContext) =
+    parameters.filter(p ⇒ p.userId === userId && p.key === key).map(_.value).result.headOption map (_.flatten)
 }
