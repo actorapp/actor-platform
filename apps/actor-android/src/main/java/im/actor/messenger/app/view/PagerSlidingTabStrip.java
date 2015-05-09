@@ -30,11 +30,13 @@ import java.util.Locale;
 
 public class PagerSlidingTabStrip extends FrameLayout {
 
+
+
     public interface IconTabProvider {
-        public int getPageIconResId(int position);
+        public int getPageIconResId(int position, Context context);
     }
     public interface TabProvider {
-        public View getTab(int position);
+        public View getTab(int position, Context context);
     }
     // @formatter:off
     private static final int[] ATTRS = new int[]{
@@ -179,9 +181,9 @@ public class PagerSlidingTabStrip extends FrameLayout {
         for (int i = 0; i < tabCount; i++) {
 
             if (pager.getAdapter() instanceof IconTabProvider) {
-                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
+                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i, getContext()));
             } else if(pager.getAdapter() instanceof TabProvider){
-                addTab(i, ((TabProvider)pager.getAdapter()).getTab(i));
+                addTab(i, ((TabProvider)pager.getAdapter()).getTab(i, getContext()));
             } else {
                 addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
             }
@@ -258,13 +260,8 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
                 // setAllCaps() is only available from API 14, so the upper case is made manually if we are on a
                 // pre-ICS-build
-                if (textAllCaps) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                        tab.setAllCaps(true);
-                    } else {
-                        tab.setText(tab.getText().toString().toUpperCase(locale));
-                    }
-                }
+                tab.setAllCaps(true);
+
             }
         }
 
@@ -495,6 +492,10 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
     public int getTabPaddingLeftRight() {
         return tabPadding;
+    }
+
+    public void setTabLayoutParams(LinearLayout.LayoutParams tabLayoutParams) {
+        this.expandedTabLayoutParams = tabLayoutParams;
     }
 
     @Override

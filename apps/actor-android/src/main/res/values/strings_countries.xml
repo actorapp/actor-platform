@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
 <resources>
     <string name="US" translatable="false">USA</string>
     <string name="CA" translatable="false">Canada</string>
