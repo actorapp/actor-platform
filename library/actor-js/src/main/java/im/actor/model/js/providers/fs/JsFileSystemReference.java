@@ -2,19 +2,18 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.model.js.providers;
+package im.actor.model.js.providers.fs;
 
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.InputFile;
 import im.actor.model.files.OutputFile;
-import im.actor.model.js.providers.fs.JsFile;
 
 public class JsFileSystemReference implements FileSystemReference {
 
     private String key;
-    private JsFile file;
+    private JsBlob file;
 
-    public JsFileSystemReference(JsFile file, String key) {
+    public JsFileSystemReference(JsBlob file, String key) {
         this.key = key;
         this.file = file;
     }

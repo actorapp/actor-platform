@@ -7,6 +7,8 @@ package im.actor.model.js.providers.http;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
+import im.actor.model.js.providers.fs.JsBlob;
+
 public class JsHttpRequest extends JavaScriptObject {
 
     public static native JsHttpRequest create()/*-{
@@ -42,5 +44,25 @@ public class JsHttpRequest extends JavaScriptObject {
 
     public final native void send(ArrayBuffer data)/*-{
         this.send(new Blob([data]));
+    }-*/;
+
+    public final native void send()/*-{
+        this.send();
+    }-*/;
+
+    public final native void setResponseType(String responseType)/*-{
+        this.responseType = responseType;
+    }-*/;
+
+    public final native String getResponseType()/*-{
+        return this.responseType;
+    }-*/;
+
+    public final native String getResponseText()/*-{
+        return this.responseText;
+    }-*/;
+
+    public final native JsBlob getResponseBlob()/*-{
+        return this.response;
     }-*/;
 }
