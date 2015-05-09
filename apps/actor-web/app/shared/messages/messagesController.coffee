@@ -6,7 +6,7 @@ class MessagesController
     console.log '[AW]MessagesController constructor'
 
     @$scope.$on 'selectDialog', (event, peer) =>
-      console.log '[AW]MessagesController: selectDialog fired.', peer
+      console.log '[AW]MessagesController: selectDialog fired.' #, peer
       if @actorService.currentPeer == peer
         console.log '[AW]MessagesController selectDialog: this peer already selected.'
         return
@@ -17,12 +17,12 @@ class MessagesController
       @actorService.bindChat peer, @renderMessages
 
   renderMessages: (messages) =>
-    console.log '[AW]MessagesController renderMessages', messages
+    console.log '[AW]MessagesController renderMessages' #, messages
     @$timeout =>
       @list = messages
 
   setViewed: (sortKey, isOut) ->
-    console.log '[AW]MessagesController setViewed', sortKey, isOut
+    console.log '[AW]MessagesController setViewed' #, sortKey, isOut
     @actorService.onMessageShown @actorService.currentPeer, sortKey, isOut
 
 MessagesController.$inject = ['$rootScope', '$scope', '$timeout', 'actorService']
