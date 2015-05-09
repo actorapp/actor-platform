@@ -31,41 +31,41 @@ class ActorService
     location.reload()
     @$rootScope.$broadcast 'actorLoggedOut'
   setCurrentPeer: (peer) ->
-    console.log '[AW]ActorService setCurrentPeer', peer
+    console.log '[AW]ActorService setCurrentPeer' #, peer
     @currentPeer = peer
 
   bindChat: (peer, callback) ->
-    console.log '[AW]ActorService bindChat', peer
+    console.log '[AW]ActorService bindChat' #, peer
     @setCurrentPeer peer
     @onConversationOpen peer
     @messenger.bindChat peer, callback
   bindDialogs: (callback) ->
     console.log '[AW]ActorService bindDialogs'
     @messenger.bindDialogs (dialogs) ->
-      console.log '[AW]ActorService bindDialogs: dialogs:', dialogs
+      console.log '[AW]ActorService bindDialogs' #: dialogs:', dialogs
       callback dialogs
   bindGroup: (id, callback) ->
-    console.log '[AW]ActorService bindGroup', id
+    console.log '[AW]ActorService bindGroup' #, id
     @messenger.bindGroup id, callback
   bindTyping: ->
     console.log '[AW]ActorService bindTyping'
   bindUser: (id, callback) ->
-    console.log '[AW]ActorService bindUser', id
+    console.log '[AW]ActorService bindUser' #, id
     @messenger.bindUser id, callback
 
   unbindChat: (peer, callback) ->
-    console.log '[AW]ActorService unbindChat', peer
+    console.log '[AW]ActorService unbindChat' #, peer
     @onConversationClosed peer
     @messenger.unbindChat peer, callback
   unbindDialogs: (callback) ->
     console.log '[AW]ActorService unbindDialogs'
   unbindGroup: (peer, callback) ->
-    console.log '[AW]ActorService unbindGroup', peer
+    console.log '[AW]ActorService unbindGroup' #, peer
     @messenger.unbindGroup peer, callback
   unbindTyping: ->
     console.log '[AW]ActorService unbindTyping'
   unbindUser: (peer, callback) ->
-    console.log '[AW]ActorService unbindUser', peer
+    console.log '[AW]ActorService unbindUser' #, peer
     @messenger.unbindUser peer, callback
 
   getAuthPhone: ->
@@ -73,7 +73,7 @@ class ActorService
   getAuthState: ->
     console.log '[AW]ActorService getAuthState'
   getGroup: (uid) ->
-    console.log '[AW]ActorService getGroup', uid
+    console.log '[AW]ActorService getGroup' #, uid
     @messenger.getGroup uid
   getTyping: ->
     console.log '[AW]ActorService getTyping'
@@ -81,7 +81,7 @@ class ActorService
     console.log '[AW]ActorService getUid'
     @messenger.getUid()
   getUser: (uid) ->
-    console.log '[AW]ActorService getUser', uid
+    console.log '[AW]ActorService getUser' #, uid
     @messenger.getUser uid
 
   clearChat: ->
@@ -94,49 +94,49 @@ class ActorService
     console.log '[AW]ActorService loadDraft'
     @messenger.loadDraft peer
   saveDraft: (peer, draft) ->
-    console.log '[AW]ActorService saveDraft', draft
+    console.log '[AW]ActorService saveDraft' #, draft
     if draft != null
       @messenger.saveDraft peer, draft
 
 
   requestSms: (phone) ->
-    console.log '[AW]ActorService requestSms', phone
+    console.log '[AW]ActorService requestSms' #, phone
     @messenger.requestSms phone.toString(), (state) =>
-      console.log '[AW]ActorService requestSms: state:', state
+      console.log '[AW]ActorService requestSms' #: state:', state
       switch state
         when 'code'
           console.log '[AW]ActorService requestSms: $broadcast actorAuthCode'
           @$rootScope.$broadcast 'actorAuthCode'
     , (tag, message, canTryAgain, state) ->
-      console.log '[AW]ActorService requestSms: error: state:', state
+      console.log '[AW]ActorService requestSms: error' #: state:', state
   sendCode: (code) ->
     console.log '[AW]ActorService sendCode'
     @messenger.sendCode code, (state) =>
-      console.log '[AW]ActorService sendCode: ok:', state
+      console.log '[AW]ActorService sendCode: ok' #:', state
       switch state
         when 'logged_in'
           @setLoggedIn()
         when 'signup'
           @$rootScope.$broadcast 'actorSignUp'
     , (tag, message, canTryAgain, state) ->
-      console.log '[AW]ActorService sendCode: error:', state
+      console.log '[AW]ActorService sendCode: error' #:', state
       switch state
         when 'code'
           console.log '[AW]ActorService sendCode: wrong code'
 
 
   sendFile: (peer, file) ->
-    console.log '[AW]ActorService sendFile', file
+    console.log '[AW]ActorService sendFile' #, file
     @messenger.sendFile peer, file
   sendMessage: (peer, message) ->
-    console.log '[AW]ActorService sendMessage', message
+    console.log '[AW]ActorService sendMessage' #, message
     message = message.replace /^\s+|\s+$/g, ''
     if message.length > 0
-      console.log '[AW]ActorService sendMessage: message:', message.length
+      console.log '[AW]ActorService sendMessage' #: message:', message.length
     # console.log '[AW]ActorService sendMessage: peer:', peer
       @messenger.sendMessage peer, message
   sendPhoto: (peer, file) ->
-    console.log '[AW]ActorService sendPhoto', file
+    console.log '[AW]ActorService sendPhoto' #, file
     @messenger.sendPhoto peer, file
 
 
@@ -148,13 +148,13 @@ class ActorService
   onAppVisible: ->
     console.log '[AW]ActorService onAppVisible'
   onConversationClosed: (peer) ->
-    console.log '[AW]ActorService onConversationClosed', peer
+    console.log '[AW]ActorService onConversationClosed' #, peer
     @messenger.onConversationClosed peer
     @$rootScope.$broadcast 'onConversationClosed', peer
   onConversationOpen: (peer) ->
-    console.log '[AW]ActorService onConversationOpen', peer
+    console.log '[AW]ActorService onConversationOpen' #, peer
     @messenger.onConversationOpen peer
-    @$rootScope.$broadcast 'onConversationOpen', peer
+    @$rootScope.$broadcast 'onConversationOpen' #, peer
   onDialogsClosed: ->
     console.log '[AW]ActorService onDialogsClosed'
   onDialogsEnd: ->
