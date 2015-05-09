@@ -108,17 +108,35 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_ConnectionCreated)
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithLong:(jlong)messageId;
+
+- (jlong)getMessageId;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTSenderActor_NewSession)
 
-FOUNDATION_EXPORT void MTSenderActor_NewSession_init(MTSenderActor_NewSession *self);
+FOUNDATION_EXPORT void MTSenderActor_NewSession_initWithLong_(MTSenderActor_NewSession *self, jlong messageId);
 
-FOUNDATION_EXPORT MTSenderActor_NewSession *new_MTSenderActor_NewSession_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT MTSenderActor_NewSession *new_MTSenderActor_NewSession_initWithLong_(jlong messageId) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_NewSession)
+
+@interface MTSenderActor_SessionLost : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(MTSenderActor_SessionLost)
+
+FOUNDATION_EXPORT void MTSenderActor_SessionLost_init(MTSenderActor_SessionLost *self);
+
+FOUNDATION_EXPORT MTSenderActor_SessionLost *new_MTSenderActor_SessionLost_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_SessionLost)
 
 @interface MTSenderActor_ForceAck : NSObject
 
