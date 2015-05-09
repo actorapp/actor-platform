@@ -12,18 +12,16 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class JsSecureInterval extends JavaScriptObject {
     public static native JsSecureInterval create(Runnable runnable)/*-{
-//        if (typeof(Worker) !== "undefined") {
-//            worker = new Worker("js/interval.js");
-//            _runnable = runnable;
-//            worker.onmessage = function() {
-//                console.log("Worker: on Message");
-//                _runnable.@java.lang.Runnable::run()();
-//            };
-//            return {runnable: runnable, useWebWorker: true, worker: worker};
-//        } else {
-//            return {runnable: runnable, useWebWorker: false};
-//        }
-          return {runnable: runnable, useWebWorker: false};
+        if (typeof(Worker) !== "undefined") {
+            var worker = new Worker("assets/js/interval.js");
+            var _runnable = runnable;
+            worker.onmessage = function() {
+                _runnable.@java.lang.Runnable::run()();
+            };
+            return {runnable: runnable, useWebWorker: true, worker: worker};
+        } else {
+            return {runnable: runnable, useWebWorker: false};
+        }
     }-*/;
 
     protected JsSecureInterval() {
@@ -35,7 +33,6 @@ public class JsSecureInterval extends JavaScriptObject {
     }
 
     public native final void schedule(int msec)/*-{
-        console.log("JsSecureInterval: schedule at " + msec);
         if (this.useWebWorker) {
             this.worker.postMessage({message: "schedule", delay: msec});
         } else {
@@ -43,7 +40,7 @@ public class JsSecureInterval extends JavaScriptObject {
                 clearTimeout(this.timerId);
                 this.timerId = null;
             }
-            _runnable = this.runnable
+            var _runnable = this.runnable
             this.timerId = setTimeout(function() {
                 _runnable.@java.lang.Runnable::run()();
             }, msec);
@@ -51,7 +48,6 @@ public class JsSecureInterval extends JavaScriptObject {
     }-*/;
 
     public native final void cancel()/*-{
-        console.log("JsSecureInterval: cancel");
         if (this.useWebWorker) {
             this.worker.postMessage({message: "cancel"});
         } else {

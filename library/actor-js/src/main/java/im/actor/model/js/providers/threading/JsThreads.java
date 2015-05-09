@@ -9,9 +9,6 @@ import im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatcher;
 import im.actor.model.droidkit.actors.dispatch.Dispatch;
 import im.actor.model.droidkit.actors.dispatch.DispatchResult;
-import im.actor.model.droidkit.actors.mailbox.MailboxesQueue;
-import im.actor.model.droidkit.actors.mailbox.collections.EnvelopeRoot;
-import im.actor.model.log.Log;
 
 public class JsThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDispatcher<T, Q> {
 
@@ -25,8 +22,6 @@ public class JsThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDi
         secureInterval = JsSecureInterval.create(new Runnable() {
             @Override
             public void run() {
-                EnvelopeRoot envelopeRoot = ((MailboxesQueue) getQueue()).getEnvelopeRoot();
-                Log.d("JsThreads", "Do Perform schedule: " + envelopeRoot.getAllCount());
                 isDoingIteration = true;
                 long delay = -1;
                 int iteration = 0;
@@ -36,7 +31,6 @@ public class JsThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDi
                 }
                 isDoingIteration = false;
                 if (delay < 0) {
-                    Log.d("JsThreads", "Schedule again: " + envelopeRoot.getAllCount());
                     secureInterval.scheduleNow();
                 } else {
                     if (delay > 15000) {
@@ -46,7 +40,6 @@ public class JsThreads<T, Q extends AbstractDispatchQueue<T>> extends AbstractDi
                         delay = 1;
                     }
 
-                    Log.d("JsThreads", "Schedule: " + envelopeRoot.getAllCount());
                     secureInterval.schedule((int) delay);
                 }
             }

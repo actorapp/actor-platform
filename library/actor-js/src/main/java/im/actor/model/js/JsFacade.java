@@ -167,6 +167,7 @@ public class JsFacade implements Exportable {
     }
 
     public void onMessageShown(JsPeer peer, String sortKey, boolean isOut) {
+        Log.d(TAG, "onMessageShown");
         if (!isOut) {
             messenger.onMessageShown(peer.convert(), Long.parseLong(sortKey));
         }
