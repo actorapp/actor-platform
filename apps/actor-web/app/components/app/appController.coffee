@@ -21,12 +21,12 @@ class AppController
           @actorService.unbindGroup peer.id, @renderPeerInfo
 
   renderMyInfo: (info) =>
-    console.log '[AW]AppController renderMyInfo', info
+    console.log '[AW]AppController renderMyInfo' #, info
     @$timeout =>
       @user = info
 
   renderPeerInfo: (info) =>
-    console.log '[AW]AppController renderPeerInfo', info
+    console.log '[AW]AppController renderPeerInfo' #, info
     @$timeout =>
       @info = info
 
