@@ -4,7 +4,7 @@
 
 import Foundation
 
-class GroupCreateController: AAViewController {
+class GroupCreateController: AAViewController, UITextFieldDelegate {
 
     private var addPhotoButton = UIButton()
     private var avatarImageView = UIImageView()
@@ -14,7 +14,7 @@ class GroupCreateController: AAViewController {
     override init(){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = NSLocalizedString("CreateGroupTitle", comment: "Compose Title")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -68,7 +68,7 @@ class GroupCreateController: AAViewController {
         groupName.keyboardType = UIKeyboardType.Default
         groupName.returnKeyType = UIReturnKeyType.Next
         groupName.placeholder = NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title")
-        // groupName.delegate = self
+        groupName.delegate = self
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
         
@@ -80,7 +80,7 @@ class GroupCreateController: AAViewController {
         
         let screenSize = UIScreen.mainScreen().bounds.size
         
-        avatarImageView.frame = CGRectMake((screenSize.width - 48)/2, 24, 80, 80)
+        avatarImageView.frame = CGRectMake((screenSize.width - 80)/2, 24, 80, 80)
         addPhotoButton.frame = avatarImageView.frame
         
         groupName.frame = CGRectMake(24, 126, screenSize.width - 48, 56.0)
@@ -93,10 +93,18 @@ class GroupCreateController: AAViewController {
         groupName.becomeFirstResponder()
     }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        doNext()
+        return false
+    }
+    
     func doNext() {
-        if (groupName.text.trim().size() == 0) {
+        var title = groupName.text.trim()
+        if (title.size() == 0) {
             shakeView(groupName, originalX: groupName.frame.origin.x)
             return
         }
+        
+        navigateNext(GroupMembersController(title: title), removeCurrent: true)
     }
 }
