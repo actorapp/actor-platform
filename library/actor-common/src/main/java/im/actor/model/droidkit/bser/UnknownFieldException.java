@@ -4,7 +4,9 @@
 
 package im.actor.model.droidkit.bser;
 
-public class UnknownFieldException extends RuntimeException {
+import java.io.IOException;
+
+public class UnknownFieldException extends IOException {
     public UnknownFieldException() {
     }
 
