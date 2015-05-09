@@ -6,12 +6,12 @@ import akka.persistence.kafka.server.TestServer
 import org.scalatest.Suite
 
 object KafkaSpec {
-  private var kafkaServer: TestServer = _
+  private var kafkaServer: Option[TestServer] = None
 
   private def newServer(): Unit = {
-    if (Option(kafkaServer) == None) {
-      kafkaServer = new TestServer()
-    }
+    kafkaServer foreach (_.stop())
+    cleanData()
+    kafkaServer = Some(new TestServer())
   }
 
   private def cleanData(): Unit = {
@@ -26,10 +26,4 @@ trait KafkaSpec {
   this: Suite ⇒
 
   KafkaSpec.newServer()
-
-  protected def cleanKafka(): Unit = {
-    KafkaSpec.kafkaServer.stop()
-    KafkaSpec.cleanData()
-    KafkaSpec.newServer()
-  }
 }
