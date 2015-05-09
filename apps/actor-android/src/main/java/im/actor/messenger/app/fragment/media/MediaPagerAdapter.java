@@ -44,7 +44,7 @@ public class MediaPagerAdapter extends FragmentStatePagerAdapter {
         if (document.getSource() instanceof FileRemoteSource) {
             FileRemoteSource remoteSource = (FileRemoteSource) document.getSource();
             final FileReference location = remoteSource.getFileReference();
-            fragment = PictureActivity.PictureFragment.getInstance(location.getFileId(), senderId);
+            fragment = PictureActivity.PictureFragment.getInstance(location, senderId);
 
             // todo not loaded?
         } else if (document.getSource() instanceof FileLocalSource) {
