@@ -660,26 +660,6 @@ class SeqUpdatesManager(
       case _ ⇒ DBIO.successful(builder)
     }
 
-    /*
-    textOpt match {
-      case Some(text) =>
-        val action = p.AuthId.findUserId(authId) flatMap {
-          case Some(userId) =>
-            for {
-              isMuted <- p.configs.Parameter.find(userId)
-            }
-            builder.setAlertBody(text)
-            Future.successful(builder)
-          case None =>
-            DBIO.successful(builder) // TODO: fail?
-        }
-
-        db.run(action)
-      case None =>
-        Future.successful(builder)
-    }
-     */
-
     db.run(action) foreach { b ⇒
       builder.addCustomProperty("seq", seq)
       builder.setContentAvailable(true)

@@ -51,7 +51,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val (userIds, groupIds) = updateRefs(update)
 
     val actions = for (a ← 1 to 600) yield {
-      persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None)
+      persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None, None)
     }
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
