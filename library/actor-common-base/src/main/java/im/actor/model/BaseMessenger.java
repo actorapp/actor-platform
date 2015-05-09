@@ -4,6 +4,7 @@
 
 package im.actor.model;
 
+import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
@@ -23,7 +24,8 @@ public class BaseMessenger extends Messenger {
 
     public BaseMessenger(Configuration configuration) {
         super(configuration);
-        
+        // Adding dispatcher for database
+        ActorSystem.system().addDispatcher("db", 1);
         displayLists = new DisplayLists(modules);
     }
 

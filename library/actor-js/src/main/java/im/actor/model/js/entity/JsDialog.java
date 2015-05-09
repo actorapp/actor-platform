@@ -24,10 +24,11 @@ public class JsDialog extends JavaScriptObject implements Exportable {
 
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
-                if (src.getMessageType() != ContentType.SERVICE) {
+                if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.EMPTY) {
                     showSender = true;
                 }
             }
+
             String senderName = null;
             if (showSender) {
                 senderName = messenger.getUsers().get(src.getSenderId()).getName().get();

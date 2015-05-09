@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.model.js.providers;
+package im.actor.model.js.providers.fs;
 
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.TypedArrays;
@@ -10,15 +10,12 @@ import com.google.gwt.typedarrays.shared.Uint8Array;
 
 import im.actor.model.files.FileReadCallback;
 import im.actor.model.files.InputFile;
-import im.actor.model.js.providers.fs.JsFile;
-import im.actor.model.js.providers.fs.JsFileLoadedClosure;
-import im.actor.model.js.providers.fs.JsFileReader;
 
 public class JsFileInput implements InputFile {
 
-    private JsFile jsFile;
+    private JsBlob jsFile;
 
-    public JsFileInput(JsFile jsFile) {
+    public JsFileInput(JsBlob jsFile) {
         this.jsFile = jsFile;
     }
 

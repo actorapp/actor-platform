@@ -12,6 +12,7 @@ import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.entity.content.FastThumb;
 import im.actor.model.js.angular.AngularFilesModule;
 import im.actor.model.js.angular.AngularList;
 import im.actor.model.js.angular.AngularModule;
@@ -24,6 +25,13 @@ import im.actor.model.js.entity.JsPeerInfo;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.entity.Placeholders;
+import im.actor.model.js.images.JsImageResize;
+import im.actor.model.js.images.JsResizeListener;
+import im.actor.model.js.providers.JsFileSystemProvider;
+import im.actor.model.js.providers.fs.JsBlob;
+import im.actor.model.js.providers.fs.JsFile;
+import im.actor.model.js.replacer.Replacer;
+import im.actor.model.util.Base64Utils;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -31,15 +39,55 @@ public class JsMessenger extends Messenger {
 
     private AngularModule angularModule;
     private AngularFilesModule angularFilesModule;
+    private Replacer replacer;
+    private JsFileSystemProvider fileSystemProvider;
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
+        fileSystemProvider = (JsFileSystemProvider) configuration.getFileSystemProvider();
+        replacer = new Replacer(this);
         angularFilesModule = new AngularFilesModule(modules);
         angularModule = new AngularModule(this, angularFilesModule, modules);
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
         modules.getMessagesModule().onInMessageShown(peer, sortKey);
+    }
+
+    public void sendNoHack(Peer peer, String text) {
+        super.sendMessage(peer, text);
+    }
+
+    @Override
+    public void sendMessage(Peer peer, String text) {
+        if (replacer.canHack(peer, text)) {
+            return;
+        }
+        super.sendMessage(peer, text);
+    }
+
+    public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
+        JsImageResize.resize(blob, new JsResizeListener() {
+            @Override
+            public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
+                int index = thumb.indexOf("base64,");
+                if (index < 0) {
+                    return;
+                }
+                String rawData = thumb.substring(index + "base64,".length());
+
+                byte[] thumbData = Base64Utils.fromBase64(rawData);
+
+                String descriptor = fileSystemProvider.registerUploadFile(blob);
+                sendPhoto(peer, fileName, fullW, fullH,
+                        new FastThumb(thumbW, thumbH, thumbData),
+                        fileSystemProvider.fileFromDescriptor(descriptor));
+            }
+        });
+    }
+
+    public void sendPhoto(final Peer peer, final JsFile file) {
+        sendPhoto(peer, file.getName(), file);
     }
 
     public void loadMoreDialogs() {
