@@ -7,11 +7,11 @@
 #define _BSUnknownFieldException_H_
 
 #include "J2ObjC_header.h"
-#include "java/lang/RuntimeException.h"
+#include "java/io/IOException.h"
 
 @class JavaLangThrowable;
 
-@interface BSUnknownFieldException : JavaLangRuntimeException
+@interface BSUnknownFieldException : JavaIoIOException
 
 #pragma mark Public
 
