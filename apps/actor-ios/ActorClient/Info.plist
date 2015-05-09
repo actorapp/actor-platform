@@ -14,6 +14,8 @@
 	<string>${API_URL2}</string>
 	<key>APP_THEME</key>
 	<string>${APP_THEME}</string>
+	<key>MINT_API_KEY</key>
+	<string>${MINT_API_KEY}</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

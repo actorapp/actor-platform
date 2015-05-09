@@ -61,6 +61,22 @@ get{
         
         UIImageJPEGRepresentation(resized, 0.80).writeToFile(path, atomically: true)
         
-        MSG.sendPhotoWithAMPeer(peer, withNSString: "image.jpg", withInt: jint(resized.size.width), withInt: jint(resized.size.height), withAMFastThumb: AMFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes()), withAMFileSystemReference: CocoaFile(path: descriptor))
+        sendPhotoWithAMPeer(peer, withNSString: "image.jpg", withInt: jint(resized.size.width), withInt: jint(resized.size.height), withAMFastThumb: AMFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes()), withAMFileSystemReference: CocoaFile(path: descriptor))
+    }
+    
+    private func prepareAvatar(image: UIImage) -> String {
+        var res = "/tmp/"+NSUUID().UUIDString
+        let avatarPath = CocoaFiles.pathFromDescriptor(res)
+        var thumb = image.resizeSquare(800, maxH: 800);
+        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)
+        return res
+    }
+    
+    func changeOwnAvatar(image: UIImage) {
+        changeAvatarWithNSString(prepareAvatar(image))
+    }
+    
+    func changeGroupAvatar(gid: jint, image: UIImage) {
+        changeGroupAvatarWithInt(gid, withNSString: prepareAvatar(image))
     }
 }

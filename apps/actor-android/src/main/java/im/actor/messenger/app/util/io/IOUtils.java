@@ -4,12 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class IOUtils {
@@ -104,6 +106,17 @@ public class IOUtils {
         }
         return os.toByteArray();
     }
+
+    public static String toString(FileInputStream fileInputStream) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(fileInputStream));
+        StringBuilder total = new StringBuilder();
+        String line;
+        while ((line = r.readLine()) != null) {
+            total.append(line);
+        }
+        return total.toString();
+    }
+
 
     public static interface ProgressListener {
         public void onProgress(int bytes);
