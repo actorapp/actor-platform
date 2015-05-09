@@ -20,6 +20,7 @@ import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.Container;
 import im.actor.model.network.mtp.entity.MessageAck;
 import im.actor.model.network.mtp.entity.ProtoMessage;
+import im.actor.model.network.mtp.entity.SessionHello;
 import im.actor.model.network.util.MTUids;
 
 public class SenderActor extends Actor {
@@ -74,7 +75,15 @@ public class SenderActor extends Actor {
                 toSend.add(unsentPackage);
             }
 
+            if (toSend.size() == 0) {
+                Log.d(TAG, "Sending SessionHello");
+                toSend.add(new ProtoMessage(MTUids.nextId(), new SessionHello().toByteArray()));
+            }
+
             doSend(toSend);
+        } else if (message instanceof SessionLost) {
+            Log.d(TAG, "Sending SessionHello");
+            doSend(new ProtoMessage(MTUids.nextId(), new SessionHello().toByteArray()));
         } else if (message instanceof ForgetMessage) {
             Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
             unsentPackages.remove(((ForgetMessage) message).mid);
@@ -106,11 +115,14 @@ public class SenderActor extends Actor {
         } else if (message instanceof NewSession) {
             Log.w(TAG, "Received NewSessionCreated");
 
-            // Resending all messages
+            NewSession newSession = (NewSession) message;
+            // Resending all required messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
-                Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
-                toSend.add(unsentPackage);
+                if (unsentPackage.getMessageId() < newSession.getMessageId()) {
+                    Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                    toSend.add(unsentPackage);
+                }
             }
 
             doSend(toSend);
@@ -203,6 +215,18 @@ public class SenderActor extends Actor {
     }
 
     public static class NewSession {
+        private long messageId;
+
+        public NewSession(long messageId) {
+            this.messageId = messageId;
+        }
+
+        public long getMessageId() {
+            return messageId;
+        }
+    }
+
+    public static class SessionLost {
 
     }
 
