@@ -1,7 +1,8 @@
 <md-list flex layout-padding class="messages-list" ng-controller="messagesController as messages" in-view-container>
     <md-list-item class="messages-list__item"
                   ng-repeat="message in messages.list"
-                  in-view="messages.setViewed( message.sortKey, message.isOut)">
+                  in-view="messages.setViewed( message.sortKey, message.isOut)"
+                  in-view-options="{ debounce: messages.messageDebounce }">
 
         <div class="messages-list__item__avatar avatar avatar--small avatar--{{ ::message.sender.placeholder }}"
              ng-hide="::message.content.content == 'service'">
