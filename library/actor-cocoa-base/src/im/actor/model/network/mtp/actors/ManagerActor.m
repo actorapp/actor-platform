@@ -392,21 +392,16 @@ MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) {
 }
 
 void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor *self, jint id_, id<AMConnection> connection) {
-  AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Connection #", id_, @" created"));
   if ([((id<AMConnection>) nil_chk(connection)) isClosed]) {
-    AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to register connection #", id_, @": already closed"));
     return;
   }
   if (self->currentConnectionId_ == id_) {
-    AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to register connection #", id_, @": already have connection"));
     return;
   }
   if (self->currentConnection_ != nil) {
     [self->currentConnection_ close];
-    AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
     self->currentConnectionId_ = 0;
   }
-  AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I", @"Set connection #", id_));
   self->currentConnectionId_ = id_;
   self->currentConnection_ = connection;
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onSuccess];
@@ -416,7 +411,6 @@ void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor 
 }
 
 void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self) {
-  AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Connection create failure");
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onFailure];
   self->isCheckingConnections_ = NO;
   MTManagerActor_requestCheckConnectionWithLong_(self, [self->backoff_ exponentialWait]);
@@ -425,13 +419,11 @@ void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self) {
 void MTManagerActor_onConnectionDieWithInt_(MTManagerActor *self, jint id_) {
   AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Connection #", id_, @" dies"));
   if (self->currentConnectionId_ == id_) {
-    AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
     self->currentConnectionId_ = 0;
     self->currentConnection_ = nil;
     MTManagerActor_requestCheckConnection(self);
   }
   else {
-    AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$I", @"Unable to unregister connection #", id_, @": connection not found, expected: #", self->currentConnectionId_));
   }
 }
 
@@ -490,7 +482,6 @@ void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *se
       [self->currentConnection_ close];
       self->currentConnection_ = nil;
       self->currentConnectionId_ = 0;
-      AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
     }
     MTManagerActor_checkConnection(self);
   }
@@ -499,7 +490,6 @@ void MTManagerActor_onInMessageWithByteArray_withInt_withInt_(MTManagerActor *se
 void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *self, IOSByteArray *data, jint offset, jint len) {
   if (self->currentConnection_ != nil && [self->currentConnection_ isClosed]) {
     self->currentConnection_ = nil;
-    AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Set connection #0");
     self->currentConnectionId_ = 0;
     MTManagerActor_checkConnection(self);
   }

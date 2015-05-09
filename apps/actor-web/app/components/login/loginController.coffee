@@ -21,7 +21,7 @@ class LoginController
 
   signUp: (name) ->
     console.log '[AW]LoginController signUp'
-    console.log '[AW]LoginController signUp: name', name
+    console.log '[AW]LoginController signUp' #: name', name
 
   wrongNumber: ->
     console.log '[AW]LoginController wrongNumber'

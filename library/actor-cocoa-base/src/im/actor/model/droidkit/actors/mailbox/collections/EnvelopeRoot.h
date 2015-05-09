@@ -25,6 +25,8 @@
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)fetchCollectionWithLong:(jlong)time;
 
+- (jint)getAllCount;
+
 #pragma mark Package-Private
 
 - (jlong)buildKeyWithLong:(jlong)time;

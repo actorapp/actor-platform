@@ -6,7 +6,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/UnknownFieldException.h"
-#include "java/lang/RuntimeException.h"
+#include "java/io/IOException.h"
 #include "java/lang/Throwable.h"
 
 @implementation BSUnknownFieldException
@@ -35,7 +35,7 @@
 @end
 
 void BSUnknownFieldException_init(BSUnknownFieldException *self) {
-  (void) JavaLangRuntimeException_init(self);
+  (void) JavaIoIOException_init(self);
 }
 
 BSUnknownFieldException *new_BSUnknownFieldException_init() {
@@ -45,7 +45,7 @@ BSUnknownFieldException *new_BSUnknownFieldException_init() {
 }
 
 void BSUnknownFieldException_initWithNSString_(BSUnknownFieldException *self, NSString *message) {
-  (void) JavaLangRuntimeException_initWithNSString_(self, message);
+  (void) JavaIoIOException_initWithNSString_(self, message);
 }
 
 BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_(NSString *message) {
@@ -55,7 +55,7 @@ BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_(NSString 
 }
 
 void BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(BSUnknownFieldException *self, NSString *message, JavaLangThrowable *cause) {
-  (void) JavaLangRuntimeException_initWithNSString_withJavaLangThrowable_(self, message, cause);
+  (void) JavaIoIOException_initWithNSString_withJavaLangThrowable_(self, message, cause);
 }
 
 BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_withJavaLangThrowable_(NSString *message, JavaLangThrowable *cause) {
@@ -65,7 +65,7 @@ BSUnknownFieldException *new_BSUnknownFieldException_initWithNSString_withJavaLa
 }
 
 void BSUnknownFieldException_initWithJavaLangThrowable_(BSUnknownFieldException *self, JavaLangThrowable *cause) {
-  (void) JavaLangRuntimeException_initWithJavaLangThrowable_(self, cause);
+  (void) JavaIoIOException_initWithJavaLangThrowable_(self, cause);
 }
 
 BSUnknownFieldException *new_BSUnknownFieldException_initWithJavaLangThrowable_(JavaLangThrowable *cause) {
