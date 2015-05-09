@@ -24,6 +24,7 @@ import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.network.mtp.entity.ProtoSerializer;
 import im.actor.model.network.mtp.entity.ProtoStruct;
 import im.actor.model.network.mtp.entity.RequestResend;
+import im.actor.model.network.mtp.entity.SessionLost;
 import im.actor.model.network.mtp.entity.UnsentMessage;
 import im.actor.model.network.mtp.entity.UnsentResponse;
 import im.actor.model.network.util.MTUids;
@@ -93,13 +94,16 @@ public class ReceiverActor extends Actor {
             // Log.d(TAG, obj + "");
 
             if (obj instanceof NewSessionCreated) {
-                sender.send(new SenderActor.NewSession());
+                NewSessionCreated newSessionCreated = (NewSessionCreated) obj;
+                sender.send(new SenderActor.NewSession(newSessionCreated.getMessageId()));
                 proto.getCallback().onSessionCreated();
             } else if (obj instanceof Container) {
                 Container container = (Container) obj;
                 for (ProtoMessage m : container.getMessages()) {
                     self().send(m, sender());
                 }
+            } else if (obj instanceof SessionLost) {
+                sender.send(new SenderActor.SessionLost());
             } else if (obj instanceof MTRpcResponse) {
                 MTRpcResponse responseBox = (MTRpcResponse) obj;
                 // Forget messages
@@ -114,15 +118,6 @@ public class ReceiverActor extends Actor {
             } else if (obj instanceof MTPush) {
                 MTPush box = (MTPush) obj;
                 proto.getCallback().onUpdate(box.getPayload());
-//                try {
-//                    Update update = ProtoSerializer.readUpdate(box.getPayload());
-//                    stateBroker.send(new im.actor.api.mtp.messages.Update(update.updateType, update.body));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    if (LOG != null) {
-//                        LOG.w(TAG, "Unable to load data from UpdateBox");
-//                    }
-//                }
             } else if (obj instanceof UnsentResponse) {
                 UnsentResponse unsent = (UnsentResponse) obj;
                 if (!receivedMessages.contains(unsent.getResponseMessageId())) {
