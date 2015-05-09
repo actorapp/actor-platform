@@ -28,6 +28,7 @@
 #include "im/actor/model/network/mtp/entity/ProtoSerializer.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/RequestResend.h"
+#include "im/actor/model/network/mtp/entity/SessionLost.h"
 #include "im/actor/model/network/mtp/entity/UnsentMessage.h"
 #include "im/actor/model/network/mtp/entity/UnsentResponse.h"
 #include "im/actor/model/network/util/MTUids.h"
@@ -149,7 +150,8 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
       return;
     }
     if ([obj isKindOfClass:[MTNewSessionCreated class]]) {
-      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_NewSession_init()];
+      MTNewSessionCreated *newSessionCreated = (MTNewSessionCreated *) check_class_cast(obj, [MTNewSessionCreated class]);
+      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_NewSession_initWithLong_([((MTNewSessionCreated *) nil_chk(newSessionCreated)) getMessageId])];
       [((id<MTMTProtoCallback>) nil_chk([((MTMTProto *) nil_chk(self->proto_)) getCallback])) onSessionCreated];
     }
     else if ([obj isKindOfClass:[MTContainer class]]) {
@@ -163,6 +165,9 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
           [((DKActorRef *) nil_chk([self self__])) sendWithId:m withDKActorRef:[self sender]];
         }
       }
+    }
+    else if ([obj isKindOfClass:[MTSessionLost class]]) {
+      [((DKActorRef *) nil_chk(self->sender_)) sendWithId:new_MTSenderActor_SessionLost_init()];
     }
     else if ([obj isKindOfClass:[MTMTRpcResponse class]]) {
       MTMTRpcResponse *responseBox = (MTMTRpcResponse *) check_class_cast(obj, [MTMTRpcResponse class]);

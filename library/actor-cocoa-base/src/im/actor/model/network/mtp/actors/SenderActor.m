@@ -21,6 +21,7 @@
 #include "im/actor/model/network/mtp/entity/Container.h"
 #include "im/actor/model/network/mtp/entity/MessageAck.h"
 #include "im/actor/model/network/mtp/entity/ProtoMessage.h"
+#include "im/actor/model/network/mtp/entity/SessionHello.h"
 #include "im/actor/model/network/util/MTUids.h"
 #include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
@@ -97,6 +98,13 @@ J2OBJC_FIELD_SETTER(MTSenderActor_SendMessage, message_, IOSByteArray *)
 
 @end
 
+@interface MTSenderActor_NewSession () {
+ @public
+  jlong messageId_;
+}
+
+@end
+
 @interface MTSenderActor_$1 : NSObject < DKActorCreator > {
  @public
   MTMTProto *val$proto_;
@@ -148,7 +156,15 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
       AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId]));
       [toSend addWithId:unsentPackage];
     }
+    if ([toSend size] == 0) {
+      AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Sending SessionHello");
+      [toSend addWithId:new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [new_MTSessionHello_init() toByteArray])];
+    }
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);
+  }
+  else if ([message isKindOfClass:[MTSenderActor_SessionLost class]]) {
+    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Sending SessionHello");
+    MTSenderActor_doSendWithMTProtoMessage_(self, new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [new_MTSessionHello_init() toByteArray]));
   }
   else if ([message isKindOfClass:[MTSenderActor_ForgetMessage class]]) {
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"Received ForgetMessage #", ((MTSenderActor_ForgetMessage *) nil_chk(((MTSenderActor_ForgetMessage *) check_class_cast(message, [MTSenderActor_ForgetMessage class]))))->mid_));
@@ -182,10 +198,13 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
   }
   else if ([message isKindOfClass:[MTSenderActor_NewSession class]]) {
     AMLog_wWithNSString_withNSString_(MTSenderActor_TAG_, @"Received NewSessionCreated");
+    MTSenderActor_NewSession *newSession = (MTSenderActor_NewSession *) check_class_cast(message, [MTSenderActor_NewSession class]);
     JavaUtilArrayList *toSend = new_JavaUtilArrayList_init();
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
-      AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId]));
-      [toSend addWithId:unsentPackage];
+      if ([((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId] < [((MTSenderActor_NewSession *) nil_chk(newSession)) getMessageId]) {
+        AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$J", @"ReSending #", [unsentPackage getMessageId]));
+        [toSend addWithId:unsentPackage];
+      }
     }
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);
   }
@@ -376,24 +395,50 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConnectionCreated)
 
 @implementation MTSenderActor_NewSession
 
+- (instancetype)initWithLong:(jlong)messageId {
+  MTSenderActor_NewSession_initWithLong_(self, messageId);
+  return self;
+}
+
+- (jlong)getMessageId {
+  return messageId_;
+}
+
+@end
+
+void MTSenderActor_NewSession_initWithLong_(MTSenderActor_NewSession *self, jlong messageId) {
+  (void) NSObject_init(self);
+  self->messageId_ = messageId;
+}
+
+MTSenderActor_NewSession *new_MTSenderActor_NewSession_initWithLong_(jlong messageId) {
+  MTSenderActor_NewSession *self = [MTSenderActor_NewSession alloc];
+  MTSenderActor_NewSession_initWithLong_(self, messageId);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_NewSession)
+
+@implementation MTSenderActor_SessionLost
+
 - (instancetype)init {
-  MTSenderActor_NewSession_init(self);
+  MTSenderActor_SessionLost_init(self);
   return self;
 }
 
 @end
 
-void MTSenderActor_NewSession_init(MTSenderActor_NewSession *self) {
+void MTSenderActor_SessionLost_init(MTSenderActor_SessionLost *self) {
   (void) NSObject_init(self);
 }
 
-MTSenderActor_NewSession *new_MTSenderActor_NewSession_init() {
-  MTSenderActor_NewSession *self = [MTSenderActor_NewSession alloc];
-  MTSenderActor_NewSession_init(self);
+MTSenderActor_SessionLost *new_MTSenderActor_SessionLost_init() {
+  MTSenderActor_SessionLost *self = [MTSenderActor_SessionLost alloc];
+  MTSenderActor_SessionLost_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_NewSession)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_SessionLost)
 
 @implementation MTSenderActor_ForceAck
 

@@ -32,6 +32,14 @@ public class EnvelopeRoot {
         this.queue = queue;
     }
 
+    public synchronized int getAllCount() {
+        int res = 0;
+        for (EnvelopeCollection e : collections.values()) {
+            res += e.getSize();
+        }
+        return res;
+    }
+
     public synchronized void attachCollection(EnvelopeCollection collection) {
         long key = collection.getTopKey();
 
