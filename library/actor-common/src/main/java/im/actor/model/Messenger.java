@@ -76,7 +76,10 @@ public class Messenger {
         // Actor system
         timing.section("Actors");
         ActorSystem.system().setTraceInterface(new ActorTrace());
-        ActorSystem.system().addDispatcher("db", 1);
+
+//        if (!configuration.getMainThreadProvider().isSingleThread()) {
+//            ActorSystem.system().addDispatcher("db", 1);
+//        }
 
         timing.section("Modules:Create");
         this.modules = new Modules(this, configuration);

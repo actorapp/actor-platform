@@ -94,24 +94,28 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
 
             if (isInverted) {
                 for (int i = values.size() - 1; i >= 0; i--) {
-                    if (values.get(i).getEngineSort() > sortKey) {
-                        values.add(i, item);
-                        insert(jsValues, i, entityConverter.convert(item, messenger));
+                    if (sortKey > values.get(i).getEngineSort()) {
+                        values.add(i + 1, item);
+                        insert(jsValues, i + 1, entityConverter.convert(item, messenger));
                         return;
                     }
                 }
+
+                values.add(0, item);
+                insert(jsValues, 0, entityConverter.convert(item, messenger));
             } else {
                 for (int i = 0; i < values.size(); i++) {
-                    if (values.get(i).getEngineSort() < sortKey) {
+                    if (sortKey > values.get(i).getEngineSort()) {
                         values.add(i, item);
                         insert(jsValues, i, entityConverter.convert(item, messenger));
                         return;
                     }
                 }
+
+                values.add(item);
+                jsValues.push(entityConverter.convert(item, messenger));
             }
 
-            values.add(item);
-            jsValues.push(entityConverter.convert(item, messenger));
         } finally {
             notifySubscribers();
         }
