@@ -52,9 +52,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, storage_
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, pendingStorage_, ImActorModelModulesNotificationsEntityPendingStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor, visiblePeer_, AMPeer *)
 
-static NSString *ImActorModelModulesNotificationsNotificationsActor_PREFERENCES_STORAGE_ = @"notifications_pending";
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesNotificationsNotificationsActor, PREFERENCES_STORAGE_, NSString *)
-
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesNotificationsNotificationsActor, MAX_NOTIFICATION_COUNT, jint)
 
 __attribute__((unused)) static id<JavaUtilList> ImActorModelModulesNotificationsNotificationsActor_getNotifications(ImActorModelModulesNotificationsNotificationsActor *self);
@@ -134,29 +131,34 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
                        withInt:(jint)sender
                       withLong:(jlong)date
       withAMContentDescription:(AMContentDescription *)description_ {
-  jboolean isEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabledWithAMPeer:peer];
+  jboolean isPeerEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabledWithAMPeer:peer];
+  jboolean isEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabled] && isPeerEnabled;
   id<JavaUtilList> allPending = ImActorModelModulesNotificationsNotificationsActor_getNotifications(self);
-  if (isEnabled) {
-    [((id<JavaUtilList>) nil_chk(allPending)) addWithId:new_ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(peer, sender, date, description_)];
-    ImActorModelModulesNotificationsNotificationsActor_saveStorage(self);
-  }
+  [((id<JavaUtilList>) nil_chk(allPending)) addWithId:new_ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(peer, sender, date, description_)];
+  ImActorModelModulesNotificationsNotificationsActor_saveStorage(self);
   if ([((AMConfiguration *) nil_chk([self config])) getNotificationProvider] != nil) {
-    if (visiblePeer_ != nil && [visiblePeer_ isEqual:peer]) {
-      if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled]) {
-        [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInAppWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
+    if (isAppVisible_) {
+      if (visiblePeer_ != nil && [visiblePeer_ isEqual:peer]) {
+        if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled]) {
+          [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInAppWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
+        }
       }
-      return;
-    }
-    if (isDialogsVisible_) {
-      if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled]) {
-        [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInAppWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
+      else if (isDialogsVisible_) {
+        if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled]) {
+          [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onMessageArriveInAppWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger]];
+        }
       }
-      return;
+      else if ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isInAppEnabled]) {
+        if (isPeerEnabled) {
+          ImActorModelModulesNotificationsNotificationsActor_performNotificationWithBoolean_(self, NO);
+        }
+      }
     }
-    if (!isEnabled) {
-      return;
+    else {
+      if (isEnabled) {
+        ImActorModelModulesNotificationsNotificationsActor_performNotificationWithBoolean_(self, NO);
+      }
     }
-    ImActorModelModulesNotificationsNotificationsActor_performNotificationWithBoolean_(self, NO);
   }
 }
 
@@ -300,7 +302,7 @@ void ImActorModelModulesNotificationsNotificationsActor_performNotificationWithB
     [peers addWithId:[((ImActorModelModulesNotificationsEntityPendingNotification *) nil_chk(p)) getPeer]];
   }
   jint chatsCount = [peers size];
-  [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onNotificationWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger] withJavaUtilList:res withInt:messagesCount withInt:chatsCount withBoolean:isSilentUpdate];
+  [((id<AMNotificationProvider>) nil_chk([((AMConfiguration *) nil_chk([self config])) getNotificationProvider])) onNotificationWithAMMessenger:[((ImActorModelModulesModules *) nil_chk([self modules])) getMessenger] withJavaUtilList:res withInt:messagesCount withInt:chatsCount withBoolean:isSilentUpdate withBoolean:self->isAppVisible_];
 }
 
 void ImActorModelModulesNotificationsNotificationsActor_hideNotification(ImActorModelModulesNotificationsNotificationsActor *self) {
