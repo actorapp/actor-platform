@@ -341,7 +341,9 @@ class AuthServiceImpl(activationContext: ActivationContext)(
       // TODO: use service-level logging
       actorSystem.log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
 
-      val update = UpdateContactRegistered(user.id, isSilent, date.getMillis)
+      val randomId = ThreadLocalRandom.current().nextLong()
+      val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+      // TODO: write service message if isSilent == true
 
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
       val actions = contacts map { contact ⇒
