@@ -16,6 +16,8 @@
 	<string>${APP_THEME}</string>
 	<key>MINT_API_KEY</key>
 	<string>${MINT_API_KEY}</string>
+	<key>MIXPANEL_API_KEY</key>
+	<string>${MIXPANEL_API_KEY}</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
