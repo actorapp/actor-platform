@@ -51,7 +51,12 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean silentUpdate) {
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount,
+                               boolean silentUpdate, boolean isInApp) {
+
+        // Android ignores isInApp argument because it is ok to send normal notification
+        // instead in-app
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setAutoCancel(true);
