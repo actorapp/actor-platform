@@ -27,9 +27,10 @@ public interface NotificationProvider {
      * @param messagesCount      total messages count
      * @param conversationsCount total conversations count
      * @param silentUpdate       is silent notification update required
+     * @param isInApp            is notification performed in application window
      */
     void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount,
-                        int conversationsCount, boolean silentUpdate);
+                        int conversationsCount, boolean silentUpdate, boolean isInApp);
 
     /**
      * Hide all notifications
