@@ -44,6 +44,7 @@ android {
     def ENABLE_PHONE_BOOK = "ENABLE_PHONE_BOOK"
     def VERSION_TITLE = "VERSION_TITLE"
     def MINT = "MINT"
+    def MIXPANEL = "MIXPANEL"
     def HOCKEY = "HOCKEY"
     def API_URL = "API_URL"
     def API_ID = "API_ID"
@@ -76,6 +77,10 @@ android {
     // Bug catch
     def MINT_MAIN = "\"4345135a\""
 
+    // Tracking
+    def MIXPANEL_DEBUG = "\"b2b7a96c3f1e131cf170029f97b2c7c2\""
+    def MIXPANEL_RELEASE = "\"c82ba102f81bc9371bce1ab96e9a576a\""
+
     def API_MAIN_ID = "1"
     def API_MAIN_KEY = "\"4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855\""
 
@@ -98,6 +103,7 @@ android {
         // Integrations
         buildConfigField STRING, HOCKEY, NULL
         buildConfigField STRING, MINT, MINT_MAIN
+        buildConfigField STRING, MIXPANEL, MIXPANEL_DEBUG
     }
 
     signingConfigs {
@@ -112,6 +118,8 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
             signingConfig signingConfigs.release
             applicationIdSuffix ".business"
+
+            buildConfigField STRING, MIXPANEL, MIXPANEL_RELEASE
         }
 
         llectro {
@@ -136,6 +144,7 @@ android {
             applicationIdSuffix ".business"
 
             buildConfigField STRING, HOCKEY, HOCKEY_ENTERPRISE
+            buildConfigField STRING, MIXPANEL, MIXPANEL_RELEASE
         }
 
         // Development builds
