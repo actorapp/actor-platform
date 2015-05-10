@@ -330,7 +330,7 @@ object SeqUpdatesManager {
       case api.groups.UpdateGroupUserAdded(groupId, userId, inviterUserId, _, _) ⇒ (Set(userId, inviterUserId), Set(groupId))
       case api.groups.UpdateGroupUserKick(groupId, userId, kickerUserId, _, _)   ⇒ (Set(userId, kickerUserId), Set(groupId))
       case api.groups.UpdateGroupUserLeave(groupId, userId, _, _)                ⇒ (Set(userId), Set(groupId))
-      case api.contacts.UpdateContactRegistered(userId, _, _)                    ⇒ singleUser(userId)
+      case api.contacts.UpdateContactRegistered(userId, _, _, _)                 ⇒ singleUser(userId)
       case api.contacts.UpdateContactsAdded(userIds)                             ⇒ users(userIds)
       case api.contacts.UpdateContactsRemoved(userIds)                           ⇒ users(userIds)
       case api.users.UpdateEmailMoved(_, userId)                                 ⇒ singleUser(userId)
@@ -345,7 +345,6 @@ object SeqUpdatesManager {
       case api.users.UpdateUserNameChanged(userId, _)                            ⇒ singleUser(userId)
       case api.users.UpdateUserPhoneAdded(userId, _)                             ⇒ singleUser(userId)
       case api.users.UpdateUserPhoneRemoved(userId, _)                           ⇒ singleUser(userId)
-      case api.users.UpdateUserStateChanged(userId, _)                           ⇒ singleUser(userId)
       case api.weak.UpdateGroupOnline(groupId, _)                                ⇒ singleGroup(groupId)
       case api.weak.UpdateTyping(peer, userId, _) ⇒
         val refs = peerRefs(peer)

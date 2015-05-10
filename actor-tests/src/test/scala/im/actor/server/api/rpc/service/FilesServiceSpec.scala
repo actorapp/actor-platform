@@ -107,7 +107,7 @@ class FilesServiceSpec extends BaseServiceSuite {
   }
 
   def e3() = {
-    whenReady(service.handleCommitFileUpload(uploadKey)) { resp ⇒
+    whenReady(service.handleCommitFileUpload(uploadKey, "The.File")) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseCommitFileUpload(_)) ⇒
       }
@@ -124,6 +124,8 @@ class FilesServiceSpec extends BaseServiceSuite {
 
       resp.toOption.get.url
     }
+
+    urlStr should include("The.File?")
 
     val url = new URL(urlStr)
     val connection = url.openConnection().asInstanceOf[HttpURLConnection]

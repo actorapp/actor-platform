@@ -1,0 +1,1 @@
+ALTER TABLE files ADD COLUMN name text NOT NULL default '';

@@ -703,26 +703,6 @@
           }
         },
         {
-          "type": "enum",
-          "content": {
-            "name": "UserState",
-            "values": [
-              {
-                "name": "Registered",
-                "id": 1
-              },
-              {
-                "name": "Email",
-                "id": 2
-              },
-              {
-                "name": "Deleted",
-                "id": 3
-              }
-            ]
-          }
-        },
-        {
           "type": "struct",
           "content": {
             "name": "Phone",
@@ -973,14 +953,6 @@
                 },
                 "id": 10,
                 "name": "emails"
-              },
-              {
-                "type": {
-                  "type": "enum",
-                  "childType": "UserState"
-                },
-                "id": 11,
-                "name": "userState"
               }
             ]
           }
@@ -1464,43 +1436,6 @@
                 },
                 "id": 3,
                 "name": "emails"
-              }
-            ]
-          }
-        },
-        {
-          "type": "update",
-          "content": {
-            "name": "UserStateChanged",
-            "header": 100,
-            "doc": [
-              "Update about user state changed",
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  user's id"
-              },
-              {
-                "type": "reference",
-                "argument": "state",
-                "category": "full",
-                "description": "  new user state"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "uid"
-              },
-              {
-                "type": {
-                  "type": "enum",
-                  "childType": "UserState"
-                },
-                "id": 2,
-                "name": "state"
               }
             ]
           }
@@ -2226,6 +2161,14 @@
                 },
                 "id": 3,
                 "name": "date"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 4,
+                "name": "rid"
               }
             ]
           }
@@ -5681,6 +5624,11 @@
                 "type": "bytes",
                 "id": 1,
                 "name": "uploadKey"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "fileName"
               }
             ]
           }

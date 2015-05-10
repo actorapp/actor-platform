@@ -40,7 +40,7 @@ class FilesServiceImpl(bucketName: String)(
       persist.File.find(location.fileId) flatMap {
         case Some(file) ⇒
           if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
-            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, FileUtils.s3Key(file.id))
+            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, FileUtils.s3Key(file.id, file.name))
             val timeout = 1.day
 
             val expiration = new java.util.Date
@@ -115,7 +115,7 @@ class FilesServiceImpl(bucketName: String)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  override def jhandleCommitFileUpload(uploadKey: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseCommitFileUpload]] = {
+  override def jhandleCommitFileUpload(uploadKey: Array[Byte], fileName: String, clientData: ClientData): Future[HandlerResult[ResponseCommitFileUpload]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       val key = new String(uploadKey)
 
@@ -131,11 +131,11 @@ class FilesServiceImpl(bucketName: String)(
             concatFile ← DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
             fileLengthF = getFileLength(concatFile)
             upload = FutureTransfer.listenFor {
-              transferManager.upload(bucketName, s"file_${file.id}", concatFile)
+              transferManager.upload(bucketName, FileUtils.s3Key(file.id, fileName), concatFile)
             } map (_.waitForCompletion())
             _ ← DBIO.from(upload)
             _ ← DBIO.from(deleteDir(tempDir))
-            _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.File.setUploaded(file.id, size))
+            _ ← DBIO.from(fileLengthF) flatMap (size ⇒ persist.File.setUploaded(file.id, size, fileName))
           } yield {
             Ok(ResponseCommitFileUpload(FileLocation(file.id, ACLUtils.fileAccessHash(file.id, file.accessSalt))))
           }
