@@ -34,7 +34,6 @@ object UserUtils {
         phone = phones.head.number,
         phones = phones map (_.id) toVector,
         emails = emails map (_.id) toVector,
-        userState = users.UserState.apply(u.state.toInt),
         avatar = adOpt flatMap (AvatarUtils.avatar)
       )
     }
@@ -61,7 +60,6 @@ object UserUtils {
         phone = phones.head.number,
         phones = phones map (_.id) toVector,
         emails = emails map (_.id) toVector,
-        userState = users.UserState.apply(u.state.toInt),
         avatar = adOpt flatMap (AvatarUtils.avatar)
       )
     }

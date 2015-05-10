@@ -26,20 +26,20 @@ object FileUtils {
   ): dbio.DBIOAction[Option[File], NoStream, Read with Effect] = {
     persist.File.find(id) flatMap {
       case Some(file) ⇒
-        download(bucketName, file.id) map (Some(_))
+        download(bucketName, file.id, file.name) map (Some(_))
       case None ⇒ DBIO.successful(None)
     }
   }
 
-  def download(bucketName: String, id: Long)(implicit transferManager: TransferManager, ec: ExecutionContext) = {
+  def download(bucketName: String, id: Long, name: String)(implicit transferManager: TransferManager, ec: ExecutionContext) = {
     for {
       dirFile ← DBIO.from(createTempDir())
       file = dirFile.toPath.resolve("file").toFile
-      _ ← DBIO.from(FutureTransfer.listenFor(transferManager.download(bucketName, s3Key(id), file)) map (_.waitForCompletion()))
+      _ ← DBIO.from(FutureTransfer.listenFor(transferManager.download(bucketName, s3Key(id, name), file)) map (_.waitForCompletion()))
     } yield file
   }
 
-  def uploadFile(bucketName: String, file: File)(
+  def uploadFile(bucketName: String, name: String, file: File)(
     implicit
     transferManager: TransferManager,
     ec:              ExecutionContext,
@@ -51,21 +51,27 @@ object FileUtils {
     val sizeF = getFileLength(file)
 
     for {
-      _ ← persist.File.create(id, accessSalt, s3Key(id))
-      _ ← DBIO.from(upload(bucketName, id, file))
-      _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s))
+      _ ← persist.File.create(id, accessSalt, s3Key(id, name))
+      _ ← DBIO.from(upload(bucketName, id, name, file))
+      _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s, name))
     } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
   }
 
-  def upload(bucketName: String, id: Long, file: File)(
+  def upload(bucketName: String, id: Long, name: String, file: File)(
     implicit
     transferManager: TransferManager,
     ec:              ExecutionContext
   ): Future[UploadResult] = {
-    FutureTransfer.listenFor(transferManager.upload(bucketName, s3Key(id), file)) map (_.waitForUploadResult())
+    FutureTransfer.listenFor(transferManager.upload(bucketName, s3Key(id, name), file)) map (_.waitForUploadResult())
   }
 
-  def s3Key(id: Long): String = s"file_${id}"
+  def s3Key(id: Long, name: String): String = {
+    if (name.isEmpty) {
+      s"file_${id}"
+    } else {
+      s"file_${id}/${name}"
+    }
+  }
 
   // FIXME: #perf pinned dispatcher
   def createTempDir()(implicit ec: ExecutionContext): Future[File] = {

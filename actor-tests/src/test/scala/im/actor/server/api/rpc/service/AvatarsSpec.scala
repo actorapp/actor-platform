@@ -69,7 +69,7 @@ class AvatarsSpec extends BaseServiceSuite {
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
     def e1() = {
-      val validOrigFileModel = Await.result(db.run(uploadFile(bucketName, validOrigFile)), 5.seconds)
+      val validOrigFileModel = Await.result(db.run(uploadFile(bucketName, "avatar.jpg", validOrigFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(FileLocation(validOrigFileModel.fileId, validOrigFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
@@ -81,21 +81,21 @@ class AvatarsSpec extends BaseServiceSuite {
         r.avatar.fullImage.get.width should ===(validOrigDimensions._1)
         r.avatar.fullImage.get.height should ===(validOrigDimensions._2)
         r.avatar.fullImage.get.fileSize should ===(validOrigBytes.length)
-        whenReady(db.run(download(bucketName, r.avatar.fullImage.get.fileLocation.fileId))) { file ⇒
+        whenReady(db.run(download(bucketName, r.avatar.fullImage.get.fileLocation.fileId, "avatar.jpg"))) { file ⇒
           org.apache.commons.io.FileUtils.readFileToByteArray(file) should ===(validOrigBytes)
         }
 
         r.avatar.smallImage.get.width should ===(validSmallDimensions._1)
         r.avatar.smallImage.get.height should ===(validSmallDimensions._2)
         r.avatar.smallImage.get.fileSize should ===(validSmallBytes.length)
-        whenReady(db.run(download(bucketName, r.avatar.smallImage.get.fileLocation.fileId))) { file ⇒
+        whenReady(db.run(download(bucketName, r.avatar.smallImage.get.fileLocation.fileId, "small-avatar.jpg"))) { file ⇒
           org.apache.commons.io.FileUtils.readFileToByteArray(file) should ===(validSmallBytes)
         }
 
         r.avatar.largeImage.get.width should ===(validLargeDimensions._1)
         r.avatar.largeImage.get.height should ===(validLargeDimensions._2)
         r.avatar.largeImage.get.fileSize should ===(validLargeBytes.length)
-        whenReady(db.run(download(bucketName, r.avatar.largeImage.get.fileLocation.fileId))) { file ⇒
+        whenReady(db.run(download(bucketName, r.avatar.largeImage.get.fileLocation.fileId, "large-avatar.jpg"))) { file ⇒
           org.apache.commons.io.FileUtils.readFileToByteArray(file) should ===(validLargeBytes)
         }
 
@@ -103,7 +103,7 @@ class AvatarsSpec extends BaseServiceSuite {
     }
 
     def e2() = {
-      val invalidImageFileModel = Await.result(db.run(uploadFile(bucketName, invalidImageFile)), 5.seconds)
+      val invalidImageFileModel = Await.result(db.run(uploadFile(bucketName, "invalid-avatar.jpg", invalidImageFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(FileLocation(invalidImageFileModel.fileId, invalidImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
@@ -113,7 +113,7 @@ class AvatarsSpec extends BaseServiceSuite {
     }
 
     def e3() = {
-      val tooLargeImageFileModel = Await.result(db.run(uploadFile(bucketName, tooLargeImageFile)), 5.seconds)
+      val tooLargeImageFileModel = Await.result(db.run(uploadFile(bucketName, "too-large-avatar.jpg", tooLargeImageFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(FileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {

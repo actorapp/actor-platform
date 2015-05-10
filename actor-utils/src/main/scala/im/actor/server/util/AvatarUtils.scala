@@ -70,6 +70,9 @@ object AvatarUtils {
     ec:              ExecutionContext,
     system:          ActorSystem
   ) = {
+    val smallFileName = "small-avatar.jpg"
+    val largeFileName = "large-avatar.jpg"
+
     persist.File.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
         downloadFile(bucketName, fullFileId) flatMap {
@@ -81,14 +84,14 @@ object AvatarUtils {
               smallAimg ← DBIO.from(resizeToSmall(fullAimg))
               largeAimg ← DBIO.from(resizeToLarge(fullAimg))
 
-              smallFile = fullFile.getParentFile.toPath.resolve("small.jpg").toFile
-              largeFile = fullFile.getParentFile.toPath.resolve("large.jpg").toFile
+              smallFile = fullFile.getParentFile.toPath.resolve(smallFileName).toFile
+              largeFile = fullFile.getParentFile.toPath.resolve(largeFileName).toFile
 
               _ ← DBIO.from(smallAimg.writer(Format.JPEG).write(smallFile))
               _ ← DBIO.from(largeAimg.writer(Format.JPEG).write(largeFile))
 
-              smallFileLocation ← uploadFile(bucketName, smallFile)
-              largeFileLocation ← uploadFile(bucketName, largeFile)
+              smallFileLocation ← uploadFile(bucketName, smallFileName, smallFile)
+              largeFileLocation ← uploadFile(bucketName, largeFileName, largeFile)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 

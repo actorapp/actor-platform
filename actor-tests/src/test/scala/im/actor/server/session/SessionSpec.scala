@@ -165,7 +165,7 @@ class SessionSpec extends BaseSessionSpec {
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
 
-      val update = UpdateContactRegistered(1, true, 1L)
+      val update = UpdateContactRegistered(1, true, 1L, 2L)
       Await.result(db.run(SeqUpdatesManager.broadcastClientUpdate(update, None)), 1.second)
 
       expectSeqUpdate(authId, sessionId).update should ===(update.toByteArray)
@@ -210,7 +210,7 @@ class SessionSpec extends BaseSessionSpec {
 
       implicit val clientData = AuthorizedClientData(authId, sessionId, authResult.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id)
 
-      val update = UpdateContactRegistered(1, true, 1L)
+      val update = UpdateContactRegistered(1, true, 1L, 5L)
       Await.result(db.run(WeakUpdatesManager.broadcastUserWeakUpdate(clientData.userId, update)), 1.second)
 
       expectWeakUpdate(authId, sessionId).update should ===(update.toByteArray)
