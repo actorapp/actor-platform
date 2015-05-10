@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAAuthPhoneController: AAAuthController {
+class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
     
     // MARK: - 
     // MARK: Private vars
@@ -95,6 +95,7 @@ class AAAuthPhoneController: AAAuthController {
         phoneTextField.placeholder = NSLocalizedString("AuthPhoneNumberHint", comment: "Hint")
         phoneTextField.keyboardType = UIKeyboardType.NumberPad;
         phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        phoneTextField.delegate = self
         view.addSubview(phoneTextField)
         
         navigationBarSeparator = UIView()
@@ -166,22 +167,33 @@ class AAAuthPhoneController: AAAuthController {
         phoneTextField.becomeFirstResponder()
     }
     
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        MSG.trackAuthPhoneTypeWithNSString(textField.text)
+        return true
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         MainAppTheme.navigation.applyAuthStatusBar()
+        MSG.trackAuthPhoneOpen()
     }
     
     // MARK: -
     // MARK: Methods
     
     func nextButtonPressed() {
+        let action = "Request code"
+        MSG.trackCodeRequest()
         let numberLength = count(phoneTextField.phoneNumber) as Int
         let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
         if (numberLength < numberRequiredLength) {
-            SVProgressHUD.showErrorWithStatus(NSLocalizedString("AuthPhoneTooShort", comment: "Too short error"))
+            var msg = NSLocalizedString("AuthPhoneTooShort", comment: "Too short error");
+            SVProgressHUD.showErrorWithStatus(msg)
+            MSG.trackActionErrorWithNSString(action, withNSString: "LOCAL_EMPTY_PHONE", withNSString: msg)
         } else {
             execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
                 successBlock: { (val) -> () in
+                    MSG.trackActionSuccessWithNSString(action)
                     self.navigateToSms()
                 },
                 failureBlock: { (val) -> () in
