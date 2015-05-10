@@ -72,7 +72,7 @@ get{
     }
     
     private func prepareAvatar(image: UIImage) -> String {
-        var res = "/tmp/"+NSUUID().UUIDString
+        var res = "/tmp/" + NSUUID().UUIDString
         let avatarPath = CocoaFiles.pathFromDescriptor(res)
         var thumb = image.resizeSquare(800, maxH: 800);
         UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)

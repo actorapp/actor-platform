@@ -44,6 +44,7 @@
 		060323621AE0667400C73C0F /* AAAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323611AE0667400C73C0F /* AAAuthController.swift */; };
 		060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323651AE07D1000C73C0F /* MainSplitViewController.swift */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
+		0623AC4A1AFFB436007CD6B7 /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */; };
 		062774371AC070F700A4A8B3 /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774361AC070F700A4A8B3 /* SearchSource.swift */; };
 		062774391AC073D700A4A8B3 /* ContactsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774381AC073D700A4A8B3 /* ContactsSource.swift */; };
 		063BCF311AB7AC0F00D469AB /* iOSNotificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */; };
@@ -794,6 +795,7 @@
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
+		0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
 		062774361AC070F700A4A8B3 /* SearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchSource.swift; path = ../../SearchSource.swift; sourceTree = "<group>"; };
 		062774381AC073D700A4A8B3 /* ContactsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsSource.swift; path = ../../ContactsSource.swift; sourceTree = "<group>"; };
 		063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSNotificationProvider.swift; sourceTree = "<group>"; };
@@ -2197,6 +2199,7 @@
 				062774381AC073D700A4A8B3 /* ContactsSource.swift */,
 				0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */,
 				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
+				0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */,
 			);
 			path = Root;
 			sourceTree = "<group>";
@@ -4709,6 +4712,7 @@
 				06FCF1761AB60B0F00422FEC /* CocoaLogProvider.swift in Sources */,
 				06819F851AFE96910095576A /* Delete.m in Sources */,
 				06819E771AFE96910095576A /* RequestSignUp.m in Sources */,
+				0623AC4A1AFFB436007CD6B7 /* AAImagePickerController.swift in Sources */,
 				06819EAC1AFE96910095576A /* UpdateGroupInvite.m in Sources */,
 				06819F2B1AFE96910095576A /* ObjectCache.m in Sources */,
 				06819E431AFE96900095576A /* OutPeer.m in Sources */,

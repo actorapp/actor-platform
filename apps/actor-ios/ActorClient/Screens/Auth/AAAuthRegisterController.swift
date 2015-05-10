@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import MobileCoreServices 
 
 class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
     
@@ -285,6 +286,14 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
         if (MSG.getAuthState() != AMAuthState.SIGN_UP.rawValue) {
             navigateBack()
         }
+    }
+    
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        MainAppTheme.navigation.applyStatusBar()
+    }
+    
+    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
+        MainAppTheme.navigation.applyStatusBar()
     }
 }
 
