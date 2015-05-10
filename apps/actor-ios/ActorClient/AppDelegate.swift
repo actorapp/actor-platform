@@ -9,7 +9,7 @@ import Foundation
     // MARK: -
     // MARK: Private vars
     
-    private var window : UIWindow?;
+    var window : UIWindow?
     private var binder = Binder()
     
     // MARK: -
