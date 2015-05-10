@@ -198,10 +198,11 @@ class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
                 },
                 failureBlock: { (val) -> () in
                     var message = "Unknown error"
+                    var tag = "UNKNOWN"
                     var canTryAgain = false
                     
                     if let exception = val as? AMRpcException {
-                        var tag = exception.getTag()
+                        tag = exception.getTag()
                         if (tag == "PHONE_NUMBER_INVALID") {
                             message = NSLocalizedString("ErrorPhoneIncorrect", comment: "PHONE_NUMBER_INVALID error")
                         } else {
@@ -212,6 +213,8 @@ class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
                         message = exception.getLocalizedMessage()
                         canTryAgain = true
                     }
+                    
+                    MSG.trackActionErrorWithNSString(action, withNSString: tag, withNSString: message)
                     
                     var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()
