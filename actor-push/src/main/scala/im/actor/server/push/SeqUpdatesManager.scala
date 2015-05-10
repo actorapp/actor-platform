@@ -16,7 +16,9 @@ import akka.util.Timeout
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
 import com.google.android.gcm.server.{ Message ⇒ GCMMessage, Sender ⇒ GCMSender }
 import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
+import slick.dbio
 import slick.dbio.DBIO
+import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
@@ -24,6 +26,7 @@ import im.actor.api.rpc.peers.{ PeerType, Peer }
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.commons.serialization.TaggedFieldSerializable
+import im.actor.server.models.sequence
 import im.actor.server.{ models, persist ⇒ p }
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
@@ -273,13 +276,22 @@ object SeqUpdatesManager {
     seqUpdManagerRegion.ref ! Envelope(authId, ApplePushCredentialsUpdated(credsOpt))
   }
 
-  def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext) = {
+  def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext): dbio.DBIOAction[(Seq[sequence.SeqUpdate], Boolean, Array[Byte]), NoStream, Read] = {
     val timestamp = bytesToTimestamp(state)
     for (updates ← p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1)) yield {
       if (updates.length > MaxDifferenceUpdates) {
-        (updates.take(updates.length - 1), true)
+        val neededUpdates = updates.take(updates.length - 1)
+
+        (neededUpdates, true, timestampToBytes(neededUpdates.last.timestamp))
       } else {
-        (updates, false)
+        val newState =
+          if (updates.nonEmpty) {
+            timestampToBytes(updates.last.timestamp)
+          } else {
+            state
+          }
+
+        (updates, false, newState)
       }
     }
   }
