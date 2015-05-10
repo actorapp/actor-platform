@@ -46,6 +46,17 @@
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
 		0623AC4A1AFFB436007CD6B7 /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */; };
 		0623AC4E1AFFF07C007CD6B7 /* silence.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC4D1AFFF07C007CD6B7 /* silence.aiff */; };
+		0623AC5C1B001F8E007CD6B7 /* ariel.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC511B001F8E007CD6B7 /* ariel.caf */; };
+		0623AC5D1B001F8E007CD6B7 /* carme.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC521B001F8E007CD6B7 /* carme.caf */; };
+		0623AC5E1B001F8E007CD6B7 /* ceres.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC531B001F8E007CD6B7 /* ceres.caf */; };
+		0623AC5F1B001F8E007CD6B7 /* elara.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC541B001F8E007CD6B7 /* elara.caf */; };
+		0623AC601B001F8E007CD6B7 /* europa.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC551B001F8E007CD6B7 /* europa.caf */; };
+		0623AC611B001F8E007CD6B7 /* iapetus.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC561B001F8E007CD6B7 /* iapetus.caf */; };
+		0623AC621B001F8E007CD6B7 /* io.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC571B001F8E007CD6B7 /* io.caf */; };
+		0623AC631B001F8E007CD6B7 /* rhea.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC581B001F8E007CD6B7 /* rhea.caf */; };
+		0623AC641B001F8E007CD6B7 /* salacia.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC591B001F8E007CD6B7 /* salacia.caf */; };
+		0623AC651B001F8E007CD6B7 /* tethys.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC5A1B001F8E007CD6B7 /* tethys.caf */; };
+		0623AC661B001F8E007CD6B7 /* titan.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC5B1B001F8E007CD6B7 /* titan.caf */; };
 		062774371AC070F700A4A8B3 /* SearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774361AC070F700A4A8B3 /* SearchSource.swift */; };
 		062774391AC073D700A4A8B3 /* ContactsSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062774381AC073D700A4A8B3 /* ContactsSource.swift */; };
 		063BCF311AB7AC0F00D469AB /* iOSNotificationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */; };
@@ -798,6 +809,17 @@
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
 		0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
 		0623AC4D1AFFF07C007CD6B7 /* silence.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = silence.aiff; sourceTree = "<group>"; };
+		0623AC511B001F8E007CD6B7 /* ariel.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ariel.caf; sourceTree = "<group>"; };
+		0623AC521B001F8E007CD6B7 /* carme.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = carme.caf; sourceTree = "<group>"; };
+		0623AC531B001F8E007CD6B7 /* ceres.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ceres.caf; sourceTree = "<group>"; };
+		0623AC541B001F8E007CD6B7 /* elara.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = elara.caf; sourceTree = "<group>"; };
+		0623AC551B001F8E007CD6B7 /* europa.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = europa.caf; sourceTree = "<group>"; };
+		0623AC561B001F8E007CD6B7 /* iapetus.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = iapetus.caf; sourceTree = "<group>"; };
+		0623AC571B001F8E007CD6B7 /* io.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = io.caf; sourceTree = "<group>"; };
+		0623AC581B001F8E007CD6B7 /* rhea.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = rhea.caf; sourceTree = "<group>"; };
+		0623AC591B001F8E007CD6B7 /* salacia.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = salacia.caf; sourceTree = "<group>"; };
+		0623AC5A1B001F8E007CD6B7 /* tethys.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = tethys.caf; sourceTree = "<group>"; };
+		0623AC5B1B001F8E007CD6B7 /* titan.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = titan.caf; sourceTree = "<group>"; };
 		062774361AC070F700A4A8B3 /* SearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchSource.swift; path = ../../SearchSource.swift; sourceTree = "<group>"; };
 		062774381AC073D700A4A8B3 /* ContactsSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsSource.swift; path = ../../ContactsSource.swift; sourceTree = "<group>"; };
 		063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSNotificationProvider.swift; sourceTree = "<group>"; };
@@ -2364,6 +2386,24 @@
 				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
 			);
 			name = Main;
+			sourceTree = "<group>";
+		};
+		0623AC501B001F61007CD6B7 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				0623AC511B001F8E007CD6B7 /* ariel.caf */,
+				0623AC521B001F8E007CD6B7 /* carme.caf */,
+				0623AC531B001F8E007CD6B7 /* ceres.caf */,
+				0623AC541B001F8E007CD6B7 /* elara.caf */,
+				0623AC551B001F8E007CD6B7 /* europa.caf */,
+				0623AC561B001F8E007CD6B7 /* iapetus.caf */,
+				0623AC571B001F8E007CD6B7 /* io.caf */,
+				0623AC581B001F8E007CD6B7 /* rhea.caf */,
+				0623AC591B001F8E007CD6B7 /* salacia.caf */,
+				0623AC5A1B001F8E007CD6B7 /* tethys.caf */,
+				0623AC5B1B001F8E007CD6B7 /* titan.caf */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 		0649DCE91AE6472200070F7D /* Providers */ = {
@@ -4369,6 +4409,7 @@
 				06F6B70F1AB0CE9600A7DB91 /* Resouces.swift */,
 				0603232D1ADF066500C73C0F /* App.swift */,
 				2537F8301A966B9D004A02E9 /* Supporting Files */,
+				0623AC501B001F61007CD6B7 /* Sounds */,
 				06CCE9411AD4A68200A17705 /* Pods */,
 				0699D4C81ADC8D820005AB9B /* Localizable.strings */,
 				2537F8421A966B9D004A02E9 /* LaunchScreen.xib */,
@@ -4574,21 +4615,32 @@
 				06D1D7851ACAE31000AC22ED /* AppText_Ru.properties in Resources */,
 				0699D4C61ADC8D820005AB9B /* Localizable.strings in Resources */,
 				0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */,
+				0623AC651B001F8E007CD6B7 /* tethys.caf in Resources */,
 				06CCE93F1AD4A67D00A17705 /* Pods-ActorApp.releasellectro.xcconfig in Resources */,
 				06D1D7861ACAE31000AC22ED /* AppText.properties in Resources */,
+				0623AC621B001F8E007CD6B7 /* io.caf in Resources */,
 				06D1D7871ACAE31000AC22ED /* Months_Ru.properties in Resources */,
 				06D1D7881ACAE31000AC22ED /* Months.properties in Resources */,
+				0623AC631B001F8E007CD6B7 /* rhea.caf in Resources */,
 				0623AC4E1AFFF07C007CD6B7 /* silence.aiff in Resources */,
 				06CCE93D1AD4A67D00A17705 /* Pods-ActorApp.releasedev1.xcconfig in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
 				06CCE93E1AD4A67D00A17705 /* Pods-ActorApp.releasedev2.xcconfig in Resources */,
 				06A907D11AB7AE8200E087EA /* notification.aiff in Resources */,
+				0623AC661B001F8E007CD6B7 /* titan.caf in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
+				0623AC5C1B001F8E007CD6B7 /* ariel.caf in Resources */,
+				0623AC5F1B001F8E007CD6B7 /* elara.caf in Resources */,
+				0623AC601B001F8E007CD6B7 /* europa.caf in Resources */,
 				069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */,
 				065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */,
 				06D1D77F1ACAD9ED00AC22ED /* mapping.properties in Resources */,
+				0623AC5D1B001F8E007CD6B7 /* carme.caf in Resources */,
+				0623AC611B001F8E007CD6B7 /* iapetus.caf in Resources */,
 				06D1D7801ACAD9ED00AC22ED /* prefixes.properties in Resources */,
+				0623AC641B001F8E007CD6B7 /* salacia.caf in Resources */,
 				06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */,
+				0623AC5E1B001F8E007CD6B7 /* ceres.caf in Resources */,
 				2537F8441A966B9D004A02E9 /* LaunchScreen.xib in Resources */,
 				06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */,
 			);
