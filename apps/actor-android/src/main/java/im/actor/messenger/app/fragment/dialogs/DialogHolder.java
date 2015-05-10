@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import im.actor.android.view.BindedViewHolder;
 import im.actor.messenger.R;
+import im.actor.messenger.app.emoji.SmileProcessor;
+import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
@@ -26,6 +28,7 @@ import im.actor.model.mvvm.ValueModel;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
 
 /**
  * Created by ex3ndr on 14.03.15.
@@ -222,7 +225,7 @@ public class DialogHolder extends BindedViewHolder {
             time.setVisibility(View.GONE);
         }
 
-        String contentText = messenger().getFormatter().formatContentDialogText(data.getSenderId(),
+        CharSequence contentText = messenger().getFormatter().formatContentDialogText(data.getSenderId(),
                 data.getMessageType(), data.getText(), data.getRelatedUid());
 
         if (messenger().getFormatter().isLargeDialogMessage(data.getMessageType())) {
@@ -232,6 +235,23 @@ public class DialogHolder extends BindedViewHolder {
                 bindedText = messenger().getFormatter().formatPerformerName(data.getSenderId()) + ": " + contentText;
             } else {
                 bindedText = contentText;
+            }
+        }
+
+        if(SmileProcessor.containsEmoji(bindedText)){
+            if(emoji().isLoaded()){
+                bindedText = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_BUBBLES);;
+            } else {
+                emoji().registerListener(new SmilesListener() {
+                    @Override
+                    public void onSmilesUpdated(boolean completed) {
+                        CharSequence emojiProcessed = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_DIALOGS);
+                        if(text.getText().equals(bindedText)){
+                            text.setText(emojiProcessed);
+                        }
+                        bindedText = emojiProcessed;
+                    }
+                });
             }
         }
 
