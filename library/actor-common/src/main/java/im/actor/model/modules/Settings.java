@@ -19,8 +19,13 @@ public class Settings extends BaseModule {
     private final String KEY_NOTIFICATION_TONES;
     private final String KEY_CHAT_SEND_BY_ENTER;
 
+    private final String KEY_NOTIFICATION_ENABLED;
     private final String KEY_NOTIFICATION_SOUND;
+    private final String KEY_NOTIFICATION_SOUND_ENABLED;
     private final String KEY_NOTIFICATION_VIBRATION;
+    private final String KEY_NOTIFICATION_IN_APP_ENABLED;
+    private final String KEY_NOTIFICATION_IN_APP_SOUND;
+    private final String KEY_NOTIFICATION_IN_APP_VIBRATION;
     private final String KEY_NOTIFICATION_TEXT;
     private final String KEY_NOTIFICATION_CHAT_PREFIX;
 
@@ -63,11 +68,18 @@ public class Settings extends BaseModule {
         KEY_NOTIFICATION_TONES = "app." + configKey + ".tones_enabled";
         KEY_CHAT_SEND_BY_ENTER = "app." + configKey + ".send_by_enter";
 
+        KEY_NOTIFICATION_SOUND = "account.notification.sound";
+
         // Category specific settings
-        KEY_NOTIFICATION_SOUND = "category." + deviceTypeKey + ".notification.sound.enabled";
+        KEY_NOTIFICATION_ENABLED = "category." + deviceTypeKey + ".notification.enabled";
+        KEY_NOTIFICATION_SOUND_ENABLED = "category." + deviceTypeKey + ".notification.sound.enabled";
         KEY_NOTIFICATION_VIBRATION = "category." + deviceTypeKey + ".notification.vibration.enabled";
         KEY_NOTIFICATION_TEXT = "category." + deviceTypeKey + ".notification.show_text";
         KEY_NOTIFICATION_CHAT_PREFIX = "category." + deviceTypeKey + ".notification.chat.";
+
+        KEY_NOTIFICATION_IN_APP_ENABLED = "category." + deviceTypeKey + ".in_app.enabled";
+        KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
+        KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
     }
 
     public void run() {
@@ -83,7 +95,7 @@ public class Settings extends BaseModule {
         writeValue(key, value);
     }
 
-    // Notifications
+    // Sound Effects
 
     public boolean isConversationTonesEnabled() {
         return loadValue(KEY_NOTIFICATION_TONES, true);
@@ -93,12 +105,30 @@ public class Settings extends BaseModule {
         changeValue(KEY_NOTIFICATION_TONES, val);
     }
 
+    // Notifications
+
+    public boolean isNotificationsEnabled() {
+        return loadValue(KEY_NOTIFICATION_ENABLED, true);
+    }
+
+    public void changeNotificationsEnabled(boolean val) {
+        changeValue(KEY_NOTIFICATION_ENABLED, val);
+    }
+
     public boolean isNotificationSoundEnabled() {
-        return loadValue(KEY_NOTIFICATION_SOUND, true);
+        return loadValue(KEY_NOTIFICATION_SOUND_ENABLED, true);
     }
 
     public void changeNotificationSoundEnabled(boolean val) {
-        changeValue(KEY_NOTIFICATION_SOUND, val);
+        changeValue(KEY_NOTIFICATION_SOUND_ENABLED, val);
+    }
+
+    public String getNotificationSound() {
+        return readValue(KEY_NOTIFICATION_SOUND);
+    }
+
+    public void changeNotificationSound(String sound) {
+        changeValue(KEY_NOTIFICATION_SOUND, sound);
     }
 
     public boolean isVibrationEnabled() {
@@ -115,6 +145,32 @@ public class Settings extends BaseModule {
 
     public void changeShowNotificationTextEnabled(boolean val) {
         changeValue(KEY_NOTIFICATION_TEXT, val);
+    }
+
+    // In-App notifications
+
+    public boolean isInAppEnabled() {
+        return loadValue(KEY_NOTIFICATION_IN_APP_ENABLED, true);
+    }
+
+    public void changeInAppEnabled(boolean val) {
+        changeValue(KEY_NOTIFICATION_IN_APP_ENABLED, val);
+    }
+
+    public boolean isInAppSoundEnabled() {
+        return loadValue(KEY_NOTIFICATION_IN_APP_SOUND, true);
+    }
+
+    public void changeInAppSoundEnabled(boolean val) {
+        changeValue(KEY_NOTIFICATION_IN_APP_SOUND, val);
+    }
+
+    public boolean isInAppVibrationEnabled() {
+        return loadValue(KEY_NOTIFICATION_IN_APP_VIBRATION, true);
+    }
+
+    public void changeInAppVibrationEnabled(boolean val) {
+        changeValue(KEY_NOTIFICATION_IN_APP_VIBRATION, val);
     }
 
     // Chat settings
@@ -135,6 +191,14 @@ public class Settings extends BaseModule {
 
     public void changeNotificationsEnabled(Peer peer, boolean val) {
         changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".enabled", val);
+    }
+
+    public String getNotificationSound(Peer peer) {
+        return readValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound");
+    }
+
+    public void changeNotificationSound(Peer peer, String sound) {
+        changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound", sound);
     }
 
     private String getChatKey(Peer peer) {
@@ -160,8 +224,12 @@ public class Settings extends BaseModule {
 
     private void changeValue(String key, boolean val) {
         String sVal = val ? "true" : "false";
-        writeValue(key, sVal);
-        settingsSync.send(new SettingsSyncActor.ChangeSettings(key, sVal));
+        changeValue(key, sVal);
+    }
+
+    private void changeValue(String key, String val) {
+        writeValue(key, val);
+        settingsSync.send(new SettingsSyncActor.ChangeSettings(key, val));
     }
 
     private void writeValue(String key, String val) {

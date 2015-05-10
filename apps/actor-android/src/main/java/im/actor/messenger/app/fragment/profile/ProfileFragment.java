@@ -1,6 +1,8 @@
 package im.actor.messenger.app.fragment.profile;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -139,10 +141,10 @@ public class ProfileFragment extends BaseFragment {
                                                             .replace("{0}", phoneNumber)
                                                             .replace("{1}", user.getName().get())));
                                         } else if (which == 3) {
-                                            android.content.ClipboardManager clipboard =
-                                                    (android.content.ClipboardManager) getActivity()
+                                            ClipboardManager clipboard =
+                                                    (ClipboardManager) getActivity()
                                                             .getSystemService(Context.CLIPBOARD_SERVICE);
-                                            android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phoneNumber);
+                                            ClipData clip = ClipData.newPlainText("Phone number", phoneNumber);
                                             clipboard.setPrimaryClip(clip);
                                             Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
                                         }
@@ -155,8 +157,8 @@ public class ProfileFragment extends BaseFragment {
                 recordView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", "+" + record.getPhone());
+                        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Phone number", "+" + record.getPhone());
                         clipboard.setPrimaryClip(clip);
                         Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
                         return true;
@@ -181,6 +183,40 @@ public class ProfileFragment extends BaseFragment {
                 startActivity(ViewAvatarActivity.viewAvatar(uid, getActivity()));
             }
         });
+
+        int docsCount = 0;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
+        if (docsCount == 0) {
+            res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
+        } else {
+            res.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+            res.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.openDocs(Peer.user(uid), getActivity()));
+                }
+            });
+            ((TextView) res.findViewById(R.id.docCount)).setText(
+                    "" + docsCount
+            );
+        }
+
+        Peer peer = Peer.user(uid);
+        int mediaCount = messenger().getMediaCount(peer);
+        if (mediaCount == 0) {
+            res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
+        } else {
+            res.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
+            res.findViewById(R.id.mediaContainer).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.openMedias(Peer.user(uid), getActivity()));
+                }
+            });
+            res.findViewById(R.id.mediaCount).setVisibility(View.VISIBLE);
+            ((TextView) res.findViewById(R.id.mediaCount)).setText(
+                    "" + mediaCount
+            );
+        }
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
         final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);

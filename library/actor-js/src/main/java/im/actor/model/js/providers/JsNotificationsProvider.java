@@ -28,7 +28,9 @@ public class JsNotificationsProvider implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean silentUpdate) {
+    public void onNotification(Messenger messenger, List<Notification> topNotifications,
+                               int messagesCount, int conversationsCount, boolean silentUpdate,
+                               boolean isInApp) {
         if (silentUpdate) {
             return;
         }

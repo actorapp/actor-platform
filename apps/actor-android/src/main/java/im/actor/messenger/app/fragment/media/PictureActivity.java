@@ -18,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.droidkit.progress.CircularView;
 
@@ -32,9 +31,11 @@ import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
+import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.viewmodel.FileCallback;
+import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.UserVM;
 import uk.co.senab.photoview.DefaultOnDoubleTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -42,10 +43,15 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 import static im.actor.messenger.app.Core.getImageLoader;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
 
 
 public class PictureActivity extends BaseActivity {
 
+
+    private static final String ARG_FILE_SIZE = "ARG_FILE_SIZE";
+    private static final String ARG_FILE_ACCESS_HASH = "ARG_FILE_ACCESS";
+    private static final String ARG_FILE_NAME = "ARG_FILE_NAME";
     private static final String ARG_FILE_PATH = "arg_file_path";
     private static final String ARG_FILE_ID = "arg_file_id";
     private static final String ARG_OWNER = "arg_owner";
@@ -238,6 +244,9 @@ public class PictureActivity extends BaseActivity {
         private PhotoViewAttacher attacher;
         private String path;
         private long fileId;
+        private long accessHash;
+        private int fileSize;
+        private String fileName;
         private CircularView circularView;
         private View backgroundView;
 
@@ -258,6 +267,9 @@ public class PictureActivity extends BaseActivity {
             final Bundle bundle = getArguments();
             path = bundle.getString(ARG_FILE_PATH);
             fileId = bundle.getLong(ARG_FILE_ID);
+            accessHash = bundle.getLong(ARG_FILE_ACCESS_HASH);
+            fileSize = bundle.getInt(ARG_FILE_SIZE);
+            fileName = bundle.getString(ARG_FILE_NAME);
             int sender = bundle.getInt(ARG_OWNER, 0);
             circularView = (CircularView) rootView.findViewById(R.id.progress);
             circularView.setValue(50);
@@ -265,6 +277,7 @@ public class PictureActivity extends BaseActivity {
             imageView.setExtraReceiverCallback(new ReceiverCallback() {
                 @Override
                 public void onImageLoaded(BitmapReference bitmap) {
+                    goneView(circularView);
                     attacher = new PhotoViewAttacher(imageView);
                     attacher.setOnDoubleTapListener(new DefaultOnDoubleTapListener(attacher) {
                         @Override
@@ -302,16 +315,38 @@ public class PictureActivity extends BaseActivity {
                 }
             });
             if (path == null) {
+
                 messenger().requestState(fileId, new FileCallback() {
                     @Override
                     public void onNotDownloaded() {
-                        //messenger().startDownloading(location);
-                        Toast.makeText(getActivity(), "File is not loaded :O", Toast.LENGTH_SHORT).show();
+                        final FileReference location = new FileReference(fileId, accessHash, fileSize, fileName);
+                        messenger().bindFile(location, true, new FileVMCallback() {
+                            @Override
+                            public void onNotDownloaded() {
+                                messenger().startDownloading(location);
+                            }
+
+                            @Override
+                            public void onDownloading(float progress) {
+                                circularView.setValue((int) progress);
+                            }
+
+                            @Override
+                            public void onDownloaded(final FileSystemReference reference) {
+                                MVVMEngine.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        path = reference.getDescriptor();
+                                        imageView.request(new RawFileTask(path));
+                                    }
+                                });
+                            }
+                        });
+                        circularView.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onDownloading(float progress) {
-
                     }
 
                     @Override
@@ -381,7 +416,8 @@ public class PictureActivity extends BaseActivity {
         @Override
         public void onDestroyView() {
             super.onDestroyView();
-            attacher.cleanup();
+            if(attacher!=null)
+                attacher.cleanup();
         }
 
         @Override
@@ -525,6 +561,19 @@ public class PictureActivity extends BaseActivity {
         public static Fragment getInstance(long fileId, int senderId) {
             Bundle bundle = new Bundle();
             bundle.putLong(ARG_FILE_ID, fileId);
+            bundle.putInt(ARG_OWNER, senderId);
+            Fragment fragment = new PictureFragment();
+            fragment.setArguments(bundle);
+            return fragment;
+        }
+
+
+        public static Fragment getInstance(FileReference ref, int senderId) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(ARG_FILE_ID, ref.getFileId());
+            bundle.putInt(ARG_FILE_SIZE, ref.getFileSize());
+            bundle.putLong(ARG_FILE_ACCESS_HASH, ref.getAccessHash());
+            bundle.putString(ARG_FILE_NAME, ref.getFileName());
             bundle.putInt(ARG_OWNER, senderId);
             Fragment fragment = new PictureFragment();
             fragment.setArguments(bundle);

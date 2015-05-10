@@ -51,7 +51,12 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean silentUpdate) {
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount,
+                               boolean silentUpdate, boolean isInApp) {
+
+        // Android ignores isInApp argument because it is ok to send normal notification
+        // instead in-app
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setAutoCancel(true);
@@ -98,7 +103,7 @@ public class AndroidNotifications implements NotificationProvider {
                     .setContentText(text)
                     .setContentIntent(PendingIntent.getActivity(context, 0,
                             Intents.openDialog(topNotification.getPeer(), false, context),
-                            PendingIntent.FLAG_ONE_SHOT))
+                            PendingIntent.FLAG_UPDATE_CURRENT))
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(text))
                     .build();
@@ -113,7 +118,7 @@ public class AndroidNotifications implements NotificationProvider {
 
             builder.setContentIntent(PendingIntent.getActivity(context, 0,
                     Intents.openDialog(topNotification.getPeer(), false, context),
-                    PendingIntent.FLAG_ONE_SHOT));
+                    PendingIntent.FLAG_UPDATE_CURRENT));
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {
@@ -136,7 +141,7 @@ public class AndroidNotifications implements NotificationProvider {
 
             builder.setContentIntent(PendingIntent.getActivity(context, 0,
                     new Intent(context, MainActivity.class),
-                    PendingIntent.FLAG_ONE_SHOT));
+                    PendingIntent.FLAG_UPDATE_CURRENT));
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {

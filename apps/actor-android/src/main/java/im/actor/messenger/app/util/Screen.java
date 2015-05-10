@@ -57,6 +57,6 @@ public class Screen {
     public static boolean hasNavigationBar() {
         Resources resources = AppContext.getContext().getResources();
         int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
-        return id > 0 && resources.getBoolean(id);
+        return  (id > 0) && resources.getBoolean(id);
     }
 }
