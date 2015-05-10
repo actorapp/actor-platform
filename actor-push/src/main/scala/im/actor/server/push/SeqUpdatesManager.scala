@@ -654,13 +654,11 @@ class SeqUpdatesManager(
             val key = s"category.mobile.notification.chat.${peerStr}.enabled"
 
             p.configs.Parameter.findValue(userId, key) map {
-              case Some("true") ⇒
-                builder.setAlertBody(text)
-                builder
               case Some("false") ⇒
                 builder
               case _ ⇒
                 builder.setAlertBody(text)
+                builder.setSoundFileName("silence.aiff")
                 builder
             }
           case None ⇒ DBIO.successful(builder) // TODO: fail?
