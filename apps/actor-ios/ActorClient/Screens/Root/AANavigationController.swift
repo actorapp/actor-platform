@@ -14,5 +14,4 @@ class AANavigationController: UINavigationController {
         navigationBar.shadowImage = UIImage()
         navigationBar.translucent = true
     }
-    
 }
