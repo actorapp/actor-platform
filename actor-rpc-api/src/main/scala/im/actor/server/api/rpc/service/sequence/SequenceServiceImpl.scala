@@ -47,13 +47,13 @@ class SequenceServiceImpl(
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
         seqstate ← getSeqState(client.authId)
-        (updates, needMore) ← getDifference(client.authId, state)
+        (updates, needMore, newState) ← getDifference(client.authId, state)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, phones, groups) ← getUsersPhonesGroups(userIds, groupIds)
       } yield {
         Ok(ResponseGetDifference(
           seq = seqstate._1,
-          state = seqstate._2,
+          state = newState,
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,

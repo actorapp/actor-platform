@@ -50,15 +50,35 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val update = UpdateContactsAdded(Vector(1, 2, 3))
     val (userIds, groupIds) = updateRefs(update)
 
-    val actions = for (a ← 1 to 600) yield {
+    val actions = for (a ← 1 to 203) yield {
       persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None, None)
     }
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
 
-    whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
+    val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
       res should matchPattern {
         case Ok(ResponseGetDifference(seq, state, users, updates, true, groups, phones, emails)) if updates.length == 100 ⇒
+      }
+
+      val diff = res.toOption.get
+
+      (diff.seq, diff.state)
+    }
+
+    val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1)) { res ⇒
+      res should matchPattern {
+        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups, phones, emails)) if updates.length == 100 ⇒
+      }
+
+      val diff = res.toOption.get
+
+      (diff.seq, diff.state)
+    }
+
+    whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
+      res should matchPattern {
+        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, phones, emails)) if updates.length == 3 ⇒
       }
     }
   }
