@@ -76,10 +76,32 @@ class SequenceServiceSpec extends BaseServiceSuite {
       (diff.seq, diff.state)
     }
 
+    val (seq3, state3) = whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
+      res should matchPattern {
+        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, phones, emails)) if updates.length == 3 ⇒
+      }
+
+      val diff = res.toOption.get
+
+      (diff.seq, diff.state)
+    }
+
     whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
       res should matchPattern {
         case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, phones, emails)) if updates.length == 3 ⇒
       }
+    }
+
+    whenReady(service.handleGetDifference(seq3, state3)) { res ⇒
+      res should matchPattern {
+        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, phones, emails)) if updates.isEmpty ⇒
+      }
+
+      val diff = res.toOption.get
+
+      diff.seq shouldEqual seq3
+
+      diff.state shouldEqual state3
     }
   }
 }
