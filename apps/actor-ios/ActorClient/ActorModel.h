@@ -39,6 +39,7 @@
 #import "im/actor/model/LocaleProvider.h"
 #import "im/actor/model/PhoneBookProvider.h"
 #import "im/actor/model/HttpProvider.h"
+#import "im/actor/model/AnalyticsProvider.h"
 #import "im/actor/model/AppCategory.h"
 #import "im/actor/model/DeviceCategory.h"
 
