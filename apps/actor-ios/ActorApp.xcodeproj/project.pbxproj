@@ -5460,6 +5460,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = 8721303f;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5556,6 +5557,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = 8721303f;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5652,6 +5654,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = 8721303f;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5748,6 +5751,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = 8721303f;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5844,6 +5848,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = 8721303f;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5985,6 +5990,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = "";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
@@ -6028,6 +6034,7 @@
 				INFOPLIST_FILE = ActorClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MINT_API_KEY = 8721303f;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";

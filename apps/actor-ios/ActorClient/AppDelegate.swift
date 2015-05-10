@@ -22,21 +22,6 @@ import Foundation
             }
         }
         
-        // Apply styles
-        MainAppTheme.navigation.applyAppearance(application)
-        MainAppTheme.tab.applyAppearance(application)
-        MainAppTheme.search.applyAppearance(application)
-        
-        // Register notifications
-        if application.respondsToSelector("registerUserNotificationSettings:") {
-            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
-            application.registerUserNotificationSettings(settings)
-            application.registerForRemoteNotifications()
-        } else {
-            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
-        }
-        
         // Register hockey app
         if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
             if (hockey.trim().size() > 0) {
@@ -48,8 +33,22 @@ import Foundation
             }
         }
         
-        // Creating main window
+        // Register notifications
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
+        } else {
+            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+        }
         
+        // Apply styles
+        MainAppTheme.navigation.applyAppearance(application)
+        MainAppTheme.tab.applyAppearance(application)
+        MainAppTheme.search.applyAppearance(application)
+        
+        // Creating main window
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.backgroundColor = UIColor.whiteColor()
         
