@@ -475,7 +475,7 @@ extension AAConversationController: UIDocumentPickerDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AAConversationController: UIImagePickerControllerDelegate {
+extension AAConversationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
@@ -499,21 +499,12 @@ extension AAConversationController: UIImagePickerControllerDelegate {
 }
 
 // MARK: -
-// MARK: UINavigationController Delegate
-
-extension AAConversationController: UINavigationControllerDelegate {
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        MainAppTheme.navigation.applyStatusBarFast()
-    }
-}
-
-// MARK: -
 // MARK: ABActionShit Delegate
 
 extension AAConversationController: ABActionShitDelegate {
     func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
         if (buttonIndex == 0 || buttonIndex == 1) {
-            var pickerController = UIImagePickerController()
+            var pickerController = AAImagePickerController()
             pickerController.sourceType = (buttonIndex == 0 ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             pickerController.mediaTypes = [kUTTypeImage]
             pickerController.view.backgroundColor = MainAppTheme.list.bgColor

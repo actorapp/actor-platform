@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import MobileCoreServices 
 
 class AAConversationGroupInfoController: AATableViewController {
     
@@ -403,10 +404,15 @@ extension AAConversationGroupInfoController: UIActionSheetDelegate {
 
         if (buttonIndex == 1 || buttonIndex == 2) {
             let takePhoto = (buttonIndex == 1)
-            var picker = UIImagePickerController()
-            picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
-            picker.delegate = self
-            self.navigationController!.presentViewController(picker, animated: true, completion: nil)
+            var pickerController = AAImagePickerController()
+            pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+            pickerController.mediaTypes = [kUTTypeImage]
+            pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+            pickerController.delegate = self
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+            self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
         } else if (buttonIndex == 3) {
             MSG.removeGroupAvatarWithInt(jint(gid))
         }
@@ -416,7 +422,7 @@ extension AAConversationGroupInfoController: UIActionSheetDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AAConversationGroupInfoController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
+extension AAConversationGroupInfoController: UIImagePickerControllerDelegate, PECropViewControllerDelegate, UINavigationControllerDelegate {
     
     func cropImage(image: UIImage) {
         var cropController = PECropViewController()
