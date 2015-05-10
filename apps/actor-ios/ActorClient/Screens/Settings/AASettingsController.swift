@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import MobileCoreServices 
 
 class AASettingsController: AATableViewController {
     
@@ -349,9 +350,14 @@ extension AASettingsController: UIActionSheetDelegate {
         
         if (buttonIndex == 1 || buttonIndex == 2) {
             let takePhoto = (buttonIndex == 1)
-            var picker = UIImagePickerController()
+            var picker = AAImagePickerController()
             picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+            picker.mediaTypes = [kUTTypeImage]
+            picker.view.backgroundColor = MainAppTheme.list.bgColor
+            picker.navigationBar.tintColor = MainAppTheme.navigation.barColor
             picker.delegate = self
+            picker.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            picker.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
         } else if (buttonIndex == 3) {
             MSG.removeAvatar()
@@ -362,7 +368,7 @@ extension AASettingsController: UIActionSheetDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AASettingsController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
+extension AASettingsController: UIImagePickerControllerDelegate, PECropViewControllerDelegate, UINavigationControllerDelegate {
     
     func cropImage(image: UIImage) {
         var cropController = PECropViewController()
@@ -402,15 +408,6 @@ extension AASettingsController: UIImagePickerControllerDelegate, PECropViewContr
         MainAppTheme.navigation.applyStatusBar()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-    
-}
-
-// MARK: -
-// MARK: UINavigationController Delegate
-
-extension AASettingsController: UINavigationControllerDelegate {
-    
-    
     
 }
 
