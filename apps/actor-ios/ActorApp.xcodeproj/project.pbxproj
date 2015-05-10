@@ -680,6 +680,7 @@
 		0681A08F1AFE96910095576A /* Pack.m in Sources */ = {isa = PBXBuildFile; fileRef = 06819E1E1AFE96900095576A /* Pack.m */; };
 		0681A0901AFE96910095576A /* Shorts.m in Sources */ = {isa = PBXBuildFile; fileRef = 06819E201AFE96900095576A /* Shorts.m */; };
 		0681A0911AFE96910095576A /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 06819E221AFE96900095576A /* Strings.m */; };
+		06896B101AFF204100BA271D /* MixpanelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06896B0F1AFF204100BA271D /* MixpanelProvider.swift */; };
 		0692F6ED1AD77AA300D61AFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0692F6EC1AD77AA300D61AFB /* Images.xcassets */; };
 		0699D4C11ADC80B20005AB9B /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0699D4C01ADC80B20005AB9B /* AppTheme.swift */; };
 		0699D4C61ADC8D820005AB9B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
@@ -2053,6 +2054,7 @@
 		06819E201AFE96900095576A /* Shorts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shorts.m; sourceTree = "<group>"; };
 		06819E211AFE96900095576A /* Strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		06819E221AFE96900095576A /* Strings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Strings.m; sourceTree = "<group>"; };
+		06896B0F1AFF204100BA271D /* MixpanelProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixpanelProvider.swift; sourceTree = "<group>"; };
 		0692F6EC1AD77AA300D61AFB /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0699D4C01ADC80B20005AB9B /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		0699D4C51ADC8D670005AB9B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -2373,6 +2375,7 @@
 				06C97C9C1AF4225000E16F19 /* CocoaTcpConnection.swift */,
 				063BCF301AB7AC0F00D469AB /* iOSNotificationProvider.swift */,
 				06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */,
+				06896B0F1AFF204100BA271D /* MixpanelProvider.swift */,
 			);
 			name = Providers;
 			sourceTree = "<group>";
@@ -4936,6 +4939,7 @@
 				06819FF91AFE96910095576A /* UnsentMessage.m in Sources */,
 				0681A01D1AFE96910095576A /* FileVM.m in Sources */,
 				0681A0511AFE96910095576A /* RSAPrivateCrtKeyParameters.m in Sources */,
+				06896B101AFF204100BA271D /* MixpanelProvider.swift in Sources */,
 				0681A0471AFE96910095576A /* PKCS7Padding.m in Sources */,
 				06819F0F1AFE96910095576A /* BserUnknownFields.m in Sources */,
 				06819EB31AFE96910095576A /* UpdateMessage.m in Sources */,
@@ -5461,6 +5465,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
+				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5558,6 +5563,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
+				MIXPANEL_API_KEY = c82ba102f81bc9371bce1ab96e9a576a;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5655,6 +5661,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
+				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5752,6 +5759,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
+				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5849,6 +5857,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
+				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5991,6 +6000,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = "";
+				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
@@ -6035,6 +6045,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
+				MIXPANEL_API_KEY = c82ba102f81bc9371bce1ab96e9a576a;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
