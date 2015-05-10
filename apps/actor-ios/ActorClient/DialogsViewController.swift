@@ -16,18 +16,13 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
-        
-        initCommon();
     }
     
     override init() {
         super.init(nibName: nil, bundle: nil)
-        
-        initCommon(); 
     }
     
-    func initCommon(){
-        
+    override func loadView() {
         var title = "";
         if (MainAppTheme.tab.showText) {
             title = NSLocalizedString("TabMessages", comment: "Messages Title")
@@ -36,27 +31,18 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tabBarItem = UITabBarItem(title: title,
             image: MainAppTheme.tab.createUnselectedIcon("ic_chats_outline"),
             selectedImage: MainAppTheme.tab.createSelectedIcon("ic_chats_filled"))
-     
+        
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
         }
+        
+        self.extendedLayoutIncludesOpaqueBars = true
         
         tableView = UITableView()
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.rowHeight = 76
         tableView.backgroundColor = MainAppTheme.list.backyardColor
-        self.extendedLayoutIncludesOpaqueBars = true
-        view.addSubview(tableView)
-        view.backgroundColor = MainAppTheme.list.bgColor
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
-//        var insetSize = getStatusBarHeight() + getNavigationBarHeight()
-//        tableView.contentInset = UIEdgeInsetsMake(insetSize, 0, 0, 0)
-//        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(insetSize, 0, 0, 0)
+        view = tableView
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -155,6 +141,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         // Header hack
         tableView.tableHeaderView?.setNeedsLayout()
         tableView.tableFooterView?.setNeedsLayout()
+        
+        // tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
         
         if (searchDisplay != nil && searchDisplay!.active) {
             MainAppTheme.search.applyStatusBar()

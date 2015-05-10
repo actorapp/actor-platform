@@ -89,7 +89,8 @@ class MainTabController : UITabBarController, UITabBarDelegate {
                 }
                 
                 viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
-                
+
+                selectedIndex = 0;
                 selectedIndex = 1;
             }
         }
