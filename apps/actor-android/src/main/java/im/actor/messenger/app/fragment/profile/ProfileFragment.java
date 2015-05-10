@@ -201,7 +201,7 @@ public class ProfileFragment extends BaseFragment {
         }
 
         Peer peer = Peer.user(uid);
-        int mediaCount = messenger().getMediaCount(peer);
+        int mediaCount = 0;//messenger().getMediaCount(peer);
         if (mediaCount == 0) {
             res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
         } else {
