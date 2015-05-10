@@ -154,7 +154,7 @@ class ActorService
   onConversationOpen: (peer) ->
     console.log '[AW]ActorService onConversationOpen' #, peer
     @messenger.onConversationOpen peer
-    @$rootScope.$broadcast 'onConversationOpen' #, peer
+    @$rootScope.$broadcast 'onConversationOpen', peer
   onDialogsClosed: ->
     console.log '[AW]ActorService onDialogsClosed'
   onDialogsEnd: ->
