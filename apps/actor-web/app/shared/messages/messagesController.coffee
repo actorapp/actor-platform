@@ -1,6 +1,6 @@
 class MessagesController
   list: []
-  messageDebounce: 1000 # time in ms after which the message is considered read
+  messageDebounce: 30 # time in ms after which the message is considered read
 
   constructor: (@$rootScope, @$scope, @$timeout, @actorService) ->
     console.log '[AW]MessagesController constructor'
