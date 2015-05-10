@@ -248,7 +248,7 @@ class AASettingsController: AATableViewController {
             }
             return Int(phones!.size());
         case 3:
-            return 1
+            return 2
         default:
             return 0
         }
@@ -262,8 +262,8 @@ class AASettingsController: AATableViewController {
         } else if indexPath.section == 2 {
             return phoneCell(indexPath)
         } else if indexPath.section == 3 && indexPath.row == 0 {
-//            return notificationsCell(indexPath)
-//        } else if indexPath.section == 1 && indexPath.row == 1 {
+            return notificationsCell(indexPath)
+        } else if indexPath.section == 3 && indexPath.row == 1 {
             return privacyCell(indexPath)
         }
         return UITableViewCell()
@@ -282,8 +282,8 @@ class AASettingsController: AATableViewController {
         if indexPath.section == 1 && indexPath.row == 0 {
             askSetPhoto(tableView.cellForRowAtIndexPath(indexPath)!)
         } else if indexPath.section == 3 && indexPath.row == 0 {
-//            navigateToNotificationsSettings()
-//        } else if indexPath.section == 1 && indexPath.row == 1 {
+            navigateToNotificationsSettings()
+        } else if indexPath.section == 3 && indexPath.row == 1 {
             navigateToPrivacySettings()
         }
     }
