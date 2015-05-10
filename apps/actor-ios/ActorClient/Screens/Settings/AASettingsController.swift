@@ -328,9 +328,10 @@ class AASettingsController: AATableViewController {
     }
     
     private func navigateToPrivacySettings() {
-        let privacySettingsController = AASettingsPrivacyController(user: user)
-        privacySettingsController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(privacySettingsController, animated: true)
+//        let privacySettingsController = AASettingsPrivacyController(user: user)
+//        privacySettingsController.hidesBottomBarWhenPushed = true
+//        navigationController?.pushViewController(privacySettingsController, animated: true)
+        fatalError("Test Error")
     }
     
 }
