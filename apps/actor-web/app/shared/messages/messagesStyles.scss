@@ -63,9 +63,9 @@
             display: inline-block;
 
             background-color: rgba($baseColor, .05);
+            margin-top: 6px;
             img
             {
-                margin-top: 6px;
                 max-width: 300px;
                 height: auto;
                 @media (max-width: 396px) {
