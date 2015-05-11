@@ -100,6 +100,21 @@ class AAUserInfoController: AATableViewController {
         MSG.onProfileClosed(jint(uid))
     }
     
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (scrollView == self.tableView) {
+            var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
+            if (scrollView.contentOffset.y < 0) {
+                if (scrollView.contentOffset.y < -(scrollView.frame.width - 200)) {
+                    scrollView.contentOffset = CGPointMake(0, -scrollView.frame.width + 200)
+                }
+                var offset = scrollView.contentOffset.y
+                userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+            } else {
+                userCell?.userAvatarView.frame = CGRectMake(0, 0, scrollView.frame.width, 200)
+            }
+        }
+    }
+    
     // MARK: -
     // MARK: Setters
     
@@ -122,7 +137,7 @@ class AAUserInfoController: AATableViewController {
     
     private func userInfoCell(indexPath: NSIndexPath) -> AAUserInfoCell {
         var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
-        
+        cell.contentView.superview?.clipsToBounds = false
         if user != nil {
             
             if let username = user!.getName().get() as? String {

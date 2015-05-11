@@ -4,6 +4,7 @@
 
 import Foundation
 import AVFoundation
+import AudioToolbox.AudioServices
 
 @objc class iOSNotificationProvider: NSObject, AMNotificationProvider {
 
@@ -41,7 +42,7 @@ import AVFoundation
         
         if (isInApp) {
             
-            if (messenger.isInAppNotificationsEnabled() && messenger.isInAppNotificationSoundEnabled()) {
+            if (messenger.isInAppNotificationSoundEnabled()) {
                 var path = getNotificationSound(messenger)
                 if (sounds[path] == nil) {
                     var fileUrl = NSBundle.mainBundle().URLForResource(path, withExtension: "caf");
@@ -50,6 +51,10 @@ import AVFoundation
                     sounds[path] = messageSound
                 }
                 AudioServicesPlaySystemSound(sounds[path]!)
+            }
+            
+            if (messenger.isInAppNotificationVibrationEnabled()) {
+                AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             }
 
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
