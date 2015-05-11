@@ -8,12 +8,12 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
 
     @IBOutlet weak var tokenField: UIView!
     @IBOutlet weak var contactsTable: UITableView!
-    var tokenFieldView: VENTokenField?;
+    var tokenFieldView: VENTokenField!;
     var selectedNames: Array<AMContact> = []
-    
-    override init() {
+    var groupTitle: String!
+    init(title: String) {
         super.init(nibName: "GroupMembersController", bundle: nil)
-        
+        groupTitle = title
         navigationItem.title = "Group Members";
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
     }
@@ -23,12 +23,14 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     }
     
     override func viewDidLoad() {
-        tokenFieldView = VENTokenField(frame: CGRectMake(0, 0, tokenField.frame.width, tokenField.frame.height))
-        tokenFieldView!.delegate = self
-        tokenFieldView!.dataSource = self
-        tokenFieldView!.maxHeight = 96
+        tokenFieldView = VENTokenField(frame: CGRectMake(0, 0, tokenField.frame.width, 48))
+        tokenFieldView.delegate = self
+        tokenFieldView.dataSource = self
+        tokenFieldView.maxHeight = 48
+        tokenFieldView.contentMode = UIViewContentMode.Center
+        tokenFieldView.setColorScheme(MainAppTheme.navigation.barColor)
         
-        view.addSubview(tokenFieldView!)
+        view.addSubview(tokenFieldView)
         
         bindTable(contactsTable, fade: true)
         
@@ -36,7 +38,16 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     }
     
     func doNext() {
-        
+        var res = IOSIntArray(length: UInt(selectedNames.count))
+        for i in 0..<selectedNames.count {
+            res.replaceIntAtIndex(UInt(i), withInt: selectedNames[i].getUid())
+        }
+        execute(MSG.createGroupWithNSString(groupTitle, withNSString: nil, withIntArray: res), successBlock: { (val) -> Void in
+            var gid = val as! JavaLangInteger
+            self.navigateNext(AAConversationController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
+        }) { (val) -> Void in
+            
+        }
     }
     
     func tokenField(tokenField: VENTokenField!, didChangeText text: String!) {
@@ -45,7 +56,20 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         var contact = objectAtIndexPath(indexPath) as! AMContact
-        selectedNames.append(contact)
+        var isRemoved = false
+        for i in 0..<selectedNames.count {
+            var n = selectedNames[i]
+            if (n.getUid() == contact.getUid()) {
+                selectedNames.removeAtIndex(i)
+                isRemoved = true
+                break
+            }
+        }
+        
+        if (!isRemoved) {
+            selectedNames.append(contact)
+            filter("")
+        }
         tokenFieldView?.reloadData()
         
         tableView.deselectRowAtIndexPath(indexPath, animated: true)

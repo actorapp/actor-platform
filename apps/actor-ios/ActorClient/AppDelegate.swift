@@ -15,9 +15,14 @@ import Foundation
     // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-
-        // Apply styles
+        // Apply crash logging
+        if let apiKey = NSBundle.mainBundle().infoDictionary?["MINT_API_KEY"] as? String {
+            if (apiKey.trim().size() > 0) {
+                Mint.sharedInstance().initAndStartSession(apiKey)
+            }
+        }
         
+        // Apply styles
         MainAppTheme.navigation.applyAppearance(application)
         MainAppTheme.tab.applyAppearance(application)
         MainAppTheme.search.applyAppearance(application)
@@ -36,6 +41,7 @@ import Foundation
         if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
             if (hockey.trim().size() > 0) {
                 BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
+                BITHockeyManager.sharedHockeyManager().disableCrashManager = true
                 BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
                 BITHockeyManager.sharedHockeyManager().startManager()
                 BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
@@ -110,6 +116,7 @@ import Foundation
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
+        
         MSG.registerApplePushWithInt(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withNSString: tokenString)
     }
     
