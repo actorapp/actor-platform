@@ -120,6 +120,8 @@
 
 "NotificationsPreviewHint" = "Remove message text from notifications.";
 
+"NotificationSecretMessage" = "New Message";
+
 /*
  * Privacy
  */

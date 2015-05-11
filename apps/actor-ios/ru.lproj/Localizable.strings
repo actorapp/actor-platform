@@ -120,6 +120,8 @@
 
 "NotificationsPreviewHint" = "Убрать текст сообщений из оповещений.";
 
+"NotificationSecretMessage" = "Новое сообщение";
+
 /*
  * Privacy
  */
