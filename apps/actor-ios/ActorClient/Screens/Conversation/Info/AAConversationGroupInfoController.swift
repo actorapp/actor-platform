@@ -52,7 +52,7 @@ class AAConversationGroupInfoController: AATableViewController {
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableView.registerClass(AAConversationGroupInfoUserCell.self, forCellReuseIdentifier: UserCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
-        
+        tableView.clipsToBounds = false
         tableView.reloadData()
         
         binder.bind(group!.getName()!, closure: { (value: String?) -> () in
@@ -117,8 +117,25 @@ class AAConversationGroupInfoController: AATableViewController {
     // MARK: -
     // MARK: Getters
     
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (scrollView == self.tableView) {
+            var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
+            if (scrollView.contentOffset.y < 0) {
+                if (scrollView.contentOffset.y < -(scrollView.frame.width - 200)) {
+                    scrollView.contentOffset = CGPointMake(0, -scrollView.frame.width + 200)
+                }
+                var offset = scrollView.contentOffset.y
+                groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+            } else {
+                groupCell?.groupAvatarView.frame = CGRectMake(0, 0, scrollView.frame.width, 200)
+            }
+        }
+    }
+    
     private func groupInfoCell(indexPath: NSIndexPath) -> AAConversationGroupInfoCell {
         var cell: AAConversationGroupInfoCell = tableView.dequeueReusableCellWithIdentifier(GroupInfoCellIdentifier, forIndexPath: indexPath) as! AAConversationGroupInfoCell
+        
+        cell.contentView.superview?.clipsToBounds = false
         
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
