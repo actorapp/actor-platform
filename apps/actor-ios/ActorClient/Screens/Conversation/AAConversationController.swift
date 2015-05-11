@@ -296,7 +296,7 @@ class AAConversationController: EngineSlackListController {
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            navigateToUserWithId(id)
+            navigateToUserProfileWithId(id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = AAConversationGroupInfoController(gid: id)
             groupInfoController.hidesBottomBarWhenPushed = true
@@ -452,11 +452,12 @@ class AAConversationController: EngineSlackListController {
     // MARK: Navigation
     
     private func navigateToUserWithId(id: Int) {
-        let userInfoController = AAUserInfoController(uid: id)
-        userInfoController.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(userInfoController, animated: true)
+        navigateNext(AAConversationController(peer: AMPeer.userWithInt(jint(id))), removeCurrent: false)
     }
-    
+
+    private func navigateToUserProfileWithId(id: Int) {
+        navigateNext(AAUserInfoController(uid: id), removeCurrent: false)
+    }
 }
 
 // MARK: -
