@@ -84,6 +84,8 @@
 
 "CreateGroupTitle" = "Create Group";
 
+"CreateGroupNamePlaceholder" = "Enter group title";
+
 /*
  * Privacy
  */
