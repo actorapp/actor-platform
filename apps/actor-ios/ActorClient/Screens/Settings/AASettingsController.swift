@@ -211,7 +211,6 @@ class AASettingsController: AATableViewController {
         cell.setLeftInset(15.0)
         
         cell.showTopSeparator()
-        cell.showBottomSeparator()
         
         return cell
     }
@@ -229,11 +228,51 @@ class AASettingsController: AATableViewController {
         return cell
     }
     
+    private func askQuestionCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.style = AATableViewCellStyle.Navigation
+        cell.setContent("Ask Question")
+        cell.setLeftInset(15.0)
+        
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
+        
+        return cell
+    }
+
+    private func aboutCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.style = AATableViewCellStyle.Navigation
+        cell.setContent("About")
+        cell.setLeftInset(15.0)
+        
+        cell.showBottomSeparator()
+        
+        return cell
+    }
+
+    private func versionCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.style = AATableViewCellStyle.Hint
+        cell.setLeftInset(15.0)
+
+        var version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
+        cell.setContent("App Version: \(version)")
+        
+        cell.showBottomSeparator()
+        
+        return cell
+    }
+
+    
     // MARK: -
     // MARK: UITableView Data Source
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -249,23 +288,33 @@ class AASettingsController: AATableViewController {
             return Int(phones!.size());
         case 3:
             return 2
+        case 4:
+            return 3
         default:
             return 0
         }
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         if indexPath.section == 0 && indexPath.row == 0 {
             return userInfoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
             return setProfilePhotoCell(indexPath)
         } else if indexPath.section == 2 {
             return phoneCell(indexPath)
-        } else if indexPath.section == 3 && indexPath.row == 0 {
+        } else if (indexPath.section == 3 && indexPath.row == 0) {
             return notificationsCell(indexPath)
-        } else if indexPath.section == 3 && indexPath.row == 1 {
+        } else if (indexPath.section == 3 && indexPath.row == 1) {
             return privacyCell(indexPath)
+        } else if indexPath.section == 4 && indexPath.row == 0 {
+            return askQuestionCell(indexPath)
+        } else if indexPath.section == 4 && indexPath.row == 1 {
+            return aboutCell(indexPath)
+        } else if indexPath.section == 4 && indexPath.row == 2 {
+            return versionCell(indexPath)
         }
+
         return UITableViewCell()
     }
     
@@ -329,10 +378,9 @@ class AASettingsController: AATableViewController {
     }
     
     private func navigateToPrivacySettings() {
-//        let privacySettingsController = AASettingsPrivacyController(user: user)
-//        privacySettingsController.hidesBottomBarWhenPushed = true
-//        navigationController?.pushViewController(privacySettingsController, animated: true)
-        fatalError("Test Error")
+        let privacySettingsController = AASettingsPrivacyController(user: user)
+        privacySettingsController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(privacySettingsController, animated: true)
     }
     
 }
