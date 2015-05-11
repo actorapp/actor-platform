@@ -18,7 +18,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc._
-import im.actor.server.api.util
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
 import im.actor.server.sms.ActivationContext
@@ -350,7 +349,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
         for {
           _ ← DBIO.from(recordRelation(user.id, contact.ownerUserId))
           _ ← persist.contact.UserContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some("Contact registered"))
+          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
         } yield ()
       }
 

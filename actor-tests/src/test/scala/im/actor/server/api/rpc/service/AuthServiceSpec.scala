@@ -95,7 +95,7 @@ class AuthServiceSpec extends BaseServiceSuite {
           val sessionId = createSessionId()
           val smsHash = getSmsHash(authId, unregPhoneNumber)
 
-          Await.result(db.run(persist.contact.UnregisteredContact.create(unregPhoneNumber, user.id)), 5.seconds)
+          Await.result(db.run(persist.contact.UnregisteredContact.create(unregPhoneNumber, user.id, Some("Local name"))), 5.seconds)
 
           implicit val clientData = ClientData(authId, sessionId, None)
 
