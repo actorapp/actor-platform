@@ -13,17 +13,19 @@ class UnregisteredContactTable(tag: Tag) extends Table[models.UnregisteredContac
 
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
 
-  def * = (phoneNumber, ownerUserId) <> (models.UnregisteredContact.tupled, models.UnregisteredContact.unapply)
+  def name = column[Option[String]]("name")
+
+  def * = (phoneNumber, ownerUserId, name) <> (models.UnregisteredContact.tupled, models.UnregisteredContact.unapply)
 }
 
 object UnregisteredContact {
   val ucontacts = TableQuery[UnregisteredContactTable]
 
-  def create(phoneNumber: Long, ownerUserId: Int) =
-    ucontacts += models.UnregisteredContact(phoneNumber, ownerUserId)
+  def create(phoneNumber: Long, ownerUserId: Int, name: Option[String]) =
+    ucontacts += models.UnregisteredContact(phoneNumber, ownerUserId, name)
 
-  def createIfNotExists(phoneNumber: Long, ownerUserId: Int) = {
-    create(phoneNumber, ownerUserId).asTry
+  def createIfNotExists(phoneNumber: Long, ownerUserId: Int, name: Option[String]) = {
+    create(phoneNumber, ownerUserId, name).asTry
   }
 
   def find(phoneNumber: Long) =
