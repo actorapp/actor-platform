@@ -2391,6 +2391,8 @@
 		0623AC501B001F61007CD6B7 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				0623AC4D1AFFF07C007CD6B7 /* silence.aiff */,
+				06A907D01AB7AE8200E087EA /* notification.aiff */,
 				0623AC511B001F8E007CD6B7 /* ariel.caf */,
 				0623AC521B001F8E007CD6B7 /* carme.caf */,
 				0623AC531B001F8E007CD6B7 /* ceres.caf */,
@@ -4424,8 +4426,6 @@
 		2537F8301A966B9D004A02E9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				0623AC4D1AFFF07C007CD6B7 /* silence.aiff */,
-				06A907D01AB7AE8200E087EA /* notification.aiff */,
 				2537F8311A966B9D004A02E9 /* Info.plist */,
 				2537F8321A966B9D004A02E9 /* main.m */,
 				B30D5B68EC3C911BB612D6EA /* ActorClient-Bridging-Header.h */,
