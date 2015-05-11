@@ -9,7 +9,6 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import akka.pattern.pipe
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
@@ -114,25 +113,27 @@ class Session(
       // TODO: handle errors
       // TODO: refactor
       val infoAction = {
-        for {
-          authIdModelOpt ← persist.AuthId.find(authId).headOption
-          infoModel ← persist.SessionInfo.find(authId, sessionId).headOption.map(_.getOrElse(models.SessionInfo(authId, sessionId, None)))
-        } yield {
-          authIdModelOpt match {
-            case Some(models.AuthId(_, Some(userId), _)) ⇒
-              persist.SessionInfo.updateUserId(authId, sessionId, Some(userId))
-              models.SessionInfo(authId, sessionId, Some(userId))
-            case Some(models.AuthId(_, None, _)) ⇒
-              infoModel
-            case None ⇒
-              infoModel
-          }
+        persist.AuthId.find(authId).headOption flatMap {
+          case Some(authIdModel) ⇒
+            persist.SessionInfo.find(authId, sessionId) flatMap {
+              case s @ Some(sessionInfoModel) ⇒ DBIO.successful(s)
+              case None ⇒
+                val sessionInfoModel = models.SessionInfo(authId, sessionId, authIdModel.userId)
+
+                for {
+                  _ ← persist.SessionInfo.create(sessionInfoModel)
+                } yield Some(sessionInfoModel)
+            }
+          case None ⇒ DBIO.successful(None)
         }
       }
 
       val infoFuture = db.run(infoAction)
 
-      infoFuture.pipeTo(self)
+      infoFuture map {
+        case Some(info) ⇒ self ! info
+        case None       ⇒ self ! PoisonPill // TODO: AuthIdInvalid
+      }
     case msg ⇒ stash()
   }
 
@@ -225,7 +226,7 @@ class Session(
         this.optUserId = Some(userId)
 
         // TODO: handle errors
-        persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId)
+        db.run(persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId))
     }
   }
 

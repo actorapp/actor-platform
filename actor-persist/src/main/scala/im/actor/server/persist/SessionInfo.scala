@@ -20,8 +20,14 @@ object SessionInfo {
   def create(authId: Long, sessionId: Long, optUserId: Option[Int]) =
     infos += models.SessionInfo(authId, sessionId, optUserId)
 
+  def create(info: models.SessionInfo) =
+    infos += info
+
+  def createOrUpdate(info: models.SessionInfo) =
+    infos.insertOrUpdate(info)
+
   def find(authId: Long, sessionId: Long) =
-    infos.filter(i ⇒ i.authId === authId && i.sessionId === sessionId).result
+    infos.filter(i ⇒ i.authId === authId && i.sessionId === sessionId).result.headOption
 
   def updateUserId(authId: Long, sessionId: Long, optUserId: Option[Int]) =
     infos.filter(i ⇒ i.authId === authId && i.sessionId === sessionId).map(_.optUserId).update(optUserId)
