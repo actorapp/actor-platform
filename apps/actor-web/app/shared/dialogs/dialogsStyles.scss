@@ -49,6 +49,8 @@
       font-size: 13px;
       font-weight: 400;
       line-height: 20px;
+      height: 20px;
+      overflow: hidden;
       margin: 4px 0 0;
       &__counter {
         float: right;
@@ -60,6 +62,10 @@
         border-radius: 100%;
         background-color: $baseColor;
         color: white;
+      }
+      &__sender {
+        font-weight: 500;
+        color: darken(rgb(148,148,148), 10);
       }
       &--highlighted {
         color: darken(rgb(148,148,148),20);
