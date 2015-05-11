@@ -299,7 +299,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
   override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
-        sessions ← persist.AuthSession.findByUserId(client.userId) map (_.filterNot(_.authId != client.authId))
+        sessions ← persist.AuthSession.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
         _ ← DBIO.sequence(sessions map logout)
       } yield {
         Ok(ResponseVoid)
@@ -362,6 +362,8 @@ class AuthServiceImpl(activationContext: ActivationContext)(
   }
 
   private def logout(session: models.AuthSession): dbio.DBIOAction[Unit, NoStream, Write with Write] = {
+    actorSystem.log.debug(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
+
     for {
       _ ← persist.AuthSession.delete(session.userId, session.id)
       _ ← persist.AuthId.delete(session.authId)
