@@ -639,7 +639,9 @@ class SeqUpdatesManager(
   }
 
   private def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer]): Unit = {
-    log.debug("Delivering apple push, authId: {}, seq: {}", authId, seq)
+    val paramBase = "category.mobile.notification"
+
+    log.debug("Delivering apple push, authId: {}, seq: {}, text: {}, originPeer: {}", authId, seq, textOpt, originPeerOpt)
 
     val builder = new ApnsPayloadBuilder
 
@@ -651,15 +653,35 @@ class SeqUpdatesManager(
               case PeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
               case PeerType.Group   ⇒ s"GROUP_${originPeer.id}"
             }
-            val key = s"category.mobile.notification.chat.${peerStr}.enabled"
 
-            p.configs.Parameter.findValue(userId, key) map {
+            log.debug(s"Loading params ${paramBase}")
+
+            p.configs.Parameter.findValue(userId, s"${paramBase}.chat.${peerStr}.enabled") flatMap {
               case Some("false") ⇒
-                builder
+                log.debug("Notifications disabled")
+                DBIO.successful(builder)
               case _ ⇒
-                builder.setAlertBody(text)
-                builder.setSoundFileName("silence.aiff")
-                builder
+                log.debug("Notifications enabled")
+                for {
+                  soundEnabled ← p.configs.Parameter.findValue(userId, s"${paramBase}.sound.enabled") map (_.getOrElse("true"))
+                  vibrationEnabled ← p.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
+                  showText ← p.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
+                } yield {
+                  if (soundEnabled == "true") {
+                    log.debug("Sound enabled")
+                    builder.setSoundFileName("iapetus.caf")
+                  } else if (vibrationEnabled == "true") {
+                    log.debug("Sound disabled, vibration enabled")
+                    builder.setSoundFileName("silence.caf")
+                  }
+
+                  if (showText == "true") {
+                    log.debug("Text enabled")
+                    builder.setAlertBody(text)
+                  }
+
+                  builder
+                }
             }
           case None ⇒ DBIO.successful(builder) // TODO: fail?
         }
