@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<ripple
+    android:color="@color/selector_ripple"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+
+        <selector android:exitFadeDuration="200" xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:drawable="@color/selector_selected" android:state_pressed="true" />
+            <item android:drawable="@color/selector_selected" android:state_selected="true" />
+            <item android:drawable="@color/selector_hover" android:state_focused="true" />
+            <item android:drawable="@color/selector_hover" android:state_hovered="true" />
+            <item android:drawable="@color/bg_main" />
+        </selector>
+    </item>
+</ripple>
