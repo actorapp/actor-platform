@@ -135,13 +135,6 @@ class AASettingsController: AATableViewController {
         actionSheet.showInView(view)
     }
     
-    private func changeAvatarToImage(image: UIImage) {
-        let avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
-        var thumb = image.resizeSquare(200, maxH: 200);
-        UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true) // TODO: Check smallest 100x100, crop to 800x800
-        MSG.changeAvatarWithNSString("/tmp/avatar.jpg")
-    }
-    
     // MARK: -
     // MARK: Setters
     
@@ -368,25 +361,40 @@ extension AASettingsController: UIActionSheetDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AASettingsController: UIImagePickerControllerDelegate {
+extension AASettingsController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
+    
+    func cropImage(image: UIImage) {
+        var cropController = PECropViewController()
+        cropController.cropAspectRatio = 1.0
+        cropController.keepingCropAspectRatio = true
+        cropController.image = image
+        cropController.delegate = self
+        cropController.toolbarHidden = true
+        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
+    }
+    
+    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
+        MSG.changeOwnAvatar(croppedImage)
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func cropViewControllerDidCancel(controller: PECropViewController!) {
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
     
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
-        
-        changeAvatarToImage(image)
-        
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        cropImage(image)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        
-        changeAvatarToImage(image)
-        
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        cropImage(image)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {

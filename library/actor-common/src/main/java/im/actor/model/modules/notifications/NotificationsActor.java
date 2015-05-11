@@ -20,7 +20,6 @@ import im.actor.model.modules.utils.ModuleActor;
 
 public class NotificationsActor extends ModuleActor {
 
-    private static final String PREFERENCES_STORAGE = "notifications_pending";
     private static final int MAX_NOTIFICATION_COUNT = 10;
 
     private SyncKeyValue storage;
@@ -54,36 +53,35 @@ public class NotificationsActor extends ModuleActor {
 
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description) {
 
-        boolean isEnabled = modules().getSettings().isNotificationsEnabled(peer);
-        List<PendingNotification> allPending = getNotifications();
+        boolean isPeerEnabled = modules().getSettings().isNotificationsEnabled(peer);
+        boolean isEnabled = modules().getSettings().isNotificationsEnabled() && isPeerEnabled;
 
-        if (isEnabled) {
-            allPending.add(new PendingNotification(peer, sender, date, description));
-            saveStorage();
-        }
+        List<PendingNotification> allPending = getNotifications();
+        allPending.add(new PendingNotification(peer, sender, date, description));
+        saveStorage();
 
         if (config().getNotificationProvider() != null) {
-            if (visiblePeer != null && visiblePeer.equals(peer)) {
-                if (modules().getSettings().isConversationTonesEnabled()) {
-                    config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
+            if (isAppVisible) {
+                if (visiblePeer != null && visiblePeer.equals(peer)) {
+                    if (modules().getSettings().isConversationTonesEnabled()) {
+                        config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
+                    }
+                } else if (isDialogsVisible) {
+                    if (modules().getSettings().isConversationTonesEnabled()) {
+                        config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
+                    }
+                } else if (modules().getSettings().isInAppEnabled()) {
+                    if (isPeerEnabled) {
+                        performNotification(false);
+                    }
                 }
-                return;
-            }
-            if (isDialogsVisible) {
-                if (modules().getSettings().isConversationTonesEnabled()) {
-                    config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
+            } else {
+                if (isEnabled) {
+                    performNotification(false);
                 }
-                return;
             }
-
-            if (!isEnabled) {
-                return;
-            }
-
-            performNotification(false);
         }
     }
-
 
     public void onMessagesRead(Peer peer, long fromDate) {
         boolean isChanged = false;
@@ -161,7 +159,8 @@ public class NotificationsActor extends ModuleActor {
         }
         int chatsCount = peers.size();
 
-        config().getNotificationProvider().onNotification(modules().getMessenger(), res, messagesCount, chatsCount, isSilentUpdate);
+        config().getNotificationProvider().onNotification(modules().getMessenger(), res,
+                messagesCount, chatsCount, isSilentUpdate, isAppVisible);
     }
 
     private void hideNotification() {
