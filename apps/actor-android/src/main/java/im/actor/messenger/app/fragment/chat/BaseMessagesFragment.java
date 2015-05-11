@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -152,7 +152,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         if (actionMode == null) {
             messagesAdapter.clearSelection();
             messagesAdapter.setSelected(message, true);
-            actionMode = ((ActionBarActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
+            actionMode = ((AppCompatActivity) getActivity()).startSupportActionMode(new ActionMode.Callback() {
                 @Override
                 public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                     getActivity().getMenuInflater().inflate(R.menu.messages_context, menu);
