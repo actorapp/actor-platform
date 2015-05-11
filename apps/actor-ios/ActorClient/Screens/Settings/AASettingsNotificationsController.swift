@@ -25,7 +25,7 @@ class AASettingsNotificationsController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Notifications and Sounds" // TODO: Localize
+        navigationItem.title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
         
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = MainAppTheme.list.backyardColor
@@ -43,9 +43,9 @@ class AASettingsNotificationsController: AATableViewController {
         if (section == 0) {
             return 1
         } else if (section == 1) {
-            return 2
+            return MSG.isNotificationsEnabled() ? 2 : 1
         } else if (section == 2) {
-            return 2
+            return MSG.isInAppNotificationsEnabled() ? 3 : 1
         } else if (section == 3) {
             return 1
         }
@@ -55,13 +55,13 @@ class AASettingsNotificationsController: AATableViewController {
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if (section == 0) {
-            return "Effects"
+            return NSLocalizedString("NotificationsEffectsTitle", comment: "Effects")
         } else if (section == 1) {
-            return "Mobile Notifications"
+            return NSLocalizedString("NotificationsMobileTitle", comment: "Mobile Notifications")
         } else if (section == 2) {
-            return "In-App Notifications"
+            return NSLocalizedString("NotificationsInAppTitle", comment: "InApp Notifications")
         } else if (section == 3) {
-            return "Privacy"
+            return NSLocalizedString("NotificationsPrivacyTitle", comment: "Privacy")
         }
         
         return nil
@@ -69,9 +69,9 @@ class AASettingsNotificationsController: AATableViewController {
     
     func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if (section == 1) {
-            return "You can disable notifications for specific users or groups on their info pages."
+            return NSLocalizedString("NotificationsNotificationHint", comment: "Disable hint")
         } else if (section == 3) {
-            return "Remove message text from notifications."
+            return NSLocalizedString("NotificationsPreviewHint", comment: "Preview hint")
         }
         
         return nil
@@ -80,7 +80,7 @@ class AASettingsNotificationsController: AATableViewController {
     private func notificationsTonesCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setContent("Sound Effects")
+        cell.setContent(NSLocalizedString("NotificationsSoundEffects", comment: "Sound Effects"))
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
@@ -97,21 +97,29 @@ class AASettingsNotificationsController: AATableViewController {
     private func notificationsEnableCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setContent("Enable")
+        cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         cell.showTopSeparator()
         
-        cell.setSwitcherOn(MSG.isNotificationSoundEnabled())
+        cell.setSwitcherOn(MSG.isNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeNotificationSoundEnabledWithBoolean(nValue)
-            var soundCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 1)) as! AATableViewCell
+            self.tableView.beginUpdates()
+            MSG.changeNotificationsEnabledWithBoolean(nValue)
+            var rows = [NSIndexPath(forRow: 1, inSection: 1)]
             if (nValue) {
-                soundCell.setSwitcherEnabled(true)
+                self.tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
             } else {
-                soundCell.setSwitcherEnabled(false)
+                self.tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
             }
+//            var soundCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 1)) as! AATableViewCell
+//            if (nValue) {
+//                soundCell.setSwitcherEnabled(true)
+//            } else {
+//                soundCell.setSwitcherEnabled(false)
+//            }
+            self.tableView.endUpdates()
         }
         
         return cell
@@ -120,7 +128,7 @@ class AASettingsNotificationsController: AATableViewController {
     private func notificationsAlertCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setContent("Sound")
+        cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
@@ -137,7 +145,7 @@ class AASettingsNotificationsController: AATableViewController {
     private func inAppAlertCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setContent("Enable")
+        cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showTopSeparator()
@@ -145,13 +153,15 @@ class AASettingsNotificationsController: AATableViewController {
         
         cell.setSwitcherOn(MSG.isInAppNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
+            self.tableView.beginUpdates()
             MSG.changeInAppNotificationsEnabledWithBoolean(nValue)
-            var soundCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 2)) as! AATableViewCell
+            var rows = [NSIndexPath(forRow: 1, inSection: 2), NSIndexPath(forRow: 2, inSection: 2)]
             if (nValue) {
-                soundCell.setSwitcherEnabled(true)
+                self.tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
             } else {
-                soundCell.setSwitcherEnabled(false)
+                self.tableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
             }
+            self.tableView.endUpdates()
         }
         
         return cell
@@ -160,25 +170,44 @@ class AASettingsNotificationsController: AATableViewController {
     private func inAppSoundCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setContent("Sound")
+        cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         
-        cell.setSwitcherOn(MSG.isNotificationSoundEnabled())
+        cell.setSwitcherOn(MSG.isInAppNotificationSoundEnabled())
         cell.setSwitcherEnabled(MSG.isInAppNotificationsEnabled())
         
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeNotificationSoundEnabledWithBoolean(nValue)
+            MSG.changeInAppNotificationSoundEnabledWithBoolean(nValue)
         }
         
         return cell
     }
+
     
+    private func inAppVibrateCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.setContent(NSLocalizedString("NotificationsVibration", comment: "Vibration"))
+        cell.style = AATableViewCellStyle.Switch
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.showBottomSeparator()
+        
+        cell.setSwitcherOn(MSG.isInAppNotificationVibrationEnabled())
+        cell.setSwitcherEnabled(MSG.isInAppNotificationsEnabled())
+        
+        cell.switchBlock = { (nValue: Bool) in
+            MSG.changeInAppNotificationVibrationEnabledWithBoolean(nValue)
+        }
+        
+        return cell
+    }
+
     private func notificationsPreviewCell(indexPath: NSIndexPath) -> AATableViewCell {
         var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
-        cell.setContent("Preview")
+        cell.setContent(NSLocalizedString("NotificationsPreview", comment: "Message Preview"))
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
@@ -204,8 +233,10 @@ class AASettingsNotificationsController: AATableViewController {
         } else if (indexPath.section == 2) {
             if (indexPath.row == 0) {
                 return inAppAlertCell(indexPath)
-            } else {
+            } else if (indexPath.row == 1) {
                 return inAppSoundCell(indexPath)
+            } else if (indexPath.row == 2) {
+                return inAppVibrateCell(indexPath)
             }
         } else if (indexPath.section == 3) {
             return notificationsPreviewCell(indexPath)
