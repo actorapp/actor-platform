@@ -109,6 +109,9 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
+        application.beginBackgroundTaskWithExpirationHandler { () -> Void in
+            
+        }
     }
     
     // MARK: -
