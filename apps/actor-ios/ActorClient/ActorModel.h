@@ -5,7 +5,9 @@
 #ifndef ActorClient_ActorModel_h
 #define ActorClient_ActorModel_h
 
-#include "J2ObjC_header.h"
+#import "J2ObjC_header.h"
+#import "J2ObjC_source.h"
+#import "IOSClass.h"
 
 // Java Objects
 
@@ -132,6 +134,8 @@
 #import "im/actor/model/entity/PhoneBookEmail.h"
 #import "im/actor/model/entity/ContentType.h"
 #import "im/actor/model/entity/FileReference.h"
+#import "im/actor/model/entity/Notification.h"
+#import "im/actor/model/entity/ContentDescription.h"
 
 
 // Entities View Model

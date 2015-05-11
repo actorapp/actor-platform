@@ -24,12 +24,27 @@ import AVFoundation
             return
         }
         
+        var n = topNotifications.getWithInt(0) as! AMNotification
+        
+        var message = messenger.getFormatter().formatContentDialogTextWithInt(n.getSender(), withAMContentTypeEnum: n.getContentDescription().getContentType(), withNSString: n.getContentDescription().getText(), withInt: n.getContentDescription().getRelatedUser())
+        var senderUser = messenger.getUsers().getWithLong(jlong(n.getSender())) as! AMUserVM
+        var sender = senderUser.getName().get() as! String
+        
+        if (UInt(n.getPeer().getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
+            var group = messenger.getGroups().getWithLong(jlong(n.getPeer().getPeerId())) as! AMGroupVM
+            sender = "\(sender)@\(group.getName().get() as! String)"
+        }
+        
         if (isInApp) {
-            // TODO: Implement
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                TWMessageBarManager.sharedInstance()
+                    .showMessageWithTitle(sender, description: message, type: TWMessageBarMessageType.Info)
+            })
         } else {
             var localNotification =  UILocalNotification ()
-            localNotification.alertTitle = "New Message!"
-            localNotification.alertBody = "Message body"
+            localNotification.alertTitle = sender
+            localNotification.alertBody = message
+            localNotification.soundName = "carme.caf"
             UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
         }
     }
