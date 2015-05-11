@@ -35,11 +35,11 @@ class AAConversationGroupInfoCell: AATableViewCell {
         groupNameLabel.font = UIFont.systemFontOfSize(20.0)
         groupNameLabel.text = " "
         groupNameLabel.sizeToFit()
-        groupNameLabel.layer.shadowColor = UIColor.blackColor().CGColor
-        groupNameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
-        groupNameLabel.layer.shadowRadius = 0.0
-        groupNameLabel.layer.shadowOpacity = 1.0
-        groupNameLabel.layer.masksToBounds = false
+//        groupNameLabel.layer.shadowColor = UIColor.blackColor().CGColor
+//        groupNameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
+//        groupNameLabel.layer.shadowRadius = 0.0
+//        groupNameLabel.layer.shadowOpacity = 1.0
+//        groupNameLabel.layer.masksToBounds = false
         groupNameLabel.clipsToBounds = false
         contentView.addSubview(groupNameLabel)
         

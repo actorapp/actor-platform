@@ -42,6 +42,12 @@
 
 "SettingsEditHeader" = "Измените свое имя";
 
+"SettingsNotifications" = "Оповещения и звуки";
+
+"SettingsAskQuestion" = "Задать вопрос";
+
+"SettingsAbout" = "О Программе";
+
 /*
  * Profile
  */
