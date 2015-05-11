@@ -38,6 +38,9 @@ object GroupUser {
   def findUserIds(groupId: Int) =
     groupUsers.filter(g ⇒ g.groupId === groupId).map(_.userId).result
 
+  def findUserIds(groupIds: Set[Int]) =
+    groupUsers.filter(_.groupId inSet groupIds).map(_.userId).result
+
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
     groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).delete
 }
