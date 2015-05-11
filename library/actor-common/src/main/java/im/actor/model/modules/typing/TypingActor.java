@@ -35,10 +35,7 @@ public class TypingActor extends ModuleActor {
                 return new Mailbox(queue) {
                     @Override
                     protected boolean isEqualEnvelope(Envelope a, Envelope b) {
-                        if (a.getMessage().equals(b.getMessage())) {
-                            return true;
-                        }
-                        return super.isEqualEnvelope(a, b);
+                        return a.getMessage().equals(b.getMessage());
                     }
                 };
             }
