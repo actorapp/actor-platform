@@ -91,7 +91,7 @@ class ContactsServiceImpl(
 
               // TODO: #perf do less queries
               val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
-                persist.contact.UnregisteredContact.createIfNotExists(phoneNumber, client.userId)
+                persist.contact.UnregisteredContact.createIfNotExists(phoneNumber, client.userId, phonesMap.get(phoneNumber).getOrElse(None))
               }
 
               DBIO.sequence(unregInsertActions).flatMap { _ ⇒
