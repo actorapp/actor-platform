@@ -42,7 +42,10 @@
                              ng-if="::dialog.state == 'error'"
                              class="status status--error"></md-icon>
 
-                    {{ ::dialog.text | truncate : 22 }}
+                    <span class="dialogs__body__message__sender" ng-if="::dialog.showSender">
+                        {{ ::dialog.sender}}:
+                    </span>
+                    {{ ::dialog.text | truncate : dialog.showSender ? 10 : 22 }}
 
                     <span class="dialogs__body__message__counter"
                           ng-if="::dialog.counter > 0"
