@@ -818,6 +818,24 @@ public class Messenger {
     }
 
     /**
+     * Is notifications enabled setting
+     *
+     * @return is notifications enabled
+     */
+    public boolean isNotificationsEnabled() {
+        return modules.getSettings().isNotificationsEnabled();
+    }
+
+    /**
+     * Change notifications enabled value
+     *
+     * @param val is notifications enabled
+     */
+    public void changeNotificationsEnabled(boolean val) {
+        modules.getSettings().changeNotificationsEnabled(val);
+    }
+
+    /**
      * Is notifications sounds enabled
      *
      * @return is notification sounds enabled
@@ -833,6 +851,24 @@ public class Messenger {
      */
     public void changeNotificationSoundEnabled(boolean val) {
         modules.getSettings().changeNotificationSoundEnabled(val);
+    }
+
+    /**
+     * Sound that used for notifications
+     *
+     * @return notification sound name
+     */
+    public String getNotificationSound() {
+        return modules.getSettings().getNotificationSound();
+    }
+
+    /**
+     * Change sound that used for notifications
+     *
+     * @param sound notification sound name
+     */
+    public void changeNotificationSound(String sound) {
+        modules.getSettings().changeNotificationSound(sound);
     }
 
     /**
@@ -907,6 +943,60 @@ public class Messenger {
      */
     public void changeNotificationsEnabled(Peer peer, boolean val) {
         modules.getSettings().changeNotificationsEnabled(peer, val);
+    }
+
+    /**
+     * Is in-app notifications enabled
+     *
+     * @return is notifications enabled
+     */
+    public boolean isInAppNotificationsEnabled() {
+        return modules.getSettings().isInAppEnabled();
+    }
+
+    /**
+     * Change in-app notifications enable value
+     *
+     * @param val is notifications enabled
+     */
+    public void changeInAppNotificationsEnabled(boolean val) {
+        modules.getSettings().changeInAppEnabled(val);
+    }
+
+    /**
+     * Is in-app notifications sound enabled
+     *
+     * @return is notifications sound enabled
+     */
+    public boolean isInAppNotificationSoundEnabled() {
+        return modules.getSettings().isInAppSoundEnabled();
+    }
+
+    /**
+     * Change in-app notifications sound enabled value
+     *
+     * @param val is notifications sound enabled
+     */
+    public void changeInAppNotificationSoundEnabled(boolean val) {
+        modules.getSettings().changeInAppSoundEnabled(val);
+    }
+
+    /**
+     * Is in-app notification vibration enabled
+     *
+     * @return is notifications vibration enabled
+     */
+    public boolean isInAppNotificationVibrationEnabled() {
+        return modules.getSettings().isInAppVibrationEnabled();
+    }
+
+    /**
+     * Change in-app notifications vibration enabled value
+     *
+     * @param val is notifications vibration enabled
+     */
+    public void changeInAppNotificationVibrationEnabled(boolean val) {
+        modules.getSettings().changeInAppVibrationEnabled(val);
     }
 
     //////////////////////////////////////
