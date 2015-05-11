@@ -114,4 +114,22 @@
             margin-right: 5px;
         }
     }
+    &__typing {
+        text-align: center;
+        p {
+            background-color: rgba(0, 0, 0, .03);
+            color: rgba(0,0,0,.5);
+            border-radius: 4px;
+            margin: 0;
+            line-height: 16px;
+            font-size: 12px;
+            display: inline-block;
+            padding: 4px 8px;
+            margin-bottom: 16px;
+        }
+        md-icon {
+            width: 16px;
+            height: 16px;
+        }
+    }
 }
