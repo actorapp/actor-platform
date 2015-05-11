@@ -13,7 +13,7 @@ import AudioToolbox.AudioServices
     
     override init() {
         super.init()
-        var path = NSBundle.mainBundle().URLForResource("notification", withExtension: "aiff");
+        var path = NSBundle.mainBundle().URLForResource("notification", withExtension: "caf");
         AudioServicesCreateSystemSoundID(path, &internalMessage)
     }
     
@@ -30,7 +30,7 @@ import AudioToolbox.AudioServices
         
         var message = messenger.getFormatter().formatContentDialogTextWithInt(n.getSender(), withAMContentTypeEnum: n.getContentDescription().getContentType(), withNSString: n.getContentDescription().getText(), withInt: n.getContentDescription().getRelatedUser())
         if (!messenger.isShowNotificationsText()) {
-            message = "New Message";
+            message = NSLocalizedString("NotificationSecretMessage", comment: "New Message")
         }
         var senderUser = messenger.getUsers().getWithLong(jlong(n.getSender())) as! AMUserVM
         var sender = senderUser.getName().get() as! String
