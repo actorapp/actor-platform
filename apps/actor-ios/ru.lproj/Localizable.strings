@@ -87,6 +87,34 @@
 "CreateGroupNamePlaceholder" = "Введите название группы";
 
 /*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Оповещения и звуки";
+
+"NotificationsEffectsTitle" = "Эффекты";
+
+"NotificationsMobileTitle" = "Мобильные оповещения";
+
+"NotificationsInAppTitle" = "Оповещения в приложении";
+
+"NotificationsNotificationHint" = "Вы можете выключить оповещения для конкретных людей или групп на страницах их профилей.";
+
+"NotificationsPrivacyTitle" = "Приватность";
+
+"NotificationsSoundEffects" = "Звуковые эффекты";
+
+"NotificationsEnable" = "Включить";
+
+"NotificationsSound" = "Звук";
+
+"NotificationsVibration" = "Вибрация";
+
+"NotificationsPreview" = "Предпросмотр сообщений";
+
+"NotificationsPreviewHint" = "Убрать текст сообщений из оповещений.";
+
+/*
  * Privacy
  */
 
