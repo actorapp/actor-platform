@@ -541,10 +541,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingTypingActor_$2)
 
 - (jboolean)isEqualEnvelopeWithDKEnvelope:(DKEnvelope *)a
                            withDKEnvelope:(DKEnvelope *)b {
-  if ([nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) isEqual:[((DKEnvelope *) nil_chk(b)) getMessage]]) {
-    return YES;
-  }
-  return [super isEqualEnvelopeWithDKEnvelope:a withDKEnvelope:b];
+  return [nil_chk([((DKEnvelope *) nil_chk(a)) getMessage]) isEqual:[((DKEnvelope *) nil_chk(b)) getMessage]];
 }
 
 - (instancetype)initWithDKMailboxesQueue:(DKMailboxesQueue *)arg$0 {
