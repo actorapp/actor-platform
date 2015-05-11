@@ -8,6 +8,7 @@ import AVFoundation
 @objc class iOSNotificationProvider: NSObject, AMNotificationProvider {
 
     var internalMessage:SystemSoundID = 0
+    var sounds: [String: SystemSoundID] = [:]
     
     override init() {
         super.init()
@@ -27,6 +28,9 @@ import AVFoundation
         var n = topNotifications.getWithInt(0) as! AMNotification
         
         var message = messenger.getFormatter().formatContentDialogTextWithInt(n.getSender(), withAMContentTypeEnum: n.getContentDescription().getContentType(), withNSString: n.getContentDescription().getText(), withInt: n.getContentDescription().getRelatedUser())
+        if (!messenger.isShowNotificationsText()) {
+            message = "New Message";
+        }
         var senderUser = messenger.getUsers().getWithLong(jlong(n.getSender())) as! AMUserVM
         var sender = senderUser.getName().get() as! String
         
@@ -36,20 +40,43 @@ import AVFoundation
         }
         
         if (isInApp) {
+            
+            if (messenger.isInAppNotificationsEnabled() && messenger.isInAppNotificationSoundEnabled()) {
+                var path = getNotificationSound(messenger)
+                if (sounds[path] == nil) {
+                    var fileUrl = NSBundle.mainBundle().URLForResource(path, withExtension: "caf");
+                    var messageSound:SystemSoundID = 0
+                    AudioServicesCreateSystemSoundID(fileUrl, &messageSound)
+                    sounds[path] = messageSound
+                }
+                AudioServicesPlaySystemSound(sounds[path]!)
+            }
+
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 TWMessageBarManager.sharedInstance()
                     .showMessageWithTitle(sender, description: message, type: TWMessageBarMessageType.Info)
             })
         } else {
             var localNotification =  UILocalNotification ()
-            localNotification.alertTitle = sender
-            localNotification.alertBody = message
-            localNotification.soundName = "carme.caf"
+            localNotification.alertBody = "\(sender): \(message)"
+            if (messenger.isNotificationSoundEnabled()) {
+                localNotification.soundName = "\(getNotificationSound(messenger)).caf"
+            }
             UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
         }
     }
     
     func hideAllNotifications() {
         
+    }
+    
+    func getNotificationSound(messenger: AMMessenger!) -> String {
+        if (messenger.getNotificationSound() != nil) {
+            var path = NSBundle.mainBundle().pathForResource(messenger.getNotificationSound(), ofType: "caf")
+            if (NSFileManager.defaultManager().fileExistsAtPath(path!)) {
+                return messenger.getNotificationSound()
+            }
+        }
+        return "iapetus"
     }
 }
