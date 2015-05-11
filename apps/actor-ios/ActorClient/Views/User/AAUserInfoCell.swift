@@ -40,11 +40,11 @@ class AAUserInfoCell: AATableViewCell {
         usernameLabel.font = UIFont.boldSystemFontOfSize(20)
         usernameLabel.text = " "
         usernameLabel.sizeToFit()
-        usernameLabel.layer.shadowColor = UIColor.blackColor().CGColor
-        usernameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
-        usernameLabel.layer.shadowRadius = 0.0
-        usernameLabel.layer.shadowOpacity = 1.0
-        usernameLabel.layer.masksToBounds = false
+//        usernameLabel.layer.shadowColor = UIColor.blackColor().CGColor
+//        usernameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
+//        usernameLabel.layer.shadowRadius = 0.0
+//        usernameLabel.layer.shadowOpacity = 1.0
+//        usernameLabel.layer.masksToBounds = false
         usernameLabel.clipsToBounds = false
         contentView.addSubview(usernameLabel)
         
@@ -54,11 +54,11 @@ class AAUserInfoCell: AATableViewCell {
         presenceLabel.font = UIFont.systemFontOfSize(14)
         presenceLabel.text = " "
         presenceLabel.sizeToFit()
-        presenceLabel.layer.shadowColor = UIColor.blackColor().CGColor
-        presenceLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
-        presenceLabel.layer.shadowRadius = 0.0
-        presenceLabel.layer.shadowOpacity = 1.0
-        presenceLabel.layer.masksToBounds = false
+//        presenceLabel.layer.shadowColor = UIColor.blackColor().CGColor
+//        presenceLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
+//        presenceLabel.layer.shadowRadius = 0.0
+//        presenceLabel.layer.shadowOpacity = 1.0
+//        presenceLabel.layer.masksToBounds = false
         presenceLabel.clipsToBounds = false
         contentView.addSubview(presenceLabel)
         

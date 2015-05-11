@@ -221,7 +221,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
-        cell.setContent("Notifications and Sounds") // TODO: Localize
+        cell.setContent(NSLocalizedString("SettingsNotifications", comment: "Notifications and Sounds"))
         cell.setLeftInset(15.0)
         
         cell.showTopSeparator()
@@ -246,7 +246,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
-        cell.setContent("Ask Question")
+        cell.setContent(NSLocalizedString("SettingsAskQuestion", comment: "Ask Question"))
         cell.setLeftInset(15.0)
         
         cell.showTopSeparator()
@@ -259,7 +259,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
-        cell.setContent("About")
+        cell.setContent(NSLocalizedString("SettingsAbout", comment: "About"))
         cell.setLeftInset(15.0)
         
         cell.showBottomSeparator()
@@ -348,6 +348,22 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             navigateToNotificationsSettings()
         } else if indexPath.section == 3 && indexPath.row == 1 {
             navigateToPrivacySettings()
+        } else if (indexPath.section == 4 && indexPath.row == 0) {
+            execute(MSG.findUsersWithNSString("75551234567"), successBlock: { (val) -> Void in
+                var user:AMUserVM!
+                if let users = val as? IOSObjectArray {
+                    if Int(users.length()) > 0 {
+                        if let tempUser = users.objectAtIndex(0) as? AMUserVM {
+                            user = tempUser
+                        }
+                    }
+                }
+                self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+            }, failureBlock: { (val) -> Void in
+                
+            })
+        } else if (indexPath.section == 4 && indexPath.row == 1) {
+            UIApplication.sharedApplication().openURL(NSURL(string: "https://actor.im")!)
         }
     }
 
