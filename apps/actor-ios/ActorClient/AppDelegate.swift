@@ -72,6 +72,7 @@ import Foundation
     
     func onLoggedIn() {
         // Create root layout for app
+        MSG.onAppVisible()
         var rootController : UIViewController? = nil
         if (isIPad) {
             var splitController = MainSplitViewController()
