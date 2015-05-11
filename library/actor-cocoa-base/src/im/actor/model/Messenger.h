@@ -69,8 +69,18 @@
 - (void)changeGroupAvatarWithInt:(jint)gid
                     withNSString:(NSString *)descriptor;
 
+- (void)changeInAppNotificationsEnabledWithBoolean:(jboolean)val;
+
+- (void)changeInAppNotificationSoundEnabledWithBoolean:(jboolean)val;
+
+- (void)changeInAppNotificationVibrationEnabledWithBoolean:(jboolean)val;
+
+- (void)changeNotificationsEnabledWithBoolean:(jboolean)val;
+
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val;
+
+- (void)changeNotificationSoundWithNSString:(NSString *)sound;
 
 - (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val;
 
@@ -117,6 +127,8 @@
 
 - (AMValueModel *)getGroupTypingWithInt:(jint)gid;
 
+- (NSString *)getNotificationSound;
+
 - (AMOwnAvatarVM *)getOwnAvatarVM;
 
 - (id<DKPreferencesStorage>)getPreferences;
@@ -127,7 +139,15 @@
 
 - (jboolean)isConversationTonesEnabled;
 
+- (jboolean)isInAppNotificationsEnabled;
+
+- (jboolean)isInAppNotificationSoundEnabled;
+
+- (jboolean)isInAppNotificationVibrationEnabled;
+
 - (jboolean)isLoggedIn;
+
+- (jboolean)isNotificationsEnabled;
 
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer;
 

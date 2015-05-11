@@ -402,12 +402,28 @@
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeConversationTonesEnabledWithBoolean:val];
 }
 
+- (jboolean)isNotificationsEnabled {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isNotificationsEnabled];
+}
+
+- (void)changeNotificationsEnabledWithBoolean:(jboolean)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationsEnabledWithBoolean:val];
+}
+
 - (jboolean)isNotificationSoundEnabled {
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isNotificationSoundEnabled];
 }
 
 - (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val {
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationSoundEnabledWithBoolean:val];
+}
+
+- (NSString *)getNotificationSound {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) getNotificationSound];
+}
+
+- (void)changeNotificationSoundWithNSString:(NSString *)sound {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationSoundWithNSString:sound];
 }
 
 - (jboolean)isNotificationVibrationEnabled {
@@ -441,6 +457,30 @@
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val {
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeNotificationsEnabledWithAMPeer:peer withBoolean:val];
+}
+
+- (jboolean)isInAppNotificationsEnabled {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isInAppEnabled];
+}
+
+- (void)changeInAppNotificationsEnabledWithBoolean:(jboolean)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeInAppEnabledWithBoolean:val];
+}
+
+- (jboolean)isInAppNotificationSoundEnabled {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isInAppSoundEnabled];
+}
+
+- (void)changeInAppNotificationSoundEnabledWithBoolean:(jboolean)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeInAppSoundEnabledWithBoolean:val];
+}
+
+- (jboolean)isInAppNotificationVibrationEnabled {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isInAppVibrationEnabled];
+}
+
+- (void)changeInAppNotificationVibrationEnabledWithBoolean:(jboolean)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeInAppVibrationEnabledWithBoolean:val];
 }
 
 - (id<AMCommand>)loadSessions {

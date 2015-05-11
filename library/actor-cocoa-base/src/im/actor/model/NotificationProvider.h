@@ -19,7 +19,8 @@
                      withJavaUtilList:(id<JavaUtilList>)topNotifications
                               withInt:(jint)messagesCount
                               withInt:(jint)conversationsCount
-                          withBoolean:(jboolean)silentUpdate;
+                          withBoolean:(jboolean)silentUpdate
+                          withBoolean:(jboolean)isInApp;
 
 - (void)hideAllNotifications;
 
