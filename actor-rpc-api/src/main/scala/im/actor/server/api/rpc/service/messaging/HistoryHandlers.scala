@@ -236,8 +236,9 @@ trait HistoryHandlers {
     }
 
     for {
-      users ← userStructs(userIds, client.userId, client.authId)
       groups ← getGroupsStructs(groupIds)
+      groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
+      users ← userStructs(userIds ++ groupUserIds, client.userId, client.authId)
     } yield (users, groups)
   }
 }
