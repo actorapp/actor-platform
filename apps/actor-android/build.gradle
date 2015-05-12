@@ -79,7 +79,8 @@ android {
 
     // Tracking
     def MIXPANEL_DEBUG = "\"b2b7a96c3f1e131cf170029f97b2c7c2\""
-    def MIXPANEL_RELEASE = "\"c82ba102f81bc9371bce1ab96e9a576a\""
+    def MIXPANEL_ENTERPRISE = "\"c82ba102f81bc9371bce1ab96e9a576a\""
+    def MIXPANEL_RELEASE = "\"0275e71777404c81d37be6e935e78031\""
 
     def API_MAIN_ID = "1"
     def API_MAIN_KEY = "\"4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855\""
@@ -122,20 +123,13 @@ android {
             buildConfigField STRING, MIXPANEL, MIXPANEL_RELEASE
         }
 
-        llectro {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
-            applicationIdSuffix ".llectro"
-            signingConfig signingConfigs.release
-
-            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
-        }
-
         alpha {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Alpha)\""
             signingConfig signingConfigs.release
             applicationIdSuffix ".business"
 
             buildConfigField STRING, HOCKEY, HOCKEY_ALPHA
+            buildConfigField STRING, MIXPANEL, MIXPANEL_ENTERPRISE
         }
 
         enterprise {
@@ -144,10 +138,18 @@ android {
             applicationIdSuffix ".business"
 
             buildConfigField STRING, HOCKEY, HOCKEY_ENTERPRISE
-            buildConfigField STRING, MIXPANEL, MIXPANEL_RELEASE
+            buildConfigField STRING, MIXPANEL, MIXPANEL_ENTERPRISE
         }
 
         // Development builds
+
+        llectro {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
+            applicationIdSuffix ".llectro"
+            signingConfig signingConfigs.release
+
+            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
+        }
 
         debug {
             buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
@@ -303,6 +305,7 @@ dependencies {
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
     compile 'com.splunk.mint:mint:4.0.8'
+    compile "com.mixpanel.android:mixpanel-android:4.5.3"
 }
 
 task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1', 'assembleDev2']) {
