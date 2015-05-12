@@ -5525,7 +5525,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
-				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
+				MIXPANEL_API_KEY = c82ba102f81bc9371bce1ab96e9a576a;
+				MIXPANEL_APP_TYPE = eap;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5624,6 +5625,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
 				MIXPANEL_API_KEY = c82ba102f81bc9371bce1ab96e9a576a;
+				MIXPANEL_APP_TYPE = enterprise;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5721,7 +5723,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
-				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
+				MIXPANEL_API_KEY = "";
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5819,7 +5821,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
-				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
+				MIXPANEL_API_KEY = "";
+				MIXPANEL_APP_TYPE = "";
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -5918,6 +5921,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
 				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
+				MIXPANEL_APP_TYPE = llectro;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
@@ -6061,6 +6065,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = "";
 				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
+				MIXPANEL_APP_TYPE = debug;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
@@ -6105,7 +6110,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MINT_API_KEY = 8721303f;
-				MIXPANEL_API_KEY = c82ba102f81bc9371bce1ab96e9a576a;
+				MIXPANEL_API_KEY = 0275e71777404c81d37be6e935e78031;
+				MIXPANEL_APP_TYPE = app_store;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";
