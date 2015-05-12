@@ -2,6 +2,9 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 import akka.stream.ActorFlowMaterializer
 import com.google.android.gcm.server.Sender
 
@@ -26,7 +29,7 @@ import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.util.testing._
 
-class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
+class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with SqlSpecHelpers {
   behavior of "Server"
 
   it should "connect and Handshake" in e1
@@ -34,10 +37,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
   it should "respond to RPC requests" in e2
 
   val serverConfig = system.settings.config
-  val sqlConfig = serverConfig.getConfig("persist.sql")
-  val ds = initDs(sqlConfig)
 
-  implicit val db = initDb(ds)
+  implicit val (ds, db) = migrateAndInitDb()
   implicit val flowMaterializer = ActorFlowMaterializer()
 
   val gcmConfig = system.settings.config.getConfig("push.google")
@@ -54,7 +55,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
   implicit val socialManagerRegion = SocialManager.startRegion()
 
   implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
-  implicit val sessionRegion = Session.startRegion(Some(Session.props))
+  Session.startRegion(Some(Session.props))
+
+  implicit val sessionRegion = Session.startRegionProxy()
 
   val services = Seq(
     new AuthServiceImpl(new DummyActivationContext),
@@ -84,7 +87,16 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
     val sessionId = 2L
     val phoneNumber = 75550000000L
 
+    Await.result(db.run(persist.AuthId.create(1L, None, None)), 5.seconds)
+
     val smsHash = {
+      val helloMessageId = 4L
+      val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello(sessionId, 0L))).require
+      val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
+      client.send(helloMtPackage)
+      expectNewSession(sessionId, helloMessageId)
+      expectMessageAck(helloMessageId)
+
       val messageId = 3L
 
       val requestBytes = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
@@ -93,7 +105,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec {
 
       client.send(mtPackage)
 
-      expectNewSession(sessionId, messageId)
       expectMessageAck(messageId)
 
       val result = receiveRpcResult(messageId)

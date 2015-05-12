@@ -97,6 +97,7 @@ class Session(
   import SessionMessage._
 
   implicit val ec: ExecutionContext = context.dispatcher
+  log.debug("====Session create")
 
   private[this] var optUserId: Option[Int] = None
   private[this] var clients = immutable.Set.empty[ActorRef]
