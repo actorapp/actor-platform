@@ -37,7 +37,7 @@ class AAConversationController: EngineSlackListController {
         super.init(isInverted: true);
         
         // Hack for fixing top offsets
-        self.edgesForExtendedLayout = UIRectEdge.All ^ UIRectEdge.Top;
+        // self.edgesForExtendedLayout = UIRectEdge.All ^ UIRectEdge.Top;
         
         self.peer = peer;
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
