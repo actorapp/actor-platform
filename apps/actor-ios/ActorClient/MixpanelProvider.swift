@@ -28,7 +28,7 @@ class MixpanelProvider:NSObject, AMAnalyticsProvider {
     func onLoggedInWithNSString(deviceId: String!, withInt uid: jint, withLong phoneNumber: jlong, withNSString userName: String!) {
         saveDeviceId(deviceId)
         mixpanel.identify("uid:\(uid)")
-        mixpanel.people.set("PhoneNumber", to: "\(phoneNumber)")
+        mixpanel.people.set("$phone", to: "\(phoneNumber)")
         mixpanel.people.set("$name", to: "\(userName)")
     }
     
@@ -36,7 +36,7 @@ class MixpanelProvider:NSObject, AMAnalyticsProvider {
         saveDeviceId(deviceId)
         mixpanel.createAlias("uid:\(uid)", forDistinctID: "device:\(deviceId)")
         mixpanel.identify("uid:\(uid)")
-        mixpanel.people.set("PhoneNumber", to: "\(phoneNumber)")
+        mixpanel.people.set("$phone", to: "\(phoneNumber)")
         mixpanel.people.set("$name", to: "\(userName)")
     }
     
