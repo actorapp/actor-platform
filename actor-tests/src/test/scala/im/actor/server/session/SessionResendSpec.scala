@@ -9,7 +9,9 @@ import com.typesafe.config.ConfigFactory
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCode, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs.RequestCodec
-import im.actor.server.mtproto.protocol.RpcRequestBox
+import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.server.mtproto.protocol.{ SessionHello, RpcRequestBox }
+import im.actor.server.push.SeqUpdatesManager
 import im.actor.util.testing.ActorSpecification
 
 class SessionResendSpec extends BaseSessionSpec(
@@ -71,10 +73,11 @@ class SessionResendSpec extends BaseSessionSpec(
 
       {
         implicit val probe = TestProbe()
-        ignoreNewSession(authId, sessionId)
 
         val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
+
+        expectNewSession(authId, sessionId, messageId)
 
         expectMessageAck(authId, sessionId, messageId)
 
@@ -88,10 +91,9 @@ class SessionResendSpec extends BaseSessionSpec(
 
       {
         implicit val probe = TestProbe()
-        ignoreNewSession(authId, sessionId)
 
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
-        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
+        val helloMessageId = Random.nextLong()
+        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello(sessionId, helloMessageId))
 
         // response to previous request
         expectRpcResult() should matchPattern {
@@ -99,11 +101,6 @@ class SessionResendSpec extends BaseSessionSpec(
         }
 
         expectMessageAck(authId, sessionId, messageId)
-
-        // response to the last request
-        expectRpcResult() should matchPattern {
-          case RpcOk(ResponseSendAuthCode(_, _)) ⇒
-        }
 
         expectNoMsg(6.seconds)
       }

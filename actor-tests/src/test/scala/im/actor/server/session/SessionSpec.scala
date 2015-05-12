@@ -284,14 +284,11 @@ class SessionSpec extends BaseSessionSpec {
 
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello(authId, sessionId))
       expectNewSession(authId, sessionId, messageId)
-      probe.receiveOne(1.second) // ack
+      expectMessageAck(authId, sessionId, messageId)
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
+      SeqUpdatesManager.persistAndPushUpdate(authId, UpdateContactRegistered(1, false, 1L, 2L), None)
 
-      // ack and response
-      probe.receiveOne(1.second)
-      probe.receiveOne(1.second)
+      expectSeqUpdate(authId, sessionId)
       probe.expectNoMsg()
     }
   }
