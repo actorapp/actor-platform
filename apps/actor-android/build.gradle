@@ -118,7 +118,7 @@ android {
         release {
             buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
             signingConfig signingConfigs.release
-            applicationIdSuffix ".business"
+            applicationIdSuffix ".cloud"
 
             buildConfigField STRING, MIXPANEL, MIXPANEL_RELEASE
         }
