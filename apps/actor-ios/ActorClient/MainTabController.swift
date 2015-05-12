@@ -39,11 +39,6 @@ class MainTabController : UITabBarController, UITabBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Disable transparency for iOS7
-        if (!isiOS8) {
-            tabBar.translucent = false
-        }
-        
         appEmptyContainer.hidden = true
         appIsEmptyPlaceholder.hidden = true
         appIsEmptyPlaceholder.setImage(
@@ -65,6 +60,7 @@ class MainTabController : UITabBarController, UITabBarDelegate {
         appEmptyContainer.addSubview(appIsSyncingPlaceholder)
         
         view.addSubview(appEmptyContainer)
+        view.backgroundColor = UIColor.whiteColor()
     }
     
     

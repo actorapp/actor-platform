@@ -23,6 +23,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     override func loadView() {
+        super.loadView()
+        
         var title = "";
         if (MainAppTheme.tab.showText) {
             title = NSLocalizedString("TabMessages", comment: "Messages Title")
@@ -42,7 +44,8 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.rowHeight = 76
         tableView.backgroundColor = MainAppTheme.list.backyardColor
-        view = tableView
+        view.addSubview(tableView)
+        // view = tableView
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -149,6 +152,17 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         } else {
             MainAppTheme.navigation.applyStatusBar()
         }
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        searchDisplay?.setActive(false, animated: animated)
     }
     
     // MARK: -
