@@ -314,6 +314,7 @@ class AAConversationController: EngineSlackListController {
         // Perform auto correct
         textView.refreshFirstResponder();
         
+        MSG.trackTextSendWithAMPeer(peer)
         MSG.sendMessage(peer, withText: textView.text);
         
         super.didPressRightButton(sender);
@@ -481,7 +482,7 @@ extension AAConversationController: UIImagePickerControllerDelegate, UINavigatio
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        
+        MSG.trackPhotoSendWithAMPeer(peer!)
         MSG.sendUIImage(image, peer: peer!)
     }
     
