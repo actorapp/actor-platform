@@ -17,10 +17,15 @@ import im.actor.model.AnalyticsProvider;
 
 public class AndroidMixpanelAnalytics implements AnalyticsProvider {
 
-    private MixpanelAPI mixpanel;
+    public static MixpanelAPI getRegisteredApi() {
+        return mixpanel;
+    }
+
+    private static MixpanelAPI mixpanel;
 
     public AndroidMixpanelAnalytics(Context context, String token) {
-        this.mixpanel = MixpanelAPI.getInstance(context, token);
+
+        mixpanel = MixpanelAPI.getInstance(context, token);
 
         try {
             JSONObject deviceProperties = new JSONObject();
@@ -45,6 +50,7 @@ public class AndroidMixpanelAnalytics implements AnalyticsProvider {
     public void onLoggedOut(String deviceId) {
         saveDeviceId(deviceId);
         mixpanel.identify("device:" + deviceId);
+        mixpanel.getPeople().identify("device:" + deviceId);
     }
 
     @Override
@@ -52,7 +58,7 @@ public class AndroidMixpanelAnalytics implements AnalyticsProvider {
         saveDeviceId(deviceId);
         mixpanel.identify("uid:" + uid);
         mixpanel.getPeople().identify("uid:" + uid);
-        mixpanel.getPeople().set("PhoneNumber", phoneNumber);
+        mixpanel.getPeople().set("$phone", phoneNumber);
         mixpanel.getPeople().set("$name", userName);
     }
 
@@ -62,7 +68,7 @@ public class AndroidMixpanelAnalytics implements AnalyticsProvider {
         mixpanel.alias("uid:" + uid, "device:" + deviceId);
         mixpanel.identify("uid:" + uid);
         mixpanel.getPeople().identify("uid:" + uid);
-        mixpanel.getPeople().set("PhoneNumber", phoneNumber);
+        mixpanel.getPeople().set("$phone", phoneNumber);
         mixpanel.getPeople().set("$name", userName);
     }
 
