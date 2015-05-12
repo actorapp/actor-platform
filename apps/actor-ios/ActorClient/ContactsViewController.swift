@@ -137,6 +137,12 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        searchDisplay?.setActive(false, animated: animated)
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }

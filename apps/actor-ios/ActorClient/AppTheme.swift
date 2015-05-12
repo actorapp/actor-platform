@@ -189,7 +189,6 @@ class AppTabBar {
     private let mainColor = UIColor.RGB(0x5085CB)
     
     var backgroundColor : UIColor { get { return UIColor.whiteColor() } }
-    var isTransculent : Bool { get { return true } }
     
     var showText : Bool { get { return true } }
     
@@ -213,16 +212,9 @@ class AppTabBar {
     
     func applyAppearance(application: UIApplication) {
         var tabBar = UITabBar.appearance()
-        // TabBar Transculent
-        // Ignore for iOS7
-        if (isiOS8) {
-            tabBar.translucent = isTransculent
-        }
-        NSLog("Appearance 3")
         // TabBar Background color
         tabBar.barTintColor = backgroundColor;
 
-        NSLog("Appearance 4")
         // TabBar Shadow
         if (barShadow != nil) {
             tabBar.shadowImage = UIImage(named: barShadow!);
@@ -230,13 +222,10 @@ class AppTabBar {
             tabBar.shadowImage = nil
         }
         
-        NSLog("Appearance 5")
         var tabBarItem = UITabBarItem.appearance()
         // TabBar Unselected Text
-        NSLog("Appearance 6")
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: unselectedTextColor], forState: UIControlState.Normal)
         // TabBar Selected Text
-        NSLog("Appearance 7")
         tabBarItem.setTitleTextAttributes([NSForegroundColorAttributeName: selectedTextColor], forState: UIControlState.Selected)
     }
 }
@@ -244,13 +233,13 @@ class AppTabBar {
 class AppNavigationBar {
     
     var statusBarLightContent : Bool { get { return true } }
-    var barColor:UIColor { get { return UIColor.RGB(0x5085CB) } }
+    var barColor:UIColor { get { return /*UIColor.RGB(0x5085CB)*/ UIColor.RGB(0x3576cc) } }
+    var barSolidColor:UIColor { get { return UIColor.RGB(0x5085CB) } }
     
     var titleColor: UIColor { get { return UIColor.whiteColor() } }
     var subtitleColor: UIColor { get { return UIColor.whiteColor() } }
     var subtitleActiveColor: UIColor { get { return UIColor.whiteColor() } }
     
-    var isTransculent : Bool { get { return false } }
     var shadowImage : String? { get { return nil } }
     
     func applyAppearance(application: UIApplication) {
@@ -272,23 +261,19 @@ class AppNavigationBar {
         // NavigationBar Background
         navAppearance.barTintColor = barColor;
         
-        navAppearance.setBackgroundImage(Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 1)), forBarMetrics: UIBarMetrics.Default)
-        navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
+        // navAppearance.setBackgroundImage(Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 1)), forBarMetrics: UIBarMetrics.Default)
+        // navAppearance.shadowImage = Imaging.imageWithColor(barColor, size: CGSize(width: 1, height: 2))
         // Small hack for correct background color
         UISearchBar.appearance().backgroundColor = barColor
         
-        // NavigationBar Transculency
-        // Ignore for iOS7
-        if (isiOS8) {
-            navAppearance.translucent = isTransculent;
-        }
-        
         // NavigationBar Shadow
-        if (shadowImage == nil) {
-            navAppearance.shadowImage = UIImage()
-        } else {
-            navAppearance.shadowImage = UIImage(named: shadowImage!)
-        }
+//        navAppearance.shadowImage = nil
+//        if (shadowImage == nil) {
+//            navAppearance.shadowImage = UIImage()
+//            navAppearance.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+//        } else {
+//            navAppearance.shadowImage = UIImage(named: shadowImage!)
+//        }
     }
     
     func applyAuthStatusBar() {

@@ -120,15 +120,10 @@ class AAConversationGroupInfoController: AATableViewController {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
             var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
-            if (scrollView.contentOffset.y < 0) {
-                if (scrollView.contentOffset.y < -(scrollView.frame.width - 200)) {
-                    scrollView.contentOffset = CGPointMake(0, -scrollView.frame.width + 200)
-                }
-                var offset = scrollView.contentOffset.y
-                groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
-            } else {
-                groupCell?.groupAvatarView.frame = CGRectMake(0, 0, scrollView.frame.width, 200)
-            }
+            var topOffset = getNavigationBarHeight() + getStatusBarHeight()
+            var maxOffset = scrollView.frame.width - 200 + topOffset
+            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
     
