@@ -32,7 +32,7 @@ case class SmsActivationContext(smsActivationActor: ActorRef) extends Activation
   import SmsActivation._
 
   override def send(authId: Long, phoneNumber: Long, code: String): Unit = {
-    smsActivationActor ! Send(authId, phoneNumber, s"${code} is your Actor confirmation code")
+    smsActivationActor ! Send(authId, phoneNumber, code)
   }
 }
 
@@ -46,8 +46,7 @@ class SmsActivation(smsWaitIntervalMs: Long, config: Config, implicit val flowMa
   private val sentCodes = new mutable.HashSet[(Long, String)]()
 
   private val engines = List(
-    new TwilioSmsEngine(config.getConfig("twilio")),
-    new ClickatellSmsEngine(config.getConfig("clickatell"))
+    new TelesignSmsEngine(config.getConfig("telesign"))
   )
 
   private def codeWasNotSent(phoneNumber: Long, code: String) = !sentCodes.contains((phoneNumber, code))
@@ -66,7 +65,7 @@ class SmsActivation(smsWaitIntervalMs: Long, config: Config, implicit val flowMa
       rememberSentCode(phoneNumber, code)
 
       engines foreach { engine ⇒
-        engine.send(phoneNumber, code) andThen {
+        engine.sendCode(phoneNumber, code) andThen {
           case Success(res) ⇒
           //EventService.log(authId, phoneNumber, E.SmsSentSuccessfully(code, res))
           case Failure(e)   ⇒

@@ -25,6 +25,8 @@ object Dependencies {
 
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
+    val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
+
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
@@ -114,7 +116,7 @@ object Dependencies {
 
   val presences = shared :+ akkaContrib
 
-  val sms = shared ++ Seq(akkaActor, akkaHttp)
+  val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
   val social = shared :+ akkaContrib
 
