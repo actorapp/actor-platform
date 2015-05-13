@@ -132,6 +132,8 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
      * */
     final AnchorInfo mAnchorInfo;
 
+    private boolean scrollToPositionWithOffsetCalled;
+
     /**
      * Creates a vertical LinearLayoutManager
      *
@@ -795,20 +797,23 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
             return true;
         }
         // override layout from end values for consistency
-        anchorInfo.mLayoutFromEnd = mShouldReverseLayout;
-        //
-        /*
-        if (mShouldReverseLayout) {
+        //Act like not reversed if scrollToPositionWithOffset called
+        anchorInfo.mLayoutFromEnd = scrollToPositionWithOffsetCalled?false:mShouldReverseLayout;
+        if(scrollToPositionWithOffsetCalled){
+            //Act like not reversed if scrollToPositionWithOffset called
+            anchorInfo.mLayoutFromEnd = false;
+            anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
+                    mPendingScrollPositionOffset;
+            scrollToPositionWithOffsetCalled = false;
+
+        }else if (mShouldReverseLayout) {
             anchorInfo.mCoordinate = mOrientationHelper.getEndAfterPadding() -
                     mPendingScrollPositionOffset;
         } else {
             anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
                     mPendingScrollPositionOffset;
         }
-        */
-        //
-        anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
-                mPendingScrollPositionOffset;
+
 
         return true;
     }
@@ -959,6 +964,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
      * @see #scrollToPosition(int)
      */
     public void scrollToPositionWithOffset(int position, int offset) {
+        scrollToPositionWithOffsetCalled = true;
         mPendingScrollPosition = position;
         mPendingScrollPositionOffset = offset;
         if (mPendingSavedState != null) {
