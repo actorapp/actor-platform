@@ -131,7 +131,8 @@ class SequenceServiceImpl(
   private def getUsersPhonesGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData): dbio.DBIOAction[(Seq[User], Seq[Phone], Seq[Group]), NoStream, Read with Read with Read with Read with Read with Read with Read with Read with Read] = {
     for {
       groups ← getGroupsStructs(groupIds)
-      allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(_.userId) }
+      // TODO: #perf optimize collection operations
+      allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
       users ← userStructs(allUserIds)
       phones ← getUserPhones(allUserIds)
     } yield (users, phones, groups)
