@@ -512,6 +512,9 @@ class SeqUpdatesManager(
     case SeqChanged(value) ⇒
       log.debug("Recovery: SeqChanged {}", value)
       seq = value
+    case SnapshotOffer(_, SeqChanged(value)) ⇒
+      log.debug("Recovery(snapshot): SeqChanged {}", value)
+      seq = value
     case RecoveryFailure(cause) ⇒
       log.error(cause, "Failed to recover")
       context.stop(self)
@@ -596,6 +599,7 @@ class SeqUpdatesManager(
     if (seq % (IncrementOnStart / 2) == 0) {
       persist(SeqChanged(seq)) { _ ⇒
         push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
+        saveSnapshot(SeqChanged(seq))
       }
     } else {
       push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
