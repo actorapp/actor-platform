@@ -354,11 +354,7 @@ object SeqUpdatesManager {
     }
   }
 
-  private[push] def subscribe(authId: Long, consumer: ActorRef)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
-    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
-  }
-
-  private def bytesToTimestamp(bytes: Array[Byte]): Long = {
+  def bytesToTimestamp(bytes: Array[Byte]): Long = {
     if (bytes.isEmpty) {
       0L
     } else {
@@ -366,8 +362,12 @@ object SeqUpdatesManager {
     }
   }
 
-  private def timestampToBytes(timestamp: Long): Array[Byte] = {
+  def timestampToBytes(timestamp: Long): Array[Byte] = {
     ByteBuffer.allocate(java.lang.Long.BYTES).putLong(timestamp).array()
+  }
+
+  private[push] def subscribe(authId: Long, consumer: ActorRef)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext, timeout: Timeout): Future[Unit] = {
+    region.ref.ask(Envelope(authId, Subscribe(consumer))).mapTo[SubscribeAck].map(_ ⇒ ())
   }
 
   private def pushUpdateGetSeqState(
