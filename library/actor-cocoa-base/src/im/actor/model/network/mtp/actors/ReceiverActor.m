@@ -138,8 +138,8 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
     }
     if ([self->receivedMessages_ size] >= MTReceiverActor_MAX_RECEIVED_BUFFER) {
       (void) [self->receivedMessages_ removeWithInt:0];
-      [self->receivedMessages_ addWithId:JavaLangLong_valueOfWithLong_([message getMessageId])];
     }
+    [self->receivedMessages_ addWithId:JavaLangLong_valueOfWithLong_([message getMessageId])];
     MTProtoStruct *obj;
     @try {
       obj = MTProtoSerializer_readMessagePayloadWithByteArray_([message getPayload]);

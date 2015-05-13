@@ -28,6 +28,7 @@ import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.network.RpcException;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -90,8 +91,15 @@ public class JsFacade implements Exportable {
 
                 @Override
                 public void onError(Exception e) {
-                    error.onError("INTERNAL_ERROR", "Internal error", false,
-                            getAuthState());
+                    String tag = "INTERNAL_ERROR";
+                    String message = "Internal error";
+                    boolean canTryAgain = false;
+                    if (e instanceof RpcException) {
+                        tag = ((RpcException) e).getTag();
+                        message = e.getMessage();
+                        canTryAgain = ((RpcException) e).isCanTryAgain();
+                    }
+                    error.onError(tag, message, canTryAgain, getAuthState());
                 }
             });
         } catch (Exception e) {
@@ -118,8 +126,15 @@ public class JsFacade implements Exportable {
 
                 @Override
                 public void onError(Exception e) {
-                    error.onError("INTERNAL_ERROR", "Internal error", false,
-                            getAuthState());
+                    String tag = "INTERNAL_ERROR";
+                    String message = "Internal error";
+                    boolean canTryAgain = false;
+                    if (e instanceof RpcException) {
+                        tag = ((RpcException) e).getTag();
+                        message = e.getMessage();
+                        canTryAgain = ((RpcException) e).isCanTryAgain();
+                    }
+                    error.onError(tag, message, canTryAgain, getAuthState());
                 }
             });
         } catch (Exception e) {
@@ -132,6 +147,29 @@ public class JsFacade implements Exportable {
                 }
             });
         }
+    }
+
+    public void signUp(String name, final JsAuthSuccessClosure success,
+                       final JsAuthErrorClosure error) {
+        messenger.signUp(name, null, false).start(new CommandCallback<AuthState>() {
+            @Override
+            public void onResult(AuthState res) {
+                success.onResult(Enums.convert(res));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                String tag = "INTERNAL_ERROR";
+                String message = "Internal error";
+                boolean canTryAgain = false;
+                if (e instanceof RpcException) {
+                    tag = ((RpcException) e).getTag();
+                    message = e.getMessage();
+                    canTryAgain = ((RpcException) e).isCanTryAgain();
+                }
+                error.onError(tag, message, canTryAgain, getAuthState());
+            }
+        });
     }
 
     // Dialogs
