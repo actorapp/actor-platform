@@ -29,6 +29,9 @@ class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor
 
   private type Chain = PartialFunction[RpcRequest, ClientData ⇒ Future[RpcError \/ RpcOk]]
 
+  // TODO: configurable
+  private val DefaultErrorDelay = 1
+
   implicit private val ec: ExecutionContext = context.dispatcher
 
   def receive: Receive = {
@@ -68,7 +71,7 @@ class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor
                 .recover {
                   case e: Throwable ⇒
                     log.error(e, "Failed to handle messageId:{} rpcRequest: {}", messageId, rpcRequest)
-                    RpcInternalError(true, 1000) // TODO: configurable delay
+                    RpcInternalError(true, DefaultErrorDelay)
                 }
                 .map(result ⇒ RpcResponse(messageId, RpcResultCodec.encode(result).require))
                 .pipeTo(replyTo)
@@ -77,7 +80,7 @@ class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor
           }
         } catch {
           case e: Exception ⇒
-            replyTo ! RpcResponse(messageId, RpcResultCodec.encode(RpcInternalError(true, 1000)).require) // TODO: configurable delay
+            replyTo ! RpcResponse(messageId, RpcResultCodec.encode(RpcInternalError(true, DefaultErrorDelay)).require) // TODO: configurable delay
           case e: Throwable ⇒
             log.error(e, "Failed to handle {}", msg)
         }
