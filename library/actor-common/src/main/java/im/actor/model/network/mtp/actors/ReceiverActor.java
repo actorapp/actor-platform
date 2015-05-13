@@ -79,8 +79,8 @@ public class ReceiverActor extends Actor {
 
             if (receivedMessages.size() >= MAX_RECEIVED_BUFFER) {
                 receivedMessages.remove(0);
-                receivedMessages.add(message.getMessageId());
             }
+            receivedMessages.add(message.getMessageId());
 
             ProtoStruct obj;
             try {
