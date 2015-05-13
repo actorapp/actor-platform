@@ -206,7 +206,7 @@ trait HistoryHandlers {
   private def getDialogStruct(dialogModel: models.Dialog): DBIOAction[Dialog, NoStream, Read with Read] = {
     for {
       messageOpt ← persist.HistoryMessage.find(dialogModel.userId, dialogModel.peer).headOption
-      unreadCount ← persist.HistoryMessage.getUnreadCount(dialogModel.userId, dialogModel.peer, dialogModel.lastReadAt)
+      unreadCount ← persist.HistoryMessage.getUnreadCount(dialogModel.userId, dialogModel.peer, dialogModel.ownerLastReadAt)
     } yield {
       val emptyMessageContent = TextMessage("", None)
       val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
