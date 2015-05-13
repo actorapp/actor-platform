@@ -10,7 +10,8 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCode, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.server.mtproto.protocol.{ SessionHello, RpcRequestBox }
+import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
+import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello, RpcRequestBox }
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.util.testing.ActorSpecification
 
@@ -27,9 +28,10 @@ class SessionResendSpec extends BaseSessionSpec(
 ) {
   behavior of "Session's ReSender"
 
-  it should "Resend messages if ack received within ack-timeout" in Sessions().e1
-  it should "not Resend messages if ack received within ack-timeout" in Sessions().e3
+  it should "Resend messages if no ack received within ack-timeout" in Sessions().e1
   it should "Resend messages to new client" in Sessions().e2
+  it should "not Resend messages if ack received within ack-timeout" in Sessions().e3
+  it should "Resend updates if no ack received within ack-timeout" in Sessions().e4
 
   case class Sessions() {
     def e1() = {
@@ -59,11 +61,18 @@ class SessionResendSpec extends BaseSessionSpec(
       // Still no ack
       Thread.sleep(5000)
 
+      expectRpcResult(sendAckAt = None) should matchPattern {
+        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+      }
+
+      // Still no ack
+      Thread.sleep(5000)
+
       expectRpcResult() should matchPattern {
         case RpcOk(ResponseSendAuthCode(_, _)) ⇒
       }
 
-      expectNoMsg(6.seconds)
+      probe.expectNoMsg(5.seconds)
     }
 
     def e2() = {
@@ -101,7 +110,7 @@ class SessionResendSpec extends BaseSessionSpec(
 
         expectMessageAck(authId, sessionId, messageId)
 
-        expectNoMsg(6.seconds)
+        probe.expectNoMsg(6.seconds)
       }
     }
 
@@ -117,15 +126,34 @@ class SessionResendSpec extends BaseSessionSpec(
       ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, messageId)
 
-      expectRpcResult(sendAckAt = None) should matchPattern {
+      expectRpcResult() should matchPattern {
         case RpcOk(ResponseSendAuthCode(_, _)) ⇒
       }
 
-      // We didn't send Ack within ack-timeout
-      expectNoMsg(6.seconds)
+      probe.expectNoMsg(6.seconds)
+    }
 
-      // But we've sent Response Ack with delay in 6 seconds, so we don't expect Response resending
-      expectNoMsg(5.seconds)
+    def e4() = {
+      implicit val probe = TestProbe()
+
+      val authId = createAuthId()
+      val sessionId = Random.nextLong()
+
+      val helloMessageId = Random.nextLong()
+      sendMessageBox(authId, sessionId, sessionRegion.ref, helloMessageId, SessionHello)
+      expectNewSession(authId, sessionId, helloMessageId)
+      expectMessageAck(authId, sessionId, helloMessageId)
+
+      val update = UpdateContactRegistered(1, false, 1L, 2L)
+      SeqUpdatesManager.persistAndPushUpdate(authId, update, None)
+      expectSeqUpdate(authId, sessionId, None)
+
+      // Still no ack
+      Thread.sleep(5000)
+
+      expectSeqUpdate(authId, sessionId)
+
+      probe.expectNoMsg(6.seconds)
     }
   }
 }
