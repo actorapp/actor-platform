@@ -281,7 +281,6 @@ object SeqUpdatesManager {
     for (updates ← p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1)) yield {
       if (updates.length > MaxDifferenceUpdates) {
         val neededUpdates = updates.take(updates.length - 1)
-
         (neededUpdates, true, timestampToBytes(neededUpdates.last.timestamp))
       } else {
         val newState =

@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import com.google.protobuf.CodedInputStream
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
@@ -47,10 +48,9 @@ class SequenceServiceSpec extends BaseServiceSuite {
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
-    val update = UpdateContactsAdded(Vector(1, 2, 3))
-    val (userIds, groupIds) = updateRefs(update)
-
-    val actions = for (a ← 1 to 203) yield {
+    val actions = for (i ← 0 to 202) yield {
+      val update = UpdateContactsAdded(Vector(i, 0, 0))
+      val (userIds, groupIds) = updateRefs(update)
       persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None, None)
     }
 
@@ -63,6 +63,12 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
       val diff = res.toOption.get
 
+      for (i ← 0 to 99) {
+        val data = diff.updates(i).update
+        val in = CodedInputStream.newInstance(data)
+        UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(i, 0, 0)))
+      }
+
       (diff.seq, diff.state)
     }
 
@@ -73,6 +79,12 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
       val diff = res.toOption.get
 
+      for (i ← 0 to 99) {
+        val data = diff.updates(i).update
+        val in = CodedInputStream.newInstance(data)
+        UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(100 + i, 0, 0)))
+      }
+
       (diff.seq, diff.state)
     }
 
@@ -82,6 +94,12 @@ class SequenceServiceSpec extends BaseServiceSuite {
       }
 
       val diff = res.toOption.get
+
+      for (i ← 0 to 2) {
+        val data = diff.updates(i).update
+        val in = CodedInputStream.newInstance(data)
+        UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(200 + i, 0, 0)))
+      }
 
       (diff.seq, diff.state)
     }
