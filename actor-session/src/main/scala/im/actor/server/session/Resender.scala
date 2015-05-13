@@ -81,6 +81,10 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
 
   def subscriber: Receive = {
     case OnNext(msg: MessageAck with IncomingProtoMessage) ⇒
+      // TODO: #perf possibly can be optimized
+      msg.messageIds foreach { messageId ⇒
+        resendBuffer.get(messageId) map (_._2.cancel())
+      }
       resendBuffer --= msg.messageIds
     case OnNext(msg: ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage) ⇒ enqueueProtoMessageWithResend(msg)
     case OnNext(msg: ProtoMessage with OutgoingProtoMessage)                             ⇒ enqueueProtoMessage(msg)

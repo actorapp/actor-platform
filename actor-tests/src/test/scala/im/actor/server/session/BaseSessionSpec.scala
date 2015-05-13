@@ -58,8 +58,21 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
     authId
   }
 
-  protected def expectSeqUpdate(authId: Long, sessionId: Long)(implicit probe: TestProbe): SeqUpdate = {
-    UpdateBoxCodec.decode(expectMessageBox(authId, sessionId).body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[SeqUpdate]
+  protected def expectSeqUpdate(authId: Long, sessionId: Long, sendAckAt: Option[Duration] = Some(0.seconds))(implicit probe: TestProbe): SeqUpdate = {
+    val mb = expectMessageBox(authId, sessionId)
+
+    val update = UpdateBoxCodec.decode(mb.body.asInstanceOf[UpdateBox].bodyBytes).require.value.asInstanceOf[SeqUpdate]
+
+    sendAckAt map { delay ⇒
+      Future {
+        blocking {
+          Thread.sleep(delay.toMillis)
+          sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong, MessageAck(Vector(mb.messageId)))
+        }
+      }
+    }
+
+    update
   }
 
   protected def expectWeakUpdate(authId: Long, sessionId: Long)(implicit probe: TestProbe): WeakUpdate = {
@@ -72,18 +85,20 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
     if (messages.size != expectAckFor.size + 1) {
       fail(s"Expected response and acks for ${expectAckFor.mkString(",")}, got: ${messages.mkString(",")}")
     } else {
-      val (rest, ackIds) = messages.foldLeft(Vector.empty[(Long, Long, ProtoMessage)], Set.empty[Long]) {
+      val (rest, ackIds) = messages.foldLeft(Vector.empty[(Long, Long, Long, ProtoMessage)], Set.empty[Long]) {
         case ((rest, ackIds), MTPackage(authId, sessionId, mbBytes)) ⇒
-          MessageBoxCodec.decode(mbBytes).require.value.body match {
+          val mb = MessageBoxCodec.decode(mbBytes).require.value
+
+          mb.body match {
             case MessageAck(ids) ⇒ (rest, ackIds ++ ids)
-            case x               ⇒ (rest :+ ((authId, sessionId, x)), ackIds)
+            case body            ⇒ (rest :+ ((authId, sessionId, mb.messageId, body)), ackIds)
           }
       }
 
       ackIds shouldEqual expectAckFor
 
       rest match {
-        case Vector((authId, sessionId, RpcResponseBox(messageId, rpcResultBytes))) ⇒
+        case Vector((authId, sessionId, messageId, RpcResponseBox(_, rpcResultBytes))) ⇒
           sendAckAt map { delay ⇒
             Future {
               blocking {
