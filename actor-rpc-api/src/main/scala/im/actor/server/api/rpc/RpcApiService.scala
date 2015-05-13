@@ -61,12 +61,16 @@ class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor
                 }
 
               result
-                .map(_.fold(err ⇒ err, ok ⇒ ok))
-                .recover({
+                .map { res ⇒
+                  log.debug("Response: {}, Client: {}", res, clientData)
+                  res.fold(err ⇒ err, ok ⇒ ok)
+                }
+                .recover {
                   case e: Throwable ⇒
                     log.error(e, "Failed to handle messageId:{} rpcRequest: {}", messageId, rpcRequest)
                     RpcInternalError(true, 1000) // TODO: configurable delay
-                }).map(result ⇒ RpcResponse(messageId, RpcResultCodec.encode(result).require))
+                }
+                .map(result ⇒ RpcResponse(messageId, RpcResultCodec.encode(result).require))
                 .pipeTo(replyTo)
             case _ ⇒
               Future.successful(CommonErrors.UnsupportedRequest)
