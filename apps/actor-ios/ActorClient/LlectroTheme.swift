@@ -16,6 +16,10 @@ class LlectroTheme : AppTheme {
 
 class LlectroCommon: AppCommon {
     override var isDarkKeyboard: Bool { get { return true } }
+    
+    override var tokenFieldText: UIColor { get { return UIColor.alphaWhite(0xDE/255.0) } }
+    override var tokenFieldTextSelected: UIColor { get { return UIColor.alphaWhite(0xDE/255.0) } }
+    override var tokenFieldBg: UIColor { get { return UIColor.RGB(0x50A1D6) } }
 }
 
 class LlectroChat: AppChat {
