@@ -129,7 +129,6 @@ android {
             applicationIdSuffix ".business"
 
             buildConfigField STRING, HOCKEY, HOCKEY_ALPHA
-            buildConfigField STRING, MIXPANEL, MIXPANEL_ENTERPRISE
         }
 
         enterprise {
@@ -138,6 +137,7 @@ android {
             applicationIdSuffix ".business"
 
             buildConfigField STRING, HOCKEY, HOCKEY_ENTERPRISE
+            buildConfigField STRING, MIXPANEL, MIXPANEL_ENTERPRISE
         }
 
         // Development builds
