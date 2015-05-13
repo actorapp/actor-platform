@@ -53,6 +53,8 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
   }
 
   private def publishMessage(message: SessionStreamMessage): Unit = {
+    log.debug("Publish message {}", message)
+
     if (messageQueue.isEmpty && totalDemand > 0)
       onNext(message)
     else {
@@ -62,6 +64,9 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
   }
 
   private def publishMessages(messages: immutable.Iterable[SessionStreamMessage]): Unit = {
+    messages foreach { message ⇒
+      log.debug("Publish message {}", message)
+    }
     messageQueue = messageQueue.enqueue(messages)
     deliverBuf()
   }

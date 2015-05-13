@@ -282,7 +282,7 @@ class SessionSpec extends BaseSessionSpec {
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello(authId, sessionId))
+      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello)
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
 

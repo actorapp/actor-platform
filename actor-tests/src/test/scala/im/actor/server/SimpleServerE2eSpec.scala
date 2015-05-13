@@ -91,7 +91,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with
 
     val smsHash = {
       val helloMessageId = 4L
-      val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello(sessionId, 0L))).require
+      val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
       val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
       client.send(helloMtPackage)
       expectNewSession(sessionId, helloMessageId)
