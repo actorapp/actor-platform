@@ -557,7 +557,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
         }
 
         // changes may cause gaps on the UI, try to fix them.
-        // TODO we can probably avoid this if neither stackFromEnd/reverseLayout/RTL values have
+
         // changed
         if (getChildCount() > 0) {
             // because layout from end may be changed by scroll to position
@@ -1301,7 +1301,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
         // max offset we should set is mFastScroll + available
         final int start = layoutState.mAvailable;
         if (layoutState.mScrollingOffset != LayoutState.SCOLLING_OFFSET_NaN) {
-            // TODO ugly bug fix. should not happen
+
             if (layoutState.mAvailable < 0) {
                 layoutState.mScrollingOffset += layoutState.mAvailable;
             }
