@@ -24,23 +24,29 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 
   def lastReadAt = column[DateTime]("last_read_at")
 
-  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) <> (applyDialog.tupled, unapplyDialog)
+  def ownerLastReceivedAt = column[DateTime]("owner_last_received_at")
 
-  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime) ⇒ models.Dialog = {
-    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt) ⇒
+  def ownerLastReadAt = column[DateTime]("owner_last_read_at")
+
+  def * = (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt) <> (applyDialog.tupled, unapplyDialog)
+
+  def applyDialog: (Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime) ⇒ models.Dialog = {
+    case (userId, peerType, peerId, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt) ⇒
       models.Dialog(
         userId = userId,
         peer = models.Peer(models.PeerType.fromInt(peerType), peerId),
         lastMessageDate = lastMessageDate,
         lastReceivedAt = lastReceivedAt,
-        lastReadAt = lastReadAt
+        lastReadAt = lastReadAt,
+        ownerLastReceivedAt = ownerLastReceivedAt,
+        ownerLastReadAt = ownerLastReadAt
       )
   }
 
-  def unapplyDialog: models.Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime)] = { dialog ⇒
+  def unapplyDialog: models.Dialog ⇒ Option[(Int, Int, Int, DateTime, DateTime, DateTime, DateTime, DateTime)] = { dialog ⇒
     models.Dialog.unapply(dialog).map {
-      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt) ⇒
-        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt)
+      case (userId, peer, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt) ⇒
+        (userId, peer.typ.toInt, peer.id, lastMessageDate, lastReceivedAt, lastReadAt, ownerLastReceivedAt, ownerLastReadAt)
     }
   }
 }
@@ -81,7 +87,7 @@ object Dialog {
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastMessageDate).update(lastMessageDate) flatMap {
       case 0 ⇒
-        create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0)))
+        create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0)))
       case x ⇒ DBIO.successful(x)
     }
   }
@@ -89,7 +95,15 @@ object Dialog {
   def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastReceivedAt).update(lastReceivedAt) flatMap {
       case 0 ⇒
-        create(models.Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0)))
+        create(models.Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0), new DateTime(0), new DateTime(0)))
+      case x ⇒ DBIO.successful(x)
+    }
+  }
+
+  def updateOwnerLastReceivedAt(userId: Int, peer: models.Peer, ownerLastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
+    byUserIdPeer(userId, peer).map(_.ownerLastReceivedAt).update(ownerLastReceivedAt) flatMap {
+      case 0 ⇒
+        create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReceivedAt, new DateTime(0)))
       case x ⇒ DBIO.successful(x)
     }
   }
@@ -97,7 +111,15 @@ object Dialog {
   def updateLastReadAt(userId: Int, peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
     byUserIdPeer(userId, peer).map(_.lastReadAt).update(lastReadAt) flatMap {
       case 0 ⇒
-        create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt))
+        create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt, new DateTime(0), new DateTime(0)))
+      case x ⇒ DBIO.successful(x)
+    }
+  }
+
+  def updateOwnerLastReadAt(userId: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) = {
+    byUserIdPeer(userId, peer).map(_.ownerLastReadAt).update(ownerLastReadAt) flatMap {
+      case 0 ⇒
+        create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReadAt))
       case x ⇒ DBIO.successful(x)
     }
   }
