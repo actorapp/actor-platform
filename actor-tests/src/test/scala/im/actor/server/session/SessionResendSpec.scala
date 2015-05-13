@@ -92,8 +92,7 @@ class SessionResendSpec extends BaseSessionSpec(
       {
         implicit val probe = TestProbe()
 
-        val helloMessageId = Random.nextLong()
-        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello(sessionId, helloMessageId))
+        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, SessionHello)
 
         // response to previous request
         expectRpcResult() should matchPattern {
