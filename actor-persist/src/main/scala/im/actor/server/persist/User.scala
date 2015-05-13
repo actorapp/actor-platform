@@ -64,6 +64,8 @@ object User {
       result
   }
 
+  def activeUsersIds = activeUsers.map(_.id).result
+
   def page(number: Int, size: Int) = {
     val offset = (number - 1) * size
     activeUsers.
