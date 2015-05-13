@@ -48,6 +48,10 @@ class AppChat {
 
 class AppCommon {
     var isDarkKeyboard: Bool { get { return false } }
+    
+    var tokenFieldText: UIColor { get { return UIColor.alphaBlack(0xDE/255.0) } }
+    var tokenFieldTextSelected: UIColor { get { return UIColor.alphaBlack(0xDE/255.0) } }
+    var tokenFieldBg: UIColor { get { return UIColor.RGB(0x5085CB) } }
 }
 
 class ChatBubbles {
