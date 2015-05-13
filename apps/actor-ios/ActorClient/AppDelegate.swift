@@ -44,9 +44,7 @@ import Foundation
         }
         
         // Apply styles
-        MainAppTheme.navigation.applyAppearance(application)
-        MainAppTheme.tab.applyAppearance(application)
-        MainAppTheme.search.applyAppearance(application)
+        MainAppTheme.applyAppearance(application)
         
         // Creating main window
         window = UIWindow(frame: UIScreen.mainScreen().bounds);

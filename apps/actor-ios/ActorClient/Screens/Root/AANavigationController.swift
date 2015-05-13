@@ -6,12 +6,19 @@ import UIKit
 
 class AANavigationController: UINavigationController {
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationBar.hideBottomHairline()
+        view.backgroundColor = MainAppTheme.list.backyardColor
+    }
+    
     // MARK: -
     // MARK: Methods
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationBar.hideBottomHairline()
-    }
+//    override func viewWillAppear(animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationBar.hideBottomHairline()
+//        view.backgroundColor = MainAppTheme.list.backyardColor
+//    }
     
     func makeBarTransparent() {
         navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)

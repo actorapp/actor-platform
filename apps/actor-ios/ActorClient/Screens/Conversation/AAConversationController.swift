@@ -53,6 +53,8 @@ class AAConversationController: EngineSlackListController {
         self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
         
         self.keyboardPanningEnabled = true;
+        
+        self.textView.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
 
         self.leftButton.setImage(UIImage(named: "conv_attach")!
             .tintImage(MainAppTheme.chat.attachColor)

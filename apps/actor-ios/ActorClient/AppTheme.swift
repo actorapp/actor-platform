@@ -19,6 +19,15 @@ class AppTheme {
     var text: AppText { get { return AppText() } }
     
     var chat: AppChat { get { return AppChat() } }
+    
+    var common: AppCommon { get { return AppCommon() } }
+    
+    func applyAppearance(application: UIApplication) {
+        navigation.applyAppearance(application)
+        tab.applyAppearance(application)
+        search.applyAppearance(application)
+        list.applyAppearance(application)
+    }
 }
 
 class AppText {
@@ -35,6 +44,10 @@ class AppChat {
     var sendDisabled: UIColor { get { return UIColor.alphaBlack(0.56) } }
     
     var profileBgTint: UIColor { get { return UIColor.RGB(0x5085CB) } }
+}
+
+class AppCommon {
+    var isDarkKeyboard: Bool { get { return false } }
 }
 
 class ChatBubbles {
@@ -123,6 +136,7 @@ class AppList {
     
     var textColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     var hintColor : UIColor { get { return UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1) } }
+    var sectionColor : UIColor { get { return UIColor(red: 164/255.0, green: 164/255.0, blue: 164/255.0, alpha: 1) } }
 //     var arrowColor : UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     
     var dialogTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
@@ -134,6 +148,10 @@ class AppList {
     
     var contactsTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
     var contactsShortTitle: UIColor { get { return UIColor(red: 0, green: 0, blue: 0, alpha: 0xDE/255.0) } }
+    
+    func applyAppearance(application: UIApplication) {
+        UITableViewHeaderFooterView.appearance().tintColor = sectionColor
+    }
 }
 
 class AppSearchBar {

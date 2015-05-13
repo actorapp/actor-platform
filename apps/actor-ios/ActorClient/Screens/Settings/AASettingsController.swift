@@ -157,6 +157,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.textFieldAtIndex(0)?.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
     
@@ -182,6 +183,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Blue
+        cell.selectionStyle = UITableViewCellSelectionStyle.Default
         cell.setContent(NSLocalizedString("SettingsSetPhoto", comment: "Edit Photo"))
         cell.setLeftInset(15.0)
         
@@ -216,6 +218,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
+        cell.selectionStyle = UITableViewCellSelectionStyle.Default
         cell.setContent(NSLocalizedString("SettingsNotifications", comment: "Notifications and Sounds"))
         cell.setLeftInset(15.0)
         
@@ -228,6 +231,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
+        cell.selectionStyle = UITableViewCellSelectionStyle.Default
         cell.setContent(NSLocalizedString("SettingsSecurity", comment: "Security Title"))
         cell.setLeftInset(15.0)
         
@@ -241,6 +245,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
+        cell.selectionStyle = UITableViewCellSelectionStyle.Default
         cell.setContent(NSLocalizedString("SettingsAskQuestion", comment: "Ask Question"))
         cell.setLeftInset(15.0)
         
@@ -254,6 +259,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Navigation
+        cell.selectionStyle = UITableViewCellSelectionStyle.Default
         cell.setContent(NSLocalizedString("SettingsAbout", comment: "About"))
         cell.setLeftInset(15.0)
         
@@ -266,6 +272,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
         
         cell.style = AATableViewCellStyle.Hint
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.setLeftInset(15.0)
 
         var version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
