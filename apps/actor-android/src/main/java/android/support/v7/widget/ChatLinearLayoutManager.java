@@ -796,7 +796,8 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
         }
         // override layout from end values for consistency
         anchorInfo.mLayoutFromEnd = mShouldReverseLayout;
-
+        //
+        /*
         if (mShouldReverseLayout) {
             anchorInfo.mCoordinate = mOrientationHelper.getEndAfterPadding() -
                     mPendingScrollPositionOffset;
@@ -804,6 +805,11 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
             anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
                     mPendingScrollPositionOffset;
         }
+        */
+        //
+        anchorInfo.mCoordinate = mOrientationHelper.getStartAfterPadding() +
+                mPendingScrollPositionOffset;
+
         return true;
     }
 
