@@ -80,6 +80,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchView = UISearchBar()
         searchView!.delegate = self
         searchView!.frame = CGRectMake(0, 0, 320, 44)
+        searchView!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         
         MainAppTheme.search.styleSearchBar(searchView!)
         
@@ -90,15 +91,15 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-//        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-//        header.addSubview(searchView!)
-//        
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
+
 //        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
 //        headerShadow.image = UIImage(named: "CardTop2");
 //        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
 //        header.addSubview(headerShadow);
         
-        tableView.tableHeaderView = searchView
+        tableView.tableHeaderView = header
         
         searchSource = AADialogsListSearchSource(searchDisplay: searchDisplay!)
         

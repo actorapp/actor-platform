@@ -124,6 +124,7 @@ class AAUserInfoController: AATableViewController {
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
     
