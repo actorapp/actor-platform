@@ -4,6 +4,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
 
 import akka.actor.ActorSystem
+import akka.event.Logging
 import slick.dbio
 import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
@@ -17,7 +18,7 @@ import im.actor.api.rpc.users.{ Phone, User }
 import im.actor.server.models
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionMessage, SessionRegion }
-import im.actor.server.util.{ GroupUtils, UserUtils }
+import im.actor.server.util.{ AnyRefLogSource, GroupUtils, UserUtils }
 
 class SequenceServiceImpl(
   implicit
@@ -26,9 +27,12 @@ class SequenceServiceImpl(
   db:                  Database,
   actorSystem:         ActorSystem
 ) extends SequenceService {
+  import AnyRefLogSource._
   import GroupUtils._
   import SeqUpdatesManager._
   import UserUtils._
+
+  private val log = Logging(actorSystem, this)
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -46,13 +50,18 @@ class SequenceServiceImpl(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        seqstate ← getSeqState(client.authId)
         (updates, needMore, newState) ← getDifference(client.authId, state)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, phones, groups) ← getUsersPhonesGroups(userIds, groupIds)
       } yield {
+        val newSeq = updates.lastOption.map(_.seq).getOrElse(seq)
+
+        log.debug("Requested timestamp {}, {}", bytesToTimestamp(state), clientData)
+        log.debug("Updates {}, {}", updates, clientData)
+        log.debug("New state {}, {}", bytesToTimestamp(newState), clientData)
+
         Ok(ResponseGetDifference(
-          seq = seqstate._1,
+          seq = newSeq,
           state = newState,
           updates = diffUpdates,
           needMore = needMore,

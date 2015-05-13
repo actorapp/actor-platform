@@ -69,6 +69,8 @@ class SequenceServiceSpec extends BaseServiceSuite {
         UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(i, 0, 0)))
       }
 
+      diff.seq shouldEqual 1099
+
       (diff.seq, diff.state)
     }
 
@@ -85,6 +87,8 @@ class SequenceServiceSpec extends BaseServiceSuite {
         UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(100 + i, 0, 0)))
       }
 
+      diff.seq shouldEqual 1199
+
       (diff.seq, diff.state)
     }
 
@@ -100,6 +104,8 @@ class SequenceServiceSpec extends BaseServiceSuite {
         val in = CodedInputStream.newInstance(data)
         UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(200 + i, 0, 0)))
       }
+
+      diff.seq shouldEqual 1202
 
       (diff.seq, diff.state)
     }
