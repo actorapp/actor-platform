@@ -55,14 +55,12 @@ object NewSession {
   val header = 0x0C
 }
 
-@SerialVersionUID(1L)
-case class SessionHello(sessionId: Long, messageId: Long) extends ProtoMessage with IncomingProtoMessage {
-  val header = SessionHello.header
-}
-
-object SessionHello {
+trait SessionHello extends ProtoMessage with IncomingProtoMessage {
   val header = 0x0F
 }
+
+@SerialVersionUID(1L)
+case object SessionHello extends SessionHello
 
 @SerialVersionUID(1L)
 case class RequestAuthId() extends ProtoMessage {
