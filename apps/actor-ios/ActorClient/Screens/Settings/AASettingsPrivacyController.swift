@@ -57,6 +57,8 @@ class AASettingsPrivacyController: AATableViewController {
         
         cell.setContent(NSLocalizedString("PrivacyTerminate", comment: "Terminate action"))
         cell.style = AATableViewCellStyle.Normal
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
         return cell
     }
@@ -129,4 +131,14 @@ class AASettingsPrivacyController: AATableViewController {
             }, failureBlock: nil)
         }
     }
+    
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.sectionColor
+    }
+    
+    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.hintColor
+    }    
 }
