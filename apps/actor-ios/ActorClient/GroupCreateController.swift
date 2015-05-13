@@ -80,15 +80,15 @@ class GroupCreateController: AAViewController, UITextFieldDelegate {
         
         let screenSize = UIScreen.mainScreen().bounds.size
         
-        avatarImageView.frame = CGRectMake((screenSize.width - 80)/2, 24, 80, 80)
+        avatarImageView.frame = CGRectMake((screenSize.width - 80)/2, 24  + 66, 80, 80)
         addPhotoButton.frame = avatarImageView.frame
         
-        groupName.frame = CGRectMake(24, 126, screenSize.width - 48, 56.0)
+        groupName.frame = CGRectMake(24, 126 + 66, screenSize.width - 48, 56.0)
         groupNameFieldSeparator.frame = CGRectMake(24, 182, screenSize.width - 48, retinaPixel)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         
         groupName.becomeFirstResponder()
     }

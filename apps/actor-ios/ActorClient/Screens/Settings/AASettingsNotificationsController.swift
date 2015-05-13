@@ -211,7 +211,7 @@ class AASettingsNotificationsController: AATableViewController {
         cell.style = AATableViewCellStyle.Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
-        cell.hideTopSeparator()
+        cell.showTopSeparator()
         
         cell.setSwitcherOn(MSG.isShowNotificationsText())
         cell.switchBlock = { (nValue: Bool) in
@@ -243,6 +243,17 @@ class AASettingsNotificationsController: AATableViewController {
         }
          return UITableViewCell()
     }
+    
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.sectionColor
+    }
+    
+    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.hintColor
+    }
+    
 
     // MARK: -
     // MARK: UITableView Delegate
