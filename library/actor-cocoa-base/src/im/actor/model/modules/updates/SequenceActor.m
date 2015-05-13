@@ -238,7 +238,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   }
   else if ([u isKindOfClass:[ImActorModelApiBaseWeakUpdate class]]) {
     ImActorModelApiBaseWeakUpdate *w = (ImActorModelApiBaseWeakUpdate *) check_class_cast(u, [ImActorModelApiBaseWeakUpdate class]);
-    AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Received weak update");
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Received weak update");
     @try {
       [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processUpdateWithImActorModelNetworkParserUpdate:[((ImActorModelApiParserUpdatesParser *) nil_chk(self->parser_)) readWithInt:[((ImActorModelApiBaseWeakUpdate *) nil_chk(w)) getUpdateHeader] withByteArray:[w getUpdate]]];
     }
@@ -249,7 +249,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     return;
   }
   else if ([u isKindOfClass:[ImActorModelModulesUpdatesInternalInternalUpdate class]]) {
-    AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Received internal update");
+    AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Received internal update");
     [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *) check_class_cast(u, [ImActorModelModulesUpdatesInternalInternalUpdate class])];
     return;
   }
