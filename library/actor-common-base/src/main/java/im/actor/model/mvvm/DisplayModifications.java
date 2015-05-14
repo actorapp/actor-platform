@@ -154,8 +154,8 @@ class DisplayModifications {
 
         // If no place for insert: insert to end
         if (addedIndex < 0) {
-            sourceList.add(sourceList.size(), item);
             addedIndex = sourceList.size();
+            sourceList.add(sourceList.size(), item);
         }
 
         if (addedIndex == removedIndex) {
