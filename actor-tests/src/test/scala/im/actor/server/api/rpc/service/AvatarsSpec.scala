@@ -13,12 +13,13 @@ import com.sksamuel.scrimage.AsyncImage
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
+import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ImageUtils, FileUtils }
 
-class AvatarsSpec extends BaseServiceSuite {
+class AvatarsSpec extends BaseAppSuite {
   behavior of "Profile Service"
 
   it should "Set user avatar" in profile.e1
