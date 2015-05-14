@@ -8,7 +8,10 @@
 #include "im/actor/model/mvvm/DefferedListChange.h"
 #include "im/actor/model/mvvm/DefferedListModification.h"
 #include "im/actor/model/mvvm/DisplayList.h"
+#include "java/lang/RuntimeException.h"
 #include "java/util/ArrayList.h"
+#include "java/util/HashMap.h"
+#include "java/util/HashSet.h"
 
 @interface AMDefferedListChange () {
  @public
@@ -163,7 +166,126 @@ AMDefferedListChange *AMDefferedListChange_buildAndroidListChangeWithJavaUtilArr
       }
     }
   }
-  return new_AMDefferedListChange_initWithJavaUtilArrayList_withJavaUtilArrayList_(initialList, listModifications);
+  JavaUtilArrayList *optimizedModifications = new_JavaUtilArrayList_init();
+  JavaUtilArrayList *tempList = new_JavaUtilArrayList_initWithJavaUtilCollection_(initialList);
+  JavaUtilHashSet *removed = new_JavaUtilHashSet_init();
+  for (AMDefferedListModification * __strong m in listModifications) {
+    if ([((AMDefferedListModification *) nil_chk(m)) getOperation] == AMDefferedListModification_OperationEnum_get_REMOVE() || [m getOperation] == AMDefferedListModification_OperationEnum_get_REMOVE_RANGE()) {
+      jint removeIndex = [m getIndex];
+      for (jint i = 0; i < [m getLength]; i++) {
+        id toRemove = [tempList removeWithInt:removeIndex];
+        [removed removeWithId:toRemove];
+        for (jint j = 0; j < [((JavaUtilArrayList *) nil_chk(initialList)) size]; j++) {
+          if ([initialList getWithInt:j] == toRemove) {
+            [optimizedModifications addWithId:new_AMDefferedListModification_initWithAMDefferedListModification_OperationEnum_withInt_(AMDefferedListModification_OperationEnum_get_REMOVE(), j)];
+            break;
+          }
+        }
+      }
+    }
+    else {
+      {
+        id itm;
+        jint index;
+        switch ([[m getOperation] ordinal]) {
+          case AMDefferedListModification_Operation_MOVE:
+          itm = [tempList removeWithInt:[m getIndex]];
+          [tempList addWithInt:[m getDestIndex] withId:itm];
+          break;
+          case AMDefferedListModification_Operation_ADD:
+          case AMDefferedListModification_Operation_ADD_RANGE:
+          index = [m getIndex];
+          for (id __strong i in nil_chk([m getItems])) {
+            [tempList addWithInt:index++ withId:i];
+          }
+          break;
+          default:
+          case AMDefferedListModification_Operation_UPDATE_RANGE:
+          case AMDefferedListModification_Operation_UPDATE:
+          break;
+        }
+      }
+    }
+  }
+  tempList = new_JavaUtilArrayList_initWithJavaUtilCollection_(initialList);
+  for (AMDefferedListModification * __strong m in optimizedModifications) {
+    jint index = [((AMDefferedListModification *) nil_chk(m)) getIndex];
+    for (jint i = 0; i < index; i++) {
+      (void) [tempList removeWithInt:i];
+    }
+  }
+  JavaUtilHashMap *updated = new_JavaUtilHashMap_init();
+  for (AMDefferedListModification * __strong m in listModifications) {
+    {
+      if ([((AMDefferedListModification *) nil_chk(m)) getOperation] == AMDefferedListModification_OperationEnum_get_REMOVE() || [m getOperation] == AMDefferedListModification_OperationEnum_get_REMOVE_RANGE()) {
+        continue;
+      }
+      if ([m getOperation] == AMDefferedListModification_OperationEnum_get_UPDATE() || [m getOperation] == AMDefferedListModification_OperationEnum_get_UPDATE_RANGE()) {
+        jint updateIndex = [m getIndex];
+        for (jint i = 0; i < [m getLength]; i++) {
+          id newElement = [((JavaUtilArrayList *) nil_chk([m getItems])) getWithInt:i];
+          id oldElement = [tempList removeWithInt:updateIndex];
+          [tempList addWithInt:updateIndex withId:oldElement];
+          updateIndex++;
+          if ([updated containsKeyWithId:oldElement]) {
+            AMDefferedListModification *oldMod = [updated removeWithId:oldElement];
+            [((AMDefferedListModification *) nil_chk(oldMod)) replaceWithId:newElement];
+            (void) [updated putWithId:newElement withId:oldMod];
+          }
+          else {
+            for (jint j = 0; j < [((JavaUtilArrayList *) nil_chk(initialList)) size]; j++) {
+              if ([initialList getWithInt:j] == oldElement) {
+                AMDefferedListModification *mod = new_AMDefferedListModification_initWithAMDefferedListModification_OperationEnum_withInt_withId_(AMDefferedListModification_OperationEnum_get_UPDATE(), j, newElement);
+                (void) [updated putWithId:newElement withId:mod];
+                [optimizedModifications addWithId:mod];
+                goto continue_outer;
+              }
+            }
+            @throw new_JavaLangRuntimeException_initWithNSString_(@"Unknown state");
+          }
+        }
+      }
+      {
+        id itm;
+        switch ([[m getOperation] ordinal]) {
+          case AMDefferedListModification_Operation_MOVE:
+          itm = [tempList removeWithInt:[m getIndex]];
+          [tempList addWithInt:[m getDestIndex] withId:itm];
+          break;
+          default:
+          break;
+        }
+      }
+    }
+    continue_outer: ;
+  }
+  tempList = new_JavaUtilArrayList_initWithJavaUtilCollection_(initialList);
+  for (AMDefferedListModification * __strong m in optimizedModifications) {
+    if ([((AMDefferedListModification *) nil_chk(m)) getOperation] == AMDefferedListModification_OperationEnum_get_REMOVE() || [m getOperation] == AMDefferedListModification_OperationEnum_get_REMOVE_RANGE()) {
+      jint index = [m getIndex];
+      for (jint i = 0; i < index; i++) {
+        (void) [tempList removeWithInt:i];
+      }
+    }
+  }
+  JavaUtilHashMap *moved = new_JavaUtilHashMap_init();
+  for (AMDefferedListModification * __strong m in listModifications) {
+    if ([((AMDefferedListModification *) nil_chk(m)) getOperation] == AMDefferedListModification_OperationEnum_get_MOVE()) {
+      id element = [tempList getWithInt:[m getIndex]];
+      if ([moved containsKeyWithId:element]) {
+        [((AMDefferedListModification *) nil_chk([moved getWithId:element])) changeDestWithInt:[m getDestIndex]];
+      }
+      else {
+        for (jint j = 0; j < [((JavaUtilArrayList *) nil_chk(initialList)) size]; j++) {
+          if ([initialList getWithInt:j] == element) {
+            AMDefferedListModification *mod = new_AMDefferedListModification_initWithAMDefferedListModification_OperationEnum_withInt_withInt_(AMDefferedListModification_OperationEnum_get_MOVE(), j, [m getDestIndex]);
+            [optimizedModifications addWithId:mod];
+          }
+        }
+      }
+    }
+  }
+  return new_AMDefferedListChange_initWithJavaUtilArrayList_withJavaUtilArrayList_(initialList, optimizedModifications);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDefferedListChange)

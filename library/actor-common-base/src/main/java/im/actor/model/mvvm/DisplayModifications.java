@@ -168,9 +168,10 @@ class DisplayModifications {
             result.appendUpdate(addedIndex, item);
         } else if (removedIndex >= 0) {
             // Movement + update occurred
-            // First update element, then move to new place
-            result.appendUpdate(removedIndex, item);
+            // Move to new place, then update element
+            // This order is required for iOS lists
             result.appendMove(removedIndex, addedIndex);
+            result.appendUpdate(addedIndex, item);
         } else {
             // No old element found: add new element
             result.appendAdd(addedIndex, item);

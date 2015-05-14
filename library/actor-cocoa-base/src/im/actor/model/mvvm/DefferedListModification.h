@@ -49,9 +49,13 @@
 
 #pragma mark Package-Private
 
+- (void)changeDestWithInt:(jint)index;
+
 - (void)expandWithId:(id)item;
 
 - (JavaUtilArrayList *)getItems;
+
+- (void)replaceWithId:(id)item;
 
 @end
 
