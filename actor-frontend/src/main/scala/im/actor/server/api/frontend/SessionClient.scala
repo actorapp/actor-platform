@@ -1,6 +1,7 @@
 package im.actor.server.api.frontend
 
 import scala.annotation.tailrec
+import scala.collection.immutable
 
 import akka.actor.{ Actor, ActorLogging, Props }
 import akka.stream.actor.ActorPublisher
@@ -20,16 +21,16 @@ private[frontend] object SessionClient {
 private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Actor with ActorLogging with ActorPublisher[T.MTProto] {
   import SessionClient.SendToSession
 
-  private[this] var buf = Vector.empty[T.MTProto]
+  private[this] var packageQueue = immutable.Queue.empty[T.MTProto]
 
   def receive = {
     case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) ⇒
       sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
     case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) ⇒
-      if (buf.isEmpty && totalDemand > 0) {
+      if (packageQueue.isEmpty && totalDemand > 0) {
         onNext(p)
       } else {
-        buf :+= p
+        packageQueue = packageQueue.enqueue(p)
         deliverBuf()
       }
     case Request(_) ⇒
@@ -40,17 +41,13 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
 
   @tailrec
   private def deliverBuf(): Unit = {
-    if (totalDemand > 0) {
-      if (totalDemand <= Int.MaxValue) {
-        val (use, keep) = buf.splitAt(totalDemand.toInt)
-        buf = keep
-        use.foreach { p ⇒ onNext(p) }
-      } else {
-        val (use, keep) = buf.splitAt(Int.MaxValue)
-        buf = keep
-        use.foreach { p ⇒ onNext(p) }
-        deliverBuf()
+    if (isActive && totalDemand > 0)
+      packageQueue.dequeueOption match {
+        case Some((el, queue)) ⇒
+          packageQueue = queue
+          onNext(el)
+          deliverBuf()
+        case None ⇒
       }
-    }
   }
 }
