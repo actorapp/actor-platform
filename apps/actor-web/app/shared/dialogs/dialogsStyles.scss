@@ -47,15 +47,22 @@
     &__message {
       color: rgb(148,148,148);
       font-size: 13px;
-      font-weight: 400;
-      line-height: 20px;
-      height: 20px;
+      line-height: 24px;
       overflow: hidden;
       margin: 4px 0 0;
+      position: relative;
+      padding-right: 24px;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
       &__counter {
-        float: right;
+        //float: right;
+        position: absolute;
+        right: 0;
         width: 20px;
         height: 20px;
+        line-height: 20px;
         font-size: 12px;
         font-weight: 500;
         text-align: center;
@@ -63,12 +70,17 @@
         background-color: $baseColor;
         color: white;
       }
+
       &__sender {
         font-weight: 500;
         color: darken(rgb(148,148,148), 10);
       }
       &--highlighted {
-        color: darken(rgb(148,148,148),20);
+        font-weight: 500;
+        color: darken(rgb(148,148,148), 25) !important;
+      }
+      &--with-counter {
+
       }
     }
   }
