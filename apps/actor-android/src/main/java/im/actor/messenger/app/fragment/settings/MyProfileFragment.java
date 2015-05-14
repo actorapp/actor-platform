@@ -36,6 +36,7 @@ import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.util.Screen;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserPhone;
@@ -185,6 +186,25 @@ public class MyProfileFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), SecuritySettingsActivity.class));
+            }
+        });
+
+        view.findViewById(R.id.askQuestion).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                execute(messenger().findUsers("75551234567"), R.string.progress_common, new CommandCallback<UserVM[]>() {
+                    @Override
+                    public void onResult(UserVM[] res) {
+                        if (res.length >= 1) {
+                            startActivity(Intents.openPrivateDialog(res[0].getId(), true, getActivity()));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
             }
         });
 
