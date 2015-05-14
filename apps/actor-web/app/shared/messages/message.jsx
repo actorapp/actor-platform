@@ -25,66 +25,22 @@ Message.Content = React.createClass({
 
     switch(content.content) {
       case 'text':
-        var text = this.renderText(content.text);
+        var markedOptions = {
+          sanitize: true,
+          breaks: true,
+          highlight: function (code) {
+            return hljs.highlightAuto(code).value;
+          }
+        };
+
+        var renderedText = marked(content.text, markedOptions);
 
         return (
-          <p>{text}</p>
+          <p dangerouslySetInnerHTML={{__html: renderedText}}></p>
         );
       default:
         return <p>Unsupported content</p>;
     }
-  },
-  // renders text with nl2br and linkify
-  renderText: function(text) {
-    var result = [];
-
-    var nld = this.nl2br(text);
-
-    var _this = this;
-    nld.forEach(function(line) {
-      if (typeof line === 'string') {
-        _this.linkify(line).forEach(function (linkifiedLine) {
-          result.push(linkifiedLine);
-        });
-      } else {
-        result.push(line);
-      }
-    });
-
-    return result;
-  },
-  nl2br: function(text) {
-    var split = text.split(this.nlExp);
-    if (split.length > 1) {
-      var result = [];
-
-      for (var i = 0; i < split.length; i++) {
-        if (split[i] !== undefined) {
-          result.push(split[i]);
-          if (i + 1 < split.length) {
-            result.push(<br/>)
-          }
-        }
-      }
-
-      return result;
-    } else {
-      return [text];
-    }
-  },
-  linkify: function(text) {
-    var split = text.split(this.findUriExp);
-    var result = [];
-    for (var i = 0; i < split.length; ++i) {
-      if (split[i] !== undefined) {
-        if (i + 1 < split.length && split[i + 1] === undefined) {
-          result.push(<a href={split[i]} target="_blank">{split[i]}</a>);
-        } else {
-          result.push(split[i]);
-        }
-      }
-    }
-    return result;
   }
 });
 
