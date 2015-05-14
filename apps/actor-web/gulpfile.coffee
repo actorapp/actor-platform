@@ -35,12 +35,14 @@ gulp.task 'html', ->
   gulp.src ['./app/**/*.html']
     .pipe gulp.dest './dist/app/'
     .pipe connect.reload()
+  gulp.src ['./index.html']
+    .pipe gulp.dest './dist/'
+    .pipe connect.reload()
 
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
   gulp.watch ['./app/**/*.scss'], ['sass']
-  gulp.watch ['./app/**/*.html'], ['html']
-  gulp.watch ['./index.html'], ['usemin']
+  gulp.watch ['./index.html', './app/**/*.html'], ['html']
 
 gulp.task 'assets', ->
   gulp.src ['./assets/**/*']
@@ -61,14 +63,16 @@ gulp.task 'usemin', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
-gulp.task 'server', ['usemin'], ->
+gulp.task 'server', ->
   connect.server
     port: 3000
-    root: './dist/'
+    root: ['./dist/', './bower_components/']
     livereload: true
 
 gulp.task 'build', ['assets', 'coffee', 'sass', 'html', 'usemin']
 
-gulp.task 'dev', ['build', 'server', 'watch']
+gulp.task 'build:dev', ['assets', 'coffee', 'sass', 'html']
+
+gulp.task 'dev', ['build:dev', 'server', 'watch']
 
 gulp.task 'default', ['build']

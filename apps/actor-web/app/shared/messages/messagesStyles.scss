@@ -41,6 +41,7 @@
                 margin: 4px 0 0;
 
                 word-wrap: break-word;
+                word-break: break-all;
 
                 color: rgb(37,37,37);
                 &.unsupported
@@ -110,8 +111,8 @@
             }
         }
         &__status {
-            margin-top: -1px;
-            margin-right: 5px;
+            margin-top: -2px;
+            margin-right: 4px;
         }
     }
     &__typing {
