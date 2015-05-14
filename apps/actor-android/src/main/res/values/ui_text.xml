@@ -118,6 +118,7 @@
     <string name="settings_menu_change_photo">Change photo</string>
     <string name="settings_header">Settings</string>
     <string name="settings_help">Help</string>
+    <string name="settings_ask">Ask Question</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_chat">Chat Settings</string>
     <string name="settings_security">Security</string>

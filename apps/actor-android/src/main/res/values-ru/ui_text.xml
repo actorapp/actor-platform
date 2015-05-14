@@ -118,6 +118,7 @@
     <string name="settings_menu_change_photo">Изменить фотографию</string>
     <string name="settings_header">Настройки</string>
     <string name="settings_help">Помощь</string>
+    <string name="settings_ask">Задать вопрос</string>
     <string name="settings_notifications">Оповещения</string>
     <string name="settings_chat">Настройки чата</string>
     <string name="settings_security">Безопасность</string>
