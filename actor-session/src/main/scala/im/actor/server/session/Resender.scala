@@ -84,7 +84,11 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
     case OnNext(msg: MessageAck with IncomingProtoMessage) ⇒
       // TODO: #perf possibly can be optimized
       msg.messageIds foreach { messageId ⇒
-        resendBuffer.get(messageId) map (_._2.cancel())
+        resendBuffer.get(messageId) foreach {
+          case (message, scheduledResend) ⇒
+            resendBufferSize -= message.bodySize
+            scheduledResend.cancel()
+        }
       }
       resendBuffer --= msg.messageIds
     case OnNext(msg: ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage) ⇒ enqueueProtoMessageWithResend(msg)
@@ -99,10 +103,12 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
     case ScheduledResend(messageId) ⇒
       log.debug("Scheduled resend for messageId: {}", messageId)
       resendBuffer.get(messageId) map {
-        case (msg, _) ⇒
-          log.debug("Resending {}", msg)
+        case (message, _) ⇒
+          log.debug("Resending {}", message)
 
-          msg match {
+          resendBufferSize -= message.bodySize
+
+          message match {
             case rspBox @ RpcResponseBox(requestMessageId, bodyBytes) ⇒
               val bodySize = bodyBytes.bytes.size
 
@@ -122,7 +128,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
                 enqueueProtoMessage(nextMessageId(), UnsentMessage(messageId, bodySize))
               }
             case msg ⇒
-              enqueueProtoMessageWithResend(messageId, msg)
+              enqueueProtoMessageWithResend(messageId, message)
           }
       }
   }
