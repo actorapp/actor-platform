@@ -53,9 +53,9 @@ Message.Content = React.createClass({
         }
 
         return(
-          <div class="messages-list__item__photo">
+          <div className="messages-list__item__photo">
             {original}
-            <img class="messages-list__item__photo__preview"
+            <img className="messages-list__item__photo__preview"
                  width={content.w}
                  height={content.h}
                  src={content.preview}/>
