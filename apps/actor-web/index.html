@@ -50,6 +50,8 @@
 <script src="CryptoJS/build/components/sha256.js"></script>
 <script src="jsencrypt/bin/jsencrypt.js"></script>
 <script src="angular/angular.js"></script>
+<script src="react/react.js"></script>
+<script src="ngReact/ngReact.js"></script>
 <script src="angular-ui-router/release/angular-ui-router.js"></script>
 <script src="angular-aria/angular-aria.js"></script>
 <script src="angular-animate/angular-animate.js"></script>
@@ -59,6 +61,18 @@
 <script src="angular-inview/angular-inview.js"></script>
 <!-- endbuild -->
 
+<script type="application/javascript">
+    angular.module('actorWeb', [
+        'ui.router',
+        'react',
+        'ngMaterial',
+        'ngSanitize',
+        'angular-inview',
+        'luegg.directives'
+    ]);
+</script>
+
+<script src="assets/js/app-jsx.js"></script>
 <script src="assets/js/app.js"></script>
 
 </body>
