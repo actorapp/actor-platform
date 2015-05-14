@@ -37,7 +37,7 @@ class AAConversationController: EngineSlackListController {
         super.init(isInverted: true);
         
         // Hack for fixing top offsets
-        self.edgesForExtendedLayout = UIRectEdge.All ^ UIRectEdge.Top;
+        // self.edgesForExtendedLayout = UIRectEdge.All ^ UIRectEdge.Top;
         
         self.peer = peer;
         self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
@@ -53,6 +53,8 @@ class AAConversationController: EngineSlackListController {
         self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
         
         self.keyboardPanningEnabled = true;
+        
+        self.textView.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
 
         self.leftButton.setImage(UIImage(named: "conv_attach")!
             .tintImage(MainAppTheme.chat.attachColor)
@@ -296,7 +298,7 @@ class AAConversationController: EngineSlackListController {
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            navigateToUserWithId(id)
+            navigateToUserProfileWithId(id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = AAConversationGroupInfoController(gid: id)
             groupInfoController.hidesBottomBarWhenPushed = true
@@ -314,6 +316,7 @@ class AAConversationController: EngineSlackListController {
         // Perform auto correct
         textView.refreshFirstResponder();
         
+        MSG.trackTextSendWithAMPeer(peer)
         MSG.sendMessage(peer, withText: textView.text);
         
         super.didPressRightButton(sender);
@@ -452,11 +455,12 @@ class AAConversationController: EngineSlackListController {
     // MARK: Navigation
     
     private func navigateToUserWithId(id: Int) {
-        let userInfoController = AAUserInfoController(uid: id)
-        userInfoController.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(userInfoController, animated: true)
+        navigateNext(AAConversationController(peer: AMPeer.userWithInt(jint(id))), removeCurrent: false)
     }
-    
+
+    private func navigateToUserProfileWithId(id: Int) {
+        navigateNext(AAUserInfoController(uid: id), removeCurrent: false)
+    }
 }
 
 // MARK: -
@@ -475,12 +479,12 @@ extension AAConversationController: UIDocumentPickerDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AAConversationController: UIImagePickerControllerDelegate {
+extension AAConversationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        
+        MSG.trackPhotoSendWithAMPeer(peer!)
         MSG.sendUIImage(image, peer: peer!)
     }
     
@@ -499,21 +503,12 @@ extension AAConversationController: UIImagePickerControllerDelegate {
 }
 
 // MARK: -
-// MARK: UINavigationController Delegate
-
-extension AAConversationController: UINavigationControllerDelegate {
-    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
-        MainAppTheme.navigation.applyStatusBarFast()
-    }
-}
-
-// MARK: -
 // MARK: ABActionShit Delegate
 
 extension AAConversationController: ABActionShitDelegate {
     func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
         if (buttonIndex == 0 || buttonIndex == 1) {
-            var pickerController = UIImagePickerController()
+            var pickerController = AAImagePickerController()
             pickerController.sourceType = (buttonIndex == 0 ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
             pickerController.mediaTypes = [kUTTypeImage]
             pickerController.view.backgroundColor = MainAppTheme.list.bgColor
