@@ -13,7 +13,7 @@ angular
           {
             this.props.messages.map(function(message) {
               return (
-                <div class="messages-list__item">
+                <div className="messages-list__item">
                   <Avatar sender={message.sender}/>
                   <Message message={message}/>
                 </div>

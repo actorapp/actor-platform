@@ -6,7 +6,7 @@ var Message = React.createClass({
     var message = this.props.message;
 
     return (
-      <div class="md-list-item-text messages-list__item__body" flex>
+      <div className="md-list-item-text messages-list__item__body" flex>
         <Message.State message={message}/>
         <Message.Content content={message.content}/>
       </div>
@@ -102,29 +102,29 @@ Message.State = React.createClass({
 
       switch(message.state) {
         case 'pending':
-          icon = <img src="assets/img/icons/ic_access_time_24px.svg" class="status status--penging"/>;
+          icon = <img src="assets/img/icons/ic_access_time_24px.svg" className="status status--penging"/>;
           break;
         case 'sent':
-          icon = <img src="assets/img/icons/ic_done_24px.svg" class="status status--sent"/>;
+          icon = <img src="assets/img/icons/ic_done_24px.svg" className="status status--sent"/>;
           break;
         case 'received':
-          icon = <img src="assets/img/icons/ic_done_all_24px.svg" class="status status--received"/>;
+          icon = <img src="assets/img/icons/ic_done_all_24px.svg" className="status status--received"/>;
           break;
         case 'read':
-          icon = <img src="assets/img/icons/ic_done_all_24px.svg" class="status status--read"/>;
+          icon = <img src="assets/img/icons/ic_done_all_24px.svg" className="status status--read"/>;
           break;
         case 'error':
-          icon = <img src="assets/img/icons/ic_report_problem_24px.svg" class="status status--error"/>;
+          icon = <img src="assets/img/icons/ic_report_problem_24px.svg" className="status status--error"/>;
           break;
       }
 
       return (
-        <h3 layout="row" class="messages-list__item__body__title">
+        <h3 layout="row" className="messages-list__item__body__title">
           <span flex>{message.sender.title}</span>
 
-          <div class="messages-list__item__status">{icon}</div>
+          <div className="messages-list__item__status">{icon}</div>
 
-          <time class="messages-list__item__body__timestamp">{message.date}</time>
+          <time className="messages-list__item__body__timestamp">{message.date}</time>
         </h3>
       );
     }
