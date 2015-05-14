@@ -14,6 +14,8 @@ import im.actor.android.view.BindedListAdapter;
 import im.actor.android.view.BindedViewHolder;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
+import im.actor.model.mvvm.AndroidListChange;
+import im.actor.model.mvvm.AndroidListModification;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 
@@ -21,7 +23,7 @@ import im.actor.model.mvvm.DisplayList;
  * Created by ex3ndr on 15.03.15.
  */
 public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
-        V extends BindedViewHolder> extends BaseFragment implements DisplayList.Listener {
+        V extends BindedViewHolder> extends BaseFragment implements DisplayList.AndroidListener<T> {
 
     private RecyclerView collection;
     // private View emptyCollection;
@@ -107,12 +109,39 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
     public void onResume() {
         super.onResume();
         adapter.resume();
-        displayList.addListener(this);
-        onCollectionChanged();
+        displayList.addDifferedListener(this);
+        if (displayList.getSize() == 0) {
+            hideView(collection, false);
+        } else {
+            showView(collection, false);
+        }
+        // onCollectionChanged();
     }
 
     @Override
-    public void onCollectionChanged() {
+    public void onCollectionChanged(AndroidListChange<T> modification) {
+        AndroidListModification<T> currentChange = null;
+        adapter.startUpdates(modification);
+        while ((currentChange = modification.next()) != null) {
+            switch (currentChange.getOperation()) {
+                case ADD:
+                    adapter.notifyItemInserted(currentChange.getIndex());
+                    break;
+                case UPDATE:
+                    adapter.notifyItemChanged(currentChange.getIndex());
+                    break;
+                case MOVE:
+                    adapter.notifyItemMoved(currentChange.getIndex(), currentChange.getDestIndex());
+                    break;
+                case REMOVE:
+                    adapter.notifyItemRemoved(currentChange.getIndex());
+                    break;
+                default:
+                    throw new RuntimeException("Unsupported");
+            }
+        }
+        adapter.stopUpdates();
+
         if (displayList.getSize() == 0) {
             hideView(collection);
         } else {
@@ -120,11 +149,20 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         }
     }
 
+//    @Override
+//    public void onCollectionChanged() {
+//        if (displayList.getSize() == 0) {
+//            hideView(collection);
+//        } else {
+//            showView(collection);
+//        }
+//    }
+
     @Override
     public void onPause() {
         super.onPause();
         adapter.pause();
-        displayList.removeListener(this);
+        displayList.removeDifferedListener(this);
     }
 
     @Override

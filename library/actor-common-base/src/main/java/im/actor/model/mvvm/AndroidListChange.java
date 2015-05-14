@@ -6,6 +6,8 @@ package im.actor.model.mvvm;
 
 import java.util.ArrayList;
 
+import im.actor.model.log.Log;
+
 public class AndroidListChange<T> {
     private ArrayList<T> list;
     private ArrayList<AndroidListModification<T>> modifications;
@@ -24,7 +26,7 @@ public class AndroidListChange<T> {
         return list.size();
     }
 
-    public AndroidListModification next() {
+    public AndroidListModification<T> next() {
         if (modifications.size() == 0) {
             return null;
         }
@@ -52,5 +54,47 @@ public class AndroidListChange<T> {
                 break;
         }
         return modification;
+    }
+
+    public static <T> AndroidListChange<T> buildAndroidListChange(
+            ArrayList<DisplayList.ModificationResult<T>> modificationResults, ArrayList<T> initialList) {
+
+        ArrayList<AndroidListModification<T>> listModifications = new ArrayList<AndroidListModification<T>>();
+
+        Log.d("AndroidListChange", "Start");
+        for (DisplayList.ModificationResult<T> res : modificationResults) {
+            for (DisplayList.ModificationResult.Operation<T> operation : res.getOperations()) {
+                Log.d("AndroidListChange", operation.getType() + " @" + operation.getIndex());
+                switch (operation.getType()) {
+                    case ADD:
+                        listModifications.add(
+                                new AndroidListModification<T>(
+                                        AndroidListModification.Operation.ADD,
+                                        operation.getIndex(),
+                                        operation.getItem()));
+                        break;
+                    case UPDATE:
+                        listModifications.add(new AndroidListModification<T>(
+                                AndroidListModification.Operation.UPDATE,
+                                operation.getIndex(),
+                                operation.getItem()));
+                        break;
+                    case REMOVE:
+                        listModifications.add(new AndroidListModification<T>(
+                                AndroidListModification.Operation.REMOVE,
+                                operation.getIndex()));
+                        break;
+                    case MOVE:
+                        listModifications.add(new AndroidListModification<T>(
+                                AndroidListModification.Operation.MOVE,
+                                operation.getIndex(), operation.getDestIndex(),
+                                1));
+                        break;
+                }
+            }
+        }
+        Log.d("AndroidListChange", "End");
+
+        return new AndroidListChange<T>(initialList, listModifications);
     }
 }
