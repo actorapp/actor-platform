@@ -11,13 +11,13 @@ import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
+import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
 
-class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
+class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
 
   behavior of "Rich message updater"
 

@@ -14,6 +14,7 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -24,7 +25,7 @@ import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
 import im.actor.utils.http.DownloadManager
 
-class ILectroInterceptorsSpec extends BaseServiceSuite with GroupsServiceHelpers with PeersImplicits {
+class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits {
   val messageCount = 10
 
   behavior of "ILectro MessageInterceptor"

@@ -5,11 +5,13 @@ import scala.concurrent.duration._
 import im.actor.api.rpc.messaging.TextMessage
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
-import im.actor.server.api.rpc.service.{ BaseServiceSuite, messaging }
+import im.actor.server.BaseAppSuite
+import im.actor.server.api.rpc.service.messaging
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class UnreadWatcherSpec extends BaseServiceSuite {
+class UnreadWatcherSpec extends BaseAppSuite {
 
   behavior of "UreadWatcher"
 
@@ -27,8 +29,10 @@ class UnreadWatcherSpec extends BaseServiceSuite {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
+  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-  implicit val service = new messaging.MessagingServiceImpl
+  implicit val service = messaging.MessagingServiceImpl(mediator)
 
   implicit val sessionRegion = buildSessionRegionProxy()
   implicit val authService = buildAuthService()

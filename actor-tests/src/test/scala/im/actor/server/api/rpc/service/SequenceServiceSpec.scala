@@ -13,13 +13,15 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
+import im.actor.server.BaseAppSuite
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.presences.PresenceManager
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.SeqUpdatesManager
+import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
 import im.actor.util.testing.ActorSpecification
 
-class SequenceServiceSpec extends BaseServiceSuite({
+class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
     ConfigFactory.parseString(
       """
