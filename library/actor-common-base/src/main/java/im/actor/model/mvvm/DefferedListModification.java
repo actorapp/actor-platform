@@ -76,6 +76,20 @@ public class DefferedListModification<T> {
         }
     }
 
+    /* package */ void replace(T item) {
+        items = new ArrayList<T>();
+        items.add(item);
+        len = 1;
+    }
+
+    /* package */ void changeDest(int index) {
+        destIndex = index;
+    }
+
+    /* package */ void changeIndex(int index) {
+        this.index = index;
+    }
+
     /* package */ ArrayList<T> getItems() {
         return items;
     }
