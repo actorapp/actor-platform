@@ -153,7 +153,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
 }
 
 - (void)trackAuthPhoneTypeWithNSString:(NSString *)newValue {
-  [self trackWithNSString:JreStrcat("$$", @"Auth: Phone Typed: ", newValue)];
+  [self trackWithNSString:@"Auth: Phone Typed" withNSStringArray:[IOSObjectArray newArrayWithObjects:(id[]){ @"Value", newValue } count:2 type:NSString_class_()]];
 }
 
 - (void)trackAuthPhoneInfoOpen {

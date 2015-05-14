@@ -25,7 +25,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
                 if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.EMPTY) {
-                    showSender = true;
+                    showSender = src.getSenderId() != 0;
                 }
             }
 

@@ -26,8 +26,6 @@
 #include "java/lang/RuntimeException.h"
 #include "java/lang/System.h"
 #include "java/util/ArrayList.h"
-#include "java/util/Collections.h"
-#include "java/util/Comparator.h"
 #include "java/util/List.h"
 
 @class AMBindedDisplayList_EngineListener;
@@ -72,31 +70,11 @@ J2OBJC_FIELD_SETTER(AMBindedDisplayList, pendingModifications_, JavaUtilArrayLis
 static NSString *AMBindedDisplayList_TAG_ = @"BindedDisplayList";
 J2OBJC_STATIC_FIELD_GETTER(AMBindedDisplayList, TAG_, NSString *)
 
-static id<JavaUtilComparator> AMBindedDisplayList_COMPARATOR_;
-J2OBJC_STATIC_FIELD_GETTER(AMBindedDisplayList, COMPARATOR_, id<JavaUtilComparator>)
-
 __attribute__((unused)) static void AMBindedDisplayList_loadMoreForward(AMBindedDisplayList *self);
 
 __attribute__((unused)) static void AMBindedDisplayList_loadMoreBackward(AMBindedDisplayList *self);
 
 __attribute__((unused)) static id<DKListEngineDisplayLoadCallback> AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(AMBindedDisplayList *self, id<DKListEngineDisplayLoadCallback> callback, jint generation);
-
-@interface AMBindedDisplayList_ListEngineComparator : NSObject < JavaUtilComparator >
-
-- (jint)compareWithId:(id<DKListEngineItem>)o1
-               withId:(id<DKListEngineItem>)o2;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_ListEngineComparator)
-
-__attribute__((unused)) static void AMBindedDisplayList_ListEngineComparator_init(AMBindedDisplayList_ListEngineComparator *self);
-
-__attribute__((unused)) static AMBindedDisplayList_ListEngineComparator *new_AMBindedDisplayList_ListEngineComparator_init() NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_ListEngineComparator)
 
 @interface AMBindedDisplayList_EngineListener : NSObject < DKListEngineDisplayListener > {
  @public
@@ -202,19 +180,26 @@ __attribute__((unused)) static void AMBindedDisplayList_StateEnum_initWithNSStri
 
 __attribute__((unused)) static AMBindedDisplayList_StateEnum *new_AMBindedDisplayList_StateEnum_initWithNSString_withInt_(NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
-@interface AMBindedDisplayList_$1 : NSObject < AMDisplayList_Hook >
+@interface AMBindedDisplayList_$1 : NSObject < DKListEngineDisplayLoadCallback > {
+ @public
+  AMBindedDisplayList *this$0_;
+}
 
-- (void)beforeDisplayWithJavaUtilList:(id<JavaUtilList>)list;
+- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
+                        withLong:(jlong)topSortKey
+                        withLong:(jlong)bottomSortKey;
 
-- (instancetype)init;
+- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$1)
 
-__attribute__((unused)) static void AMBindedDisplayList_$1_init(AMBindedDisplayList_$1 *self);
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$1, this$0_, AMBindedDisplayList *)
 
-__attribute__((unused)) static AMBindedDisplayList_$1 *new_AMBindedDisplayList_$1_init() NS_RETURNS_RETAINED;
+__attribute__((unused)) static void AMBindedDisplayList_$1_initWithAMBindedDisplayList_(AMBindedDisplayList_$1 *self, AMBindedDisplayList *outer$);
+
+__attribute__((unused)) static AMBindedDisplayList_$1 *new_AMBindedDisplayList_$1_initWithAMBindedDisplayList_(AMBindedDisplayList *outer$) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$1)
 
@@ -290,29 +275,6 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$4)
 @interface AMBindedDisplayList_$5 : NSObject < DKListEngineDisplayLoadCallback > {
  @public
   AMBindedDisplayList *this$0_;
-}
-
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
-                        withLong:(jlong)topSortKey
-                        withLong:(jlong)bottomSortKey;
-
-- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$5)
-
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$5, this$0_, AMBindedDisplayList *)
-
-__attribute__((unused)) static void AMBindedDisplayList_$5_initWithAMBindedDisplayList_(AMBindedDisplayList_$5 *self, AMBindedDisplayList *outer$);
-
-__attribute__((unused)) static AMBindedDisplayList_$5 *new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_(AMBindedDisplayList *outer$) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5)
-
-@interface AMBindedDisplayList_$6 : NSObject < DKListEngineDisplayLoadCallback > {
- @public
-  AMBindedDisplayList *this$0_;
   jlong val$start_;
   jint val$gen_;
 }
@@ -327,13 +289,59 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5)
 
 @end
 
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$5)
+
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$5, this$0_, AMBindedDisplayList *)
+
+__attribute__((unused)) static void AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList_$5 *self, AMBindedDisplayList *outer$, jlong capture$0, jint capture$1);
+
+__attribute__((unused)) static AMBindedDisplayList_$5 *new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList *outer$, jlong capture$0, jint capture$1) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5)
+
+@interface AMBindedDisplayList_$5_$1 : NSObject < JavaLangRunnable > {
+ @public
+  AMBindedDisplayList_$5 *this$0_;
+}
+
+- (void)run;
+
+- (instancetype)initWithAMBindedDisplayList_$5:(AMBindedDisplayList_$5 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$5_$1)
+
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$5_$1, this$0_, AMBindedDisplayList_$5 *)
+
+__attribute__((unused)) static void AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(AMBindedDisplayList_$5_$1 *self, AMBindedDisplayList_$5 *outer$);
+
+__attribute__((unused)) static AMBindedDisplayList_$5_$1 *new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(AMBindedDisplayList_$5 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$5_$1)
+
+@interface AMBindedDisplayList_$6 : NSObject < DKListEngineDisplayLoadCallback > {
+ @public
+  AMBindedDisplayList *this$0_;
+  jint val$gen_;
+}
+
+- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
+                        withLong:(jlong)topSortKey
+                        withLong:(jlong)bottomSortKey;
+
+- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
+                                    withInt:(jint)capture$0;
+
+@end
+
 J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$6)
 
 J2OBJC_FIELD_SETTER(AMBindedDisplayList_$6, this$0_, AMBindedDisplayList *)
 
-__attribute__((unused)) static void AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList_$6 *self, AMBindedDisplayList *outer$, jlong capture$0, jint capture$1);
+__attribute__((unused)) static void AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList_$6 *self, AMBindedDisplayList *outer$, jint capture$0);
 
-__attribute__((unused)) static AMBindedDisplayList_$6 *new_AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList *outer$, jlong capture$0, jint capture$1) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMBindedDisplayList_$6 *new_AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList *outer$, jint capture$0) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$6)
 
@@ -361,52 +369,6 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$6_$1)
 @interface AMBindedDisplayList_$7 : NSObject < DKListEngineDisplayLoadCallback > {
  @public
   AMBindedDisplayList *this$0_;
-  jint val$gen_;
-}
-
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
-                        withLong:(jlong)topSortKey
-                        withLong:(jlong)bottomSortKey;
-
-- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
-                                    withInt:(jint)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$7)
-
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7, this$0_, AMBindedDisplayList *)
-
-__attribute__((unused)) static void AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList_$7 *self, AMBindedDisplayList *outer$, jint capture$0);
-
-__attribute__((unused)) static AMBindedDisplayList_$7 *new_AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList *outer$, jint capture$0) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7)
-
-@interface AMBindedDisplayList_$7_$1 : NSObject < JavaLangRunnable > {
- @public
-  AMBindedDisplayList_$7 *this$0_;
-}
-
-- (void)run;
-
-- (instancetype)initWithAMBindedDisplayList_$7:(AMBindedDisplayList_$7 *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$7_$1)
-
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7_$1, this$0_, AMBindedDisplayList_$7 *)
-
-__attribute__((unused)) static void AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(AMBindedDisplayList_$7_$1 *self, AMBindedDisplayList_$7 *outer$);
-
-__attribute__((unused)) static AMBindedDisplayList_$7_$1 *new_AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(AMBindedDisplayList_$7 *outer$) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
-
-@interface AMBindedDisplayList_$8 : NSObject < DKListEngineDisplayLoadCallback > {
- @public
-  AMBindedDisplayList *this$0_;
   jint val$generation_;
   id<DKListEngineDisplayLoadCallback> val$callback_;
 }
@@ -421,20 +383,20 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$8)
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$7)
 
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8, this$0_, AMBindedDisplayList *)
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8, val$callback_, id<DKListEngineDisplayLoadCallback>)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7, this$0_, AMBindedDisplayList *)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7, val$callback_, id<DKListEngineDisplayLoadCallback>)
 
-__attribute__((unused)) static void AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList_$8 *self, AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1);
+__attribute__((unused)) static void AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList_$7 *self, AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1);
 
-__attribute__((unused)) static AMBindedDisplayList_$8 *new_AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMBindedDisplayList_$7 *new_AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$8)
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7)
 
-@interface AMBindedDisplayList_$8_$1 : NSObject < JavaLangRunnable > {
+@interface AMBindedDisplayList_$7_$1 : NSObject < JavaLangRunnable > {
  @public
-  AMBindedDisplayList_$8 *this$0_;
+  AMBindedDisplayList_$7 *this$0_;
   id<JavaUtilList> val$items_;
   jlong val$topSortKey_;
   jlong val$bottomSortKey_;
@@ -442,25 +404,23 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$8)
 
 - (void)run;
 
-- (instancetype)initWithAMBindedDisplayList_$8:(AMBindedDisplayList_$8 *)outer$
+- (instancetype)initWithAMBindedDisplayList_$7:(AMBindedDisplayList_$7 *)outer$
                               withJavaUtilList:(id<JavaUtilList>)capture$0
                                       withLong:(jlong)capture$1
                                       withLong:(jlong)capture$2;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$8_$1)
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_$7_$1)
 
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8_$1, this$0_, AMBindedDisplayList_$8 *)
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_$8_$1, val$items_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7_$1, this$0_, AMBindedDisplayList_$7 *)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_$7_$1, val$items_, id<JavaUtilList>)
 
-__attribute__((unused)) static void AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$8_$1 *self, AMBindedDisplayList_$8 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2);
+__attribute__((unused)) static void AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$7_$1 *self, AMBindedDisplayList_$7 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2);
 
-__attribute__((unused)) static AMBindedDisplayList_$8_$1 *new_AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$8 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMBindedDisplayList_$7_$1 *new_AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$7 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$8_$1)
-
-J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
+J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
 
 @implementation AMBindedDisplayList
 
@@ -526,7 +486,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
   [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
-  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$2_initWithAMBindedDisplayList_(self), currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$1_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
 - (void)initBottomWithBoolean:(jboolean)refresh {
@@ -547,7 +507,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitBackward];
   [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
-  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$3_initWithAMBindedDisplayList_(self), currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadBackwardWithInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$2_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
 - (void)initCenterWithLong:(jlong)centerSortKey
@@ -566,7 +526,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitCenter];
   [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
-  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadCenterWithLong:centerSortKey withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$4_initWithAMBindedDisplayList_(self), currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadCenterWithLong:centerSortKey withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$3_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
 - (void)initSearchWithNSString:(NSString *)query
@@ -592,7 +552,7 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) startInitForward];
   [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
-  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_(self), currentGeneration_)];
+  [((id<DKListEngineDisplayExt>) nil_chk(listEngine_)) loadForwardWithNSString:query withInt:pageSize_ withDKListEngineDisplayLoadCallback:AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$4_initWithAMBindedDisplayList_(self), currentGeneration_)];
 }
 
 - (void)loadMoreForward {
@@ -616,17 +576,10 @@ J2OBJC_INITIALIZED_DEFN(AMBindedDisplayList)
   return AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, callback, generation);
 }
 
-+ (void)initialize {
-  if (self == [AMBindedDisplayList class]) {
-    AMBindedDisplayList_COMPARATOR_ = new_AMBindedDisplayList_ListEngineComparator_init();
-    J2OBJC_SET_INITIALIZED(AMBindedDisplayList)
-  }
-}
-
 @end
 
 void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook) {
-  (void) AMDisplayList_initWithAMDisplayList_Hook_(self, new_AMBindedDisplayList_$1_init());
+  (void) AMDisplayList_init(self);
   self->engineListener_ = new_AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(self);
   self->currentGeneration_ = 0;
   self->isLoadMoreForwardRequested_ = NO;
@@ -660,7 +613,7 @@ void AMBindedDisplayList_loadMoreForward(AMBindedDisplayList *self) {
   jint gen = self->currentGeneration_;
   AMLog_dWithNSString_withNSString_(AMBindedDisplayList_TAG_, @"Loading more items...");
   jlong start = JavaLangSystem_currentTimeMillis();
-  id<DKListEngineDisplayLoadCallback> callback = AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(self, start, gen), self->currentGeneration_);
+  id<DKListEngineDisplayLoadCallback> callback = AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(self, start, gen), self->currentGeneration_);
   if (self->mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadForwardWithLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentForwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineDisplayLoadCallback:callback];
   }
@@ -679,7 +632,7 @@ void AMBindedDisplayList_loadMoreBackward(AMBindedDisplayList *self) {
   }
   self->isLoadMoreBackwardRequested_ = YES;
   jint gen = self->currentGeneration_;
-  id<DKListEngineDisplayLoadCallback> callback = AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(self, gen), self->currentGeneration_);
+  id<DKListEngineDisplayLoadCallback> callback = AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(self, new_AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(self, gen), self->currentGeneration_);
   if (self->mode_ != AMBindedDisplayList_ListModeEnum_get_SEARCH()) {
     [((id<DKListEngineDisplayExt>) nil_chk(self->listEngine_)) loadBackwardWithLong:[((JavaLangLong *) nil_chk([self->window_ getCurrentBackwardHead])) longLongValue] withInt:self->pageSize_ withDKListEngineDisplayLoadCallback:callback];
   }
@@ -689,46 +642,10 @@ void AMBindedDisplayList_loadMoreBackward(AMBindedDisplayList *self) {
 }
 
 id<DKListEngineDisplayLoadCallback> AMBindedDisplayList_coverWithDKListEngineDisplayLoadCallback_withInt_(AMBindedDisplayList *self, id<DKListEngineDisplayLoadCallback> callback, jint generation) {
-  return new_AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(self, generation, callback);
+  return new_AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(self, generation, callback);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList)
-
-@implementation AMBindedDisplayList_ListEngineComparator
-
-- (jint)compareWithId:(id<DKListEngineItem>)o1
-               withId:(id<DKListEngineItem>)o2 {
-  jlong lKey = [((id<DKListEngineItem>) nil_chk(o1)) getEngineSort];
-  jlong rKey = [((id<DKListEngineItem>) nil_chk(o2)) getEngineSort];
-  if (lKey > rKey) {
-    return -1;
-  }
-  else if (lKey < rKey) {
-    return 1;
-  }
-  else {
-    return 0;
-  }
-}
-
-- (instancetype)init {
-  AMBindedDisplayList_ListEngineComparator_init(self);
-  return self;
-}
-
-@end
-
-void AMBindedDisplayList_ListEngineComparator_init(AMBindedDisplayList_ListEngineComparator *self) {
-  (void) NSObject_init(self);
-}
-
-AMBindedDisplayList_ListEngineComparator *new_AMBindedDisplayList_ListEngineComparator_init() {
-  AMBindedDisplayList_ListEngineComparator *self = [AMBindedDisplayList_ListEngineComparator alloc];
-  AMBindedDisplayList_ListEngineComparator_init(self);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_ListEngineComparator)
 
 @implementation AMBindedDisplayList_EngineListener
 
@@ -956,24 +873,38 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMBindedDisplayList_BindHook)
 
 @implementation AMBindedDisplayList_$1
 
-- (void)beforeDisplayWithJavaUtilList:(id<JavaUtilList>)list {
-  JavaUtilCollections_sortWithJavaUtilList_withJavaUtilComparator_(list, AMBindedDisplayList_get_COMPARATOR_());
+- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
+                        withLong:(jlong)topSortKey
+                        withLong:(jlong)bottomSortKey {
+  AMMVVMEngine_checkMainThread();
+  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
+  if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
+  }
+  else {
+    [this$0_->window_ onForwardCompleted];
+  }
+  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithAMDisplayList_Modification:m];
+  }
+  [this$0_->pendingModifications_ clear];
 }
 
-- (instancetype)init {
-  AMBindedDisplayList_$1_init(self);
+- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
+  AMBindedDisplayList_$1_initWithAMBindedDisplayList_(self, outer$);
   return self;
 }
 
 @end
 
-void AMBindedDisplayList_$1_init(AMBindedDisplayList_$1 *self) {
+void AMBindedDisplayList_$1_initWithAMBindedDisplayList_(AMBindedDisplayList_$1 *self, AMBindedDisplayList *outer$) {
+  self->this$0_ = outer$;
   (void) NSObject_init(self);
 }
 
-AMBindedDisplayList_$1 *new_AMBindedDisplayList_$1_init() {
+AMBindedDisplayList_$1 *new_AMBindedDisplayList_$1_initWithAMBindedDisplayList_(AMBindedDisplayList *outer$) {
   AMBindedDisplayList_$1 *self = [AMBindedDisplayList_$1 alloc];
-  AMBindedDisplayList_$1_init(self);
+  AMBindedDisplayList_$1_initWithAMBindedDisplayList_(self, outer$);
   return self;
 }
 
@@ -985,12 +916,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$1)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
-  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
+  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitBackwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
     [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
   }
   else {
-    [this$0_->window_ onForwardCompleted];
+    [this$0_->window_ onBackwardCompleted];
   }
   for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
     [this$0_ editListWithAMDisplayList_Modification:m];
@@ -1024,11 +955,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$2)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
-  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitBackwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
+  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitCenterWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey) withJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
   }
   else {
+    [this$0_->window_ onForwardCompleted];
     [this$0_->window_ onBackwardCompleted];
   }
   for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
@@ -1063,13 +995,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$3)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
-  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitCenterWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey) withJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
-  if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
-  }
-  else {
+  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
+  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
+  if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
-    [this$0_->window_ onBackwardCompleted];
   }
   for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
     [this$0_ editListWithAMDisplayList_Modification:m];
@@ -1103,43 +1032,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$4)
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
-  [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
-  if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
-    [this$0_->window_ onForwardCompleted];
-  }
-  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
-    [this$0_ editListWithAMDisplayList_Modification:m];
-  }
-  [this$0_->pendingModifications_ clear];
-}
-
-- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
-  AMBindedDisplayList_$5_initWithAMBindedDisplayList_(self, outer$);
-  return self;
-}
-
-@end
-
-void AMBindedDisplayList_$5_initWithAMBindedDisplayList_(AMBindedDisplayList_$5 *self, AMBindedDisplayList *outer$) {
-  self->this$0_ = outer$;
-  (void) NSObject_init(self);
-}
-
-AMBindedDisplayList_$5 *new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_(AMBindedDisplayList *outer$) {
-  AMBindedDisplayList_$5 *self = [AMBindedDisplayList_$5 alloc];
-  AMBindedDisplayList_$5_initWithAMBindedDisplayList_(self, outer$);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5)
-
-@implementation AMBindedDisplayList_$6
-
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
-                        withLong:(jlong)topSortKey
-                        withLong:(jlong)bottomSortKey {
-  AMMVVMEngine_checkMainThread();
   AMLog_dWithNSString_withNSString_(AMBindedDisplayList_get_TAG_(), JreStrcat("$J$", @"Items loaded in ", (JavaLangSystem_currentTimeMillis() - val$start_), @" ms"));
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeForwardLoading];
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
@@ -1148,29 +1040,96 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5)
   }
   else {
     [this$0_->window_ onForwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$6_$1_initWithAMBindedDisplayList_$6_(self)];
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self)];
   }
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
                                    withLong:(jlong)capture$0
                                     withInt:(jint)capture$1 {
-  AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(self, outer$, capture$0, capture$1);
+  AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(self, outer$, capture$0, capture$1);
   return self;
 }
 
 @end
 
-void AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList_$6 *self, AMBindedDisplayList *outer$, jlong capture$0, jint capture$1) {
+void AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList_$5 *self, AMBindedDisplayList *outer$, jlong capture$0, jint capture$1) {
   self->this$0_ = outer$;
   self->val$start_ = capture$0;
   self->val$gen_ = capture$1;
   (void) NSObject_init(self);
 }
 
-AMBindedDisplayList_$6 *new_AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList *outer$, jlong capture$0, jint capture$1) {
+AMBindedDisplayList_$5 *new_AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(AMBindedDisplayList *outer$, jlong capture$0, jint capture$1) {
+  AMBindedDisplayList_$5 *self = [AMBindedDisplayList_$5 alloc];
+  AMBindedDisplayList_$5_initWithAMBindedDisplayList_withLong_withInt_(self, outer$, capture$0, capture$1);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5)
+
+@implementation AMBindedDisplayList_$5_$1
+
+- (void)run {
+  if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
+    this$0_->this$0_->isLoadMoreForwardRequested_ = NO;
+  }
+}
+
+- (instancetype)initWithAMBindedDisplayList_$5:(AMBindedDisplayList_$5 *)outer$ {
+  AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self, outer$);
+  return self;
+}
+
+@end
+
+void AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(AMBindedDisplayList_$5_$1 *self, AMBindedDisplayList_$5 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+AMBindedDisplayList_$5_$1 *new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(AMBindedDisplayList_$5 *outer$) {
+  AMBindedDisplayList_$5_$1 *self = [AMBindedDisplayList_$5_$1 alloc];
+  AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5_$1)
+
+@implementation AMBindedDisplayList_$6
+
+- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
+                        withLong:(jlong)topSortKey
+                        withLong:(jlong)bottomSortKey {
+  AMMVVMEngine_checkMainThread();
+  [((AMDisplayWindow *) nil_chk(this$0_->window_)) endBackwardLoading];
+  if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
+    [this$0_->window_ onBackwardCompleted];
+    this$0_->isLoadMoreBackwardRequested_ = NO;
+  }
+  else {
+    [this$0_->window_ onBackwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
+    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$6_$1_initWithAMBindedDisplayList_$6_(self)];
+  }
+}
+
+- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
+                                    withInt:(jint)capture$0 {
+  AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList_$6 *self, AMBindedDisplayList *outer$, jint capture$0) {
+  self->this$0_ = outer$;
+  self->val$gen_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+AMBindedDisplayList_$6 *new_AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList *outer$, jint capture$0) {
   AMBindedDisplayList_$6 *self = [AMBindedDisplayList_$6 alloc];
-  AMBindedDisplayList_$6_initWithAMBindedDisplayList_withLong_withInt_(self, outer$, capture$0, capture$1);
+  AMBindedDisplayList_$6_initWithAMBindedDisplayList_withInt_(self, outer$, capture$0);
   return self;
 }
 
@@ -1180,7 +1139,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6)
 
 - (void)run {
   if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
-    this$0_->this$0_->isLoadMoreForwardRequested_ = NO;
+    this$0_->this$0_->isLoadMoreBackwardRequested_ = NO;
   }
 }
 
@@ -1209,35 +1168,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$6_$1)
 - (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
                         withLong:(jlong)topSortKey
                         withLong:(jlong)bottomSortKey {
-  AMMVVMEngine_checkMainThread();
-  [((AMDisplayWindow *) nil_chk(this$0_->window_)) endBackwardLoading];
-  if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
-    [this$0_->window_ onBackwardCompleted];
-    this$0_->isLoadMoreBackwardRequested_ = NO;
-  }
-  else {
-    [this$0_->window_ onBackwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(self)];
-  }
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(self, items, topSortKey, bottomSortKey));
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
-                                    withInt:(jint)capture$0 {
-  AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(self, outer$, capture$0);
+                                    withInt:(jint)capture$0
+        withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)capture$1 {
+  AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(self, outer$, capture$0, capture$1);
   return self;
 }
 
 @end
 
-void AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList_$7 *self, AMBindedDisplayList *outer$, jint capture$0) {
+void AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList_$7 *self, AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1) {
   self->this$0_ = outer$;
-  self->val$gen_ = capture$0;
+  self->val$generation_ = capture$0;
+  self->val$callback_ = capture$1;
   (void) NSObject_init(self);
 }
 
-AMBindedDisplayList_$7 *new_AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(AMBindedDisplayList *outer$, jint capture$0) {
+AMBindedDisplayList_$7 *new_AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1) {
   AMBindedDisplayList_$7 *self = [AMBindedDisplayList_$7 alloc];
-  AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_(self, outer$, capture$0);
+  AMBindedDisplayList_$7_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(self, outer$, capture$0, capture$1);
   return self;
 }
 
@@ -1246,83 +1198,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$7)
 @implementation AMBindedDisplayList_$7_$1
 
 - (void)run {
-  if (this$0_->val$gen_ == this$0_->this$0_->currentGeneration_) {
-    this$0_->this$0_->isLoadMoreBackwardRequested_ = NO;
-  }
-}
-
-- (instancetype)initWithAMBindedDisplayList_$7:(AMBindedDisplayList_$7 *)outer$ {
-  AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(self, outer$);
-  return self;
-}
-
-@end
-
-void AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(AMBindedDisplayList_$7_$1 *self, AMBindedDisplayList_$7 *outer$) {
-  self->this$0_ = outer$;
-  (void) NSObject_init(self);
-}
-
-AMBindedDisplayList_$7_$1 *new_AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(AMBindedDisplayList_$7 *outer$) {
-  AMBindedDisplayList_$7_$1 *self = [AMBindedDisplayList_$7_$1 alloc];
-  AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_(self, outer$);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$7_$1)
-
-@implementation AMBindedDisplayList_$8
-
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
-                        withLong:(jlong)topSortKey
-                        withLong:(jlong)bottomSortKey {
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(self, items, topSortKey, bottomSortKey));
-}
-
-- (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$
-                                    withInt:(jint)capture$0
-        withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)capture$1 {
-  AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(self, outer$, capture$0, capture$1);
-  return self;
-}
-
-@end
-
-void AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList_$8 *self, AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1) {
-  self->this$0_ = outer$;
-  self->val$generation_ = capture$0;
-  self->val$callback_ = capture$1;
-  (void) NSObject_init(self);
-}
-
-AMBindedDisplayList_$8 *new_AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(AMBindedDisplayList *outer$, jint capture$0, id<DKListEngineDisplayLoadCallback> capture$1) {
-  AMBindedDisplayList_$8 *self = [AMBindedDisplayList_$8 alloc];
-  AMBindedDisplayList_$8_initWithAMBindedDisplayList_withInt_withDKListEngineDisplayLoadCallback_(self, outer$, capture$0, capture$1);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$8)
-
-@implementation AMBindedDisplayList_$8_$1
-
-- (void)run {
   if (this$0_->val$generation_ != this$0_->this$0_->currentGeneration_) {
     return;
   }
   [((id<DKListEngineDisplayLoadCallback>) nil_chk(this$0_->val$callback_)) onLoadedWithJavaUtilList:val$items_ withLong:val$topSortKey_ withLong:val$bottomSortKey_];
 }
 
-- (instancetype)initWithAMBindedDisplayList_$8:(AMBindedDisplayList_$8 *)outer$
+- (instancetype)initWithAMBindedDisplayList_$7:(AMBindedDisplayList_$7 *)outer$
                               withJavaUtilList:(id<JavaUtilList>)capture$0
                                       withLong:(jlong)capture$1
                                       withLong:(jlong)capture$2 {
-  AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(self, outer$, capture$0, capture$1, capture$2);
+  AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(self, outer$, capture$0, capture$1, capture$2);
   return self;
 }
 
 @end
 
-void AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$8_$1 *self, AMBindedDisplayList_$8 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2) {
+void AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$7_$1 *self, AMBindedDisplayList_$7 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2) {
   self->this$0_ = outer$;
   self->val$items_ = capture$0;
   self->val$topSortKey_ = capture$1;
@@ -1330,10 +1222,10 @@ void AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_w
   (void) NSObject_init(self);
 }
 
-AMBindedDisplayList_$8_$1 *new_AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$8 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2) {
-  AMBindedDisplayList_$8_$1 *self = [AMBindedDisplayList_$8_$1 alloc];
-  AMBindedDisplayList_$8_$1_initWithAMBindedDisplayList_$8_withJavaUtilList_withLong_withLong_(self, outer$, capture$0, capture$1, capture$2);
+AMBindedDisplayList_$7_$1 *new_AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(AMBindedDisplayList_$7 *outer$, id<JavaUtilList> capture$0, jlong capture$1, jlong capture$2) {
+  AMBindedDisplayList_$7_$1 *self = [AMBindedDisplayList_$7_$1 alloc];
+  AMBindedDisplayList_$7_$1_initWithAMBindedDisplayList_$7_withJavaUtilList_withLong_withLong_(self, outer$, capture$0, capture$1, capture$2);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$8_$1)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$7_$1)
