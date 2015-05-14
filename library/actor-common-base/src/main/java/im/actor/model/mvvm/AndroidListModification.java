@@ -6,13 +6,22 @@ package im.actor.model.mvvm;
 
 import java.util.ArrayList;
 
-public abstract class AndroidListModification<T> {
+public class AndroidListModification<T> {
 
     private Operation operation;
     private int index;
     private int len;
+    private int destIndex;
 
     /* package */ ArrayList<T> items;
+
+    public AndroidListModification(Operation operation, int index, T item) {
+        this.operation = operation;
+        this.index = index;
+        this.items = new ArrayList<T>();
+        this.items.add(item);
+        this.len = 1;
+    }
 
     public AndroidListModification(Operation operation, int index, ArrayList<T> items) {
         this.operation = operation;
@@ -26,10 +35,21 @@ public abstract class AndroidListModification<T> {
         this.index = index;
     }
 
+    public AndroidListModification(Operation operation, int index, int destIndex, int len) {
+        this.operation = operation;
+        this.index = index;
+        this.len = len;
+        this.destIndex = destIndex;
+    }
+
     public AndroidListModification(Operation operation, int index, int len) {
         this.operation = operation;
         this.index = index;
         this.len = len;
+    }
+
+    public int getDestIndex() {
+        return destIndex;
     }
 
     public Operation getOperation() {
@@ -49,6 +69,6 @@ public abstract class AndroidListModification<T> {
     }
 
     public enum Operation {
-        ADD, REMOVE, UPDATE, ADD_RANGE, REMOVE_RANGE
+        ADD, REMOVE, UPDATE, ADD_RANGE, REMOVE_RANGE, MOVE
     }
 }
