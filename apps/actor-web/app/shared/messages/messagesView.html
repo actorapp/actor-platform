@@ -1,5 +1,6 @@
 <md-list flex layout-padding class="messages-list" ng-controller="messagesController as messages" in-view-container>
-    <md-list-item class="messages-list__item"
+    <messages messages="messages.list"></messages>
+   <md-list-item ng-if="false" class="messages-list__item"
                   ng-repeat="message in messages.list"
                   in-view="messages.setMessageViewed( message.sortKey, message.isOut)"
                   in-view-options="{ debounce: messages.messageDebounce }">
