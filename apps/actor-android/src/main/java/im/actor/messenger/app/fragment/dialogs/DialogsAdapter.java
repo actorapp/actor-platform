@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.android.view.BindedListAdapter;
+import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.model.entity.Dialog;
 import im.actor.model.mvvm.BindedDisplayList;
 
@@ -29,6 +29,7 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     @Override
     public void onBindViewHolder(DialogHolder dialogHolder, int index, Dialog item) {
+        // Log.d("DialogsAdapter", "Perform bind @" + index);
         dialogHolder.bind(item, index == getItemCount() - 1);
     }
 

@@ -113,8 +113,8 @@ public class DisplayLists extends BaseModule {
                 }
             };
         }
-        BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>(operationMode,
-                (ListEngineDisplayExt<Dialog>) dialogsEngine, isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
+        BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
         displayList.initTop(false);
         return displayList;
     }
@@ -127,8 +127,8 @@ public class DisplayLists extends BaseModule {
             throw new RuntimeException("Contacts ListEngine must implement ListEngineDisplayExt for using global list");
         }
 
-        BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>(operationMode,
-                (ListEngineDisplayExt<Contact>) contactsEngine, isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+        BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>((ListEngineDisplayExt<Contact>) contactsEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
         contactList.initTop(false);
         return contactList;
     }
@@ -159,8 +159,8 @@ public class DisplayLists extends BaseModule {
             };
         }
 
-        BindedDisplayList<Message> chatList = new BindedDisplayList<Message>(operationMode,
-                (ListEngineDisplayExt<Message>) messagesEngine, isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
+        BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
         chatList.initTop(false);
         return chatList;
     }
@@ -173,8 +173,8 @@ public class DisplayLists extends BaseModule {
             throw new RuntimeException("Media ListEngine must implement ListEngineDisplayExt for using global list");
         }
 
-        BindedDisplayList<Message> mediaList = new BindedDisplayList<Message>(operationMode,
-                (ListEngineDisplayExt<Message>) mediaEngine, isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+        BindedDisplayList<Message> mediaList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) mediaEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
         mediaList.initTop(false);
         return mediaList;
     }
@@ -187,8 +187,8 @@ public class DisplayLists extends BaseModule {
             throw new RuntimeException("Search ListEngine must implement ListEngineDisplayExt for using global list");
         }
 
-        BindedDisplayList<SearchEntity> contactList = new BindedDisplayList<SearchEntity>(operationMode,
-                (ListEngineDisplayExt<SearchEntity>) contactsEngine, isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+        BindedDisplayList<SearchEntity> contactList = new BindedDisplayList<SearchEntity>((ListEngineDisplayExt<SearchEntity>) contactsEngine,
+                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
         contactList.initEmpty();
         return contactList;
     }
