@@ -38,11 +38,29 @@ Message.Content = React.createClass({
         return(
           <div className="messages-list__item__document">
             <p>
-              <md-icon md-svg-icon="assets/img/icons/ic_attach_file_24px.svg"></md-icon>
+              <img src="assets/img/icons/ic_attach_file_24px.svg"></img>
               <a href={content.fileUrl}>{content.fileName}</a>
             </p>
           </div>
         );
+      case 'photo':
+        var original = null;
+        if (content.fileUrl) {
+          original = <img className="messages-list__item__photo__original"
+                          width={ content.w }
+                          height={ content.h }
+                          src={content.fileUrl}/>
+        }
+
+        return(
+          <div class="messages-list__item__photo">
+            {original}
+            <img class="messages-list__item__photo__preview"
+                 width={content.w}
+                 height={content.h}
+                 src={content.preview}/>
+          </div>
+        )
       default:
         return <p>Unsupported content</p>;
     }
