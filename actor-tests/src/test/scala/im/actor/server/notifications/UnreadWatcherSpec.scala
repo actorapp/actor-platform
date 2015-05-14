@@ -81,7 +81,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
     implicit val clientData = clientData1
 
     object s {
-      implicit val config = UnreadWatcherConfig(2.seconds)
+      implicit val config = UnreadWatcherConfig(4.seconds)
       val watcher = new UnreadWatcher()
 
       def noNotifications() = {
@@ -92,7 +92,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
       }
 
       def fromOneSender() = {
-        whenReady(futureSleep(2000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
+        whenReady(futureSleep(4000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 1
           notifications.head shouldEqual Notification(user2.id, Map(Some(user1.name) → 1))
         }
@@ -115,7 +115,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
         }
 
         //then we wait - this message should appear because dialog is timed out
-        whenReady(futureSleep(2000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
+        whenReady(futureSleep(4000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 1
           notifications.head shouldEqual Notification(user2.id, Map(Some(user1.name) → 2, Some(user3.name) → 1))
         }
@@ -126,12 +126,12 @@ class UnreadWatcherSpec extends BaseAppSuite {
 
         whenReady(service.handleSendMessage(user21Peer, 4L, TextMessage("hello to you", None)))(_ ⇒ ())
         //not enough time passed to be timed out
-        whenReady(futureSleep(1000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
+        whenReady(futureSleep(2000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 1
         }
 
         //enough time to be timed out - one message
-        whenReady(futureSleep(1000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
+        whenReady(futureSleep(2000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 2
           notifications should contain allOf (
             Notification(user2.id, Map(Some(user1.name) → 2, Some(user3.name) → 1)),
@@ -149,7 +149,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
 
       def threeNotifications() = {
         whenReady(service.handleSendMessage(user13Peer, 6L, TextMessage("Where is the money!?", None)))(_ ⇒ ())
-        whenReady(futureSleep(2000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
+        whenReady(futureSleep(4000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 3
           notifications should contain allOf (
             Notification(user2.id, Map(Some(user1.name) → 2, Some(user3.name) → 1)),
