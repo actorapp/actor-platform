@@ -87,10 +87,10 @@ object SeqUpdatesManager {
   type Sequence = Int
   type SequenceState = (Int, Array[Byte])
 
-  private sealed trait PersistentEvent
+  sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
-  private final case class SeqChanged(@(KryoTag @field)(0) sequence:Int) extends PersistentEvent with TaggedFieldSerializable
+  final case class SeqChanged(@(KryoTag @field)(0) sequence:Int) extends PersistentEvent with TaggedFieldSerializable
 
   private val noop1: Any ⇒ Unit = _ ⇒ ()
 
