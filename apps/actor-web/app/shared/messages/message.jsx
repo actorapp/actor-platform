@@ -41,9 +41,9 @@ Message.Content = React.createClass({
     var nld = this.nl2br(text);
 
     var _this = this;
-    nld.map(function(line) {
+    nld.forEach(function(line) {
       if (typeof line === 'string') {
-        _this.linkify(line).map(function (linkifiedLine) {
+        _this.linkify(line).forEach(function (linkifiedLine) {
           result.push(linkifiedLine);
         });
       } else {
