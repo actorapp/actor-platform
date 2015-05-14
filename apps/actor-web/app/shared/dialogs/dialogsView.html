@@ -45,7 +45,9 @@
                     <span class="dialogs__body__message__sender" ng-if="::dialog.showSender">
                         {{ ::dialog.sender}}:
                     </span>
-                    {{ ::dialog.text | truncate : dialog.showSender ? 10 : 22 }}
+
+                    <!--{{ ::dialog.text | truncate : dialog.showSender ? 10 : 22 }}-->
+                    {{ ::dialog.text }}
 
                     <span class="dialogs__body__message__counter"
                           ng-if="::dialog.counter > 0"
