@@ -1,43 +1,13 @@
-package im.actor.server.util
-
-import java.util.concurrent.TimeUnit
+package im.actor.server.notifications
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 
-import com.typesafe.config.Config
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models.PeerType
-import im.actor.server.sms.SmsEngine
 import im.actor.server.{ models, persist }
-
-case class UnreadWatcherConfig(unreadTimeout: Duration)
-
-object UnreadWatcherConfig {
-  def apply(config: Config): UnreadWatcherConfig =
-    UnreadWatcherConfig.apply(config.getDuration("unread-timeout", TimeUnit.HOURS).minutes)
-}
-
-trait Notifier {
-  def processTask(task: Notification): Unit
-}
-
-class PhoneNotifier(engine: SmsEngine) extends Notifier {
-  def processTask(task: Notification) = {
-    val total = task.data.values.sum
-    val senders = task.data.keySet.flatten mkString " ,"
-    val message = s"You got $total messages from $senders."
-    for {
-      optPhone ← persist.UserPhone.findByUserId(task.userId).headOption
-      _ ← DBIO.successful(optPhone.map { phone ⇒ engine.send(phone.number, message) })
-    } yield ()
-  }
-}
-
-case class Notification(userId: Int, data: Map[Option[String], Int])
 
 class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, notifier: Notifier) {
 

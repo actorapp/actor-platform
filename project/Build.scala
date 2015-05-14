@@ -92,6 +92,7 @@ object Build extends sbt.Build {
       actorFrontend,
       actorIlectro,
       actorModels,
+      actorNotifications,
       actorPersist,
       actorPresences,
       actorSession,
@@ -253,6 +254,15 @@ object Build extends sbt.Build {
     .enablePlugins(PlayScala)
     .dependsOn(actorPersist, actorUtils)
 
+  lazy val actorNotifications = Project(
+    id = "actor-notifications",
+    base = file("actor-notifications"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.notifications
+    )
+  )
+    .dependsOn(actorModels, actorPersist, actorSms)
+
   lazy val actorUtils = Project(
     id = "actor-utils",
     base = file("actor-utils"),
@@ -260,7 +270,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorCommonsApi, actorModels, actorPersist, actorPush, actorSms)
+    .dependsOn(actorCommonsApi, actorModels, actorPersist, actorSms)
 
   lazy val actorUtilsHttp = Project(
     id = "actor-utils-http",
@@ -301,6 +311,7 @@ object Build extends sbt.Build {
       actorDashboard,
       actorEnrich,
       actorFrontend,
+      actorNotifications,
       actorPersist,
       actorPush,
       actorRpcApi,
