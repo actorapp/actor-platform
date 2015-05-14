@@ -29,7 +29,6 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     @Override
     public void onBindViewHolder(DialogHolder dialogHolder, int index, Dialog item) {
-        // Log.d("DialogsAdapter", "Perform bind @" + index);
         dialogHolder.bind(item, index == getItemCount() - 1);
     }
 
