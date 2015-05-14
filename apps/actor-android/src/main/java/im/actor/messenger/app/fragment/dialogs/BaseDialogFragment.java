@@ -41,7 +41,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         View res = inflate(inflater, container, R.layout.fragment_dialogs,
                 messenger().getDialogsGlobalList());
 
-        setAnimationsEnabled(false);
+        // setAnimationsEnabled(true);
 
         // Footer
 
