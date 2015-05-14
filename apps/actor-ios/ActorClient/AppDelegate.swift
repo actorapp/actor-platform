@@ -9,7 +9,7 @@ import Foundation
     // MARK: -
     // MARK: Private vars
     
-    private var window : UIWindow?;
+    var window : UIWindow?
     private var binder = Binder()
     
     // MARK: -
@@ -20,21 +20,6 @@ import Foundation
             if (apiKey.trim().size() > 0) {
                 Mint.sharedInstance().initAndStartSession(apiKey)
             }
-        }
-        
-        // Apply styles
-        MainAppTheme.navigation.applyAppearance(application)
-        MainAppTheme.tab.applyAppearance(application)
-        MainAppTheme.search.applyAppearance(application)
-        
-        // Register notifications
-        if application.respondsToSelector("registerUserNotificationSettings:") {
-            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
-            application.registerUserNotificationSettings(settings)
-            application.registerForRemoteNotifications()
-        } else {
-            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
         }
         
         // Register hockey app
@@ -48,8 +33,20 @@ import Foundation
             }
         }
         
-        // Creating main window
+        // Register notifications
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
+        } else {
+            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+        }
         
+        // Apply styles
+        MainAppTheme.applyAppearance(application)
+        
+        // Creating main window
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.backgroundColor = UIColor.whiteColor()
         
@@ -73,6 +70,7 @@ import Foundation
     
     func onLoggedIn() {
         // Create root layout for app
+        MSG.onAppVisible()
         var rootController : UIViewController? = nil
         if (isIPad) {
             var splitController = MainSplitViewController()
@@ -109,6 +107,9 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
+        application.beginBackgroundTaskWithExpirationHandler { () -> Void in
+            
+        }
     }
     
     // MARK: -
@@ -118,6 +119,12 @@ import Foundation
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
         
         MSG.registerApplePushWithInt(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withNSString: tokenString)
+        
+        if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
+            if (apiKey.trim().size() > 0) {
+                 Mixpanel.sharedInstance().people.addPushDeviceToken(deviceToken)
+            }
+        }
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {

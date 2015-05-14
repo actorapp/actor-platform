@@ -7,8 +7,14 @@
 #define _AMDisplayList_H_
 
 #include "J2ObjC_header.h"
+#include "java/lang/Enum.h"
 
-@protocol AMDisplayList_Hook;
+@class AMDefferedListChange;
+@class AMDisplayList_ModificationResult;
+@class AMDisplayList_ModificationResult_Operation;
+@class AMDisplayList_ModificationResult_OperationTypeEnum;
+@class JavaUtilArrayList;
+@protocol AMDisplayList_DifferedChangeListener;
 @protocol AMDisplayList_Listener;
 @protocol AMDisplayList_Modification;
 @protocol JavaLangRunnable;
@@ -20,10 +26,9 @@
 
 - (instancetype)init;
 
-- (instancetype)initWithAMDisplayList_Hook:(id<AMDisplayList_Hook>)hook;
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)defaultValues;
 
-- (instancetype)initWithAMDisplayList_Hook:(id<AMDisplayList_Hook>)hook
-                          withJavaUtilList:(id<JavaUtilList>)defaultValues;
+- (void)addDifferedListenerWithAMDisplayList_DifferedChangeListener:(id<AMDisplayList_DifferedChangeListener>)listener;
 
 - (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
 
@@ -36,6 +41,8 @@
 
 - (jint)getSize;
 
+- (void)removeDifferedListenerWithAMDisplayList_DifferedChangeListener:(id<AMDisplayList_DifferedChangeListener>)listener;
+
 - (void)removeListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
 
 @end
@@ -46,37 +53,13 @@ FOUNDATION_EXPORT void AMDisplayList_init(AMDisplayList *self);
 
 FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_init() NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void AMDisplayList_initWithAMDisplayList_Hook_(AMDisplayList *self, id<AMDisplayList_Hook> hook);
+FOUNDATION_EXPORT void AMDisplayList_initWithJavaUtilList_(AMDisplayList *self, id<JavaUtilList> defaultValues);
 
-FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithAMDisplayList_Hook_(id<AMDisplayList_Hook> hook) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void AMDisplayList_initWithAMDisplayList_Hook_withJavaUtilList_(AMDisplayList *self, id<AMDisplayList_Hook> hook, id<JavaUtilList> defaultValues);
-
-FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithAMDisplayList_Hook_withJavaUtilList_(id<AMDisplayList_Hook> hook, id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithJavaUtilList_(id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList)
 
 typedef AMDisplayList ImActorModelMvvmDisplayList;
-
-@protocol AMDisplayList_Modification < NSObject, JavaObject >
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Modification)
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Modification)
-
-@protocol AMDisplayList_Hook < NSObject, JavaObject >
-
-- (void)beforeDisplayWithJavaUtilList:(id<JavaUtilList>)list;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Hook)
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Hook)
 
 @protocol AMDisplayList_Listener < NSObject, JavaObject >
 
@@ -87,5 +70,185 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Hook)
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Listener)
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Listener)
+
+@protocol AMDisplayList_DifferedChangeListener < NSObject, JavaObject >
+
+- (void)onCollectionChangedWithAMDefferedListChange:(AMDefferedListChange *)modification;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_DifferedChangeListener)
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_DifferedChangeListener)
+
+typedef NS_ENUM(NSUInteger, AMDisplayList_OperationMode) {
+  AMDisplayList_OperationMode_GENERAL = 0,
+  AMDisplayList_OperationMode_ANDROID = 1,
+  AMDisplayList_OperationMode_IOS = 2,
+};
+
+@interface AMDisplayList_OperationModeEnum : JavaLangEnum < NSCopying >
+
+#pragma mark Package-Private
+
++ (IOSObjectArray *)values;
+FOUNDATION_EXPORT IOSObjectArray *AMDisplayList_OperationModeEnum_values();
+
++ (AMDisplayList_OperationModeEnum *)valueOfWithNSString:(NSString *)name;
+FOUNDATION_EXPORT AMDisplayList_OperationModeEnum *AMDisplayList_OperationModeEnum_valueOfWithNSString_(NSString *name);
+
+- (id)copyWithZone:(NSZone *)zone;
+
+@end
+
+J2OBJC_STATIC_INIT(AMDisplayList_OperationModeEnum)
+
+FOUNDATION_EXPORT AMDisplayList_OperationModeEnum *AMDisplayList_OperationModeEnum_values_[];
+
+#define AMDisplayList_OperationModeEnum_GENERAL AMDisplayList_OperationModeEnum_values_[AMDisplayList_OperationMode_GENERAL]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_OperationModeEnum, GENERAL)
+
+#define AMDisplayList_OperationModeEnum_ANDROID AMDisplayList_OperationModeEnum_values_[AMDisplayList_OperationMode_ANDROID]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_OperationModeEnum, ANDROID)
+
+#define AMDisplayList_OperationModeEnum_IOS AMDisplayList_OperationModeEnum_values_[AMDisplayList_OperationMode_IOS]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_OperationModeEnum, IOS)
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_OperationModeEnum)
+
+@protocol AMDisplayList_Modification < NSObject, JavaObject >
+
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Modification)
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Modification)
+
+@interface AMDisplayList_ModificationResult : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+- (void)appendAddWithInt:(jint)index
+                  withId:(id)item;
+
+- (void)appendMoveWithInt:(jint)index
+                  withInt:(jint)destIndex;
+
+- (void)appendOperationWithAMDisplayList_ModificationResult_Operation:(AMDisplayList_ModificationResult_Operation *)operation;
+
+- (void)appendRemoveWithInt:(jint)index
+                    withInt:(jint)len;
+
+- (void)appendUpdateWithInt:(jint)index
+                     withId:(id)item;
+
+- (JavaUtilArrayList *)getOperations;
+
+- (jboolean)isEmpty;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ModificationResult)
+
+FOUNDATION_EXPORT void AMDisplayList_ModificationResult_init(AMDisplayList_ModificationResult *self);
+
+FOUNDATION_EXPORT AMDisplayList_ModificationResult *new_AMDisplayList_ModificationResult_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationResult)
+
+@interface AMDisplayList_ModificationResult_Operation : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
+                                                                   withInt:(jint)index;
+
+- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
+                                                                   withInt:(jint)index
+                                                                   withInt:(jint)length;
+
+- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
+                                                                   withInt:(jint)index
+                                                                   withInt:(jint)destIndex
+                                                                   withInt:(jint)length;
+
+- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
+                                                                   withInt:(jint)index
+                                                                    withId:(id)item;
+
+- (jint)getDestIndex;
+
+- (jint)getIndex;
+
+- (id)getItem;
+
+- (jint)getLength;
+
+- (AMDisplayList_ModificationResult_OperationTypeEnum *)getType;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ModificationResult_Operation)
+
+FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withId_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, id item);
+
+FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withId_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, id item) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index);
+
+FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_withInt_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint destIndex, jint length);
+
+FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint destIndex, jint length) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint length);
+
+FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint length) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationResult_Operation)
+
+typedef NS_ENUM(NSUInteger, AMDisplayList_ModificationResult_OperationType) {
+  AMDisplayList_ModificationResult_OperationType_ADD = 0,
+  AMDisplayList_ModificationResult_OperationType_REMOVE = 1,
+  AMDisplayList_ModificationResult_OperationType_UPDATE = 2,
+  AMDisplayList_ModificationResult_OperationType_MOVE = 3,
+};
+
+@interface AMDisplayList_ModificationResult_OperationTypeEnum : JavaLangEnum < NSCopying >
+
+#pragma mark Package-Private
+
++ (IOSObjectArray *)values;
+FOUNDATION_EXPORT IOSObjectArray *AMDisplayList_ModificationResult_OperationTypeEnum_values();
+
++ (AMDisplayList_ModificationResult_OperationTypeEnum *)valueOfWithNSString:(NSString *)name;
+FOUNDATION_EXPORT AMDisplayList_ModificationResult_OperationTypeEnum *AMDisplayList_ModificationResult_OperationTypeEnum_valueOfWithNSString_(NSString *name);
+
+- (id)copyWithZone:(NSZone *)zone;
+
+@end
+
+J2OBJC_STATIC_INIT(AMDisplayList_ModificationResult_OperationTypeEnum)
+
+FOUNDATION_EXPORT AMDisplayList_ModificationResult_OperationTypeEnum *AMDisplayList_ModificationResult_OperationTypeEnum_values_[];
+
+#define AMDisplayList_ModificationResult_OperationTypeEnum_ADD AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_ADD]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, ADD)
+
+#define AMDisplayList_ModificationResult_OperationTypeEnum_REMOVE AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_REMOVE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, REMOVE)
+
+#define AMDisplayList_ModificationResult_OperationTypeEnum_UPDATE AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_UPDATE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, UPDATE)
+
+#define AMDisplayList_ModificationResult_OperationTypeEnum_MOVE AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_MOVE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, MOVE)
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationResult_OperationTypeEnum)
 
 #endif // _AMDisplayList_H_

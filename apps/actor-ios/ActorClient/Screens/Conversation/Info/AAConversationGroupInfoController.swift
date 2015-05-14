@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import MobileCoreServices 
 
 class AAConversationGroupInfoController: AATableViewController {
     
@@ -51,7 +52,7 @@ class AAConversationGroupInfoController: AATableViewController {
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
         tableView.registerClass(AAConversationGroupInfoUserCell.self, forCellReuseIdentifier: UserCellIdentifier)
         tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
-        
+        tableView.clipsToBounds = false
         tableView.reloadData()
         
         binder.bind(group!.getName()!, closure: { (value: String?) -> () in
@@ -110,14 +111,27 @@ class AAConversationGroupInfoController: AATableViewController {
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = group!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
     
     // MARK: -
     // MARK: Getters
     
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (scrollView == self.tableView) {
+            var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
+            var topOffset = getNavigationBarHeight() + getStatusBarHeight()
+            var maxOffset = scrollView.frame.width - 200 + topOffset
+            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+        }
+    }
+    
     private func groupInfoCell(indexPath: NSIndexPath) -> AAConversationGroupInfoCell {
         var cell: AAConversationGroupInfoCell = tableView.dequeueReusableCellWithIdentifier(GroupInfoCellIdentifier, forIndexPath: indexPath) as! AAConversationGroupInfoCell
+        
+        cell.contentView.superview?.clipsToBounds = false
         
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
@@ -403,10 +417,15 @@ extension AAConversationGroupInfoController: UIActionSheetDelegate {
 
         if (buttonIndex == 1 || buttonIndex == 2) {
             let takePhoto = (buttonIndex == 1)
-            var picker = UIImagePickerController()
-            picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
-            picker.delegate = self
-            self.navigationController!.presentViewController(picker, animated: true, completion: nil)
+            var pickerController = AAImagePickerController()
+            pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+            pickerController.mediaTypes = [kUTTypeImage]
+            pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+            pickerController.delegate = self
+            pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+            self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
         } else if (buttonIndex == 3) {
             MSG.removeGroupAvatarWithInt(jint(gid))
         }
@@ -416,7 +435,7 @@ extension AAConversationGroupInfoController: UIActionSheetDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AAConversationGroupInfoController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
+extension AAConversationGroupInfoController: UIImagePickerControllerDelegate, PECropViewControllerDelegate, UINavigationControllerDelegate {
     
     func cropImage(image: UIImage) {
         var cropController = PECropViewController()

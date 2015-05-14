@@ -5,7 +5,9 @@
 #ifndef ActorClient_ActorModel_h
 #define ActorClient_ActorModel_h
 
-#include "J2ObjC_header.h"
+#import "J2ObjC_header.h"
+#import "J2ObjC_source.h"
+#import "IOSClass.h"
 
 // Java Objects
 
@@ -39,8 +41,10 @@
 #import "im/actor/model/LocaleProvider.h"
 #import "im/actor/model/PhoneBookProvider.h"
 #import "im/actor/model/HttpProvider.h"
+#import "im/actor/model/AnalyticsProvider.h"
 #import "im/actor/model/AppCategory.h"
 #import "im/actor/model/DeviceCategory.h"
+#import "im/actor/model/MessengerEnvironment.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -88,6 +92,8 @@
 #import "im/actor/model/mvvm/ValueChangedListener.h"
 #import "im/actor/model/mvvm/DisplayList.h"
 #import "im/actor/model/mvvm/BindedDisplayList.h"
+#import "im/actor/model/mvvm/DefferedListChange.h"
+#import "im/actor/model/mvvm/DefferedListModification.h"
 
 // I18N
 
@@ -131,6 +137,8 @@
 #import "im/actor/model/entity/PhoneBookEmail.h"
 #import "im/actor/model/entity/ContentType.h"
 #import "im/actor/model/entity/FileReference.h"
+#import "im/actor/model/entity/Notification.h"
+#import "im/actor/model/entity/ContentDescription.h"
 
 
 // Entities View Model

@@ -8,6 +8,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
@@ -79,50 +80,9 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         return values;
     }
 
-    @Override
-    public void onItemAddedOrUpdated(V item) {
-        try {
-            long id = item.getEngineId();
-            long sortKey = item.getEngineSort();
-            for (int i = 0; i < values.size(); i++) {
-                if (values.get(i).getEngineId() == id) {
-                    values.remove(i);
-                    remove(jsValues, i);
-                    break;
-                }
-            }
-
-            if (isInverted) {
-                for (int i = values.size() - 1; i >= 0; i--) {
-                    if (sortKey > values.get(i).getEngineSort()) {
-                        values.add(i + 1, item);
-                        insert(jsValues, i + 1, entityConverter.convert(item, messenger));
-                        return;
-                    }
-                }
-
-                values.add(0, item);
-                insert(jsValues, 0, entityConverter.convert(item, messenger));
-            } else {
-                for (int i = 0; i < values.size(); i++) {
-                    if (sortKey > values.get(i).getEngineSort()) {
-                        values.add(i, item);
-                        insert(jsValues, i, entityConverter.convert(item, messenger));
-                        return;
-                    }
-                }
-
-                values.add(item);
-                jsValues.push(entityConverter.convert(item, messenger));
-            }
-
-        } finally {
-            notifySubscribers();
-        }
-    }
-
-    @Override
-    public void onItemRemoved(long id) {
+    private void addItemOrUpdateImpl(V item) {
+        long id = item.getEngineId();
+        long sortKey = item.getEngineSort();
         for (int i = 0; i < values.size(); i++) {
             if (values.get(i).getEngineId() == id) {
                 values.remove(i);
@@ -131,14 +91,80 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
             }
         }
 
+        if (isInverted) {
+            for (int i = values.size() - 1; i >= 0; i--) {
+                if (sortKey > values.get(i).getEngineSort()) {
+                    values.add(i + 1, item);
+                    insert(jsValues, i + 1, entityConverter.convert(item, messenger));
+                    return;
+                }
+            }
+
+            values.add(0, item);
+            insert(jsValues, 0, entityConverter.convert(item, messenger));
+        } else {
+            for (int i = 0; i < values.size(); i++) {
+                if (sortKey > values.get(i).getEngineSort()) {
+                    values.add(i, item);
+                    insert(jsValues, i, entityConverter.convert(item, messenger));
+                    return;
+                }
+            }
+
+            values.add(item);
+            jsValues.push(entityConverter.convert(item, messenger));
+        }
+    }
+
+    private void remoteItemImpl(long id) {
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i).getEngineId() == id) {
+                values.remove(i);
+                remove(jsValues, i);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onItemAddedOrUpdated(V item) {
+        addItemOrUpdateImpl(item);
         notifySubscribers();
+    }
+
+    @Override
+    public void onItemsAddedOrUpdated(List<V> items) {
+        for (V item : items) {
+            addItemOrUpdateImpl(item);
+        }
+        notifySubscribers();
+    }
+
+    @Override
+    public void onItemRemoved(long id) {
+        remoteItemImpl(id);
+        notifySubscribers();
+    }
+
+    @Override
+    public void onItemsRemoved(long[] ids) {
+        for (long id : ids) {
+            remoteItemImpl(id);
+        }
+        notifySubscribers();
+    }
+
+    @Override
+    public void onItemsReplaced(List<V> items) {
+        values.clear();
+        clear(jsValues);
+        onItemsAddedOrUpdated(items);
     }
 
     @Override
     public void onClear() {
         values.clear();
         clear(jsValues);
-
         notifySubscribers();
     }
 
