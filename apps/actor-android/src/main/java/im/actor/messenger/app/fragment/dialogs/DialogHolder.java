@@ -225,28 +225,33 @@ public class DialogHolder extends BindedViewHolder {
             time.setVisibility(View.GONE);
         }
 
-        CharSequence contentText = messenger().getFormatter().formatContentDialogText(data.getSenderId(),
-                data.getMessageType(), data.getText(), data.getRelatedUid());
-
-        if (messenger().getFormatter().isLargeDialogMessage(data.getMessageType())) {
-            bindedText = contentText;
+        if (data.getSenderId() == 0) {
+            bindedText = "";
         } else {
-            if (data.getPeer().getPeerType() == PeerType.GROUP) {
-                bindedText = messenger().getFormatter().formatPerformerName(data.getSenderId()) + ": " + contentText;
-            } else {
+            CharSequence contentText = messenger().getFormatter().formatContentDialogText(data.getSenderId(),
+                    data.getMessageType(), data.getText(), data.getRelatedUid());
+
+            if (messenger().getFormatter().isLargeDialogMessage(data.getMessageType())) {
                 bindedText = contentText;
+            } else {
+                if (data.getPeer().getPeerType() == PeerType.GROUP) {
+                    bindedText = messenger().getFormatter().formatPerformerName(data.getSenderId()) + ": " + contentText;
+                } else {
+                    bindedText = contentText;
+                }
             }
         }
 
-        if(SmileProcessor.containsEmoji(bindedText)){
-            if(emoji().isLoaded()){
-                bindedText = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_BUBBLES);;
+        if (SmileProcessor.containsEmoji(bindedText)) {
+            if (emoji().isLoaded()) {
+                bindedText = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_BUBBLES);
+                ;
             } else {
                 emoji().registerListener(new SmilesListener() {
                     @Override
                     public void onSmilesUpdated(boolean completed) {
                         CharSequence emojiProcessed = emoji().processEmojiCompatMutable(bindedText, SmileProcessor.CONFIGURATION_DIALOGS);
-                        if(text.getText().equals(bindedText)){
+                        if (text.getText().equals(bindedText)) {
                             text.setText(emojiProcessed);
                         }
                         bindedText = emojiProcessed;
