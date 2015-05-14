@@ -38,9 +38,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private boolean isLoadMoreBackwardRequested = false;
     private ArrayList<Modification<T>> pendingModifications = new ArrayList<Modification<T>>();
 
-    public BindedDisplayList(OperationMode operationMode, ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
+    public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
                              int pageSize, int loadGap, BindHook<T> bindHook) {
-        super(operationMode);
+        super();
 
         this.bindHook = bindHook;
         this.isGlobalList = isGlobalList;

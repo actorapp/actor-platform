@@ -19,24 +19,21 @@ public class DisplayList<T> {
 
     private static int NEXT_ID = 0;
     private final int DISPLAY_LIST_ID;
-    private final OperationMode operationMode;
     private ActorRef executor;
     private ArrayList<T>[] lists;
-    private ArrayList<T> androidNotificationList;
     private volatile int currentList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-    private CopyOnWriteArrayList<AndroidListener<T>> androidListeners = new CopyOnWriteArrayList<AndroidListener<T>>();
+    private CopyOnWriteArrayList<DifferedChangeListener<T>> differedListeners = new CopyOnWriteArrayList<DifferedChangeListener<T>>();
 
-    public DisplayList(OperationMode operationMode) {
-        this(operationMode, new ArrayList<T>());
+    public DisplayList() {
+        this(new ArrayList<T>());
     }
 
-    public DisplayList(OperationMode operationMode, List<T> defaultValues) {
+    public DisplayList(List<T> defaultValues) {
         MVVMEngine.checkMainThread();
 
         this.DISPLAY_LIST_ID = NEXT_ID++;
-        this.operationMode = operationMode;
 
         this.executor = system().actorOf(Props.create(ListSwitcher.class, new ActorCreator<ListSwitcher>() {
             @Override
@@ -49,9 +46,6 @@ public class DisplayList<T> {
         this.currentList = 0;
         this.lists[0] = new ArrayList<T>(defaultValues);
         this.lists[1] = new ArrayList<T>(defaultValues);
-        if (operationMode == OperationMode.ANDROID) {
-            this.androidNotificationList = new ArrayList<T>(defaultValues);
-        }
     }
 
     public int getSize() {
@@ -84,16 +78,16 @@ public class DisplayList<T> {
         listeners.remove(listener);
     }
 
-    public void addDifferedListener(AndroidListener<T> listener) {
+    public void addDifferedListener(DifferedChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
-        if (!androidListeners.contains(listener)) {
-            androidListeners.add(listener);
+        if (!differedListeners.contains(listener)) {
+            differedListeners.add(listener);
         }
     }
 
-    public void removeDifferedListener(AndroidListener<T> listener) {
+    public void removeDifferedListener(DifferedChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
-        androidListeners.remove(listener);
+        differedListeners.remove(listener);
     }
 
     // Update actor
@@ -149,8 +143,8 @@ public class DisplayList<T> {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
 
-                    for (AndroidListener<T> l : displayList.androidListeners) {
-                        AndroidListChange<T> aListChange = AndroidListChange.buildAndroidListChange(modRes,
+                    for (DifferedChangeListener<T> l : displayList.differedListeners) {
+                        DefferedListChange<T> aListChange = DefferedListChange.buildAndroidListChange(modRes,
                                 new ArrayList<T>(initialList));
                         l.onCollectionChanged(aListChange);
                     }
@@ -227,8 +221,8 @@ public class DisplayList<T> {
         void onCollectionChanged();
     }
 
-    public interface AndroidListener<T> {
-        void onCollectionChanged(AndroidListChange<T> modification);
+    public interface DifferedChangeListener<T> {
+        void onCollectionChanged(DefferedListChange<T> modification);
     }
 
     public enum OperationMode {

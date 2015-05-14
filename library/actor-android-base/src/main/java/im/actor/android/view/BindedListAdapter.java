@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
-import im.actor.model.mvvm.AndroidListChange;
+import im.actor.model.mvvm.DefferedListChange;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 
@@ -21,7 +21,7 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
 
     private DisplayList.Listener listener;
 
-    private AndroidListChange<V> currentChange = null;
+    private DefferedListChange<V> currentChange = null;
 
     public BindedListAdapter(BindedDisplayList<V> displayList) {
         this(displayList, true);
@@ -46,7 +46,7 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
         return displayList.isGlobalList();
     }
 
-    public void startUpdates(AndroidListChange<V> currentChange) {
+    public void startUpdates(DefferedListChange<V> currentChange) {
         this.currentChange = currentChange;
     }
 
