@@ -278,8 +278,8 @@ void AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayLis
     [((AMDisplayList_ModificationResult *) nil_chk(result)) appendUpdateWithInt:addedIndex withId:item];
   }
   else if (removedIndex >= 0) {
-    [((AMDisplayList_ModificationResult *) nil_chk(result)) appendUpdateWithInt:removedIndex withId:item];
-    [result appendMoveWithInt:removedIndex withInt:addedIndex];
+    [((AMDisplayList_ModificationResult *) nil_chk(result)) appendMoveWithInt:removedIndex withInt:addedIndex];
+    [result appendUpdateWithInt:addedIndex withId:item];
   }
   else {
     [((AMDisplayList_ModificationResult *) nil_chk(result)) appendAddWithInt:addedIndex withId:item];

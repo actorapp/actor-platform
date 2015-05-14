@@ -112,7 +112,11 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                 self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
                 break
             case AMDefferedListModification_Operation.MOVE.rawValue:
-                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(currentChange!.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(currentChange!.getDestIndex()), inSection: 0))
+                var nextIndex = currentChange!.getDestIndex()
+                if (currentChange!.getIndex() < nextIndex) {
+                    nextIndex++
+                }
+                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(currentChange!.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(nextIndex), inSection: 0))
                 break
             default:
                 break
