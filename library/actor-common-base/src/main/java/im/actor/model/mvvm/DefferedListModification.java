@@ -6,7 +6,7 @@ package im.actor.model.mvvm;
 
 import java.util.ArrayList;
 
-public class AndroidListModification<T> {
+public class DefferedListModification<T> {
 
     private Operation operation;
     private int index;
@@ -15,7 +15,7 @@ public class AndroidListModification<T> {
 
     /* package */ ArrayList<T> items;
 
-    public AndroidListModification(Operation operation, int index, T item) {
+    public DefferedListModification(Operation operation, int index, T item) {
         this.operation = operation;
         this.index = index;
         this.items = new ArrayList<T>();
@@ -23,26 +23,26 @@ public class AndroidListModification<T> {
         this.len = 1;
     }
 
-    public AndroidListModification(Operation operation, int index, ArrayList<T> items) {
+    public DefferedListModification(Operation operation, int index, ArrayList<T> items) {
         this.operation = operation;
         this.index = index;
         this.items = items;
         this.len = items.size();
     }
 
-    public AndroidListModification(Operation operation, int index) {
+    public DefferedListModification(Operation operation, int index) {
         this.operation = operation;
         this.index = index;
     }
 
-    public AndroidListModification(Operation operation, int index, int destIndex, int len) {
+    public DefferedListModification(Operation operation, int index, int destIndex, int len) {
         this.operation = operation;
         this.index = index;
         this.len = len;
         this.destIndex = destIndex;
     }
 
-    public AndroidListModification(Operation operation, int index, int len) {
+    public DefferedListModification(Operation operation, int index, int len) {
         this.operation = operation;
         this.index = index;
         this.len = len;
@@ -64,11 +64,23 @@ public class AndroidListModification<T> {
         return len;
     }
 
+    /* package */ void expand(T item) {
+        items.add(item);
+        len++;
+        if (operation == Operation.ADD) {
+            operation = Operation.ADD_RANGE;
+        } else if (operation == Operation.REMOVE) {
+            operation = Operation.REMOVE_RANGE;
+        } else if (operation == Operation.UPDATE) {
+            operation = Operation.UPDATE_RANGE;
+        }
+    }
+
     /* package */ ArrayList<T> getItems() {
         return items;
     }
 
     public enum Operation {
-        ADD, REMOVE, UPDATE, ADD_RANGE, REMOVE_RANGE, MOVE
+        ADD, REMOVE, UPDATE, UPDATE_RANGE, ADD_RANGE, REMOVE_RANGE, MOVE
     }
 }
