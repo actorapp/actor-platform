@@ -26,7 +26,7 @@ public class DisplayList<T> {
     private volatile int currentList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-    private CopyOnWriteArrayList<AndroidListener> androidListeners = new CopyOnWriteArrayList<AndroidListener>();
+    private CopyOnWriteArrayList<AndroidListener<T>> androidListeners = new CopyOnWriteArrayList<AndroidListener<T>>();
 
     public DisplayList(OperationMode operationMode) {
         this(operationMode, new ArrayList<T>());
@@ -84,6 +84,18 @@ public class DisplayList<T> {
         listeners.remove(listener);
     }
 
+    public void addDifferedListener(AndroidListener<T> listener) {
+        MVVMEngine.checkMainThread();
+        if (!androidListeners.contains(listener)) {
+            androidListeners.add(listener);
+        }
+    }
+
+    public void removeDifferedListener(AndroidListener<T> listener) {
+        MVVMEngine.checkMainThread();
+        androidListeners.remove(listener);
+    }
+
     // Update actor
 
     private static class ListSwitcher<T> extends Actor {
@@ -95,48 +107,53 @@ public class DisplayList<T> {
             this.displayList = displayList;
         }
 
-//        private void applyModification(ModificationResult<T> res, ArrayList<T> list) {
-//            for (ModificationResult.Operation<T> op : res.getOperations()) {
-//                switch (op.type) {
-//                    case ADD:
-//                        list.add(op.index, op.item);
-//                        break;
-//                    case MOVE:
-//                        T itm = list.remove(op.index);
-//                        list.add(op.destIndex, itm);
-//                        break;
-//                    case REMOVE:
-//                        list.remove(op.index);
-//                        break;
-//                    case UPDATE:
-//                        list.remove(op.index);
-//                        list.add(op.index, op.item);
-//                        break;
-//                }
-//            }
-//        }
-
         public void onEditList(final Modification<T> modification, final Runnable runnable) {
+
             ModificationHolder<T> holder = new ModificationHolder<T>(modification, runnable);
             if (isLocked) {
                 pending.add(holder);
                 return;
             }
 
+            if (modification != null) {
+                pending.add(new ModificationHolder<T>(modification, runnable));
+            }
+
+            if (pending.size() == 0) {
+                // Nothing to update
+                return;
+            }
+
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
+            ArrayList<T> initialList = new ArrayList<T>(backgroundList);
 
-            ModificationResult<T> res = modification.modify(backgroundList);
+            ModificationHolder<T>[] dest = pending.toArray(new ModificationHolder[pending.size()]);
+            pending.clear();
+            ArrayList<ModificationResult<T>> modRes = new ArrayList<ModificationResult<T>>();
 
-            requestListSwitch(new ModificationHolder[]{holder});
+            for (ModificationHolder<T> m : dest) {
+                ModificationResult<T> res2 = m.modification.modify(backgroundList);
+                modRes.add(res2);
+            }
+
+            requestListSwitch(dest, initialList, modRes);
         }
 
-        private void requestListSwitch(final ModificationHolder<T>[] modifications) {
+        private void requestListSwitch(final ModificationHolder<T>[] modifications,
+                                       final ArrayList<T> initialList,
+                                       final ArrayList<ModificationResult<T>> modRes) {
             isLocked = true;
             MVVMEngine.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
+
+                    for (AndroidListener<T> l : displayList.androidListeners) {
+                        AndroidListChange<T> aListChange = AndroidListChange.buildAndroidListChange(modRes,
+                                new ArrayList<T>(initialList));
+                        l.onCollectionChanged(aListChange);
+                    }
 
                     for (Listener l : displayList.listeners) {
                         l.onCollectionChanged();
@@ -158,27 +175,20 @@ public class DisplayList<T> {
 
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
             for (ModificationHolder m : modifications) {
-                ModificationResult<T> res = m.modification.modify(backgroundList);
+                m.modification.modify(backgroundList);
             }
 
             if (pending.size() > 0) {
-                ModificationHolder[] dest = pending.toArray(new ModificationHolder[pending.size()]);
-                pending.clear();
-
-                for (ModificationHolder m : dest) {
-                    ModificationResult<T> res = m.modification.modify(backgroundList);
-                }
-
-                requestListSwitch(dest);
+                self().send(new EditList<T>(null, null));
             }
         }
 
         @Override
         public void onReceive(Object message) {
             if (message instanceof ListSwitched) {
-                onListSwitched(((ListSwitched) message).modifications);
+                onListSwitched(((ListSwitched<T>) message).modifications);
             } else if (message instanceof EditList) {
-                onEditList(((EditList) message).modification, ((EditList) message).executeAfter);
+                onEditList(((EditList<T>) message).modification, ((EditList) message).executeAfter);
             } else {
                 drop(message);
             }
