@@ -1,4 +1,4 @@
-package im.actor.server.util
+package im.actor.server.notifications
 
 import scala.concurrent.duration._
 
@@ -7,6 +7,7 @@ import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, messaging }
 import im.actor.server.social.SocialManager
+import im.actor.server.util.ACLUtils
 
 class UnreadWatcherSpec extends BaseServiceSuite {
 
