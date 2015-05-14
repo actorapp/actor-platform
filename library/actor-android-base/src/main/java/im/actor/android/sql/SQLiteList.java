@@ -210,11 +210,11 @@ public class SQLiteList implements ListStorageDisplayEx {
         if (centerSortKey == null) {
             cursor = database.query("\"" + tableName + "\"",
                     new String[]{"\"LIST_ID\"", "\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
-                    null, null, null, null, "\"SORT_KEY\" ASC", String.valueOf(limit));
+                    null, null, null, null, "\"SORT_KEY\" DESC", String.valueOf(limit));
         } else {
             cursor = database.query("\"" + tableName + "\"",
                     new String[]{"\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
-                    "\"SORT_KEY\" > ?",
+                    "\"SORT_KEY\" >= ?",
                     new String[]{
                             String.valueOf(centerSortKey)
                     }, null, null, "\"SORT_KEY\" ASC", String.valueOf(limit));
