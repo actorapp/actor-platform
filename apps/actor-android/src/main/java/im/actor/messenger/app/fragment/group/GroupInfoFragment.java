@@ -159,7 +159,7 @@ public class GroupInfoFragment extends BaseFragment {
         }
 
         Peer peer = Peer.group(groupInfo.getId());
-        int mediaCount = messenger().getMediaCount(peer);
+        int mediaCount = 0;//messenger().getMediaCount(peer);
         if (mediaCount == 0) {
             header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
         } else {

@@ -12,6 +12,7 @@
 @class AMBindedDisplayList;
 @class AMConfiguration;
 @class AMConversationVM;
+@class AMMessengerEnvironmentEnum;
 @class AMPeer;
 @protocol AMConversationVMCallback;
 
@@ -19,7 +20,8 @@
 
 #pragma mark Public
 
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
+- (instancetype)initWithAMMessengerEnvironmentEnum:(AMMessengerEnvironmentEnum *)environment
+                               withAMConfiguration:(AMConfiguration *)configuration;
 
 - (AMBindedDisplayList *)buildContactDisplayList;
 
@@ -45,9 +47,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseMessenger)
 
-FOUNDATION_EXPORT void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration);
+FOUNDATION_EXPORT void AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(AMBaseMessenger *self, AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration);
 
-FOUNDATION_EXPORT AMBaseMessenger *new_AMBaseMessenger_initWithAMConfiguration_(AMConfiguration *configuration) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMBaseMessenger *new_AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBaseMessenger)
 

@@ -63,16 +63,18 @@ class GroupCreateController: AAViewController, UITextFieldDelegate {
         addPhotoLabelFirst.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelFirst.frame.size.width) / 2, 22, addPhotoLabelFirst.frame.size.width, addPhotoLabelFirst.frame.size.height));
         addPhotoLabelSecond.frame = CGRectIntegral(CGRectMake((80 - addPhotoLabelSecond.frame.size.width) / 2, 22 + 22, addPhotoLabelSecond.frame.size.width, addPhotoLabelSecond.frame.size.height));
         
-        groupName.backgroundColor = UIColor.whiteColor()
+//        groupName.backgroundColor = UIColor.whiteColor()
+        groupName.backgroundColor = MainAppTheme.list.bgColor
+        groupName.textColor = MainAppTheme.list.textColor
         groupName.font = UIFont.systemFontOfSize(20)
         groupName.keyboardType = UIKeyboardType.Default
         groupName.returnKeyType = UIReturnKeyType.Next
-        groupName.placeholder = NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title")
+        groupName.attributedPlaceholder = NSAttributedString(string: NSLocalizedString("CreateGroupNamePlaceholder", comment: "Enter group title"), attributes: [NSForegroundColorAttributeName: MainAppTheme.list.hintColor])
         groupName.delegate = self
         groupName.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
         
-        groupNameFieldSeparator.backgroundColor = UIColor.RGB(0xc8c7cc)
+        groupNameFieldSeparator.backgroundColor = MainAppTheme.list.separatorColor
     }
     
     override func viewDidLayoutSubviews() {
@@ -80,15 +82,15 @@ class GroupCreateController: AAViewController, UITextFieldDelegate {
         
         let screenSize = UIScreen.mainScreen().bounds.size
         
-        avatarImageView.frame = CGRectMake((screenSize.width - 80)/2, 24, 80, 80)
+        avatarImageView.frame = CGRectMake((screenSize.width - 80)/2, 24  + 66, 80, 80)
         addPhotoButton.frame = avatarImageView.frame
         
-        groupName.frame = CGRectMake(24, 126, screenSize.width - 48, 56.0)
-        groupNameFieldSeparator.frame = CGRectMake(24, 182, screenSize.width - 48, retinaPixel)
+        groupName.frame = CGRectMake(24, 126 + 66, screenSize.width - 48, 56.0)
+        groupNameFieldSeparator.frame = CGRectMake(24, 182 + 66, screenSize.width - 48, retinaPixel)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         
         groupName.becomeFirstResponder()
     }
