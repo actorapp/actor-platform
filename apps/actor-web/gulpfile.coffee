@@ -7,6 +7,7 @@ coffee = require 'gulp-coffee'
 autoprefixer = require 'gulp-autoprefixer'
 sourcemaps = require 'gulp-sourcemaps'
 minifycss = require 'gulp-minify-css'
+react = require 'gulp-react'
 uglify = require 'gulp-uglify'
 usemin = require 'gulp-usemin'
 
@@ -16,6 +17,16 @@ gulp.task 'coffee', ->
       .pipe coffee({ bare: true }).on('error', gutil.log)
       .pipe uglify()
       .pipe concat 'app.js'
+    .pipe sourcemaps.write './'
+    .pipe gulp.dest './dist/assets/js/'
+    .pipe connect.reload()
+
+gulp.task 'jsx', ->
+  gulp.src ['app/**/*.jsx']
+    .pipe sourcemaps.init()
+    .pipe react().on('error', gutil.log)
+      .pipe uglify()
+      .pipe concat 'app-jsx.js'
     .pipe sourcemaps.write './'
     .pipe gulp.dest './dist/assets/js/'
     .pipe connect.reload()
@@ -32,7 +43,7 @@ gulp.task 'sass', ->
     .pipe connect.reload()
 
 gulp.task 'html', ->
-  gulp.src ['./app/**/*.html']
+  gulp.src ['./app/**/*.html', './app/**/*.jsx']
     .pipe gulp.dest './dist/app/'
     .pipe connect.reload()
   gulp.src ['./index.html']
@@ -41,6 +52,7 @@ gulp.task 'html', ->
 
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
+  gulp.watch ['./app/**/*.jsx'], ['jsx']
   gulp.watch ['./app/**/*.scss'], ['sass']
   gulp.watch ['./index.html', './app/**/*.html'], ['html']
 
@@ -71,7 +83,7 @@ gulp.task 'server', ->
 
 gulp.task 'build', ['assets', 'coffee', 'sass', 'html', 'usemin']
 
-gulp.task 'build:dev', ['assets', 'coffee', 'sass', 'html']
+gulp.task 'build:dev', ['assets', 'coffee', 'jsx', 'sass', 'html']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
