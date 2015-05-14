@@ -15,7 +15,7 @@ angular
               return (
                 <div class="messages-list__item">
                   <Avatar sender={message.sender}/>
-                  <p>{message.content.text}</p>
+                  <Message message={message}/>
                 </div>
               );
             })
