@@ -66,16 +66,22 @@ class DialogCell: UITableViewCell {
         
         titleView.text = dialog.getDialogTitle();
         
-        var text = MSG.getFormatter().formatContentDialogTextWithInt(dialog.getSenderId(), withAMContentTypeEnum: dialog.getMessageType(), withNSString: dialog.getText(), withInt: dialog.getRelatedUid());
-
-        if (UInt(dialog.getPeer().getPeerType().ordinal()) == AMPeerType.GROUP.rawValue){
-            if (MSG.getFormatter().isLargeDialogMessageWithAMContentTypeEnum(dialog.getMessageType())) {
-                self.messageView.text = text
+        // TODO: Seems to be wrong behaviour
+        // Need to check message type, but it doesn't work
+        if (dialog.getSenderId() != 0) {
+            var text = MSG.getFormatter().formatContentDialogTextWithInt(dialog.getSenderId(), withAMContentTypeEnum: dialog.getMessageType(), withNSString: dialog.getText(), withInt: dialog.getRelatedUid());
+            
+            if (UInt(dialog.getPeer().getPeerType().ordinal()) == AMPeerType.GROUP.rawValue){
+                if (MSG.getFormatter().isLargeDialogMessageWithAMContentTypeEnum(dialog.getMessageType())) {
+                    self.messageView.text = text
+                } else {
+                    self.messageView.text = MSG.getFormatter().formatPerformerNameWithInt(dialog.getSenderId()) + ": " + text
+                }
             } else {
-                self.messageView.text = MSG.getFormatter().formatPerformerNameWithInt(dialog.getSenderId()) + ": " + text
+                self.messageView.text = text
             }
         } else {
-           self.messageView.text = text
+            self.messageView.text = ""
         }
         
         if (dialog.getDate() > 0) {

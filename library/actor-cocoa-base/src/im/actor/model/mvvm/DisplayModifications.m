@@ -9,30 +9,44 @@
 #include "im/actor/model/droidkit/engine/ListEngineItem.h"
 #include "im/actor/model/mvvm/DisplayList.h"
 #include "im/actor/model/mvvm/DisplayModifications.h"
-#include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
-#include "java/util/HashSet.h"
-#include "java/util/Iterator.h"
 #include "java/util/List.h"
+
+@interface AMDisplayModifications ()
+
++ (void)replaceWithJavaUtilList:(id<JavaUtilList>)items
+          withJavaUtilArrayList:(JavaUtilArrayList *)sourceList
+withAMDisplayList_ModificationResult:(AMDisplayList_ModificationResult *)result;
+
++ (void)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item
+                  withJavaUtilArrayList:(JavaUtilArrayList *)sourceList
+   withAMDisplayList_ModificationResult:(AMDisplayList_ModificationResult *)result
+                            withBoolean:(jboolean)isAddOnly;
+
+@end
+
+__attribute__((unused)) static void AMDisplayModifications_replaceWithJavaUtilList_withJavaUtilArrayList_withAMDisplayList_ModificationResult_(id<JavaUtilList> items, JavaUtilArrayList *sourceList, AMDisplayList_ModificationResult *result);
+
+__attribute__((unused)) static void AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withAMDisplayList_ModificationResult_withBoolean_(id<DKListEngineItem> item, JavaUtilArrayList *sourceList, AMDisplayList_ModificationResult *result, jboolean isAddOnly);
 
 @interface AMDisplayModifications_$1 : NSObject < AMDisplayList_Modification > {
  @public
-  id<DKListEngineItem> val$item_;
+  id<JavaUtilList> val$items_;
 }
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
 
-- (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0;
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$1)
 
-J2OBJC_FIELD_SETTER(AMDisplayModifications_$1, val$item_, id)
+J2OBJC_FIELD_SETTER(AMDisplayModifications_$1, val$items_, id<JavaUtilList>)
 
-__attribute__((unused)) static void AMDisplayModifications_$1_initWithDKListEngineItem_(AMDisplayModifications_$1 *self, id<DKListEngineItem> capture$0);
+__attribute__((unused)) static void AMDisplayModifications_$1_initWithJavaUtilList_(AMDisplayModifications_$1 *self, id<JavaUtilList> capture$0);
 
-__attribute__((unused)) static AMDisplayModifications_$1 *new_AMDisplayModifications_$1_initWithDKListEngineItem_(id<DKListEngineItem> capture$0) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMDisplayModifications_$1 *new_AMDisplayModifications_$1_initWithJavaUtilList_(id<JavaUtilList> capture$0) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$1)
 
@@ -41,7 +55,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$1)
   id<JavaUtilList> val$items_;
 }
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
 
@@ -62,7 +76,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$2)
   id<JavaUtilList> val$items_;
 }
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
 
@@ -80,80 +94,40 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$3)
 
 @interface AMDisplayModifications_$4 : NSObject < AMDisplayList_Modification > {
  @public
-  id<JavaUtilList> val$items_;
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$4)
-
-J2OBJC_FIELD_SETTER(AMDisplayModifications_$4, val$items_, id<JavaUtilList>)
-
-__attribute__((unused)) static void AMDisplayModifications_$4_initWithJavaUtilList_(AMDisplayModifications_$4 *self, id<JavaUtilList> capture$0);
-
-__attribute__((unused)) static AMDisplayModifications_$4 *new_AMDisplayModifications_$4_initWithJavaUtilList_(id<JavaUtilList> capture$0) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$4)
-
-@interface AMDisplayModifications_$5 : NSObject < AMDisplayList_Modification > {
- @public
-  jlong val$dstId_;
-}
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
-
-- (instancetype)initWithLong:(jlong)capture$0;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$5)
-
-__attribute__((unused)) static void AMDisplayModifications_$5_initWithLong_(AMDisplayModifications_$5 *self, jlong capture$0);
-
-__attribute__((unused)) static AMDisplayModifications_$5 *new_AMDisplayModifications_$5_initWithLong_(jlong capture$0) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$5)
-
-@interface AMDisplayModifications_$6 : NSObject < AMDisplayList_Modification > {
- @public
   IOSLongArray *val$dstIds_;
 }
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
 
 - (instancetype)initWithLongArray:(IOSLongArray *)capture$0;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$6)
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$4)
 
-J2OBJC_FIELD_SETTER(AMDisplayModifications_$6, val$dstIds_, IOSLongArray *)
+J2OBJC_FIELD_SETTER(AMDisplayModifications_$4, val$dstIds_, IOSLongArray *)
 
-__attribute__((unused)) static void AMDisplayModifications_$6_initWithLongArray_(AMDisplayModifications_$6 *self, IOSLongArray *capture$0);
+__attribute__((unused)) static void AMDisplayModifications_$4_initWithLongArray_(AMDisplayModifications_$4 *self, IOSLongArray *capture$0);
 
-__attribute__((unused)) static AMDisplayModifications_$6 *new_AMDisplayModifications_$6_initWithLongArray_(IOSLongArray *capture$0) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMDisplayModifications_$4 *new_AMDisplayModifications_$4_initWithLongArray_(IOSLongArray *capture$0) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$6)
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$4)
 
-@interface AMDisplayModifications_$7 : NSObject < AMDisplayList_Modification >
+@interface AMDisplayModifications_$5 : NSObject < AMDisplayList_Modification >
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList;
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
 
 - (instancetype)init;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$7)
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayModifications_$5)
 
-__attribute__((unused)) static void AMDisplayModifications_$7_init(AMDisplayModifications_$7 *self);
+__attribute__((unused)) static void AMDisplayModifications_$5_init(AMDisplayModifications_$5 *self);
 
-__attribute__((unused)) static AMDisplayModifications_$7 *new_AMDisplayModifications_$7_init() NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMDisplayModifications_$5 *new_AMDisplayModifications_$5_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$7)
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$5)
 
 @implementation AMDisplayModifications
 
@@ -185,6 +159,19 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$7)
   return AMDisplayModifications_clear();
 }
 
++ (void)replaceWithJavaUtilList:(id<JavaUtilList>)items
+          withJavaUtilArrayList:(JavaUtilArrayList *)sourceList
+withAMDisplayList_ModificationResult:(AMDisplayList_ModificationResult *)result {
+  AMDisplayModifications_replaceWithJavaUtilList_withJavaUtilArrayList_withAMDisplayList_ModificationResult_(items, sourceList, result);
+}
+
++ (void)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item
+                  withJavaUtilArrayList:(JavaUtilArrayList *)sourceList
+   withAMDisplayList_ModificationResult:(AMDisplayList_ModificationResult *)result
+                            withBoolean:(jboolean)isAddOnly {
+  AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withAMDisplayList_ModificationResult_withBoolean_(item, sourceList, result, isAddOnly);
+}
+
 - (instancetype)init {
   AMDisplayModifications_init(self);
   return self;
@@ -194,37 +181,109 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayModifications_$7)
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithDKListEngineItem_(id<DKListEngineItem> item) {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$1_initWithDKListEngineItem_(item);
+  JavaUtilArrayList *res = new_JavaUtilArrayList_init();
+  [res addWithId:item];
+  return AMDisplayModifications_addOrUpdateWithJavaUtilList_(res);
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items) {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$2_initWithJavaUtilList_(items);
+  return new_AMDisplayModifications_$1_initWithJavaUtilList_(items);
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_addOnlyWithJavaUtilList_(id<JavaUtilList> items) {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$3_initWithJavaUtilList_(items);
+  return new_AMDisplayModifications_$2_initWithJavaUtilList_(items);
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_replaceWithJavaUtilList_(id<JavaUtilList> items) {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$4_initWithJavaUtilList_(items);
+  return new_AMDisplayModifications_$3_initWithJavaUtilList_(items);
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_removeWithLong_(jlong dstId) {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$5_initWithLong_(dstId);
+  return AMDisplayModifications_removeWithLongArray_([IOSLongArray newArrayWithLongs:(jlong[]){ dstId } count:1]);
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_removeWithLongArray_(IOSLongArray *dstIds) {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$6_initWithLongArray_(dstIds);
+  return new_AMDisplayModifications_$4_initWithLongArray_(dstIds);
 }
 
 id<AMDisplayList_Modification> AMDisplayModifications_clear() {
   AMDisplayModifications_initialize();
-  return new_AMDisplayModifications_$7_init();
+  return new_AMDisplayModifications_$5_init();
+}
+
+void AMDisplayModifications_replaceWithJavaUtilList_withJavaUtilArrayList_withAMDisplayList_ModificationResult_(id<JavaUtilList> items, JavaUtilArrayList *sourceList, AMDisplayList_ModificationResult *result) {
+  AMDisplayModifications_initialize();
+  for (jint i = 0; i < [((JavaUtilArrayList *) nil_chk(sourceList)) size]; i++) {
+    {
+      jlong id_ = [((id<DKListEngineItem>) nil_chk([sourceList getWithInt:i])) getEngineId];
+      for (id<DKListEngineItem> __strong itm in nil_chk(items)) {
+        if ([((id<DKListEngineItem>) nil_chk(itm)) getEngineId] == id_) {
+          goto continue_outer;
+        }
+      }
+      [((AMDisplayList_ModificationResult *) nil_chk(result)) appendRemoveWithInt:i withInt:1];
+      (void) [sourceList removeWithInt:i];
+      i--;
+    }
+    continue_outer: ;
+  }
+  for (id<DKListEngineItem> __strong itm in nil_chk(items)) {
+    AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withAMDisplayList_ModificationResult_withBoolean_(itm, sourceList, result, NO);
+  }
+}
+
+void AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withAMDisplayList_ModificationResult_withBoolean_(id<DKListEngineItem> item, JavaUtilArrayList *sourceList, AMDisplayList_ModificationResult *result, jboolean isAddOnly) {
+  AMDisplayModifications_initialize();
+  jlong id_ = [((id<DKListEngineItem>) nil_chk(item)) getEngineId];
+  jlong sortKey = [item getEngineSort];
+  jint removedIndex = -1;
+  jint addedIndex = -1;
+  for (jint i = 0; i < [((JavaUtilArrayList *) nil_chk(sourceList)) size]; i++) {
+    id<DKListEngineItem> srcItem = [sourceList getWithInt:i];
+    if ([((id<DKListEngineItem>) nil_chk(srcItem)) getEngineId] == id_) {
+      if (isAddOnly) {
+        return;
+      }
+      (void) [sourceList removeWithInt:i];
+      if (addedIndex >= 0) {
+        removedIndex = i - 1;
+      }
+      else {
+        removedIndex = i;
+      }
+      i--;
+      continue;
+    }
+    else {
+      if ((addedIndex < 0) && sortKey > [srcItem getEngineSort]) {
+        addedIndex = i;
+        [sourceList addWithInt:i withId:item];
+        i++;
+      }
+    }
+    if (addedIndex >= 0 && removedIndex >= 0) {
+      break;
+    }
+  }
+  if (addedIndex < 0) {
+    addedIndex = [sourceList size];
+    [sourceList addWithInt:[sourceList size] withId:item];
+  }
+  if (addedIndex == removedIndex) {
+    [((AMDisplayList_ModificationResult *) nil_chk(result)) appendUpdateWithInt:addedIndex withId:item];
+  }
+  else if (removedIndex >= 0) {
+    [((AMDisplayList_ModificationResult *) nil_chk(result)) appendUpdateWithInt:removedIndex withId:item];
+    [result appendMoveWithInt:removedIndex withInt:addedIndex];
+  }
+  else {
+    [((AMDisplayList_ModificationResult *) nil_chk(result)) appendAddWithInt:addedIndex withId:item];
+  }
 }
 
 void AMDisplayModifications_init(AMDisplayModifications *self) {
@@ -241,33 +300,29 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications)
 
 @implementation AMDisplayModifications_$1
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  jlong dstId = [((id<DKListEngineItem>) nil_chk(val$item_)) getEngineId];
-  id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
-  while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
-    id<DKListEngineItem> src = [iterator next];
-    if ([((id<DKListEngineItem>) nil_chk(src)) getEngineId] == dstId) {
-      [iterator remove];
-    }
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList {
+  AMDisplayList_ModificationResult *res = new_AMDisplayList_ModificationResult_init();
+  for (id<DKListEngineItem> __strong toAdd in nil_chk(val$items_)) {
+    AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withAMDisplayList_ModificationResult_withBoolean_(toAdd, sourceList, res, NO);
   }
-  [sourceList addWithId:val$item_];
+  return res;
 }
 
-- (instancetype)initWithDKListEngineItem:(id<DKListEngineItem>)capture$0 {
-  AMDisplayModifications_$1_initWithDKListEngineItem_(self, capture$0);
+- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
+  AMDisplayModifications_$1_initWithJavaUtilList_(self, capture$0);
   return self;
 }
 
 @end
 
-void AMDisplayModifications_$1_initWithDKListEngineItem_(AMDisplayModifications_$1 *self, id<DKListEngineItem> capture$0) {
-  self->val$item_ = capture$0;
+void AMDisplayModifications_$1_initWithJavaUtilList_(AMDisplayModifications_$1 *self, id<JavaUtilList> capture$0) {
+  self->val$items_ = capture$0;
   (void) NSObject_init(self);
 }
 
-AMDisplayModifications_$1 *new_AMDisplayModifications_$1_initWithDKListEngineItem_(id<DKListEngineItem> capture$0) {
+AMDisplayModifications_$1 *new_AMDisplayModifications_$1_initWithJavaUtilList_(id<JavaUtilList> capture$0) {
   AMDisplayModifications_$1 *self = [AMDisplayModifications_$1 alloc];
-  AMDisplayModifications_$1_initWithDKListEngineItem_(self, capture$0);
+  AMDisplayModifications_$1_initWithJavaUtilList_(self, capture$0);
   return self;
 }
 
@@ -275,19 +330,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$1)
 
 @implementation AMDisplayModifications_$2
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  JavaUtilHashSet *keys = new_JavaUtilHashSet_init();
-  for (id<DKListEngineItem> __strong i in nil_chk(val$items_)) {
-    [keys addWithId:JavaLangLong_valueOfWithLong_([((id<DKListEngineItem>) nil_chk(i)) getEngineId])];
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList {
+  AMDisplayList_ModificationResult *res = new_AMDisplayList_ModificationResult_init();
+  for (id<DKListEngineItem> __strong toAdd in nil_chk(val$items_)) {
+    AMDisplayModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withAMDisplayList_ModificationResult_withBoolean_(toAdd, sourceList, res, YES);
   }
-  id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
-  while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
-    id<DKListEngineItem> src = [iterator next];
-    if ([keys containsWithId:JavaLangLong_valueOfWithLong_([((id<DKListEngineItem>) nil_chk(src)) getEngineId])]) {
-      [iterator remove];
-    }
-  }
-  [sourceList addAllWithJavaUtilCollection:val$items_];
+  return res;
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
@@ -312,20 +360,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$2)
 
 @implementation AMDisplayModifications_$3
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  JavaUtilArrayList *toAdd = new_JavaUtilArrayList_init();
-  for (id<DKListEngineItem> __strong t in nil_chk(val$items_)) {
-    {
-      for (id<DKListEngineItem> __strong srcT in nil_chk(sourceList)) {
-        if ([((id<DKListEngineItem>) nil_chk(srcT)) getEngineId] == [((id<DKListEngineItem>) nil_chk(t)) getEngineId]) {
-          goto continue_outer;
-        }
-      }
-      [toAdd addWithId:t];
-    }
-    continue_outer: ;
-  }
-  [((id<JavaUtilList>) nil_chk(sourceList)) addAllWithJavaUtilCollection:toAdd];
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList {
+  AMDisplayList_ModificationResult *res = new_AMDisplayList_ModificationResult_init();
+  AMDisplayModifications_replaceWithJavaUtilList_withJavaUtilArrayList_withAMDisplayList_ModificationResult_(val$items_, sourceList, res);
+  return res;
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
@@ -350,26 +388,43 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$3)
 
 @implementation AMDisplayModifications_$4
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  [((id<JavaUtilList>) nil_chk(sourceList)) clear];
-  [sourceList addAllWithJavaUtilCollection:val$items_];
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList {
+  AMDisplayList_ModificationResult *res = new_AMDisplayList_ModificationResult_init();
+  for (jint i = 0; i < [((JavaUtilArrayList *) nil_chk(sourceList)) size]; i++) {
+    id<DKListEngineItem> src = [sourceList getWithInt:i];
+    {
+      IOSLongArray *a__ = val$dstIds_;
+      jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
+      jlong const *e__ = b__ + a__->size_;
+      while (b__ < e__) {
+        jlong aDstId = *b__++;
+        if ([((id<DKListEngineItem>) nil_chk(src)) getEngineId] == aDstId) {
+          (void) [sourceList removeWithInt:i];
+          [res appendOperationWithAMDisplayList_ModificationResult_Operation:new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum_get_REMOVE(), i)];
+          i--;
+          break;
+        }
+      }
+    }
+  }
+  return res;
 }
 
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)capture$0 {
-  AMDisplayModifications_$4_initWithJavaUtilList_(self, capture$0);
+- (instancetype)initWithLongArray:(IOSLongArray *)capture$0 {
+  AMDisplayModifications_$4_initWithLongArray_(self, capture$0);
   return self;
 }
 
 @end
 
-void AMDisplayModifications_$4_initWithJavaUtilList_(AMDisplayModifications_$4 *self, id<JavaUtilList> capture$0) {
-  self->val$items_ = capture$0;
+void AMDisplayModifications_$4_initWithLongArray_(AMDisplayModifications_$4 *self, IOSLongArray *capture$0) {
+  self->val$dstIds_ = capture$0;
   (void) NSObject_init(self);
 }
 
-AMDisplayModifications_$4 *new_AMDisplayModifications_$4_initWithJavaUtilList_(id<JavaUtilList> capture$0) {
+AMDisplayModifications_$4 *new_AMDisplayModifications_$4_initWithLongArray_(IOSLongArray *capture$0) {
   AMDisplayModifications_$4 *self = [AMDisplayModifications_$4 alloc];
-  AMDisplayModifications_$4_initWithJavaUtilList_(self, capture$0);
+  AMDisplayModifications_$4_initWithLongArray_(self, capture$0);
   return self;
 }
 
@@ -377,99 +432,30 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$4)
 
 @implementation AMDisplayModifications_$5
 
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  id<JavaUtilIterator> iterator = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
-  while ([((id<JavaUtilIterator>) nil_chk(iterator)) hasNext]) {
-    id<DKListEngineItem> src = [iterator next];
-    if ([((id<DKListEngineItem>) nil_chk(src)) getEngineId] == val$dstId_) {
-      [iterator remove];
-    }
+- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList {
+  AMDisplayList_ModificationResult *res = new_AMDisplayList_ModificationResult_init();
+  if ([((JavaUtilArrayList *) nil_chk(sourceList)) size] != 0) {
+    [sourceList clear];
+    [res appendRemoveWithInt:0 withInt:[sourceList size]];
   }
+  return res;
 }
 
-- (instancetype)initWithLong:(jlong)capture$0 {
-  AMDisplayModifications_$5_initWithLong_(self, capture$0);
+- (instancetype)init {
+  AMDisplayModifications_$5_init(self);
   return self;
 }
 
 @end
 
-void AMDisplayModifications_$5_initWithLong_(AMDisplayModifications_$5 *self, jlong capture$0) {
-  self->val$dstId_ = capture$0;
+void AMDisplayModifications_$5_init(AMDisplayModifications_$5 *self) {
   (void) NSObject_init(self);
 }
 
-AMDisplayModifications_$5 *new_AMDisplayModifications_$5_initWithLong_(jlong capture$0) {
+AMDisplayModifications_$5 *new_AMDisplayModifications_$5_init() {
   AMDisplayModifications_$5 *self = [AMDisplayModifications_$5 alloc];
-  AMDisplayModifications_$5_initWithLong_(self, capture$0);
+  AMDisplayModifications_$5_init(self);
   return self;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$5)
-
-@implementation AMDisplayModifications_$6
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  id<JavaUtilIterator> it = [((id<JavaUtilList>) nil_chk(sourceList)) iterator];
-  while ([((id<JavaUtilIterator>) nil_chk(it)) hasNext]) {
-    id<DKListEngineItem> value = [it next];
-    jlong srcId = [((id<DKListEngineItem>) nil_chk(value)) getEngineId];
-    {
-      IOSLongArray *a__ = val$dstIds_;
-      jlong const *b__ = ((IOSLongArray *) nil_chk(a__))->buffer_;
-      jlong const *e__ = b__ + a__->size_;
-      while (b__ < e__) {
-        jlong dstId = *b__++;
-        if (dstId == srcId) {
-          [it remove];
-          break;
-        }
-      }
-    }
-  }
-}
-
-- (instancetype)initWithLongArray:(IOSLongArray *)capture$0 {
-  AMDisplayModifications_$6_initWithLongArray_(self, capture$0);
-  return self;
-}
-
-@end
-
-void AMDisplayModifications_$6_initWithLongArray_(AMDisplayModifications_$6 *self, IOSLongArray *capture$0) {
-  self->val$dstIds_ = capture$0;
-  (void) NSObject_init(self);
-}
-
-AMDisplayModifications_$6 *new_AMDisplayModifications_$6_initWithLongArray_(IOSLongArray *capture$0) {
-  AMDisplayModifications_$6 *self = [AMDisplayModifications_$6 alloc];
-  AMDisplayModifications_$6_initWithLongArray_(self, capture$0);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$6)
-
-@implementation AMDisplayModifications_$7
-
-- (void)modifyWithJavaUtilList:(id<JavaUtilList>)sourceList {
-  [((id<JavaUtilList>) nil_chk(sourceList)) clear];
-}
-
-- (instancetype)init {
-  AMDisplayModifications_$7_init(self);
-  return self;
-}
-
-@end
-
-void AMDisplayModifications_$7_init(AMDisplayModifications_$7 *self) {
-  (void) NSObject_init(self);
-}
-
-AMDisplayModifications_$7 *new_AMDisplayModifications_$7_init() {
-  AMDisplayModifications_$7 *self = [AMDisplayModifications_$7 alloc];
-  AMDisplayModifications_$7_init(self);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayModifications_$7)

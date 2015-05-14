@@ -788,7 +788,7 @@ public class MediaActivity extends BaseActivity {
 
     public static class MediaFullscreenAnimationUtils {
 
-        public static final int animationMultiplier = 5;
+        public static final int animationMultiplier = 1;
         public static int startDelay = 60;
 
         public static void animateForward(final View transitionView, Bitmap bitmap,

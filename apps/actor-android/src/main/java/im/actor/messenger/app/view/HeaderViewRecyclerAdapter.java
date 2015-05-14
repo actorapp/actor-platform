@@ -224,8 +224,9 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             super.onItemRangeMoved(fromPosition, toPosition, itemCount);
             int hCount = getHeaderCount();
-            // TODO: No notifyItemRangeMoved method?
-            notifyItemRangeChanged(fromPosition + hCount, toPosition + hCount + itemCount);
+            for (int i = 0; i < itemCount; i++) {
+                notifyItemMoved(fromPosition + hCount + i, toPosition + hCount + i);
+            }
         }
     };
 

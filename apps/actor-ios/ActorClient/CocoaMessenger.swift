@@ -27,6 +27,13 @@ get{
         builder.setAppCategory(AMAppCategoryEnum.values().objectAtIndex(AMAppCategory.IOS.rawValue) as! AMAppCategoryEnum)
         builder.setDeviceCategory(AMDeviceCategoryEnum.values().objectAtIndex(AMDeviceCategory.MOBILE.rawValue) as! AMDeviceCategoryEnum)
         
+        // Setting Analytics provider
+        if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
+            if (apiKey.trim().size() > 0) {
+                builder.setAnalyticsProviderWithAMAnalyticsProvider(MixpanelProvider(token: apiKey))
+            }
+        }
+        
         // Parameters
         var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!
         var apiKey = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_KEY") as! String)
@@ -41,7 +48,7 @@ get{
         builder.setApiConfiguration(AMApiConfiguration(NSString: appTitle, withInt: jint(apiId), withNSString: apiKey, withNSString: deviceName, withNSString: deviceKey))
 
         // Creating messenger
-        holder = CocoaMessenger(AMConfiguration: builder.build());
+        holder = CocoaMessenger(configuration: builder.build());
     }
     return holder!;
     }
@@ -49,6 +56,11 @@ get{
 
 @objc class CocoaMessenger : AMBaseMessenger {
     class func messenger() -> CocoaMessenger { return MSG }
+
+    init!(configuration: AMConfiguration!) {
+        var env = AMMessengerEnvironmentEnum.values().objectAtIndex(AMMessengerEnvironment.IOS.rawValue) as! AMMessengerEnvironmentEnum
+        super.init(AMMessengerEnvironmentEnum: env, withAMConfiguration: configuration)
+    }
     
     func sendUIImage(image: UIImage, peer: AMPeer) {
         var thumb = image.resizeSquare(90, maxH: 90);
@@ -65,7 +77,7 @@ get{
     }
     
     private func prepareAvatar(image: UIImage) -> String {
-        var res = "/tmp/"+NSUUID().UUIDString
+        var res = "/tmp/" + NSUUID().UUIDString
         let avatarPath = CocoaFiles.pathFromDescriptor(res)
         var thumb = image.resizeSquare(800, maxH: 800);
         UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)

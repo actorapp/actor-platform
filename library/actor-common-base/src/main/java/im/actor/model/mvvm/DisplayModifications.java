@@ -5,8 +5,6 @@
 package im.actor.model.mvvm;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import im.actor.model.droidkit.engine.ListEngineItem;
@@ -14,41 +12,20 @@ import im.actor.model.droidkit.engine.ListEngineItem;
 class DisplayModifications {
 
     public static <T extends ListEngineItem> DisplayList.Modification<T> addOrUpdate(final T item) {
-        return new DisplayList.Modification<T>() {
-            @Override
-            public void modify(List<T> sourceList) {
-                long dstId = item.getEngineId();
-
-                Iterator<T> iterator = sourceList.iterator();
-                while (iterator.hasNext()) {
-                    T src = iterator.next();
-                    if (src.getEngineId() == dstId) {
-                        iterator.remove();
-                    }
-                }
-
-                sourceList.add(item);
-            }
-        };
+        ArrayList<T> res = new ArrayList<T>();
+        res.add(item);
+        return addOrUpdate(res);
     }
 
     public static <T extends ListEngineItem> DisplayList.Modification<T> addOrUpdate(final List<T> items) {
         return new DisplayList.Modification<T>() {
             @Override
-            public void modify(List<T> sourceList) {
-                HashSet<Long> keys = new HashSet<Long>();
-                for (ListEngineItem i : items) {
-                    keys.add(i.getEngineId());
+            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
+                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+                for (T toAdd : items) {
+                    addOrUpdate(toAdd, sourceList, res, false);
                 }
-                Iterator<T> iterator = sourceList.iterator();
-                while (iterator.hasNext()) {
-                    T src = iterator.next();
-                    if (keys.contains(src.getEngineId())) {
-                        iterator.remove();
-                    }
-                }
-
-                sourceList.addAll(items);
+                return res;
             }
         };
     }
@@ -56,20 +33,12 @@ class DisplayModifications {
     public static <T extends ListEngineItem> DisplayList.Modification<T> addOnly(final List<T> items) {
         return new DisplayList.Modification<T>() {
             @Override
-            public void modify(List<T> sourceList) {
-
-                ArrayList<T> toAdd = new ArrayList<T>();
-                outer:
-                for (T t : items) {
-                    for (T srcT : sourceList) {
-                        if (srcT.getEngineId() == t.getEngineId()) {
-                            continue outer;
-                        }
-                    }
-                    toAdd.add(t);
+            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
+                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+                for (T toAdd : items) {
+                    addOrUpdate(toAdd, sourceList, res, true);
                 }
-
-                sourceList.addAll(toAdd);
+                return res;
             }
         };
     }
@@ -77,43 +46,36 @@ class DisplayModifications {
     public static <T extends ListEngineItem> DisplayList.Modification<T> replace(final List<T> items) {
         return new DisplayList.Modification<T>() {
             @Override
-            public void modify(List<T> sourceList) {
-                sourceList.clear();
-                sourceList.addAll(items);
+            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
+                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+                replace(items, sourceList, res);
+                return res;
             }
         };
     }
 
     public static <T extends ListEngineItem> DisplayList.Modification<T> remove(final long dstId) {
-        return new DisplayList.Modification<T>() {
-            @Override
-            public void modify(List<T> sourceList) {
-                Iterator<T> iterator = sourceList.iterator();
-                while (iterator.hasNext()) {
-                    ListEngineItem src = iterator.next();
-                    if (src.getEngineId() == dstId) {
-                        iterator.remove();
-                    }
-                }
-            }
-        };
+        return remove(new long[]{dstId});
     }
 
     public static <T extends ListEngineItem> DisplayList.Modification<T> remove(final long[] dstIds) {
         return new DisplayList.Modification<T>() {
             @Override
-            public void modify(List<T> sourceList) {
-                Iterator<T> it = sourceList.iterator();
-                while (it.hasNext()) {
-                    T value = it.next();
-                    long srcId = value.getEngineId();
-                    for (long dstId : dstIds) {
-                        if (dstId == srcId) {
-                            it.remove();
+            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
+                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+                for (int i = 0; i < sourceList.size(); i++) {
+                    ListEngineItem src = sourceList.get(i);
+                    for (long aDstId : dstIds) {
+                        if (src.getEngineId() == aDstId) {
+                            sourceList.remove(i);
+                            res.appendOperation(new DisplayList.ModificationResult
+                                    .Operation(DisplayList.ModificationResult.OperationType.REMOVE, i));
+                            i--;
                             break;
                         }
                     }
                 }
+                return res;
             }
         };
     }
@@ -121,9 +83,98 @@ class DisplayModifications {
     public static <T> DisplayList.Modification<T> clear() {
         return new DisplayList.Modification<T>() {
             @Override
-            public void modify(List<T> sourceList) {
-                sourceList.clear();
+            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
+                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+                if (sourceList.size() != 0) {
+                    sourceList.clear();
+                    res.appendRemove(0, sourceList.size());
+                }
+                return res;
             }
         };
     }
+
+    private static <T extends ListEngineItem> void replace(List<T> items, ArrayList<T> sourceList,
+                                                           DisplayList.ModificationResult<T> result) {
+        // Remove missing items
+        outer:
+        for (int i = 0; i < sourceList.size(); i++) {
+            long id = sourceList.get(i).getEngineId();
+
+            for (T itm : items) {
+                if (itm.getEngineId() == id) {
+                    continue outer;
+                }
+            }
+
+            result.appendRemove(i, 1);
+            sourceList.remove(i);
+            i--;
+        }
+
+        for (T itm : items) {
+            addOrUpdate(itm, sourceList, result, false);
+        }
+    }
+
+    private static <T extends ListEngineItem> void addOrUpdate(T item,
+                                                               ArrayList<T> sourceList,
+                                                               DisplayList.ModificationResult<T> result,
+                                                               boolean isAddOnly) {
+        long id = item.getEngineId();
+        long sortKey = item.getEngineSort();
+
+        // Finding suitable place for item
+        int removedIndex = -1;
+        int addedIndex = -1;
+        for (int i = 0; i < sourceList.size(); i++) {
+            T srcItem = sourceList.get(i);
+            if (srcItem.getEngineId() == id) {
+                if (isAddOnly) {
+                    return;
+                }
+                // Remove old item
+                sourceList.remove(i);
+                if (addedIndex >= 0) {
+                    removedIndex = i - 1;
+                } else {
+                    removedIndex = i;
+                }
+                i--;
+                continue;
+            } else {
+                // TODO: Fix ADD ONLY
+                if ((addedIndex < 0) && sortKey > srcItem.getEngineSort()) {
+                    addedIndex = i;
+                    sourceList.add(i, item);
+                    i++;
+                }
+            }
+
+            // Already founded
+            if (addedIndex >= 0 && removedIndex >= 0) {
+                break;
+            }
+        }
+
+        // If no place for insert: insert to end
+        if (addedIndex < 0) {
+            addedIndex = sourceList.size();
+            sourceList.add(sourceList.size(), item);
+        }
+
+        if (addedIndex == removedIndex) {
+            // If there are no movement: just update item in place
+            result.appendUpdate(addedIndex, item);
+        } else if (removedIndex >= 0) {
+            // Movement + update occurred
+            // First update element, then move to new place
+            result.appendUpdate(removedIndex, item);
+            result.appendMove(removedIndex, addedIndex);
+        } else {
+            // No old element found: add new element
+            result.appendAdd(addedIndex, item);
+        }
+    }
+
 }

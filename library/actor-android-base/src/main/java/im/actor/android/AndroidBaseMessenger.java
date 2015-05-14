@@ -18,6 +18,7 @@ import java.util.Random;
 import im.actor.android.images.ImageHelper;
 import im.actor.model.BaseMessenger;
 import im.actor.model.Configuration;
+import im.actor.model.MessengerEnvironment;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.FastThumb;
 
@@ -26,7 +27,8 @@ public class AndroidBaseMessenger extends BaseMessenger {
     private final Random random = new Random();
 
     public AndroidBaseMessenger(Context context, Configuration configuration) {
-        super(configuration);
+        super(MessengerEnvironment.ANDROID, configuration);
+
         this.context = context;
 
         // Catch all phone book changes
