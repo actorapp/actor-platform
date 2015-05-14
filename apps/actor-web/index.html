@@ -31,6 +31,7 @@
     <!-- build:css(./bower_components/) assets/css/vendor.css -->
     <link rel="stylesheet" href="normalize.css/normalize.css">
     <link rel="stylesheet" href="angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="highlightjs/styles/default.css">
     <!-- endbuild -->
 
     <link rel="stylesheet" href="assets/css/styles.css">
@@ -43,14 +44,16 @@
 
 <div ng-if="main.actorService.isReady" ui-view class="app" layout="row"></div>
 
-<script src="ActorMessenger/ActorMessenger.nocache.js"></script>
+<script src="ActorMessenger/ActorMessenger.nocache.js"></body>
 
 <!-- build:js(./bower_components/) assets/js/lib.js -->
 <script src="CryptoJS/build/components/core.js"></script>
 <script src="CryptoJS/build/components/sha256.js"></script>
+<script src="highlightjs/highlight.pack.js"></script>
+<script src="marked/lib/marked.js"></script>
 <script src="jsencrypt/bin/jsencrypt.js"></script>
 <script src="angular/angular.js"></script>
-<script src="react/react.js"></script>
+<script src="react/react-with-addons.js"></script>
 <script src="ngReact/ngReact.js"></script>
 <script src="angular-ui-router/release/angular-ui-router.js"></script>
 <script src="angular-aria/angular-aria.js"></script>
