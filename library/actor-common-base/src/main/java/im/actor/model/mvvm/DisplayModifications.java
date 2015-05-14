@@ -135,10 +135,15 @@ class DisplayModifications {
                 }
                 // Remove old item
                 sourceList.remove(i);
-                removedIndex = i;
+                if (addedIndex >= 0) {
+                    removedIndex = i - 1;
+                } else {
+                    removedIndex = i;
+                }
                 i--;
                 continue;
             } else {
+                // TODO: Fix ADD ONLY
                 if ((addedIndex < 0) && sortKey > srcItem.getEngineSort()) {
                     addedIndex = i;
                     sourceList.add(i, item);
