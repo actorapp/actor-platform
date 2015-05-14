@@ -15,8 +15,13 @@ var Message = React.createClass({
 });
 
 Message.Content = React.createClass({
-  findUriExp: /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?\u00ab\u00bb\u201c\u201d\u2018\u2019]))/gi,
-  nlExp: /[\r\n]+/g,
+  markedOptions: {
+    sanitize: true,
+    breaks: true,
+    highlight: function (code) {
+      return hljs.highlightAuto(code).value;
+    }
+  },
   propTypes: {
     content: React.PropTypes.object.isRequired
   },
@@ -25,18 +30,18 @@ Message.Content = React.createClass({
 
     switch(content.content) {
       case 'text':
-        var markedOptions = {
-          sanitize: true,
-          breaks: true,
-          highlight: function (code) {
-            return hljs.highlightAuto(code).value;
-          }
-        };
-
-        var renderedText = marked(content.text, markedOptions);
-
+        var renderedText = marked(content.text, this.markedOptions);
         return (
           <p dangerouslySetInnerHTML={{__html: renderedText}}></p>
+        );
+      case 'document':
+        return(
+          <div className="messages-list__item__document">
+            <p>
+              <md-icon md-svg-icon="assets/img/icons/ic_attach_file_24px.svg"></md-icon>
+              <a href={content.fileUrl}>{content.fileName}</a>
+            </p>
+          </div>
         );
       default:
         return <p>Unsupported content</p>;
