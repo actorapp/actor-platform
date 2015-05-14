@@ -61,6 +61,11 @@ Message.Content = React.createClass({
                  src={content.preview}/>
           </div>
         )
+      case 'service':
+        return(
+          <p className="service"
+             flex>{content.text}</p>
+        )
       default:
         return <p>Unsupported content</p>;
     }
