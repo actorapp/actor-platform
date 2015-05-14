@@ -22,7 +22,11 @@ class Utils: NSObject {
 extension UIViewController {
     
     func getNavigationBarHeight() -> CGFloat {
-        return navigationController!.navigationBar.frame.height
+        if (navigationController != nil) {
+            return navigationController!.navigationBar.frame.height
+        } else {
+            return CGFloat(44)
+        }
     }
     
     func getStatusBarHeight() -> CGFloat {
