@@ -100,6 +100,16 @@ class AAUserInfoController: AATableViewController {
         MSG.onProfileClosed(jint(uid))
     }
     
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (scrollView == self.tableView) {
+            var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
+            var topOffset = getNavigationBarHeight() + getStatusBarHeight()
+            var maxOffset = scrollView.frame.width - 200 + topOffset
+            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+        }
+    }
+    
     // MARK: -
     // MARK: Setters
     
@@ -114,6 +124,7 @@ class AAUserInfoController: AATableViewController {
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
     
@@ -122,7 +133,7 @@ class AAUserInfoController: AATableViewController {
     
     private func userInfoCell(indexPath: NSIndexPath) -> AAUserInfoCell {
         var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
-        
+        cell.contentView.superview?.clipsToBounds = false
         if user != nil {
             
             if let username = user!.getName().get() as? String {

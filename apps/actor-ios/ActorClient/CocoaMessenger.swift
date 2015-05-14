@@ -27,6 +27,13 @@ get{
         builder.setAppCategory(AMAppCategoryEnum.values().objectAtIndex(AMAppCategory.IOS.rawValue) as! AMAppCategoryEnum)
         builder.setDeviceCategory(AMDeviceCategoryEnum.values().objectAtIndex(AMDeviceCategory.MOBILE.rawValue) as! AMDeviceCategoryEnum)
         
+        // Setting Analytics provider
+        if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
+            if (apiKey.trim().size() > 0) {
+                builder.setAnalyticsProviderWithAMAnalyticsProvider(MixpanelProvider(token: apiKey))
+            }
+        }
+        
         // Parameters
         var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!
         var apiKey = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_KEY") as! String)
@@ -65,7 +72,7 @@ get{
     }
     
     private func prepareAvatar(image: UIImage) -> String {
-        var res = "/tmp/"+NSUUID().UUIDString
+        var res = "/tmp/" + NSUUID().UUIDString
         let avatarPath = CocoaFiles.pathFromDescriptor(res)
         var thumb = image.resizeSquare(800, maxH: 800);
         UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)
