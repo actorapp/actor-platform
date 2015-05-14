@@ -2,17 +2,20 @@ class DialogsController
   list: undefined
 
   constructor: (@$rootScope, @$scope, @$timeout, @$mdSidenav, @actorService) ->
-    console.log '[AW]DialogsController constructor'
-    @actorService.bindDialogs (items) => @renderDialogs items
+    console.log '[AW]DialogsController: constructor'
+    @$scope.$watch 'main.actorService.isReady', (newValue, oldValue) =>
+      if newValue
+        console.log '[AW]DialogsController: actorService.isReady.'
+        @actorService.bindDialogs @renderDialogs
 
-  renderDialogs: (dialogs) ->
-    console.log '[AW]DialogsController renderDialogs:', dialogs
+  renderDialogs: (dialogs) =>
+    console.log '[AW]DialogsController: renderDialogs'
     @$timeout =>
       @list = dialogs
 
   selectDialog: (peer) ->
-    console.log '[AW]DialogsController selectDialog:', peer
-    @$rootScope.$broadcast 'selectDialog', peer
+    console.log '[AW]DialogsController: selectDialog'
+    @actorService.setCurrentPeer peer
 
     # Close sidebar
     @$mdSidenav('left').close()

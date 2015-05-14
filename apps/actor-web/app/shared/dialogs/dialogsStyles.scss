@@ -48,22 +48,25 @@
       color: rgb(148,148,148);
       font-size: 13px;
       line-height: 24px;
-      overflow: hidden;
       margin: 4px 0 0;
-      position: relative;
-      padding-right: 24px;
+      width: 207px; // for firefox
+      p {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        margin: 0;
+        padding-right: 5px;
+      }
 
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      .status {
+        margin-right: 4px;
+      }
 
       &__counter {
-        //float: right;
-        position: absolute;
-        right: 0;
         width: 20px;
         height: 20px;
-        line-height: 20px;
-        font-size: 12px;
+        line-height: 22px;
+        font-size: 11px;
         font-weight: 500;
         text-align: center;
         border-radius: 100%;
@@ -78,9 +81,6 @@
       &--highlighted {
         font-weight: 500;
         color: darken(rgb(148,148,148), 25) !important;
-      }
-      &--with-counter {
-
       }
     }
   }
