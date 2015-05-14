@@ -60,14 +60,18 @@ Message.Content = React.createClass({
                  height={content.h}
                  src={content.preview}/>
           </div>
-        )
+        );
       case 'service':
         return(
           <p className="service"
              flex>{content.text}</p>
-        )
-      default:
-        return <p>Unsupported content</p>;
+        );
+      case 'default':
+        return(
+          <p className="unsupported">
+            Данный вид контента на данный момент не поддерживается.
+          </p>
+        );
     }
   }
 });
