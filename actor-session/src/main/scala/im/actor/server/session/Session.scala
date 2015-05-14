@@ -197,6 +197,7 @@ class Session(
 
   private def recordClient(client: ActorRef, reSender: ActorRef): Unit = {
     if (!clients.contains(client)) {
+      log.debug("New client")
       clients += client
       reSender ! ReSenderMessage.NewClient(client)
       context watch client
@@ -211,13 +212,12 @@ class Session(
     publisher: ActorRef,
     reSender:  ActorRef
   ): Unit = {
-    //log.debug("Session message {}", message)
     message match {
       case HandleMessageBox(messageBoxBytes) ⇒
         withValidMessageBox(client, messageBoxBytes) { mb ⇒
+          recordClient(client, reSender)
           publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
         }
-        recordClient(client, reSender)
       case cmd: SubscribeCommand ⇒
         publisher ! cmd
       case UserAuthorized(userId) ⇒
