@@ -5,10 +5,11 @@
 import Foundation
 import UIKit
 
-class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_Listener {
+class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_DifferedChangeListener {
     
-    private var engineTableView: UITableView!;
-    private var displayList: AMBindedDisplayList!;
+    private var engineTableView: UITableView!
+    private var displayList: AMBindedDisplayList!
+    private var applyingModification: AMDefferedListChange?
     private var fade: Bool = false
     
     required init(coder aDecoder: NSCoder) {
@@ -35,8 +36,13 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
-            self.displayList.addListenerWithAMDisplayList_Listener(self)
-            onCollectionChanged()
+            self.displayList.addDifferedListenerWithAMDisplayList_DifferedChangeListener(self)
+            
+            if (displayList.getSize() == jint(0)) {
+                self.engineTableView.alpha = 0
+            } else {
+                self.engineTableView.alpha = 1
+            }
         }
     }
     
@@ -61,36 +67,79 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     // Table Data Source
     
-    func onCollectionChanged() {
-        if (self.engineTableView != nil) {
-            if (displayList.getSize() == jint(0)) {
-                if (self.engineTableView.alpha != 0) {
-                    if (fade) {
-                        UIView.animateWithDuration(0.0, animations: { () -> Void in
-                            self.engineTableView.alpha = 0
-                        })
-                    } else {
+    func onCollectionChangedWithAMDefferedListChange(modification: AMDefferedListChange!) {
+        if (self.engineTableView == nil) {
+            return
+        }
+        
+//        self.applyingModification = modification
+//        
+//        var currentChange: AMDefferedListModification? = modification.next()
+//        
+//        while currentChange != nil {
+//            
+//            currentChange = modification.next()
+//        }
+//        
+//        self.applyingModification = nil
+        self.engineTableView.reloadData()
+        
+        if (displayList.getSize() == jint(0)) {
+            if (self.engineTableView.alpha != 0) {
+                if (fade) {
+                    UIView.animateWithDuration(0.0, animations: { () -> Void in
                         self.engineTableView.alpha = 0
-                    }
-                }
-            } else {
-                if (self.engineTableView.alpha == 0){
-                    if (fade) {
-                        UIView.animateWithDuration(0.3, animations: { () -> Void in
-                            self.engineTableView.alpha = 1
-                        })
-                    } else {
-                        self.engineTableView.alpha = 1
-                    }
+                    })
+                } else {
+                    self.engineTableView.alpha = 0
                 }
             }
-            self.engineTableView.reloadData()
+        } else {
+            if (self.engineTableView.alpha == 0){
+                if (fade) {
+                    UIView.animateWithDuration(0.3, animations: { () -> Void in
+                        self.engineTableView.alpha = 1
+                    })
+                } else {
+                    self.engineTableView.alpha = 1
+                }
+            }
         }
     }
+    
+//    func onCollectionChanged() {
+//        if (self.engineTableView != nil) {
+//            if (displayList.getSize() == jint(0)) {
+//                if (self.engineTableView.alpha != 0) {
+//                    if (fade) {
+//                        UIView.animateWithDuration(0.0, animations: { () -> Void in
+//                            self.engineTableView.alpha = 0
+//                        })
+//                    } else {
+//                        self.engineTableView.alpha = 0
+//                    }
+//                }
+//            } else {
+//                if (self.engineTableView.alpha == 0){
+//                    if (fade) {
+//                        UIView.animateWithDuration(0.3, animations: { () -> Void in
+//                            self.engineTableView.alpha = 1
+//                        })
+//                    } else {
+//                        self.engineTableView.alpha = 1
+//                    }
+//                }
+//            }
+//            self.engineTableView.reloadData()
+//        }
+//    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (displayList == nil) {
             return 0;
+        }
+        if (applyingModification != nil) {
+            return Int(applyingModification!.getCount())
         }
         
         return Int(displayList.getSize());
@@ -107,6 +156,10 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
         if (displayList == nil) {
             return nil
+        }
+        
+        if (applyingModification != nil) {
+            return applyingModification!.getItemWithInt(jint(indexPath.row))
         }
         
         return displayList.getItemWithInt(jint(indexPath.row));
