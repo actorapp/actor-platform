@@ -47,7 +47,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
       msg._1 should ===(1001)
     }
 
-    probe.expectNoMsg(1.5.seconds)
+    probe.expectNoMsg(3.seconds)
 
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None)))
