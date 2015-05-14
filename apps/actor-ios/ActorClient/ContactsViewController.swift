@@ -65,6 +65,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         searchView = UISearchBar()
         searchView!.delegate = self
         searchView!.frame = CGRectMake(0, 0, 0, 44)
+        searchView!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         
         MainAppTheme.search.styleSearchBar(searchView!)
         
@@ -75,15 +76,15 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-//        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-//        header.addSubview(searchView!)
-//        
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
+        
 //        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
 //        headerShadow.image = UIImage(named: "CardTop2");
 //        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
 //        header.addSubview(headerShadow);
         
-        tableView.tableHeaderView = searchView
+        tableView.tableHeaderView = header
         
         searchSource = ContactsSource(searchDisplay: searchDisplay!)
         
@@ -137,39 +138,45 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        searchDisplay?.setActive(false, animated: animated)
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 0) {
-            return super.tableView(tableView, numberOfRowsInSection: section)
-        } else {
-            return 2
-        }
-    }
+//    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+//        return 2
+//    }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.section == 0) {
-            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        } else {
-            if (indexPath.row == 1) {
-                let reuseId = "cell_invite";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_add_user",
-                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
-                    isLast: true)
-                return res
-            } else {
-                let reuseId = "cell_add";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_invite_user",
-                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
-                    isLast: false)
-                return res
-            }
-        }
-    }
+//    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        if (section == 0) {
+//            return super.tableView(tableView, numberOfRowsInSection: section)
+//        } else {
+//            return 2
+//        }
+//    }
+//    
+//    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//        if (indexPath.section == 0) {
+//            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+//        } else {
+//            if (indexPath.row == 1) {
+//                let reuseId = "cell_invite";
+//                var res = ContactActionCell(reuseIdentifier: reuseId)
+//                res.bind("ic_add_user",
+//                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
+//                    isLast: true)
+//                return res
+//            } else {
+//                let reuseId = "cell_add";
+//                var res = ContactActionCell(reuseIdentifier: reuseId)
+//                res.bind("ic_invite_user",
+//                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
+//                    isLast: false)
+//                return res
+//            }
+//        }
+//    }
     
     // MARK: -
     // MARK: Methods
@@ -182,8 +189,8 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             delegate: self,
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Alert Cancel"),
             otherButtonTitles: NSLocalizedString("AlertNext", comment: "Alert Next"))
-        
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
+        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
     

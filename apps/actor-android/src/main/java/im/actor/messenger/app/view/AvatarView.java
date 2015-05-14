@@ -100,6 +100,7 @@ public class AvatarView extends SimpleDraweeView {
         }
 
         // Nothing to bind
+
         if (avatar == null || avatar.getSmallImage() == null) {
             setImageURI(null);
             return;
