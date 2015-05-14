@@ -14,8 +14,8 @@ import im.actor.android.view.BindedListAdapter;
 import im.actor.android.view.BindedViewHolder;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
-import im.actor.model.mvvm.AndroidListChange;
-import im.actor.model.mvvm.AndroidListModification;
+import im.actor.model.mvvm.DefferedListChange;
+import im.actor.model.mvvm.DefferedListModification;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 
@@ -23,7 +23,7 @@ import im.actor.model.mvvm.DisplayList;
  * Created by ex3ndr on 15.03.15.
  */
 public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
-        V extends BindedViewHolder> extends BaseFragment implements DisplayList.AndroidListener<T> {
+        V extends BindedViewHolder> extends BaseFragment implements DisplayList.DifferedChangeListener<T> {
 
     private RecyclerView collection;
     // private View emptyCollection;
@@ -119,25 +119,32 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
     }
 
     @Override
-    public void onCollectionChanged(AndroidListChange<T> modification) {
-        AndroidListModification<T> currentChange = null;
+    public void onCollectionChanged(DefferedListChange<T> modification) {
         adapter.startUpdates(modification);
+        DefferedListModification<T> currentChange;
         while ((currentChange = modification.next()) != null) {
             switch (currentChange.getOperation()) {
                 case ADD:
                     adapter.notifyItemInserted(currentChange.getIndex());
                     break;
+                case ADD_RANGE:
+                    adapter.notifyItemRangeInserted(currentChange.getIndex(), currentChange.getLength());
+                    break;
                 case UPDATE:
                     adapter.notifyItemChanged(currentChange.getIndex());
                     break;
-                case MOVE:
-                    adapter.notifyItemMoved(currentChange.getIndex(), currentChange.getDestIndex());
+                case UPDATE_RANGE:
+                    adapter.notifyItemRangeChanged(currentChange.getIndex(), currentChange.getLength());
                     break;
                 case REMOVE:
                     adapter.notifyItemRemoved(currentChange.getIndex());
                     break;
-                default:
-                    throw new RuntimeException("Unsupported");
+                case REMOVE_RANGE:
+                    adapter.notifyItemRangeRemoved(currentChange.getIndex(), currentChange.getDestIndex());
+                    break;
+                case MOVE:
+                    adapter.notifyItemMoved(currentChange.getIndex(), currentChange.getDestIndex());
+                    break;
             }
         }
         adapter.stopUpdates();
