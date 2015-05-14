@@ -1,5 +1,5 @@
 <md-list flex layout-padding class="messages-list" ng-controller="messagesController as messages" in-view-container>
-    <messages messages="messages.list"></messages>
+    <messages peer="main.actorService.currentPeer" messages="messages.list"></messages>
 
     <div class="messages-list__typing" ng-if="messages.typing !== null">
         <p>
