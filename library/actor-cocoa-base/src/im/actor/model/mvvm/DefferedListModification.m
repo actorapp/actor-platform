@@ -94,6 +94,16 @@ __attribute__((unused)) static AMDefferedListModification_OperationEnum *new_AMD
   }
 }
 
+- (void)replaceWithId:(id)item {
+  items_ = new_JavaUtilArrayList_init();
+  [items_ addWithId:item];
+  len_ = 1;
+}
+
+- (void)changeDestWithInt:(jint)index {
+  destIndex_ = index;
+}
+
 - (JavaUtilArrayList *)getItems {
   return items_;
 }
