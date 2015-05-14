@@ -203,6 +203,27 @@ public class SQLiteList implements ListStorageDisplayEx {
     }
 
     @Override
+    public List<ListEngineRecord> loadCenter(Long centerSortKey, int limit) {
+        checkTable();
+
+        Cursor cursor;
+        if (centerSortKey == null) {
+            cursor = database.query("\"" + tableName + "\"",
+                    new String[]{"\"LIST_ID\"", "\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    null, null, null, null, "\"SORT_KEY\" ASC", String.valueOf(limit));
+        } else {
+            cursor = database.query("\"" + tableName + "\"",
+                    new String[]{"\"ID\"", "\"SORT_KEY\"", "\"QUERY\"", "\"BYTES\""},
+                    "\"SORT_KEY\" > ?",
+                    new String[]{
+                            String.valueOf(centerSortKey)
+                    }, null, null, "\"SORT_KEY\" ASC", String.valueOf(limit));
+        }
+
+        return loadSlice(cursor);
+    }
+
+    @Override
     public List<ListEngineRecord> loadBackward(String query, Long sortingKey, int limit) {
         checkTable();
         Cursor cursor;
