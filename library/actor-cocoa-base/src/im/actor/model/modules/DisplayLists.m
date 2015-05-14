@@ -6,6 +6,7 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/MessengerEnvironment.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
 #include "im/actor/model/entity/Dialog.h"
@@ -18,6 +19,7 @@
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/SearchModule.h"
 #include "im/actor/model/mvvm/BindedDisplayList.h"
+#include "im/actor/model/mvvm/DisplayList.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "java/lang/RuntimeException.h"
 #include "java/util/HashMap.h"
@@ -27,6 +29,8 @@
 
 @interface ImActorModelModulesDisplayLists () {
  @public
+  AMMessengerEnvironmentEnum *environment_;
+  AMDisplayList_OperationModeEnum *operationMode_;
   AMBindedDisplayList *dialogGlobalList_;
   AMBindedDisplayList *contactsGlobalList_;
   JavaUtilHashMap *chatMediaGlobalLists_;
@@ -35,6 +39,8 @@
 
 @end
 
+J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, environment_, AMMessengerEnvironmentEnum *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, operationMode_, AMDisplayList_OperationModeEnum *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, dialogGlobalList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, contactsGlobalList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, chatMediaGlobalLists_, JavaUtilHashMap *)
@@ -95,8 +101,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
 
 @implementation ImActorModelModulesDisplayLists
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
-  ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self, modules);
+- (instancetype)initWithAMMessengerEnvironmentEnum:(AMMessengerEnvironmentEnum *)environment
+                    withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
+  ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(self, environment, modules);
   return self;
 }
 
@@ -204,15 +211,23 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
 
 @end
 
-void ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, ImActorModelModulesModules *modules) {
+void ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
   self->chatMediaGlobalLists_ = new_JavaUtilHashMap_init();
   self->chatsGlobalLists_ = new_JavaUtilHashMap_init();
+  self->environment_ = environment;
+  switch ([environment ordinal]) {
+    case AMMessengerEnvironment_ANDROID:
+    self->operationMode_ = AMDisplayList_OperationModeEnum_get_ANDROID();
+    break;
+    default:
+    self->operationMode_ = AMDisplayList_OperationModeEnum_get_GENERAL();
+  }
 }
 
-ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
+ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules) {
   ImActorModelModulesDisplayLists *self = [ImActorModelModulesDisplayLists alloc];
-  ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self, modules);
+  ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(self, environment, modules);
   return self;
 }
 

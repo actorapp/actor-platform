@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.android.view.BindedListAdapter;
+import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.model.entity.Dialog;
 import im.actor.model.mvvm.BindedDisplayList;
 

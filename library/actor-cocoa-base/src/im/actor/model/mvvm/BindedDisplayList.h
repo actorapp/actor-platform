@@ -45,7 +45,7 @@
 
 @end
 
-J2OBJC_STATIC_INIT(AMBindedDisplayList)
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList)
 
 FOUNDATION_EXPORT void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook);
 

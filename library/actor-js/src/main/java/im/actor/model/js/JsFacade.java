@@ -201,7 +201,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getConversationList(peer.convert()).subscribe(callback);
+        messenger.getConversationList(peer.convert()).unsubscribe(callback);
     }
 
     public void onMessageShown(JsPeer peer, String sortKey, boolean isOut) {
