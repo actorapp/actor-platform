@@ -5,8 +5,6 @@
 package im.actor.model.mvvm;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import im.actor.model.annotation.MainThread;
@@ -20,8 +18,6 @@ import im.actor.model.log.Log;
 public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T> {
 
     private static final String TAG = "BindedDisplayList";
-
-    private static final Comparator<ListEngineItem> COMPARATOR = new ListEngineComparator();
 
     private final ListEngineDisplayExt<T> listEngine;
     private final DisplayWindow window;
@@ -42,14 +38,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private boolean isLoadMoreBackwardRequested = false;
     private ArrayList<Modification<T>> pendingModifications = new ArrayList<Modification<T>>();
 
-    public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
+    public BindedDisplayList(OperationMode operationMode, ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
                              int pageSize, int loadGap, BindHook<T> bindHook) {
-        super(new Hook<T>() {
-            @Override
-            public void beforeDisplay(List<T> list) {
-                Collections.sort(list, COMPARATOR);
-            }
-        });
+        super(operationMode);
 
         this.bindHook = bindHook;
         this.isGlobalList = isGlobalList;
@@ -125,7 +116,6 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         query = null;
 
         if (refresh) {
-            // Log.d(TAG, "Clearing list");
             editList((Modification) DisplayModifications.clear());
         }
 
@@ -134,13 +124,10 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         window.startInitForward();
         pendingModifications.clear();
 
-        // Log.d(TAG, "Starting load generation " + currentGeneration);
         listEngine.loadForward(pageSize, cover(new ListEngineDisplayLoadCallback<T>() {
             @Override
             public void onLoaded(List<T> items, long topSortKey, long bottomSortKey) {
                 MVVMEngine.checkMainThread();
-
-                // Log.d(TAG, "Loaded initial data at generation " + currentGeneration + " items " + items.size());
 
                 window.completeInitForward(bottomSortKey);
 
@@ -424,26 +411,9 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         };
     }
 
-    private static class ListEngineComparator implements Comparator<ListEngineItem> {
-
-        @Override
-        public int compare(ListEngineItem o1, ListEngineItem o2) {
-            long lKey = o1.getEngineSort();
-            long rKey = o2.getEngineSort();
-
-            if (lKey > rKey) {
-                return -1;
-            } else if (lKey < rKey) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
     private class EngineListener implements ListEngineDisplayListener<T> {
 
-        private void applyModification(final Modification<T> modification){
+        private void applyModification(final Modification<T> modification) {
             MVVMEngine.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

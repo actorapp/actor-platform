@@ -19,25 +19,25 @@ public class DisplayList<T> {
 
     private static int NEXT_ID = 0;
     private final int DISPLAY_LIST_ID;
-    private Hook<T> hook;
+    private final OperationMode operationMode;
     private ActorRef executor;
     private ArrayList<T>[] lists;
+    private ArrayList<T> androidNotificationList;
     private volatile int currentList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
+    private CopyOnWriteArrayList<AndroidListener> androidListeners = new CopyOnWriteArrayList<AndroidListener>();
 
-    public DisplayList() {
-        this(null, new ArrayList<T>());
+    public DisplayList(OperationMode operationMode) {
+        this(operationMode, new ArrayList<T>());
     }
 
-    public DisplayList(Hook<T> hook) {
-        this(hook, new ArrayList<T>());
-    }
+    public DisplayList(OperationMode operationMode, List<T> defaultValues) {
+        MVVMEngine.checkMainThread();
 
-    public DisplayList(Hook<T> hook, List<T> defaultValues) {
         this.DISPLAY_LIST_ID = NEXT_ID++;
+        this.operationMode = operationMode;
 
-        this.hook = hook;
         this.executor = system().actorOf(Props.create(ListSwitcher.class, new ActorCreator<ListSwitcher>() {
             @Override
             public ListSwitcher create() {
@@ -49,8 +49,8 @@ public class DisplayList<T> {
         this.currentList = 0;
         this.lists[0] = new ArrayList<T>(defaultValues);
         this.lists[1] = new ArrayList<T>(defaultValues);
-        if (hook != null) {
-            hook.beforeDisplay(lists[0]);
+        if (operationMode == OperationMode.ANDROID) {
+            this.androidNotificationList = new ArrayList<T>(defaultValues);
         }
     }
 
@@ -84,14 +84,6 @@ public class DisplayList<T> {
         listeners.remove(listener);
     }
 
-    public static interface Modification<T> {
-        public void modify(List<T> sourceList);
-    }
-
-    public static interface Hook<T> {
-        public void beforeDisplay(List<T> list);
-    }
-
     // Update actor
 
     private static class ListSwitcher<T> extends Actor {
@@ -103,6 +95,27 @@ public class DisplayList<T> {
             this.displayList = displayList;
         }
 
+//        private void applyModification(ModificationResult<T> res, ArrayList<T> list) {
+//            for (ModificationResult.Operation<T> op : res.getOperations()) {
+//                switch (op.type) {
+//                    case ADD:
+//                        list.add(op.index, op.item);
+//                        break;
+//                    case MOVE:
+//                        T itm = list.remove(op.index);
+//                        list.add(op.destIndex, itm);
+//                        break;
+//                    case REMOVE:
+//                        list.remove(op.index);
+//                        break;
+//                    case UPDATE:
+//                        list.remove(op.index);
+//                        list.add(op.index, op.item);
+//                        break;
+//                }
+//            }
+//        }
+
         public void onEditList(final Modification<T> modification, final Runnable runnable) {
             ModificationHolder<T> holder = new ModificationHolder<T>(modification, runnable);
             if (isLocked) {
@@ -112,10 +125,7 @@ public class DisplayList<T> {
 
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
 
-            modification.modify(backgroundList);
-            if (displayList.hook != null) {
-                displayList.hook.beforeDisplay(backgroundList);
-            }
+            ModificationResult<T> res = modification.modify(backgroundList);
 
             requestListSwitch(new ModificationHolder[]{holder});
         }
@@ -148,7 +158,7 @@ public class DisplayList<T> {
 
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
             for (ModificationHolder m : modifications) {
-                m.modification.modify(backgroundList);
+                ModificationResult<T> res = m.modification.modify(backgroundList);
             }
 
             if (pending.size() > 0) {
@@ -156,11 +166,7 @@ public class DisplayList<T> {
                 pending.clear();
 
                 for (ModificationHolder m : dest) {
-                    m.modification.modify(backgroundList);
-                }
-
-                if (displayList.hook != null) {
-                    displayList.hook.beforeDisplay(backgroundList);
+                    ModificationResult<T> res = m.modification.modify(backgroundList);
                 }
 
                 requestListSwitch(dest);
@@ -208,6 +214,113 @@ public class DisplayList<T> {
     }
 
     public interface Listener {
-        public void onCollectionChanged();
+        void onCollectionChanged();
+    }
+
+    public interface AndroidListener<T> {
+        void onCollectionChanged(AndroidListChange<T> modification);
+    }
+
+    public enum OperationMode {
+        GENERAL, ANDROID, IOS
+    }
+
+    public interface Modification<T> {
+        ModificationResult<T> modify(ArrayList<T> sourceList);
+    }
+
+    public static final class ModificationResult<T> {
+
+        private ArrayList<Operation<T>> operations = new ArrayList<Operation<T>>();
+
+        public ModificationResult() {
+
+        }
+
+        public void appendOperation(Operation<T> operation) {
+            operations.add(operation);
+        }
+
+        public void appendMove(int index, int destIndex) {
+            operations.add(new Operation(OperationType.MOVE, index, destIndex, 1));
+        }
+
+        public void appendUpdate(int index, T item) {
+            operations.add(new Operation<T>(OperationType.UPDATE, index, item));
+        }
+
+        public void appendAdd(int index, T item) {
+            operations.add(new Operation<T>(OperationType.ADD, index, item));
+        }
+
+        public void appendRemove(int index, int len) {
+            operations.add(new Operation(OperationType.REMOVE, index, len));
+        }
+
+        public ArrayList<Operation<T>> getOperations() {
+            return operations;
+        }
+
+        public boolean isEmpty() {
+            return operations.size() == 0;
+        }
+
+        public static class Operation<T> {
+            private OperationType type;
+            private int index;
+            private int destIndex;
+            private int length;
+            private T item;
+
+            public Operation(OperationType type, int index, T item) {
+                this.type = type;
+                this.index = index;
+                this.item = item;
+                this.length = 1;
+            }
+
+            public Operation(OperationType type, int index) {
+                this.type = type;
+                this.index = index;
+                this.length = 1;
+            }
+
+            public Operation(OperationType type, int index, int destIndex, int length) {
+                this.type = type;
+                this.index = index;
+                this.destIndex = destIndex;
+                this.length = length;
+            }
+
+            public Operation(OperationType type, int index, int length) {
+                this.type = type;
+                this.index = index;
+                this.length = length;
+            }
+
+            public OperationType getType() {
+                return type;
+            }
+
+            public int getIndex() {
+                return index;
+            }
+
+            public int getDestIndex() {
+                return destIndex;
+            }
+
+            public int getLength() {
+                return length;
+            }
+
+            public T getItem() {
+                return item;
+            }
+        }
+
+        public enum OperationType {
+            ADD, REMOVE, UPDATE, MOVE
+        }
     }
 }
