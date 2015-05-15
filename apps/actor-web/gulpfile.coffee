@@ -84,6 +84,7 @@ gulp.task 'watchify', ->
     .bundle()
     .pipe(source(jsBundleFile))
     .pipe(gulp.dest('./dist/assets/js'))
+    .pipe connect.reload()
 
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
