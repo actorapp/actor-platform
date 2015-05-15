@@ -107,7 +107,6 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         self.engineTableView.endUpdates()
         
         // Apply cell change
-        self.engineTableView.beginUpdates()
         for i in 0..<modification.getChanges().size() {
             var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
             switch(UInt(change.getOperationType().ordinal())) {
@@ -123,7 +122,6 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                 break
             }
         }
-        self.engineTableView.endUpdates()
         
         if (displayList.getSize() == jint(0)) {
             if (self.engineTableView.alpha != 0) {
