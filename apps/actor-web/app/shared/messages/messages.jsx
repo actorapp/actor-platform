@@ -47,7 +47,7 @@ angular
       var typing = null;
 
       if (this.props.typing !== null) {
-        typing = <div class="messages-list__typing">
+        typing = <div className="messages-list__typing">
           <p>
             <img src="assets/img/icons/ic_keyboard_control_24px.svg"></img>
             {this.props.typing}
