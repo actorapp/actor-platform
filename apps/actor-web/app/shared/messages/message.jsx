@@ -1,3 +1,5 @@
+var React = require('react');
+
 var Message = React.createClass({
   propTypes: {
     message: React.PropTypes.object.isRequired
@@ -118,3 +120,5 @@ Message.State = React.createClass({
     }
   }
 });
+
+module.exports = Message;
