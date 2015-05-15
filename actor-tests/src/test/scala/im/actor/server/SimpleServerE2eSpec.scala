@@ -32,175 +32,177 @@ import im.actor.util.testing._
 class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with SqlSpecHelpers {
   behavior of "Server"
 
-  it should "connect and Handshake" in e1
+  it should "connect and Handshake" in Server.e1
 
-  it should "respond to RPC requests" in e2
+  it should "respond to RPC requests" in Server.e2
 
-  val serverConfig = system.settings.config
+  implicit lazy val (ds, db) = migrateAndInitDb()
 
-  implicit val (ds, db) = migrateAndInitDb()
-  implicit val flowMaterializer = ActorFlowMaterializer()
+  object Server {
+    val serverConfig = system.settings.config
 
-  val gcmConfig = system.settings.config.getConfig("push.google")
-  val apnsConfig = system.settings.config.getConfig("push.apple")
+    implicit val flowMaterializer = ActorFlowMaterializer()
 
-  implicit val gcmSender = new Sender(gcmConfig.getString("key"))
+    val gcmConfig = system.settings.config.getConfig("push.google")
+    val apnsConfig = system.settings.config.getConfig("push.apple")
 
-  implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.fromConfig(apnsConfig))
+    implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
-  implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
+    implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.fromConfig(apnsConfig))
 
-  implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
-  Session.startRegion(Some(Session.props))
+    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+    implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+    implicit val socialManagerRegion = SocialManager.startRegion()
 
-  implicit val sessionRegion = Session.startRegionProxy()
+    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+    Session.startRegion(Some(Session.props))
+    implicit val sessionRegion = Session.startRegionProxy()
 
-  val services = Seq(
-    new AuthServiceImpl(new DummyActivationContext),
-    new ContactsServiceImpl,
-    new MessagingServiceImpl,
-    new SequenceServiceImpl
-  )
+    val services = Seq(
+      new AuthServiceImpl(new DummyActivationContext),
+      new ContactsServiceImpl,
+      new MessagingServiceImpl,
+      new SequenceServiceImpl
+    )
 
-  system.actorOf(RpcApiService.props(services), "rpcApiService")
+    system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-  TcpFrontend.start(serverConfig, sessionRegion)
+    TcpFrontend.start(serverConfig, sessionRegion)
 
-  val remote = new InetSocketAddress("localhost", 8080)
+    val remote = new InetSocketAddress("localhost", 8080)
 
-  def e1() = {
-    val client = MTProtoClient()
-    client.connectAndHandshake(remote)
-    client.close()
-  }
-
-  def e2() = {
-    implicit val client = MTProtoClient()
-
-    client.connectAndHandshake(remote)
-
-    val authId = 1L
-    val sessionId = 2L
-    val phoneNumber = 75550000000L
-
-    Await.result(db.run(persist.AuthId.create(1L, None, None)), 5.seconds)
-
-    val smsHash = {
-      val helloMessageId = 4L
-      val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
-      val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
-      client.send(helloMtPackage)
-      expectNewSession(sessionId, helloMessageId)
-      expectMessageAck(helloMessageId)
-
-      val messageId = 3L
-
-      val requestBytes = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-      val mtPackage = MTPackage(authId, sessionId, mbBytes)
-
-      client.send(mtPackage)
-
-      expectMessageAck(messageId)
-
-      val result = receiveRpcResult(messageId)
-      result shouldBe an[RpcOk]
-
-      result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+    def e1() = {
+      val client = MTProtoClient()
+      client.connectAndHandshake(remote)
+      client.close()
     }
 
-    {
-      val messageId = 4L
+    def e2() = {
+      implicit val client = MTProtoClient()
 
-      val requestBytes = RequestCodec.encode(Request(RequestSignUp(
-        phoneNumber = phoneNumber,
-        smsHash = smsHash,
-        smsCode = "0000",
-        name = "Wayne Brain",
-        deviceHash = Array(4, 5, 6),
-        deviceTitle = "Specs virtual device",
-        appId = 1,
-        appKey = "appKey",
-        isSilent = false
-      ))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-      val mtPackage = MTPackage(authId, sessionId, mbBytes)
+      client.connectAndHandshake(remote)
 
-      client.send(mtPackage)
+      val authId = 1L
+      val sessionId = 2L
+      val phoneNumber = 75550000000L
 
-      expectMessageAck(messageId)
+      Await.result(db.run(persist.AuthId.create(1L, None, None)), 5.seconds)
 
-      val result = receiveRpcResult(messageId)
-      result shouldBe an[RpcOk]
+      val smsHash = {
+        val helloMessageId = 4L
+        val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
+        client.send(helloMtPackage)
+        expectNewSession(sessionId, helloMessageId)
+        expectMessageAck(helloMessageId)
+
+        val messageId = 3L
+
+        val requestBytes = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+        client.send(mtPackage)
+
+        expectMessageAck(messageId)
+
+        val result = receiveRpcResult(messageId)
+        result shouldBe an[RpcOk]
+
+        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      }
+
+      {
+        val messageId = 4L
+
+        val requestBytes = RequestCodec.encode(Request(RequestSignUp(
+          phoneNumber = phoneNumber,
+          smsHash = smsHash,
+          smsCode = "0000",
+          name = "Wayne Brain",
+          deviceHash = Array(4, 5, 6),
+          deviceTitle = "Specs virtual device",
+          appId = 1,
+          appKey = "appKey",
+          isSilent = false
+        ))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+        client.send(mtPackage)
+
+        expectMessageAck(messageId)
+
+        val result = receiveRpcResult(messageId)
+        result shouldBe an[RpcOk]
+      }
+
+      {
+        val messageId = 5L
+
+        val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+        client.send(mtPackage)
+
+        expectMessageAck(messageId)
+
+        val result = receiveRpcResult(messageId)
+        result shouldBe an[RpcOk]
+      }
+
+      client.close()
     }
 
-    {
-      val messageId = 5L
+    private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {
+      val mb = receiveMessageBox()
+      mb.body shouldBe a[MessageAck]
 
-      val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
-      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-      val mtPackage = MTPackage(authId, sessionId, mbBytes)
+      val expectedAck = MessageAck(Vector(messageId))
 
-      client.send(mtPackage)
+      val ack = mb.body.asInstanceOf[MessageAck]
+      ack should ===(expectedAck)
 
-      expectMessageAck(messageId)
-
-      val result = receiveRpcResult(messageId)
-      result shouldBe an[RpcOk]
+      ack
     }
 
-    client.close()
-  }
+    private def receiveRpcResult(messageId: Long)(implicit client: MTProtoClient): RpcResult = {
+      val mb = receiveMessageBox()
+      mb.body shouldBe an[RpcResponseBox]
 
-  private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {
-    val mb = receiveMessageBox()
-    mb.body shouldBe a[MessageAck]
+      val rspBox = mb.body.asInstanceOf[RpcResponseBox]
+      rspBox.messageId should ===(messageId)
 
-    val expectedAck = MessageAck(Vector(messageId))
-
-    val ack = mb.body.asInstanceOf[MessageAck]
-    ack should ===(expectedAck)
-
-    ack
-  }
-
-  private def receiveRpcResult(messageId: Long)(implicit client: MTProtoClient): RpcResult = {
-    val mb = receiveMessageBox()
-    mb.body shouldBe an[RpcResponseBox]
-
-    val rspBox = mb.body.asInstanceOf[RpcResponseBox]
-    rspBox.messageId should ===(messageId)
-
-    RpcResultCodec.decode(rspBox.bodyBytes).require.value
-  }
-
-  private def receiveMessageBox()(implicit client: MTProtoClient): MessageBox = {
-    val mtp = receiveMTPackage()
-    MessageBoxCodec.decode(mtp.messageBytes).require.value
-  }
-
-  private def receiveMTPackage()(implicit client: MTProtoClient): MTPackage = {
-    val body = client.receiveTransportPackage() match {
-      case Some(TransportPackage(_, body)) ⇒ body
-      case None                            ⇒ throw new Exception("Transport package not received")
+      RpcResultCodec.decode(rspBox.bodyBytes).require.value
     }
 
-    body shouldBe a[MTPackage]
-    body.asInstanceOf[MTPackage]
-  }
+    private def receiveMessageBox()(implicit client: MTProtoClient): MessageBox = {
+      val mtp = receiveMTPackage()
+      MessageBoxCodec.decode(mtp.messageBytes).require.value
+    }
 
-  private def expectNewSession(sessionId: Long, messageId: Long)(implicit client: MTProtoClient): Unit = {
-    val mtp = receiveMTPackage()
+    private def receiveMTPackage()(implicit client: MTProtoClient): MTPackage = {
+      val body = client.receiveTransportPackage() match {
+        case Some(TransportPackage(_, body)) ⇒ body
+        case None                            ⇒ throw new Exception("Transport package not received")
+      }
 
-    val expectedNewSession = NewSession(sessionId, messageId)
+      body shouldBe a[MTPackage]
+      body.asInstanceOf[MTPackage]
+    }
 
-    val mb = MessageBoxCodec.decode(mtp.messageBytes).require.value
-    mb.body shouldBe a[NewSession]
-    mb.body should ===(expectedNewSession)
+    private def expectNewSession(sessionId: Long, messageId: Long)(implicit client: MTProtoClient): Unit = {
+      val mtp = receiveMTPackage()
+
+      val expectedNewSession = NewSession(sessionId, messageId)
+
+      val mb = MessageBoxCodec.decode(mtp.messageBytes).require.value
+      mb.body shouldBe a[NewSession]
+      mb.body should ===(expectedNewSession)
+    }
   }
 
   override def afterAll = {
