@@ -45,8 +45,8 @@ gulp.task 'js', ->
     .pipe(source(jsBundleFile))
     .pipe(buffer())
     .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
+      .pipe(gulpif(argv.production, uglify()))
     .pipe(gulpif(!argv.production, sourcemaps.write('./')))
-    .pipe(gulpif(argv.production, uglify()))
     .pipe(gulp.dest('./dist/assets/js'))
 
 gulp.task 'sass', ->
@@ -114,7 +114,7 @@ gulp.task 'usemin', ->
 gulp.task 'server', ->
   connect.server
     port: 3000
-    root: ['./dist/', './bower_components/']
+    root: ['./dist/', './bower_components/', './node_modules/']
     livereload: true
 
 gulp.task 'build', ['assets', 'coffee', 'js', 'sass', 'html', 'usemin']
