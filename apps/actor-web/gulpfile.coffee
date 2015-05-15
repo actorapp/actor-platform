@@ -61,7 +61,7 @@ gulp.task 'sass', ->
     .pipe connect.reload()
 
 gulp.task 'html', ->
-  gulp.src ['./app/**/*.html', './app/**/*.jsx', './app/**/*.js']
+  gulp.src ['./app/**/*.html']
     .pipe gulp.dest './dist/app/'
     .pipe connect.reload()
   gulp.src ['./index.html']
