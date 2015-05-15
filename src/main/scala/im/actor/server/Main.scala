@@ -30,6 +30,7 @@ import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.ilectro.ILectro
+import im.actor.server.notifications._
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
@@ -49,6 +50,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
   val ilectroInterceptionConfig = ILectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.ilectro"))
+  val notificationsConfig = NotificationsConfig.fromConfig(serverConfig.getConfig("notifications"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
@@ -132,6 +134,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     WebhooksFrontend.start(webhooksConfig)
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)
+
+    NotificationsService.init(notificationsConfig, smsConfig)
   }
 
   def shutdown() = {

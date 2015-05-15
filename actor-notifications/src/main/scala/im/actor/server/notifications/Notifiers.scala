@@ -1,6 +1,6 @@
 package im.actor.server.notifications
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 import slick.dbio.DBIO
 
@@ -11,7 +11,7 @@ trait Notifier {
   def processTask(task: Notification): Unit
 }
 
-class PhoneNotifier(engine: SmsEngine) extends Notifier {
+class PhoneNotifier(engine: SmsEngine)(implicit ec: ExecutionContext) extends Notifier {
   def processTask(task: Notification) = {
     val total = task.data.values.sum
     val senders = task.data.keySet.flatten mkString " ,"
