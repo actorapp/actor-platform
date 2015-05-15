@@ -92,8 +92,8 @@
 #import "im/actor/model/mvvm/ValueChangedListener.h"
 #import "im/actor/model/mvvm/DisplayList.h"
 #import "im/actor/model/mvvm/BindedDisplayList.h"
-#import "im/actor/model/mvvm/DefferedListChange.h"
-#import "im/actor/model/mvvm/DefferedListModification.h"
+#import "im/actor/model/mvvm/AppleListUpdate.h"
+#import "im/actor/model/mvvm/ChangeDescription.h"
 
 // I18N
 
