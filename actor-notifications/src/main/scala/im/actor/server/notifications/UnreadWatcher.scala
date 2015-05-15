@@ -1,6 +1,6 @@
 package im.actor.server.notifications
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -9,15 +9,9 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.models.PeerType
 import im.actor.server.{ models, persist }
 
-class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, notifier: Notifier) {
+class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: ExecutionContext) {
 
   val unreadTimeout = config.unreadTimeout.toMillis
-
-  def notifyUsers() = {
-    getNotifications.map { tasks ⇒
-      tasks.foreach(notifier.processTask)
-    }
-  }
 
   def getNotifications = {
     val now = DateTime.now
