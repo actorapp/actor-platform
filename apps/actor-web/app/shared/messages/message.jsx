@@ -8,7 +8,7 @@ var Message = React.createClass({
     var message = this.props.message;
 
     return (
-      <div className="md-list-item-text messages-list__item__body" flex>
+      <div className="message__body" flex>
         <Message.State message={message}/>
         <Message.Content content={message.content}/>
       </div>
@@ -38,7 +38,7 @@ Message.Content = React.createClass({
         );
       case 'document':
         return(
-          <div className="messages-list__item__document">
+          <div className="message__document">
             <p>
               <img src="assets/img/icons/ic_attach_file_24px.svg"></img>
               <a href={content.fileUrl}>{content.fileName}</a>
@@ -48,16 +48,16 @@ Message.Content = React.createClass({
       case 'photo':
         var original = null;
         if (content.fileUrl) {
-          original = <img className="messages-list__item__photo__original"
+          original = <img className="message__photo__original"
                           width={ content.w }
                           height={ content.h }
                           src={content.fileUrl}/>
         }
 
         return(
-          <div className="messages-list__item__photo">
+          <div className="message__photo">
             {original}
-            <img className="messages-list__item__photo__preview"
+            <img className="message__photo__preview"
                  width={content.w}
                  height={content.h}
                  src={content.preview}/>
@@ -109,12 +109,12 @@ Message.State = React.createClass({
       }
 
       return (
-        <h3 layout="row" className="messages-list__item__body__title">
+        <h3 layout="row" className="message__body__title">
           <span flex>{message.sender.title}</span>
 
-          <div className="messages-list__item__status">{icon}</div>
+          <div className="message__status">{icon}</div>
 
-          <time className="messages-list__item__body__timestamp">{message.date}</time>
+          <time className="message__body__timestamp">{message.date}</time>
         </h3>
       );
     }

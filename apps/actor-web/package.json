@@ -14,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
+    "flexboxgrid": "^6.2.0",
     "highlight.js": "^8.5.0",
     "marked": "^0.3.3",
     "normalize.css": "^3.0.3",
