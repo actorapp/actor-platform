@@ -82,6 +82,7 @@ object Build extends sbt.Build {
       actorFrontend,
       actorCommonsBase,
       actorRpcApi,
+      actorNotifications,
       actorWebhooks
     )
     .aggregate(
