@@ -1,5 +1,7 @@
 package im.actor.server.persist.push
 
+import scala.concurrent.ExecutionContext
+
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
@@ -17,8 +19,12 @@ class GooglePushCredentialsTable(tag: Tag) extends Table[models.push.GooglePushC
 object GooglePushCredentials {
   val creds = TableQuery[GooglePushCredentialsTable]
 
-  def createOrUpdate(authId: Long, projectId: Long, regId: String) =
-    creds.insertOrUpdate(models.push.GooglePushCredentials(authId, projectId, regId))
+  def createOrUpdate(authId: Long, projectId: Long, regId: String)(implicit ec: ExecutionContext) = {
+    for {
+      _ ← creds.filterNot(_.authId === authId).filter(c ⇒ c.projectId === projectId && c.regId === regId).delete
+      r ← creds.insertOrUpdate(models.push.GooglePushCredentials(authId, projectId, regId))
+    } yield r
+  }
 
   def createOrUpdate(c: models.push.GooglePushCredentials) =
     creds.insertOrUpdate(c)
