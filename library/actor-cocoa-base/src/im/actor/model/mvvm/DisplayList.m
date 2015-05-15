@@ -316,12 +316,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList)
 - (void)onEditListWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)modification
                                  withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
   AMDisplayList_ModificationHolder *holder = new_AMDisplayList_ModificationHolder_initWithImActorModelMvvmAlgModification_withJavaLangRunnable_(modification, runnable);
-  if (isLocked_) {
-    [((JavaUtilArrayList *) nil_chk(pending_)) addWithId:holder];
-    return;
-  }
   if (modification != nil) {
-    [((JavaUtilArrayList *) nil_chk(pending_)) addWithId:new_AMDisplayList_ModificationHolder_initWithImActorModelMvvmAlgModification_withJavaLangRunnable_(modification, runnable)];
+    [((JavaUtilArrayList *) nil_chk(pending_)) addWithId:holder];
+  }
+  if (isLocked_) {
+    return;
   }
   if ([((JavaUtilArrayList *) nil_chk(pending_)) size] == 0) {
     return;

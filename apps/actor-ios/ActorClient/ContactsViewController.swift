@@ -21,17 +21,8 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     // MARK: Constructors
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-        initCommon();
-    }
-    
-    override init() {
-        super.init(nibName: nil, bundle: nil)
-        initCommon();
-    }
-    
-    func initCommon(){
+    init() {
+        super.init(contentSection: 0)
         
         var title = "";
         if (MainAppTheme.tab.showText) {
@@ -53,6 +44,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         self.extendedLayoutIncludesOpaqueBars = true
         view.addSubview(tableView)
         view.backgroundColor = MainAppTheme.list.bgColor
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -

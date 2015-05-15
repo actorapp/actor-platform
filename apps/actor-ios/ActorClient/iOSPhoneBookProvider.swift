@@ -6,7 +6,13 @@ import Foundation
 
 class PhoneBookProvider: NSObject, AMPhoneBookProvider {
     func loadPhoneBookWithAMPhoneBookProvider_Callback(callback: AMPhoneBookProvider_Callback!) {
-        var book: ABAddressBook = ABAddressBookCreateWithOptions(nil, nil).takeRetainedValue()
+        var rawBook = ABAddressBookCreateWithOptions(nil, nil);
+        if (rawBook == nil) {
+            println("Access to AddressBook denied");
+            callback.onLoadedWithJavaUtilList(JavaUtilArrayList())
+            return
+        }
+        var book: ABAddressBook = rawBook.takeRetainedValue()
         ABAddressBookRequestAccessWithCompletion(book, { (granted: Bool, error: CFError!) -> Void in
             if (!granted) {
                 println("Access to AddressBook denied");
