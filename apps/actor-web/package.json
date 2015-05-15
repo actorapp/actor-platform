@@ -14,6 +14,9 @@
     "tests"
   ],
   "dependencies": {
+    "highlight.js": "^8.5.0",
+    "marked": "^0.3.3",
+    "normalize.css": "^3.0.3",
     "react": "0.13.3",
     "react-visibility-sensor": "^1.5.1"
   },
