@@ -72,15 +72,15 @@ public class ReceiverActor extends Actor {
         try {
             // Log.d(TAG, "Received message #" + message.getMessageId());
 
-            if (receivedMessages.contains(message.getMessageId())) {
-                Log.w(TAG, "Already received message #" + message.getMessageId() + ": ignoring");
-                return;
-            }
+//            if (receivedMessages.contains(message.getMessageId())) {
+//                Log.w(TAG, "Already received message #" + message.getMessageId() + ": ignoring");
+//                return;
+//            }
 
             if (receivedMessages.size() >= MAX_RECEIVED_BUFFER) {
                 receivedMessages.remove(0);
-                receivedMessages.add(message.getMessageId());
             }
+            receivedMessages.add(message.getMessageId());
 
             ProtoStruct obj;
             try {

@@ -18,6 +18,8 @@ class CocoaTcpConnectionFactory: NSObject, AMAsyncConnectionFactory {
 
 class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
 
+    static let queue = dispatch_queue_create("im.actor.queue.TCP", nil);
+    
     let READ_HEADER = 1
     let READ_BODY = 2
     
@@ -33,7 +35,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     
     override func doConnect() {
 //        NSLog("\(TAG) connecting...")
-        gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0))
+        gcdSocket = GCDAsyncSocket(delegate: self, delegateQueue: CocoaTcpConnection.queue)
         var endpoint = getEndpoint()
         gcdSocket!.connectToHost(endpoint.getHost()!, onPort: UInt16(endpoint.getPort()), withTimeout: Double(AMManagedConnection_CONNECTION_TIMEOUT) / 1000.0, error: nil)
     }
@@ -69,6 +71,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
         if (tag == READ_HEADER) {
 //            NSLog("\(TAG) Header received")
             self.header = data
+            var packageId = data.readUInt32(0)
             var size = data.readUInt32(5)
             gcdSocket?.readDataToLength(UInt(size + 4), withTimeout: -1, tag: READ_BODY)
         } else if (tag == READ_BODY) {
@@ -76,10 +79,11 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
             var package = NSMutableData()
             package.appendData(self.header!)
             package.appendData(data)
+            var packageId = package.readUInt32(0)
             self.header = nil
-            gcdSocket?.readDataToLength(UInt(9), withTimeout: -1, tag: READ_HEADER)
-            
             onReceivedWithByteArray(package.toJavaBytes())
+            
+            gcdSocket?.readDataToLength(UInt(9), withTimeout: -1, tag: READ_HEADER)
         } else {
             fatalError("Unknown tag in read data")
         }

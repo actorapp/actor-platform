@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_Listener {
+class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_AppleChangeListener {
 
     private var displayList: AMBindedDisplayList!;
     private var emptyLock: Bool = true;
@@ -23,7 +23,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
     override func viewDidLoad() {
         if (self.displayList == nil) {
             self.displayList = getDisplayList()
-            self.displayList.addListenerWithAMDisplayList_Listener(self)
+            self.displayList.addAppleListenerWithAMDisplayList_AppleChangeListener(self)
         }
         
         dispatch_async(dispatch_get_main_queue(),{
@@ -31,14 +31,57 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             self.tableView.reloadData()
         });
     }
-
-    func onCollectionChanged() {
-        NSLog("🇯🇵 onCollcetionChanged")
+    
+    func onCollectionChangedWithAMAppleListUpdate(modification: AMAppleListUpdate!) {
         if (self.emptyLock) {
             return
         }
-        if (self.tableView != nil){
-            self.tableView.reloadData()
+        
+        self.tableView.beginUpdates()
+        for i in 0..<modification.getChanges().size() {
+            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.ADD.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                }
+                self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                break
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                // Ignore in separate batch
+                break
+            case AMChangeDescription_OperationType.REMOVE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                }
+                self.tableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+            case AMChangeDescription_OperationType.MOVE.rawValue:
+                self.tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: 0))
+                break
+            default:
+                break
+            }
+        }
+        self.tableView.endUpdates()
+        
+        for i in 0..<modification.getChanges().size() {
+            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                }
+                self.tableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
+                break
+            default:
+                break
+            }
         }
     }
     

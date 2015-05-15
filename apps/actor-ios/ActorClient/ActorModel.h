@@ -44,6 +44,7 @@
 #import "im/actor/model/AnalyticsProvider.h"
 #import "im/actor/model/AppCategory.h"
 #import "im/actor/model/DeviceCategory.h"
+#import "im/actor/model/MessengerEnvironment.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -91,6 +92,8 @@
 #import "im/actor/model/mvvm/ValueChangedListener.h"
 #import "im/actor/model/mvvm/DisplayList.h"
 #import "im/actor/model/mvvm/BindedDisplayList.h"
+#import "im/actor/model/mvvm/AppleListUpdate.h"
+#import "im/actor/model/mvvm/ChangeDescription.h"
 
 // I18N
 
