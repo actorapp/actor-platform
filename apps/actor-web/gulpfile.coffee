@@ -1,3 +1,4 @@
+argv = require('yargs').argv
 autoprefixer = require 'gulp-autoprefixer'
 browserify = require 'browserify'
 buffer = require 'vinyl-buffer'
@@ -6,6 +7,8 @@ concat = require 'gulp-concat'
 connect = require 'gulp-connect'
 gulp = require 'gulp'
 gutil = require 'gulp-util'
+gulpif = require 'gulp-if'
+assign = require 'lodash.assign'
 minifycss = require 'gulp-minify-css'
 sass = require 'gulp-sass'
 source = require 'vinyl-source-stream'
@@ -25,21 +28,25 @@ gulp.task 'coffee', ->
     .pipe gulp.dest './dist/assets/js/'
     .pipe connect.reload()
 
-gulp.task 'js', ->
-  b = browserify({
-    entries: 'app/main.js',
-    extensions: 'jsx',
-    debug: true,
-    transform: [reactify]
-  })
 
-  b.bundle()
-    .pipe(source('app-js.js'))
+opts = assign({}, watchify.args, {
+  entries: 'app/main.js',
+  extensions: 'jsx',
+  debug: !argv.production
+})
+
+bundler = browserify(opts)
+bundler.transform(reactify)
+
+jsBundleFile = 'app-js.js'
+
+gulp.task 'js', ->
+  bundler.bundle()
+    .pipe(source(jsBundleFile))
     .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(uglify())
-      .on('error', gutil.log)
-    .pipe(sourcemaps.write('./'))
+    .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(!argv.production, sourcemaps.write('./')))
+    .pipe(gulpif(argv.production, uglify()))
     .pipe(gulp.dest('./dist/assets/js'))
 
 gulp.task 'sass', ->
@@ -53,15 +60,6 @@ gulp.task 'sass', ->
     .pipe gulp.dest './dist/assets/css/'
     .pipe connect.reload()
 
-gulp.task 'requirejs', ->
-  rjs({
-    baseUrl: '',
-    out: './dist/assets/js/',
-    shim: {
-
-    }
-  })
-
 gulp.task 'html', ->
   gulp.src ['./app/**/*.html', './app/**/*.jsx', './app/**/*.js']
     .pipe gulp.dest './dist/app/'
@@ -70,10 +68,27 @@ gulp.task 'html', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
+gulp.task 'watchify', ->
+  watcher = watchify(bundler)
+  watcher
+    .on 'error', gutil.log.bind(gutil, 'Browserify Error')
+    .on 'update', ->
+      watcher.bundle()
+        .pipe(source(jsBundleFile))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist/assets/js'))
+
+      gutil.log("Updated JavaScript sources")
+    .bundle()
+    .pipe(source(jsBundleFile))
+    .pipe(gulp.dest('./dist/assets/js'))
+
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
-  gulp.watch ['./app/**/*.js', './app/**/*.jsx'], ['js']
   gulp.watch ['./app/**/*.scss'], ['sass']
+  gulp.watch ['./app/**/*.js', './app/**/*.jsx'], ['watchify']
   gulp.watch ['./index.html', './app/**/*.html'], ['html']
 
 gulp.task 'assets', ->

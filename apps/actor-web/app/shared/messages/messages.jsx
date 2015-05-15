@@ -43,7 +43,7 @@ angular
     },
     render: function() {
       var peer = this.props.peer;
-
+      
       var typing = null;
 
       if (this.props.typing !== null) {
