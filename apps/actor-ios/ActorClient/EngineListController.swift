@@ -10,17 +10,20 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     private var engineTableView: UITableView!
     private var displayList: AMBindedDisplayList!
     private var fade: Bool = false
+    private var contentSection: Int = 0
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    init(contentSection: Int, nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil);
+        self.contentSection = contentSection;
     }
     
-    override init() {
-       super.init(nibName: nil, bundle: nil);
+    init(contentSection: Int) {
+        super.init(nibName: nil, bundle: nil);
+        self.contentSection = contentSection;
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     
@@ -70,7 +73,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         if (self.engineTableView == nil) {
             return
         }
-
+        
+        // Apply other changes
         self.engineTableView.beginUpdates()
         for i in 0..<modification.getChanges().size() {
             var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
@@ -79,78 +83,47 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                 var startIndex = Int(change.getIndex())
                 var rows: NSMutableArray = []
                 for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
                 }
                 self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
                 break
             case AMChangeDescription_OperationType.UPDATE.rawValue:
-                // TODO: Implement
+                // Ignore
                 break
             case AMChangeDescription_OperationType.REMOVE.rawValue:
                 var startIndex = Int(change.getIndex())
                 var rows: NSMutableArray = []
                 for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
                 }
                 self.engineTableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
             case AMChangeDescription_OperationType.MOVE.rawValue:
-                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: 0))
+                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: contentSection), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: contentSection))
                 break
             default:
                 break
             }
         }
         self.engineTableView.endUpdates()
-//        var currentChange: AMChangeDescription? = modification.getChanges()
-//        while currentChange != nil {
-//            switch(UInt(currentChange!.getOperationType().ordinal())) {
-//            case AMChangeDescription_OperationType.ADD.rawValue:
-//                var rows = [NSIndexPath(forRow: Int(currentChange!.getIndex()), inSection: 0)]
-//                self.engineTableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Top)
-//                break
-//            case AMDefferedListModification_Operation.ADD_RANGE.rawValue:
-//                var rows: NSMutableArray = []
-//                for i in 0..<Int(currentChange!.getLength()) {
-//                    rows.addObject(NSIndexPath(forRow: Int(currentChange!.getIndex() + i), inSection: 0))
-//                }
-//                self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Middle)
-//                break
-//            case AMDefferedListModification_Operation.REMOVE.rawValue:
-//                var rows = [NSIndexPath(forRow: Int(currentChange!.getIndex()), inSection: 0)]
-//                self.engineTableView.deleteRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Bottom)
-//                break
-//            case AMDefferedListModification_Operation.REMOVE_RANGE.rawValue:
-//                var rows: NSMutableArray = []
-//                for i in 0..<Int(currentChange!.getLength()) {
-//                    rows.addObject(NSIndexPath(forRow: Int(currentChange!.getIndex() + i), inSection: 0))
-//                }
-//                self.engineTableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Middle)
-//                break
-//            case AMDefferedListModification_Operation.UPDATE.rawValue:
-//                var rows = [NSIndexPath(forRow: Int(currentChange!.getIndex()), inSection: 0)]
-//                self.engineTableView.reloadRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.None)
-//                break
-//            case AMDefferedListModification_Operation.UPDATE_RANGE.rawValue:
-//                var rows: NSMutableArray = []
-//                for i in 0..<Int(currentChange!.getLength()) {
-//                    rows.addObject(NSIndexPath(forRow: Int(currentChange!.getIndex() + i), inSection: 0))
-//                }
-//                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
-//                break
-//            case AMDefferedListModification_Operation.MOVE.rawValue:
-//                var nextIndex = currentChange!.getDestIndex()
-//                if (currentChange!.getIndex() < nextIndex) {
-//                    nextIndex++
-//                }
-//                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(currentChange!.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(nextIndex), inSection: 0))
-//                break
-//            default:
-//                break
-//            }
-//            
-//            currentChange = modification.next()
-//        }
-//        self.engineTableView.endUpdates()
+        
+        // Apply cell change
+        self.engineTableView.beginUpdates()
+        for i in 0..<modification.getChanges().size() {
+            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+                }
+                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
+                break
+            default:
+                break
+            }
+        }
+        self.engineTableView.endUpdates()
         
         if (displayList.getSize() == jint(0)) {
             if (self.engineTableView.alpha != 0) {

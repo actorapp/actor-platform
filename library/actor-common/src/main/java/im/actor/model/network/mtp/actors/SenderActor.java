@@ -99,15 +99,7 @@ public class SenderActor extends Actor {
             if (confirm.size() == 0) {
                 return;
             }
-            // Log
-            String acks = "";
-            for (Long l : confirm) {
-                if (acks.length() != 0) {
-                    acks += ",";
-                }
-                acks += "#" + l;
-            }
-            Log.d(TAG, "Sending acks " + acks);
+
 
             MessageAck messageAck = buildAck();
             confirm.clear();
@@ -132,9 +124,15 @@ public class SenderActor extends Actor {
     private MessageAck buildAck() {
         long[] ids = new long[confirm.size()];
         Long[] ids2 = confirm.toArray(new Long[confirm.size()]);
+        String acks = "";
         for (int i = 0; i < ids.length; i++) {
             ids[i] = ids2[i];
+            if (acks.length() != 0) {
+                acks += ",";
+            }
+            acks += "#" + ids2[i];
         }
+        Log.d(TAG, "Sending acks " + acks);
         return new MessageAck(ids);
     }
 
