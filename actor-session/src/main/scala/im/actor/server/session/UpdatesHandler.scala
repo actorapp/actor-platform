@@ -53,6 +53,10 @@ private[session] class UpdatesHandler(authId: Long)(
         case SubscribeFromGroupOnline(groupIds) ⇒
           updatesConsumer ! UnsubscribeFromGroupPresences(groupIds)
       }
+    case OnComplete ⇒
+      context.stop(self)
+    case OnError(cause) ⇒
+      log.error(cause, "Error in upstream")
   }
 
   override val requestStrategy = WatermarkRequestStrategy(10) // TODO: configurable
