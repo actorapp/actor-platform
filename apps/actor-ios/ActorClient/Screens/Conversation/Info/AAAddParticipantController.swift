@@ -24,7 +24,7 @@ class AAAddParticipantController: ContactsBaseController {
         
         // TODO: Parse array of current members so they are fade out
         
-        super.init()
+        super.init(contentSection: 0)
         
         view.backgroundColor = Resources.BackyardColor
     }

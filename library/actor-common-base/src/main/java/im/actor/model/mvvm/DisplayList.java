@@ -125,13 +125,12 @@ public class DisplayList<T> {
         public void onEditList(final Modification<T> modification, final Runnable runnable) {
 
             ModificationHolder<T> holder = new ModificationHolder<T>(modification, runnable);
-            if (isLocked) {
+            if (modification != null) {
                 pending.add(holder);
-                return;
             }
 
-            if (modification != null) {
-                pending.add(new ModificationHolder<T>(modification, runnable));
+            if (isLocked) {
+                return;
             }
 
             if (pending.size() == 0) {
