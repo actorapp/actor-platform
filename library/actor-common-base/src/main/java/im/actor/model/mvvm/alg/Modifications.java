@@ -2,26 +2,27 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.model.mvvm;
+package im.actor.model.mvvm.alg;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.droidkit.engine.ListEngineItem;
+import im.actor.model.mvvm.ChangeDescription;
 
-class DisplayModifications {
+public class Modifications {
 
-    public static <T extends ListEngineItem> DisplayList.Modification<T> addOrUpdate(final T item) {
+    public static <T extends ListEngineItem> Modification<T> addOrUpdate(final T item) {
         ArrayList<T> res = new ArrayList<T>();
         res.add(item);
         return addOrUpdate(res);
     }
 
-    public static <T extends ListEngineItem> DisplayList.Modification<T> addOrUpdate(final List<T> items) {
-        return new DisplayList.Modification<T>() {
+    public static <T extends ListEngineItem> Modification<T> addOrUpdate(final List<T> items) {
+        return new Modification<T>() {
             @Override
-            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
-                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+            public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
+                ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
                 for (T toAdd : items) {
                     addOrUpdate(toAdd, sourceList, res, false);
                 }
@@ -30,11 +31,11 @@ class DisplayModifications {
         };
     }
 
-    public static <T extends ListEngineItem> DisplayList.Modification<T> addOnly(final List<T> items) {
-        return new DisplayList.Modification<T>() {
+    public static <T extends ListEngineItem> Modification<T> addOnly(final List<T> items) {
+        return new Modification<T>() {
             @Override
-            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
-                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+            public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
+                ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
                 for (T toAdd : items) {
                     addOrUpdate(toAdd, sourceList, res, true);
                 }
@@ -43,33 +44,32 @@ class DisplayModifications {
         };
     }
 
-    public static <T extends ListEngineItem> DisplayList.Modification<T> replace(final List<T> items) {
-        return new DisplayList.Modification<T>() {
+    public static <T extends ListEngineItem> Modification<T> replace(final List<T> items) {
+        return new Modification<T>() {
             @Override
-            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
-                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+            public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
+                ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
                 replace(items, sourceList, res);
                 return res;
             }
         };
     }
 
-    public static <T extends ListEngineItem> DisplayList.Modification<T> remove(final long dstId) {
+    public static <T extends ListEngineItem> Modification<T> remove(final long dstId) {
         return remove(new long[]{dstId});
     }
 
-    public static <T extends ListEngineItem> DisplayList.Modification<T> remove(final long[] dstIds) {
-        return new DisplayList.Modification<T>() {
+    public static <T extends ListEngineItem> Modification<T> remove(final long[] dstIds) {
+        return new Modification<T>() {
             @Override
-            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
-                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+            public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
+                ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
                 for (int i = 0; i < sourceList.size(); i++) {
                     ListEngineItem src = sourceList.get(i);
                     for (long aDstId : dstIds) {
                         if (src.getEngineId() == aDstId) {
                             sourceList.remove(i);
-                            res.appendOperation(new DisplayList.ModificationResult
-                                    .Operation(DisplayList.ModificationResult.OperationType.REMOVE, i));
+                            res.add(ChangeDescription.<T>remove(i));
                             i--;
                             break;
                         }
@@ -80,22 +80,23 @@ class DisplayModifications {
         };
     }
 
-    public static <T> DisplayList.Modification<T> clear() {
-        return new DisplayList.Modification<T>() {
+    public static <T> Modification<T> clear() {
+        return new Modification<T>() {
             @Override
-            public DisplayList.ModificationResult<T> modify(ArrayList<T> sourceList) {
-                DisplayList.ModificationResult<T> res = new DisplayList.ModificationResult<T>();
+            public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
+                ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
                 if (sourceList.size() != 0) {
                     sourceList.clear();
-                    res.appendRemove(0, sourceList.size());
+                    res.add(ChangeDescription.<T>remove(0, sourceList.size()));
                 }
                 return res;
             }
         };
     }
 
-    private static <T extends ListEngineItem> void replace(List<T> items, ArrayList<T> sourceList,
-                                                           DisplayList.ModificationResult<T> result) {
+    private static <T extends ListEngineItem> void replace(List<T> items,
+                                                           ArrayList<T> sourceList,
+                                                           ArrayList<ChangeDescription<T>> changes) {
         // Remove missing items
         outer:
         for (int i = 0; i < sourceList.size(); i++) {
@@ -107,19 +108,19 @@ class DisplayModifications {
                 }
             }
 
-            result.appendRemove(i, 1);
+            changes.add(ChangeDescription.<T>remove(i));
             sourceList.remove(i);
             i--;
         }
 
         for (T itm : items) {
-            addOrUpdate(itm, sourceList, result, false);
+            addOrUpdate(itm, sourceList, changes, false);
         }
     }
 
     private static <T extends ListEngineItem> void addOrUpdate(T item,
                                                                ArrayList<T> sourceList,
-                                                               DisplayList.ModificationResult<T> result,
+                                                               ArrayList<ChangeDescription<T>> changes,
                                                                boolean isAddOnly) {
         long id = item.getEngineId();
         long sortKey = item.getEngineSort();
@@ -165,16 +166,14 @@ class DisplayModifications {
 
         if (addedIndex == removedIndex) {
             // If there are no movement: just update item in place
-            result.appendUpdate(addedIndex, item);
+            changes.add(ChangeDescription.update(addedIndex, item));
         } else if (removedIndex >= 0) {
             // Movement + update occurred
-            // Move to new place, then update element
-            // This order is required for iOS lists
-            result.appendMove(removedIndex, addedIndex);
-            result.appendUpdate(addedIndex, item);
+            changes.add(ChangeDescription.<T>move(removedIndex, addedIndex));
+            changes.add(ChangeDescription.update(addedIndex, item));
         } else {
             // No old element found: add new element
-            result.appendAdd(addedIndex, item);
+            changes.add(ChangeDescription.add(addedIndex, item));
         }
     }
 

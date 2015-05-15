@@ -12,6 +12,8 @@ import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.mvvm.alg.ChangeBuilder;
+import im.actor.model.mvvm.alg.Modification;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -24,7 +26,10 @@ public class DisplayList<T> {
     private volatile int currentList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-    private CopyOnWriteArrayList<DifferedChangeListener<T>> differedListeners = new CopyOnWriteArrayList<DifferedChangeListener<T>>();
+    private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
+            new CopyOnWriteArrayList<AndroidChangeListener<T>>();
+    private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
+            new CopyOnWriteArrayList<AppleChangeListener<T>>();
 
     public DisplayList() {
         this(new ArrayList<T>());
@@ -78,16 +83,18 @@ public class DisplayList<T> {
         listeners.remove(listener);
     }
 
-    public void addDifferedListener(DifferedChangeListener<T> listener) {
+    public void addAndroidListener(AndroidChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
-        if (!differedListeners.contains(listener)) {
-            differedListeners.add(listener);
+
+        if (!androidListeners.contains(listener)) {
+            androidListeners.add(listener);
         }
     }
 
-    public void removeDifferedListener(DifferedChangeListener<T> listener) {
+    public void removeAndroidListener(AndroidChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
-        differedListeners.remove(listener);
+
+        androidListeners.remove(listener);
     }
 
     // Update actor
@@ -123,19 +130,26 @@ public class DisplayList<T> {
 
             ModificationHolder<T>[] dest = pending.toArray(new ModificationHolder[pending.size()]);
             pending.clear();
-            ArrayList<ModificationResult<T>> modRes = new ArrayList<ModificationResult<T>>();
+            ArrayList<ChangeDescription<T>> modRes = new ArrayList<ChangeDescription<T>>();
 
             for (ModificationHolder<T> m : dest) {
-                ModificationResult<T> res2 = m.modification.modify(backgroundList);
-                modRes.add(res2);
+                List<ChangeDescription<T>> changes = m.modification.modify(backgroundList);
+                modRes.addAll(changes);
             }
 
-            requestListSwitch(dest, initialList, modRes);
+            // Build changes
+            ArrayList<ChangeDescription<T>> androidChanges = ChangeBuilder.processAndroidModifications(modRes,
+                    initialList);
+            ArrayList<ChangeDescription<T>> appleChanges = ChangeBuilder.processAppleModifications(modRes,
+                    initialList);
+
+            requestListSwitch(dest, initialList, androidChanges, appleChanges);
         }
 
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
-                                       final ArrayList<ModificationResult<T>> modRes) {
+                                       final ArrayList<ChangeDescription<T>> androidChanges,
+                                       final ArrayList<ChangeDescription<T>> appleChanges) {
             isLocked = true;
             MVVMEngine.runOnUiThread(new Runnable() {
                 @Override
@@ -143,10 +157,8 @@ public class DisplayList<T> {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
 
-                    for (DifferedChangeListener<T> l : displayList.differedListeners) {
-                        DefferedListChange<T> aListChange = DefferedListChange.buildAndroidListChange(modRes,
-                                new ArrayList<T>(initialList));
-                        l.onCollectionChanged(aListChange);
+                    for (AndroidChangeListener<T> l : displayList.androidListeners) {
+                        l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges));
                     }
 
                     for (Listener l : displayList.listeners) {
@@ -221,110 +233,15 @@ public class DisplayList<T> {
         void onCollectionChanged();
     }
 
-    public interface DifferedChangeListener<T> {
-        void onCollectionChanged(DefferedListChange<T> modification);
+    public interface AndroidChangeListener<T> {
+        void onCollectionChanged(AndroidListUpdate<T> modification);
+    }
+
+    public interface AppleChangeListener<T> {
+        void onCollectionChanged(AppleListUpdate<T> modification);
     }
 
     public enum OperationMode {
         GENERAL, ANDROID, IOS
-    }
-
-    public interface Modification<T> {
-        ModificationResult<T> modify(ArrayList<T> sourceList);
-    }
-
-    public static final class ModificationResult<T> {
-
-        private ArrayList<Operation<T>> operations = new ArrayList<Operation<T>>();
-
-        public ModificationResult() {
-
-        }
-
-        public void appendOperation(Operation<T> operation) {
-            operations.add(operation);
-        }
-
-        public void appendMove(int index, int destIndex) {
-            operations.add(new Operation(OperationType.MOVE, index, destIndex, 1));
-        }
-
-        public void appendUpdate(int index, T item) {
-            operations.add(new Operation<T>(OperationType.UPDATE, index, item));
-        }
-
-        public void appendAdd(int index, T item) {
-            operations.add(new Operation<T>(OperationType.ADD, index, item));
-        }
-
-        public void appendRemove(int index, int len) {
-            operations.add(new Operation(OperationType.REMOVE, index, len));
-        }
-
-        public ArrayList<Operation<T>> getOperations() {
-            return operations;
-        }
-
-        public boolean isEmpty() {
-            return operations.size() == 0;
-        }
-
-        public static class Operation<T> {
-            private OperationType type;
-            private int index;
-            private int destIndex;
-            private int length;
-            private T item;
-
-            public Operation(OperationType type, int index, T item) {
-                this.type = type;
-                this.index = index;
-                this.item = item;
-                this.length = 1;
-            }
-
-            public Operation(OperationType type, int index) {
-                this.type = type;
-                this.index = index;
-                this.length = 1;
-            }
-
-            public Operation(OperationType type, int index, int destIndex, int length) {
-                this.type = type;
-                this.index = index;
-                this.destIndex = destIndex;
-                this.length = length;
-            }
-
-            public Operation(OperationType type, int index, int length) {
-                this.type = type;
-                this.index = index;
-                this.length = length;
-            }
-
-            public OperationType getType() {
-                return type;
-            }
-
-            public int getIndex() {
-                return index;
-            }
-
-            public int getDestIndex() {
-                return destIndex;
-            }
-
-            public int getLength() {
-                return length;
-            }
-
-            public T getItem() {
-                return item;
-            }
-        }
-
-        public enum OperationType {
-            ADD, REMOVE, UPDATE, MOVE
-        }
     }
 }
