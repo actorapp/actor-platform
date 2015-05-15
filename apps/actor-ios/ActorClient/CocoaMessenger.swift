@@ -48,7 +48,7 @@ get{
         builder.setApiConfiguration(AMApiConfiguration(NSString: appTitle, withInt: jint(apiId), withNSString: apiKey, withNSString: deviceName, withNSString: deviceKey))
 
         // Creating messenger
-        holder = CocoaMessenger(AMConfiguration: builder.build());
+        holder = CocoaMessenger(configuration: builder.build());
     }
     return holder!;
     }
@@ -56,6 +56,11 @@ get{
 
 @objc class CocoaMessenger : AMBaseMessenger {
     class func messenger() -> CocoaMessenger { return MSG }
+
+    init!(configuration: AMConfiguration!) {
+        var env = AMMessengerEnvironmentEnum.values().objectAtIndex(AMMessengerEnvironment.IOS.rawValue) as! AMMessengerEnvironmentEnum
+        super.init(AMMessengerEnvironmentEnum: env, withAMConfiguration: configuration)
+    }
     
     func sendUIImage(image: UIImage, peer: AMPeer) {
         var thumb = image.resizeSquare(90, maxH: 90);

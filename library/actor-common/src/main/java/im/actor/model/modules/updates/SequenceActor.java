@@ -101,7 +101,7 @@ public class SequenceActor extends ModuleActor {
             body = ((FatSeqUpdate) u).getUpdate();
         } else if (u instanceof WeakUpdate) {
             WeakUpdate w = (WeakUpdate) u;
-            Log.w(TAG, "Received weak update");
+            Log.d(TAG, "Received weak update");
             try {
                 processor.processUpdate(parser.read(w.getUpdateHeader(), w.getUpdate()));
             } catch (IOException e) {
@@ -110,7 +110,7 @@ public class SequenceActor extends ModuleActor {
             }
             return;
         } else if (u instanceof InternalUpdate) {
-            Log.w(TAG, "Received internal update");
+            Log.d(TAG, "Received internal update");
             processor.processInternalUpdate((InternalUpdate) u);
             return;
         } else if (u instanceof ExecuteAfter) {
