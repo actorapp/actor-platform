@@ -16,16 +16,20 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
+import im.actor.model.android.providers.AndroidNotifications;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Peer;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 18.09.14.
@@ -84,6 +88,72 @@ public class AvatarView extends SimpleDraweeView {
     public void bind(GroupVM group) {
         bind(group.getAvatar().get(), group.getName().get(), group.getId());
     }
+
+    public void bind(Peer peer, final AndroidNotifications.NotifaicationCallback callback){
+        Avatar avatar = null;
+        String name = "";
+        int id = 0;
+        switch (peer.getPeerType()){
+            case PRIVATE:
+                avatar = users().get(peer.getPeerId()).getAvatar().get();
+                name = users().get(peer.getPeerId()).getName().get();
+                id = users().get(peer.getPeerId()).getId();
+                break;
+            case GROUP:
+                avatar = groups().get(peer.getPeerId()).getAvatar().get();
+                name = groups().get(peer.getPeerId()).getName().get();
+                id = groups().get(peer.getPeerId()).getId();
+                break;
+
+        }
+
+
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(name, id, placeholderTextSize, getContext()));
+
+        // Same avatar
+        if (avatar != null && avatar.getSmallImage() != null
+                && avatar.getSmallImage().getFileReference().getFileId() == id) {
+            return;
+        }
+
+        if (bindedFile != null) {
+            bindedFile.detach();
+            bindedFile = null;
+        }
+
+        // Nothing to bind
+        if (avatar == null || avatar.getSmallImage() == null) {
+            callback.onAvatarLoaded();
+            setImageURI(null);
+            return;
+        }
+
+        bindedFile = messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            @Override
+            public void onNotDownloaded() {
+
+            }
+
+            @Override
+            public void onDownloading(float progress) {
+
+            }
+
+            @Override
+            public void onDownloaded(FileSystemReference reference) {
+                ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
+                        .setResizeOptions(new ResizeOptions(size, size))
+                        .build();
+                PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setOldController(getController())
+                        .setImageRequest(request)
+                        .build();
+                setController(controller);
+                callback.onAvatarLoaded();
+            }
+        });
+    }
+
 
     public void bind(Avatar avatar, String title, int id) {
         getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext()));
