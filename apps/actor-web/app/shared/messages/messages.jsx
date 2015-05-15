@@ -41,9 +41,13 @@ angular
       messages: React.PropTypes.array.isRequired,
       typing: React.PropTypes.object.isRequired
     },
+
+    componentDidMount: function() {
+      this._scrollToBottom();
+    },
+
     render: function() {
       var peer = this.props.peer;
-
       var typing = null;
 
       if (this.props.typing !== null) {
@@ -56,7 +60,7 @@ angular
       }
 
       return (
-        <div>
+        <div onScroll={this._onScroll}>
           {
             this.props.messages.map(function (message) {
               return (
@@ -67,6 +71,19 @@ angular
           {typing}
         </div>
       );
+    },
+
+    componentDidUpdate: function() {
+      this._scrollToBottom();
+    },
+
+    _onScroll: function() {
+      console.error('scroll');
+    },
+
+    _scrollToBottom: function() {
+      var self = this.getDOMNode();
+      self.scrollTop = self.scrollHeight;
     }
   });
 }]);
