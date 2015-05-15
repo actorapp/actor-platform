@@ -134,3 +134,10 @@
         }
     }
 }
+
+
+.messages-list {
+    > div {
+        overflow: auto;
+    }
+}

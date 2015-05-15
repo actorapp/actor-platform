@@ -1,4 +1,8 @@
-<md-list flex layout-padding class="messages-list" ng-controller="messagesController as messages" in-view-container>
-    <messages peer="main.actorService.currentPeer" messages="messages.list" typing="messages.typing"></messages>
-</md-list>
-
+<messages peer="main.actorService.currentPeer"
+          messages="messages.list"
+          typing="messages.typing"
+          flex
+          layout="column"
+          ng-controller="messagesController as messages"
+          class="messages-list">
+</messages>
