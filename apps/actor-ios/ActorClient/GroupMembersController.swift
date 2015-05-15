@@ -12,7 +12,8 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     var selectedNames: Array<AMContact> = []
     var groupTitle: String!
     init(title: String) {
-        super.init(nibName: "GroupMembersController", bundle: nil)
+        super.init(contentSection: 0, nibName: "GroupMembersController", bundle: nil)
+
         groupTitle = title
         navigationItem.title = "Group Members";
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
