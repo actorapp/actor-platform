@@ -97,6 +97,20 @@ public class DisplayList<T> {
         androidListeners.remove(listener);
     }
 
+    public void addAppleListener(AppleChangeListener<T> listener) {
+        MVVMEngine.checkMainThread();
+
+        if (!appleListeners.contains(listener)) {
+            appleListeners.add(listener);
+        }
+    }
+
+    public void removeAppleListener(AppleChangeListener<T> listener) {
+        MVVMEngine.checkMainThread();
+
+        appleListeners.remove(listener);
+    }
+
     // Update actor
 
     private static class ListSwitcher<T> extends Actor {
@@ -159,6 +173,10 @@ public class DisplayList<T> {
 
                     for (AndroidChangeListener<T> l : displayList.androidListeners) {
                         l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges));
+                    }
+
+                    for (AppleChangeListener<T> l : displayList.appleListeners) {
+                        l.onCollectionChanged(new AppleListUpdate<T>(appleChanges));
                     }
 
                     for (Listener l : displayList.listeners) {
