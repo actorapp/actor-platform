@@ -1,4 +1,5 @@
 argv = require('yargs').argv
+assign = require 'lodash.assign'
 autoprefixer = require 'gulp-autoprefixer'
 browserify = require 'browserify'
 buffer = require 'vinyl-buffer'
@@ -8,7 +9,6 @@ connect = require 'gulp-connect'
 gulp = require 'gulp'
 gutil = require 'gulp-util'
 gulpif = require 'gulp-if'
-assign = require 'lodash.assign'
 minifycss = require 'gulp-minify-css'
 sass = require 'gulp-sass'
 source = require 'vinyl-source-stream'
@@ -40,14 +40,22 @@ bundler.transform(reactify)
 
 jsBundleFile = 'app-js.js'
 
-gulp.task 'js', ->
-  bundler.bundle()
-    .pipe(source(jsBundleFile))
-    .pipe(buffer())
-    .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
-      .pipe(gulpif(argv.production, uglify()))
-    .pipe(gulpif(!argv.production, sourcemaps.write('./')))
-    .pipe(gulp.dest('./dist/assets/js'))
+gulp.task 'browserify', ->
+  watcher = watchify(bundler)
+
+  watcher.on 'update', ->
+    updateStart = Date.now()
+    console.log('Browserify started')
+    watcher.bundle()
+      .pipe(source(jsBundleFile))
+        ## uglify
+      .pipe(gulp.dest('./dist/assets/js'))
+      .pipe(connect.reload())
+    console.log('Browserify ended', (Date.now() - updateStart) + 'ms')
+  .bundle()
+  .pipe(source(jsBundleFile))
+  .pipe(gulp.dest('./dist/assets/js'))
+  .pipe(connect.reload())
 
 gulp.task 'sass', ->
   gulp.src ['./app/**/*.scss']
@@ -68,28 +76,10 @@ gulp.task 'html', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
-gulp.task 'watchify', ->
-  watcher = watchify(bundler)
-  watcher
-    .on 'error', gutil.log.bind(gutil, 'Browserify Error')
-    .on 'update', ->
-      watcher.bundle()
-        .pipe(source(jsBundleFile))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/assets/js'))
-
-      gutil.log("Updated JavaScript sources")
-    .bundle()
-    .pipe(source(jsBundleFile))
-    .pipe(gulp.dest('./dist/assets/js'))
-    .pipe connect.reload()
 
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
   gulp.watch ['./app/**/*.scss'], ['sass']
-  gulp.watch ['./app/**/*.js', './app/**/*.jsx'], ['watchify']
   gulp.watch ['./index.html', './app/**/*.html'], ['html']
 
 gulp.task 'assets', ->
@@ -117,9 +107,9 @@ gulp.task 'server', ->
     root: ['./dist/', './bower_components/', './node_modules/']
     livereload: true
 
-gulp.task 'build', ['assets', 'coffee', 'js', 'sass', 'html', 'usemin']
+gulp.task 'build', ['assets', 'coffee', 'browserify', 'sass', 'html', 'usemin']
 
-gulp.task 'build:dev', ['assets', 'coffee', 'js', 'sass', 'html']
+gulp.task 'build:dev', ['assets', 'coffee', 'browserify', 'sass', 'html']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
