@@ -110,22 +110,18 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
 
           message match {
             case rspBox @ RpcResponseBox(requestMessageId, bodyBytes) ⇒
-              val bodySize = bodyBytes.bytes.size
-
-              if (bodySize <= MaxResendSize) {
+              if (message.bodySize <= MaxResendSize) {
                 enqueueProtoMessageWithResend(messageId, rspBox)
               } else {
                 scheduleResend(messageId, rspBox)
-                enqueueProtoMessage(nextMessageId(), UnsentResponse(messageId, requestMessageId, bodySize))
+                enqueueProtoMessage(nextMessageId(), UnsentResponse(messageId, requestMessageId, message.bodySize))
               }
             case ub @ UpdateBox(bodyBytes) ⇒
-              val bodySize = bodyBytes.bytes.size
-
-              if (bodySize <= MaxResendSize) {
+              if (message.bodySize <= MaxResendSize) {
                 enqueueProtoMessageWithResend(messageId, ub)
               } else {
                 scheduleResend(messageId, ub)
-                enqueueProtoMessage(nextMessageId(), UnsentMessage(messageId, bodySize))
+                enqueueProtoMessage(nextMessageId(), UnsentMessage(messageId, message.bodySize))
               }
             case msg ⇒
               enqueueProtoMessageWithResend(messageId, message)
