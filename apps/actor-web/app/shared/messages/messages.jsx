@@ -1,5 +1,10 @@
 /** @jsx React.DOM */
 
+var React = require('react');
+var Avatar = require('./avatar.jsx');
+var Message = require('./message.jsx');
+var VisibilitySensor = require('react-visibility-sensor');
+
 var ChatMessage = React.createClass({
   propTypes: {
     peer: React.PropTypes.object.isRequired,
@@ -50,3 +55,5 @@ angular
     }
   });
 }]);
+
+module.exports = ChatMessage;

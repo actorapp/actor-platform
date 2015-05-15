@@ -1,3 +1,5 @@
+var React = require('react');
+
 var Avatar = React.createClass({
   propTypes: {
     sender : React.PropTypes.object.isRequired
@@ -19,3 +21,5 @@ var Avatar = React.createClass({
     )
   }
 });
+
+module.exports = Avatar;

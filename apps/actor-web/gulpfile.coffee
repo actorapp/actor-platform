@@ -1,15 +1,19 @@
+autoprefixer = require 'gulp-autoprefixer'
+browserify = require 'browserify'
+buffer = require 'vinyl-buffer'
+coffee = require 'gulp-coffee'
+concat = require 'gulp-concat'
+connect = require 'gulp-connect'
 gulp = require 'gulp'
 gutil = require 'gulp-util'
-connect = require 'gulp-connect'
-concat = require 'gulp-concat'
-sass = require 'gulp-sass'
-coffee = require 'gulp-coffee'
-autoprefixer = require 'gulp-autoprefixer'
-sourcemaps = require 'gulp-sourcemaps'
 minifycss = require 'gulp-minify-css'
-react = require 'gulp-react'
+sass = require 'gulp-sass'
+source = require 'vinyl-source-stream'
+sourcemaps = require 'gulp-sourcemaps'
+reactify = require 'reactify'
 uglify = require 'gulp-uglify'
 usemin = require 'gulp-usemin'
+watchify = require 'watchify'
 
 gulp.task 'coffee', ->
   gulp.src ['./app/**/*.coffee']
@@ -21,24 +25,22 @@ gulp.task 'coffee', ->
     .pipe gulp.dest './dist/assets/js/'
     .pipe connect.reload()
 
-gulp.task 'jsx', ->
-  gulp.src ['app/**/*.jsx']
-    .pipe sourcemaps.init()
-    .pipe react().on('error', gutil.log)
-      .pipe uglify()
-      .pipe concat 'app-jsx.js'
-    .pipe sourcemaps.write './'
-    .pipe gulp.dest './dist/assets/js/'
-    .pipe connect.reload()
-
 gulp.task 'js', ->
-  gulp.src ['app/**/*.js']
-  .pipe sourcemaps.init()
-  .pipe uglify()
-  .pipe concat 'app-js.js'
-  .pipe sourcemaps.write './'
-  .pipe gulp.dest './dist/assets/js/'
-  .pipe connect.reload()
+  b = browserify({
+    entries: 'app/main.js',
+    extensions: 'jsx',
+    debug: true,
+    transform: [reactify]
+  })
+
+  b.bundle()
+    .pipe(source('app-js.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(uglify())
+      .on('error', gutil.log)
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('./dist/assets/js'))
 
 gulp.task 'sass', ->
   gulp.src ['./app/**/*.scss']
@@ -51,6 +53,15 @@ gulp.task 'sass', ->
     .pipe gulp.dest './dist/assets/css/'
     .pipe connect.reload()
 
+gulp.task 'requirejs', ->
+  rjs({
+    baseUrl: '',
+    out: './dist/assets/js/',
+    shim: {
+
+    }
+  })
+
 gulp.task 'html', ->
   gulp.src ['./app/**/*.html', './app/**/*.jsx', './app/**/*.js']
     .pipe gulp.dest './dist/app/'
@@ -62,7 +73,6 @@ gulp.task 'html', ->
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
   gulp.watch ['./app/**/*.js'], ['js']
-  gulp.watch ['./app/**/*.jsx'], ['jsx']
   gulp.watch ['./app/**/*.scss'], ['sass']
   gulp.watch ['./index.html', './app/**/*.html'], ['html']
 
@@ -91,9 +101,9 @@ gulp.task 'server', ->
     root: ['./dist/', './bower_components/']
     livereload: true
 
-gulp.task 'build', ['assets', 'coffee', 'js', 'jsx', 'sass', 'html', 'usemin']
+gulp.task 'build', ['assets', 'coffee', 'js', 'sass', 'html', 'usemin']
 
-gulp.task 'build:dev', ['assets', 'coffee', 'js', 'jsx', 'sass', 'html']
+gulp.task 'build:dev', ['assets', 'coffee', 'js', 'sass', 'html']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
