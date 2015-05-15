@@ -58,16 +58,15 @@ object MTProto {
       val mapResp = builder.add(mapRespFlow)
       val complete = builder.add(completeSink)
 
-      // @formatter:off
+      // format: OFF
 
       mtproto ~> merge
-      auth ~> merge
+      auth    ~> merge
       session ~> merge
-      watch ~> merge
-      merge ~> mapResp ~> bcast
-      bcast.out(0) ~> complete
+      watch   ~> merge ~> mapResp ~> bcast
+                                     bcast.out(0) ~> complete
 
-      // @formatter:on
+      // format: ON
 
       (mtproto.inlet, bcast.out(1))
     }
