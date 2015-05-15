@@ -90,7 +90,7 @@ public class ReceiverActor extends Actor {
                 e.printStackTrace();
                 return;
             }
-            
+
             // Log.d(TAG, obj + "");
 
             if (obj instanceof NewSessionCreated) {
