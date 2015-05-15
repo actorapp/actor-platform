@@ -45,25 +45,7 @@
 <div ng-if="main.actorService.isReady" ui-view class="app" layout="row"></div>
 
 <script src="ActorMessenger/ActorMessenger.nocache.js"></body>
-
-<!-- build:js(./bower_components/) assets/js/lib.js -->
-<script src="CryptoJS/build/components/core.js"></script>
-<script src="CryptoJS/build/components/sha256.js"></script>
-<script src="highlightjs/highlight.pack.js"></script>
-<script src="marked/lib/marked.js"></script>
-<script src="jsencrypt/bin/jsencrypt.js"></script>
 <script src="angular/angular.js"></script>
-<script src="react/react.js"></script>
-<script src="ngReact/ngReact.js"></script>
-<script src="angular-ui-router/release/angular-ui-router.js"></script>
-<script src="angular-aria/angular-aria.js"></script>
-<script src="angular-animate/angular-animate.js"></script>
-<script src="angular-material/angular-material.js"></script>
-<script src="angular-scroll-glue/src/scrollglue.js"></script>
-<script src="angular-sanitize/angular-sanitize.js"></script>
-<script src="angular-inview/angular-inview.js"></script>
-<!-- endbuild -->
-
 <script type="application/javascript">
     angular.module('actorWeb', [
         'ui.router',
@@ -75,8 +57,26 @@
     ]);
 </script>
 
-<script src="assets/js/app-jsx.js"></script>
+<!-- build:js(./bower_components/) assets/js/lib.js -->
+<script src="CryptoJS/build/components/core.js"></script>
+<script src="CryptoJS/build/components/sha256.js"></script>
+<script src="highlightjs/highlight.pack.js"></script>
+<script src="marked/lib/marked.js"></script>
+<script src="jsencrypt/bin/jsencrypt.js"></script>
+
 <script src="assets/js/app-js.js"></script>
+
+<script src="ngReact/ngReact.js"></script>
+<script src="angular-ui-router/release/angular-ui-router.js"></script>
+<script src="angular-aria/angular-aria.js"></script>
+<script src="angular-animate/angular-animate.js"></script>
+<script src="angular-material/angular-material.js"></script>
+<script src="angular-scroll-glue/src/scrollglue.js"></script>
+<script src="angular-sanitize/angular-sanitize.js"></script>
+<script src="angular-inview/angular-inview.js"></script>
+<!-- endbuild -->
+
+
 <script src="assets/js/app-coffee.js"></script>
 
 </body>

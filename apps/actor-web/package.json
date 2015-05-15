@@ -13,7 +13,12 @@
     "test",
     "tests"
   ],
+  "dependencies": {
+    "react": "0.13.3",
+    "react-visibility-sensor": "^1.5.1"
+  },
   "devDependencies": {
+    "browserify": "^10.2.0",
     "coffee-script": "^1.9.1",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.2.0",
@@ -26,6 +31,10 @@
     "gulp-sourcemaps": "^1.5.1",
     "gulp-uglify": "^1.2.0",
     "gulp-usemin": "^0.3.11",
-    "gulp-util": "^3.0.4"
+    "gulp-util": "^3.0.4",
+    "reactify": "^1.1.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.2.1"
   }
 }
