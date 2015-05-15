@@ -5,22 +5,25 @@
 import Foundation
 import UIKit
 
-class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_Listener {
+class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_AppleChangeListener {
     
-    private var engineTableView: UITableView!;
-    private var displayList: AMBindedDisplayList!;
+    private var engineTableView: UITableView!
+    private var displayList: AMBindedDisplayList!
     private var fade: Bool = false
+    private var contentSection: Int = 0
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    init(contentSection: Int, nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil);
+        self.contentSection = contentSection;
     }
     
-    override init() {
-       super.init(nibName: nil, bundle: nil);
+    init(contentSection: Int) {
+        super.init(nibName: nil, bundle: nil);
+        self.contentSection = contentSection;
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     
@@ -35,8 +38,13 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
-            self.displayList.addListenerWithAMDisplayList_Listener(self)
-            onCollectionChanged()
+            self.displayList.addAppleListenerWithAMDisplayList_AppleChangeListener(self)
+            
+            if (displayList.getSize() == jint(0)) {
+                self.engineTableView.alpha = 0
+            } else {
+                self.engineTableView.alpha = 1
+            }
         }
     }
     
@@ -61,30 +69,80 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     // Table Data Source
     
-    func onCollectionChanged() {
-        if (self.engineTableView != nil) {
-            if (displayList.getSize() == jint(0)) {
-                if (self.engineTableView.alpha != 0) {
-                    if (fade) {
-                        UIView.animateWithDuration(0.0, animations: { () -> Void in
-                            self.engineTableView.alpha = 0
-                        })
-                    } else {
-                        self.engineTableView.alpha = 0
-                    }
+    func onCollectionChangedWithAMAppleListUpdate(modification: AMAppleListUpdate!) {
+        if (self.engineTableView == nil) {
+            return
+        }
+        
+        // Apply other changes
+        self.engineTableView.beginUpdates()
+        for i in 0..<modification.getChanges().size() {
+            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.ADD.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
                 }
-            } else {
-                if (self.engineTableView.alpha == 0){
-                    if (fade) {
-                        UIView.animateWithDuration(0.3, animations: { () -> Void in
-                            self.engineTableView.alpha = 1
-                        })
-                    } else {
-                        self.engineTableView.alpha = 1
-                    }
+                self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                break
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                // Ignore
+                break
+            case AMChangeDescription_OperationType.REMOVE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+                }
+                self.engineTableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+            case AMChangeDescription_OperationType.MOVE.rawValue:
+                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: contentSection), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: contentSection))
+                break
+            default:
+                break
+            }
+        }
+        self.engineTableView.endUpdates()
+        
+        // Apply cell change
+        for i in 0..<modification.getChanges().size() {
+            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+                }
+                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
+                break
+            default:
+                break
+            }
+        }
+        
+        if (displayList.getSize() == jint(0)) {
+            if (self.engineTableView.alpha != 0) {
+                if (fade) {
+                    UIView.animateWithDuration(0.0, animations: { () -> Void in
+                        self.engineTableView.alpha = 0
+                    })
+                } else {
+                    self.engineTableView.alpha = 0
                 }
             }
-            self.engineTableView.reloadData()
+        } else {
+            if (self.engineTableView.alpha == 0){
+                if (fade) {
+                    UIView.animateWithDuration(0.3, animations: { () -> Void in
+                        self.engineTableView.alpha = 1
+                    })
+                } else {
+                    self.engineTableView.alpha = 1
+                }
+            }
         }
     }
     

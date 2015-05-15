@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
@@ -290,7 +289,7 @@ public class ChatActivity extends BaseActivity {
                             String externalPath = externalFile.getAbsolutePath();
                             new File(externalPath + "/actor/").mkdirs();
 
-                            fileName = externalPath + "/actor/capture_" + RandomUtil.randomId() + ".jpg";
+                            fileName = externalPath + "/actor/capture_" + RandomUtil.randomId() + ".mp4";
 
                             Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                                     .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
@@ -547,7 +546,7 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(emojiKeyboard.isShowing()){
+        if (emojiKeyboard.isShowing()) {
             emojiKeyboard.dismiss();
         } else {
             super.onBackPressed();
@@ -602,11 +601,19 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
         if (fileName != null) {
             outState.putString("pending_file_name", fileName);
         }
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        fileName = savedInstanceState.getString("pending_file_name", null);
     }
 
     @Override

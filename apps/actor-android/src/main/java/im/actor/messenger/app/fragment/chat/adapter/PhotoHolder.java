@@ -1,5 +1,6 @@
 package im.actor.messenger.app.fragment.chat.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -237,6 +238,12 @@ public class PhotoHolder extends MessageHolder {
                 if (isPhoto) {
                     previewView.setImageURI(Uri.fromFile(
                             new File(((FileLocalSource) fileMessage.getSource()).getFileDescriptor())));
+                } else {
+                    previewView.setImageURI(null);
+                    //TODO: better approach?
+                    if (fileMessage.getFastThumb() != null) {
+                        fastThumbLoader.request(fileMessage.getFastThumb().getImage());
+                    }
                 }
             } else {
                 throw new RuntimeException("Unknown file source type: " + fileMessage.getSource());
@@ -263,12 +270,16 @@ public class PhotoHolder extends MessageHolder {
 
                 @Override
                 public void onDownloaded(final FileSystemReference reference) {
+
                     MVVMEngine.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), previewView, reference.getDescriptor(), currentMessage.getSenderId());
-                            /*Activity activity = getAdapter().getMessagesFragment().getActivity();
-                            activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));*/
+                            if (document instanceof PhotoContent) {
+                                Intents.openMedia(getAdapter().getMessagesFragment().getActivity(), previewView, reference.getDescriptor(), currentMessage.getSenderId());
+                            } else {
+                                Activity activity = getAdapter().getMessagesFragment().getActivity();
+                                activity.startActivity(Intents.openDoc(document.getName(), reference.getDescriptor()));
+                            }
                         }
                     });
                 }

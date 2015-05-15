@@ -8,6 +8,7 @@
 #include "im/actor/model/BaseMessenger.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/Messenger.h"
+#include "im/actor/model/MessengerEnvironment.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/DisplayLists.h"
 #include "im/actor/model/modules/Modules.h"
@@ -18,16 +19,19 @@
 @interface AMBaseMessenger () {
  @public
   ImActorModelModulesDisplayLists *displayLists_;
+  AMMessengerEnvironmentEnum *environment_;
 }
 
 @end
 
 J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLists *)
+J2OBJC_FIELD_SETTER(AMBaseMessenger, environment_, AMMessengerEnvironmentEnum *)
 
 @implementation AMBaseMessenger
 
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration {
-  AMBaseMessenger_initWithAMConfiguration_(self, configuration);
+- (instancetype)initWithAMMessengerEnvironmentEnum:(AMMessengerEnvironmentEnum *)environment
+                               withAMConfiguration:(AMConfiguration *)configuration {
+  AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(self, environment, configuration);
   return self;
 }
 
@@ -71,14 +75,15 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, displayLists_, ImActorModelModulesDisplayLi
 
 @end
 
-void AMBaseMessenger_initWithAMConfiguration_(AMBaseMessenger *self, AMConfiguration *configuration) {
+void AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(AMBaseMessenger *self, AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration) {
   (void) AMMessenger_initWithAMConfiguration_(self, configuration);
-  self->displayLists_ = new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(self->modules_);
+  self->environment_ = environment;
+  self->displayLists_ = new_ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(environment, self->modules_);
 }
 
-AMBaseMessenger *new_AMBaseMessenger_initWithAMConfiguration_(AMConfiguration *configuration) {
+AMBaseMessenger *new_AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration) {
   AMBaseMessenger *self = [AMBaseMessenger alloc];
-  AMBaseMessenger_initWithAMConfiguration_(self, configuration);
+  AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(self, environment, configuration);
   return self;
 }
 

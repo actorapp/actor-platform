@@ -20,11 +20,12 @@ import im.actor.model.viewmodel.ConversationVMCallback;
 public class BaseMessenger extends Messenger {
 
     private DisplayLists displayLists;
+    private MessengerEnvironment environment;
 
-    public BaseMessenger(Configuration configuration) {
+    public BaseMessenger(MessengerEnvironment environment, Configuration configuration) {
         super(configuration);
-
-        displayLists = new DisplayLists(modules);
+        this.environment = environment;
+        displayLists = new DisplayLists(environment, modules);
     }
 
     public ConversationVM buildConversationVM(Peer peer, BindedDisplayList<Message> displayList,
