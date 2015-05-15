@@ -72,7 +72,7 @@ gulp.task 'html', ->
 
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
-  gulp.watch ['./app/**/*.js'], ['js']
+  gulp.watch ['./app/**/*.js', './app/**/*.jsx'], ['js']
   gulp.watch ['./app/**/*.scss'], ['sass']
   gulp.watch ['./index.html', './app/**/*.html'], ['html']
 
