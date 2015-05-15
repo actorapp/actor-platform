@@ -50,7 +50,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
                 self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
                 break
             case AMChangeDescription_OperationType.UPDATE.rawValue:
-                // TODO: Implement
+                // Ignore in separate batch
                 break
             case AMChangeDescription_OperationType.REMOVE.rawValue:
                 var startIndex = Int(change.getIndex())
@@ -67,6 +67,22 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             }
         }
         self.tableView.endUpdates()
+        
+        for i in 0..<modification.getChanges().size() {
+            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                }
+                self.tableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
+                break
+            default:
+                break
+            }
+        }
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
