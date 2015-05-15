@@ -44,6 +44,10 @@ private[session] class RpcHandler extends ActorSubscriber with ActorPublisher[Pr
 
       log.debug("Making an rpc request for messageId: {}", messageId)
       rpcApiService ! RpcApiService.HandleRpcRequest(messageId, requestBytes, clientData)
+    case OnComplete ⇒
+      context.stop(self)
+    case OnError(cause) ⇒
+      log.error(cause, "Error in upstream")
   }
 
   override val requestStrategy = new MaxInFlightRequestStrategy(max = MaxRequestQueueSize) {
