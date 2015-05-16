@@ -1,143 +1,139 @@
 @import '../../styles/variables';
 
-.messages-list
-{
-    &__item
-    {
-        &__avatar
-        {
-            //margin: 16px 16px 16px 0;
-            margin: 8px 16px 16px 0;
-        }
-        &__body
-        {
-            //margin: 12px 0 8px;
-            margin: 4px 0 8px;
-            &__title
-            {
-                font-size: 14px;
-                font-weight: 500;
-                line-height: 12px;
-
-                height: 12px;
-                margin: 6px 0 4px;
-
-                color: rgb(22,22,22);
-            }
-            &__timestamp
-            {
-                font-size: 12px;
-
-                text-transform: lowercase;
-
-                color: rgb(190,190,190);
-            }
-            > p
-            {
-                font-size: 13px;
-                font-weight: 400;
-                line-height: 22px;
-
-                margin: 4px 0 0;
-
-                word-wrap: break-word;
-                word-break: break-all;
-
-                color: rgb(37,37,37);
-                &.unsupported
-                {
-                    color: rgba(red,.3);
-                }
-                &.service
-                {
-                    text-align: center;
-
-                    color: rgba(black,.3);
-                }
-            }
-        }
-
-        &__photo
-        {
-            position: relative;
-
-            display: inline-block;
-
-            background-color: rgba($baseColor, .05);
-            margin-top: 6px;
-            img
-            {
-                max-width: 300px;
-                height: auto;
-                @media (max-width: 396px) {
-                    max-width: 100%;
-                }
-            }
-            &__original
-            {
-                position: absolute;
-            }
-        }
-        &__document
-        {
-            display: inline-block;
-
-            padding: 10px 10px 10px 6px;
-
-            color: rgba(0,0,0,.5);
-            border-radius: 4px;
-            background-color: rgba($baseColor, .05);
-            md-icon
-            {
-                width: 20px;
-                height: 20px;
-            }
-            p
-            {
-                font-size: 14px;
-                line-height: 20px;
-
-                margin: 0;
-            }
-            a
-            {
-                text-decoration: none;
-
-                color: $baseColor;
-                &:hover
-                {
-                    text-decoration: underline;
-                }
-            }
-        }
-        &__status {
-            margin-top: -2px;
-            margin-right: 4px;
-        }
+.messages-list {
+  overflow: auto;
+  padding: 8px 0;
+  [class*="col"] {
+    padding: 0;
+  }
+  &__typing {
+    text-align: center;
+    background-color: rgba(0, 0, 0, .03);
+    color: rgba(0, 0, 0, .5);
+    border-radius: 4px;
+    margin: 0;
+    line-height: 16px;
+    font-size: 12px;
+    display: inline-block;
+    padding: 4px 8px;
+    margin-bottom: 16px;
+    img {
+      width: 16px;
+      height: 16px;
     }
-    &__typing {
-        text-align: center;
-        p {
-            background-color: rgba(0, 0, 0, .03);
-            color: rgba(0,0,0,.5);
-            border-radius: 4px;
-            margin: 0;
-            line-height: 16px;
-            font-size: 12px;
-            display: inline-block;
-            padding: 4px 8px;
-            margin-bottom: 16px;
-        }
-        md-icon {
-            width: 16px;
-            height: 16px;
-        }
-    }
+  }
 }
 
+.message {
+  margin: 0;
+  padding: 0 16px;
 
-.messages-list {
-    > div {
-        overflow: auto;
+  &__avatar {
+    margin: 8px 16px 16px 0;
+  }
+  &__body {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    &__title {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 14px;
+
+      height: 12px;
+      margin: 8px 0 4px;
+
+      color: rgb(22, 22, 22);
     }
+    &__timestamp {
+      font-size: 12px;
+
+      text-transform: lowercase;
+
+      color: rgb(190, 190, 190);
+    }
+  }
+  &__status {
+    margin-top: -2px;
+    margin-right: 4px;
+  }
+
+  &__text {
+    word-wrap: break-word;
+    word-break: keep-all;
+    color: rgb(37, 37, 37);
+    margin-top: 4px;
+    line-height: 22px;
+
+    // Styles for markdown
+    p {
+      margin: 4px 0 0;
+    }
+    ul, ol {
+      margin: 6px 0;
+      padding-left: 24px;
+    }
+    h1, h2, h3, h4, h5 {
+      padding: 6px 0;
+      margin: 0;
+    }
+    blockquote {
+      border-left: 3px solid $baseColor;
+      margin: 0 24px 0 6px;
+      padding-left: 15px;
+    }
+  }
+  &__photo {
+    position: relative;
+
+    display: inline-block;
+
+    background-color: rgba($baseColor, .05);
+    margin-top: 6px;
+    img {
+      max-width: 300px;
+      height: auto;
+      @media (max-width: 396px) {
+        max-width: 100%;
+      }
+    }
+    &__original {
+      position: absolute;
+    }
+  }
+  &__document {
+    margin: 6px 0 4px;
+    display: inline-block;
+
+    padding: 6px;
+    border-radius: 2px;
+    background-color: transparent;
+    line-height: 18px;
+    color: $baseColor;
+    transition: background-color 400ms cubic-bezier(.25,.8,.25,1);
+    &__icon {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+    }
+    span {
+      font-size: 13px;
+      padding-right: 4px;
+      line-height: 24px;
+      text-decoration: none;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    &:hover {
+      background-color: rgba(darken($baseColor,10), .07);
+      text-decoration: none;
+    }
+  }
+  &__service {
+    text-align: center;
+    color: rgba(black, .3);
+  }
+  &__unsupported {
+    color: rgba(red, .3);
+  }
 }
