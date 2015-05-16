@@ -1,4 +1,4 @@
-@charset 'UTF-8';
+@charset "UTF-8";
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin,cyrillic);
 @import 'variables';
 
@@ -22,13 +22,21 @@ body {
   }
 }
 
+a {
+  color: $baseColor;
+  font-weight: 500;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .splash-screen {
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: #f00;
   z-index: 1000;
   background-color: $baseColor;
   background-repeat: no-repeat;
@@ -117,7 +125,6 @@ md-list-item {
   padding: 0 16px;
   text-overflow: ellipsis;
   justify-content: flex-start;
-  align-items: center;
   flex: 1;
   align-items: flex-start;
 }
