@@ -11,7 +11,7 @@ var Avatar = React.createClass({
       image = <img src={sender.avatar} alt={sender.title}/>;
     }
 
-    var divClass = 'messages-list__item__avatar avatar avatar--small avatar--' + sender.placeholder;
+    var divClass = 'message__avatar avatar avatar--small avatar--' + sender.placeholder;
 
     return (
       <div className={divClass}>
