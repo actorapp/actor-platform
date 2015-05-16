@@ -812,6 +812,7 @@
 		0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigtionExtensions.swift; sourceTree = "<group>"; };
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
+		060E8BF61B06F50A0000FFB8 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
 		0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
 		0623AC511B001F8E007CD6B7 /* ariel.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ariel.caf; sourceTree = "<group>"; };
@@ -4419,6 +4420,7 @@
 		2537F8241A966B9D004A02E9 = {
 			isa = PBXGroup;
 			children = (
+				060E8BF61B06F50A0000FFB8 /* ActorApp.entitlements */,
 				2537F82F1A966B9D004A02E9 /* ActorClient */,
 				2537F84C1A966B9D004A02E9 /* ActorClientTests */,
 				2537F82E1A966B9D004A02E9 /* Products */,
@@ -4610,13 +4612,13 @@
 				TargetAttributes = {
 					2537F82C1A966B9D004A02E9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = WBZ2456W25;
+						DevelopmentTeam = ZLY9DP39MF;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
 							com.apple.iCloud = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -5550,7 +5552,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business.enterprise;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5649,7 +5651,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business.enterprise;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5748,7 +5750,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.develop;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5846,7 +5848,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.develop;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5945,7 +5947,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.llectro.preview;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -6089,7 +6091,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -6135,7 +6137,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;

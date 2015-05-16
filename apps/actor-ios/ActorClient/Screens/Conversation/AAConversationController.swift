@@ -352,7 +352,12 @@ class AAConversationController: EngineSlackListController {
                 cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier, peer: peer)
             }
             return cell!
-            
+        } else if (message.getContent() is AMDocumentContent) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
+            if (cell == nil) {
+                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier, peer: peer)
+            }
+            return cell!
         } else if (message.getContent() is AMServiceContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! AABubbleServiceCell?
             if (cell == nil) {
