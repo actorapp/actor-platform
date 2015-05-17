@@ -48,7 +48,7 @@ gulp.task 'assets', ->
   gulp.src ['./assets/**/*']
     .pipe gulp.dest './dist/assets/'
   gulp.src ['./bower_components/actor/**/*.js']
-    .pipe gulp.dest './dist/assets/actor'
+    .pipe gulp.dest './dist/assets/js/actor'
 
 gulp.task 'usemin', ->
   gulp.src ['./index.html']
