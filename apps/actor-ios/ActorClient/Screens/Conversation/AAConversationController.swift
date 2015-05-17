@@ -268,13 +268,13 @@ class AAConversationController: EngineSlackListController {
                     
                     var item = objectAtIndexPath(indexPath!) as! AMMessage
                     if let content = item.getContent() as? AMPhotoContent {
-                        if let fileSource = content.getSource() as? AMFileRemoteSource {
-                            if let photoCell = cell as? AABubbleMediaCell {
-                                let frame = photoCell.preview.frame
-                                
-                                MSG.requestStateWithLong(fileSource.getFileReference().getFileId(),
-                                    withAMFileCallback: CocoaDownloadCallback(
-                                        notDownloaded: { () -> () in
+                        if let photoCell = cell as? AABubbleMediaCell {
+                            var frame = photoCell.preview.frame
+                            var touchFrame = tableView.convertRect(frame, fromView: cell.bubble.superview)
+                            if CGRectContainsPoint(touchFrame, point) {
+                                if let fileSource = content.getSource() as? AMFileRemoteSource {
+                                    MSG.requestStateWithLong(fileSource.getFileReference().getFileId(), withAMFileCallback: CocoaDownloadCallback(
+                                    notDownloaded: { () -> () in
                                         MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
                                     }, onDownloading: { (progress) -> () in
                                         MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
@@ -287,23 +287,52 @@ class AAConversationController: EngineSlackListController {
                                         var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
                                         previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
                                     }))
+                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
+                                    MSG.requestUploadStateWithLong(item.getRid(), withAMUploadFileCallback: CocoaUploadCallback(
+                                    notUploaded: { () -> () in
+                                        MSG.resumeUploadWithLong(item.getRid())
+                                    }, onUploading: { (progress) -> () in
+                                        MSG.pauseUploadWithLong(item.getRid())
+                                    }, onUploadedClosure: { () -> () in
+                                        var imageInfo = JTSImageInfo()
+                                        imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                                        imageInfo.referenceRect = frame
+                                        imageInfo.referenceView = photoCell
+                                        
+                                        var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                                        previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+                                    }))
+                                }
                             }
                         }
                     } else if let content = item.getContent() as? AMDocumentContent {
-                        if let fileSource = content.getSource() as? AMFileRemoteSource {
-                            if let photoCell = cell as? AABubbleDocumentCell {
-//                                let frame = photoCell.preview.frame
-                                MSG.requestStateWithLong(fileSource.getFileReference().getFileId(),
-                                    withAMFileCallback: CocoaDownloadCallback(
-                                        notDownloaded: { () -> () in
-                                            MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
-                                        }, onDownloading: { (progress) -> () in
-                                            MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
-                                        }, onDownloaded: { (reference) -> () in
-                                            var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
-                                            controller.delegate = self
-                                            controller.presentPreviewAnimated(true)
+                        if let documentCell = cell as? AABubbleDocumentCell {
+                            var frame = documentCell.bubble.frame
+                            frame = tableView.convertRect(frame, fromView: cell.bubble.superview)
+                            if CGRectContainsPoint(frame, point) {
+                                if let fileSource = content.getSource() as? AMFileRemoteSource {
+                                    MSG.requestStateWithLong(fileSource.getFileReference().getFileId(), withAMFileCallback: CocoaDownloadCallback(
+                                    notDownloaded: { () -> () in
+                                        MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
+                                    }, onDownloading: { (progress) -> () in
+                                        MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
+                                    }, onDownloaded: { (reference) -> () in
+                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+                                        controller.delegate = self
+                                        controller.presentPreviewAnimated(true)
                                     }))
+                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
+                                    MSG.requestUploadStateWithLong(item.getRid(), withAMUploadFileCallback: CocoaUploadCallback(
+                                    notUploaded: { () -> () in
+                                        MSG.resumeUploadWithLong(item.getRid())
+                                    }, onUploading: { (progress) -> () in
+                                        MSG.pauseUploadWithLong(item.getRid())
+                                    }, onUploadedClosure: { () -> () in
+                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                                        controller.delegate = self
+                                        controller.presentPreviewAnimated(true)
+                                    }))
+                                }
                             }
                         }
                     }
