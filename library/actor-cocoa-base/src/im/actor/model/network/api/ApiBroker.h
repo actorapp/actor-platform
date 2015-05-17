@@ -86,4 +86,20 @@ FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_CancelRequest *new_ImActorMode
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_CancelRequest)
 
+@interface ImActorModelNetworkApiApiBroker_NetworkChanged : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_NetworkChanged)
+
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_NetworkChanged_init(ImActorModelNetworkApiApiBroker_NetworkChanged *self);
+
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_NetworkChanged)
+
 #endif // _ImActorModelNetworkApiApiBroker_H_

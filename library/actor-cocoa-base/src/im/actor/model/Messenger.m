@@ -46,6 +46,7 @@
 #include "im/actor/model/mvvm/MVVMCollection.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/util/ActorTrace.h"
 #include "im/actor/model/util/Timing.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
@@ -199,6 +200,7 @@
 }
 
 - (void)onNetworkChanged {
+  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getActorApi])) onNetworkChanged];
 }
 
 - (void)onPushReceivedWithInt:(jint)seq {
