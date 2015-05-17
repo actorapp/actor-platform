@@ -67,4 +67,12 @@ public class Notifications extends BaseModule {
     public void onAppHidden() {
         notificationsActor.send(new NotificationsActor.OnAppHidden());
     }
+
+    public void pauseNotifications() {
+        notificationsActor.send(new NotificationsActor.PauseNotifications());
+    }
+
+    public void resumeNotifications() {
+        notificationsActor.send(new NotificationsActor.ResumeNotifications());
+    }
 }
