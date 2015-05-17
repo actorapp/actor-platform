@@ -4,11 +4,12 @@
 
 import UIKit
 
-class AABubbleDocumentCell: AABubbleCell {
+class AABubbleDocumentCell: AABubbleBaseFileCell {
     
     // MARK: -
     // MARK: Private vars
     
+    private let progressBg = UIImageView()
     private let circullarNode = CircullarNode()
     private let fileIcon = UIImageView()
     
@@ -18,13 +19,7 @@ class AABubbleDocumentCell: AABubbleCell {
     private let dateLabel = UILabel()
     private let statusView = UIImageView()
     
-    private var messageState: UInt = AMMessageState.UNKNOWN.rawValue
-    
-    var bindedDownloadFile: jlong? = nil
-    var bindedDownloadCallback: CocoaDownloadCallback? = nil
-    
-    var bindedUploadFile: jlong? = nil
-    var bindedUploadCallback: CocoaUploadCallback? = nil
+    private var bindedExt = ""
     
     // MARK: -
     // MARK: Constructors
@@ -52,7 +47,7 @@ class AABubbleDocumentCell: AABubbleCell {
         sizeLabel.text = " "
         sizeLabel.sizeToFit()
         
-        fileIcon.image = UIImage(named: "file_apk")
+        progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
         
         contentView.addSubview(titleLabel)
         contentView.addSubview(sizeLabel)
@@ -60,6 +55,7 @@ class AABubbleDocumentCell: AABubbleCell {
         contentView.addSubview(dateLabel)
         contentView.addSubview(statusView)
         
+        contentView.addSubview(progressBg)
         contentView.addSubview(fileIcon)
         contentView.addSubview(circullarNode.view)
         
@@ -91,18 +87,26 @@ class AABubbleDocumentCell: AABubbleCell {
             }
             
             titleLabel.text = document.getName()
+            bindedExt = document.getExt().lowercaseString
+            sizeLabel.text = MSG.getFormatter().formatFileSizeWithInt(document.getSource().getSize())
             
-            let source = document.getSource()
+            // Reset progress
+            circullarNode.hidden = true
+            circullarNode.setProgress(0, animated: false)
+            UIView.animateWithDuration(0, animations: { () -> Void in
+                self.circullarNode.alpha = 0
+                self.fileIcon.alpha = 0
+                self.progressBg.alpha = 0
+            })
             
-            sizeLabel.text = MSG.getFormatter().formatFileSizeWithInt(source.getSize())
+            // Bind file
+            fileBind(message, autoDownload: false)
         }
         
         // Always update date and state
         dateLabel.text = formatDate(message.getDate())
-        messageState = UInt(message.getMessageState().ordinal())
-        
         if (isOut) {
-            switch(self.messageState) {
+            switch(UInt(message.getMessageState().ordinal())) {
             case AMMessageState.PENDING.rawValue:
                 self.statusView.image = Resources.iconClock
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
@@ -131,6 +135,128 @@ class AABubbleDocumentCell: AABubbleCell {
         }
     }
     
+    override func fileUploadPaused(reference: String, selfGeneration: Int) {
+        bgShowState(selfGeneration)
+        bgShowIcon(UIImage(named: "ic_upload")!.tintImage(UIColor.whiteColor()), selfGeneration: selfGeneration)
+        bgHideProgress(selfGeneration)
+    }
+    
+    override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
+        bgShowState(selfGeneration)
+        bgHideIcon(selfGeneration)
+        bgShowProgress(progress, selfGeneration: selfGeneration)
+    }
+    
+    override func fileDownloadPaused(selfGeneration: Int) {
+        bgShowState(selfGeneration)
+        bgShowIcon(UIImage(named: "ic_download")!.tintImage(UIColor.whiteColor()), selfGeneration: selfGeneration)
+        bgHideProgress(selfGeneration)
+    }
+    
+    override func fileDownloading(progress: Double, selfGeneration: Int) {
+        bgShowState(selfGeneration)
+        bgHideIcon(selfGeneration)
+        bgShowProgress(progress, selfGeneration: selfGeneration)
+    }
+    
+    override func fileReady(reference: String, selfGeneration: Int) {
+        bgHideState(selfGeneration)
+        var fileName = "file_unknown"
+        if (FileTypes[bindedExt] != nil) {
+            switch(FileTypes[bindedExt]!) {
+            case FileType.Music:
+                fileName = "file_music"
+                break
+            case FileType.Doc:
+                fileName = "file_doc"
+                break
+            case FileType.Spreadsheet:
+                fileName = "file_xls"
+                break
+            case FileType.Video:
+                fileName = "file_video"
+                break
+            case FileType.Presentation:
+                fileName = "file_ppt"
+                break
+            case FileType.PDF:
+                fileName = "file_pdf"
+                break
+            case FileType.APK:
+                fileName = "file_apk"
+                break
+            case FileType.RAR:
+                fileName = "file_rar"
+                break
+            case FileType.ZIP:
+                fileName = "file_zip"
+                break
+            case FileType.CSV:
+                fileName = "file_csv"
+                break
+            case FileType.HTML:
+                fileName = "file_html"
+                break
+            default:
+                fileName = "file_unknown"
+                break
+            }
+        }
+        bgShowIcon(UIImage(named: fileName)!, selfGeneration: selfGeneration)
+        bgHideProgress(selfGeneration)
+    }
+    
+    // Progress show/hide
+    func bgHideProgress(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            UIView.animateWithDuration(0.4, animations: { () -> Void in
+                self.circullarNode.alpha = 0
+                }, completion: { (val) -> Void in
+                    if (val) {
+                        self.circullarNode.hidden = true
+                    }
+            })
+        })
+    }
+    func bgShowProgress(value: Double, selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            if (self.circullarNode.hidden) {
+                self.circullarNode.hidden = false
+                self.circullarNode.alpha = 0
+            }
+            self.circullarNode.postProgress(value, animated: true)
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                self.circullarNode.alpha = 1
+            })
+        })
+    }
+    
+    // State show/hide
+    func bgHideState(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.progressBg.hideView()
+        })
+    }
+    
+    func bgShowState(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.progressBg.showView()
+        })
+    }
+    
+    // Icon show/hide
+    func bgShowIcon(image: UIImage, selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.fileIcon.image = image
+            self.fileIcon.showView()
+        })
+    }
+    func bgHideIcon(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.fileIcon.hideView()
+        })
+    }
+    
     // MARK: -
     // MARK: Methods
     
@@ -154,37 +280,23 @@ class AABubbleDocumentCell: AABubbleCell {
         
         var contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
         
+        // Content
         self.titleLabel.frame = CGRectMake(contentLeft + 62, 16, 200 - 64, 22)
         self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22, 200 - 64, 22)
         
-        self.fileIcon.frame = CGRectMake(contentLeft + 8, 12, 48, 48)
+        // Progress state
+        var progressRect = CGRectMake(contentLeft + 8, 12, 48, 48)
+        self.progressBg.frame = progressRect
+        self.fileIcon.frame = CGRectMake(contentLeft + 16, 20, 32, 32)
+        self.circullarNode.frame = progressRect
         
-        // var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
-        // var bubbleWidth = CGFloat(201)
-        
-//        var contentInsetY = CGFloat((self.isGroup ? self.groupContentInsetY : 0.0))
-//        var contentInsetX = CGFloat((self.isGroup ? self.groupContentInsetX : 0.0))
-//
-//        if (self.isOut) {
-//            // self.layoutBubble(CGRectMake(contentWidth - bubbleWidth - self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight))
-//            
-//            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-//            
-//            self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 25.0, width: bubbleWidth - 76.0 - 8.0 - 6.0, height: self.titleLabel.bounds.height)
-//            self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
-//        } else {
-//            // self.layoutBubble(CGRectMake(self.bubblePadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight))
-//            
-//            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-//            
-//            self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 25.0 + contentInsetY, width: bubbleWidth - 82.0 - 8.0, height: self.titleLabel.bounds.height)
-//            self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 47.0 + contentInsetY, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
-//        }
-//        
+        // Message state
         if (self.isOut) {
+            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
             self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26)
             self.statusView.hidden = false
         } else {
+            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
             self.statusView.hidden = true
         }
     }
