@@ -43,6 +43,10 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
   [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(request, callback)];
 }
 
+- (void)onNetworkChanged {
+  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_NetworkChanged_init()];
+}
+
 @end
 
 void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {

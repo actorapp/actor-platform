@@ -53,6 +53,7 @@
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Contacts.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/modules/contacts/ContactsSyncActor.h"
 #include "im/actor/model/modules/messages/entity/EntityConverter.h"
@@ -201,6 +202,18 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [self applyRelatedWithJavaUtilList:new_JavaUtilArrayList_init() withJavaUtilList:groups withBoolean:NO];
     [self runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUpdatesUpdateProcessor_$2_initWithImActorModelModulesUpdatesInternalGroupCreated_(created)];
   }
+}
+
+- (void)applyDifferenceUpdateWithJavaUtilList:(id<JavaUtilList>)users
+                             withJavaUtilList:(id<JavaUtilList>)groups
+                             withJavaUtilList:(id<JavaUtilList>)updates {
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) pauseNotifications];
+  [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:NO];
+  for (ImActorModelNetworkParserUpdate * __strong u in nil_chk(updates)) {
+    [self processUpdateWithImActorModelNetworkParserUpdate:u];
+  }
+  [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:YES];
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) resumeNotifications];
 }
 
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {

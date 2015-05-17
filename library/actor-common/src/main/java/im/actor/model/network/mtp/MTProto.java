@@ -72,4 +72,8 @@ public class MTProto {
     public void cancelRpc(long mtId) {
         sender.send(new SenderActor.ForgetMessage(mtId));
     }
+
+    public void onNetworkChanged() {
+        this.manager.send(new ManagerActor.NetworkChanged());
+    }
 }

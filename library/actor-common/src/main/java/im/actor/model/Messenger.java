@@ -370,7 +370,7 @@ public class Messenger {
      * MUST be called when network status change detected
      */
     public void onNetworkChanged() {
-        // TODO: Implement
+        modules.getActorApi().onNetworkChanged();
     }
 
     /**

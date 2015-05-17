@@ -42,6 +42,10 @@
 - (void)onOwnReadWithAMPeer:(AMPeer *)peer
                    withLong:(jlong)fromDate;
 
+- (void)pauseNotifications;
+
+- (void)resumeNotifications;
+
 - (void)run;
 
 @end
