@@ -354,7 +354,7 @@ class AAConversationController: EngineSlackListController {
         actionShit.buttonTitles = [
             NSLocalizedString("PhotoCamera",comment: "Take Photo"),
             NSLocalizedString("PhotoLibrary",comment: "Choose Photo"),
-            "Send Document"]
+            NSLocalizedString("SendDocument",comment: "Document")]
         actionShit.cancelButtonTitle = NSLocalizedString("AlertCancel",comment: "Cancel")
         actionShit.delegate = self
         actionShit.showWithCompletion(nil)
@@ -574,7 +574,7 @@ extension AAConversationController: ABActionShitDelegate {
             var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
             documentPicker.view.backgroundColor = UIColor.clearColor()
             documentPicker.delegate = self
-            self.navigationController!.presentViewController(documentPicker, animated: true, completion: nil)
+            self.presentViewController(documentPicker, animated: true, completion: nil)
         }
     }
 }
