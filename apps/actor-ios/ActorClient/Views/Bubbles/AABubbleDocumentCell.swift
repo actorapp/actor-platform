@@ -10,6 +10,7 @@ class AABubbleDocumentCell: AABubbleCell {
     // MARK: Private vars
     
     private let circullarNode = CircullarNode()
+    private let fileIcon = UIImageView()
     
     private let titleLabel = UILabel()
     private let sizeLabel = UILabel()
@@ -18,6 +19,12 @@ class AABubbleDocumentCell: AABubbleCell {
     private let statusView = UIImageView()
     
     private var messageState: UInt = AMMessageState.UNKNOWN.rawValue
+    
+    var bindedDownloadFile: jlong? = nil
+    var bindedDownloadCallback: CocoaDownloadCallback? = nil
+    
+    var bindedUploadFile: jlong? = nil
+    var bindedUploadCallback: CocoaUploadCallback? = nil
     
     // MARK: -
     // MARK: Constructors
@@ -45,12 +52,15 @@ class AABubbleDocumentCell: AABubbleCell {
         sizeLabel.text = " "
         sizeLabel.sizeToFit()
         
+        fileIcon.image = UIImage(named: "file_apk")
+        
         contentView.addSubview(titleLabel)
         contentView.addSubview(sizeLabel)
         
         contentView.addSubview(dateLabel)
         contentView.addSubview(statusView)
         
+        contentView.addSubview(fileIcon)
         contentView.addSubview(circullarNode.view)
         
         self.bubbleInsets = UIEdgeInsets(
@@ -144,8 +154,10 @@ class AABubbleDocumentCell: AABubbleCell {
         
         var contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
         
-        self.titleLabel.frame = CGRectMake(contentLeft + 64, 16, 200 - 64, 22)
-        self.sizeLabel.frame = CGRectMake(contentLeft + 64, 16 + 22, 200 - 64, 22)
+        self.titleLabel.frame = CGRectMake(contentLeft + 62, 16, 200 - 64, 22)
+        self.sizeLabel.frame = CGRectMake(contentLeft + 62, 16 + 22, 200 - 64, 22)
+        
+        self.fileIcon.frame = CGRectMake(contentLeft + 8, 12, 48, 48)
         
         // var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
         // var bubbleWidth = CGFloat(201)
