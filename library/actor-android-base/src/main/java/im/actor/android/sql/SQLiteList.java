@@ -50,7 +50,7 @@ public class SQLiteList implements ListStorageDisplayEx {
     public void updateOrAdd(ListEngineRecord valueContainer) {
         checkTable();
 
-        Object[] args = new Object[]{valueContainer.getKey(), valueContainer.getQuery(), valueContainer.getOrder(), valueContainer.getData()};
+        Object[] args = new Object[]{valueContainer.getKey(), valueContainer.getQuery().toLowerCase(), valueContainer.getOrder(), valueContainer.getData()};
         database.execSQL("REPLACE INTO \"" + tableName + "\" (\"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\") VALUES (?,?,?,?)", args);
     }
 
@@ -62,7 +62,7 @@ public class SQLiteList implements ListStorageDisplayEx {
 
         try {
             for (ListEngineRecord record : items) {
-                Object[] args = new Object[]{record.getKey(), record.getQuery(), record.getOrder(), record.getData()};
+                Object[] args = new Object[]{record.getKey(), record.getQuery().toLowerCase(), record.getOrder(), record.getData()};
                 database.execSQL("REPLACE INTO \"" + tableName + "\" (\"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\") VALUES (?,?,?,?)", args);
             }
             database.setTransactionSuccessful();
