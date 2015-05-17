@@ -492,18 +492,17 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
     return;
   }
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"Difference loaded {seq=", [((ImActorModelApiRpcResponseGetDifference *) nil_chk(response)) getSeq], '}'));
-  [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(this$0_->processor_)) applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withBoolean:NO];
+  JavaUtilArrayList *updates = new_JavaUtilArrayList_init();
   for (ImActorModelApiDifferenceUpdate * __strong u in nil_chk([response getUpdates])) {
     @try {
-      ImActorModelNetworkParserUpdate *update = [((ImActorModelApiParserUpdatesParser *) nil_chk(this$0_->parser_)) readWithInt:[((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader] withByteArray:[u getUpdate]];
-      [this$0_->processor_ processUpdateWithImActorModelNetworkParserUpdate:update];
+      [updates addWithId:[((ImActorModelApiParserUpdatesParser *) nil_chk(this$0_->parser_)) readWithInt:[((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader] withByteArray:[u getUpdate]]];
     }
     @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
       AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$I$", @"Broken update #", [((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader], @": ignoring"));
     }
   }
-  [this$0_->processor_ applyRelatedWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withBoolean:YES];
+  [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(this$0_->processor_)) applyDifferenceUpdateWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withJavaUtilList:updates];
   this$0_->seq_ = [response getSeq];
   this$0_->state_ = [response getState];
   this$0_->isValidated_ = YES;

@@ -331,7 +331,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
 - (NSString *)formatFullServiceMessageWithInt:(jint)senderId
                          withAMServiceContent:(AMServiceContent *)content {
   if ([content isKindOfClass:[AMServiceUserRegistered class]]) {
-    return AMI18nEngine_getTemplateWithInt_withNSString_(self, senderId, @"ServiceRegisteredFull");
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceRegisteredFull");
   }
   else if ([content isKindOfClass:[AMServiceGroupCreated class]]) {
     return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupCreatedFull"))) replace:@"{title}" withSequence:[((AMServiceGroupCreated *) nil_chk(((AMServiceGroupCreated *) check_class_cast(content, [AMServiceGroupCreated class])))) getGroupTitle]];
