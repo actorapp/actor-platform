@@ -9,6 +9,8 @@ class AABubbleDocumentCell: AABubbleCell {
     // MARK: -
     // MARK: Private vars
     
+    private let circullarNode = CircullarNode()
+    
     private let titleLabel = UILabel()
     private let sizeLabel = UILabel()
     
@@ -28,17 +30,18 @@ class AABubbleDocumentCell: AABubbleCell {
         dateLabel.numberOfLines = 1
         dateLabel.contentMode = UIViewContentMode.TopLeft
         dateLabel.textAlignment = NSTextAlignment.Right
+        dateLabel.textColor = MainAppTheme.bubbles.textDateOut
         
         statusView.contentMode = UIViewContentMode.Center
         
         titleLabel.font = UIFont.systemFontOfSize(16.0)
-        titleLabel.textColor = UIColor.RGB(0x3faa3c)
+        titleLabel.textColor = MainAppTheme.bubbles.textOut
         titleLabel.text = " "
         titleLabel.sizeToFit()
-        titleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingMiddle
+        titleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingTail
         
         sizeLabel.font = UIFont.systemFontOfSize(13.0)
-        sizeLabel.textColor = UIColor.RGB(0x74b56e)
+        sizeLabel.textColor = MainAppTheme.bubbles.textOut
         sizeLabel.text = " "
         sizeLabel.sizeToFit()
         
@@ -47,6 +50,15 @@ class AABubbleDocumentCell: AABubbleCell {
         
         contentView.addSubview(dateLabel)
         contentView.addSubview(statusView)
+        
+        contentView.addSubview(circullarNode.view)
+        
+        self.bubbleInsets = UIEdgeInsets(
+            top: 3,
+            left: 10,
+            bottom: 3,
+            right: 10)
+        self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)        
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -116,49 +128,47 @@ class AABubbleDocumentCell: AABubbleCell {
     // MARK: Getters
     
     class func measureServiceHeight(message: AMMessage) -> CGFloat {
-        return 81
-    }
-    
-    class func bubbleTopPadding() -> CGFloat {
-        return 1 + Utils.retinaPixel()
-    }
-    
-    class func bubbleBottomPadding() -> CGFloat {
-        return 1 + Utils.retinaPixel()
+        return 66 + 6
     }
     
     // MARK: -
     // MARK: Layout
     
     override func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
-        var bubbleTopPadding = AABubbleDocumentCell.bubbleTopPadding()
-        var bubbleBottomPadding = AABubbleDocumentCell.bubbleBottomPadding()
+        var insets = fullContentInsets
         
         var contentWidth = self.contentView.frame.width
         var contentHeight = self.contentView.frame.height
         
-        var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
-        var bubbleWidth = CGFloat(201)
+        layoutBubble(200, contentHeight: 66)
         
-        var contentInsetY = CGFloat((self.isGroup ? self.groupContentInsetY : 0.0))
-        var contentInsetX = CGFloat((self.isGroup ? self.groupContentInsetX : 0.0))
+        var contentLeft = self.isOut ? contentWidth - 200 - insets.right - contentInsets.left : insets.left
         
-        if (self.isOut) {
-            self.layoutBubble(CGRectMake(contentWidth - bubbleWidth - self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight))
-            
-            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-            
-            self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 25.0, width: bubbleWidth - 76.0 - 8.0 - 6.0, height: self.titleLabel.bounds.height)
-            self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
-        } else {
-            self.layoutBubble(CGRectMake(self.bubblePadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight))
-            
-            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
-            
-            self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 25.0 + contentInsetY, width: bubbleWidth - 82.0 - 8.0, height: self.titleLabel.bounds.height)
-            self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 47.0 + contentInsetY, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
-        }
+        self.titleLabel.frame = CGRectMake(contentLeft + 64, 16, 200 - 64, 22)
+        self.sizeLabel.frame = CGRectMake(contentLeft + 64, 16 + 22, 200 - 64, 22)
         
+        // var bubbleHeight = contentHeight - bubbleTopPadding - bubbleBottomPadding
+        // var bubbleWidth = CGFloat(201)
+        
+//        var contentInsetY = CGFloat((self.isGroup ? self.groupContentInsetY : 0.0))
+//        var contentInsetX = CGFloat((self.isGroup ? self.groupContentInsetX : 0.0))
+//
+//        if (self.isOut) {
+//            // self.layoutBubble(CGRectMake(contentWidth - bubbleWidth - self.bubblePadding, bubbleTopPadding, bubbleWidth, bubbleHeight))
+//            
+//            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 70 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+//            
+//            self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 25.0, width: bubbleWidth - 76.0 - 8.0 - 6.0, height: self.titleLabel.bounds.height)
+//            self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 76.0, y: 47.0, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
+//        } else {
+//            // self.layoutBubble(CGRectMake(self.bubblePadding + contentInsetX, bubbleTopPadding, bubbleWidth, bubbleHeight))
+//            
+//            self.dateLabel.frame = CGRectMake(self.bubble.frame.maxX - 47 - self.bubblePadding, self.bubble.frame.maxY - 24, 46, 26)
+//            
+//            self.titleLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 25.0 + contentInsetY, width: bubbleWidth - 82.0 - 8.0, height: self.titleLabel.bounds.height)
+//            self.sizeLabel.frame = CGRect(x: self.bubble.frame.minX + 82.0, y: 47.0 + contentInsetY, width: self.titleLabel.bounds.width, height: self.sizeLabel.bounds.height)
+//        }
+//        
         if (self.isOut) {
             self.statusView.frame = CGRectMake(self.bubble.frame.maxX - 24 - self.bubblePadding, self.bubble.frame.maxY - 24, 20, 26)
             self.statusView.hidden = false
