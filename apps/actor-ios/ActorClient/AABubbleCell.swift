@@ -128,7 +128,7 @@ class AABubbleCell: UITableViewCell {
         } else if (content is AMServiceContent) {
             height = AABubbleServiceCell.measureServiceHeight(message, isPreferCompact: isPreferCompact)
         } else if (content is AMDocumentContent) {
-            height = AABubbleDocumentCell.measureServiceHeight(message) + AABubbleDocumentCell.bubbleTopPadding() + AABubbleDocumentCell.bubbleBottomPadding()
+            height = AABubbleDocumentCell.measureServiceHeight(message)
         } else {
             // Use Text Cell for usupported content
             height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
