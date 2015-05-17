@@ -255,17 +255,18 @@ public class SequenceActor extends ModuleActor {
 
                     Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "}");
 
-                    processor.applyRelated(response.getUsers(), response.getGroups(), false);
+                    ArrayList<Update> updates = new ArrayList<Update>();
                     for (DifferenceUpdate u : response.getUpdates()) {
                         try {
-                            Update update = parser.read(u.getUpdateHeader(), u.getUpdate());
-                            processor.processUpdate(update);
+                            updates.add(parser.read(u.getUpdateHeader(), u.getUpdate()));
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.d(TAG, "Broken update #" + u.getUpdateHeader() + ": ignoring");
                         }
                     }
-                    processor.applyRelated(response.getUsers(), response.getGroups(), true);
+
+                    processor.applyDifferenceUpdate(response.getUsers(),response.getGroups(),
+                            updates);
 
                     seq = response.getSeq();
                     state = response.getState();

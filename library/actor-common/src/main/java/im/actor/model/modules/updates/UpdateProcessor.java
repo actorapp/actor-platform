@@ -130,6 +130,43 @@ public class UpdateProcessor extends BaseModule {
         }
     }
 
+    public void applyDifferenceUpdate(List<User> users, List<Group> groups, List<Update> updates) {
+        modules().getNotifications().pauseNotifications();
+        applyRelated(users, groups, false);
+        ArrayList<Update> miscUpdates = new ArrayList<Update>();
+//        HashMap<im.actor.model.api.Peer, CombinedMessageUpdate> chatUpdates =
+//                new HashMap<im.actor.model.api.Peer, CombinedMessageUpdate>();
+        for (Update u : updates) {
+
+            if (u instanceof UpdateUserNameChanged) {
+                miscUpdates.add(u);
+            } else if (u instanceof UpdateUserLocalNameChanged) {
+                miscUpdates.add(u);
+            } else if (u instanceof UpdateUserAvatarChanged) {
+                miscUpdates.add(u);
+            }
+
+//            if (u instanceof UpdateMessage) {
+//                UpdateMessage upd = (UpdateMessage) u;
+//                if (!chatUpdates.containsKey(upd.getPeer())) {
+//                    chatUpdates.put(upd.getPeer(), new CombinedMessageUpdate());
+//                }
+//                CombinedMessageUpdate combinedMessageUpdate = chatUpdates.get(upd.getPeer());
+//                combinedMessageUpdate.getMessages().add(new CombinedMessageUpdate.CombinedMessage(
+//                        upd.getRid(), upd.getSenderUid(), upd.getDate(), upd.getMessage()));
+//            } else if (u instanceof UpdateMessageRead) {
+//
+//            } else if (u instanceof UpdateMessageReceived) {
+//
+//            } else if (u instanceof UpdateMessageReadByMe) {
+//
+//            }
+            processUpdate(u);
+        }
+        applyRelated(users, groups, true);
+        modules().getNotifications().resumeNotifications();
+    }
+
     public void processUpdate(Update update) {
         Log.d(TAG, update + "");
         if (update instanceof UpdateUserNameChanged) {
