@@ -716,6 +716,7 @@
 		06A16C251ACA9F5700EA96BD /* ABActionShit.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A16C241ACA9F5700EA96BD /* ABActionShit.m */; };
 		06A5B0E51AEE8A47003E134A /* iOSPhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */; };
 		06A5B8D41AEE9CB2003E134A /* CocoaHttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */; };
+		06A6FCF71B088F78000E11CE /* AABubbleBaseFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
@@ -2122,6 +2123,7 @@
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
 		06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
 		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaHttpProvider.swift; sourceTree = "<group>"; };
+		06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
@@ -2386,6 +2388,7 @@
 				06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */,
 				065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */,
 				05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */,
+				06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */,
 			);
 			name = Bubbles;
 			sourceTree = "<group>";
@@ -4998,6 +5001,7 @@
 				068DE6681B061C890067A3A6 /* RequestDeleteChat.m in Sources */,
 				068DE6FF1B061C890067A3A6 /* RsaCipher.m in Sources */,
 				0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */,
+				06A6FCF71B088F78000E11CE /* AABubbleBaseFileCell.swift in Sources */,
 				068DE73E1B061C890067A3A6 /* ListEngineItem.m in Sources */,
 				068DE7FC1B061C890067A3A6 /* ReceiverActor.m in Sources */,
 				068DE7101B061C890067A3A6 /* QueueListener.m in Sources */,
