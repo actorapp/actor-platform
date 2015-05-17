@@ -16,16 +16,20 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
+import im.actor.model.android.providers.AndroidNotifications;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Peer;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 18.09.14.
@@ -84,6 +88,7 @@ public class AvatarView extends SimpleDraweeView {
     public void bind(GroupVM group) {
         bind(group.getAvatar().get(), group.getName().get(), group.getId());
     }
+
 
     public void bind(Avatar avatar, String title, int id) {
         getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext()));
