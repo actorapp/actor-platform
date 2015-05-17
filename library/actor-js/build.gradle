@@ -85,6 +85,8 @@ tasks.compileJava.dependsOn(updateExternalSources)
 // Builiding library
 task buildPackage(dependsOn: ['war']) {
     doFirst {
+        delete "$buildDir/library"
+
         copy {
             into "$buildDir/library"
             with war

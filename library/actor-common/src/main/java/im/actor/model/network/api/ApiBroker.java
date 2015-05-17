@@ -104,6 +104,14 @@ public class ApiBroker extends Actor {
             forceResend(((ForceResend) message).id);
         } else if (message instanceof ProtoUpdate) {
             processUpdate(((ProtoUpdate) message).getData());
+        } else if (message instanceof NetworkChanged) {
+            onNetworkChanged();
+        }
+    }
+
+    private void onNetworkChanged() {
+        if (proto != null) {
+            proto.onNetworkChanged();
         }
     }
 
@@ -337,6 +345,10 @@ public class ApiBroker extends Actor {
         }
     }
 
+    public static class NetworkChanged {
+
+    }
+
     private class RequestAuthId {
 
     }
@@ -408,4 +420,6 @@ public class ApiBroker extends Actor {
             this.callback = callback;
         }
     }
+
+
 }
