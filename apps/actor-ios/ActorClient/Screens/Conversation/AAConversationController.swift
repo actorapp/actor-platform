@@ -300,17 +300,9 @@ class AAConversationController: EngineSlackListController {
                                         }, onDownloading: { (progress) -> () in
                                             MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
                                         }, onDownloaded: { (reference) -> () in
-//                                            var imageInfo = JTSImageInfo()
-//                                            imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
-//                                            imageInfo.referenceRect = frame
-//                                            imageInfo.referenceView = photoCell
-//
-//                                            var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
-//                                            previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
                                             var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
                                             controller.delegate = self
                                             controller.presentPreviewAnimated(true)
-//                                            self.presentViewController(controller, animated: true, completion: nil)
                                     }))
                             }
                         }
