@@ -1,0 +1,12 @@
+{
+  "name": "actor",
+  "version": "0.9.0",
+  "homepage": "https://actor.im",
+  "description": "Actor is js library for working with actor.im messaging platform",
+  "main": "actor/actor.nocache.js",
+  "keywords": [
+    "actor",
+    "messaging"
+  ],
+  "license": "MIT"
+}

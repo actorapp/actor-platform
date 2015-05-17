@@ -1,0 +1,22 @@
+{
+  "name": "actor-js",
+  "version": "0.9.0",
+  "description": "Actor Js is client library for Actor messaging platform",
+  "main": "actor/actor.nocache.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://ex3ndr@github.com/actorapp/actor-js.git"
+  },
+  "keywords": [
+    "actor",
+    "messaging"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/actorapp/actor-js/issues"
+  },
+  "homepage": "https://github.com/actorapp/actor-js"
+}
