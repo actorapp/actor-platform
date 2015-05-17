@@ -43,6 +43,7 @@
 		060323301ADF078200C73C0F /* NavigtionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */; };
 		060323621AE0667400C73C0F /* AAAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323611AE0667400C73C0F /* AAAuthController.swift */; };
 		060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323651AE07D1000C73C0F /* MainSplitViewController.swift */; };
+		060E8BF81B085EDF0000FFB8 /* UTTs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E8BF71B085EDF0000FFB8 /* UTTs.swift */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
 		0623AC4A1AFFB436007CD6B7 /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */; };
 		0623AC5C1B001F8E007CD6B7 /* ariel.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC511B001F8E007CD6B7 /* ariel.caf */; };
@@ -813,6 +814,7 @@
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		060E8BF61B06F50A0000FFB8 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
+		060E8BF71B085EDF0000FFB8 /* UTTs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UTTs.swift; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
 		0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
 		0623AC511B001F8E007CD6B7 /* ariel.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ariel.caf; sourceTree = "<group>"; };
@@ -4413,6 +4415,7 @@
 				0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */,
 				0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */,
 				0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */,
+				060E8BF71B085EDF0000FFB8 /* UTTs.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -5370,6 +5373,7 @@
 				068DE7F21B061C890067A3A6 /* AsyncConnectionInterface.m in Sources */,
 				0699D4D41ADD9F0C0005AB9B /* BasicCell.swift in Sources */,
 				068DE7CD1B061C890067A3A6 /* MessagesProcessor.m in Sources */,
+				060E8BF81B085EDF0000FFB8 /* UTTs.swift in Sources */,
 				068DE7491B061C890067A3A6 /* AbsContent.m in Sources */,
 				050E99BD1ACB4D410052C06B /* AANavigationController.swift in Sources */,
 				068DE8511B061C890067A3A6 /* EncodableDigest.m in Sources */,
