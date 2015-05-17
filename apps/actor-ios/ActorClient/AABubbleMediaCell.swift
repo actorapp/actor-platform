@@ -107,7 +107,6 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
             })
             
             // Bind file
-            NSLog("fileBind")
             fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
         }
         
@@ -248,17 +247,13 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     // State show/hide
     func bgHideState(selfGeneration: Int) {
         self.runOnUiThread(selfGeneration, closure: { () -> () in
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.progressBg.alpha = 0
-            })
+            self.progressBg.hideView()
         })
     }
     
     func bgShowState(selfGeneration: Int) {
         self.runOnUiThread(selfGeneration, closure: { () -> () in
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.progressBg.alpha = 1
-            })
+            self.progressBg.showView()
         })
     }
     
@@ -267,25 +262,19 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         var img = UIImage(named: name)?.tintImage(UIColor.whiteColor())
         self.runOnUiThread(selfGeneration, closure: { () -> () in
             self.fileStatusIcon.image = img
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.fileStatusIcon.alpha = 1
-            })
+            self.fileStatusIcon.showView()
         })
     }
     func bgHideIcon(selfGeneration: Int) {
         self.runOnUiThread(selfGeneration, closure: { () -> () in
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.fileStatusIcon.alpha = 0
-            })
+            self.fileStatusIcon.hideView()
         })
     }
     
     func setPreviewImage(img: UIImage, fast: Bool){
         if ((fast && self.preview.image == nil) || !fast) {
             self.preview.image = img;
-            UIView.animateWithDuration(0.2, animations: { () -> Void in
-                self.preview.alpha = 1
-            })
+            self.preview.showView()
         }
     }
     
@@ -332,7 +321,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         }
         circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
         progressBg.frame = circullarNode.frame
-        fileStatusIcon.frame = circullarNode.frame
+        fileStatusIcon.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 24, preview.frame.origin.y + preview.frame.height/2 - 24, 48, 48)
         
         timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
         timeLabel.sizeToFit()
