@@ -100,7 +100,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
             })
             
             // Bind file
-            fileBind(message, autoDownload: false)
+            fileBind(message, autoDownload: document.getSource().getSize() < 1024 * 1025 * 1024)
         }
         
         // Always update date and state
