@@ -26,6 +26,7 @@ get{
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setAppCategory(AMAppCategoryEnum.values().objectAtIndex(AMAppCategory.IOS.rawValue) as! AMAppCategoryEnum)
         builder.setDeviceCategory(AMDeviceCategoryEnum.values().objectAtIndex(AMDeviceCategory.MOBILE.rawValue) as! AMDeviceCategoryEnum)
+        builder.setEnableFilesLoggingWithBoolean(true)
         
         // Setting Analytics provider
         if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
