@@ -85,8 +85,8 @@ gulp.task 'watch', ['server'], ->
 gulp.task 'assets', ->
   gulp.src ['./assets/**/*']
     .pipe gulp.dest './dist/assets/'
-  gulp.src ['./ActorMessenger/**/*.js']
-    .pipe gulp.dest './dist/ActorMessenger/'
+  gulp.src ['./bower_components/actor/**/*.js']
+    .pipe gulp.dest './dist/assets/js/actor'
   gulp.src ['./bower_components/angular/angular.js']
     .pipe gulp.dest './dist/assets/js'
 
