@@ -1,6 +1,8 @@
 package im.actor.messenger.app.fragment.settings;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,13 +31,13 @@ import java.util.ArrayList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.messenger.app.fragment.help.HelpActivity;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.app.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
@@ -147,10 +149,10 @@ public class MyProfileFragment extends BaseFragment {
                                                                     .replace("{0}", phoneNumber)
                                                                     .replace("{1}", userModel.getName().get())));
                                                 } else if (which == 3) {
-                                                    android.content.ClipboardManager clipboard =
-                                                            (android.content.ClipboardManager) getActivity()
+                                                    ClipboardManager clipboard =
+                                                            (ClipboardManager) getActivity()
                                                                     .getSystemService(Context.CLIPBOARD_SERVICE);
-                                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Phone number", phoneNumber);
+                                                    ClipData clip = ClipData.newPlainText("Phone number", phoneNumber);
                                                     clipboard.setPrimaryClip(clip);
                                                     Toast.makeText(getActivity(), R.string.toast_phone_copied, Toast.LENGTH_SHORT).show();
                                                 }
