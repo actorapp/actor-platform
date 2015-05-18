@@ -28,11 +28,11 @@
     <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
     <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
 
-    <!-- build:css(./bower_components/) assets/css/vendor.css -->
-    <link rel="stylesheet" href="normalize.css/normalize.css">
-    <link rel="stylesheet" href="angular-material/angular-material.min.css">
-    <link rel="stylesheet" href="highlight.js/styles/default.css">
-    <link rel="stylesheet" href="flexboxgrid/dist/flexboxgrid.min.css">
+    <!-- build:css(.) assets/css/vendor.css -->
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+    <link rel="stylesheet" href="node_modules/highlight.js/styles/default.css">
+    <link rel="stylesheet" href="node_modules/flexboxgrid/dist/flexboxgrid.min.css">
     <!-- endbuild -->
 
     <link rel="stylesheet" href="assets/css/styles.css">
@@ -46,7 +46,8 @@
 <div ng-if="main.actorService.isReady" ui-view class="app" layout="row"></div>
 
 <script src="ActorMessenger/ActorMessenger.nocache.js"></script>
-<script src="angular/angular.js"></script>
+
+<script src="assets/js/angular.js"></script>
 <script>
     angular.module('actorWeb', [
         'ui.router',
@@ -57,16 +58,16 @@
 
 <script src="assets/js/app-js.js"></script>
 
-<!-- build:js(./bower_components/) assets/js/lib.js -->
-<script src="CryptoJS/build/components/core.js"></script>
-<script src="CryptoJS/build/components/sha256.js"></script>
-<script src="jsencrypt/bin/jsencrypt.js"></script>
+<!-- build:js(.) assets/js/lib.js -->
+<script src="bower_components/CryptoJS/build/components/core.js"></script>
+<script src="bower_components/CryptoJS/build/components/sha256.js"></script>
+<script src="bower_components/jsencrypt/bin/jsencrypt.js"></script>
 
-<script src="ngReact/ngReact.js"></script>
-<script src="angular-ui-router/release/angular-ui-router.js"></script>
-<script src="angular-aria/angular-aria.js"></script>
-<script src="angular-animate/angular-animate.js"></script>
-<script src="angular-material/angular-material.js"></script>
+<script src="bower_components/ngReact/ngReact.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
 <!-- endbuild -->
 
 <script src="assets/js/app-coffee.js"></script>
