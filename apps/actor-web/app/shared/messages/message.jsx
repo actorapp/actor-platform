@@ -113,19 +113,24 @@ Message.State = React.createClass({
 
       switch(message.state) {
         case 'pending':
-          icon = <img src="assets/img/icons/ic_access_time_24px.svg" className="status status--penging"/>;
+          icon = <img src="assets/img/icons/ic_access_time_24px.svg"
+                      className="status status--penging"/>;
           break;
         case 'sent':
-          icon = <img src="assets/img/icons/ic_done_24px.svg" className="status status--sent"/>;
+          icon = <img src="assets/img/icons/ic_done_24px.svg"
+                      className="status status--sent"/>;
           break;
         case 'received':
-          icon = <img src="assets/img/icons/ic_done_all_24px.svg" className="status status--received"/>;
+          icon = <img src="assets/img/icons/ic_done_all_24px.svg"
+                      className="status status--received"/>;
           break;
         case 'read':
-          icon = <img src="assets/img/icons/ic_done_all_24px.svg" className="status status--read"/>;
+          icon = <img src="assets/img/icons/ic_done_all_24px.svg"
+                      className="status status--read"/>;
           break;
         case 'error':
-          icon = <img src="assets/img/icons/ic_report_problem_24px.svg" className="status status--error"/>;
+          icon = <img src="assets/img/icons/ic_report_problem_24px.svg"
+                      className="status status--error"/>;
           break;
       }
 
