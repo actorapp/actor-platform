@@ -68,14 +68,8 @@ angular
       });
 
       return (
-        <div className="messages-list" onScroll={this._onScroll}>
-          {
-            this.props.messages.map(function (message) {
-              return (
-                <ChatMessage key={message.sortKey} peer={peer} message={message}/>
-              );
-            })
-          }
+        <div className="messages-list row" onScroll={this._onScroll}>
+          {chatMessages}
           {typing}
         </div>
       );
