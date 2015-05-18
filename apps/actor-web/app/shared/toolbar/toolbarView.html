@@ -22,10 +22,10 @@
 
         <span flex></span>
 
-        <!-- <md-button class="md-icon-button" aria-label="Attachments">
-            <md-icon md-svg-icon="assets/img/icons/ic_insert_drive_file_24px.svg"></md-icon>
-            Attachments
-        </md-button> -->
+        <md-button class="md-icon-button" aria-label="Fullscreen" ng-click="main.toggleFullScreen()">
+            <md-icon md-svg-icon="assets/img/icons/ic_fullscreen_24px.svg" ng-show="!main.isFullScreen"></md-icon>
+            <md-icon md-svg-icon="assets/img/icons/ic_fullscreen_exit_24px.svg" ng-show="main.isFullScreen"></md-icon>
+        </md-button>
 
     </div>
 </md-toolbar>
