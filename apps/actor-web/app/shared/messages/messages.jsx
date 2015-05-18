@@ -106,10 +106,10 @@ angular
         if (messages.length * this._minMessageHeight > vpHeight) {
           var count;
           var vpMessagesCount = Math.round(vpHeight / this._minMessageHeight);
-          if (this._isScrolledToBottom()) {
+          if (this._lastScrolledFromBottom == 0) {
             count = vpMessagesCount + this._additionaMessagesNumber;
           } else {
-            var scrolledMessagesCount = Math.round(this._scrolledFromBottom() / this._minMessageHeight);
+            var scrolledMessagesCount = Math.round(this._lastScrolledFromBottom / this._minMessageHeight);
             count = vpMessagesCount + scrolledMessagesCount + this._additionaMessagesNumber;
           }
           messagesToRender = _.takeRight(messages, count);
