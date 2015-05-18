@@ -2,25 +2,26 @@
 
 .messages-list {
   overflow: auto;
-  padding: 8px 0;
+  padding: 8px 0 25px;
   flex: 1;
   [class*="col"] {
     padding: 0;
   }
   &__typing {
     text-align: center;
-    background-color: rgba(0, 0, 0, .03);
+    background-color: rgba(0, 0, 0, .02);
     color: rgba(0, 0, 0, .5);
-    border-radius: 4px;
-    margin: 0;
+    //border-radius: 4px;
     line-height: 16px;
     font-size: 12px;
-    display: inline-block;
+    display: block;
     padding: 4px 8px;
-    margin-bottom: 16px;
+    margin-bottom: -25px;
     img {
       width: 16px;
       height: 16px;
+      display: inline-block;
+      vertical-align: middle;
     }
   }
 }
