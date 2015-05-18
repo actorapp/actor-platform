@@ -23,7 +23,7 @@ var ChatMessage = React.createClass({
       </VisibilitySensor>
     );
   },
-  
+
   _onChange: _.debounce(function (isVisible) {
     if (isVisible) {
       window.messenger.onMessageShown(this.props.peer, this.props.message.sortKey, this.props.message.isOut);
