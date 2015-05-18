@@ -20,8 +20,17 @@
             </md-button>
 
             <span flex></span>
-
-            <md-button class="md-primary md-raised md-big" ng-click="compose.sendMessage()">Send</md-button>
+            <md-checkbox aria-label="Send by enter"
+                         class="md-primary"
+                         ng-model="compose.sendByEnter"
+                         ng-init="compose.sendByEnter = true"
+                         ng-class="{'selected': compose.sendByEnter}">
+                Send by enter ⏎
+              <md-tooltip ng-if="!compose.sendByEnter">
+                Send by enter
+              </md-tooltip>
+            </md-checkbox>
+            <md-button class="md-primary md-raised md-big" ng-click="compose.sendMessage()" ng-hide="compose.sendByEnter">Send</md-button>
 
         </footer>
 

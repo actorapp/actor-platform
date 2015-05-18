@@ -90,11 +90,6 @@ md-toolbar.md-default-theme {
       box-shadow: 0 8px 17px rgba(0, 0, 0, .2) !important;
     }
   }
-  &.md-big {
-    line-height: 36px;
-    min-width: 100px;
-    padding: 0 16px;
-  }
   &.md-wide {
     width: 100%;
   }
@@ -145,6 +140,7 @@ md-list-item {
   }
   @media (max-height: 600px) {
     border-radius: 0;
+
   }
 }
 
