@@ -94,8 +94,7 @@ angular
         this._scrollToBottom();
       } else {
         var self = this.getDOMNode();
-        var s = self.scrollHeight - self.clientHeight - this._lastScrolledFromBottom;
-        self.scrollTop = s;
+        self.scrollTop = self.scrollHeight - self.clientHeight - this._lastScrolledFromBottom;
       }
     },
 
@@ -131,10 +130,9 @@ angular
     _onScroll: function() {
       var self = this.getDOMNode();
 
-      var scrolledFromBottom = this._scrolledFromBottom();
+      this._lastScrolledFromBottom = this._scrolledFromBottom();
 
       if (self.scrollTop < (this._minMessageHeight * 10)) {
-        this._lastScrolledFromBottom = scrolledFromBottom;
         this._setMessagesToRender(this.props.messages);
       }
     },
