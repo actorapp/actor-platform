@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.ChatLinearLayoutManager;
+import android.support.v7.widget.CustomLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,7 +41,7 @@ import static im.actor.messenger.app.Core.messenger;
 public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
     private Peer peer;
-    private ChatLinearLayoutManager linearLayoutManager;
+    private CustomLinearLayoutManager linearLayoutManager;
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
@@ -114,7 +114,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
+        linearLayoutManager = new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, true);
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
