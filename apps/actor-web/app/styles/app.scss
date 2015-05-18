@@ -243,8 +243,7 @@ md-list-item {
   &--sent {}
   &--received {}
   &--read {
-    fill: lighten($baseColor, 25);
-    //fill: #7ea8ef;
+      fill: lighten($baseColor,25);
   }
   &--error {
       fill: #962e00;
