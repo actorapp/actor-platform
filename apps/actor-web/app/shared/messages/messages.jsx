@@ -37,7 +37,7 @@ angular
   .module('actorWeb')
   .factory('Messages', ['$filter', function($filter) {
   return React.createClass({
-    _minMessageHeight: 86,
+    _minMessageHeight: 32,
     _lastScrolledFromBottom: 0,
 
     propTypes: {
