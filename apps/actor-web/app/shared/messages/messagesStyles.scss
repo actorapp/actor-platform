@@ -139,5 +139,6 @@
 .messages-list {
     > div {
         overflow: auto;
+        flex: 1;
     }
 }
