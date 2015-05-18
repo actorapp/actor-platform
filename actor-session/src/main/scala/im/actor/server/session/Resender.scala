@@ -76,7 +76,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
   }
 
   private[this] var resendBufferSize = 0L
-  private[this] var resendBuffer = immutable.Map.empty[Long, (ProtoMessage with ResendableProtoMessage, Cancellable)]
+  private[this] var resendBuffer = immutable.SortedMap.empty[Long, (ProtoMessage with ResendableProtoMessage, Cancellable)]
 
   // Subscriber-related
 
