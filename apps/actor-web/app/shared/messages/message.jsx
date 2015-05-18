@@ -1,11 +1,30 @@
 var React = require('react');
 var hljs = require('highlight.js');
 var marked = require('marked');
+var memoize = require('memoizee');
+var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 1000}); // 1h expire, max 1000 elements
 
 var Message = React.createClass({
   propTypes: {
     message: React.PropTypes.object.isRequired
   },
+
+  _markedOptions: {
+    sanitize: true,
+    breaks: true,
+    highlight: function (code) {
+      return hljs.highlightAuto(code).value;
+    }
+  },
+
+  componentWillMount: function() {
+    this._renderTextContent(this.props);
+  },
+
+  componentWillReceiveProps: function(props) {
+    this._renderTextContent(props);
+  },
+
   render: function() {
     var message = this.props.message;
 
@@ -15,17 +34,16 @@ var Message = React.createClass({
         <Message.Content content={message.content}/>
       </div>
     );
-  }
+  },
+
+  _renderTextContent: function(props) {
+    if (props.message.content.content == 'text') {
+      props.message.content.html = memoizedMarked(props.message.content.text, this._markedOptions);
+    }
+  },
 });
 
 Message.Content = React.createClass({
-  markedOptions: {
-    sanitize: true,
-    breaks: true,
-    highlight: function (code) {
-      return hljs.highlightAuto(code).value;
-    }
-  },
   propTypes: {
     content: React.PropTypes.object.isRequired
   },
@@ -34,10 +52,9 @@ Message.Content = React.createClass({
 
     switch(content.content) {
       case 'text':
-        var renderedText = marked(content.text, this.markedOptions);
         return (
           <div className="message__text"
-               dangerouslySetInnerHTML={{__html: renderedText}}>
+               dangerouslySetInnerHTML={{__html: content.html}}>
           </div>
         );
       case 'document':
