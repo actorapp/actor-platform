@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 
+_ = require('lodash');
 var React = require('react');
 var Avatar = require('./avatar.jsx');
 var Message = require('./message.jsx');
@@ -36,14 +37,17 @@ angular
   .module('actorWeb')
   .factory('Messages', ['$filter', function($filter) {
   return React.createClass({
+    _minMessageHeight: 86,
+    _lastScrolledFromBottom: 0,
+
     propTypes: {
       peer: React.PropTypes.object,
       messages: React.PropTypes.array.isRequired,
       typing: React.PropTypes.object.isRequired
     },
 
-    componentDidMount: function() {
-      this._scrollToBottom();
+    getInitialState: function() {
+      return({messagesToRender: []});
     },
 
     render: function() {
@@ -59,31 +63,94 @@ angular
         </div>
       }
 
+      var chatMessages = _.map(this.state.messagesToRender, function (message) {
+        return (
+          <ChatMessage key={message.sortKey} peer={peer} message={message}/>
+        );
+      });
+
       return (
         <div onScroll={this._onScroll}>
-          {
-            this.props.messages.map(function (message) {
-              return (
-                <ChatMessage key={message.sortKey} peer={peer} message={message}/>
-              );
-            })
-          }
+          {chatMessages}
           {typing}
         </div>
       );
     },
 
+    componentWillReceiveProps: function(props) {
+      this._setMessagesToRender(props.messages);
+    },
+
     componentDidUpdate: function() {
-      this._scrollToBottom();
+      this._fixScroll();
+    },
+
+    _fixScroll: function() {
+      if (this._lastScrolledFromBottom == 0) {
+        this._scrollToBottom();
+      } else {
+        var self = this.getDOMNode();
+        var s = self.scrollHeight - self.clientHeight - this._lastScrolledFromBottom;
+        self.scrollTop = s;
+      }
+    },
+
+    _setMessagesToRender: function(messages) {
+      if (messages.length > 0) {
+
+        var self = this.getDOMNode();
+
+        var vpHeight = self.clientHeight;
+
+        var messagesToRender;
+
+        if (messages.length * this._minMessageHeight > vpHeight) {
+          var count;
+          var vpMessagesCount = Math.round(vpHeight * 2 / this._minMessageHeight);
+          if (this._isScrolledToBottom()) {
+            count = vpMessagesCount;
+          } else {
+            var scrolledMessagesCount = Math.round(this._scrolledFromBottom() / this._minMessageHeight);
+            count = vpMessagesCount + scrolledMessagesCount;
+          }
+          messagesToRender = _.takeRight(messages, count);
+        } else {
+          messagesToRender = messages;
+        }
+
+        if (messagesToRender.length > 0) {
+          this.setState({messagesToRender: messagesToRender});
+        }
+      }
     },
 
     _onScroll: function() {
-      console.error('scroll');
+      var self = this.getDOMNode();
+
+      var scrolledFromBottom = this._scrolledFromBottom();
+
+      if (self.scrollTop < (this._minMessageHeight * 10)) {
+        this._lastScrolledFromBottom = scrolledFromBottom;
+        this._setMessagesToRender(this.props.messages);
+      }
     },
 
     _scrollToBottom: function() {
       var self = this.getDOMNode();
       self.scrollTop = self.scrollHeight;
+    },
+
+    _scrolledFromBottom: function() {
+      var self = this.getDOMNode();
+      return(self.scrollHeight - self.scrollTop - self.clientHeight);
+    },
+
+    _isScrolledToBottom: function() {
+      return(this._scrolledFromBottom() == 0);
+    },
+
+    _isScrolledToTop: function() {
+      return(this.getDOMNode().scrollTop == 0);
     }
   });
 }]);
