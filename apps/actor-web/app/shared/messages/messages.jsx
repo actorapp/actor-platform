@@ -22,9 +22,9 @@ var ChatMessage = React.createClass({
 
     return(
       <VisibilitySensor onChange={onChange}>
-        <div className="messages-list__item">
-        <Avatar sender={message.sender}/>
-        <Message message={message}/>
+        <div className="message row">
+          <Avatar sender={message.sender}/>
+          <Message message={message}/>
         </div>
       </VisibilitySensor>
     );
@@ -56,10 +56,8 @@ angular
 
       if (this.props.typing !== null) {
         typing = <div className="messages-list__typing">
-          <p>
-            <img src="assets/img/icons/ic_keyboard_control_24px.svg"></img>
-            {this.props.typing}
-          </p>
+          <img src="assets/img/icons/ic_keyboard_control_24px.svg"></img>
+          {this.props.typing}
         </div>
       }
 
@@ -70,8 +68,14 @@ angular
       });
 
       return (
-        <div onScroll={this._onScroll}>
-          {chatMessages}
+        <div className="messages-list" onScroll={this._onScroll}>
+          {
+            this.props.messages.map(function (message) {
+              return (
+                <ChatMessage key={message.sortKey} peer={peer} message={message}/>
+              );
+            })
+          }
           {typing}
         </div>
       );
