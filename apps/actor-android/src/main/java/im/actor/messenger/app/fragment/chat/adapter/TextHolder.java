@@ -2,6 +2,7 @@ package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.util.Linkify;
 import android.view.View;
@@ -19,6 +20,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.viewmodel.UserVM;
+import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
@@ -81,6 +83,7 @@ public class TextHolder extends MessageHolder {
 
 
         CharSequence spannedText;
+        Bypass bypass = new Bypass();
         if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
             String name;
             UserVM userModel = users().get(message.getSenderId());
@@ -94,10 +97,12 @@ public class TextHolder extends MessageHolder {
             builder.append(name);
             builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             builder.append("\n");
-            builder.append(((TextContent) message.getContent()).getText());
+            builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText()));
+            //builder.append(((TextContent) message.getContent()).getText());
             spannedText = builder;
         } else {
-            spannedText = ((TextContent) message.getContent()).getText();
+            spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText());
+            //spannedText = ((TextContent) message.getContent()).getText();
         }
         if (emoji().containsEmoji(spannedText)) {
             if (emoji().isLoaded()) {
@@ -118,6 +123,7 @@ public class TextHolder extends MessageHolder {
             }
         }
         text.setText(spannedText);
+        text.setMovementMethod(LinkMovementMethod.getInstance());
 
         Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS |
                 Linkify.WEB_URLS);
