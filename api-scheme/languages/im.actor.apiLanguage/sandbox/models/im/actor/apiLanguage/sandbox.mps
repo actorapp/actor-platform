@@ -4617,6 +4617,132 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="2tyCW$TWimx" role="2m5lHt">
+      <property role="TrG5h" value="Calls" />
+      <property role="3XOG$Z" value="calls" />
+      <node concept="NpBTk" id="2tyCW$TWiJK" role="2m5mJr">
+        <property role="TrG5h" value="CallRing" />
+        <node concept="NXeRC" id="2tyCW$TWj9r" role="NXp_2">
+          <property role="NXePf" value="Update about phone ring" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$TWl8T" role="NXp_2">
+          <property role="NX6R2" value="Calling User" />
+          <ref role="NX6Kv" node="2tyCW$TWiJP" resolve="user" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$TWiJP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="user" />
+          <node concept="2m5mGg" id="2tyCW$TWiJT" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$TWiJW" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndX" id="2tyCW$TWiK2" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2tyCW$TWiJL" role="NuuwV">
+          <property role="Nu42W" value="31" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="2tyCW$TWjWh" role="2m5mJr">
+        <property role="TrG5h" value="CallEnd" />
+        <node concept="NXeRC" id="2tyCW$TWklZ" role="NXp_2">
+          <property role="NXePf" value="Update about phone call end" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$TWjWt" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="callId" />
+          <node concept="2m5ndX" id="2tyCW$TWjWx" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2tyCW$TWjWi" role="NuuwV">
+          <property role="Nu42W" value="53" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2tyCW$TWmlt" role="2m5mJr">
+        <property role="TrG5h" value="InitVoxSupport" />
+        <node concept="2uC4CA" id="2tyCW$TWqqL" role="2uC9gA">
+          <property role="2uC4DK" value="405" />
+          <property role="2uC4Qe" value="VOX_NOT_AVAILABLE" />
+          <property role="2uCiSL" value="VoxImplant not available" />
+        </node>
+        <node concept="NXeRC" id="2tyCW$TWn9L" role="1GBnQ6">
+          <property role="NXePf" value="Initialization VoxImplant support on client" />
+        </node>
+        <node concept="Nu42z" id="2tyCW$TWmlu" role="NuuwV">
+          <property role="Nu42W" value="82" />
+        </node>
+        <node concept="2m1R6W" id="2tyCW$TWmmk" role="2m6efq">
+          <node concept="2m7Kf5" id="2tyCW$TWmmp" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="userName" />
+            <node concept="2m5ndX" id="2tyCW$TWmmt" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="2tyCW$TWmmw" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="password" />
+            <node concept="2m5ndX" id="2tyCW$TWmmA" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="2tyCW$TWmml" role="NuuwV">
+            <property role="Nu42W" value="81" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$TWnzx" role="1y2DgH">
+            <property role="NX6R2" value="User Name for authentication" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="2tyCW$TWmmp" resolve="userName" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$TWnXb" role="1y2DgH">
+            <property role="1GSvIU" value="full" />
+            <property role="NX6R2" value="Password for authentication" />
+            <ref role="NX6Kv" node="2tyCW$TWmmw" resolve="password" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m6fVq" id="2tyCW$TWoMw" role="2m5mJr">
+        <property role="TrG5h" value="GetVoxUser" />
+        <node concept="NXeRC" id="2tyCW$TWpdg" role="1GBnQ6">
+          <property role="NXePf" value="Get Vox user name for VoxImplant" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$TWpB5" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="2tyCW$TWoN0" resolve="userPeer" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$TWoN0" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="userPeer" />
+          <node concept="2m5mGg" id="2tyCW$TWoNh" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2tyCW$TWoMx" role="NuuwV">
+          <property role="Nu42W" value="83" />
+        </node>
+        <node concept="2m1R6W" id="2tyCW$TWoNk" role="2m6efq">
+          <node concept="NX1gA" id="2tyCW$TWq0V" role="1y2DgH">
+            <property role="NX6R2" value="Call number" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="2tyCW$TWoNp" resolve="callNumber" />
+          </node>
+          <node concept="2m7Kf5" id="2tyCW$TWoNp" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="callNumber" />
+            <node concept="2m5ndX" id="2tyCW$TWoNt" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="2tyCW$TWoNl" role="NuuwV">
+            <property role="Nu42W" value="84" />
+          </node>
+        </node>
+        <node concept="2uC4CA" id="2tyCW$TWrfx" role="2uC9gA">
+          <property role="2uC4DK" value="405" />
+          <property role="2uC4Qe" value="VOX_NOT_AVAILABLE" />
+          <property role="2uCiSL" value="VoxImplant not available" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="2tyCW$TWiJC" role="1Dx9rD">
+        <property role="1Dx9K7" value="Performing voice calls with WebRTC and SIP" />
+      </node>
+    </node>
     <node concept="2m5mJO" id="3MpuFr6x9eS" role="2m5lHt">
       <property role="TrG5h" value="Config sync" />
       <property role="3XOG$Z" value="configs" />
