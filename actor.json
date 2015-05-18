@@ -2090,6 +2090,40 @@
         {
           "type": "struct",
           "content": {
+            "name": "ServiceExPhoneMissed",
+            "doc": [
+              "Update about missing phone call"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 9
+            },
+            "attributes": []
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExPhoneCall",
+            "doc": [
+              "Update about phone call"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 16
+            },
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "duration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
             "name": "DocumentMessage",
             "doc": [
               "File message",
@@ -5169,6 +5203,149 @@
                 "type": "bytes",
                 "id": 3,
                 "name": "uploadKey"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Calls",
+      "package": "calls",
+      "doc": [
+        "Performing voice calls with WebRTC and SIP"
+      ],
+      "items": [
+        {
+          "type": "update",
+          "content": {
+            "name": "CallRing",
+            "header": 49,
+            "doc": [
+              "Update about phone ring",
+              {
+                "type": "reference",
+                "argument": "user",
+                "category": "hidden",
+                "description": "  Calling User"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "User"
+                },
+                "id": 1,
+                "name": "user"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CallEnd",
+            "header": 83,
+            "doc": [
+              "Update about phone call end"
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 2,
+                "name": "callId"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InitVoxSupport",
+            "header": 130,
+            "response": {
+              "type": "anonymous",
+              "header": 129,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "userName",
+                  "category": "full",
+                  "description": "  User Name for authentication"
+                },
+                {
+                  "type": "reference",
+                  "argument": "password",
+                  "category": "full",
+                  "description": "  Password for authentication"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "userName"
+                },
+                {
+                  "type": "string",
+                  "id": 2,
+                  "name": "password"
+                }
+              ]
+            },
+            "doc": [
+              "Initialization VoxImplant support on client"
+            ],
+            "attributes": []
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetVoxUser",
+            "header": 131,
+            "response": {
+              "type": "anonymous",
+              "header": 132,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "callNumber",
+                  "category": "full",
+                  "description": "  Call number"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "callNumber"
+                }
+              ]
+            },
+            "doc": [
+              "Get Vox user name for VoxImplant",
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "Destination peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 1,
+                "name": "userPeer"
               }
             ]
           }
