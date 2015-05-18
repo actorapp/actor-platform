@@ -1,4 +1,6 @@
 var React = require('react');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+
 var hljs = require('highlight.js');
 var marked = require('marked');
 var memoize = require('memoizee');
@@ -40,10 +42,12 @@ var Message = React.createClass({
     if (props.message.content.content == 'text') {
       props.message.content.html = memoizedMarked(props.message.content.text, this._markedOptions);
     }
-  },
+  }
 });
 
 Message.Content = React.createClass({
+  mixins: [PureRenderMixin],
+
   propTypes: {
     content: React.PropTypes.object.isRequired
   },
