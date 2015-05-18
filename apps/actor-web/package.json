@@ -18,6 +18,7 @@
     "highlight.js": "^8.5.0",
     "lodash": "^3.8.0",
     "marked": "^0.3.3",
+    "memoizee": "^0.3.8",
     "normalize.css": "^3.0.3",
     "react": "0.13.3",
     "react-visibility-sensor": "^1.5.1"
