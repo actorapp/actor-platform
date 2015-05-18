@@ -1,4 +1,6 @@
 var React = require('react');
+var hljs = require('highlight.js');
+var marked = require('marked');
 
 var Message = React.createClass({
   propTypes: {
@@ -8,7 +10,7 @@ var Message = React.createClass({
     var message = this.props.message;
 
     return (
-      <div className="md-list-item-text messages-list__item__body" flex>
+      <div className="message__body col-xs">
         <Message.State message={message}/>
         <Message.Content content={message.content}/>
       </div>
@@ -34,43 +36,45 @@ Message.Content = React.createClass({
       case 'text':
         var renderedText = marked(content.text, this.markedOptions);
         return (
-          <p dangerouslySetInnerHTML={{__html: renderedText}}></p>
+          <div className="message__text"
+               dangerouslySetInnerHTML={{__html: renderedText}}>
+          </div>
         );
       case 'document':
-        return(
-          <div className="messages-list__item__document">
-            <p>
-              <img src="assets/img/icons/ic_attach_file_24px.svg"></img>
-              <a href={content.fileUrl}>{content.fileName}</a>
-            </p>
-          </div>
+        return (
+          <a href={content.fileUrl} className="message__document">
+            <img className="message__document__icon"
+                 src="assets/img/icons/ic_attach_file_24px.svg"></img>
+            {content.fileName}
+          </a>
         );
       case 'photo':
         var original = null;
+        var preview = <img className="message__photo__preview"
+                           width={content.w}
+                           height={content.h}
+                           src={content.preview}/>
         if (content.fileUrl) {
-          original = <img className="messages-list__item__photo__original"
+          original = <img className="message__photo__original"
                           width={ content.w }
                           height={ content.h }
                           src={content.fileUrl}/>
         }
 
-        return(
-          <div className="messages-list__item__photo">
+        return (
+          <div className="message__photo">
             {original}
-            <img className="messages-list__item__photo__preview"
-                 width={content.w}
-                 height={content.h}
-                 src={content.preview}/>
+            {preview}
           </div>
         );
       case 'service':
         return(
-          <p className="service"
+          <p className="message__service"
              flex>{content.text}</p>
         );
       case 'default':
         return(
-          <p className="unsupported">
+          <p className="message__unsupported">
             Данный вид контента на данный момент не поддерживается.
           </p>
         );
@@ -109,12 +113,12 @@ Message.State = React.createClass({
       }
 
       return (
-        <h3 layout="row" className="messages-list__item__body__title">
-          <span flex>{message.sender.title}</span>
+        <h3 layout="row" className="message__body__title row">
+          <span className="col-xs">{message.sender.title}</span>
 
-          <div className="messages-list__item__status">{icon}</div>
+          <div className="message__status">{icon}</div>
 
-          <time className="messages-list__item__body__timestamp">{message.date}</time>
+          <time className="message__body__timestamp">{message.date}</time>
         </h3>
       );
     }
