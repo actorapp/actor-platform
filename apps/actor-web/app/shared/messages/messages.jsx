@@ -38,6 +38,8 @@ angular
   .factory('Messages', ['$filter', function($filter) {
   return React.createClass({
     _minMessageHeight: 32,
+    _additionaMessagesNumber: 30,
+
     _lastScrolledFromBottom: 0,
 
     propTypes: {
@@ -103,12 +105,12 @@ angular
 
         if (messages.length * this._minMessageHeight > vpHeight) {
           var count;
-          var vpMessagesCount = Math.round(vpHeight * 2 / this._minMessageHeight);
+          var vpMessagesCount = Math.round(vpHeight / this._minMessageHeight);
           if (this._isScrolledToBottom()) {
-            count = vpMessagesCount;
+            count = vpMessagesCount + this._additionaMessagesNumber;
           } else {
             var scrolledMessagesCount = Math.round(this._scrolledFromBottom() / this._minMessageHeight);
-            count = vpMessagesCount + scrolledMessagesCount;
+            count = vpMessagesCount + scrolledMessagesCount + this._additionaMessagesNumber;
           }
           messagesToRender = _.takeRight(messages, count);
         } else {
@@ -121,15 +123,15 @@ angular
       }
     },
 
-    _onScroll: function() {
+    _onScroll: _.debounce(function() {
       var self = this.getDOMNode();
 
       this._lastScrolledFromBottom = this._scrolledFromBottom();
 
-      if (self.scrollTop < (this._minMessageHeight * 10)) {
+      if (self.scrollTop < (this._minMessageHeight * 20)) {
         this._setMessagesToRender(this.props.messages);
       }
-    },
+    }, 30, {maxWait: 60}),
 
     _scrollToBottom: function() {
       var self = this.getDOMNode();
