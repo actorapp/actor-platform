@@ -14,4 +14,6 @@ public interface ListStorageDisplayEx extends ListStorage {
     List<ListEngineRecord> loadBackward(String query, Long sortingKey, int limit);
 
     List<ListEngineRecord> loadForward(String query, Long sortingKey, int limit);
+
+    List<ListEngineRecord> loadCenter(Long centerSortKey, int limit);
 }
