@@ -160,6 +160,10 @@ public class Messenger {
         modules.getAuthModule().resetAuth();
     }
 
+    public void onLoggedIn() {
+
+    }
+
     //////////////////////////////////////
     //        Authenticated state
     //////////////////////////////////////

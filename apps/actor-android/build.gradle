@@ -307,6 +307,7 @@ dependencies {
 
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
+    compile files('libs/voximplantsdk.jar')
     compile 'com.splunk.mint:mint:4.0.8'
     compile "com.mixpanel.android:mixpanel-android:4.5.3"
 }
