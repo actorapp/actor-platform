@@ -41,21 +41,36 @@ bundler.transform(reactify)
 jsBundleFile = 'app-js.js'
 
 gulp.task 'browserify', ->
+  bundler
+    .bundle()
+    .pipe(source(jsBundleFile))
+    .pipe(buffer())
+    .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(!argv.production, sourcemaps.write('./')))
+    .pipe(gulp.dest('./dist/assets/js'))
+    .pipe(connect.reload())
+
+gulp.task 'browserify:watchify', ->
   watcher = watchify(bundler)
 
-  watcher.on 'update', ->
-    updateStart = Date.now()
-    console.log('Browserify started')
-    watcher.bundle()
-      .pipe(source(jsBundleFile))
-        ## uglify
-      .pipe(gulp.dest('./dist/assets/js'))
-      .pipe(connect.reload())
-    console.log('Browserify ended', (Date.now() - updateStart) + 'ms')
-  .bundle()
-  .pipe(source(jsBundleFile))
-  .pipe(gulp.dest('./dist/assets/js'))
-  .pipe(connect.reload())
+  watcher
+    .on 'error', gutil.log.bind(gutil, 'Browserify Error')
+    .on 'update', ->
+      updateStart = Date.now()
+      console.log('Browserify started')
+      watcher.bundle()
+        .pipe(source(jsBundleFile))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+          ## uglify
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./dist/assets/js'))
+        .pipe(connect.reload())
+      console.log('Browserify ended', (Date.now() - updateStart) + 'ms')
+    .bundle()
+    .pipe(source(jsBundleFile))
+    .pipe(gulp.dest('./dist/assets/js'))
+
 
 gulp.task 'sass', ->
   gulp.src ['./app/**/*.scss']
@@ -111,7 +126,7 @@ gulp.task 'server', ->
 
 gulp.task 'build', ['assets', 'coffee', 'browserify', 'sass', 'html', 'usemin']
 
-gulp.task 'build:dev', ['assets', 'coffee', 'browserify', 'sass', 'html']
+gulp.task 'build:dev', ['assets', 'coffee', 'browserify:watchify', 'sass', 'html']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
