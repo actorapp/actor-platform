@@ -1,4 +1,5 @@
 class MainController
+  isFullScreen: false
 
   constructor: (@$rootScope, @$scope, @actorService) ->
     console.log '[AW]MainController: constructor'
@@ -13,6 +14,10 @@ class MainController
         else
           console.log '[AW]MainController: user not logged, go to login.'
           @$rootScope.$state.go 'login'
+
+  toggleFullScreen: ->
+    console.log '[AW]AppController: toggleFullScreen'
+    @isFullScreen = !@isFullScreen
 
 MainController.$inject = ['$rootScope', '$scope', 'actorService']
 
