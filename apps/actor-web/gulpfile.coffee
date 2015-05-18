@@ -87,6 +87,8 @@ gulp.task 'assets', ->
     .pipe gulp.dest './dist/assets/'
   gulp.src ['./ActorMessenger/**/*.js']
     .pipe gulp.dest './dist/ActorMessenger/'
+  gulp.src ['./bower_components/angular/angular.js']
+    .pipe gulp.dest './dist/assets/js'
 
 gulp.task 'usemin', ->
   gulp.src ['./index.html']
@@ -104,7 +106,7 @@ gulp.task 'usemin', ->
 gulp.task 'server', ->
   connect.server
     port: 3000
-    root: ['./dist/', './bower_components/', './node_modules/']
+    root: ['./dist/', './']
     livereload: true
 
 gulp.task 'build', ['assets', 'coffee', 'browserify', 'sass', 'html', 'usemin']
