@@ -12,23 +12,23 @@ var ChatMessage = React.createClass({
     message: React.PropTypes.object.isRequired
   },
   render: function() {
-    var peer = this.props.peer;
     var message = this.props.message;
-    var onChange = function (isVisible) {
-      if (isVisible) {
-        window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
-      }
-    };
 
     return(
-      <VisibilitySensor onChange={onChange}>
+      <VisibilitySensor onChange={this._onChange}>
         <div className="message row">
           <Avatar sender={message.sender}/>
           <Message message={message}/>
         </div>
       </VisibilitySensor>
     );
-  }
+  },
+  
+  _onChange: _.debounce(function (isVisible) {
+    if (isVisible) {
+      window.messenger.onMessageShown(this.props.peer, this.props.message.sortKey, this.props.message.isOut);
+    }
+  }, 30)
 });
 
 var div = React.createFactory('div');
