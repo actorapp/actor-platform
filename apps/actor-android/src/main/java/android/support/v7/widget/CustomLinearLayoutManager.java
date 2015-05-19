@@ -36,7 +36,7 @@ import static android.support.v7.widget.RecyclerView.NO_POSITION;
  * A {@link android.support.v7.widget.RecyclerView.LayoutManager} implementation which provides
  * similar functionality to {@link android.widget.ListView}.
  */
-public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
+public class CustomLinearLayoutManager extends RecyclerView.LayoutManager {
 
     private static final String TAG = "LinearLayoutManager";
 
@@ -71,7 +71,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * Many calculations are made depending on orientation. To keep it clean, this interface
-     * helps {@link ChatLinearLayoutManager} make those decisions.
+     * helps {@link CustomLinearLayoutManager} make those decisions.
      * Based on {@link #mOrientation}, an implementation is lazily created in
      * {@link #ensureLayoutState} method.
      */
@@ -139,7 +139,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
      *
      * @param context Current context, will be used to access resources.
      */
-    public ChatLinearLayoutManager(Context context) {
+    public CustomLinearLayoutManager(Context context) {
         this(context, VERTICAL, false);
     }
 
@@ -149,7 +149,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
      *                      #VERTICAL}.
      * @param reverseLayout When set to true, layouts from end to start.
      */
-    public ChatLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+    public CustomLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
         mAnchorInfo = new AnchorInfo();
         setOrientation(orientation);
         setReverseLayout(reverseLayout);
@@ -296,7 +296,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
     }
 
     /**
-     * Sets the orientation of the layout. {@link ChatLinearLayoutManager}
+     * Sets the orientation of the layout. {@link CustomLinearLayoutManager}
      * will do its best to keep scroll position.
      *
      * @param orientation {@link #HORIZONTAL} or {@link #VERTICAL}
@@ -380,7 +380,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * <p>Returns the amount of extra space that should be laid out by LayoutManager.
-     * By default, {@link ChatLinearLayoutManager} lays out 1 extra page of
+     * By default, {@link CustomLinearLayoutManager} lays out 1 extra page of
      * items while smooth scrolling and 0 otherwise. You can override this method to implement your
      * custom layout pre-cache logic.</p>
      * <p>Laying out invisible elements will eventually come with performance cost. On the other
@@ -405,7 +405,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
                 new LinearSmoothScroller(recyclerView.getContext()) {
                     @Override
                     public PointF computeScrollVectorForPosition(int targetPosition) {
-                        return ChatLinearLayoutManager.this
+                        return CustomLinearLayoutManager.this
                                 .computeScrollVectorForPosition(targetPosition);
                     }
                 };
@@ -1272,7 +1272,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
      *                    parameter for now, rather than accessing {@link #mLayoutState}
      * @see #recycleViewsFromStart(android.support.v7.widget.RecyclerView.Recycler, int)
      * @see #recycleViewsFromEnd(android.support.v7.widget.RecyclerView.Recycler, int)
-     * @see ChatLinearLayoutManager.LayoutState#mLayoutDirection
+     * @see CustomLinearLayoutManager.LayoutState#mLayoutDirection
      */
     private void recycleByLayoutState(RecyclerView.Recycler recycler, LayoutState layoutState) {
         if (!layoutState.mRecycle) {
@@ -1287,7 +1287,7 @@ public class ChatLinearLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * The magic functions :). Fills the given layout, defined by the layoutState. This is fairly
-     * independent from the rest of the {@link ChatLinearLayoutManager}
+     * independent from the rest of the {@link CustomLinearLayoutManager}
      * and with little change, can be made publicly available as a helper class.
      *
      * @param recycler        Current recycler that is attached to RecyclerView
