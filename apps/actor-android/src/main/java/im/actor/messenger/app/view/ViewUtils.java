@@ -2,6 +2,11 @@ package im.actor.messenger.app.view;
 
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.AbsListView;
+
+import im.actor.messenger.app.util.Screen;
 
 /**
  * Created by ex3ndr on 05.10.14.
@@ -86,4 +91,47 @@ public class ViewUtils {
             view.setVisibility(View.VISIBLE);
         }
     }
+
+    public static void expandMentions(final View v, final int oldRowsCount, final int newRowsCount) {
+        if(newRowsCount==oldRowsCount){
+            return;
+        }
+        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = (Screen.dp(29) * newRowsCount)>Screen.dp(87)?Screen.dp(87):Screen.dp(29) * newRowsCount;
+        final int initialHeight = Screen.dp(29) *  oldRowsCount;
+
+        v.getLayoutParams().height = initialHeight;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new Animation(){
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(newRowsCount>oldRowsCount){
+                    v.getLayoutParams().height = interpolatedTime == 1
+                            ? targetHeight
+                            : (int)((targetHeight * interpolatedTime)-initialHeight*interpolatedTime+initialHeight);
+                    v.requestLayout();
+                }else{
+                    v.getLayoutParams().height = interpolatedTime == 1
+                            ? targetHeight
+                            : (int)(initialHeight - (initialHeight * interpolatedTime)+targetHeight-targetHeight*(1f-interpolatedTime));
+                    v.requestLayout();
+                }
+
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // 1dp/ms
+        a.setDuration((int) ((newRowsCount>oldRowsCount?targetHeight:initialHeight / Screen.dp(1))));
+        a.setInterpolator(MaterialInterpolator.getInstance());
+        a.setFillAfter(true);
+        v.startAnimation(a);
+
+    }
+
+
 }
