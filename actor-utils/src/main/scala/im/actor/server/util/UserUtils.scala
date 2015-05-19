@@ -9,19 +9,30 @@ import slick.dbio.{ DBIO, DBIOAction, NoStream }
 import slick.profile.SqlAction
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.users.{ Phone, User }
+import im.actor.api.rpc.users.{ ContactType, ContactRecord, User }
 import im.actor.server.{ models, persist }
 
 object UserUtils {
+  def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ContactRecord] = {
+    val phoneRecords = phones map { phone ⇒
+      ContactRecord(ContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None)
+    }
+
+    val emailRecords = emails map { email ⇒
+      ContactRecord(ContactType.Email, stringValue = Some(email.title), longValue = None, title = Some(email.title), subtitle = None)
+    }
+
+    phoneRecords ++ emailRecords
+  }
+
   def userStruct(u: models.User, localName: Option[String], senderAuthId: Long)(
     implicit
     ec: ExecutionContext,
     s:  ActorSystem
   ): DBIOAction[User, NoStream, Read with Read with Read with Read] =
     for {
-      keyHashes ← persist.UserPublicKey.findKeyHashes(u.id)
       phones ← persist.UserPhone.findByUserId(u.id)
-      emails ← persist.UserPhone.findByUserId(u.id)
+      emails ← persist.UserEmail.findByUserId(u.id)
       adOpt ← persist.AvatarData.findByUserId(u.id).headOption
     } yield {
       users.User(
@@ -30,11 +41,9 @@ object UserUtils {
         name = u.name,
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
-        keyHashes = keyHashes.toVector,
-        phone = phones.head.number,
-        phones = phones map (_.id) toVector,
-        emails = emails map (_.id) toVector,
-        avatar = adOpt flatMap (AvatarUtils.avatar)
+        avatar = adOpt flatMap (AvatarUtils.avatar),
+        isBot = false,
+        contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
 
@@ -47,7 +56,7 @@ object UserUtils {
       localName ← persist.contact.UserContact.findName(senderUserId: Int, u.id).headOption map (_.getOrElse(None))
       keyHashes ← persist.UserPublicKey.findKeyHashes(u.id)
       phones ← persist.UserPhone.findByUserId(u.id)
-      emails ← persist.UserPhone.findByUserId(u.id)
+      emails ← persist.UserEmail.findByUserId(u.id)
       adOpt ← persist.AvatarData.findByUserId(u.id).headOption
     } yield {
       users.User(
@@ -56,11 +65,9 @@ object UserUtils {
         name = u.name,
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
-        keyHashes = keyHashes.toVector,
-        phone = phones.head.number,
-        phones = phones map (_.id) toVector,
-        emails = emails map (_.id) toVector,
-        avatar = adOpt flatMap (AvatarUtils.avatar)
+        avatar = adOpt flatMap (AvatarUtils.avatar),
+        isBot = false,
+        contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
 
@@ -77,12 +84,6 @@ object UserUtils {
 
   def userStructs(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] =
     userStructs(userIds, client.userId, client.authId)
-
-  def getUserPhones(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[Phone], NoStream, Read] = {
-    for {
-      phoneModels ← persist.UserPhone.findByUserIds(userIds)
-    } yield phoneModels map (model ⇒ Phone(model.id, ACLUtils.phoneAccessHash(client.authId, model), model.number, model.title))
-  }
 
   def getClientUser(implicit client: AuthorizedClientData): SqlAction[Option[models.User], NoStream, Read] = {
     persist.User.find(client.userId).headOption
