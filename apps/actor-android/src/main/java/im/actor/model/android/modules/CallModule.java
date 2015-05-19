@@ -4,6 +4,10 @@
 
 package im.actor.model.android.modules;
 
+import android.content.Intent;
+
+import im.actor.messenger.app.AppContext;
+import im.actor.messenger.app.fragment.call.CallActivity;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.model.android.modules.call.CallActor;
 import im.actor.model.android.modules.call.CallState;
@@ -13,6 +17,7 @@ import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
+import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ValueModel;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
@@ -42,6 +47,14 @@ public class CallModule extends BaseModule {
 
     public synchronized void onIncomingCall(long rid, int uid) {
         currentCall.change(new CurrentCall(rid, uid, CallState.RINGING_INCOMING));
+        MVVMEngine.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AppContext.getContext().startActivity(
+                        new Intent(AppContext.getContext(), CallActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+        });
     }
 
     public synchronized void onCallEnded(long rid) {

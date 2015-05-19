@@ -38,6 +38,15 @@ public class CallFragment extends BaseFragment {
                 }
             }
         });
+        res.findViewById(R.id.answerCall).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CurrentCall currentCall = messenger().getCurrentCall().get();
+                if (currentCall != null) {
+                    messenger().answerCall(currentCall.getRid());
+                }
+            }
+        });
         return res;
     }
 
