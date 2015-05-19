@@ -7,9 +7,9 @@
                       ng-class="{'dialogs__item--selected' : dialog.peer.peer.id == main.actorService.currentPeer.id}"
                       ng-click="dialogs.selectDialog(dialog.peer.peer)">
 
-            <div class="dialogs__avatar avatar avatar--{{::dialog.peer.placeholder }}">
-                <img ng-src="{{::dialog.peer.avatar }}" alt="{{::dialog.peer.title }}" ng-if="::dialog.peer.avatar" />
-                <span ng-bind="::dialog.peer.title | limitTo:1"></span>
+            <div class="avatar">
+                <img class="avatar__image" ng-src="{{::dialog.peer.avatar }}" alt="{{::dialog.peer.title }}" ng-if="::dialog.peer.avatar" />
+                <span class="avatar__placeholder avatar__placeholder--{{::dialog.peer.placeholder }}" ng-bind="::dialog.peer.title | limitTo:1"></span>
             </div>
 
             <div class="md-list-item-text dialogs__body" flex>
