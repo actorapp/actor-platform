@@ -108,12 +108,12 @@ public class ViewUtils {
                 if(newRowsCount>oldRowsCount){
                     v.getLayoutParams().height = interpolatedTime == 1
                             ? targetHeight
-                            : (int)(((targetHeight * interpolatedTime)-initialHeight*interpolatedTime)+initialHeight);
+                            : (int)((targetHeight * interpolatedTime)-initialHeight*interpolatedTime+initialHeight);
                     v.requestLayout();
                 }else{
                     v.getLayoutParams().height = interpolatedTime == 1
                             ? targetHeight
-                            : (int)(initialHeight - (initialHeight * interpolatedTime)+targetHeight-targetHeight*Math.abs(interpolatedTime-1f));
+                            : (int)(initialHeight - (initialHeight * interpolatedTime)+targetHeight-targetHeight*(1f-interpolatedTime));
                     v.requestLayout();
                 }
 
