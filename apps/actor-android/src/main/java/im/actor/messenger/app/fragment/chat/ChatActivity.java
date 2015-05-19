@@ -11,8 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.CustomLinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
@@ -21,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -43,14 +40,12 @@ import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.emoji.SmileProcessor;
-import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.keyboard.KeyboardStatusListener;
 import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.messenger.app.view.AvatarView;
-import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
@@ -59,9 +54,6 @@ import im.actor.model.Messenger;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.entity.SearchEntity;
-import im.actor.model.mvvm.BindedDisplayList;
-import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
@@ -215,13 +207,14 @@ public class ChatActivity extends BaseActivity{
                         mentionSearchString = "";
                     }
 
-                    if(mentionsAdapter!=null){
+                    if(mentionSearchString.equals(" ")){
+                        hideMentions();
+                    }else if(mentionsAdapter!=null){
                         //mentionsDisplay.initSearch(mentionSearchString, false);
                         mentionsAdapter.setQuery(mentionSearchString.trim().toLowerCase());
                         onMentionsChanged();
-                    }else if(mentionSearchString.equals(" ")){
-                        hideMentions();
                     }
+
                 }
 
 
@@ -584,15 +577,12 @@ public class ChatActivity extends BaseActivity{
 
     private void showMentions() {
         if (isMentionsVisible) {
-            //mentionsDisplay.initBottom(false);
-            ////showView(mentionsContainer);
             return;
         }
         isMentionsVisible = true;
 
 
         GroupVM groupInfo = groups().get(peer.getPeerId());
-        //mentionsDisplay = messenger().buildSearchList();
         mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new OnItemClickedListener<GroupMember>(){
 
             @Override
@@ -612,39 +602,13 @@ public class ChatActivity extends BaseActivity{
             }
         });
 
-        /*
-        mentionsAdapter = new SearchAdapter(this, mentionsDisplay, new OnItemClickedListener<SearchEntity>() {
-            @Overrider
-            public void onClicked(SearchEntity item) {
-                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
-                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(item.getTitle())));
-                    messageBody.setSelection(mentionStart + item.getTitle().length() + 1);
-                }
-                hideMentions();
 
-            }
-
-            @Override
-            public boolean onLongClicked(SearchEntity item) {
-                return false;
-            }
-        });
-
-
-        HeaderViewRecyclerAdapter recyclerAdapter = new HeaderViewRecyclerAdapter(mentionsAdapter);
-
-        View header = new View(this);
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-        header.setBackgroundColor(getResources().getColor(R.color.bg_main));
-        recyclerAdapter.addHeaderView(header);
-
-        mentionsList.setAdapter(recyclerAdapter);
-               */
 
         mentionsList.setAdapter(mentionsAdapter);
+        mentionsList.setStackFromBottom(true);
         onMentionsChanged();
         goneView(mentionsEmptyView, false);
-        //showView(mentionsContainer);
+
     }
 
     private void hideMentions() {
@@ -663,12 +627,10 @@ public class ChatActivity extends BaseActivity{
 
     private void onMentionsChanged() {
         if(mentionsAdapter!=null)
-        if (/*mentionsDisplay.getSize() == 0*/ mentionsAdapter.getCount()==0) {
-            //showView(mentionsEmptyView);
+        if (mentionsAdapter.getCount()==0) {
             goneView(mentionsContainer);
         } else {
             showView(mentionsContainer);
-            //goneView(mentionsEmptyView);
         }
 
     }

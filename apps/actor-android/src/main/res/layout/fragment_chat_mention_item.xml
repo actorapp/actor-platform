@@ -17,8 +17,8 @@
         android:paddingRight="8dp">
 
         <FrameLayout
-            android:layout_width="72dp"
-            android:layout_height="58dp">
+            android:layout_width="36dp"
+            android:layout_height="29dp">
 
             <im.actor.messenger.app.view.AvatarView
                 android:id="@+id/avatar"
@@ -43,9 +43,5 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/div_size"
-        android:layout_marginLeft="72dp"
-        android:background="@color/divider" />
+
 </LinearLayout>
