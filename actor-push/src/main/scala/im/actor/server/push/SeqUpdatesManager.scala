@@ -560,18 +560,18 @@ class SeqUpdatesManager(
         .map(_ ⇒ ())
         .andThen {
           case Success(_) ⇒
-            consumers foreach { consumer ⇒
-              consumer ! UpdateReceived(
-                SeqUpdate(
-                  seqUpdate.seq,
-                  timestampToBytes(seqUpdate.timestamp),
-                  seqUpdate.header,
-                  seqUpdate.serializedData
-                )
-              )
-            }
-
             if (header != UpdateMessageSent.header) {
+              consumers foreach { consumer ⇒
+                consumer ! UpdateReceived(
+                  SeqUpdate(
+                    seqUpdate.seq,
+                    timestampToBytes(seqUpdate.timestamp),
+                    seqUpdate.header,
+                    seqUpdate.serializedData
+                  )
+                )
+              }
+
               googleCredsOpt foreach { creds ⇒
                 if (header == UpdateMessage.header) {
                   deliverGooglePush(creds, authId, seqUpdate.seq)
