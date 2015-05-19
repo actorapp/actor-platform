@@ -13,11 +13,16 @@ var ChatMessage = React.createClass({
   },
   render: function() {
     var message = this.props.message;
+    var avatar = null;
+
+    if (message.content.content !== 'service') {
+      avatar = <Avatar sender={message.sender}/>;
+    }
 
     return(
       <VisibilitySensor onChange={this._onChange}>
         <div className="message row">
-          <Avatar sender={message.sender}/>
+          {avatar}
           <Message message={message}/>
         </div>
       </VisibilitySensor>
