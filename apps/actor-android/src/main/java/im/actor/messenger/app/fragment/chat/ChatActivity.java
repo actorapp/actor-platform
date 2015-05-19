@@ -113,6 +113,8 @@ public class ChatActivity extends BaseActivity{
     private RecyclerView mentionsList;
     private FrameLayout mentionsContainer;
     private TextView mentionsEmptyView;
+    private String mentionSearchString = "";
+    private int mentionStart;
 
 
     @Override
@@ -198,39 +200,29 @@ public class ChatActivity extends BaseActivity{
                 String firstPeace  = str.substring(0, start + count);
 
 
-                if(count==1 && s.charAt(start) == '@') {
+                if((count==1 && s.charAt(start) == '@') || (start>0 &&  s.charAt(start-1) == '@')) {
                     showMentions();
-                }else if(start>0 &&  s.charAt(start-1) == '@'){
-                    showMentions();
-                }else{
-                    hideMentions();
                 }
 
-                if(isMentionsVisible){
-                    String mentionSearchString = "";
-                    /*
-                    if(firstPeace.lastIndexOf('@')<start && firstPeace.length()>1){
-                        if(firstPeace.lastIndexOf('@')+1<=str.length())
-                            mentionSearchString = firstPeace.substring(firstPeace.lastIndexOf('@')+1, firstPeace.length());
-                        if(mentionSearchString!=null && !mentionSearchString.trim().isEmpty()){
-                            mentionsDisplay.initSearch(mentionSearchString, false);
-                            mentionsAdapter.setQuery(mentionSearchString.trim().toLowerCase());
-                        }else{
-                            hideMentions();
-                        }
-                    }
-                    */
-                    if(firstPeace.contains("@") && firstPeace.lastIndexOf("@") + 1 < firstPeace.length()){
-                        mentionSearchString = firstPeace.substring(firstPeace.lastIndexOf("@") + 1, firstPeace.length());
+
+                if(s.length()!=count){
+                    mentionStart = firstPeace.lastIndexOf("@");
+                    if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
+                        mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                    }else{
+                        mentionSearchString = "";
                     }
 
-                    if(mentionSearchString!=null && !mentionSearchString.trim().isEmpty()){
+                    if(mentionsDisplay!=null && !mentionSearchString.trim().isEmpty()){
                         mentionsDisplay.initSearch(mentionSearchString, false);
                         mentionsAdapter.setQuery(mentionSearchString.trim().toLowerCase());
+                    }else if(mentionSearchString.equals(" ")){
+                        hideMentions();
                     }
-
-
                 }
+
+
+
 
             }
 
@@ -590,6 +582,7 @@ public class ChatActivity extends BaseActivity{
     private void showMentions() {
         if (isMentionsVisible) {
             mentionsDisplay.initBottom(false);
+            //showView(mentionsContainer);
             return;
         }
         isMentionsVisible = true;
@@ -597,7 +590,17 @@ public class ChatActivity extends BaseActivity{
         mentionsDisplay = messenger().buildSearchList();
         mentionsAdapter = new SearchAdapter(this, mentionsDisplay, new OnItemClickedListener<SearchEntity>() {
             @Override
-            public void onClicked(SearchEntity item) {}
+            public void onClicked(SearchEntity item) {
+                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
+                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(item.getTitle())));
+                    messageBody.setSelection(mentionStart + item.getTitle().length() + 1);
+                }else{
+                    Toast.makeText(ChatActivity.this, "bug here ", Toast.LENGTH_SHORT).show();
+                }
+
+                hideMentions();
+
+            }
 
             @Override
             public boolean onLongClicked(SearchEntity item) {
@@ -624,7 +627,7 @@ public class ChatActivity extends BaseActivity{
         mentionsDisplay.initBottom(false);
 
         goneView(mentionsEmptyView, false);
-        showView(mentionsContainer);
+        //showView(mentionsContainer);
     }
 
     private void hideMentions() {
@@ -645,11 +648,13 @@ public class ChatActivity extends BaseActivity{
     }
 
     private void onMentionsChanged() {
-
+        if(mentionsDisplay!=null)
         if (mentionsDisplay.getSize() == 0) {
-            showView(mentionsEmptyView);
+            //showView(mentionsEmptyView);
+            goneView(mentionsContainer);
         } else {
-            goneView(mentionsEmptyView);
+            showView(mentionsContainer);
+            //goneView(mentionsEmptyView);
         }
 
     }
