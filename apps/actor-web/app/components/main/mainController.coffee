@@ -18,6 +18,7 @@ class MainController
   toggleFullScreen: ->
     console.log '[AW]AppController: toggleFullScreen'
     @isFullScreen = !@isFullScreen
+    angular.element(document.body).toggleClass('fullscreen')
 
 MainController.$inject = ['$rootScope', '$scope', 'actorService']
 
