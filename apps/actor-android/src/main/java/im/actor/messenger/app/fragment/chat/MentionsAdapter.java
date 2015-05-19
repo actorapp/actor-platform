@@ -30,14 +30,15 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     private HashMap<String, GroupMember> searchMap;
     private OnItemClickedListener<GroupMember> onItemClickedListener;
     Collection<GroupMember> members;
+    MentionsUpdatedCallback updatedCallback;
 
-    public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener) {
+    public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener, MentionsUpdatedCallback updatedCallback) {
         super(context);
         this.members = members;
         this.membersToShow = members.toArray(new GroupMember[0]);
         searchMap = new HashMap<String, GroupMember>();
         this.onItemClickedListener = onItemClickedListener;
-
+        this.updatedCallback = updatedCallback;
         String userName;
         for(GroupMember m:members){
             userName = users().get(m.getUid()).getName().get();
@@ -51,12 +52,15 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         }
     }
 
+
+
     public void updateUid(Collection<GroupMember> members) {
         this.membersToShow = members.toArray(new GroupMember[0]);
         notifyDataSetChanged();
     }
 
     public void setQuery(String q){
+        int oldRowsCount = new Integer(membersToShow.length);
         if(q.isEmpty()){
             this.membersToShow = members.toArray(new GroupMember[0]);
         }else{
@@ -67,7 +71,8 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             }
             this.membersToShow = foundMembers.toArray(new GroupMember[0]);
         }
-
+        int newRowsCount = new Integer(membersToShow.length);
+        updatedCallback.onMentionsUpdated(oldRowsCount, newRowsCount);
         notifyDataSetChanged();
     }
 
@@ -131,5 +136,9 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         public void unbind() {
             avatarView.unbind();
         }
+    }
+
+    public interface MentionsUpdatedCallback {
+        void onMentionsUpdated(int oldRowsCount, int newRowsCount);
     }
 }

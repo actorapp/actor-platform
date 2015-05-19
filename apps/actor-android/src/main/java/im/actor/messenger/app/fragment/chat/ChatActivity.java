@@ -63,8 +63,10 @@ import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
+
+import static im.actor.messenger.app.view.ViewUtils.expandMentions;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
-import static im.actor.messenger.app.view.ViewUtils.showView;
+
 
 public class ChatActivity extends BaseActivity{
 
@@ -212,7 +214,6 @@ public class ChatActivity extends BaseActivity{
                     }else if(mentionsAdapter!=null){
                         //mentionsDisplay.initSearch(mentionSearchString, false);
                         mentionsAdapter.setQuery(mentionSearchString.trim().toLowerCase());
-                        onMentionsChanged();
                     }
 
                 }
@@ -600,13 +601,19 @@ public class ChatActivity extends BaseActivity{
             public boolean onLongClicked(GroupMember item) {
                 return false;
             }
+        }, new MentionsAdapter.MentionsUpdatedCallback(){
+
+            @Override
+            public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
+                onMentionsChanged(oldRowsCount, newRowsCount);
+            }
         });
 
 
 
         mentionsList.setAdapter(mentionsAdapter);
-        mentionsList.setStackFromBottom(true);
-        onMentionsChanged();
+        //mentionsList.setStackFromBottom(true);
+        onMentionsChanged(0, mentionsAdapter.getCount());
         goneView(mentionsEmptyView, false);
 
     }
@@ -617,21 +624,19 @@ public class ChatActivity extends BaseActivity{
         }
         isMentionsVisible = false;
 
-
+        expandMentions(mentionsList,mentionsAdapter.getCount(),0);
         mentionsAdapter = null;
         mentionsList.setAdapter(null);
 
-        goneView(mentionsContainer);
+        //goneView(mentionsContainer);
 
     }
 
-    private void onMentionsChanged() {
+    private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
         if(mentionsAdapter!=null)
-        if (mentionsAdapter.getCount()==0) {
-            goneView(mentionsContainer);
-        } else {
-            showView(mentionsContainer);
-        }
+
+            expandMentions(mentionsList, oldRowsCount, newRowsCount);
+
 
     }
 
