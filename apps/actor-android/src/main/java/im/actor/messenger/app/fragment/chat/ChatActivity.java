@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.model.Messenger;
+import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.SearchEntity;
@@ -108,14 +110,13 @@ public class ChatActivity extends BaseActivity{
     private boolean isCompose = false;
     private EmojiKeyboard emojiKeyboard;
     private boolean isMentionsVisible = false;
-    private BindedDisplayList<SearchEntity> mentionsDisplay;
-    private SearchAdapter mentionsAdapter;
-    private RecyclerView mentionsList;
+    //private BindedDisplayList<SearchEntity> mentionsDisplay;
+    private MentionsAdapter mentionsAdapter;
+    private ListView mentionsList;
     private FrameLayout mentionsContainer;
     private TextView mentionsEmptyView;
     private String mentionSearchString = "";
     private int mentionStart;
-
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -201,6 +202,7 @@ public class ChatActivity extends BaseActivity{
 
 
                 if((count==1 && s.charAt(start) == '@') || (start>0 &&  s.charAt(start-1) == '@')) {
+                    if(peer.getPeerType()==PeerType.GROUP)
                     showMentions();
                 }
 
@@ -213,9 +215,10 @@ public class ChatActivity extends BaseActivity{
                         mentionSearchString = "";
                     }
 
-                    if(mentionsDisplay!=null && !mentionSearchString.trim().isEmpty()){
-                        mentionsDisplay.initSearch(mentionSearchString, false);
+                    if(mentionsAdapter!=null){
+                        //mentionsDisplay.initSearch(mentionSearchString, false);
                         mentionsAdapter.setQuery(mentionSearchString.trim().toLowerCase());
+                        onMentionsChanged();
                     }else if(mentionSearchString.equals(" ")){
                         hideMentions();
                     }
@@ -398,11 +401,11 @@ public class ChatActivity extends BaseActivity{
         });
 
         // Mentions
-        mentionsList = (RecyclerView) findViewById(R.id.mentionsList);
+        mentionsList = (ListView) findViewById(R.id.mentionsList);
         mentionsContainer = (FrameLayout) findViewById(R.id.mentionsContainer);
         mentionsEmptyView = (TextView) findViewById(R.id.mentionsEmpty);
         mentionsEmptyView.setVisibility(View.GONE);
-        mentionsList.setLayoutManager(new CustomLinearLayoutManager(this));
+        //mentionsList.setLayoutManager(new CustomLinearLayoutManager(this));
     }
 
     @Override
@@ -581,23 +584,42 @@ public class ChatActivity extends BaseActivity{
 
     private void showMentions() {
         if (isMentionsVisible) {
-            mentionsDisplay.initBottom(false);
-            //showView(mentionsContainer);
+            //mentionsDisplay.initBottom(false);
+            ////showView(mentionsContainer);
             return;
         }
         isMentionsVisible = true;
 
-        mentionsDisplay = messenger().buildSearchList();
-        mentionsAdapter = new SearchAdapter(this, mentionsDisplay, new OnItemClickedListener<SearchEntity>() {
+
+        GroupVM groupInfo = groups().get(peer.getPeerId());
+        //mentionsDisplay = messenger().buildSearchList();
+        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new OnItemClickedListener<GroupMember>(){
+
             @Override
+            public void onClicked(GroupMember item) {
+                String name = users().get(item.getUid()).getName().get();
+
+                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
+                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(name)));
+                    messageBody.setSelection(mentionStart + name.length() + 1);
+                }
+                hideMentions();
+            }
+
+            @Override
+            public boolean onLongClicked(GroupMember item) {
+                return false;
+            }
+        });
+
+        /*
+        mentionsAdapter = new SearchAdapter(this, mentionsDisplay, new OnItemClickedListener<SearchEntity>() {
+            @Overrider
             public void onClicked(SearchEntity item) {
                 if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
                     messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(item.getTitle())));
                     messageBody.setSelection(mentionStart + item.getTitle().length() + 1);
-                }else{
-                    Toast.makeText(ChatActivity.this, "bug here ", Toast.LENGTH_SHORT).show();
                 }
-
                 hideMentions();
 
             }
@@ -617,15 +639,10 @@ public class ChatActivity extends BaseActivity{
         recyclerAdapter.addHeaderView(header);
 
         mentionsList.setAdapter(recyclerAdapter);
-        mentionsDisplay.addListener(new DisplayList.Listener() {
+               */
 
-            @Override
-            public void onCollectionChanged() {
-                onMentionsChanged();
-            }
-        });
-        mentionsDisplay.initBottom(false);
-
+        mentionsList.setAdapter(mentionsAdapter);
+        onMentionsChanged();
         goneView(mentionsEmptyView, false);
         //showView(mentionsContainer);
     }
@@ -636,10 +653,7 @@ public class ChatActivity extends BaseActivity{
         }
         isMentionsVisible = false;
 
-        if (mentionsDisplay != null) {
-            mentionsDisplay.dispose();
-            mentionsDisplay = null;
-        }
+
         mentionsAdapter = null;
         mentionsList.setAdapter(null);
 
@@ -648,8 +662,8 @@ public class ChatActivity extends BaseActivity{
     }
 
     private void onMentionsChanged() {
-        if(mentionsDisplay!=null)
-        if (mentionsDisplay.getSize() == 0) {
+        if(mentionsAdapter!=null)
+        if (/*mentionsDisplay.getSize() == 0*/ mentionsAdapter.getCount()==0) {
             //showView(mentionsEmptyView);
             goneView(mentionsContainer);
         } else {
