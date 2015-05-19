@@ -24,17 +24,18 @@
     <FrameLayout
         android:id="@+id/mentionsContainer"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="87dp"
         android:layout_above="@+id/fl_send_panel"
-        android:background="@color/bg_main"
-        android:clickable="true"
+        android:background="@android:color/transparent"
         android:orientation="vertical"
         android:visibility="gone">
 
         <ListView
+            android:layout_gravity="bottom"
             android:id="@+id/mentionsList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:background="@color/bg_main"/>
 
 
         <TextView
