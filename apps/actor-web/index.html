@@ -37,7 +37,7 @@
 
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
-<body layout="row" ng-controller="mainController as main" ng-class="{'fullscreen': main.isFullScreen}">
+<body layout="row" ng-controller="mainController as main">
 
 <div ng-if="!main.actorService.isReady" class="splash-screen" layout="row" layout-align="center center">
     <img src="assets/img/logo_152x152.png" alt="Actor"/>
