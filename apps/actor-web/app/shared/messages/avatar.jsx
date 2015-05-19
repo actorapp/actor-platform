@@ -8,15 +8,15 @@ var Avatar = React.createClass({
     var sender = this.props.sender;
     var image = null;
     if (sender.avatar) {
-      image = <img src={sender.avatar} alt={sender.title}/>;
+      image = <img className="avatar__image" src={sender.avatar} alt={sender.title}/>;
     }
 
-    var divClass = 'message__avatar avatar avatar--small avatar--' + sender.placeholder;
+    var placeholderClass = 'avatar__placeholder avatar__placeholder--' + sender.placeholder;
 
     return (
-      <div className={divClass}>
+      <div className="avatar avatar--small">
         {image}
-        <span>{sender.title[0]}</span>
+        <span className={placeholderClass}>{sender.title[0]}</span>
       </div>
     )
   }

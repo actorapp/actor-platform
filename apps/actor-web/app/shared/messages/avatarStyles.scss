@@ -1,0 +1,82 @@
+@import '../../styles/variables';
+
+.avatar {
+  line-height: 0;
+
+  position: relative;
+
+  display: inline-block;
+  overflow: hidden;
+
+  width: $avatarDefaultSize;
+  height: $avatarDefaultSize;
+
+  cursor: default;
+
+  border-radius: 100%;
+  &__image {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+  }
+  &__placeholder {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: $avatarDefaultSize - 2px;
+
+    display: block;
+
+    width: $avatarDefaultSize - 2px;
+    height: $avatarDefaultSize - 2px;
+    margin: 1px;
+
+    text-align: center;
+    text-transform: uppercase;
+
+    color: rgb(255, 255, 255);
+    border-radius: 100%;
+    text-shadow: 0 -1px 5px rgba(0, 0, 0, .17);
+
+    // Placeholder colors
+    &--empty {
+      background-color: $emptyColor;
+    }
+    &--lblue {
+      background-color: $lblueColor;
+    }
+    &--blue {
+      background-color: $blueColor;
+    }
+    &--purple {
+      background-color: $purpleColor;
+    }
+    &--red {
+      background-color: $redColor;
+    }
+    &--orange {
+      background-color: $orangeColor;
+    }
+    &--yellow {
+      background-color: $yellowColor;
+    }
+    &--green {
+      background-color: $greenColor;
+    }
+  }
+
+  &--small {
+    width: $avatarSmallSize;
+    height: $avatarSmallSize;
+    .avatar__placeholder {
+      font-size: 14px;
+      line-height: $avatarSmallSize - 2px;
+
+      width: $avatarSmallSize - 2px;
+      height: $avatarSmallSize - 2px;
+    }
+  }
+}
