@@ -21,7 +21,7 @@ class LoginController
     @actorService.sendCode code
 
   signUp: (name) ->
-    console.log '[AW]LoginController: signUp'
+    @actorService.signUp name
 
   wrongNumber: ->
     console.log '[AW]LoginController: wrongNumber'
