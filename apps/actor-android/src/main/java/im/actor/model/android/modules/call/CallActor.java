@@ -138,6 +138,9 @@ public class CallActor extends ModuleActor {
     private void onVoxCallConnected(String callId) {
         Log.d(TAG, "Call connected: " + callId);
 
+        if (callId.equals(ongoingCallId)) {
+            callModule.onCallStarted(ongoingCallKey);
+        }
         if (callId.equals(pendingCallId)) {
             callStarted();
         }
@@ -149,6 +152,9 @@ public class CallActor extends ModuleActor {
         if (callId.equals(ongoingCallId)) {
             callModule.onCallStarted(ongoingCallKey);
         }
+        if (callId.equals(pendingCallId)) {
+            callStarted();
+        }
     }
 
     private void onVoxCallDisconnected(String callId) {
@@ -156,6 +162,9 @@ public class CallActor extends ModuleActor {
 
         if (callId.equals(pendingCallId)) {
             cancelPending();
+        }
+        if (callId.equals(ongoingCallId)) {
+            cancelOngoing();
         }
     }
 
@@ -196,6 +205,7 @@ public class CallActor extends ModuleActor {
         ongoingCallId = pendingCallId;
         pendingCallId = null;
         pendingCallKey = 0;
+        callModule.onCallStarted(ongoingCallKey);
     }
 
     private void cancelPending() {

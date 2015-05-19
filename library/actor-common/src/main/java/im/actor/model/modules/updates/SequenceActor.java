@@ -41,6 +41,8 @@ public class SequenceActor extends ModuleActor {
     private ArrayList<ExecuteAfter> pendingRunnables = new ArrayList<ExecuteAfter>();
 
     private boolean isValidated = true;
+    private boolean isTimerStarted = false;
+
     private int seq;
     private byte[] state;
 
@@ -148,9 +150,16 @@ public class SequenceActor extends ModuleActor {
         }
 
         if (!isValidSeq(seq)) {
-            Log.w(TAG, "Out of sequence: starting timer for invalidation");
             further.put(seq, u);
-            self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+
+            if (isTimerStarted) {
+                Log.w(TAG, "Out of sequence: timer already started");
+            } else {
+                Log.w(TAG, "Out of sequence: starting timer for invalidation");
+                self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+                isTimerStarted = true;
+            }
+
             return;
         }
 
@@ -195,6 +204,7 @@ public class SequenceActor extends ModuleActor {
         checkFuture();
 
         // Faaaaaar away
+        isTimerStarted = false;
         self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
     }
 
@@ -231,6 +241,7 @@ public class SequenceActor extends ModuleActor {
                     checkFuture();
 
                     // Faaaaaar away
+                    isTimerStarted = false;
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
                 }
 
@@ -265,7 +276,7 @@ public class SequenceActor extends ModuleActor {
                         }
                     }
 
-                    processor.applyDifferenceUpdate(response.getUsers(),response.getGroups(),
+                    processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(),
                             updates);
 
                     seq = response.getSeq();
@@ -280,6 +291,7 @@ public class SequenceActor extends ModuleActor {
                     checkFuture();
 
                     // Faaaaaar away
+                    isTimerStarted = false;
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
 
                     if (response.needMore()) {
