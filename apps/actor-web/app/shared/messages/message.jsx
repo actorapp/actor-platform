@@ -91,8 +91,9 @@ Message.Content = React.createClass({
         );
       case 'service':
         return(
-          <p className="message__service"
-             flex>{content.text}</p>
+          <p className="message__service">
+            {content.text}
+          </p>
         );
       case 'default':
         return(
