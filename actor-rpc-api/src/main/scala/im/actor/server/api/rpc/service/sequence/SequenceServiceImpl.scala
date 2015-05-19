@@ -5,12 +5,16 @@ import scala.util.Success
 
 import akka.actor.ActorSystem
 import akka.event.Logging
+import slick.dbio
+import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
+import im.actor.api.rpc.groups.Group
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
+import im.actor.api.rpc.users.{ Phone, User }
 import im.actor.server.models
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionMessage, SessionRegion }
@@ -48,7 +52,7 @@ class SequenceServiceImpl(
         // FIXME: would new updates between getSeqState and getDifference break client state?
         (updates, needMore, newState) ← getDifference(client.authId, state)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
-        (users, groups) ← getUsersGroups(userIds, groupIds)
+        (users, phones, groups) ← getUsersPhonesGroups(userIds, groupIds)
       } yield {
         val newSeq = updates.lastOption.map(_.seq).getOrElse(seq)
 
@@ -62,7 +66,9 @@ class SequenceServiceImpl(
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
-          groups = groups.toVector
+          groups = groups.toVector,
+          phones = phones.toVector,
+          emails = Vector.empty
         ))
       }
     }
@@ -131,12 +137,13 @@ class SequenceServiceImpl(
     }
   }
 
-  private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData) = {
+  private def getUsersPhonesGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData): dbio.DBIOAction[(Seq[User], Seq[Phone], Seq[Group]), NoStream, Read with Read with Read with Read with Read with Read with Read with Read with Read] = {
     for {
       groups ← getGroupsStructs(groupIds)
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
       users ← userStructs(allUserIds)
-    } yield (users, groups)
+      phones ← getUserPhones(allUserIds)
+    } yield (users, phones, groups)
   }
 }

@@ -9,9 +9,7 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.util.Timeout
 import scodec.bits.BitVector
-import slick.dbio
 import slick.dbio.DBIO
-import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
@@ -72,17 +70,23 @@ class ContactsServiceImpl(
             ignoredContactsIds ← persist.contact.UserContact.findIds_all(client.userId)
             uniquePhones = userPhones.filter(p ⇒ !ignoredContactsIds.contains(p.userId))
             usersPhones ← DBIO.sequence(uniquePhones map (p ⇒ persist.User.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
+            userStructsSalts ← DBIO.sequence(usersPhones.map {
+              case (u, phoneNumber) ⇒
+                userStruct(u, phonesMap(phoneNumber), client.authId) map (us ⇒ (us, u.accessSalt))
+            })
           } yield {
-            usersPhones.foldLeft((immutable.Seq.empty[(models.User, Long, Option[String])], immutable.Set.empty[Int], immutable.Set.empty[Long])) {
-              case ((usersPhonesNames, newContactIds, registeredPhones), (user, phone)) ⇒
-                (usersPhonesNames :+ Tuple3(user, phone, phonesMap(phone)),
-                  newContactIds + user.id,
-                  registeredPhones + phone)
+            val userPhoneNumbers = userPhones.map(_.number).toSet
+
+            userStructsSalts.foldLeft((immutable.Seq.empty[(User, String)], immutable.Set.empty[Int], userPhoneNumbers)) {
+              case ((userStructSalts, newContactIds, _), userStructSalt) ⇒
+                (userStructSalts :+ userStructSalt,
+                  newContactIds + userStructSalt._1.id,
+                  userPhoneNumbers)
             }
           }
 
           f flatMap {
-            case (usersPhonesNames, newContactIds, registeredPhoneNumbers) ⇒
+            case (userStructsSalts, newContactIds, registeredPhoneNumbers) ⇒
               actorSystem.log.debug("Phone numbers: {}, registered: {}", phoneNumbers, registeredPhoneNumbers)
 
               // TODO: #perf do less queries
@@ -91,15 +95,15 @@ class ContactsServiceImpl(
               }
 
               DBIO.sequence(unregInsertActions).flatMap { _ ⇒
-                if (usersPhonesNames.nonEmpty) {
+                if (userStructsSalts.nonEmpty) {
                   val socialActions = newContactIds.toSeq map (id ⇒ DBIO.from(recordRelation(id, client.userId)))
 
                   for {
-                    userStructs ← createAllUserContacts(client.userId, usersPhonesNames)
+                    _ ← createAllUserContacts(client.userId, userStructsSalts)
                     _ ← DBIO.sequence(socialActions)
                     seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector), None)
                   } yield {
-                    Ok(ResponseImportContacts(userStructs.toVector, seqstate._1, seqstate._2))
+                    Ok(ResponseImportContacts(userStructsSalts.toVector.map(_._1), seqstate._1, seqstate._2))
                   }
                 } else {
                   DBIO.successful(Ok(ResponseImportContacts(immutable.Vector.empty, 0, Array.empty)))
@@ -216,20 +220,20 @@ class ContactsServiceImpl(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  private def createAllUserContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): dbio.DBIOAction[immutable.Seq[User], NoStream, Read with Write with Read with Read with Read with Read] = {
-    persist.contact.UserContact.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
-      val actions = usersPhonesNames map {
-        case (user, phone, localName) ⇒
+  private def createAllUserContacts(ownerUserId: Int, contacts: immutable.Seq[(User, String)]) = {
+    persist.contact.UserContact.findIds(ownerUserId, contacts.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
+      val actions = contacts map {
+        case (userStruct, accessSalt) ⇒
           val userContact = models.contact.UserContact(
             ownerUserId = ownerUserId,
-            contactUserId = user.id,
-            phoneNumber = phone,
-            name = localName,
-            accessSalt = user.accessSalt,
+            contactUserId = userStruct.id,
+            phoneNumber = userStruct.phone,
+            name = userStruct.localName,
+            accessSalt = accessSalt,
             isDeleted = false
           )
 
-          val action = if (existingContactUserIds.contains(user.id)) {
+          val action = if (existingContactUserIds.contains(userStruct.id)) {
             persist.contact.UserContact.insertOrUpdate(userContact)
           } else {
             persist.contact.UserContact.createOrRestore(
@@ -241,12 +245,7 @@ class ContactsServiceImpl(
             )
           }
 
-          for {
-            _ ← action
-            userStruct ← userStruct(user, localName, client.authId)
-          } yield {
-            userStruct
-          }
+          action map (_ ⇒ userContact)
       }
 
       DBIO.sequence(actions)
