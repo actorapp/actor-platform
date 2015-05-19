@@ -11,9 +11,9 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
-import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
+import im.actor.api.rpc.users.{ UpdatePhoneTitleChanged, UpdateUserAvatarChanged, UpdateUserNameChanged }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.AvatarUtils
@@ -79,6 +79,38 @@ class ProfileServiceImpl(bucketName: String)(
     }
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+  override def jhandleDetachEmail(email: Int, accessHash: Long, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    Future {
+      throw new Exception("Not implemented")
+    }
+  }
+
+  override def jhandleSendEmailCode(email: String, description: Option[String], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    Future {
+      throw new Exception("Not implemented")
+    }
+  }
+
+  override def jhandleChangeEmailTitle(emailId: Int, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    Future {
+      throw new Exception("Not implemented")
+    }
+  }
+
+  override def jhandleChangePhoneTitle(phoneId: Int, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      val update = UpdatePhoneTitleChanged(phoneId, title)
+
+      for {
+        relatedUserIds ← DBIO.from(getRelations(client.userId))
+        _ ← broadcastUpdateAll(relatedUserIds, update, None)
+        seqstate ← broadcastClientUpdate(update, None)
+      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+    }
+
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {

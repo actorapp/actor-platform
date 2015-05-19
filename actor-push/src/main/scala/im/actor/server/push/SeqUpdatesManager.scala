@@ -332,10 +332,18 @@ object SeqUpdatesManager {
       case api.contacts.UpdateContactRegistered(userId, _, _, _)                 ⇒ singleUser(userId)
       case api.contacts.UpdateContactsAdded(userIds)                             ⇒ users(userIds)
       case api.contacts.UpdateContactsRemoved(userIds)                           ⇒ users(userIds)
+      case api.users.UpdateEmailMoved(_, userId)                                 ⇒ singleUser(userId)
+      case _: api.users.UpdateEmailTitleChanged                                  ⇒ empty
+      case api.users.UpdatePhoneMoved(_, userId)                                 ⇒ singleUser(userId)
+      case _: api.users.UpdatePhoneTitleChanged                                  ⇒ empty
       case api.users.UpdateUserAvatarChanged(userId, _)                          ⇒ singleUser(userId)
-      case api.users.UpdateUserContactsChanged(userId, _)                        ⇒ singleUser(userId)
+      case api.users.UpdateUserContactsChanged(userId, _, _)                     ⇒ singleUser(userId)
+      case api.users.UpdateUserEmailAdded(userId, _)                             ⇒ singleUser(userId)
+      case api.users.UpdateUserEmailRemoved(userId, _)                           ⇒ singleUser(userId)
       case api.users.UpdateUserLocalNameChanged(userId, _)                       ⇒ singleUser(userId)
       case api.users.UpdateUserNameChanged(userId, _)                            ⇒ singleUser(userId)
+      case api.users.UpdateUserPhoneAdded(userId, _)                             ⇒ singleUser(userId)
+      case api.users.UpdateUserPhoneRemoved(userId, _)                           ⇒ singleUser(userId)
       case api.weak.UpdateGroupOnline(groupId, _)                                ⇒ singleGroup(groupId)
       case api.weak.UpdateTyping(peer, userId, _) ⇒
         val refs = peerRefs(peer)
@@ -343,8 +351,6 @@ object SeqUpdatesManager {
       case api.weak.UpdateUserLastSeen(userId, _) ⇒ singleUser(userId)
       case api.weak.UpdateUserOffline(userId)     ⇒ singleUser(userId)
       case api.weak.UpdateUserOnline(userId)      ⇒ singleUser(userId)
-      case api.calls.UpdateCallRing(user, _)      ⇒ singleUser(user.id)
-      case api.calls.UpdateCallEnd(_)             ⇒ empty
     }
   }
 
