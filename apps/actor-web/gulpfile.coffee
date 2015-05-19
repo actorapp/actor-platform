@@ -47,6 +47,7 @@ gulp.task 'browserify', ->
     .pipe(buffer())
     .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
     .pipe(gulpif(!argv.production, sourcemaps.write('./')))
+    .pipe(gulpif(argv.production, uglify()))
     .pipe(gulp.dest('./dist/assets/js'))
     .pipe(connect.reload())
 
