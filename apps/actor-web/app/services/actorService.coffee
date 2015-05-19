@@ -140,8 +140,12 @@ class ActorService
         when 'code'
           console.log '[AW]ActorService: sendCode: wrong code'
 
-#  signUp: ->
-#    console.log '[AW]ActorService: signUp'
+  signUp: (name) ->
+    @messenger.signUp name, (state) =>
+      switch state
+        when 'logged_in'
+          console.log '[AW]ActorService: signUp: logged_in'
+          @$rootScope.$state.go 'im'
 
   sendFile: (peer, file) ->
     console.log '[AW]ActorService: sendFile'
