@@ -16,40 +16,39 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ServiceExEmailContactRegistered extends ServiceEx {
+public class TextExMarkdown extends BserObject {
 
-    private int uid;
+    private String markdown;
 
-    public ServiceExEmailContactRegistered(int uid) {
-        this.uid = uid;
+    public TextExMarkdown(String markdown) {
+        this.markdown = markdown;
     }
 
-    public ServiceExEmailContactRegistered() {
+    public TextExMarkdown() {
 
     }
 
-    public int getHeader() {
-        return 7;
-    }
-
-    public int getUid() {
-        return this.uid;
+    public String getMarkdown() {
+        return this.markdown;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.uid = values.getInt(1);
+        this.markdown = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.uid);
+        if (this.markdown == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.markdown);
     }
 
     @Override
     public String toString() {
-        String res = "struct ServiceExEmailContactRegistered{";
-        res += "uid=" + this.uid;
+        String res = "struct TextExMarkdown{";
+        res += "markdown=" + this.markdown;
         res += "}";
         return res;
     }

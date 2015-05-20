@@ -42,6 +42,7 @@
       <concept id="2348480312264231184" name="im.actor.apiLanguage.structure.Int64" flags="ng" index="2m5ndQ" />
       <concept id="2348480312264231195" name="im.actor.apiLanguage.structure.String" flags="ng" index="2m5ndX" />
       <concept id="2348480312264232779" name="im.actor.apiLanguage.structure.ApiDescription" flags="ng" index="2m5nkH">
+        <property id="2838010799853060276" name="version" index="u_6dX" />
         <property id="291384077092427558" name="scalaPackage" index="WhUdw" />
         <property id="5857873509721316771" name="javaPackage" index="3BlOl8" />
         <child id="2348480312264237371" name="sections" index="2m5lHt" />
@@ -67,6 +68,7 @@
       </concept>
       <concept id="2348480312264653219" name="im.actor.apiLanguage.structure.StructAttribute" flags="ng" index="2m7Kf5">
         <property id="2348480312264746197" name="id" index="2m7DUN" />
+        <property id="2838010799853749721" name="isDeprecated" index="toYog" />
         <child id="2348480312264746167" name="type" index="2m7DVh" />
       </concept>
       <concept id="4092665470043052969" name="im.actor.apiLanguage.structure.MethodThrows" flags="ng" index="2uC4CA">
@@ -90,9 +92,6 @@
         <property id="4689615199750888593" name="hexValue" index="Nu42W" />
       </concept>
       <concept id="4689615199750780323" name="im.actor.apiLanguage.structure.ApiEmptyDef" flags="ng" index="NvyAe" />
-      <concept id="4689615199750788559" name="im.actor.apiLanguage.structure.ApiComment" flags="ng" index="NvWBy">
-        <property id="4689615199750789856" name="text" index="NvWrd" />
-      </concept>
       <concept id="773119248390078458" name="im.actor.apiLanguage.structure.StructDocParameter" flags="ng" index="NX1gA">
         <property id="773119248390080030" name="description" index="NX6R2" />
         <property id="3073351033373018049" name="category" index="1GSvIU" />
@@ -125,6 +124,7 @@
     <property role="TrG5h" value="ActorApi" />
     <property role="3BlOl8" value="im.actor.model.api" />
     <property role="WhUdw" value="im.actor.api.rpc" />
+    <property role="u_6dX" value="1.6" />
     <node concept="wd7tA" id="55bmeIQ7$gx" role="3Bkp18">
       <property role="TrG5h" value="seq_state" />
       <node concept="2m61tm" id="55bmeIQ7$g_" role="wdlUs" />
@@ -488,6 +488,7 @@
         <node concept="2m7Kf5" id="GBscvBB78H" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="phoneNumber" />
+          <property role="toYog" value="false" />
           <node concept="2m5ndQ" id="GBscvBB78L" role="2m7DVh" />
         </node>
         <node concept="2m7Kf5" id="GBscvBB78O" role="2m0hLx">
@@ -811,6 +812,110 @@
           <property role="2m7y0m" value="3" />
         </node>
       </node>
+      <node concept="2m5naR" id="2tyCW$U0Z6j" role="2m5mJr">
+        <property role="TrG5h" value="Phone" />
+        <node concept="NXeRC" id="2tyCW$U120m" role="NXodf">
+          <property role="NXePf" value="Obsolete phone information" />
+        </node>
+        <node concept="NXeRC" id="2tyCW$U15rw" role="NXodf">
+          <property role="NXePf" value="Access hash does not used anywhere and can be any number" />
+        </node>
+        <node concept="NXeRC" id="2tyCW$U15r6" role="NXodf">
+          <property role="NXePf" value="Id is used only locally during parsing of updates" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U120s" role="NXodf">
+          <property role="NX6R2" value="Id of Phone" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2tyCW$U0ZWz" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U120$" role="NXodf">
+          <property role="NX6R2" value="Phone number access hash" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="2tyCW$U0ZWE" resolve="accessHash" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U120I" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Phone number" />
+          <ref role="NX6Kv" node="2tyCW$U11bq" resolve="phone" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U12rf" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Phone number title" />
+          <ref role="NX6Kv" node="2tyCW$U11b_" resolve="phoneTitle" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U0ZWz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2tyCW$U0ZWB" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U0ZWE" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="2tyCW$U10mX" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U11bq" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="phone" />
+          <node concept="2m5ndQ" id="2tyCW$U11by" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U11b_" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="phoneTitle" />
+          <node concept="2m5ndX" id="2tyCW$U11A0" role="2m7DVh" />
+        </node>
+      </node>
+      <node concept="2m5naR" id="2tyCW$U13id" role="2m5mJr">
+        <property role="TrG5h" value="Email" />
+        <node concept="NXeRC" id="2tyCW$U149Z" role="NXodf">
+          <property role="NXePf" value="Obsolete email information" />
+        </node>
+        <node concept="NXeRC" id="2tyCW$U15qq" role="NXodf">
+          <property role="NXePf" value="Access hash does not used anywhere and can be any number" />
+        </node>
+        <node concept="NXeRC" id="2tyCW$U15qE" role="NXodf">
+          <property role="NXePf" value="Id is used only locally during parsing of updates" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U14$A" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Id of Email" />
+          <ref role="NX6Kv" node="2tyCW$U13kp" resolve="id" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U14$I" role="NXodf">
+          <property role="1GSvIU" value="danger" />
+          <property role="NX6R2" value="Email address access hash" />
+          <ref role="NX6Kv" node="2tyCW$U13kw" resolve="accessHash" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U14$S" role="NXodf">
+          <property role="NX6R2" value="Email address" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2tyCW$U13kD" resolve="email" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U14_4" role="NXodf">
+          <property role="NX6R2" value="Email address title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2tyCW$U13Jh" resolve="emailTitle" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U13kp" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="id" />
+          <node concept="2m5ndE" id="2tyCW$U13kt" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U13kw" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="accessHash" />
+          <node concept="2m5ndQ" id="2tyCW$U13kA" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U13kD" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="2tyCW$U13Je" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U13Jh" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="emailTitle" />
+          <node concept="2m5ndX" id="2tyCW$U13Jr" role="2m7DVh" />
+        </node>
+      </node>
       <node concept="2m488m" id="2tyCW$TVx9j" role="2m5mJr">
         <property role="TrG5h" value="ContactType" />
         <node concept="2m7y0F" id="2tyCW$TVx9l" role="2m7ymf">
@@ -922,6 +1027,21 @@
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBB65K" resolve="avatar" />
         </node>
+        <node concept="NX1gA" id="2tyCW$U0W_$" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Obsolete phone number. Need to be set for API &lt;= 1.5, not set for &gt;= 1.5" />
+          <ref role="NX6Kv" node="2tyCW$U0UX5" resolve="phone" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U0YDw" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Obsolete phones id's. Need to be set for API &lt;= 1.5, not set for &gt;= 1.5" />
+          <ref role="NX6Kv" node="2tyCW$U0XpS" resolve="phones" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U0YDU" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Obsolete emails id's. Need to be set for API &lt;= 1.5, not set for &gt;= 1.5" />
+          <ref role="NX6Kv" node="2tyCW$U0XOw" resolve="emails" />
+        </node>
         <node concept="NX1gA" id="1ydqyopRLrS" role="NXodf">
           <property role="NX6R2" value="phones of user" />
           <property role="1GSvIU" value="compact" />
@@ -929,7 +1049,7 @@
         </node>
         <node concept="NX1gA" id="2tyCW$TVvhb" role="NXodf">
           <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Is user actually bot" />
+          <property role="NX6R2" value="Is user actually bot. By default is false." />
           <ref role="NX6Kv" node="2tyCW$TVuOS" resolve="isBot" />
         </node>
         <node concept="2m7Kf5" id="GBscvBAzcC" role="2m0hLx">
@@ -972,6 +1092,30 @@
             </node>
           </node>
         </node>
+        <node concept="2m7Kf5" id="2tyCW$U0UX5" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="phone" />
+          <property role="toYog" value="true" />
+          <node concept="2m5nlT" id="2tyCW$U0WZJ" role="2m7DVh">
+            <node concept="2m5ndQ" id="2tyCW$U0WZP" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U0XpS" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="phones" />
+          <property role="toYog" value="true" />
+          <node concept="2m5nlk" id="2tyCW$U0Xqk" role="2m7DVh">
+            <node concept="2m5ndE" id="2tyCW$U0Xqq" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U0XOw" role="2m0hLx">
+          <property role="2m7DUN" value="10" />
+          <property role="TrG5h" value="emails" />
+          <property role="toYog" value="true" />
+          <node concept="2m5nlk" id="2tyCW$U0XOZ" role="2m7DVh">
+            <node concept="2m5ndE" id="2tyCW$U0XP5" role="3GJlyp" />
+          </node>
+        </node>
         <node concept="2m7Kf5" id="1ydqyopRJ_W" role="2m0hLx">
           <property role="2m7DUN" value="12" />
           <property role="TrG5h" value="contactInfo" />
@@ -984,7 +1128,9 @@
         <node concept="2m7Kf5" id="2tyCW$TVuOS" role="2m0hLx">
           <property role="2m7DUN" value="11" />
           <property role="TrG5h" value="isBot" />
-          <node concept="2m5ndN" id="2tyCW$TVuPm" role="2m7DVh" />
+          <node concept="2m5nlT" id="2tyCW$U0Uz0" role="2m7DVh">
+            <node concept="2m5ndN" id="2tyCW$U0Uz6" role="3GH5xg" />
+          </node>
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBfq6" role="2m5mJr">
@@ -1127,11 +1273,6 @@
         <node concept="NXeRC" id="1ydqyopRK6U" role="NXp_2">
           <property role="NXePf" value="Update about contact information change" />
         </node>
-        <node concept="NX1gA" id="1ydqyopRKZc" role="NXp_2">
-          <property role="NX6R2" value="user's uid" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="1ydqyopRK6g" resolve="uid" />
-        </node>
         <node concept="NX1gA" id="1ydqyopRKZk" role="NXp_2">
           <property role="NX6R2" value="new phones list" />
           <property role="1GSvIU" value="compact" />
@@ -1152,7 +1293,7 @@
           </node>
         </node>
         <node concept="Nu42z" id="1ydqyopRK4D" role="NuuwV">
-          <property role="Nu42W" value="56" />
+          <property role="Nu42W" value="86" />
         </node>
       </node>
     </node>
@@ -1299,9 +1440,6 @@
       <node concept="1Dx9M1" id="2uPas5edrhn" role="1Dx9rD">
         <property role="1Dx9K7" value="For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59." />
       </node>
-      <node concept="NvWBy" id="GBscvBBgfO" role="2m5mJr">
-        <property role="NvWrd" value="Import" />
-      </node>
       <node concept="2m5naR" id="GBscvBBg2h" role="2m5mJr">
         <property role="TrG5h" value="PhoneToImport" />
         <property role="w4tQU" value="false" />
@@ -1445,9 +1583,6 @@
         </node>
       </node>
       <node concept="NvyAe" id="GBscvBBgtW" role="2m5mJr" />
-      <node concept="NvWBy" id="GBscvBBggO" role="2m5mJr">
-        <property role="NvWrd" value="Working with list" />
-      </node>
       <node concept="2m6fVq" id="GBscvBBgv0" role="2m5mJr">
         <property role="TrG5h" value="GetContacts" />
         <node concept="2m7Kf5" id="GBscvBBgvC" role="2m0hLx">
@@ -1830,9 +1965,6 @@
       <node concept="1Dx9M1" id="2uPas5edaue" role="1Dx9rD">
         <property role="1Dx9K7" value="date of read/delivered message." />
       </node>
-      <node concept="NvWBy" id="GBscvBBk9P" role="2m5mJr">
-        <property role="NvWrd" value="Model" />
-      </node>
       <node concept="w93zz" id="55bmeIQey3W" role="2m5mJr">
         <property role="TrG5h" value="Message" />
         <property role="1FaRnq" value="true" />
@@ -1849,6 +1981,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBkKA" resolve="text" />
         </node>
+        <node concept="NX1gA" id="2tyCW$U1eS_" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User mentions in message" />
+          <ref role="NX6Kv" node="2tyCW$U1etp" resolve="mentions" />
+        </node>
         <node concept="NX1gA" id="EUEXKTmpO4" role="NXodf">
           <property role="1GSvIU" value="full" />
           <property role="NX6R2" value="Optional bytes of extension" />
@@ -1858,6 +1995,13 @@
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="text" />
           <node concept="2m5ndX" id="GBscvBBkKE" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U1etp" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="mentions" />
+          <node concept="2m5nlk" id="2tyCW$U1ety" role="2m7DVh">
+            <node concept="2m5ndE" id="2tyCW$U1etC" role="3GJlyp" />
+          </node>
         </node>
         <node concept="2m7Kf5" id="GBscvBBkKQ" role="2m0hLx">
           <property role="2m7DUN" value="3" />
@@ -5236,6 +5380,26 @@
             </node>
           </node>
         </node>
+        <node concept="2m7Kf5" id="2tyCW$U1gZt" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="phones" />
+          <property role="toYog" value="true" />
+          <node concept="2m5nlk" id="2tyCW$U1gZJ" role="2m7DVh">
+            <node concept="2m5mGg" id="2tyCW$U1gZP" role="3GJlyp">
+              <ref role="2m5mJy" node="2tyCW$U0Z6j" resolve="Phone" />
+            </node>
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U1gZS" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="emails" />
+          <property role="toYog" value="true" />
+          <node concept="2m5nlk" id="2tyCW$U1h0d" role="2m7DVh">
+            <node concept="2m5mGg" id="2tyCW$U1h0j" role="3GJlyp">
+              <ref role="2m5mJy" node="2tyCW$U13id" resolve="Email" />
+            </node>
+          </node>
+        </node>
         <node concept="2m7Kf5" id="GBscvBBO9m" role="2m0hLx">
           <property role="2m7DUN" value="6" />
           <property role="TrG5h" value="groups" />
@@ -5275,6 +5439,16 @@
           <property role="NX6R2" value="Users that are referenced in update " />
           <property role="1GSvIU" value="compact" />
           <ref role="NX6Kv" node="GBscvBBNT7" resolve="users" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U1hQn" role="NXpPy">
+          <property role="1GSvIU" value="compact" />
+          <property role="NX6R2" value="Deprecated phones" />
+          <ref role="NX6Kv" node="2tyCW$U1gZt" resolve="phones" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U1hQF" role="NXpPy">
+          <property role="NX6R2" value="Deprecated emails" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="2tyCW$U1gZS" resolve="emails" />
         </node>
         <node concept="NX1gA" id="7UKSaUukmdd" role="NXpPy">
           <property role="NX6R2" value="Groups that are referenced in update" />
@@ -5400,6 +5574,46 @@
           <property role="Nu42W" value="0B" />
         </node>
         <node concept="2m1R6W" id="GBscvBB_W5" role="2m6efq">
+          <node concept="NX1gA" id="2tyCW$U1bP_" role="1y2DgH">
+            <property role="NX6R2" value="Seq of LAST update in updates" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="GBscvBB_Wa" resolve="seq" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1bPN" role="1y2DgH">
+            <property role="NX6R2" value="State of LAST update in updates" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="GBscvBB_Wh" resolve="state" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1bPF" role="1y2DgH">
+            <property role="NX6R2" value="Users referenced in updates" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="GBscvBB_Wq" resolve="users" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1cgF" role="1y2DgH">
+            <property role="NX6R2" value="Deperecated Phones referenced in users" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="2tyCW$U1a$B" resolve="phones" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1cgR" role="1y2DgH">
+            <property role="NX6R2" value="Deprecated Emails referenced in phones" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="2tyCW$U1a_3" resolve="emails" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1ch5" role="1y2DgH">
+            <property role="NX6R2" value="Groups referenced in updates" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="GBscvBB_WF" resolve="groups" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1d6R" role="1y2DgH">
+            <property role="NX6R2" value="Updates" />
+            <property role="1GSvIU" value="compact" />
+            <ref role="NX6Kv" node="GBscvBB_WZ" resolve="updates" />
+          </node>
+          <node concept="NX1gA" id="2tyCW$U1d79" role="1y2DgH">
+            <property role="NX6R2" value="Need to perform other difference" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="GBscvBB_Xm" resolve="needMore" />
+          </node>
           <node concept="2m7Kf5" id="GBscvBB_Wa" role="2m0hLx">
             <property role="2m7DUN" value="1" />
             <property role="TrG5h" value="seq" />
@@ -5418,6 +5632,26 @@
             <node concept="2m5nlk" id="GBscvBB_Wy" role="2m7DVh">
               <node concept="2m5mGg" id="3m8vlV8pH0U" role="3GJlyp">
                 <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="2tyCW$U1a$B" role="2m0hLx">
+            <property role="2m7DUN" value="7" />
+            <property role="TrG5h" value="phones" />
+            <property role="toYog" value="true" />
+            <node concept="2m5nlk" id="2tyCW$U1a$U" role="2m7DVh">
+              <node concept="2m5mGg" id="2tyCW$U1a_0" role="3GJlyp">
+                <ref role="2m5mJy" node="2tyCW$U0Z6j" resolve="Phone" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="2tyCW$U1a_3" role="2m0hLx">
+            <property role="2m7DUN" value="8" />
+            <property role="TrG5h" value="emails" />
+            <property role="toYog" value="true" />
+            <node concept="2m5nlk" id="2tyCW$U1a_p" role="2m7DVh">
+              <node concept="2m5mGg" id="2tyCW$U1a_v" role="3GJlyp">
+                <ref role="2m5mJy" node="2tyCW$U13id" resolve="Email" />
               </node>
             </node>
           </node>

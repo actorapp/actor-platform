@@ -8,6 +8,9 @@ import java.util.List;
  * Created by ex3ndr on 14.11.14.
  */
 public class SchemeDefinition {
+
+    private String version;
+
     private List<SchemeSection> sections = new ArrayList<SchemeSection>();
 
     private HashMap<String, SchemeType> aliases = new HashMap<String, SchemeType>();
@@ -18,6 +21,14 @@ public class SchemeDefinition {
 
     public List<SchemeSection> getSections() {
         return sections;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public List<SchemeRpc> getAllRpc() {
