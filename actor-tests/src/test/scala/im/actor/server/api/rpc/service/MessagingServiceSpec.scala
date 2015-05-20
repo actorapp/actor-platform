@@ -51,7 +51,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", None))) { resp ⇒
+        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseSeqDate(1000, _, _)) ⇒
           }
@@ -68,7 +68,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", None))) { resp ⇒
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseSeqDate(1001, _, _)) ⇒
           }
@@ -84,7 +84,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
         val alienClientData = ClientData(authId1, sessionId, Some(alien.id))
 
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi again", None))(alienClientData)) { resp ⇒
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi again", Vector.empty, None))(alienClientData)) { resp ⇒
           resp should matchNotAuthorized
         }
 
