@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -191,29 +190,33 @@ public class ChatActivity extends BaseActivity{
                 String str = s.toString();
                 String firstPeace  = str.substring(0, start + count);
 
+                if(peer.getPeerType()==PeerType.GROUP){
 
-                if((count==1 && s.charAt(start) == '@') || (start>0 &&  s.charAt(start-1) == '@')) {
-                    if(peer.getPeerType()==PeerType.GROUP)
-                    showMentions();
-                }
-
-
-                if(s.length()!=count){
-                    mentionStart = firstPeace.lastIndexOf("@");
-                    if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
-                        mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
-                    }else{
-                        mentionSearchString = "";
+                    if(count==1 && s.charAt(start) == '@') {
+                        showMentions(false);
+                    }else if(firstPeace.contains("@")){
+                        showMentions(true);
                     }
 
-                    if(mentionSearchString.equals(" ")){
-                        hideMentions();
-                    }else if(mentionsAdapter!=null){
-                        //mentionsDisplay.initSearch(mentionSearchString, false);
-                        mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
-                    }
 
+                    if(s.length()!=count){
+                        mentionStart = firstPeace.lastIndexOf("@");
+                        if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
+                            mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                        }else{
+                            mentionSearchString = "";
+                        }
+
+                        if(mentionSearchString.equals(" ")){
+                            hideMentions();
+                        }else if(mentionsAdapter!=null){
+                            //mentionsDisplay.initSearch(mentionSearchString, false);
+                            mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
+                        }
+
+                    }
                 }
+
 
 
 
@@ -569,7 +572,7 @@ public class ChatActivity extends BaseActivity{
         }.execute();
     }
 
-    private void showMentions() {
+    private void showMentions(boolean initEmpty) {
         if (isMentionsVisible) {
             return;
         }
@@ -600,10 +603,10 @@ public class ChatActivity extends BaseActivity{
             public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
                 onMentionsChanged(oldRowsCount, newRowsCount);
             }
-        });
+        }, initEmpty);
 
         mentionsList.setAdapter(mentionsAdapter);
-        onMentionsChanged(0, mentionsAdapter.getCount());
+        expandMentions(mentionsList,0,mentionsList.getCount());
     }
 
     private void hideMentions() {
