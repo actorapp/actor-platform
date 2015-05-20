@@ -17,56 +17,50 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestEditParameter extends Request<ResponseSeq> {
+public class RequestNotifyAddView extends Request<ResponseVoid> {
 
-    public static final int HEADER = 0x80;
-    public static RequestEditParameter fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestEditParameter(), data);
+    public static final int HEADER = 0xa2;
+    public static RequestNotifyAddView fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestNotifyAddView(), data);
     }
 
-    private String key;
-    private String value;
+    private int bannerId;
+    private int viewDuration;
 
-    public RequestEditParameter(String key, String value) {
-        this.key = key;
-        this.value = value;
+    public RequestNotifyAddView(int bannerId, int viewDuration) {
+        this.bannerId = bannerId;
+        this.viewDuration = viewDuration;
     }
 
-    public RequestEditParameter() {
+    public RequestNotifyAddView() {
 
     }
 
-    public String getKey() {
-        return this.key;
+    public int getBannerId() {
+        return this.bannerId;
     }
 
-    public String getValue() {
-        return this.value;
+    public int getViewDuration() {
+        return this.viewDuration;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.key = values.getString(1);
-        this.value = values.getString(2);
+        this.bannerId = values.getInt(1);
+        this.viewDuration = values.getInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.key == null) {
-            throw new IOException();
-        }
-        writer.writeString(1, this.key);
-        if (this.value == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.value);
+        writer.writeInt(1, this.bannerId);
+        writer.writeInt(2, this.viewDuration);
     }
 
     @Override
     public String toString() {
-        String res = "rpc EditParameter{";
-        res += "key=" + this.key;
-        res += ", value=" + this.value;
+        String res = "rpc NotifyAddView{";
+        res += "bannerId=" + this.bannerId;
+        res += ", viewDuration=" + this.viewDuration;
         res += "}";
         return res;
     }

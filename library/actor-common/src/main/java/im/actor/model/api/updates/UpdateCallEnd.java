@@ -17,53 +17,43 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class UpdateEmailTitleChanged extends Update {
+public class UpdateCallEnd extends Update {
 
-    public static final int HEADER = 0x62;
-    public static UpdateEmailTitleChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateEmailTitleChanged(), data);
+    public static final int HEADER = 0x53;
+    public static UpdateCallEnd fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateCallEnd(), data);
     }
 
-    private int emailId;
-    private String title;
+    private String callId;
 
-    public UpdateEmailTitleChanged(int emailId, String title) {
-        this.emailId = emailId;
-        this.title = title;
+    public UpdateCallEnd(String callId) {
+        this.callId = callId;
     }
 
-    public UpdateEmailTitleChanged() {
+    public UpdateCallEnd() {
 
     }
 
-    public int getEmailId() {
-        return this.emailId;
-    }
-
-    public String getTitle() {
-        return this.title;
+    public String getCallId() {
+        return this.callId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.emailId = values.getInt(1);
-        this.title = values.getString(2);
+        this.callId = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.emailId);
-        if (this.title == null) {
+        if (this.callId == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.title);
+        writer.writeString(2, this.callId);
     }
 
     @Override
     public String toString() {
-        String res = "update EmailTitleChanged{";
-        res += "emailId=" + this.emailId;
-        res += ", title=" + this.title;
+        String res = "update CallEnd{";
         res += "}";
         return res;
     }

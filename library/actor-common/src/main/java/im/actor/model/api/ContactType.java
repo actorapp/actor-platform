@@ -5,15 +5,15 @@ package im.actor.model.api;
 
 import java.io.IOException;
 
-public enum PeerType {
+public enum ContactType {
 
-    PRIVATE(1),
-    GROUP(2),
+    PHONE(1),
+    EMAIL(2),
     UNSUPPORTED_VALUE(-1);
 
     private int value;
 
-    PeerType(int value) {
+    ContactType(int value) {
         this.value = value;
     }
 
@@ -21,11 +21,11 @@ public enum PeerType {
         return value;
     }
 
-    public static PeerType parse(int value) throws IOException {
+    public static ContactType parse(int value) throws IOException {
         switch(value) {
-            case 1: return PeerType.PRIVATE;
-            case 2: return PeerType.GROUP;
-            default: return PeerType.UNSUPPORTED_VALUE;
+            case 1: return ContactType.PHONE;
+            case 2: return ContactType.EMAIL;
+            default: return ContactType.UNSUPPORTED_VALUE;
         }
     }
 }

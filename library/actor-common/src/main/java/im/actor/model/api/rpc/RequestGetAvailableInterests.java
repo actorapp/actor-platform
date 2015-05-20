@@ -17,48 +17,29 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestDetachEmail extends Request<ResponseSeq> {
+public class RequestGetAvailableInterests extends Request<ResponseGetAvailableInterests> {
 
-    public static final int HEADER = 0x7b;
-    public static RequestDetachEmail fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestDetachEmail(), data);
+    public static final int HEADER = 0x98;
+    public static RequestGetAvailableInterests fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetAvailableInterests(), data);
     }
 
-    private int email;
-    private long accessHash;
 
-    public RequestDetachEmail(int email, long accessHash) {
-        this.email = email;
-        this.accessHash = accessHash;
-    }
+    public RequestGetAvailableInterests() {
 
-    public RequestDetachEmail() {
-
-    }
-
-    public int getEmail() {
-        return this.email;
-    }
-
-    public long getAccessHash() {
-        return this.accessHash;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.email = values.getInt(1);
-        this.accessHash = values.getLong(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.email);
-        writer.writeLong(2, this.accessHash);
     }
 
     @Override
     public String toString() {
-        String res = "rpc DetachEmail{";
+        String res = "rpc GetAvailableInterests{";
         res += "}";
         return res;
     }
