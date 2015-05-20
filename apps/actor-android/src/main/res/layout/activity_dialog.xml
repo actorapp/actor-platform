@@ -34,7 +34,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_above="@+id/fl_send_panel"
-        android:background="@color/bg_main"/>
+        android:background="@color/bg_main"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/selector" />
 
 
     <FrameLayout

@@ -98,16 +98,16 @@ public class ViewUtils {
         }
 
         v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
-        int newRowsHeight = Screen.dp(29)*newRowsCount + Screen.dp(1)*((newRowsCount==0?1:newRowsCount)-1);
+        int newRowsHeight = Screen.dp(48)*newRowsCount + newRowsCount;
 
-        final int targetHeight = (newRowsHeight)>Screen.dp(87+2)?Screen.dp(100):newRowsHeight;
+        final int targetHeight = (newRowsHeight)>Screen.dp(96+2)?Screen.dp(122):newRowsHeight;
         final int initialHeight = new Integer(v.getLayoutParams().height);
 
         v.getLayoutParams().height = initialHeight;
         v.setVisibility(View.VISIBLE);
         Animation a = new ExpandMentionsAnimation(v, targetHeight, initialHeight);
 
-        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)) * 2);
+        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)) );
         a.setInterpolator(MaterialInterpolator.getInstance());
         v.startAnimation(a);
 
