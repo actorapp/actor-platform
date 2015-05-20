@@ -17,13 +17,13 @@
         android:paddingRight="8dp">
 
         <FrameLayout
-            android:layout_width="36dp"
-            android:layout_height="29dp">
+            android:layout_width="59dp"
+            android:layout_height="48dp">
 
             <im.actor.messenger.app.view.AvatarView
                 android:id="@+id/avatar"
-                android:layout_width="21dp"
-                android:layout_height="21dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="center" />
         </FrameLayout>
 
@@ -40,8 +40,12 @@
             android:textColor="@color/text_primary"
             android:textSize="16sp" />
 
-
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/div_size"
+        android:layout_marginLeft="59dp"
+        android:background="@color/divider" />
 
 </LinearLayout>
