@@ -15,6 +15,7 @@ import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
+
 public final class Version {
 
     public station String VERSION = "1.6";
