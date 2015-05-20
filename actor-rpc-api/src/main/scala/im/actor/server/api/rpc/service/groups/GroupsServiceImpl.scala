@@ -5,6 +5,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
 import com.amazonaws.services.s3.transfer.TransferManager
+import org.apache.commons.codec.digest.DigestUtils
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -15,10 +16,11 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.models.UserState.Registered
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.{ AvatarUtils, IdUtils, HistoryUtils }
+import im.actor.server.util.{ ACLUtils, AvatarUtils, HistoryUtils, IdUtils }
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String)(
@@ -184,6 +186,17 @@ class GroupsServiceImpl(bucketName: String)(
           createdAt = dateTime
         )
 
+        val bot = models.User(
+          id = nextIntId(rnd),
+          accessSalt = ACLUtils.nextAccessSalt(rnd),
+          name = "Bot",
+          countryCode = "US",
+          sex = models.NoSex,
+          state = Registered,
+          isBot = true
+        )
+        val botToken = DigestUtils.sha256Hex(rnd.nextLong().toString)
+
         val userIds = users.map(_.userId).toSet
         val groupUserIds = userIds + client.userId
 
@@ -193,6 +206,8 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           _ ← persist.Group.create(group, randomId)
           _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
+          _ ← persist.User.create(bot)
+          _ ← persist.GroupBot.create(group.id, bot.id, botToken)
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(group.id),

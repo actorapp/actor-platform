@@ -133,9 +133,11 @@ object PeerHelpers {
     case Some(group) ⇒
       (for (user ← persist.GroupUser.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ DBIO.successful(\/-(group))
-        case None ⇒ {
-          DBIO.successful(Error(CommonErrors.UserNotAuthorized))
-        }
+        case None ⇒
+          (for (bot ← persist.GroupBot.find(group.id, userId)) yield bot).flatMap {
+            case Some(bot) ⇒ DBIO.successful(\/-(group))
+            case None      ⇒ DBIO.successful(Error(CommonErrors.UserNotAuthorized))
+          }
       }
     case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
   }

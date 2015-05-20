@@ -37,5 +37,6 @@ case class User(
   countryCode: String,
   sex:         Sex,
   state:       UserState,
-  deletedAt:   Option[DateTime] = None
+  deletedAt:   Option[DateTime] = None,
+  isBot:       Boolean          = false
 )

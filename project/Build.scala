@@ -77,7 +77,7 @@ object Build extends sbt.Build {
           )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .dependsOn(actorFrontend, actorCommonsBase, actorRpcApi)
+    .dependsOn(actorFrontend, actorCommonsBase, actorRpcApi, actorWebhooks)
     .aggregate(actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
 
   lazy val actorCommonsApi = Project(
@@ -152,7 +152,7 @@ object Build extends sbt.Build {
     base = file("actor-sms"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
   )
-  
+
   lazy val actorSocial = Project(
     id = "actor-social",
     base = file("actor-social"),
@@ -184,7 +184,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.models
     )
   )
-  
+
   lazy val actorPersist = Project(
     id = "actor-persist",
     base = file("actor-persist"),
@@ -222,6 +222,15 @@ object Build extends sbt.Build {
     )
   )
 
+  lazy val actorWebhooks = Project(
+    id = "actor-webhooks",
+    base = file("actor-webhooks"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.webhooks
+    )
+  )
+    .dependsOn(actorPersist, actorRpcApi)
+
   lazy val actorTests = Project(
     id = "actor-tests",
     base = file("actor-tests"),
@@ -229,5 +238,5 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.tests
     ))
     .configs(Configs.all: _*)
-    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession)
+    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession, actorWebhooks)
 }
