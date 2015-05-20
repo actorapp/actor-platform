@@ -26,16 +26,15 @@ import static im.actor.messenger.app.Core.users;
  */
 public class MentionsAdapter extends HolderAdapter<GroupMember> {
     private GroupMember[] membersToShow;
-
+    private GroupMember[] allMembers;
     private HashMap<String, GroupMember> searchMap;
     private OnItemClickedListener<GroupMember> onItemClickedListener;
-    Collection<GroupMember> members;
     MentionsUpdatedCallback updatedCallback;
 
     public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
-        this.members = members;
-        this.membersToShow = initEmpty?new GroupMember[]{}:members.toArray(new GroupMember[0]);
+        this.allMembers = members.toArray(new GroupMember[0]);
+        this.membersToShow = initEmpty?new GroupMember[]{}:allMembers;
         searchMap = new HashMap<String, GroupMember>();
         this.onItemClickedListener = onItemClickedListener;
         this.updatedCallback = updatedCallback;
@@ -62,7 +61,10 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     public void setQuery(String q){
         int oldRowsCount = new Integer(membersToShow.length);
         if(q.isEmpty()){
-            this.membersToShow = members.toArray(new GroupMember[0]);
+            if(this.membersToShow.equals(allMembers)){
+                return;
+            }
+            this.membersToShow = allMembers;
         }else{
             HashSet<GroupMember> foundMembers = new HashSet<GroupMember>();
             for(String s:searchMap.keySet()){
