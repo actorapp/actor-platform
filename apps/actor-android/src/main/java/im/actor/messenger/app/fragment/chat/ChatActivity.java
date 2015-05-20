@@ -107,6 +107,7 @@ public class ChatActivity extends BaseActivity{
     private ListView mentionsList;
     private String mentionSearchString = "";
     private int mentionStart;
+    private boolean isEarse = false;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -180,6 +181,8 @@ public class ChatActivity extends BaseActivity{
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
+
+                isEarse = after<count;
             }
 
             @Override
@@ -621,7 +624,11 @@ public class ChatActivity extends BaseActivity{
 
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
         if(mentionsAdapter!=null)
-            expandMentions(mentionsList, oldRowsCount, newRowsCount);
+            if(newRowsCount==1 && !isEarse){
+                mentionsAdapter.getView(0, null, null).callOnClick();
+            }else{
+                expandMentions(mentionsList, oldRowsCount, newRowsCount);
+            }
      }
 
     @Override
