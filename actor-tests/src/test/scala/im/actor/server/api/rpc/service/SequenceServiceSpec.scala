@@ -58,7 +58,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
       res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups)) if updates.length == 100 ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups, _, _)) if updates.length == 100 ⇒
       }
 
       val diff = res.toOption.get
@@ -76,7 +76,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
     val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1)) { res ⇒
       res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups)) if updates.length == 100 ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups, _, _)) if updates.length == 100 ⇒
       }
 
       val diff = res.toOption.get
@@ -94,7 +94,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
     val (seq3, state3) = whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
       res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups)) if updates.length == 3 ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, _, _)) if updates.length == 3 ⇒
       }
 
       val diff = res.toOption.get
@@ -112,13 +112,13 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
     whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
       res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups)) if updates.length == 3 ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, _, _)) if updates.length == 3 ⇒
       }
     }
 
     whenReady(service.handleGetDifference(seq3, state3)) { res ⇒
       res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups)) if updates.isEmpty ⇒
+        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups, _, _)) if updates.isEmpty ⇒
       }
 
       val diff = res.toOption.get
