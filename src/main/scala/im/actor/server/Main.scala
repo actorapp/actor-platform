@@ -30,6 +30,7 @@ import im.actor.server.push.{ ApplePushManagerConfig, ApplePushManager, SeqUpdat
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
+import im.actor.server.webhooks.{ WebhooksConfig, WebhooksFrontend }
 
 class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
@@ -40,6 +41,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
   val smsConfig = serverConfig.getConfig("sms")
+  val webhooksConfig = serverConfig.getConfig("webhooks")
   implicit val sessionConfig = SessionConfig.fromConfig(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
@@ -79,10 +81,12 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
+    val messagingService = new MessagingServiceImpl
+
     val services = Seq(
       new AuthServiceImpl(activationContext),
       new ContactsServiceImpl,
-      new MessagingServiceImpl,
+      messagingService,
       new GroupsServiceImpl(s3BucketName),
       new SequenceServiceImpl,
       new WeakServiceImpl,
@@ -95,6 +99,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
+    WebhooksFrontend.start(WebhooksConfig.fromConfig(webhooksConfig), messagingService)
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)
   }
