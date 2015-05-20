@@ -16,12 +16,12 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public final class Version {
+public final class ApiVersion {
 
-    public station String VERSION = "1.6";
+    public static String VERSION = "1.6";
 
-    public station int VERSION_MAJOR = 1;
-    public station int VERSION_MINOR = 6;
+    public static int VERSION_MAJOR = 1;
+    public static int VERSION_MINOR = 6;
 
     private Version() {
     }
