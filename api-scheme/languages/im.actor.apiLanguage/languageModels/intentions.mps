@@ -476,5 +476,40 @@
       </node>
     </node>
   </node>
+  <node concept="2S6QgY" id="2tyCW$U0lRF">
+    <property role="TrG5h" value="ToggleDeprecated" />
+    <ref role="2ZfgGC" to="tsp6:22nuAqQy7Az" resolve="StructAttribute" />
+    <node concept="2Sbjvc" id="2tyCW$U0lRG" role="2ZfgGD">
+      <node concept="3clFbS" id="2tyCW$U0lRH" role="2VODD2">
+        <node concept="3clFbF" id="2tyCW$U0nwP" role="3cqZAp">
+          <node concept="37vLTI" id="2tyCW$U0nYg" role="3clFbG">
+            <node concept="3fqX7Q" id="2tyCW$U0nY$" role="37vLTx">
+              <node concept="2OqwBi" id="2tyCW$U0oaD" role="3fr31v">
+                <node concept="2Sf5sV" id="2tyCW$U0o8q" role="2Oq$k0" />
+                <node concept="3TrcHB" id="2tyCW$U0okF" role="2OqNvi">
+                  <ref role="3TsBF5" to="tsp6:2tyCW$U0knp" resolve="isDeprecated" />
+                </node>
+              </node>
+            </node>
+            <node concept="2OqwBi" id="2tyCW$U0nyo" role="37vLTJ">
+              <node concept="2Sf5sV" id="2tyCW$U0nwO" role="2Oq$k0" />
+              <node concept="3TrcHB" id="2tyCW$U0nG0" role="2OqNvi">
+                <ref role="3TsBF5" to="tsp6:2tyCW$U0knp" resolve="isDeprecated" />
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="2S6ZIM" id="2tyCW$U0lRI" role="2ZfVej">
+      <node concept="3clFbS" id="2tyCW$U0lRJ" role="2VODD2">
+        <node concept="3clFbF" id="2tyCW$U0mpT" role="3cqZAp">
+          <node concept="Xl_RD" id="2tyCW$U0mpS" role="3clFbG">
+            <property role="Xl_RC" value="Toogle Deperecate" />
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
 </model>
 

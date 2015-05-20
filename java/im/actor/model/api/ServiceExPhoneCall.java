@@ -16,51 +16,39 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Parameter extends BserObject {
+public class ServiceExPhoneCall extends ServiceEx {
 
-    private String key;
-    private String value;
+    private int duration;
 
-    public Parameter(String key, String value) {
-        this.key = key;
-        this.value = value;
+    public ServiceExPhoneCall(int duration) {
+        this.duration = duration;
     }
 
-    public Parameter() {
+    public ServiceExPhoneCall() {
 
     }
 
-    public String getKey() {
-        return this.key;
+    public int getHeader() {
+        return 16;
     }
 
-    public String getValue() {
-        return this.value;
+    public int getDuration() {
+        return this.duration;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.key = values.getString(1);
-        this.value = values.getString(2);
+        this.duration = values.getInt(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.key == null) {
-            throw new IOException();
-        }
-        writer.writeString(1, this.key);
-        if (this.value == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.value);
+        writer.writeInt(1, this.duration);
     }
 
     @Override
     public String toString() {
-        String res = "struct Parameter{";
-        res += "key=" + this.key;
-        res += ", value=" + this.value;
+        String res = "struct ServiceExPhoneCall{";
         res += "}";
         return res;
     }

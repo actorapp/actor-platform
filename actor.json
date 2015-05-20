@@ -1,4 +1,7 @@
 {
+  "version": "1.6",
+  "scala-package": "im.actor.api.rpc",
+  "java-package": "im.actor.model.api",
   "aliases": [
     {
       "type": "bytes",
@@ -13,8 +16,6 @@
       "alias": "randomId"
     }
   ],
-  "scala-package": "im.actor.api.rpc",
-  "java-package": "im.actor.model.api",
   "sections": [
     {
       "title": "Authentication",
@@ -699,6 +700,120 @@
           }
         },
         {
+          "type": "struct",
+          "content": {
+            "name": "Phone",
+            "doc": [
+              "Obsolete phone information",
+              "Access hash does not used anywhere and can be any number",
+              "Id is used only locally during parsing of updates",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Id of Phone"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Phone number access hash"
+              },
+              {
+                "type": "reference",
+                "argument": "phone",
+                "category": "full",
+                "description": "  Phone number"
+              },
+              {
+                "type": "reference",
+                "argument": "phoneTitle",
+                "category": "full",
+                "description": "  Phone number title"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "int64",
+                "id": 3,
+                "name": "phone"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "phoneTitle"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Email",
+            "doc": [
+              "Obsolete email information",
+              "Access hash does not used anywhere and can be any number",
+              "Id is used only locally during parsing of updates",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Id of Email"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Email address access hash"
+              },
+              {
+                "type": "reference",
+                "argument": "email",
+                "category": "full",
+                "description": "  Email address"
+              },
+              {
+                "type": "reference",
+                "argument": "emailTitle",
+                "category": "full",
+                "description": "  Email address title"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "email"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "emailTitle"
+              }
+            ]
+          }
+        },
+        {
           "type": "enum",
           "content": {
             "name": "ContactType",
@@ -839,6 +954,24 @@
               },
               {
                 "type": "reference",
+                "argument": "phone",
+                "category": "full",
+                "description": "  Obsolete phone number. Need to be set for API <= 1.5, not set for >= 1.5"
+              },
+              {
+                "type": "reference",
+                "argument": "phones",
+                "category": "full",
+                "description": "  Obsolete phones id's. Need to be set for API <= 1.5, not set for >= 1.5"
+              },
+              {
+                "type": "reference",
+                "argument": "emails",
+                "category": "full",
+                "description": "  Obsolete emails id's. Need to be set for API <= 1.5, not set for >= 1.5"
+              },
+              {
+                "type": "reference",
                 "argument": "contactInfo",
                 "category": "compact",
                 "description": "  phones of user"
@@ -847,7 +980,7 @@
                 "type": "reference",
                 "argument": "isBot",
                 "category": "full",
-                "description": "  Is user actually bot"
+                "description": "  Is user actually bot. By default is false."
               }
             ],
             "attributes": [
@@ -898,6 +1031,33 @@
               },
               {
                 "type": {
+                  "type": "opt",
+                  "childType": "int64"
+                },
+                "id": 7,
+                "name": "phone",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 9,
+                "name": "phones",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 10,
+                "name": "emails",
+                "deprecated": "true"
+              },
+              {
+                "type": {
                   "type": "list",
                   "childType": {
                     "type": "struct",
@@ -908,7 +1068,10 @@
                 "name": "contactInfo"
               },
               {
-                "type": "bool",
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
                 "id": 11,
                 "name": "isBot"
               }
@@ -1079,15 +1242,9 @@
           "type": "update",
           "content": {
             "name": "UserContactsChanged",
-            "header": 86,
+            "header": 134,
             "doc": [
               "Update about contact information change",
-              {
-                "type": "reference",
-                "argument": "uid",
-                "category": "full",
-                "description": "  user's uid"
-              },
               {
                 "type": "reference",
                 "argument": "contactRecords",
@@ -1258,10 +1415,6 @@
         "For adding/deleting contacts AddContact#0x72 and DeleteContact#0x59."
       ],
       "items": [
-        {
-          "type": "comment",
-          "content": "Import"
-        },
         {
           "type": "struct",
           "content": {
@@ -1434,10 +1587,6 @@
         },
         {
           "type": "empty"
-        },
-        {
-          "type": "comment",
-          "content": "Working with list"
         },
         {
           "type": "rpc",
@@ -1788,10 +1937,6 @@
       ],
       "items": [
         {
-          "type": "comment",
-          "content": "Model"
-        },
-        {
           "type": "trait",
           "content": {
             "isContainer": "true",
@@ -1813,6 +1958,12 @@
               },
               {
                 "type": "reference",
+                "argument": "mentions",
+                "category": "full",
+                "description": "  User mentions in message"
+              },
+              {
+                "type": "reference",
                 "argument": "ext",
                 "category": "full",
                 "description": "  Optional bytes of extension"
@@ -1827,6 +1978,14 @@
                 "type": "string",
                 "id": 1,
                 "name": "text"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int32"
+                },
+                "id": 2,
+                "name": "mentions"
               },
               {
                 "type": {
@@ -5898,6 +6057,18 @@
               },
               {
                 "type": "reference",
+                "argument": "phones",
+                "category": "compact",
+                "description": "  Deprecated phones"
+              },
+              {
+                "type": "reference",
+                "argument": "emails",
+                "category": "compact",
+                "description": "  Deprecated emails"
+              },
+              {
+                "type": "reference",
                 "argument": "groups",
                 "category": "compact",
                 "description": "  Groups that are referenced in update"
@@ -5937,6 +6108,30 @@
                 },
                 "id": 5,
                 "name": "users"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Phone"
+                  }
+                },
+                "id": 7,
+                "name": "phones",
+                "deprecated": "true"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Email"
+                  }
+                },
+                "id": 8,
+                "name": "emails",
+                "deprecated": "true"
               },
               {
                 "type": {
@@ -6067,6 +6262,56 @@
             "response": {
               "type": "anonymous",
               "header": 12,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Seq of LAST update in updates"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "full",
+                  "description": "  State of LAST update in updates"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "compact",
+                  "description": "  Users referenced in updates"
+                },
+                {
+                  "type": "reference",
+                  "argument": "phones",
+                  "category": "compact",
+                  "description": "  Deperecated Phones referenced in users"
+                },
+                {
+                  "type": "reference",
+                  "argument": "emails",
+                  "category": "compact",
+                  "description": "  Deprecated Emails referenced in phones"
+                },
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "compact",
+                  "description": "  Groups referenced in updates"
+                },
+                {
+                  "type": "reference",
+                  "argument": "updates",
+                  "category": "compact",
+                  "description": "  Updates"
+                },
+                {
+                  "type": "reference",
+                  "argument": "needMore",
+                  "category": "full",
+                  "description": "  Need to perform other difference"
+                }
+              ],
               "attributes": [
                 {
                   "type": "int32",
@@ -6091,6 +6336,30 @@
                   },
                   "id": 3,
                   "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Phone"
+                    }
+                  },
+                  "id": 7,
+                  "name": "phones",
+                  "deprecated": "true"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Email"
+                    }
+                  },
+                  "id": 8,
+                  "name": "emails",
+                  "deprecated": "true"
                 },
                 {
                   "type": {

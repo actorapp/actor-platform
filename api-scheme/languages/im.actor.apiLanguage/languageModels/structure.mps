@@ -147,6 +147,10 @@
       <property role="TrG5h" value="scalaPackage" />
       <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
     </node>
+    <node concept="1TJgyi" id="2tyCW$TXG2O" role="1TKVEl">
+      <property role="TrG5h" value="version" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
+    </node>
     <node concept="1TJgyj" id="55bmeIQ6Gyz" role="1TKVEi">
       <property role="20lmBu" value="aggregation" />
       <property role="20kJfa" value="aliases" />
@@ -230,6 +234,10 @@
     <node concept="1TJgyi" id="22nuAqQyujl" role="1TKVEl">
       <property role="TrG5h" value="id" />
       <ref role="AX2Wp" to="tpck:fKAQMTA" resolve="integer" />
+    </node>
+    <node concept="1TJgyi" id="2tyCW$U0knp" role="1TKVEl">
+      <property role="TrG5h" value="isDeprecated" />
+      <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
     </node>
     <node concept="PrWs8" id="22nuAqQyuiq" role="PzmwI">
       <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
@@ -611,6 +619,14 @@
     <node concept="M4N5e" id="2EAJ7H6hOqV" role="M5hS2">
       <property role="1uS6qv" value="danger" />
       <property role="1uS6qo" value="danger" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="2tyCW$U15Qi">
+    <property role="TrG5h" value="IntroducedIn" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="1TJgyi" id="2tyCW$U15Sk" role="1TKVEl">
+      <property role="TrG5h" value="varsion" />
+      <ref role="AX2Wp" to="tpck:fKAOsGN" resolve="string" />
     </node>
   </node>
 </model>
