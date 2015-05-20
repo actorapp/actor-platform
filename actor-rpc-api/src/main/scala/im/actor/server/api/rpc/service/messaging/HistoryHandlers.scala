@@ -208,7 +208,7 @@ trait HistoryHandlers {
       messageOpt ← persist.HistoryMessage.find(dialogModel.userId, dialogModel.peer).headOption
       unreadCount ← persist.HistoryMessage.getUnreadCount(dialogModel.userId, dialogModel.peer, dialogModel.ownerLastReadAt)
     } yield {
-      val emptyMessageContent = TextMessage("", None)
+      val emptyMessageContent = TextMessage(text = "", mentions = Vector.empty, ext = None)
       val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
       val message = messageModel.asStruct(dialogModel.lastReceivedAt, dialogModel.lastReadAt)
 
