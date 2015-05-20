@@ -180,9 +180,11 @@ public class ChatActivity extends BaseActivity{
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
+                /*
                 if(isMentionsVisible && after<count && s.charAt(start) == '@'){
                     hideMentions();
                 }
+                */
             }
 
             @Override
@@ -196,6 +198,8 @@ public class ChatActivity extends BaseActivity{
                         showMentions(false);
                     }else if(firstPeace.contains("@")){
                         showMentions(true);
+                    }else{
+                        hideMentions();
                     }
 
 
