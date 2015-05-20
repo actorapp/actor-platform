@@ -217,7 +217,7 @@ public class SenderActor extends ModuleActor {
 
         im.actor.model.api.Message message;
         if (content instanceof TextContent) {
-            message = new TextMessage(((TextContent) content).getText(), null);
+            message = new TextMessage(((TextContent) content).getText(), new ArrayList<Integer>(), null);
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
 
@@ -244,7 +244,6 @@ public class SenderActor extends ModuleActor {
             message = new DocumentMessage(source.getFileReference().getFileId(),
                     source.getFileReference().getAccessHash(),
                     source.getFileReference().getFileSize(),
-                    null, null, null,
                     source.getFileReference().getFileName(),
                     documentContent.getMimetype(),
                     fastThumb, documentEx);

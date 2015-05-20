@@ -17,53 +17,41 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestChangePhoneTitle extends Request<ResponseSeq> {
+public class RequestDisableInterests extends Request<ResponseVoid> {
 
-    public static final int HEADER = 0x7c;
-    public static RequestChangePhoneTitle fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestChangePhoneTitle(), data);
+    public static final int HEADER = 0x9e;
+    public static RequestDisableInterests fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestDisableInterests(), data);
     }
 
-    private int phoneId;
-    private String title;
+    private List<Integer> interests;
 
-    public RequestChangePhoneTitle(int phoneId, String title) {
-        this.phoneId = phoneId;
-        this.title = title;
+    public RequestDisableInterests(List<Integer> interests) {
+        this.interests = interests;
     }
 
-    public RequestChangePhoneTitle() {
+    public RequestDisableInterests() {
 
     }
 
-    public int getPhoneId() {
-        return this.phoneId;
-    }
-
-    public String getTitle() {
-        return this.title;
+    public List<Integer> getInterests() {
+        return this.interests;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.phoneId = values.getInt(1);
-        this.title = values.getString(2);
+        this.interests = values.getRepeatedInt(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.phoneId);
-        if (this.title == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.title);
+        writer.writeRepeatedInt(1, this.interests);
     }
 
     @Override
     public String toString() {
-        String res = "rpc ChangePhoneTitle{";
-        res += "phoneId=" + this.phoneId;
-        res += ", title=" + this.title;
+        String res = "rpc DisableInterests{";
+        res += "interests=" + this.interests;
         res += "}";
         return res;
     }
