@@ -36,7 +36,7 @@ public class MetaGenerator {
         generator.appendLn("public static int VERSION_MINOR = " + minorVersion + ";");
         generator.appendLn();
 
-        generator.appendLn("private Version() {");
+        generator.appendLn("private ApiVersion() {");
         generator.appendLn("}");
 
         generator.decreaseDepth();
