@@ -53,10 +53,15 @@ public class NotificationsActor extends ModuleActor {
 
     public void onNewMessage(Peer peer, int sender, long date, ContentDescription description) {
 
+        if(date<=modules().getMessagesModule().loadReadState(peer)){
+            return;
+        }
+
         boolean isPeerEnabled = modules().getSettings().isNotificationsEnabled(peer);
         boolean isEnabled = modules().getSettings().isNotificationsEnabled() && isPeerEnabled;
 
         List<PendingNotification> allPending = getNotifications();
+
         allPending.add(new PendingNotification(peer, sender, date, description));
         saveStorage();
 
@@ -100,7 +105,7 @@ public class NotificationsActor extends ModuleActor {
 
     public void onConversationVisible(Peer peer) {
         this.visiblePeer = peer;
-        performNotification(true);
+        //performNotification(true);
     }
 
     public void onConversationHidden(Peer peer) {
