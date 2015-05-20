@@ -18,10 +18,10 @@ import java.util.ArrayList;
 
 public final class ApiVersion {
 
-    public static String VERSION = "1.6";
+    public static final String VERSION = "1.6";
 
-    public static int VERSION_MAJOR = 1;
-    public static int VERSION_MINOR = 6;
+    public static final int VERSION_MAJOR = 1;
+    public static final int VERSION_MINOR = 6;
 
     private ApiVersion() {
     }
