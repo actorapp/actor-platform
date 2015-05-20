@@ -96,34 +96,16 @@ public class ViewUtils {
         if(newRowsCount==oldRowsCount){
             return;
         }
+
         v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
         int newRowsHeight = Screen.dp(29)*newRowsCount + Screen.dp(1)*((newRowsCount==0?1:newRowsCount)-1);
-        int oldRowsHeight = Screen.dp(29)*oldRowsCount + Screen.dp(1)*((oldRowsCount==0?1:oldRowsCount)-1);
+
         final int targetHeight = (newRowsHeight)>Screen.dp(87+2)?Screen.dp(100):newRowsHeight;
-        final int initialHeight = (oldRowsHeight)>Screen.dp(87+2)?Screen.dp(100):oldRowsHeight;
+        final int initialHeight = new Integer(v.getLayoutParams().height);
 
         v.getLayoutParams().height = initialHeight;
         v.setVisibility(View.VISIBLE);
-        Animation a = new Animation(){
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(newRowsCount>oldRowsCount){
-                    v.getLayoutParams().height =
-                            (int)((targetHeight * interpolatedTime) - initialHeight*interpolatedTime + initialHeight);
-                    v.requestLayout();
-                }else{
-                    v.getLayoutParams().height =
-                            (int)(initialHeight - (initialHeight * interpolatedTime) - targetHeight*(1f-interpolatedTime) + targetHeight);
-                    v.requestLayout();
-                }
-
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
+        Animation a = new ExpandMentionsAnimation(v, targetHeight, initialHeight);
 
         a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)) * 2);
         a.setInterpolator(MaterialInterpolator.getInstance());
@@ -132,4 +114,39 @@ public class ViewUtils {
     }
 
 
+    private static class ExpandMentionsAnimation extends Animation{
+        private final View v;
+        private final int targetHeight;
+        private final int initialHeight;
+        private int currentHeight;
+
+        public ExpandMentionsAnimation(View v, int targetHeight, int initialHeight) {
+            this.v = v;
+            this.targetHeight = targetHeight;
+            this.initialHeight = initialHeight;
+            this.currentHeight = initialHeight;
+
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            if(targetHeight>initialHeight){
+                currentHeight =
+                        (int)((targetHeight * interpolatedTime) - initialHeight*interpolatedTime + initialHeight);
+            }else{
+                currentHeight =
+                        (int)(initialHeight - (initialHeight * interpolatedTime) - targetHeight*(1f-interpolatedTime) + targetHeight);
+            }
+
+            v.getLayoutParams().height = currentHeight;
+            v.requestLayout();
+        }
+
+        @Override
+        public boolean willChangeBounds() {
+            return true;
+        }
+
+
+    }
 }
