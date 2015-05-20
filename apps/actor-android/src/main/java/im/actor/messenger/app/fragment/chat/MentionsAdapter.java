@@ -114,7 +114,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
             userName = (TextView) res.findViewById(R.id.name);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
-            avatarView.init(Screen.dp(21), 12);
+            avatarView.init(Screen.dp(35), 20);
             groupMember = data;
             res.setOnClickListener(new View.OnClickListener() {
                 @Override
