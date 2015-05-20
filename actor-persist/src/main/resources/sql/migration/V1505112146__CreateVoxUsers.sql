@@ -4,5 +4,7 @@ CREATE TABLE vox_users (
   user_name VARCHAR(255) NOT NULL,
   display_name VARCHAR(255) NOT NULL,
   salt VARCHAR(255) NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(user_id)
 );
+
+CREATE UNIQUE INDEX on vox_users(vox_user_id);
