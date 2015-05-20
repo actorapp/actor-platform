@@ -1,6 +1,6 @@
 package im.actor.server.notifications
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -11,9 +11,9 @@ import im.actor.server.{ models, persist }
 
 class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: ExecutionContext) {
 
-  val unreadTimeout = config.unreadTimeout.toMillis
+  private val unreadTimeout = config.unreadTimeout.toMillis
 
-  def getNotifications = {
+  def getNotifications: Future[Seq[Notification]] = {
     val now = DateTime.now
     db.run {
       for {
