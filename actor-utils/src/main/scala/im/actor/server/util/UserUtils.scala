@@ -10,6 +10,7 @@ import slick.profile.SqlAction
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.users._
+import im.actor.server.models.UserPhone
 import im.actor.server.{ models, persist }
 
 object UserUtils {
@@ -42,7 +43,7 @@ object UserUtils {
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
         avatar = adOpt flatMap (AvatarUtils.avatar),
-        phone = phones.headOption map (_.number),
+        phone = userPhone(u, phones),
         isBot = Some(u.isBot),
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
@@ -66,11 +67,19 @@ object UserUtils {
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
         avatar = adOpt flatMap (AvatarUtils.avatar),
-        phone = phones.headOption map (_.number),
+        phone = userPhone(u, phones),
         isBot = Some(u.isBot),
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
+
+  def userPhone(u: models.User, phones: Seq[UserPhone]): Option[Long] = {
+    phones.headOption match {
+      case Some(phone)     ⇒ Some(phone.number)
+      case None if u.isBot ⇒ Some(0L)
+      case None            ⇒ throw new Exception("Phone must be present")
+    }
+  }
 
   def userStructOption(userId: Int, senderUserId: Int, senderAuthId: Long)(implicit ec: ExecutionContext, s: ActorSystem): DBIOAction[Option[User], NoStream, Read with Read with Read with Read with Read with Read] =
     persist.User.find(userId).headOption flatMap {
