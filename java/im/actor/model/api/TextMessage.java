@@ -19,10 +19,12 @@ import java.util.ArrayList;
 public class TextMessage extends Message {
 
     private String text;
+    private List<Integer> mentions;
     private TextMessageEx ext;
 
-    public TextMessage(String text, TextMessageEx ext) {
+    public TextMessage(String text, List<Integer> mentions, TextMessageEx ext) {
         this.text = text;
+        this.mentions = mentions;
         this.ext = ext;
     }
 
@@ -38,6 +40,10 @@ public class TextMessage extends Message {
         return this.text;
     }
 
+    public List<Integer> getMentions() {
+        return this.mentions;
+    }
+
     public TextMessageEx getExt() {
         return this.ext;
     }
@@ -45,6 +51,7 @@ public class TextMessage extends Message {
     @Override
     public void parse(BserValues values) throws IOException {
         this.text = values.getString(1);
+        this.mentions = values.getRepeatedInt(2);
         if (values.optBytes(3) != null) {
             this.ext = TextMessageEx.fromBytes(values.getBytes(3));
         }
@@ -56,6 +63,7 @@ public class TextMessage extends Message {
             throw new IOException();
         }
         writer.writeString(1, this.text);
+        writer.writeRepeatedInt(2, this.mentions);
         if (this.ext != null) {
             writer.writeBytes(3, this.ext.buildContainer());
         }
@@ -65,6 +73,7 @@ public class TextMessage extends Message {
     public String toString() {
         String res = "struct TextMessage{";
         res += "text=" + this.text;
+        res += ", mentions=" + this.mentions;
         res += ", ext=" + this.ext;
         res += "}";
         return res;

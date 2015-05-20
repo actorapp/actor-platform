@@ -16,6 +16,8 @@ public class SchemeFactory {
 
         SchemeDefinition definition = new SchemeDefinition();
 
+        definition.setVersion(scheme.get("version").textValue());
+
         for (JsonNode aliases : scheme.get("aliases")) {
             definition.getAliases().put(aliases.get("alias").textValue(), loadType(aliases.get("type")));
         }
@@ -37,6 +39,9 @@ public class SchemeFactory {
                     sect.getRecords().add(entity);
                     JsonNode attributes = content.get("attributes");
                     for (JsonNode attr : attributes) {
+                        if (attr.has("deprecated") && attr.get("deprecated").textValue().equals("true")) {
+                            continue;
+                        }
                         int attrId = attr.get("id").intValue();
                         String attrName = attr.get("name").textValue();
                         SchemeType attrType = loadType(attr.get("type"));
@@ -74,6 +79,9 @@ public class SchemeFactory {
                         SchemeResponseAnonymous anonymous = new SchemeResponseAnonymous(respNode.get("header").asInt());
                         JsonNode attributes = respNode.get("attributes");
                         for (JsonNode attr : attributes) {
+                            if (attr.has("deprecated") && attr.get("deprecated").textValue().equals("true")) {
+                                continue;
+                            }
                             int attrId = attr.get("id").intValue();
                             String attrName = attr.get("name").textValue();
                             SchemeType attrType = loadType(attr.get("type"));
@@ -93,6 +101,9 @@ public class SchemeFactory {
                     sect.getRecords().add(entity);
                     JsonNode attributes = content.get("attributes");
                     for (JsonNode attr : attributes) {
+                        if (attr.has("deprecated") && attr.get("deprecated").textValue().equals("true")) {
+                            continue;
+                        }
                         int attrId = attr.get("id").intValue();
                         String attrName = attr.get("name").textValue();
                         SchemeType attrType = loadType(attr.get("type"));
@@ -121,6 +132,9 @@ public class SchemeFactory {
                     sect.getRecords().add(entity);
                     JsonNode attributes = content.get("attributes");
                     for (JsonNode attr : attributes) {
+                        if (attr.has("deprecated") && attr.get("deprecated").textValue().equals("true")) {
+                            continue;
+                        }
                         int attrId = attr.get("id").intValue();
                         String attrName = attr.get("name").textValue();
                         SchemeType attrType = loadType(attr.get("type"));
@@ -149,6 +163,9 @@ public class SchemeFactory {
                     sect.getRecords().add(entity);
                     JsonNode attributes = content.get("attributes");
                     for (JsonNode attr : attributes) {
+                        if (attr.has("deprecated") && attr.get("deprecated").textValue().equals("true")) {
+                            continue;
+                        }
                         int attrId = attr.get("id").intValue();
                         String attrName = attr.get("name").textValue();
                         SchemeType attrType = loadType(attr.get("type"));
@@ -187,6 +204,9 @@ public class SchemeFactory {
                     sect.getRecords().add(entity);
                     JsonNode attributes = content.get("attributes");
                     for (JsonNode attr : attributes) {
+                        if (attr.has("deprecated") && attr.get("deprecated").textValue().equals("true")) {
+                            continue;
+                        }
                         int attrId = attr.get("id").intValue();
                         String attrName = attr.get("name").textValue();
                         SchemeType attrType = loadType(attr.get("type"));

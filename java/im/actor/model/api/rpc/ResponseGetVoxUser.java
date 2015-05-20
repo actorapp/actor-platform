@@ -17,55 +17,43 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSendEmailCode extends Request<ResponseVoid> {
+public class ResponseGetVoxUser extends Response {
 
-    public static final int HEADER = 0x78;
-    public static RequestSendEmailCode fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSendEmailCode(), data);
+    public static final int HEADER = 0x84;
+    public static ResponseGetVoxUser fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseGetVoxUser(), data);
     }
 
-    private String email;
-    private String description;
+    private String callNumber;
 
-    public RequestSendEmailCode(String email, String description) {
-        this.email = email;
-        this.description = description;
+    public ResponseGetVoxUser(String callNumber) {
+        this.callNumber = callNumber;
     }
 
-    public RequestSendEmailCode() {
+    public ResponseGetVoxUser() {
 
     }
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public String getDescription() {
-        return this.description;
+    public String getCallNumber() {
+        return this.callNumber;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.email = values.getString(1);
-        this.description = values.optString(2);
+        this.callNumber = values.getString(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.email == null) {
+        if (this.callNumber == null) {
             throw new IOException();
         }
-        writer.writeString(1, this.email);
-        if (this.description != null) {
-            writer.writeString(2, this.description);
-        }
+        writer.writeString(1, this.callNumber);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SendEmailCode{";
-        res += "email=" + this.email;
-        res += ", description=" + this.description;
+        String res = "tuple GetVoxUser{";
         res += "}";
         return res;
     }
