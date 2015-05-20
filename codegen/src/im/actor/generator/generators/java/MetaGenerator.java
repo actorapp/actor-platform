@@ -29,11 +29,11 @@ public class MetaGenerator {
         generator.increaseDepth();
         generator.appendLn();
 
-        generator.appendLn("public static String VERSION = \"" + definition.getVersion() + "\";");
+        generator.appendLn("public static final String VERSION = \"" + definition.getVersion() + "\";");
         generator.appendLn();
 
-        generator.appendLn("public static int VERSION_MAJOR = " + majorVersion + ";");
-        generator.appendLn("public static int VERSION_MINOR = " + minorVersion + ";");
+        generator.appendLn("public static final int VERSION_MAJOR = " + majorVersion + ";");
+        generator.appendLn("public static final int VERSION_MINOR = " + minorVersion + ";");
         generator.appendLn();
 
         generator.appendLn("private ApiVersion() {");
