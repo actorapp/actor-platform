@@ -11,7 +11,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
-import im.actor.api.rpc.users.{ Email, Phone }
 import im.actor.server.models
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionMessage, SessionRegion }
@@ -57,21 +56,12 @@ class SequenceServiceImpl(
         log.debug("Updates {}, {}", updates, clientData)
         log.debug("New state {}, {}", bytesToTimestamp(newState), clientData)
 
-        val (phones, emails) = users.foldLeft(Vector.empty[Phone], Vector.empty[Email]) {
-          case ((phones, emails), user) ⇒
-            val (userPhones, userEmails) = userPhonesEmails(user)
-
-            (phones ++ userPhones, emails ++ userEmails)
-        }
-
         Ok(ResponseGetDifference(
           seq = newSeq,
           state = newState,
           updates = diffUpdates,
           needMore = needMore,
           users = users.toVector,
-          phones = phones,
-          emails = emails,
           groups = groups.toVector
         ))
       }
