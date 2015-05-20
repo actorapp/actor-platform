@@ -104,11 +104,8 @@ public class ChatActivity extends BaseActivity{
     private boolean isCompose = false;
     private EmojiKeyboard emojiKeyboard;
     private boolean isMentionsVisible = false;
-    //private BindedDisplayList<SearchEntity> mentionsDisplay;
     private MentionsAdapter mentionsAdapter;
     private ListView mentionsList;
-    private FrameLayout mentionsContainer;
-    private TextView mentionsEmptyView;
     private String mentionSearchString = "";
     private int mentionStart;
 
@@ -213,7 +210,7 @@ public class ChatActivity extends BaseActivity{
                         hideMentions();
                     }else if(mentionsAdapter!=null){
                         //mentionsDisplay.initSearch(mentionSearchString, false);
-                        mentionsAdapter.setQuery(mentionSearchString.trim().toLowerCase());
+                        mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
                     }
 
                 }
@@ -396,10 +393,6 @@ public class ChatActivity extends BaseActivity{
 
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
-        mentionsContainer = (FrameLayout) findViewById(R.id.mentionsContainer);
-        mentionsEmptyView = (TextView) findViewById(R.id.mentionsEmpty);
-        mentionsEmptyView.setVisibility(View.GONE);
-        //mentionsList.setLayoutManager(new CustomLinearLayoutManager(this));
     }
 
     @Override
@@ -591,8 +584,8 @@ public class ChatActivity extends BaseActivity{
                 String name = users().get(item.getUid()).getName().get();
 
                 if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
-                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(name)));
-                    messageBody.setSelection(mentionStart + name.length() + 1);
+                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(name).concat(new String(" "))));
+                    messageBody.setSelection(mentionStart + name.length() + 2);
                 }
                 hideMentions();
             }
@@ -609,13 +602,8 @@ public class ChatActivity extends BaseActivity{
             }
         });
 
-
-
         mentionsList.setAdapter(mentionsAdapter);
-        //mentionsList.setStackFromBottom(true);
         onMentionsChanged(0, mentionsAdapter.getCount());
-        goneView(mentionsEmptyView, false);
-
     }
 
     private void hideMentions() {
@@ -624,21 +612,15 @@ public class ChatActivity extends BaseActivity{
         }
         isMentionsVisible = false;
 
-        expandMentions(mentionsList,mentionsAdapter.getCount(),0);
+        expandMentions(mentionsList, mentionsAdapter.getCount(), 0);
         mentionsAdapter = null;
         mentionsList.setAdapter(null);
-
-        //goneView(mentionsContainer);
-
     }
 
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
         if(mentionsAdapter!=null)
-
             expandMentions(mentionsList, oldRowsCount, newRowsCount);
-
-
-    }
+     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

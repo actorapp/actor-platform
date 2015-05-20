@@ -102,7 +102,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         private TextView userName;
         private AvatarView avatarView;
         private OnItemClickedListener<GroupMember> onItemClickedListener;
-
+        GroupMember groupMember;
         public GroupViewHolder(OnItemClickedListener<GroupMember> onItemClickedListener) {
             this.onItemClickedListener = onItemClickedListener;
         }
@@ -113,10 +113,11 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             userName = (TextView) res.findViewById(R.id.name);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(21), 12);
+            groupMember = data;
             res.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickedListener.onClicked(data);
+                    onItemClickedListener.onClicked(groupMember);
                 }
             });
             return res;
@@ -125,11 +126,9 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         @Override
         public void bind(GroupMember data, int position, Context context) {
             UserVM user = users().get(data.getUid());
-
-            avatarView.bind(user);
-
+            groupMember = data;
+            avatarView.bind(user, true);
             userName.setText(user.getName().get());
-
         }
 
         @Override

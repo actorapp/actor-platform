@@ -97,7 +97,7 @@ public class ViewUtils {
             return;
         }
         v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = (Screen.dp(29) * newRowsCount)>Screen.dp(87)?Screen.dp(87):Screen.dp(29) * newRowsCount;
+        final int targetHeight = (Screen.dp(29) * newRowsCount)>Screen.dp(87)?Screen.dp(100):Screen.dp(29) * newRowsCount;
         final int initialHeight = Screen.dp(29) *  oldRowsCount;
 
         v.getLayoutParams().height = initialHeight;
@@ -106,14 +106,12 @@ public class ViewUtils {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if(newRowsCount>oldRowsCount){
-                    v.getLayoutParams().height = interpolatedTime == 1
-                            ? targetHeight
-                            : (int)((targetHeight * interpolatedTime)-initialHeight*interpolatedTime+initialHeight);
+                    v.getLayoutParams().height =
+                            (int)((targetHeight * interpolatedTime) - initialHeight*interpolatedTime + initialHeight);
                     v.requestLayout();
                 }else{
-                    v.getLayoutParams().height = interpolatedTime == 1
-                            ? targetHeight
-                            : (int)(initialHeight - (initialHeight * interpolatedTime)+targetHeight-targetHeight*(1f-interpolatedTime));
+                    v.getLayoutParams().height =
+                            (int)(initialHeight - (initialHeight * interpolatedTime) - targetHeight*(1f-interpolatedTime) + targetHeight);
                     v.requestLayout();
                 }
 
