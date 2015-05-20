@@ -11,7 +11,7 @@ import java.io.IOException;
 public class MetaGenerator {
 
     public static void generate(SchemeDefinition definition, String destFolder) throws IOException {
-        FileGenerator generator = new FileGenerator(destFolder + "/" + JavaConfig.PATH + "/Version.java");
+        FileGenerator generator = new FileGenerator(destFolder + "/" + JavaConfig.PATH + "/ApiVersion.java");
         generator.appendLn("package " + JavaConfig.PACKAGE + ";");
         generator.appendLn(JavaConfig.NOTICE);
         generator.appendLn();
@@ -25,15 +25,15 @@ public class MetaGenerator {
         int minorVersion = Integer.parseInt(parts[1]);
         generator.appendLn();
 
-        generator.appendLn("public final class Version {");
+        generator.appendLn("public final class ApiVersion {");
         generator.increaseDepth();
         generator.appendLn();
 
-        generator.appendLn("public station String VERSION = \"" + definition.getVersion() + "\";");
+        generator.appendLn("public static String VERSION = \"" + definition.getVersion() + "\";");
         generator.appendLn();
 
-        generator.appendLn("public station int VERSION_MAJOR = " + majorVersion + ";");
-        generator.appendLn("public station int VERSION_MINOR = " + minorVersion + ";");
+        generator.appendLn("public static int VERSION_MAJOR = " + majorVersion + ";");
+        generator.appendLn("public static int VERSION_MINOR = " + minorVersion + ";");
         generator.appendLn();
 
         generator.appendLn("private Version() {");
