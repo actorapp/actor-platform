@@ -28,7 +28,9 @@ public abstract class ServiceEx extends BserObject {
             case 4: return Bser.parse(new ServiceExGroupCreated(), content);
             case 5: return Bser.parse(new ServiceExChangedTitle(), content);
             case 6: return Bser.parse(new ServiceExChangedAvatar(), content);
-            case 7: return Bser.parse(new ServiceExEmailContactRegistered(), content);
+            case 8: return Bser.parse(new ServiceExContactRegistered(), content);
+            case 9: return Bser.parse(new ServiceExPhoneMissed(), content);
+            case 16: return Bser.parse(new ServiceExPhoneCall(), content);
             default: return new ServiceExUnsupported(key, content);
         }
     }

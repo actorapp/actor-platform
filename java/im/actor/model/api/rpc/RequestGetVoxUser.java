@@ -17,53 +17,44 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestChangePhoneTitle extends Request<ResponseSeq> {
+public class RequestGetVoxUser extends Request<ResponseGetVoxUser> {
 
-    public static final int HEADER = 0x7c;
-    public static RequestChangePhoneTitle fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestChangePhoneTitle(), data);
+    public static final int HEADER = 0x83;
+    public static RequestGetVoxUser fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetVoxUser(), data);
     }
 
-    private int phoneId;
-    private String title;
+    private UserOutPeer userPeer;
 
-    public RequestChangePhoneTitle(int phoneId, String title) {
-        this.phoneId = phoneId;
-        this.title = title;
+    public RequestGetVoxUser(UserOutPeer userPeer) {
+        this.userPeer = userPeer;
     }
 
-    public RequestChangePhoneTitle() {
+    public RequestGetVoxUser() {
 
     }
 
-    public int getPhoneId() {
-        return this.phoneId;
-    }
-
-    public String getTitle() {
-        return this.title;
+    public UserOutPeer getUserPeer() {
+        return this.userPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.phoneId = values.getInt(1);
-        this.title = values.getString(2);
+        this.userPeer = values.getObj(1, new UserOutPeer());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.phoneId);
-        if (this.title == null) {
+        if (this.userPeer == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.title);
+        writer.writeObject(1, this.userPeer);
     }
 
     @Override
     public String toString() {
-        String res = "rpc ChangePhoneTitle{";
-        res += "phoneId=" + this.phoneId;
-        res += ", title=" + this.title;
+        String res = "rpc GetVoxUser{";
+        res += "userPeer=" + this.userPeer;
         res += "}";
         return res;
     }

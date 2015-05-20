@@ -65,6 +65,8 @@ public class RequestEditParameter extends Request<ResponseSeq> {
     @Override
     public String toString() {
         String res = "rpc EditParameter{";
+        res += "key=" + this.key;
+        res += ", value=" + this.value;
         res += "}";
         return res;
     }

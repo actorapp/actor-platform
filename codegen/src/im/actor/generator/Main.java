@@ -22,8 +22,8 @@ public class Main {
         String workingDir = new File(args[0]).getParent();
         SchemeDefinition definition = SchemeFactory.fromFile(args[0]);
 
-        System.out.println("Generating protobuf file...");
-        ProtoBufGenerator.generate(definition, workingDir + "/actor.proto");
+        // System.out.println("Generating protobuf file...");
+        // ProtoBufGenerator.generate(definition, workingDir + "/actor.proto");
 
         System.out.println("Generating java files...");
         String destJava = workingDir + "/java/";
@@ -38,6 +38,7 @@ public class Main {
         RequestGenerator.generateParser(definition, destJava);
         // RequestGenerator.generateRpcList(definition, destJava);
         UpdateBoxGenerator.generate(definition, destJava);
+        MetaGenerator.generate(definition, destJava);
 
         // System.out.println("Generating docs...");
         // String destDoc = workingDir + "/actor-doc/";
