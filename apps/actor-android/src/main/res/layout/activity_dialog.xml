@@ -19,7 +19,14 @@
         android:id="@+id/messagesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/fl_send_panel" />
+        android:layout_above="@+id/mentionsList" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/mentionsList"
+        android:scaleType="fitXY"
+        android:src="@drawable/conv_field_shadow" />
 
     <ListView
         android:layout_gravity="bottom"
@@ -29,13 +36,6 @@
         android:layout_above="@+id/fl_send_panel"
         android:background="@color/bg_main"/>
 
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_above="@+id/fl_send_panel"
-        android:scaleType="fitXY"
-        android:src="@drawable/conv_field_shadow" />
 
     <FrameLayout
         android:id="@+id/fl_send_panel"
