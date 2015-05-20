@@ -3,8 +3,8 @@ package im.actor.server.models
 @SerialVersionUID(1L)
 case class UserEmail(
   id:         Int,
-  email:      String,
-  title:      String,
+  userId:     Int,
   accessSalt: String,
-  userId:     Int
+  email:      String,
+  title:      String
 )
