@@ -5,6 +5,7 @@
 package im.actor.model.network;
 
 import im.actor.model.NetworkProvider;
+import im.actor.model.api.ApiVersion;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.network.api.ApiBroker;
 import im.actor.model.network.parser.Request;
@@ -16,8 +17,8 @@ import im.actor.model.network.parser.Response;
 public class ActorApi {
 
     public static final int MTPROTO_VERSION = 1;
-    public static final int API_MAJOR_VERSION = 1;
-    public static final int API_MINOR_VERSION = 0;
+    public static final int API_MAJOR_VERSION = ApiVersion.VERSION_MAJOR;
+    public static final int API_MINOR_VERSION = ApiVersion.VERSION_MINOR;
 
     private ActorRef apiBroker;
 

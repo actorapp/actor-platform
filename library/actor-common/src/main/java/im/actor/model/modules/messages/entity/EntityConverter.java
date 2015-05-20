@@ -7,6 +7,7 @@ package im.actor.model.modules.messages.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.actor.model.api.ContactType;
 import im.actor.model.api.DocumentExPhoto;
 import im.actor.model.api.DocumentExVideo;
 import im.actor.model.api.DocumentMessage;
@@ -103,7 +104,15 @@ public class EntityConverter {
 
     public static User convert(im.actor.model.api.User user) {
         ArrayList<ContactRecord> res = new ArrayList<ContactRecord>();
-        res.add(new ContactRecord(0, 0, ContactRecord.TYPE_PHONE, "" + user.getPhone(), "Mobile"));
+        for (im.actor.model.api.ContactRecord r : user.getContactInfo()) {
+            if (r.getType() == ContactType.PHONE) {
+                res.add(new ContactRecord(0, 0, ContactRecord.TYPE_PHONE, r.getLongValue() + "",
+                        r.getSubtitle() != null ? r.getSubtitle() : "Mobile"));
+            } else if (r.getType() == ContactType.EMAIL) {
+                res.add(new ContactRecord(0, 0, ContactRecord.TYPE_EMAIL, r.getStringValue(),
+                        r.getSubtitle() != null ? r.getSubtitle() : "Email"));
+            }
+        }
         return new User(user.getId(), user.getAccessHash(), user.getName(), user.getLocalName(),
                 convert(user.getAvatar()), convert(user.getSex()),
                 res);
@@ -124,8 +133,6 @@ public class EntityConverter {
 
     public static PeerType convert(im.actor.model.api.PeerType peerType) {
         switch (peerType) {
-            case EMAIL:
-                return PeerType.EMAIL;
             case GROUP:
                 return PeerType.GROUP;
             default:

@@ -21,21 +21,15 @@ public class DocumentMessage extends Message {
     private long fileId;
     private long accessHash;
     private int fileSize;
-    private EncryptionType encryptionType;
-    private byte[] encryptionKey;
-    private Integer plainFileSize;
     private String name;
     private String mimeType;
     private FastThumb thumb;
     private DocumentEx ext;
 
-    public DocumentMessage(long fileId, long accessHash, int fileSize, EncryptionType encryptionType, byte[] encryptionKey, Integer plainFileSize, String name, String mimeType, FastThumb thumb, DocumentEx ext) {
+    public DocumentMessage(long fileId, long accessHash, int fileSize, String name, String mimeType, FastThumb thumb, DocumentEx ext) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
-        this.encryptionType = encryptionType;
-        this.encryptionKey = encryptionKey;
-        this.plainFileSize = plainFileSize;
         this.name = name;
         this.mimeType = mimeType;
         this.thumb = thumb;
@@ -62,18 +56,6 @@ public class DocumentMessage extends Message {
         return this.fileSize;
     }
 
-    public EncryptionType getEncryptionType() {
-        return this.encryptionType;
-    }
-
-    public byte[] getEncryptionKey() {
-        return this.encryptionKey;
-    }
-
-    public Integer getPlainFileSize() {
-        return this.plainFileSize;
-    }
-
     public String getName() {
         return this.name;
     }
@@ -95,12 +77,6 @@ public class DocumentMessage extends Message {
         this.fileId = values.getLong(1);
         this.accessHash = values.getLong(2);
         this.fileSize = values.getInt(3);
-        int val_encryptionType = values.getInt(9, 0);
-        if (val_encryptionType != 0) {
-            this.encryptionType = EncryptionType.parse(val_encryptionType);
-        }
-        this.encryptionKey = values.optBytes(10);
-        this.plainFileSize = values.optInt(11);
         this.name = values.getString(4);
         this.mimeType = values.getString(5);
         this.thumb = values.optObj(6, new FastThumb());
@@ -114,15 +90,6 @@ public class DocumentMessage extends Message {
         writer.writeLong(1, this.fileId);
         writer.writeLong(2, this.accessHash);
         writer.writeInt(3, this.fileSize);
-        if (this.encryptionType != null) {
-            writer.writeInt(9, this.encryptionType.getValue());
-        }
-        if (this.encryptionKey != null) {
-            writer.writeBytes(10, this.encryptionKey);
-        }
-        if (this.plainFileSize != null) {
-            writer.writeInt(11, this.plainFileSize);
-        }
         if (this.name == null) {
             throw new IOException();
         }
