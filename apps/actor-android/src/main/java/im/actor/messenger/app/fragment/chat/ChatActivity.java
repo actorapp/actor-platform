@@ -12,7 +12,12 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -175,6 +180,8 @@ public class ChatActivity extends BaseActivity{
         }
 
         messageBody = (EditText) findViewById(R.id.et_message);
+        messageBody.setMovementMethod(LinkMovementMethod.getInstance());
+
         messageBody.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -589,8 +596,19 @@ public class ChatActivity extends BaseActivity{
                 String name = users().get(item.getUid()).getName().get();
 
                 if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
-                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, new String("@").concat(name).concat(new String(" "))));
-                    messageBody.setSelection(mentionStart + name.length() + 2);
+
+                    //String mention = new String("<a href=\"people://").concat(name).concat(" \">").concat("@").concat(name).concat("</a>");
+                    String mention = new String("@").concat(name).concat(" ");
+                    /*
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    builder.append(mention);
+                    URLSpan urlSpan = new URLSpan(mention);
+                    builder.setSpan(urlSpan, 0, builder.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    */
+                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, mention));
+
+                    messageBody.setSelection(mentionStart + mention.length());
                 }
                 hideMentions();
             }
