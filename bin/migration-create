@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+die () {
+    echo >&2 "$@"
+    exit 1
+}
+
+[ "$#" -eq 1 ] || die "usage: bin/migration-create MigrationName"
+
+export name=$1
+export date=`date +%Y%m%d%H%M%S`
+
+export fileName=V${date}__${name}.sql
+
+touch actor-persist/src/main/resources/sql/migration/$fileName
+
+echo "Created migration $fileName"
