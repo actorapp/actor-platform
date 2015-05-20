@@ -116,7 +116,7 @@ private[messaging] trait MessagingHandlers {
 
   private def getPushText(message: Message, clientUser: models.User, outUser: Int): dbio.DBIOAction[String, NoStream, Read] = {
     message match {
-      case TextMessage(text, _) ⇒
+      case TextMessage(text, _, _) ⇒
         for (localName ← getLocalNameOrDefault(outUser, clientUser))
           yield formatAuthored(localName, text)
       case dm: DocumentMessage ⇒

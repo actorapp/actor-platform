@@ -9,7 +9,7 @@ import slick.dbio.{ DBIO, DBIOAction, NoStream }
 import slick.profile.SqlAction
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.users.{ ContactType, ContactRecord, User }
+import im.actor.api.rpc.users._
 import im.actor.server.{ models, persist }
 
 object UserUtils {
@@ -31,7 +31,7 @@ object UserUtils {
     s:  ActorSystem
   ): DBIOAction[User, NoStream, Read with Read with Read with Read] =
     for {
-      phones ← persist.UserPhone.findByUserId(u.id)
+      phones ← persist.UserPhone.findByUserId(u.id) map (_.toVector)
       emails ← persist.UserEmail.findByUserId(u.id)
       adOpt ← persist.AvatarData.findByUserId(u.id).headOption
     } yield {
@@ -42,7 +42,10 @@ object UserUtils {
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
         avatar = adOpt flatMap (AvatarUtils.avatar),
-        isBot = false,
+        phone = phones.headOption map (_.number),
+        phones = phones.map(_.id),
+        emails = Vector.empty,
+        isBot = None,
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
@@ -55,7 +58,7 @@ object UserUtils {
     for {
       localName ← persist.contact.UserContact.findName(senderUserId: Int, u.id).headOption map (_.getOrElse(None))
       keyHashes ← persist.UserPublicKey.findKeyHashes(u.id)
-      phones ← persist.UserPhone.findByUserId(u.id)
+      phones ← persist.UserPhone.findByUserId(u.id) map (_.toVector)
       emails ← persist.UserEmail.findByUserId(u.id)
       adOpt ← persist.AvatarData.findByUserId(u.id).headOption
     } yield {
@@ -66,7 +69,10 @@ object UserUtils {
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
         avatar = adOpt flatMap (AvatarUtils.avatar),
-        isBot = false,
+        phone = phones.headOption map (_.number),
+        phones = phones map (_.id),
+        emails = Vector.empty,
+        isBot = None,
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
@@ -117,5 +123,19 @@ object UserUtils {
   def normalizeLocalName(name: Option[String]) = name match {
     case n @ Some(name) if name.nonEmpty ⇒ n
     case _                               ⇒ None
+  }
+
+  // for compatibility with clients before 2.0 api version
+  def userPhonesEmails(user: User): (Vector[Phone], Vector[Email]) = {
+    user.contactInfo.foldLeft(Vector.empty[Phone], Vector.empty[Email]) {
+      case ((phones, emails), cr) ⇒
+        cr.`type` match {
+          case ContactType.Email ⇒
+            (phones, emails :+ Email(user.id, 0L, cr.stringValue.getOrElse(""), cr.title.getOrElse("")))
+          case ContactType.Phone ⇒
+            (phones :+ Phone(user.id, 0L, cr.longValue.getOrElse(0L), cr.title.getOrElse("")), emails)
+        }
+
+    }
   }
 }
