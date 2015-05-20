@@ -124,9 +124,8 @@ public class ViewUtils {
             }
         };
 
-        a.setDuration((int) (newRowsCount>oldRowsCount?targetHeight:initialHeight / Screen.dp(1))*2);
+        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)) * 2);
         a.setInterpolator(MaterialInterpolator.getInstance());
-        a.setFillAfter(true);
         v.startAnimation(a);
 
     }
