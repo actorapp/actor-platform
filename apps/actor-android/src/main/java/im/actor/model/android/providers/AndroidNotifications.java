@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -124,7 +123,7 @@ public class AndroidNotifications implements NotificationProvider {
                     break;
             }
 
-            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context);
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context, false);
 
             result = buildSingleMessageNotification(avatarDrawable, builder, sender, text, topNotification);
 
@@ -189,7 +188,7 @@ public class AndroidNotifications implements NotificationProvider {
                     break;
             }
 
-            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context);
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context, false);
 
             result = buildSingleConversationNotification(builder, inboxStyle, avatarDrawable);
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
