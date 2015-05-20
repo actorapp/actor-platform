@@ -35,6 +35,7 @@ object Dependencies {
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
     val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % "0.9.0"
+    val slickTestkit            = "com.typesafe.slick"            %% "slick-testkit"                 % V.slick
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
 
@@ -79,7 +80,6 @@ object Dependencies {
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
-    val slickTestkit    = "com.typesafe.slick"                    %% "slick-testkit"                 % V.slick % "test"
     val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
     
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
@@ -114,7 +114,7 @@ object Dependencies {
 
   val push = shared ++ Seq(akkaContrib, gcmServer, pushy)
 
-  val persist = shared ++ Seq(postgresJdbc, slick, slickJoda, slickPg, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaContrib
 
@@ -133,6 +133,8 @@ object Dependencies {
   )
 
   val dashboard = shared :+ scalazCore
+
+  val webhooks = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
 

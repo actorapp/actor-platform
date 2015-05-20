@@ -43,7 +43,7 @@ object UserUtils {
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
         avatar = adOpt flatMap (AvatarUtils.avatar),
         phone = phones.headOption map (_.number),
-        isBot = None,
+        isBot = Some(u.isBot),
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
@@ -67,7 +67,7 @@ object UserUtils {
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
         avatar = adOpt flatMap (AvatarUtils.avatar),
         phone = phones.headOption map (_.number),
-        isBot = None,
+        isBot = Some(u.isBot),
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
       )
     }
