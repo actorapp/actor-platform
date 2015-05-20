@@ -97,9 +97,10 @@ public class ViewUtils {
             return;
         }
         v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
-        int rowsHeight = Screen.dp(29)*newRowsCount + Screen.dp(1)*((newRowsCount==0?1:newRowsCount)-1);
-        final int targetHeight = (rowsHeight)>Screen.dp(87+2)?Screen.dp(100):rowsHeight;
-        final int initialHeight = Screen.dp(29) *  oldRowsCount;
+        int newRowsHeight = Screen.dp(29)*newRowsCount + Screen.dp(1)*((newRowsCount==0?1:newRowsCount)-1);
+        int oldRowsHeight = Screen.dp(29)*oldRowsCount + Screen.dp(1)*((oldRowsCount==0?1:oldRowsCount)-1);
+        final int targetHeight = (newRowsHeight)>Screen.dp(87+2)?Screen.dp(100):newRowsHeight;
+        final int initialHeight = (oldRowsHeight)>Screen.dp(87+2)?Screen.dp(100):oldRowsHeight;
 
         v.getLayoutParams().height = initialHeight;
         v.setVisibility(View.VISIBLE);
