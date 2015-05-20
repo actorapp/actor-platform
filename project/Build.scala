@@ -135,7 +135,17 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.rpcApi
     )
-  ).dependsOn(actorCodecs, actorCommonsApi, actorPersist, actorPresences, actorPush, actorSessionMessages, actorSms, actorSocial, actorUtils)
+  ).dependsOn(
+      actorCodecs,
+      actorCommonsApi,
+      actorPersist,
+      actorPresences,
+      actorPush,
+      actorSessionMessages,
+      actorSms,
+      actorSocial,
+      actorUtils,
+      actorVoximplant)
 
   lazy val actorSms = Project(
     id = "actor-sms",
@@ -203,6 +213,14 @@ object Build extends sbt.Build {
     )
   )
     .dependsOn(actorCommonsApi, actorModels, actorPersist, actorPush)
+
+  lazy val actorVoximplant = Project(
+    id = "actor-voximplant",
+    base = file("actor-voximplant"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.voximplant
+    )
+  )
 
   lazy val actorTests = Project(
     id = "actor-tests",
