@@ -38,4 +38,8 @@ object ACLUtils {
     hash(s"$fileId:$accessSalt:${secretKey()}")
 
   def nextAccessSalt(rnd: ThreadLocalRandom): String = rnd.nextLong().toString
+
+  def nextAccessSalt(): String = {
+    nextAccessSalt(ThreadLocalRandom.current())
+  }
 }

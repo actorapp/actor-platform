@@ -27,7 +27,9 @@ object Dependencies {
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
 
+    // using spray-json is deprecated
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.3.9"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -133,6 +135,8 @@ object Dependencies {
   val dashboard = shared :+ scalazCore
 
   val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
+
+  val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(
     jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,
