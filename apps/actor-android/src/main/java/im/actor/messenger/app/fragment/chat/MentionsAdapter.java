@@ -32,10 +32,10 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     Collection<GroupMember> members;
     MentionsUpdatedCallback updatedCallback;
 
-    public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener, MentionsUpdatedCallback updatedCallback) {
+    public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
         this.members = members;
-        this.membersToShow = members.toArray(new GroupMember[0]);
+        this.membersToShow = initEmpty?new GroupMember[]{}:members.toArray(new GroupMember[0]);
         searchMap = new HashMap<String, GroupMember>();
         this.onItemClickedListener = onItemClickedListener;
         this.updatedCallback = updatedCallback;
