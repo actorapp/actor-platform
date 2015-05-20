@@ -180,11 +180,6 @@ public class ChatActivity extends BaseActivity{
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
-                /*
-                if(isMentionsVisible && after<count && s.charAt(start) == '@'){
-                    hideMentions();
-                }
-                */
             }
 
             @Override
