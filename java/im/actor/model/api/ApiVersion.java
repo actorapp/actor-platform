@@ -23,6 +23,6 @@ public final class ApiVersion {
     public static int VERSION_MAJOR = 1;
     public static int VERSION_MINOR = 6;
 
-    private Version() {
+    private ApiVersion() {
     }
 }
