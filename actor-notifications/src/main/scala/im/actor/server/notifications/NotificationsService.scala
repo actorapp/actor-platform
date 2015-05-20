@@ -43,8 +43,8 @@ class NotificationsSender(implicit db: Database, config: UnreadWatcherConfig, en
 
   implicit val ec = context.system.dispatcher
 
-  val unreadWatcher = new UnreadWatcher()
-  val notifier = new PhoneNotifier(engine)
+  private val unreadWatcher = new UnreadWatcher()
+  private val notifier = new PhoneNotifier(engine)
 
   def receive: Receive = {
     case Notify ⇒
