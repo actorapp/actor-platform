@@ -64,6 +64,8 @@ public class UpdateParameterChanged extends Update {
     @Override
     public String toString() {
         String res = "update ParameterChanged{";
+        res += "key=" + this.key;
+        res += ", value=" + this.value;
         res += "}";
         return res;
     }

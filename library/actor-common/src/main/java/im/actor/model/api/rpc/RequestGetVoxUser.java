@@ -17,55 +17,44 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSendEmailCode extends Request<ResponseVoid> {
+public class RequestGetVoxUser extends Request<ResponseGetVoxUser> {
 
-    public static final int HEADER = 0x78;
-    public static RequestSendEmailCode fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSendEmailCode(), data);
+    public static final int HEADER = 0x83;
+    public static RequestGetVoxUser fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetVoxUser(), data);
     }
 
-    private String email;
-    private String description;
+    private UserOutPeer userPeer;
 
-    public RequestSendEmailCode(String email, String description) {
-        this.email = email;
-        this.description = description;
+    public RequestGetVoxUser(UserOutPeer userPeer) {
+        this.userPeer = userPeer;
     }
 
-    public RequestSendEmailCode() {
+    public RequestGetVoxUser() {
 
     }
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public String getDescription() {
-        return this.description;
+    public UserOutPeer getUserPeer() {
+        return this.userPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.email = values.getString(1);
-        this.description = values.optString(2);
+        this.userPeer = values.getObj(1, new UserOutPeer());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.email == null) {
+        if (this.userPeer == null) {
             throw new IOException();
         }
-        writer.writeString(1, this.email);
-        if (this.description != null) {
-            writer.writeString(2, this.description);
-        }
+        writer.writeObject(1, this.userPeer);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SendEmailCode{";
-        res += "email=" + this.email;
-        res += ", description=" + this.description;
+        String res = "rpc GetVoxUser{";
+        res += "userPeer=" + this.userPeer;
         res += "}";
         return res;
     }
