@@ -15,5 +15,10 @@ class InterestTable(tag: Tag) extends Table[models.ilectro.Interest](tag, "inter
 }
 
 object Interest {
-  val interests = TableQuery[UserInterestTable]
+  val interests = TableQuery[InterestTable]
+
+  def createOrUpdate(newInterests: Seq[models.ilectro.Interest]) =
+    DBIO.sequence(newInterests map { interest ⇒
+      interests.insertOrUpdate(interest)
+    })
 }

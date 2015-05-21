@@ -4,3 +4,5 @@ CREATE TABLE ilectro_users (
   name varchar(255) NOT NULL,
   PRIMARY KEY (user_id)
 );
+
+CREATE UNIQUE INDEX on ilectro_users(uuid);
