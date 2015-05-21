@@ -460,6 +460,7 @@ public class ChatActivity extends BaseActivity{
         } else {
             messageBody.setText("");
         }
+        messageBody.setSelection(messageBody.getText().length());
         isTypingDisabled = false;
     }
 
@@ -467,8 +468,7 @@ public class ChatActivity extends BaseActivity{
 
         Editable text = messageBody.getText();
         convertUrlspansToMarkdownLinks(text);
-
-        final String textString = text.toString().trim();
+        final String textString = text.toString().replace("\u200b", "").trim();
         messageBody.setText("");
         mentionSearchString = "";
 
@@ -499,8 +499,10 @@ public class ChatActivity extends BaseActivity{
             if(start!=-1 && end<=text.length()){
                 url =span.getURL();
                 urlTitle = text.toString().substring(start, end);
-                if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@"))urlTitle = new String("@").concat(urlTitle);
+                if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") && !urlTitle.equals("\u200b") && !urlTitle.equals(" \u200b"))urlTitle = new String("@").concat(urlTitle);
                 mdUrl = new String("[").concat(urlTitle).concat("](").concat(url).concat(")");
+                if(urlTitle.isEmpty() || urlTitle.equals("\u200b"))mdUrl = "";
+                if(urlTitle.equals("@\u200b"))mdUrl = "@";
                 text.replace(start, end, mdUrl);
             }
         }
@@ -627,11 +629,11 @@ public class ChatActivity extends BaseActivity{
                 if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
 
                     //String mention = new String("<a href=\"people://").concat(name).concat(" \">").concat("@").concat(name).concat("</a>");
-                    String mention = new String("[").concat("@").concat(name).concat("](people://").concat(Integer.toString(id)).concat(") ");
+                    String mention = "[".concat("@").concat(name).concat("\u200b](people://").concat(Integer.toString(id)).concat(") ");
                     CharSequence spannedMention = bypass.markdownToSpannable(mention);
                     messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention));
 
-                    messageBody.setSelection(mentionStart, mentionStart + spannedMention.length() - 1 );
+                    messageBody.setSelection(mentionStart + 1, mentionStart + spannedMention.length() - 2 );
                 }
                 hideMentions();
             }
