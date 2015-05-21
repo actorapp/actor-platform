@@ -452,17 +452,17 @@ void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *s
       AMLog_wWithNSString_withNSString_(self->TAG_, @"SHA 256 is incorrect");
       @throw new_JavaIoIOException_initWithNSString_(@"SHA 256 is incorrect");
     }
-    if (protoVersion != 1) {
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
-      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
+    if (protoVersion != self->mtprotoVersion_) {
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$IC", @"Incorrect Proto Version, expected: ", self->mtprotoVersion_, @", got ", protoVersion, ';'));
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$IC", @"Incorrect Proto Version, expected: ", self->mtprotoVersion_, @", got ", protoVersion, ';'));
     }
-    if (apiMajor != 1) {
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
-      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
+    if (apiMajor != self->apiMajorVersion_) {
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$IC", @"Incorrect Api Major Version, expected: ", apiMajor, @", got ", apiMajor, ';'));
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$IC", @"Incorrect Api Major Version, expected: ", apiMajor, @", got ", apiMajor, ';'));
     }
-    if (apiMinor != 0) {
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
-      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
+    if (apiMinor != self->apiMinorVersion_) {
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$IC", @"Incorrect Api Minor Version, expected: ", apiMinor, @", got ", apiMinor, ';'));
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$IC", @"Incorrect Api Minor Version, expected: ", apiMinor, @", got ", apiMinor, ';'));
     }
     self->isHandshakePerformed_ = YES;
     [((id<AMManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreatedWithAMManagedConnection:self];

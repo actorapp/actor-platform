@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiAvatar () {
@@ -56,6 +57,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
   self->largeImage_ = [values optObjWithInt:2 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
   self->fullImage_ = [values optObjWithInt:3 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -67,6 +71,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   }
   if (self->fullImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withBSBserObject:self->fullImage_];
+  }
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [((BSBserWriter *) nil_chk(writer)) writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
   }
 }
 

@@ -26,20 +26,14 @@
               withByteArray:(IOSByteArray *)state
            withJavaUtilList:(id<JavaUtilList>)users
            withJavaUtilList:(id<JavaUtilList>)groups
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore;
 
 + (ImActorModelApiRpcResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (id<JavaUtilList>)getEmails;
-
 - (id<JavaUtilList>)getGroups;
 
 - (jint)getHeaderKey;
-
-- (id<JavaUtilList>)getPhones;
 
 - (jint)getSeq;
 
@@ -65,9 +59,9 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetDifference, HEADER, jint
 
 FOUNDATION_EXPORT ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore);
+FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetDifference_init(ImActorModelApiRpcResponseGetDifference *self);
 
