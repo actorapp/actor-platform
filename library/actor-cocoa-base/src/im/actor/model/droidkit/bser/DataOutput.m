@@ -33,6 +33,10 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   return self;
 }
 
++ (jint)growSizeWithInt:(jint)currentSize {
+  return BSDataOutput_growSizeWithInt_(currentSize);
+}
+
 - (void)expandWithInt:(jint)size {
   BSDataOutput_expandWithInt_(self, size);
 }
@@ -187,10 +191,19 @@ BSDataOutput *new_BSDataOutput_init() {
   return self;
 }
 
+jint BSDataOutput_growSizeWithInt_(jint currentSize) {
+  BSDataOutput_initialize();
+  return currentSize <= 4 ? 8 : currentSize * 2;
+}
+
 void BSDataOutput_expandWithInt_(BSDataOutput *self, jint size) {
-  IOSByteArray *nData = [IOSByteArray newArrayWithLength:size];
+  jint nSize = ((IOSByteArray *) nil_chk(self->data_))->size_;
+  while (nSize < size) {
+    nSize = BSDataOutput_growSizeWithInt_(nSize);
+  }
+  IOSByteArray *nData = [IOSByteArray newArrayWithLength:nSize];
   for (jint i = 0; i < self->offset_; i++) {
-    *IOSByteArray_GetRef(nData, i) = IOSByteArray_Get(nil_chk(self->data_), i);
+    *IOSByteArray_GetRef(nData, i) = IOSByteArray_Get(self->data_, i);
   }
   self->data_ = nData;
 }
