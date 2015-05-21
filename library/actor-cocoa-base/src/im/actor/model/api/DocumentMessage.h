@@ -11,11 +11,8 @@
 
 @class BSBserValues;
 @class BSBserWriter;
-@class IOSByteArray;
 @class ImActorModelApiDocumentEx;
-@class ImActorModelApiEncryptionTypeEnum;
 @class ImActorModelApiFastThumb;
-@class JavaLangInteger;
 
 @interface ImActorModelApiDocumentMessage : ImActorModelApiMessage
 
@@ -26,19 +23,12 @@
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
-withImActorModelApiEncryptionTypeEnum:(ImActorModelApiEncryptionTypeEnum *)encryptionType
-               withByteArray:(IOSByteArray *)encryptionKey
-         withJavaLangInteger:(JavaLangInteger *)plainFileSize
                 withNSString:(NSString *)name
                 withNSString:(NSString *)mimeType
 withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
 withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
 - (jlong)getAccessHash;
-
-- (IOSByteArray *)getEncryptionKey;
-
-- (ImActorModelApiEncryptionTypeEnum *)getEncryptionType;
 
 - (ImActorModelApiDocumentEx *)getExt;
 
@@ -52,8 +42,6 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
 - (NSString *)getName;
 
-- (JavaLangInteger *)getPlainFileSize;
-
 - (ImActorModelApiFastThumb *)getThumb;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
@@ -66,9 +54,9 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentMessage)
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(ImActorModelApiDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, ImActorModelApiEncryptionTypeEnum *encryptionType, IOSByteArray *encryptionKey, JavaLangInteger *plainFileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext);
+FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(ImActorModelApiDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, ImActorModelApiEncryptionTypeEnum *encryptionType, IOSByteArray *encryptionKey, JavaLangInteger *plainFileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_init(ImActorModelApiDocumentMessage *self);
 

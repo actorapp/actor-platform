@@ -14,6 +14,8 @@ import im.actor.model.droidkit.engine.ListEngineDisplayListener;
 import im.actor.model.droidkit.engine.ListEngineDisplayLoadCallback;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.log.Log;
+import im.actor.model.mvvm.alg.Modification;
+import im.actor.model.mvvm.alg.Modifications;
 
 public class BindedDisplayList<T extends BserObject & ListEngineItem> extends DisplayList<T> {
 
@@ -95,7 +97,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         mode = ListMode.FORWARD;
         query = null;
 
-        editList((Modification) DisplayModifications.clear());
+        editList((Modification) Modifications.clear());
 
         stateModel.change(State.LOADING_EMPTY);
         currentGeneration++;
@@ -116,7 +118,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         query = null;
 
         if (refresh) {
-            editList((Modification) DisplayModifications.clear());
+            editList((Modification) Modifications.clear());
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -132,7 +134,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 window.completeInitForward(bottomSortKey);
 
                 if (items.size() != 0) {
-                    editList(DisplayModifications.replace(items));
+                    editList(Modifications.replace(items));
                 } else {
                     window.onForwardCompleted();
                 }
@@ -158,7 +160,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         mode = ListMode.BACKWARD;
 
         if (refresh) {
-            editList((Modification) DisplayModifications.clear());
+            editList((Modification) Modifications.clear());
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -176,7 +178,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 window.completeInitBackward(topSortKey);
 
                 if (items.size() != 0) {
-                    editList(DisplayModifications.replace(items));
+                    editList(Modifications.replace(items));
                 } else {
                     window.onBackwardCompleted();
                 }
@@ -198,7 +200,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         mode = ListMode.CENTER;
 
         if (refresh) {
-            editList((Modification) DisplayModifications.clear());
+            editList((Modification) Modifications.clear());
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -216,7 +218,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 window.completeInitCenter(bottomSortKey, topSortKey);
 
                 if (items.size() != 0) {
-                    editList(DisplayModifications.addOrUpdate(items));
+                    editList(Modifications.addOrUpdate(items));
                 } else {
                     window.onForwardCompleted();
                     window.onBackwardCompleted();
@@ -248,7 +250,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         this.query = query;
 
         if (refresh) {
-            editList((Modification) DisplayModifications.clear());
+            editList((Modification) Modifications.clear());
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -265,7 +267,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
                 window.completeInitForward(bottomSortKey);
 
-                editList(DisplayModifications.replace(items));
+                editList(Modifications.replace(items));
 
                 if (items.size() == 0) {
                     window.onForwardCompleted();
@@ -315,7 +317,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
-                    editList(DisplayModifications.addOnly(items), new Runnable() {
+                    editList(Modifications.addOnly(items), new Runnable() {
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
@@ -364,7 +366,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     isLoadMoreBackwardRequested = false;
                 } else {
                     window.onBackwardSliceLoaded(bottomSortKey);
-                    editList(DisplayModifications.addOnly(items), new Runnable() {
+                    editList(Modifications.addOnly(items), new Runnable() {
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
@@ -429,37 +431,37 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
         @Override
         public void onItemRemoved(long id) {
-            final Modification<T> modification = DisplayModifications.remove(id);
+            final Modification<T> modification = Modifications.remove(id);
             applyModification(modification);
         }
 
         @Override
         public void onItemsRemoved(long[] ids) {
-            Modification<T> modification = DisplayModifications.remove(ids);
+            Modification<T> modification = Modifications.remove(ids);
             applyModification(modification);
         }
 
         @Override
         public void addOrUpdate(T item) {
-            Modification<T> modification = DisplayModifications.addOrUpdate(item);
+            Modification<T> modification = Modifications.addOrUpdate(item);
             applyModification(modification);
         }
 
         @Override
         public void addOrUpdate(List<T> items) {
-            Modification<T> modification = DisplayModifications.addOrUpdate(items);
+            Modification<T> modification = Modifications.addOrUpdate(items);
             applyModification(modification);
         }
 
         @Override
         public void onItemsReplaced(List<T> items) {
-            Modification<T> modification = DisplayModifications.replace(items);
+            Modification<T> modification = Modifications.replace(items);
             applyModification(modification);
         }
 
         @Override
         public void onListClear() {
-            Modification<T> modification = DisplayModifications.clear();
+            Modification<T> modification = Modifications.clear();
             applyModification(modification);
         }
     }

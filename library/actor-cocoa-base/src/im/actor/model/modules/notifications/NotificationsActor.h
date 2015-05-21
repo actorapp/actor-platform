@@ -39,6 +39,10 @@
                       withLong:(jlong)date
       withAMContentDescription:(AMContentDescription *)description_;
 
+- (void)onNotificationsPaused;
+
+- (void)onNotificationsResumed;
+
 - (void)onReceiveWithId:(id)message;
 
 - (void)preStart;
@@ -200,5 +204,37 @@ FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnDial
 FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden)
+
+@interface ImActorModelModulesNotificationsNotificationsActor_PauseNotifications : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_PauseNotifications)
+
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_PauseNotifications_init(ImActorModelModulesNotificationsNotificationsActor_PauseNotifications *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_PauseNotifications *new_ImActorModelModulesNotificationsNotificationsActor_PauseNotifications_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_PauseNotifications)
+
+@interface ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications)
+
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init(ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications *new_ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications)
 
 #endif // _ImActorModelModulesNotificationsNotificationsActor_H_

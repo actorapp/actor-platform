@@ -27,8 +27,6 @@ public class Peer extends BserObject {
                 return new Peer(PeerType.PRIVATE, id);
             case 1:
                 return new Peer(PeerType.GROUP, id);
-            case 2:
-                return new Peer(PeerType.EMAIL, id);
         }
     }
 
@@ -61,9 +59,6 @@ public class Peer extends BserObject {
                 break;
             case GROUP:
                 type = 1;
-                break;
-            case EMAIL:
-                type = 2;
                 break;
         }
         return ((long)peerId & 0xFFFFFFFFL)+ (((long) type & 0xFFFFFFFFL) << 32);
@@ -105,9 +100,6 @@ public class Peer extends BserObject {
             case 1:
                 peerType = PeerType.PRIVATE;
                 break;
-            case 2:
-                peerType = PeerType.EMAIL;
-                break;
             case 3:
                 peerType = PeerType.GROUP;
                 break;
@@ -121,9 +113,6 @@ public class Peer extends BserObject {
             default:
             case PRIVATE:
                 writer.writeInt(2, 1);
-                break;
-            case EMAIL:
-                writer.writeInt(2, 2);
                 break;
             case GROUP:
                 writer.writeInt(2, 3);

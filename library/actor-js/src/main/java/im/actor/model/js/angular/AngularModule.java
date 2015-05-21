@@ -135,7 +135,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
                             typingValue = messenger.getFormatter().formatTyping(modules()
                                     .getUsersModule()
                                     .getUsersCollection()
-                                    .get(peer.getPeerId())
+                                    .get(val[0])
                                     .getName()
                                     .get());
                         } else if (val.length > 1) {

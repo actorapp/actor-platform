@@ -7,20 +7,20 @@
 #define _AMFileReference_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@class ImActorModelApiFileLocation;
 
-@interface AMFileReference : BSBserObject
+@interface AMFileReference : AMWrapperEntity
 
 #pragma mark Public
 
-- (instancetype)initWithLong:(jlong)fileId
-                    withLong:(jlong)accessHash
-                     withInt:(jint)fileSize
-                withNSString:(NSString *)fileName;
+- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
+                                       withNSString:(NSString *)fileName
+                                            withInt:(jint)fileSize;
 
 - (jboolean)isEqual:(id)o;
 
@@ -29,6 +29,8 @@
 - (jlong)getAccessHash;
 
 - (jlong)getFileId;
+
+- (ImActorModelApiFileLocation *)getFileLocation;
 
 - (NSString *)getFileName;
 
@@ -40,15 +42,19 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (ImActorModelApiFileLocation *)createInstance;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileReference)
 
 FOUNDATION_EXPORT AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void AMFileReference_initWithLong_withLong_withInt_withNSString_(AMFileReference *self, jlong fileId, jlong accessHash, jint fileSize, NSString *fileName);
+FOUNDATION_EXPORT void AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(AMFileReference *self, ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize);
 
-FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithLong_withLong_withInt_withNSString_(jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileReference)
 

@@ -17,10 +17,32 @@ public class BserValues {
 
     private SparseArray<Object> fields;
 
+    // TODO: Replace with SparseBooleanArray
+    private SparseArray<Boolean> touched = new SparseArray<Boolean>();
+
     public BserValues(SparseArray<Object> fields) {
         this.fields = fields;
     }
 
+    public boolean hasRemaining() {
+        for (int i = 0; i < fields.size(); i++) {
+            if (!touched.get(fields.keyAt(i), false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public SparseArray<Object> buildRemaining() {
+        SparseArray<Object> res = new SparseArray<Object>();
+        for (int i = 0; i < fields.size(); i++) {
+            int key = fields.keyAt(i);
+            if (!touched.get(key, false)) {
+                res.put(key, fields.get(key));
+            }
+        }
+        return res;
+    }
 
     // Long based values
 
@@ -37,6 +59,7 @@ public class BserValues {
 
     public long getLong(int id, long defValue) throws IOException {
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object obj = fields.get(id);
             if (obj instanceof Long) {
                 return (Long) obj;
@@ -101,6 +124,7 @@ public class BserValues {
 
     public byte[] getBytes(int id, byte[] defValue) throws IOException {
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object obj = fields.get(id);
             if (obj instanceof byte[]) {
                 return (byte[]) obj;
@@ -145,6 +169,7 @@ public class BserValues {
 
     public int getRepeatedCount(int id) throws IOException {
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object val = fields.get(id);
             if (val instanceof List) {
                 return ((List) val).size();
@@ -161,6 +186,7 @@ public class BserValues {
     public List<Long> getRepeatedLong(int id) throws IOException {
         ArrayList<Long> res = new ArrayList<Long>();
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object val = fields.get(id);
             if (val instanceof Long) {
                 res.add((Long) val);
@@ -195,6 +221,7 @@ public class BserValues {
     public List<byte[]> getRepeatedBytes(int id) throws IOException {
         ArrayList<byte[]> res = new ArrayList<byte[]>();
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object val = fields.get(id);
             if (val instanceof byte[]) {
                 res.add((byte[]) val);

@@ -126,7 +126,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     }
 
     public void onAvatarClick(int uid) {
-        startActivity(Intents.openPrivateDialog(uid, false, getActivity()));
+        startActivity(Intents.openProfile(uid, getActivity()));
     }
 
     public boolean onClick(Message message) {

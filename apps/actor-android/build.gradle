@@ -221,20 +221,25 @@ android {
 
     // Sigining configuration
 
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    boolean isSigningLoaded = false
+    if (project.rootProject.file('local.properties').exists()) {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        if (!properties.getProperty('androidStore', '').equals('')) {
+            def androidStore = properties.getProperty('androidStore')
+            def androidStorePass = properties.getProperty('androidStorePass')
+            def androidAliasPass = properties.getProperty('androidAliasPass')
+            def androidAlias = properties.getProperty('androidAlias')
 
-    if (!properties.getProperty('androidStore', '').equals('')) {
-        def androidStore = properties.getProperty('androidStore')
-        def androidStorePass = properties.getProperty('androidStorePass')
-        def androidAliasPass = properties.getProperty('androidAliasPass')
-        def androidAlias = properties.getProperty('androidAlias')
+            android.signingConfigs.release.storeFile = file(androidStore)
+            android.signingConfigs.release.storePassword = androidStorePass
+            android.signingConfigs.release.keyAlias = androidAlias
+            android.signingConfigs.release.keyPassword = androidAliasPass
 
-        android.signingConfigs.release.storeFile = file(androidStore)
-        android.signingConfigs.release.storePassword = androidStorePass
-        android.signingConfigs.release.keyAlias = androidAlias
-        android.signingConfigs.release.keyPassword = androidAliasPass
-    } else {
+            isSigningLoaded = true
+        }
+    }
+    if (!isSigningLoaded) {
         buildTypes.release.signingConfig = null
         buildTypes.enterprise.signingConfig = null
         buildTypes.alpha.signingConfig = null
@@ -243,7 +248,6 @@ android {
 
         buildTypes.dev1.signingConfig = null
         buildTypes.dev2.signingConfig = null
-
     }
 
     // Some technical configuration
@@ -298,6 +302,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:7.3.0'
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
+    compile files('libs/voximplantsdk.jar')
     compile 'com.splunk.mint:mint:4.0.8'
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'org.pegdown:pegdown:1.5.0'

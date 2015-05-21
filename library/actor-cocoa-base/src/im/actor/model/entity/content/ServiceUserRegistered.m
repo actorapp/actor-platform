@@ -9,6 +9,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "java/io/IOException.h"
@@ -17,6 +18,10 @@
 
 + (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
   return AMServiceUserRegistered_fromBytesWithByteArray_(data);
+}
+
+- (AMAbsContent_ContentTypeEnum *)getContentType {
+  return AMAbsContent_ContentTypeEnum_get_SERVICE_REGISTERED();
 }
 
 - (instancetype)init {

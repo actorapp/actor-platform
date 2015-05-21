@@ -7,20 +7,19 @@
 #define _AMAvatarImage_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 
 @class AMFileReference;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@class ImActorModelApiAvatarImage;
 
-@interface AMAvatarImage : BSBserObject
+@interface AMAvatarImage : AMWrapperEntity
 
 #pragma mark Public
 
-- (instancetype)initWithInt:(jint)width
-                    withInt:(jint)height
-        withAMFileReference:(AMFileReference *)fileReference;
+- (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)wrapped;
 
 - (jboolean)isEqual:(id)o;
 
@@ -38,15 +37,21 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (void)applyWrappedWithBSBserObject:(ImActorModelApiAvatarImage *)wrapped;
+
+- (ImActorModelApiAvatarImage *)createInstance;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatarImage)
 
 FOUNDATION_EXPORT AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void AMAvatarImage_initWithInt_withInt_withAMFileReference_(AMAvatarImage *self, jint width, jint height, AMFileReference *fileReference);
+FOUNDATION_EXPORT void AMAvatarImage_initWithImActorModelApiAvatarImage_(AMAvatarImage *self, ImActorModelApiAvatarImage *wrapped);
 
-FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithInt_withInt_withAMFileReference_(jint width, jint height, AMFileReference *fileReference) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *wrapped) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAvatarImage)
 

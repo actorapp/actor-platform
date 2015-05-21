@@ -182,6 +182,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
   else {
     [notifications_ onAppHidden];
   }
+  [((AMMessenger *) nil_chk(messenger_)) onLoggedIn];
 }
 
 - (id<DKPreferencesStorage>)getPreferences {

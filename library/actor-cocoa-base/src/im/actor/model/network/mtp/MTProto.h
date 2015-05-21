@@ -37,6 +37,8 @@
 
 - (jlong)getSessionId;
 
+- (void)onNetworkChanged;
+
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct;
 
 @end

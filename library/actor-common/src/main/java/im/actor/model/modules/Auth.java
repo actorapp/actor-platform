@@ -17,6 +17,7 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.entity.ContactRecord;
+import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.User;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
@@ -63,7 +64,7 @@ public class Auth extends BaseModule {
             User user = modules().getUsersModule().getUsers().getValue(myUid);
             ArrayList<Long> records = new ArrayList<Long>();
             for (ContactRecord contactRecord : user.getRecords()) {
-                if (contactRecord.getRecordType() == 0) {
+                if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
                     records.add(Long.parseLong(contactRecord.getRecordData()));
                 }
             }
@@ -94,7 +95,7 @@ public class Auth extends BaseModule {
                 User user = modules().getUsersModule().getUsers().getValue(myUid);
                 ArrayList<Long> records = new ArrayList<Long>();
                 for (ContactRecord contactRecord : user.getRecords()) {
-                    if (contactRecord.getRecordType() == 0) {
+                    if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
                         records.add(Long.parseLong(contactRecord.getRecordData()));
                     }
                 }
