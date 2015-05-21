@@ -10,6 +10,7 @@ import java.util.List;
 import im.actor.model.annotation.MainThread;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContactRecord;
+import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
@@ -139,7 +140,7 @@ public class UserVM extends BaseValueModel<User> {
     private ArrayList<UserPhone> buildPhones(List<ContactRecord> records) {
         ArrayList<UserPhone> res = new ArrayList<UserPhone>();
         for (ContactRecord r : records) {
-            if (r.getRecordType() == ContactRecord.TYPE_PHONE) {
+            if (r.getRecordType() == ContactRecordType.PHONE) {
                 res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
             }
         }

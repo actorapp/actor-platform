@@ -7,10 +7,10 @@ package im.actor.model.modules.messages.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.api.ContactType;
 import im.actor.model.api.DocumentExPhoto;
 import im.actor.model.api.DocumentExVideo;
 import im.actor.model.api.DocumentMessage;
+import im.actor.model.api.FileLocation;
 import im.actor.model.api.Member;
 import im.actor.model.api.ServiceEx;
 import im.actor.model.api.ServiceExChangedAvatar;
@@ -23,7 +23,6 @@ import im.actor.model.api.ServiceMessage;
 import im.actor.model.api.TextMessage;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.AvatarImage;
-import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.GroupMember;
@@ -69,21 +68,14 @@ public class EntityConverter {
         if (avatar == null) {
             return null;
         }
-        return new Avatar(convert(avatar.getSmallImage()),
-                convert(avatar.getLargeImage()),
-                convert(avatar.getFullImage()));
+        return new Avatar(avatar);
     }
 
     public static AvatarImage convert(im.actor.model.api.AvatarImage avatarImage) {
         if (avatarImage == null) {
             return null;
         }
-        return new AvatarImage(avatarImage.getWidth(), avatarImage.getHeight(),
-                convert(avatarImage.getFileLocation(), "avatar.jpg", avatarImage.getFileSize()));
-    }
-
-    public static FileReference convert(im.actor.model.api.FileLocation location, String fileName, int size) {
-        return new FileReference(location.getFileId(), location.getAccessHash(), size, fileName);
+        return new AvatarImage(avatarImage);
     }
 
     public static Sex convert(im.actor.model.api.Sex sex) {
@@ -103,19 +95,7 @@ public class EntityConverter {
 
 
     public static User convert(im.actor.model.api.User user) {
-        ArrayList<ContactRecord> res = new ArrayList<ContactRecord>();
-        for (im.actor.model.api.ContactRecord r : user.getContactInfo()) {
-            if (r.getType() == ContactType.PHONE) {
-                res.add(new ContactRecord(0, 0, ContactRecord.TYPE_PHONE, r.getLongValue() + "",
-                        r.getSubtitle() != null ? r.getSubtitle() : "Mobile"));
-            } else if (r.getType() == ContactType.EMAIL) {
-                res.add(new ContactRecord(0, 0, ContactRecord.TYPE_EMAIL, r.getStringValue(),
-                        r.getSubtitle() != null ? r.getSubtitle() : "Email"));
-            }
-        }
-        return new User(user.getId(), user.getAccessHash(), user.getName(), user.getLocalName(),
-                convert(user.getAvatar()), convert(user.getSex()),
-                res);
+        return new User(user);
     }
 
     public static Group convert(im.actor.model.api.Group group) {
@@ -178,10 +158,11 @@ public class EntityConverter {
             String mimeType = documentMessage.getMimeType();
             String name = documentMessage.getName();
             im.actor.model.entity.content.FastThumb fastThumb = convert(documentMessage.getThumb());
-            FileReference fileReference = new FileReference(documentMessage.getFileId(),
-                    documentMessage.getAccessHash(),
-                    documentMessage.getFileSize(),
-                    documentMessage.getName());
+            FileReference fileReference = new FileReference(
+                    new FileLocation(documentMessage.getFileId(),
+                            documentMessage.getAccessHash()),
+                    documentMessage.getName(),
+                    documentMessage.getFileSize());
             FileRemoteSource source = new FileRemoteSource(fileReference);
 
             if (documentMessage.getExt() instanceof DocumentExPhoto) {
