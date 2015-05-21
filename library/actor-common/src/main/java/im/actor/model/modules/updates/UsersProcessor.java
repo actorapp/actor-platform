@@ -14,7 +14,6 @@ import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
 import im.actor.model.modules.messages.DialogsActor;
-import im.actor.model.modules.messages.entity.EntityConverter;
 
 import static im.actor.model.util.JavaUtil.equalsE;
 
@@ -33,9 +32,9 @@ public class UsersProcessor extends BaseModule {
 
             User saved = users().getValue(u.getId());
             if (saved == null) {
-                batch.add(EntityConverter.convert(u));
+                batch.add(new User(u));
             } else if (forced) {
-                User upd = EntityConverter.convert(u);
+                User upd = new User(u);
                 batch.add(upd);
 
                 // Sending changes to dialogs
