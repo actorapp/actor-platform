@@ -28,6 +28,9 @@
                            withJavaLangLong:(JavaLangLong *)sortingKey
                                     withInt:(jint)limit;
 
+- (id<JavaUtilList>)loadCenterWithJavaLangLong:(JavaLangLong *)centerSortKey
+                                       withInt:(jint)limit;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(DKListStorageDisplayEx)

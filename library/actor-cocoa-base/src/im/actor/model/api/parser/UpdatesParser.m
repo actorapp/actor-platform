@@ -8,14 +8,14 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/parser/UpdatesParser.h"
+#include "im/actor/model/api/updates/UpdateCallEnd.h"
+#include "im/actor/model/api/updates/UpdateCallRing.h"
 #include "im/actor/model/api/updates/UpdateChatClear.h"
 #include "im/actor/model/api/updates/UpdateChatDelete.h"
 #include "im/actor/model/api/updates/UpdateConfig.h"
 #include "im/actor/model/api/updates/UpdateContactRegistered.h"
 #include "im/actor/model/api/updates/UpdateContactsAdded.h"
 #include "im/actor/model/api/updates/UpdateContactsRemoved.h"
-#include "im/actor/model/api/updates/UpdateEmailMoved.h"
-#include "im/actor/model/api/updates/UpdateEmailTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
 #include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
@@ -31,20 +31,14 @@
 #include "im/actor/model/api/updates/UpdateMessageReceived.h"
 #include "im/actor/model/api/updates/UpdateMessageSent.h"
 #include "im/actor/model/api/updates/UpdateParameterChanged.h"
-#include "im/actor/model/api/updates/UpdatePhoneMoved.h"
-#include "im/actor/model/api/updates/UpdatePhoneTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateTyping.h"
 #include "im/actor/model/api/updates/UpdateUserAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateUserContactsChanged.h"
-#include "im/actor/model/api/updates/UpdateUserEmailAdded.h"
-#include "im/actor/model/api/updates/UpdateUserEmailRemoved.h"
 #include "im/actor/model/api/updates/UpdateUserLastSeen.h"
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserOffline.h"
 #include "im/actor/model/api/updates/UpdateUserOnline.h"
-#include "im/actor/model/api/updates/UpdateUserPhoneAdded.h"
-#include "im/actor/model/api/updates/UpdateUserPhoneRemoved.h"
 #include "im/actor/model/network/parser/BaseParser.h"
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
@@ -60,23 +54,7 @@
     return ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(payload);
     case 51:
     return ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(payload);
-    case 87:
-    return ImActorModelApiUpdatesUpdateUserPhoneAdded_fromBytesWithByteArray_(payload);
-    case 88:
-    return ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(payload);
-    case 89:
-    return ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(payload);
-    case 101:
-    return ImActorModelApiUpdatesUpdatePhoneMoved_fromBytesWithByteArray_(payload);
-    case 96:
-    return ImActorModelApiUpdatesUpdateUserEmailAdded_fromBytesWithByteArray_(payload);
-    case 97:
-    return ImActorModelApiUpdatesUpdateUserEmailRemoved_fromBytesWithByteArray_(payload);
-    case 98:
-    return ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(payload);
-    case 102:
-    return ImActorModelApiUpdatesUpdateEmailMoved_fromBytesWithByteArray_(payload);
-    case 86:
+    case 134:
     return ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(payload);
     case 5:
     return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(payload);
@@ -124,6 +102,10 @@
     return ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(payload);
     case 33:
     return ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(payload);
+    case 49:
+    return ImActorModelApiUpdatesUpdateCallRing_fromBytesWithByteArray_(payload);
+    case 83:
+    return ImActorModelApiUpdatesUpdateCallEnd_fromBytesWithByteArray_(payload);
     case 131:
     return ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(payload);
     case 42:

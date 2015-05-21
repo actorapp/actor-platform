@@ -182,6 +182,8 @@
 
 - (void)onDialogsOpen;
 
+- (void)onLoggedIn;
+
 - (void)onNetworkChanged;
 
 - (void)onPhoneBookChanged;

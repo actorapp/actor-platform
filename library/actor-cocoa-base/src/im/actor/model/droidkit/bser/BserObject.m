@@ -11,17 +11,35 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 #include "java/lang/RuntimeException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+@interface BSBserObject () {
+ @public
+  ImActorModelDroidkitBserUtilSparseArray *unmappedObjects_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(BSBserObject, unmappedObjects_, ImActorModelDroidkitBserUtilSparseArray *)
+
 @implementation BSBserObject
 
 - (instancetype)init {
   BSBserObject_init(self);
   return self;
+}
+
+- (ImActorModelDroidkitBserUtilSparseArray *)getUnmappedObjects {
+  return unmappedObjects_;
+}
+
+- (void)setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)unmappedObjects {
+  self->unmappedObjects_ = unmappedObjects;
 }
 
 - (IOSByteArray *)toByteArray {

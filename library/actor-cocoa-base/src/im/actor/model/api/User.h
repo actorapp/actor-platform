@@ -13,6 +13,7 @@
 @class BSBserWriter;
 @class ImActorModelApiAvatar;
 @class ImActorModelApiSexEnum;
+@class JavaLangBoolean;
 @protocol JavaUtilList;
 
 @interface ImActorModelApiUser : BSBserObject
@@ -26,31 +27,25 @@
                withNSString:(NSString *)name
                withNSString:(NSString *)localName
  withImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex
-           withJavaUtilList:(id<JavaUtilList>)keyHashes
-                   withLong:(jlong)phone
   withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails;
+           withJavaUtilList:(id<JavaUtilList>)contactInfo
+        withJavaLangBoolean:(JavaLangBoolean *)isBot;
 
 - (jlong)getAccessHash;
 
 - (ImActorModelApiAvatar *)getAvatar;
 
-- (id<JavaUtilList>)getEmails;
+- (id<JavaUtilList>)getContactInfo;
 
 - (jint)getId;
-
-- (id<JavaUtilList>)getKeyHashes;
 
 - (NSString *)getLocalName;
 
 - (NSString *)getName;
 
-- (jlong)getPhone;
-
-- (id<JavaUtilList>)getPhones;
-
 - (ImActorModelApiSexEnum *)getSex;
+
+- (JavaLangBoolean *)isBot;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -62,9 +57,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUser)
 
-FOUNDATION_EXPORT void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(ImActorModelApiUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails);
+FOUNDATION_EXPORT void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withImActorModelApiAvatar_withJavaUtilList_withJavaLangBoolean_(ImActorModelApiUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, ImActorModelApiAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot);
 
-FOUNDATION_EXPORT ImActorModelApiUser *new_ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiUser *new_ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withImActorModelApiAvatar_withJavaUtilList_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, ImActorModelApiAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiUser_init(ImActorModelApiUser *self);
 

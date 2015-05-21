@@ -19,6 +19,8 @@
 
 - (instancetype)initWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)fields;
 
+- (ImActorModelDroidkitBserUtilSparseArray *)buildRemaining;
+
 - (jboolean)getBoolWithInt:(jint)id_;
 
 - (jboolean)getBoolWithInt:(jint)id_
@@ -64,6 +66,8 @@
 
 - (NSString *)getStringWithInt:(jint)id_
                   withNSString:(NSString *)defValue;
+
+- (jboolean)hasRemaining;
 
 - (jboolean)optBoolWithInt:(jint)id_;
 

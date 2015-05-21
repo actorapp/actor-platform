@@ -44,6 +44,7 @@
   JavaUtilHashMap *further_;
   JavaUtilArrayList *pendingRunnables_;
   jboolean isValidated_;
+  jboolean isTimerStarted_;
   jint seq_;
   IOSByteArray *state_;
   ImActorModelModulesUpdatesUpdateProcessor *processor_;
@@ -211,6 +212,7 @@ void ImActorModelModulesUpdatesSequenceActor_initWithImActorModelModulesModules_
   self->further_ = new_JavaUtilHashMap_init();
   self->pendingRunnables_ = new_JavaUtilArrayList_init();
   self->isValidated_ = YES;
+  self->isTimerStarted_ = NO;
 }
 
 ImActorModelModulesUpdatesSequenceActor *new_ImActorModelModulesUpdatesSequenceActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
@@ -288,9 +290,15 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     return;
   }
   if (!ImActorModelModulesUpdatesSequenceActor_isValidSeqWithInt_(self, seq)) {
-    AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Out of sequence: starting timer for invalidation");
     (void) [((JavaUtilHashMap *) nil_chk(self->further_)) putWithId:JavaLangInteger_valueOfWithInt_(seq) withId:u];
-    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init() withLong:ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP];
+    if (self->isTimerStarted_) {
+      AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Out of sequence: timer already started");
+    }
+    else {
+      AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Out of sequence: starting timer for invalidation");
+      [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init() withLong:ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP];
+      self->isTimerStarted_ = YES;
+    }
     return;
   }
   ImActorModelNetworkParserUpdate *update;
@@ -323,6 +331,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:ImActorModelModulesUpdatesSequenceActor_KEY_STATE_ withValue:state];
   ImActorModelModulesUpdatesSequenceActor_checkRunnables(self);
   ImActorModelModulesUpdatesSequenceActor_checkFuture(self);
+  self->isTimerStarted_ = NO;
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init() withLong:24 * 60 * 60 * 1000LL];
 }
 
@@ -454,6 +463,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_PushSeq
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"State loaded {seq=", this$0_->seq_, '}'));
   ImActorModelModulesUpdatesSequenceActor_checkRunnables(this$0_);
   ImActorModelModulesUpdatesSequenceActor_checkFuture(this$0_);
+  this$0_->isTimerStarted_ = NO;
   [((DKActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init() withLong:24 * 60 * 60 * 1000LL];
 }
 
@@ -510,6 +520,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) putBytes:ImActorModelModulesUpdatesSequenceActor_get_KEY_STATE_() withValue:this$0_->state_];
   ImActorModelModulesUpdatesSequenceActor_checkRunnables(this$0_);
   ImActorModelModulesUpdatesSequenceActor_checkFuture(this$0_);
+  this$0_->isTimerStarted_ = NO;
   [((DKActorRef *) nil_chk([this$0_ self__])) sendOnceWithId:new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init() withLong:24 * 60 * 60 * 1000LL];
   if ([response needMore]) {
     ImActorModelModulesUpdatesSequenceActor_invalidate(this$0_);
