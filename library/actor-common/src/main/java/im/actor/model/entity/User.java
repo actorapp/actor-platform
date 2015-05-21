@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.api.*;
+import im.actor.model.api.ContactType;
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
-import im.actor.model.modules.messages.entity.EntityConverter;
 
 public class User extends WrapperEntity<im.actor.model.api.User> implements KeyValueItem {
 
@@ -131,7 +130,17 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         this.accessHash = wrapped.getAccessHash();
         this.name = wrapped.getName();
         this.localName = wrapped.getLocalName();
-        this.sex = EntityConverter.convert(wrapped.getSex());
+        this.sex = Sex.UNKNOWN;
+        if (wrapped.getSex() != null) {
+            switch (wrapped.getSex()) {
+                case FEMALE:
+                    this.sex = Sex.FEMALE;
+                    break;
+                case MALE:
+                    this.sex = Sex.MALE;
+                    break;
+            }
+        }
 
         this.records = new ArrayList<ContactRecord>();
         for (im.actor.model.api.ContactRecord record : wrapped.getContactInfo()) {

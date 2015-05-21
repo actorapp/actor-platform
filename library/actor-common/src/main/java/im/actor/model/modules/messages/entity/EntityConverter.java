@@ -22,15 +22,12 @@ import im.actor.model.api.ServiceExUserLeft;
 import im.actor.model.api.ServiceMessage;
 import im.actor.model.api.TextMessage;
 import im.actor.model.entity.Avatar;
-import im.actor.model.entity.AvatarImage;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
-import im.actor.model.entity.Sex;
-import im.actor.model.entity.User;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FastThumb;
@@ -69,33 +66,6 @@ public class EntityConverter {
             return null;
         }
         return new Avatar(avatar);
-    }
-
-    public static AvatarImage convert(im.actor.model.api.AvatarImage avatarImage) {
-        if (avatarImage == null) {
-            return null;
-        }
-        return new AvatarImage(avatarImage);
-    }
-
-    public static Sex convert(im.actor.model.api.Sex sex) {
-        if (sex == null) {
-            return Sex.UNKNOWN;
-        }
-        switch (sex) {
-            case FEMALE:
-                return Sex.FEMALE;
-            case MALE:
-                return Sex.MALE;
-            default:
-            case UNKNOWN:
-                return Sex.UNKNOWN;
-        }
-    }
-
-
-    public static User convert(im.actor.model.api.User user) {
-        return new User(user);
     }
 
     public static Group convert(im.actor.model.api.Group group) {
