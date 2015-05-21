@@ -22,6 +22,7 @@
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/ContactRecord.h"
+#include "im/actor/model/entity/ContactRecordType.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Analytics.h"
 #include "im/actor/model/modules/Auth.h"
@@ -359,7 +360,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$4_$1_$1)
     AMUser *user = [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getUsersModule])) getUsers])) getValueWithLong:myUid__];
     JavaUtilArrayList *records = new_JavaUtilArrayList_init();
     for (AMContactRecord * __strong contactRecord in nil_chk([((AMUser *) nil_chk(user)) getRecords])) {
-      if ([((AMContactRecord *) nil_chk(contactRecord)) getRecordType] == 0) {
+      if ([((AMContactRecord *) nil_chk(contactRecord)) getRecordType] == AMContactRecordTypeEnum_get_PHONE()) {
         [records addWithId:JavaLangLong_valueOfWithLong_(JavaLangLong_parseLongWithNSString_([contactRecord getRecordData]))];
       }
     }
@@ -444,7 +445,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth)
   AMUser *user = [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getUsersModule])) getUsers])) getValueWithLong:this$0_->myUid__];
   JavaUtilArrayList *records = new_JavaUtilArrayList_init();
   for (AMContactRecord * __strong contactRecord in nil_chk([((AMUser *) nil_chk(user)) getRecords])) {
-    if ([((AMContactRecord *) nil_chk(contactRecord)) getRecordType] == 0) {
+    if ([((AMContactRecord *) nil_chk(contactRecord)) getRecordType] == AMContactRecordTypeEnum_get_PHONE()) {
       [records addWithId:JavaLangLong_valueOfWithLong_(JavaLangLong_parseLongWithNSString_([contactRecord getRecordData]))];
     }
   }

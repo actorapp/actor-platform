@@ -476,7 +476,7 @@ void ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLon
   }
   ImActorModelApiMessage *message;
   if ([content isKindOfClass:[AMTextContent class]]) {
-    message = new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_([((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(content, [AMTextContent class])))) getText], nil);
+    message = new_ImActorModelApiTextMessage_initWithNSString_withJavaUtilList_withImActorModelApiTextMessageEx_([((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(content, [AMTextContent class])))) getText], new_JavaUtilArrayList_init(), nil);
   }
   else if ([content isKindOfClass:[AMDocumentContent class]]) {
     AMDocumentContent *documentContent = (AMDocumentContent *) check_class_cast(content, [AMDocumentContent class]);
@@ -494,7 +494,7 @@ void ImActorModelModulesMessagesSenderActor_performSendContentWithAMPeer_withLon
     if ([documentContent getFastThumb] != nil) {
       fastThumb = new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_([((AMFastThumb *) nil_chk([documentContent getFastThumb])) getW], [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getH], [((AMFastThumb *) nil_chk([documentContent getFastThumb])) getImage]);
     }
-    message = new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_([((AMFileReference *) nil_chk([((AMFileRemoteSource *) nil_chk(source)) getFileReference])) getFileId], [((AMFileReference *) nil_chk([source getFileReference])) getAccessHash], [((AMFileReference *) nil_chk([source getFileReference])) getFileSize], nil, nil, nil, [((AMFileReference *) nil_chk([source getFileReference])) getFileName], [documentContent getMimetype], fastThumb, documentEx);
+    message = new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_([((AMFileReference *) nil_chk([((AMFileRemoteSource *) nil_chk(source)) getFileReference])) getFileId], [((AMFileReference *) nil_chk([source getFileReference])) getAccessHash], [((AMFileReference *) nil_chk([source getFileReference])) getFileSize], [((AMFileReference *) nil_chk([source getFileReference])) getFileName], [documentContent getMimetype], fastThumb, documentEx);
   }
   else {
     return;

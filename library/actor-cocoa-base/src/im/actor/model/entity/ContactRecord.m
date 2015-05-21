@@ -4,62 +4,33 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/ContactRecord.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/ContactRecordType.h"
 
 @interface AMContactRecord () {
  @public
-  jint id__;
-  jlong accessHash_;
-  jint recordType_;
+  AMContactRecordTypeEnum *recordType_;
   NSString *recordData_;
   NSString *recordTitle_;
 }
 
 @end
 
+J2OBJC_FIELD_SETTER(AMContactRecord, recordType_, AMContactRecordTypeEnum *)
 J2OBJC_FIELD_SETTER(AMContactRecord, recordData_, NSString *)
 J2OBJC_FIELD_SETTER(AMContactRecord, recordTitle_, NSString *)
 
-jint AMContactRecord_TYPE_PHONE_ = 0;
-jint AMContactRecord_TYPE_EMAIL_ = 1;
-
 @implementation AMContactRecord
 
-+ (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMContactRecord_fromBytesWithByteArray_(data);
-}
-
-- (instancetype)initWithInt:(jint)id_
-                   withLong:(jlong)accessHash
-                    withInt:(jint)recordType
-               withNSString:(NSString *)recordData
-               withNSString:(NSString *)recordTitle {
-  AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(self, id_, accessHash, recordType, recordData, recordTitle);
+- (instancetype)initWithAMContactRecordTypeEnum:(AMContactRecordTypeEnum *)recordType
+                                   withNSString:(NSString *)recordData
+                                   withNSString:(NSString *)recordTitle {
+  AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(self, recordType, recordData, recordTitle);
   return self;
 }
 
-- (instancetype)init {
-  AMContactRecord_init(self);
-  return self;
-}
-
-- (jint)getId {
-  return id__;
-}
-
-- (jlong)getAccessHash {
-  return accessHash_;
-}
-
-- (jint)getRecordType {
+- (AMContactRecordTypeEnum *)getRecordType {
   return recordType_;
 }
 
@@ -71,55 +42,18 @@ jint AMContactRecord_TYPE_EMAIL_ = 1;
   return recordTitle_;
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  accessHash_ = [values getLongWithInt:2];
-  recordType_ = [values getIntWithInt:3];
-  recordData_ = [values getStringWithInt:4];
-  recordTitle_ = [values getStringWithInt:5];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:id__];
-  [writer writeLongWithInt:2 withLong:accessHash_];
-  [writer writeIntWithInt:3 withInt:recordType_];
-  [writer writeStringWithInt:4 withNSString:recordData_];
-  [writer writeStringWithInt:5 withNSString:recordTitle_];
-}
-
-- (jlong)getEngineId {
-  return id__;
-}
-
 @end
 
-AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMContactRecord_initialize();
-  return ((AMContactRecord *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContactRecord_init(), data));
-}
-
-void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMContactRecord *self, jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
-  (void) BSBserObject_init(self);
-  self->id__ = id_;
-  self->accessHash_ = accessHash;
+void AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(AMContactRecord *self, AMContactRecordTypeEnum *recordType, NSString *recordData, NSString *recordTitle) {
+  (void) NSObject_init(self);
   self->recordType_ = recordType;
   self->recordData_ = recordData;
   self->recordTitle_ = recordTitle;
 }
 
-AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) {
+AMContactRecord *new_AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(AMContactRecordTypeEnum *recordType, NSString *recordData, NSString *recordTitle) {
   AMContactRecord *self = [AMContactRecord alloc];
-  AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(self, id_, accessHash, recordType, recordData, recordTitle);
-  return self;
-}
-
-void AMContactRecord_init(AMContactRecord *self) {
-  (void) BSBserObject_init(self);
-}
-
-AMContactRecord *new_AMContactRecord_init() {
-  AMContactRecord *self = [AMContactRecord alloc];
-  AMContactRecord_init(self);
+  AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(self, recordType, recordData, recordTitle);
   return self;
 }
 

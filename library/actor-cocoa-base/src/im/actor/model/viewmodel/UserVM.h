@@ -36,6 +36,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (AMSexEnum *)getSex;
 
+- (jboolean)isBot;
+
 - (AMValueModel *)isContact;
 
 - (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;

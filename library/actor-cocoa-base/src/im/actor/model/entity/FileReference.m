@@ -7,17 +7,19 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/FileReference.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 #include "java/io/IOException.h"
+
+#define AMFileReference_RECORD_ID 10
 
 @interface AMFileReference () {
  @public
-  jlong fileId_;
-  jlong accessHash_;
   jint fileSize_;
   NSString *fileName_;
 }
@@ -27,6 +29,8 @@
 @end
 
 J2OBJC_FIELD_SETTER(AMFileReference, fileName_, NSString *)
+
+J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
 
 __attribute__((unused)) static void AMFileReference_init(AMFileReference *self);
 
@@ -38,11 +42,10 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
   return AMFileReference_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithLong:(jlong)fileId
-                    withLong:(jlong)accessHash
-                     withInt:(jint)fileSize
-                withNSString:(NSString *)fileName {
-  AMFileReference_initWithLong_withLong_withInt_withNSString_(self, fileId, accessHash, fileSize, fileName);
+- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
+                                       withNSString:(NSString *)fileName
+                                            withInt:(jint)fileSize {
+  AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(self, fileLocation, fileName, fileSize);
   return self;
 }
 
@@ -51,46 +54,58 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
   return self;
 }
 
+- (ImActorModelApiFileLocation *)getFileLocation {
+  return [self getWrapped];
+}
+
 - (jint)getFileSize {
   return fileSize_;
 }
 
 - (jlong)getFileId {
-  return fileId_;
+  return [((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId];
 }
 
 - (jlong)getAccessHash {
-  return accessHash_;
+  return [((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getAccessHash];
 }
 
 - (NSString *)getFileName {
   return fileName_;
 }
 
-- (jboolean)isEqual:(id)o {
-  if (self == o) return YES;
-  if (o == nil || [self getClass] != [o getClass]) return NO;
-  AMFileReference *that = (AMFileReference *) check_class_cast(o, [AMFileReference class]);
-  if (fileId_ != ((AMFileReference *) nil_chk(that))->fileId_) return NO;
-  return YES;
-}
-
-- (NSUInteger)hash {
-  return (jint) (fileId_ ^ (URShift64(fileId_, 32)));
-}
-
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
-  accessHash_ = [values getLongWithInt:2];
+  if (![((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
+    jlong fileId = [values getLongWithInt:1];
+    jlong accessHash = [values getLongWithInt:2];
+    [self setWrappedWithBSBserObject:new_ImActorModelApiFileLocation_initWithLong_withLong_(fileId, accessHash)];
+  }
+  [super parseWithBSBserValues:values];
   fileSize_ = [values getIntWithInt:3];
   fileName_ = [values getStringWithInt:4];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:fileId_];
-  [writer writeLongWithInt:2 withLong:accessHash_];
+  [((BSBserWriter *) nil_chk(writer)) writeBoolWithInt:5 withBoolean:YES];
   [writer writeIntWithInt:3 withInt:fileSize_];
   [writer writeStringWithInt:4 withNSString:fileName_];
+  [super serializeWithBSBserWriter:writer];
+}
+
+- (jboolean)isEqual:(id)o {
+  if (self == o) return YES;
+  if (o == nil || [self getClass] != [o getClass]) return NO;
+  AMFileReference *that = (AMFileReference *) check_class_cast(o, [AMFileReference class]);
+  if ([((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId] != [((ImActorModelApiFileLocation *) nil_chk([((AMFileReference *) nil_chk(that)) getWrapped])) getFileId]) return NO;
+  return YES;
+}
+
+- (NSUInteger)hash {
+  return (jint) ([((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId] ^ (URShift64([((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId], 32)));
+}
+
+- (ImActorModelApiFileLocation *)createInstance {
+  return new_ImActorModelApiFileLocation_init();
 }
 
 @end
@@ -100,22 +115,20 @@ AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data) {
   return ((AMFileReference *) BSBser_parseWithBSBserObject_withByteArray_(new_AMFileReference_init(), data));
 }
 
-void AMFileReference_initWithLong_withLong_withInt_withNSString_(AMFileReference *self, jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) {
-  (void) BSBserObject_init(self);
-  self->fileId_ = fileId;
-  self->accessHash_ = accessHash;
+void AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(AMFileReference *self, ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) {
+  (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMFileReference_RECORD_ID, fileLocation);
   self->fileSize_ = fileSize;
   self->fileName_ = fileName;
 }
 
-AMFileReference *new_AMFileReference_initWithLong_withLong_withInt_withNSString_(jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) {
+AMFileReference *new_AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) {
   AMFileReference *self = [AMFileReference alloc];
-  AMFileReference_initWithLong_withLong_withInt_withNSString_(self, fileId, accessHash, fileSize, fileName);
+  AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(self, fileLocation, fileName, fileSize);
   return self;
 }
 
 void AMFileReference_init(AMFileReference *self) {
-  (void) BSBserObject_init(self);
+  (void) AMWrapperEntity_initWithInt_(self, AMFileReference_RECORD_ID);
 }
 
 AMFileReference *new_AMFileReference_init() {
