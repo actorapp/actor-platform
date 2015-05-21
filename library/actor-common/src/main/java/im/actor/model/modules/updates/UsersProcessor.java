@@ -99,9 +99,10 @@ public class UsersProcessor extends BaseModule {
         if (u != null) {
 
             // Ignore if avatar not changed
-            if (equalsE(u.getAvatar(), avatar)) {
-                return;
-            }
+            // Disabled because of future-compatibility it is unable to check equality
+            // if (equalsE(u.getAvatar(), new im.actor.model.entity.Avatar(avatar))) {
+            //    return;
+            // }
 
             // Changing user avatar
             u = u.editAvatar(avatar);

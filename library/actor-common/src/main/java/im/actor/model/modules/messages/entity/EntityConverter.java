@@ -4,14 +4,10 @@
 
 package im.actor.model.modules.messages.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import im.actor.model.api.DocumentExPhoto;
 import im.actor.model.api.DocumentExVideo;
 import im.actor.model.api.DocumentMessage;
 import im.actor.model.api.FileLocation;
-import im.actor.model.api.Member;
 import im.actor.model.api.ServiceEx;
 import im.actor.model.api.ServiceExChangedAvatar;
 import im.actor.model.api.ServiceExChangedTitle;
@@ -24,7 +20,6 @@ import im.actor.model.api.TextMessage;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
-import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
@@ -69,16 +64,7 @@ public class EntityConverter {
     }
 
     public static Group convert(im.actor.model.api.Group group) {
-        return new Group(group.getId(), group.getAccessHash(), group.getTitle(), convert(group.getAvatar()),
-                convert(group.getMembers(), group.getCreatorUid()), group.getCreatorUid(), group.isMember());
-    }
-
-    public static ArrayList<GroupMember> convert(List<Member> members, int admin) {
-        ArrayList<GroupMember> res = new ArrayList<GroupMember>();
-        for (Member m : members) {
-            res.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == admin));
-        }
-        return res;
+        return new Group(group);
     }
 
     public static PeerType convert(im.actor.model.api.PeerType peerType) {
