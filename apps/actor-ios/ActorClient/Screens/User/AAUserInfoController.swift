@@ -105,7 +105,7 @@ class AAUserInfoController: AATableViewController {
             var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
             var topOffset = getNavigationBarHeight() + getStatusBarHeight()
             var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
             userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
