@@ -43,6 +43,7 @@
 		060323301ADF078200C73C0F /* NavigtionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */; };
 		060323621AE0667400C73C0F /* AAAuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323611AE0667400C73C0F /* AAAuthController.swift */; };
 		060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323651AE07D1000C73C0F /* MainSplitViewController.swift */; };
+		060E8BF81B085EDF0000FFB8 /* FileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E8BF71B085EDF0000FFB8 /* FileTypes.swift */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
 		0623AC4A1AFFB436007CD6B7 /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */; };
 		0623AC5C1B001F8E007CD6B7 /* ariel.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0623AC511B001F8E007CD6B7 /* ariel.caf */; };
@@ -715,6 +716,8 @@
 		06A16C251ACA9F5700EA96BD /* ABActionShit.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A16C241ACA9F5700EA96BD /* ABActionShit.m */; };
 		06A5B0E51AEE8A47003E134A /* iOSPhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */; };
 		06A5B8D41AEE9CB2003E134A /* CocoaHttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */; };
+		06A6FCF71B088F78000E11CE /* AABubbleBaseFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */; };
+		06A6FCF91B08ADD1000E11CE /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6FCF81B08ADD1000E11CE /* View.swift */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
@@ -812,6 +815,8 @@
 		0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigtionExtensions.swift; sourceTree = "<group>"; };
 		060323611AE0667400C73C0F /* AAAuthController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAAuthController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
+		060E8BF61B06F50A0000FFB8 /* ActorApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorApp.entitlements; sourceTree = "<group>"; };
+		060E8BF71B085EDF0000FFB8 /* FileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTypes.swift; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
 		0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
 		0623AC511B001F8E007CD6B7 /* ariel.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ariel.caf; sourceTree = "<group>"; };
@@ -2119,6 +2124,8 @@
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
 		06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
 		06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaHttpProvider.swift; sourceTree = "<group>"; };
+		06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
+		06A6FCF81B08ADD1000E11CE /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
@@ -2383,6 +2390,7 @@
 				06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */,
 				065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */,
 				05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */,
+				06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */,
 			);
 			name = Bubbles;
 			sourceTree = "<group>";
@@ -4412,6 +4420,8 @@
 				0699D4CE1ADCA1FA0005AB9B /* UIAppearance+Swift.m */,
 				0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */,
 				0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */,
+				060E8BF71B085EDF0000FFB8 /* FileTypes.swift */,
+				06A6FCF81B08ADD1000E11CE /* View.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -4419,6 +4429,7 @@
 		2537F8241A966B9D004A02E9 = {
 			isa = PBXGroup;
 			children = (
+				060E8BF61B06F50A0000FFB8 /* ActorApp.entitlements */,
 				2537F82F1A966B9D004A02E9 /* ActorClient */,
 				2537F84C1A966B9D004A02E9 /* ActorClientTests */,
 				2537F82E1A966B9D004A02E9 /* Products */,
@@ -4610,13 +4621,13 @@
 				TargetAttributes = {
 					2537F82C1A966B9D004A02E9 = {
 						CreatedOnToolsVersion = 6.1.1;
-						DevelopmentTeam = WBZ2456W25;
+						DevelopmentTeam = ZLY9DP39MF;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
 							com.apple.iCloud = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -4993,6 +5004,7 @@
 				068DE6681B061C890067A3A6 /* RequestDeleteChat.m in Sources */,
 				068DE6FF1B061C890067A3A6 /* RsaCipher.m in Sources */,
 				0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */,
+				06A6FCF71B088F78000E11CE /* AABubbleBaseFileCell.swift in Sources */,
 				068DE73E1B061C890067A3A6 /* ListEngineItem.m in Sources */,
 				068DE7FC1B061C890067A3A6 /* ReceiverActor.m in Sources */,
 				068DE7101B061C890067A3A6 /* QueueListener.m in Sources */,
@@ -5146,6 +5158,7 @@
 				068DE7231B061C890067A3A6 /* BserObject.m in Sources */,
 				068DE79D1B061C890067A3A6 /* Delete.m in Sources */,
 				068DE6E61B061C890067A3A6 /* CocoaThreadingProvider.m in Sources */,
+				06A6FCF91B08ADD1000E11CE /* View.swift in Sources */,
 				068DE6761B061C890067A3A6 /* RequestGetFileUrl.m in Sources */,
 				068DE6F11B061C890067A3A6 /* ASN1Null.m in Sources */,
 				068DE6601B061C890067A3A6 /* Phone.m in Sources */,
@@ -5368,6 +5381,7 @@
 				068DE7F21B061C890067A3A6 /* AsyncConnectionInterface.m in Sources */,
 				0699D4D41ADD9F0C0005AB9B /* BasicCell.swift in Sources */,
 				068DE7CD1B061C890067A3A6 /* MessagesProcessor.m in Sources */,
+				060E8BF81B085EDF0000FFB8 /* FileTypes.swift in Sources */,
 				068DE7491B061C890067A3A6 /* AbsContent.m in Sources */,
 				050E99BD1ACB4D410052C06B /* AANavigationController.swift in Sources */,
 				068DE8511B061C890067A3A6 /* EncodableDigest.m in Sources */,
@@ -5550,7 +5564,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business.enterprise;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5649,7 +5663,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business.enterprise;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5748,7 +5762,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.develop;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5846,7 +5860,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.develop;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -5945,7 +5959,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.llectro.preview;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -6089,7 +6103,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -6135,7 +6149,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				BUNDLE_ID = im.actor.business;
-				CODE_SIGN_ENTITLEMENTS = ActorClient/ActorClient.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
