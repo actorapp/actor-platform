@@ -9,14 +9,20 @@ import java.util.List;
 public class SchemeStruct extends SchemeContainer implements SchemeRecord {
 
     private String name;
+    private boolean isExpandable;
     private SchemeTraitRef traitRef;
 
-    public SchemeStruct(String name) {
+    public SchemeStruct(String name, boolean isExpandable) {
         this.name = name;
+        this.isExpandable = isExpandable;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isExpandable() {
+        return isExpandable;
     }
 
     public SchemeTraitRef getTraitRef() {

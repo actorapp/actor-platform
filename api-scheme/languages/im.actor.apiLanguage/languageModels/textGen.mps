@@ -1736,6 +1736,22 @@
             </node>
           </node>
         </node>
+        <node concept="3clFbH" id="2tyCW$U5eIg" role="3cqZAp" />
+        <node concept="3clFbJ" id="2tyCW$U5fJ8" role="3cqZAp">
+          <node concept="3clFbS" id="2tyCW$U5fJa" role="3clFbx">
+            <node concept="lc7rE" id="2tyCW$U5h7L" role="3cqZAp">
+              <node concept="la8eA" id="2tyCW$U5h7Z" role="lcghm">
+                <property role="lacIc" value="&quot;expandable&quot;:&quot;true&quot;," />
+              </node>
+            </node>
+          </node>
+          <node concept="2OqwBi" id="2tyCW$U5gse" role="3clFbw">
+            <node concept="117lpO" id="2tyCW$U5gbQ" role="2Oq$k0" />
+            <node concept="3TrcHB" id="2tyCW$U5h7e" role="2OqNvi">
+              <ref role="3TsBF5" to="tsp6:2tyCW$U4uvE" resolve="isExpandable" />
+            </node>
+          </node>
+        </node>
         <node concept="3clFbH" id="7UKSaUul4Vi" role="3cqZAp" />
         <node concept="lc7rE" id="2gI7A1z0C0Y" role="3cqZAp">
           <node concept="la8eA" id="2gI7A1z0C0Z" role="lcghm">
@@ -1859,6 +1875,7 @@
                 </node>
               </node>
             </node>
+            <node concept="3clFbH" id="2tyCW$U5cGC" role="3cqZAp" />
             <node concept="lc7rE" id="2tyCW$U1ky0" role="3cqZAp">
               <node concept="la8eA" id="2tyCW$U1kyQ" role="lcghm">
                 <property role="lacIc" value="}" />

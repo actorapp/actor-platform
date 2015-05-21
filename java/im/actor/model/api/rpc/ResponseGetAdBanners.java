@@ -10,6 +10,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -17,20 +18,20 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class ResponseGetAdBatters extends Response {
+public class ResponseGetAdBanners extends Response {
 
     public static final int HEADER = 0xa1;
-    public static ResponseGetAdBatters fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseGetAdBatters(), data);
+    public static ResponseGetAdBanners fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseGetAdBanners(), data);
     }
 
     private List<Banner> banners;
 
-    public ResponseGetAdBatters(List<Banner> banners) {
+    public ResponseGetAdBanners(List<Banner> banners) {
         this.banners = banners;
     }
 
-    public ResponseGetAdBatters() {
+    public ResponseGetAdBanners() {
 
     }
 
@@ -54,7 +55,7 @@ public class ResponseGetAdBatters extends Response {
 
     @Override
     public String toString() {
-        String res = "tuple GetAdBatters{";
+        String res = "tuple GetAdBanners{";
         res += "}";
         return res;
     }
