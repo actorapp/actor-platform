@@ -116,7 +116,7 @@ object Build extends sbt.Build {
       Seq(
         libraryDependencies ++= Dependencies.ilectro
       )
-  )
+  ).dependsOn(actorModels)
 
   lazy val actorSession = Project(
     id = "actor-session",
@@ -155,6 +155,7 @@ object Build extends sbt.Build {
   ).dependsOn(
       actorCodecs,
       actorCommonsApi,
+      actorIlectro,
       actorPersist,
       actorPresences,
       actorPush,
