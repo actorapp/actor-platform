@@ -61,8 +61,6 @@ class AAUserInfoCell: AATableViewCell {
 //        presenceLabel.layer.masksToBounds = false
         presenceLabel.clipsToBounds = false
         contentView.addSubview(presenceLabel)
-        
-        layer.masksToBounds = true
     }
     
     required init(coder aDecoder: NSCoder) {

@@ -125,7 +125,8 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
             var topOffset = getNavigationBarHeight() + getStatusBarHeight()
             var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
+            NSLog("topOffset: \(topOffset), maxOffset: \(maxOffset), offset: \(offset)")
             userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
@@ -472,21 +473,30 @@ extension AASettingsController: UIImagePickerControllerDelegate, PECropViewContr
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+        
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.cropImage(image)
+            })
+        })
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.cropImage(image)
+            })
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         MainAppTheme.navigation.applyStatusBar()
-        self.dismissViewControllerAnimated(true, completion: nil)
+         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
 }
