@@ -1,4 +1,4 @@
-CREATE TABLE interests (
+CREATE TABLE ilectro_interests (
   id int NOT NULL,
   name varchar(255) NOT NULL,
   parent_id int NOT NULL,
@@ -6,3 +6,6 @@ CREATE TABLE interests (
   level int NOT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE INDEX ON ilectro_interests(level);
+CREATE INDEX ON ilectro_interests(parent_id);
