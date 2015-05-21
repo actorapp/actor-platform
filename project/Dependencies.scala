@@ -30,7 +30,6 @@ object Dependencies {
     // using spray-json is deprecated
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.3.9"
-    val upickle                 = "com.lihaoyi"                   %% "upickle"                       % "0.2.8"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -107,7 +106,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
 
-  val ilectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, upickle)
+  val ilectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, playJson)
 
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
