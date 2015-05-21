@@ -83,6 +83,7 @@
 
 
                     <FrameLayout
+                        android:id="@+id/phoneDivider"
                         android:layout_width="match_parent"
                         android:layout_height="16dp"
                         android:background="@color/bg_backyard">
@@ -102,10 +103,11 @@
 
                     <LinearLayout
                         android:id="@+id/sharedContainer"
-                        android:visibility="gone"
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
@@ -114,6 +116,7 @@
                             android:text="@string/profile_shared_header"
                             android:textColor="@color/settings_main_title"
                             android:textSize="16sp" />
+
                         <LinearLayout
                             android:id="@+id/mediaContainer"
                             android:layout_width="match_parent"
@@ -132,8 +135,8 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/text_primary"
                                 android:text="@string/profile_shared_media"
+                                android:textColor="@color/text_primary"
                                 android:textSize="16sp" />
 
 
@@ -146,6 +149,7 @@
                                 android:textSize="16sp" />
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/docsContainer"
                             android:layout_width="match_parent"
@@ -178,6 +182,7 @@
                                 android:textSize="16sp" />
 
                         </LinearLayout>
+
                         <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="16dp"
@@ -196,6 +201,7 @@
                                 android:background="@drawable/card_shadow_top" />
                         </FrameLayout>
                     </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="48dp"

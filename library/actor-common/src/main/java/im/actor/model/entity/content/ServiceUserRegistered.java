@@ -14,6 +14,11 @@ public class ServiceUserRegistered extends ServiceContent {
         return Bser.parse(new ServiceUserRegistered(), data);
     }
 
+    @Override
+    protected ContentType getContentType() {
+        return ContentType.SERVICE_REGISTERED;
+    }
+
     public ServiceUserRegistered() {
         super("User registered");
     }

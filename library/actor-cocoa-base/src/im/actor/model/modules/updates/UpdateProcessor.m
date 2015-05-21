@@ -47,15 +47,14 @@
 #include "im/actor/model/api/updates/UpdateUserOnline.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
-#include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Contacts.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/modules/contacts/ContactsSyncActor.h"
-#include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/ContactsProcessor.h"
 #include "im/actor/model/modules/updates/GroupsProcessor.h"
 #include "im/actor/model/modules/updates/MessagesProcessor.h"
@@ -203,6 +202,18 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   }
 }
 
+- (void)applyDifferenceUpdateWithJavaUtilList:(id<JavaUtilList>)users
+                             withJavaUtilList:(id<JavaUtilList>)groups
+                             withJavaUtilList:(id<JavaUtilList>)updates {
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) pauseNotifications];
+  [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:NO];
+  for (ImActorModelNetworkParserUpdate * __strong u in nil_chk(updates)) {
+    [self processUpdateWithImActorModelNetworkParserUpdate:u];
+  }
+  [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:YES];
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) resumeNotifications];
+}
+
 - (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
   if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserNameChanged class]]) {
@@ -282,7 +293,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupAvatarChanged class]]) {
     ImActorModelApiUpdatesUpdateGroupAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateGroupAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupAvatarChanged class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withAMAvatar:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([avatarChanged getAvatar]) withLong:[avatarChanged getDate] withBoolean:NO];
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withImActorModelApiAvatar:[avatarChanged getAvatar] withLong:[avatarChanged getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
     ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);

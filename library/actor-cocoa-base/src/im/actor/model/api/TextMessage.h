@@ -12,6 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 @class ImActorModelApiTextMessageEx;
+@protocol JavaUtilList;
 
 @interface ImActorModelApiTextMessage : ImActorModelApiMessage
 
@@ -20,11 +21,14 @@
 - (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)text
+                withJavaUtilList:(id<JavaUtilList>)mentions
 withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext;
 
 - (ImActorModelApiTextMessageEx *)getExt;
 
 - (jint)getHeader;
+
+- (id<JavaUtilList>)getMentions;
 
 - (NSString *)getText;
 
@@ -38,9 +42,9 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiTextMessage)
 
-FOUNDATION_EXPORT void ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(ImActorModelApiTextMessage *self, NSString *text, ImActorModelApiTextMessageEx *ext);
+FOUNDATION_EXPORT void ImActorModelApiTextMessage_initWithNSString_withJavaUtilList_withImActorModelApiTextMessageEx_(ImActorModelApiTextMessage *self, NSString *text, id<JavaUtilList> mentions, ImActorModelApiTextMessageEx *ext);
 
-FOUNDATION_EXPORT ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(NSString *text, ImActorModelApiTextMessageEx *ext) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_withJavaUtilList_withImActorModelApiTextMessageEx_(NSString *text, id<JavaUtilList> mentions, ImActorModelApiTextMessageEx *ext) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiTextMessage_init(ImActorModelApiTextMessage *self);
 

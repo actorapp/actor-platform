@@ -124,17 +124,17 @@ public class ManagedConnection implements Connection {
 //            Log.d(TAG, "Local SHA256: " + CryptoUtils.hex(localSha256));
             throw new IOException("SHA 256 is incorrect");
         }
-        if (protoVersion != 1) {
-            Log.w(TAG, "Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
-            throw new IOException("Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
+        if (protoVersion != mtprotoVersion) {
+            Log.w(TAG, "Incorrect Proto Version, expected: " + mtprotoVersion + ", got " + protoVersion + ";");
+            throw new IOException("Incorrect Proto Version, expected: " + mtprotoVersion + ", got " + protoVersion + ";");
         }
-        if (apiMajor != 1) {
-            Log.w(TAG, "Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
-            throw new IOException("Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
+        if (apiMajor != apiMajorVersion) {
+            Log.w(TAG, "Incorrect Api Major Version, expected: " + apiMajor + ", got " + apiMajor + ";");
+            throw new IOException("Incorrect Api Major Version, expected: " + apiMajor + ", got " + apiMajor + ";");
         }
-        if (apiMinor != 0) {
-            Log.w(TAG, "Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
-            throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
+        if (apiMinor != apiMinorVersion) {
+            Log.w(TAG, "Incorrect Api Minor Version, expected: " + apiMinor + ", got " + apiMinor + ";");
+            throw new IOException("Incorrect Api Minor Version, expected: " + apiMinor + ", got " + apiMinor + ";");
         }
 
         // Log.d(TAG, "Handshake successful");

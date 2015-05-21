@@ -10,6 +10,7 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiFileLocation () {
@@ -44,11 +45,21 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {

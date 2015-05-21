@@ -16,7 +16,7 @@ __attribute__((unused)) static AMPeerTypeEnum *new_AMPeerTypeEnum_initWithNSStri
 
 J2OBJC_INITIALIZED_DEFN(AMPeerTypeEnum)
 
-AMPeerTypeEnum *AMPeerTypeEnum_values_[3];
+AMPeerTypeEnum *AMPeerTypeEnum_values_[2];
 
 @implementation AMPeerTypeEnum
 
@@ -28,7 +28,7 @@ AMPeerTypeEnum *AMPeerTypeEnum_values_[3];
 
 IOSObjectArray *AMPeerTypeEnum_values() {
   AMPeerTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:AMPeerTypeEnum_values_ count:3 type:AMPeerTypeEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:AMPeerTypeEnum_values_ count:2 type:AMPeerTypeEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
@@ -41,7 +41,7 @@ IOSObjectArray *AMPeerTypeEnum_values() {
 
 AMPeerTypeEnum *AMPeerTypeEnum_valueOfWithNSString_(NSString *name) {
   AMPeerTypeEnum_initialize();
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 2; i++) {
     AMPeerTypeEnum *e = AMPeerTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -59,7 +59,6 @@ AMPeerTypeEnum *AMPeerTypeEnum_valueOfWithNSString_(NSString *name) {
   if (self == [AMPeerTypeEnum class]) {
     AMPeerTypeEnum_PRIVATE = new_AMPeerTypeEnum_initWithNSString_withInt_(@"PRIVATE", 0);
     AMPeerTypeEnum_GROUP = new_AMPeerTypeEnum_initWithNSString_withInt_(@"GROUP", 1);
-    AMPeerTypeEnum_EMAIL = new_AMPeerTypeEnum_initWithNSString_withInt_(@"EMAIL", 2);
     J2OBJC_SET_INITIALIZED(AMPeerTypeEnum)
   }
 }

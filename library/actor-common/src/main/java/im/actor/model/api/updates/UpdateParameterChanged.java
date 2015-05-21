@@ -10,6 +10,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -64,6 +65,8 @@ public class UpdateParameterChanged extends Update {
     @Override
     public String toString() {
         String res = "update ParameterChanged{";
+        res += "key=" + this.key;
+        res += ", value=" + this.value;
         res += "}";
         return res;
     }

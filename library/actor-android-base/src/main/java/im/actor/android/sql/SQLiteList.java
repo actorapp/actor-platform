@@ -50,7 +50,7 @@ public class SQLiteList implements ListStorageDisplayEx {
     public void updateOrAdd(ListEngineRecord valueContainer) {
         checkTable();
 
-        Object[] args = new Object[]{valueContainer.getKey(), valueContainer.getQuery(), valueContainer.getOrder(), valueContainer.getData()};
+        Object[] args = new Object[]{valueContainer.getKey(), valueContainer.getQuery() != null ? valueContainer.getQuery().toLowerCase() : null, valueContainer.getOrder(), valueContainer.getData()};
         database.execSQL("REPLACE INTO \"" + tableName + "\" (\"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\") VALUES (?,?,?,?)", args);
     }
 
@@ -62,7 +62,7 @@ public class SQLiteList implements ListStorageDisplayEx {
 
         try {
             for (ListEngineRecord record : items) {
-                Object[] args = new Object[]{record.getKey(), record.getQuery(), record.getOrder(), record.getData()};
+                Object[] args = new Object[]{record.getKey(), record.getQuery() != null ? record.getQuery().toLowerCase() : null, record.getOrder(), record.getData()};
                 database.execSQL("REPLACE INTO \"" + tableName + "\" (\"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\") VALUES (?,?,?,?)", args);
             }
             database.setTransactionSuccessful();
@@ -240,9 +240,9 @@ public class SQLiteList implements ListStorageDisplayEx {
 
             ArrayList<ListEngineRecord> ret = new ArrayList<ListEngineRecord>();
             ret.addAll(loadBackward(centerSortKey, limit));
-            if(centerItem!=null)ret.add(centerItem);
+            if (centerItem != null) ret.add(centerItem);
             ret.addAll(loadForward(centerSortKey, limit));
-            return  ret;
+            return ret;
         }
 
 
