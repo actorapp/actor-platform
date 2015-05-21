@@ -1,9 +1,15 @@
 package im.actor.server.ilectro
 
+import scala.concurrent.Future
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorFlowMaterializer
 import com.typesafe.config.ConfigFactory
+import slick.driver.PostgresDriver.api._
+
+import im.actor.server.models.ilectro.Interest
+import im.actor.server.persist
 
 class ILectro(implicit system: ActorSystem) {
   private implicit val ec = system.dispatcher
@@ -15,4 +21,17 @@ class ILectro(implicit system: ActorSystem) {
   val users = new Users()
   val lists = new Lists()
 
+  def getAndPersistInterests()(implicit db: Database): Future[Int] = {
+    lists.getInterests() flatMap {
+      case Right(interests) ⇒ persistInterests(interests)
+      case Left(e) ⇒
+        throw new Exception(s"Failed to load interests: ${e}")
+    }
+  }
+
+  def persistInterests(interests: List[Interest])(implicit db: Database): Future[Int] = {
+    db.run {
+      persist.ilectro.Interest.createOrUpdate(interests)
+    } map (_.sum)
+  }
 }
