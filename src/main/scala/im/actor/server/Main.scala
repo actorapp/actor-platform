@@ -93,6 +93,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val ilectro = new ILectro
+    ilectro.getAndPersistInterests()
 
     val mediator = DistributedPubSubExtension(system).mediator
 
