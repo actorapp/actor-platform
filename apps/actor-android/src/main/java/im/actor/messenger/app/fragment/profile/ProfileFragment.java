@@ -81,10 +81,13 @@ public class ProfileFragment extends BaseFragment {
         bind(lastSeen, lastSeen, user);
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
+        View phonesDivider = res.findViewById(R.id.phoneDivider);
         if (user.getPhones().get().size() == 0) {
             contactsContainer.setVisibility(View.GONE);
+            phonesDivider.setVisibility(View.GONE);
         } else {
             contactsContainer.setVisibility(View.VISIBLE);
+            phonesDivider.setVisibility(View.VISIBLE);
             ArrayList<UserPhone> phones = user.getPhones().get();
             for (int i = 0; i < phones.size(); i++) {
                 final UserPhone record = phones.get(i);
@@ -170,12 +173,17 @@ public class ProfileFragment extends BaseFragment {
             }
         }
 
-        res.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
-            }
-        });
+        if (user.isBot()) {
+            res.findViewById(R.id.profileAction).setVisibility(View.GONE);
+        } else {
+            res.findViewById(R.id.profileAction).setVisibility(View.VISIBLE);
+            res.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
+                }
+            });
+        }
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
 
