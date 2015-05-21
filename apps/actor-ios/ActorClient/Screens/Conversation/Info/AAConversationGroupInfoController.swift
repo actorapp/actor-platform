@@ -123,7 +123,7 @@ class AAConversationGroupInfoController: AATableViewController {
             var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
             var topOffset = getNavigationBarHeight() + getStatusBarHeight()
             var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
             groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
@@ -460,15 +460,17 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate, PE
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            self.cropImage(image)
+        })
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            self.cropImage(image)
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
