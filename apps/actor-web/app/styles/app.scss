@@ -1,175 +1,67 @@
-@charset "UTF-8";
-@import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&subset=latin,cyrillic);
+@charset 'UTF-8';
 @import 'variables';
 
 html {
+  height: 100%;
+
   background-color: $bodyColor;
 }
 body {
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  padding: 24px;
-  transition: padding 250ms cubic-bezier(.25,.8,.25,1);
-  text-rendering: optimizeLegibility;
-  background-color: $bodyColor;
-  background-image: linear-gradient(0 ,$baseColor 0%, $baseColor 100%);
-  background-repeat: no-repeat;
-  background-size: 100% 300px;
-  @media (max-height: 600px) {
-    padding: 0;
-  }
-  @media (max-width: 1024px) {
-    padding: 0;
-  }
-  .app {
-      transition: width 250ms cubic-bezier(.25,.8,.25,1);
-  }
-  &.fullscreen {
-    padding: 0;
-    .app {
-      width: 100%;
-      border-radius: 0;
-    }
-  }
-}
+  font-family: Lato, 'Helvetica Neue', sans-serif;
 
-a {
-  color: $baseColor;
-  font-weight: 500;
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
+  box-sizing: border-box;
+  height: 100%;
+
+  background-color: $bodyColor;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
 }
 
 .splash-screen {
-  position: absolute;
-  left: 0;
+  position: fixed;
+  z-index: 1000;
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000;
+  left: 0;
+
   background-color: $baseColor;
-  background-repeat: no-repeat;
-  background-size: 100% 300px;
   img {
-    width: 96px;
-    height: auto;
+    width: 100px;
+    height: 100px;
   }
 }
 
-md-toolbar.md-default-theme {
-  min-height: 56px;
-  border-bottom: 1px solid rgb(239,239,239);
-  background-color: rgb(250,250,250);
-  box-shadow: none;
-  md-icon {
-    color: rgb(160,160,160);
-  }
-  .md-toolbar-tools {
-    font-size: 16px;
-    height: 56px;
-    max-height: 56px;
-    color: rgb(160,160,160);
-    & > .md-button:first-child {
-      margin-right: 8px;
-      margin-left: -4px;
-    }
-    & > .md-button {
-      margin-right: -4px;
-      margin-left: 8px;
-    }
-  }
+// remove paddings and margins from flexbox grid
+.row {
+  margin: 0;
+}
+[class*='col'] {
+  padding: 0;
 }
 
-.md-button {
-  &.md-primary {
-    font-size: 14px;
-    background-color: $baseColor !important;
-    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26) !important;
-    &:hover {
-      box-shadow: 0 8px 17px rgba(0, 0, 0, .2) !important;
-    }
-  }
-  &.md-wide {
-    width: 100%;
-  }
-  &.md-icon-button {
-    font-size: 12px;
-    text-transform: inherit;
-    color: inherit !important;
-    md-icon {
-      vertical-align: middle;
-    }
-    @media (max-width: 350px) {
-      span {
-        display: none;
-      }
-    }
-    span {
-      padding-right: 4px;
-      line-height: 24px;
-      vertical-align: middle;
-    }
-  }
-}
-.md-default-theme {
-  .md-input-focused {
-    label {
-      color: $baseColor !important;
-    }
-    .md-input {
-      border-color: $baseColor !important;
-    }
-  }
-}
-md-list {
-  display: block;
-}
-md-list-item {
-  display: flex;
-  padding: 0 16px;
-  text-overflow: ellipsis;
-  justify-content: flex-start;
-  flex: 1;
-  align-items: flex-start;
-}
-.md-sidenav-left {
-  border-radius: 4px 0 0 4px;
-  @media (max-width: 1024px) {
-    border-radius: 0;
-  }
-  @media (max-height: 600px) {
-    border-radius: 0;
-
-  }
+//helper classes
+.hide {
+  display: none;
+  visibility: hidden;
 }
 
-.md-subheader {
-  padding-right: 16px;
-  margin-right: 0;
-  &:after {
-    right: 0 !important;
-  }
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
 }
 
-
-.status {
-  display: inline-block;
-  height: 16px;
-  width: 16px;
-  fill: rgb(148,148,148);
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-
-  &--penging {}
-  &--sent {}
-  &--received {}
-  &--read {
-      fill: lighten($baseColor,25);
-  }
-  &--error {
-      fill: #962e00;
-  }
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
 }
