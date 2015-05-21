@@ -18,7 +18,7 @@ class ILectro(implicit system: ActorSystem) {
   private implicit val meterializer = ActorFlowMaterializer()
   private implicit val http = Http()
 
-  private implicit val config = ILectroConfig(ConfigFactory.load().getConfig("actor-ilectro-lib"))
+  private implicit val config = ILectroConfig(ConfigFactory.load().getConfig("actor-server.ilectro"))
 
   val users = new Users()
   val lists = new Lists()
