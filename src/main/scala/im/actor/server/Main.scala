@@ -18,12 +18,16 @@ import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager, MessagingServiceImpl }
+import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.llectro.IlectroServiceImpl
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
+import im.actor.server.ilectro.ILectro
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
@@ -88,6 +92,8 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
+    val ilectro = new ILectro
+
     val mediator = DistributedPubSubExtension(system).mediator
 
     val messagingService = MessagingServiceImpl(mediator)
@@ -105,7 +111,8 @@ class Main extends Bootable with DbInit with FlywayInit {
       new FilesServiceImpl(s3BucketName),
       new ConfigsServiceImpl,
       new PushServiceImpl,
-      new ProfileServiceImpl(s3BucketName)
+      new ProfileServiceImpl(s3BucketName),
+      new IlectroServiceImpl(ilectro)
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
