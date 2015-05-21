@@ -16,20 +16,16 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
-import im.actor.model.android.providers.AndroidNotifications;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
-import im.actor.model.entity.Peer;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 18.09.14.
@@ -74,24 +70,24 @@ public class AvatarView extends SimpleDraweeView {
     }
 
     public void bind(Dialog dialog) {
-        bind(dialog.getDialogAvatar(), dialog.getDialogTitle(), dialog.getPeer().getPeerId());
+        bind(dialog.getDialogAvatar(), dialog.getDialogTitle(), dialog.getPeer().getPeerId(), false);
     }
 
     public void bind(Contact contact) {
-        bind(contact.getAvatar(), contact.getName(), contact.getUid());
+        bind(contact.getAvatar(), contact.getName(), contact.getUid(), false);
     }
 
-    public void bind(UserVM user) {
-        bind(user.getAvatar().get(), user.getName().get(), user.getId());
+    public void bind(UserVM user, boolean forceNewTextSize) {
+        bind(user.getAvatar().get(), user.getName().get(), user.getId(), forceNewTextSize);
     }
 
     public void bind(GroupVM group) {
-        bind(group.getAvatar().get(), group.getName().get(), group.getId());
+        bind(group.getAvatar().get(), group.getName().get(), group.getId(), false);
     }
 
 
-    public void bind(Avatar avatar, String title, int id) {
-        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext()));
+    public void bind(Avatar avatar, String title, int id, boolean forceNewTextSize) {
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
 
         // Same avatar
         if (avatar != null && avatar.getSmallImage() != null
