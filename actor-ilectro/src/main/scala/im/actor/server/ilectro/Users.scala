@@ -1,7 +1,5 @@
 package im.actor.server.ilectro
 
-import java.util.UUID
-
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -10,33 +8,38 @@ import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model.HttpMethods.{ DELETE, GET, POST }
 import akka.http.scaladsl.model._
 import akka.stream.ActorFlowMaterializer
-import upickle._
+import com.eaio.uuid.UUID
+import play.api.libs.json._
 
 import im.actor.server.ilectro.Common._
 import im.actor.server.ilectro.results._
+import im.actor.server.models.ilectro.{ Interest, ILectroUser }
 
-private[ilectro] class Users(implicit
-  system: ActorSystem,
-                             executionContext: ExecutionContext,
-                             materializer:     ActorFlowMaterializer,
-                             http:             HttpExt,
-                             config:           ILectroConfig) {
+private[ilectro] class Users(
+  implicit
+  system:           ActorSystem,
+  executionContext: ExecutionContext,
+  materializer:     ActorFlowMaterializer,
+  http:             HttpExt,
+  config:           ILectroConfig
+) {
+  import JsonFormatters._
 
   private implicit val authToken = config.authToken
   private val baseUrl = config.baseUrl
 
   private val resourceName = "users"
 
-  def create(name: String): Future[Either[Errors, User]] = {
-    val user = User(UUID.randomUUID(), name)
+  def create(dbUserId: Int, name: String): Future[Either[Errors, ILectroUser]] = {
+    val user = ILectroUser(dbUserId, (new UUID).toString, name)
     processRequest(
       HttpRequest(
         method = POST,
         uri = s"$baseUrl/$resourceName",
-        entity = write(Data(user))
+        entity = Json.stringify(Json.toJson(user))
       ),
-      success = (entity) ⇒ Future(Right(user)),
-      failure = defaultFailure
+      onSuccess = (entity) ⇒ Future(Right(user)),
+      onFailure = defaultFailure
     )
   }
 
@@ -45,12 +48,11 @@ private[ilectro] class Users(implicit
       method = GET,
       uri = s"$baseUrl/$resourceName/$userUuid/banners"
     ),
-    success = (entity) ⇒
+    onSuccess = (entity) ⇒
       entity.toStrict(5.seconds).map { e ⇒
-        val body = e.data.decodeString("utf-8")
-        Right(read[Banner](body))
+        Right(Json.parse(e.data.decodeString("utf-8")).validate[Banner].asOpt.get)
       },
-    failure = defaultFailure
+    onFailure = defaultFailure
   )
 
   def getInterests(userUuid: UUID): Future[Either[Errors, List[Interest]]] = processRequest(
@@ -58,12 +60,11 @@ private[ilectro] class Users(implicit
       method = GET,
       uri = s"$baseUrl/$resourceName/$userUuid/interests"
     ),
-    success = (entity) ⇒
+    onSuccess = (entity) ⇒
       entity.toStrict(5.seconds).map { e ⇒
-        val body = e.data.decodeString("utf-8")
-        Right(read[List[Interest]](body))
+        Right(Json.parse(e.data.decodeString("utf-8")).validate[List[Interest]].asOpt.get)
       },
-    failure = defaultFailure
+    onFailure = defaultFailure
   )
 
   def deleteInterest(userUuid: UUID, interestId: Int): Future[Either[Errors, Unit]] = processRequest(
@@ -71,8 +72,8 @@ private[ilectro] class Users(implicit
       method = DELETE,
       uri = s"$baseUrl/$resourceName/$userUuid/interests/$interestId"
     ),
-    success = (entity) ⇒ Future(Right(())),
-    failure = defaultFailure
+    onSuccess = (entity) ⇒ Future(Right(())),
+    onFailure = defaultFailure
   )
 
   def addInterest(userUuid: UUID, interestIds: List[Int]): Future[Either[Errors, Unit]] = {
@@ -81,10 +82,10 @@ private[ilectro] class Users(implicit
       HttpRequest(
         method = POST,
         uri = s"$baseUrl/$resourceName/$userUuid/interests",
-        entity = write(Data(interests))
+        entity = Json.stringify(Json.toJson(interests))
       ),
-      success = (entity) ⇒ Future(Right(())),
-      failure = defaultFailure
+      onSuccess = (entity) ⇒ Future(Right(())),
+      onFailure = defaultFailure
     )
   }
 
