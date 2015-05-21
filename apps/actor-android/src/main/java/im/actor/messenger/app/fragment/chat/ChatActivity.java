@@ -58,10 +58,12 @@ import im.actor.model.Messenger;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.entity.User;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
+import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
@@ -113,6 +115,7 @@ public class ChatActivity extends BaseActivity{
     private String mentionSearchString = "";
     private int mentionStart;
     private boolean isEarse = false;
+    Bypass bypass = new Bypass();
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -181,14 +184,12 @@ public class ChatActivity extends BaseActivity{
 
         messageBody = (EditText) findViewById(R.id.et_message);
         messageBody.setMovementMethod(LinkMovementMethod.getInstance());
-
         messageBody.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
-
                 isEarse = after<count;
             }
 
@@ -208,8 +209,8 @@ public class ChatActivity extends BaseActivity{
                     }
 
 
+                    mentionStart = firstPeace.lastIndexOf("@");
                     if(s.length()!=count){
-                        mentionStart = firstPeace.lastIndexOf("@");
                         if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
                             mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
                         }else{
@@ -455,7 +456,7 @@ public class ChatActivity extends BaseActivity{
         isTypingDisabled = true;
         String text = messenger().loadDraft(peer);
         if (text != null) {
-            messageBody.setText((emoji().processEmojiCompatMutable(text, SmileProcessor.CONFIGURATION_BUBBLES)));
+            messageBody.setText((emoji().processEmojiCompatMutable(bypass.markdownToSpannable(text), SmileProcessor.CONFIGURATION_BUBBLES)));
         } else {
             messageBody.setText("");
         }
@@ -463,9 +464,15 @@ public class ChatActivity extends BaseActivity{
     }
 
     private void sendMessage() {
-        final String text = messageBody.getText().toString().trim();
+
+        Editable text = messageBody.getText();
+        convertUrlspansToMarkdownLinks(text);
+
+        final String textString = text.toString().trim();
         messageBody.setText("");
-        if (text.length() == 0) {
+        mentionSearchString = "";
+
+        if (textString.length() == 0) {
             return;
         }
 
@@ -475,8 +482,28 @@ public class ChatActivity extends BaseActivity{
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, text);
+        messenger().sendMessage(peer, textString);
         messenger().trackTextSend(peer);
+    }
+
+    private void convertUrlspansToMarkdownLinks(Editable text) {
+        int start;
+        int end;
+        String url;
+        String urlTitle;
+        String mdUrl;
+        URLSpan[] spans = messageBody.getText().getSpans(0, text.length(), URLSpan.class);
+        for(URLSpan span:spans){
+            start = text.getSpanStart(span);
+            end = text.getSpanEnd(span);
+            if(start!=-1 && end<=text.length()){
+                url =span.getURL();
+                urlTitle = text.toString().substring(start, end);
+                if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@"))urlTitle = new String("@").concat(urlTitle);
+                mdUrl = new String("[").concat(urlTitle).concat("](").concat(url).concat(")");
+                text.replace(start, end, mdUrl);
+            }
+        }
     }
 
     @Override
@@ -593,22 +620,18 @@ public class ChatActivity extends BaseActivity{
 
             @Override
             public void onClicked(GroupMember item) {
-                String name = users().get(item.getUid()).getName().get();
+                UserVM user = users().get(item.getUid());
+                String name = user.getName().get();
+                int id = user.getId();
 
-                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
+                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
 
                     //String mention = new String("<a href=\"people://").concat(name).concat(" \">").concat("@").concat(name).concat("</a>");
-                    String mention = new String("@").concat(name).concat(" ");
-                    /*
-                    SpannableStringBuilder builder = new SpannableStringBuilder();
-                    builder.append(mention);
-                    URLSpan urlSpan = new URLSpan(mention);
-                    builder.setSpan(urlSpan, 0, builder.length(),
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    */
-                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, mention));
+                    String mention = new String("[").concat("@").concat(name).concat("](people://").concat(Integer.toString(id)).concat(") ");
+                    CharSequence spannedMention = bypass.markdownToSpannable(mention);
+                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention));
 
-                    messageBody.setSelection(mentionStart + mention.length());
+                    messageBody.setSelection(mentionStart, mentionStart + spannedMention.length() - 1 );
                 }
                 hideMentions();
             }
@@ -756,6 +779,9 @@ public class ChatActivity extends BaseActivity{
     public void onPause() {
         super.onPause();
         emojiKeyboard.destroy();
-        messenger.saveDraft(peer, messageBody.getText().toString());
+        Editable text = (Editable) messageBody.getText().subSequence(0, messageBody.getText().length());
+
+        convertUrlspansToMarkdownLinks(text);
+        messenger.saveDraft(peer, text.toString());
     }
 }

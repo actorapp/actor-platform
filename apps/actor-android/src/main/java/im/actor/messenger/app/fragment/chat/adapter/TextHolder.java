@@ -1,9 +1,13 @@
 package im.actor.messenger.app.fragment.chat.adapter;
 
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -44,12 +48,14 @@ public class TextHolder extends MessageHolder {
     private int errorColor;
 
     private SmilesListener smilesListener;
+    Bypass bypass = new Bypass();
 
     public TextHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
 
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
+        text.setMovementMethod(LinkMovementMethod.getInstance());
         text.setTypeface(Fonts.regular());
         time = (TextView) itemView.findViewById(R.id.tv_time);
         time.setTypeface(Fonts.regular());
@@ -83,7 +89,7 @@ public class TextHolder extends MessageHolder {
 
 
         CharSequence spannedText;
-        Bypass bypass = new Bypass();
+
         if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
             String name;
             UserVM userModel = users().get(message.getSenderId());
@@ -104,6 +110,32 @@ public class TextHolder extends MessageHolder {
             spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText());
             //spannedText = ((TextContent) message.getContent()).getText();
         }
+
+
+
+        Editable spannedTextEditable = (Editable) spannedText;
+        URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
+        if(urlSpans.length>0){
+            int start;
+            int end;
+            int prevEnd = -1;
+            Spannable toLinkyfy;
+            for (int i = 0; i < urlSpans.length; i++) {
+                start = spannedTextEditable.getSpanStart(urlSpans[i]);
+                end = spannedTextEditable.getSpanEnd(urlSpans[i]);
+                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd + 1, start);
+                Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+                spannedTextEditable.replace(prevEnd + 1, start, toLinkyfy);
+                prevEnd = end;
+            }
+            toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
+            Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+            spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
+            spannedText = spannedTextEditable;
+        }else{
+            Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+        }
+
         if (emoji().containsEmoji(spannedText)) {
             if (emoji().isLoaded()) {
                 spannedText = emoji().processEmojiCompatMutable(spannedText, SmileProcessor.CONFIGURATION_BUBBLES);
@@ -122,11 +154,8 @@ public class TextHolder extends MessageHolder {
                 emoji().registerListener(smilesListener);
             }
         }
-        text.setText(spannedText);
-        text.setMovementMethod(LinkMovementMethod.getInstance());
 
-        Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS |
-                Linkify.WEB_URLS);
+        text.setText(spannedText);
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
@@ -166,4 +195,5 @@ public class TextHolder extends MessageHolder {
         super.unbind();
         emoji().unregisterListener(smilesListener);
     }
+
 }

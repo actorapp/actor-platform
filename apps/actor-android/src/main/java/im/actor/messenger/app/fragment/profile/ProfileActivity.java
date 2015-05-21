@@ -35,6 +35,7 @@ public class ProfileActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(null);
 
         uid = getIntent().getIntExtra(Intents.EXTRA_UID, 0);
+        if(uid == 0) uid = Integer.parseInt(getIntent().getData().getHost());
 
         if (savedInstanceState == null) {
             showFragment(ProfileFragment.create(uid), false, false);
