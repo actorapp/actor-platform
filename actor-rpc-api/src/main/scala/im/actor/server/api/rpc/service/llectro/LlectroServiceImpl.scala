@@ -16,7 +16,9 @@ import im.actor.server.persist
 class LlectroServiceImpl(implicit db: Database, actorSystem: ActorSystem) extends LlectroService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleNotifyAddView(bannerId: Int, viewDuration: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = ???
+  override def jhandleNotifyAddView(bannerId: Int, viewDuration: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    Future.successful(Error(CommonErrors.UnsupportedRequest))
+  }
 
   override def jhandleDisableInterests(interests: Vector[Int], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = ???
 
