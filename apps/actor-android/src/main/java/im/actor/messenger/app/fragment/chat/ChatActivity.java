@@ -185,18 +185,25 @@ public class ChatActivity extends BaseActivity{
         messageBody = (EditText) findViewById(R.id.et_message);
         messageBody.setMovementMethod(LinkMovementMethod.getInstance());
         messageBody.addTextChangedListener(new TextWatcher() {
+            boolean mentionEarse;
+            int mentionEarseStart;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
                 isEarse = after<count;
+
+                mentionEarse = (isEarse && s.charAt(start) == '\u200b');
+                if(mentionEarse)mentionEarseStart = start;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 String firstPeace  = str.substring(0, start + count);
+
 
                 if(peer.getPeerType()==PeerType.GROUP){
 
@@ -228,9 +235,6 @@ public class ChatActivity extends BaseActivity{
                 }
 
 
-
-
-
             }
 
             @Override
@@ -242,6 +246,20 @@ public class ChatActivity extends BaseActivity{
                     sendButton.setTint(getResources().getColor(R.color.conv_send_disabled));
                     sendButton.setEnabled(false);
                 }
+
+                if(!mentionEarse){
+                    int mentionEscape = s.toString().indexOf(" \u200b");
+                    if(mentionEscape!=-1){
+                        s.replace(mentionEscape, mentionEscape + 2, "\u200b");
+                        messageBody.setSelection(mentionEscape+2);
+                    }
+                }else if(mentionEarseStart>1 && s.charAt(mentionEarseStart-1)!=' '){
+                    s.replace(mentionEarseStart-1, mentionEarseStart, "\u200b");
+                    messageBody.setSelection(mentionEarseStart);
+                }else{
+                    s.replace(mentionEarseStart-1, mentionEarseStart-1, "");
+                }
+
             }
         });
         messageBody.setOnKeyListener(new View.OnKeyListener() {
