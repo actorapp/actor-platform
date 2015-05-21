@@ -5,9 +5,7 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorFlowMaterializer
 import com.typesafe.config.ConfigFactory
 
-class ILectro {
-
-  private implicit val system = ActorSystem("actor-ilectro")
+class ILectro(implicit system: ActorSystem) {
   private implicit val ec = system.dispatcher
   private implicit val meterializer = ActorFlowMaterializer()
   private implicit val http = Http()
