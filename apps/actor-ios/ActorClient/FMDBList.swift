@@ -222,12 +222,20 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     func loadBackwardWithJavaLangLong(sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
         checkTable();
         
-        fatalError("Not implemented")
+        return JavaUtilArrayList()
+//         fatalError("Not implemented")
     }
     
     func loadBackwardWithNSString(query: String!, withJavaLangLong sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
         checkTable();
         
         fatalError("Not implemented")
+    }
+    
+    func loadCenterWithJavaLangLong(centerSortKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
+        checkTable();
+        
+        var forward = loadForwardWithJavaLangLong(centerSortKey, withInt: limit)
+        return forward
     }
 }
