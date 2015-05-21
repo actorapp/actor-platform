@@ -17,6 +17,8 @@
 
 - (instancetype)init;
 
++ (jint)growSizeWithInt:(jint)currentSize;
+
 - (IOSByteArray *)toByteArray;
 
 - (void)writeASN1LengthWithInt:(jint)length;
@@ -54,6 +56,8 @@ J2OBJC_EMPTY_STATIC_INIT(BSDataOutput)
 FOUNDATION_EXPORT void BSDataOutput_init(BSDataOutput *self);
 
 FOUNDATION_EXPORT BSDataOutput *new_BSDataOutput_init() NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT jint BSDataOutput_growSizeWithInt_(jint currentSize);
 
 J2OBJC_TYPE_LITERAL_HEADER(BSDataOutput)
 
