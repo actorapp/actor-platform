@@ -8,9 +8,12 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorFlowMaterializer
 import com.typesafe.config.ConfigFactory
+import slick.dbio
+import slick.dbio.Effect.{ Transactional, Write }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.models.ilectro.Interest
+import im.actor.server.ilectro.results.{ Banner, Errors }
+import im.actor.server.models.ilectro.{ ILectroUser, Interest }
 import im.actor.server.persist
 
 class ILectro(implicit system: ActorSystem) {
@@ -20,10 +23,33 @@ class ILectro(implicit system: ActorSystem) {
 
   private implicit val config = ILectroConfig(ConfigFactory.load().getConfig("actor-server.ilectro"))
 
-  val users = new Users()
-  val lists = new Lists()
+  private val users = new Users()
+  private val lists = new Lists()
 
-  def getBanners(userUuid: UUID) = {
+  def deleteInterest(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Vector[Either[Errors, Unit]], NoStream, Write with Effect with Transactional] = {
+    DBIO.sequence(
+      for {
+        result ← interests.map { interest ⇒
+          (for {
+            _ ← persist.ilectro.UserInterest.delete(user.userId, interest)
+            resp ← DBIO.from(users.deleteInterest(user.uuid, interest))
+          } yield resp).transactionally
+        }
+      } yield result
+    )
+  }
+
+  def addInterests(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Right[Errors, Unit], NoStream, Effect with Effect with Write with Transactional] = {
+    (for {
+      _ ← DBIO.sequence(interests.map(id ⇒ persist.ilectro.UserInterest.create(user.userId, id)))
+      resp ← DBIO.from(users.addInterests(user.uuid, interests.toList)) flatMap {
+        case Left(e)      ⇒ DBIO.failed(new Exception(e.errors))
+        case r @ Right(_) ⇒ DBIO.successful(r)
+      }
+    } yield resp).transactionally
+  }
+
+  def getBanners(userUuid: UUID): Future[Banner] = {
     users.getBanners(userUuid) map {
       case Right(banners) ⇒ banners
       case Left(e)        ⇒ throw new Exception(s"Failed to get banners: $e")
