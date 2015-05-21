@@ -86,7 +86,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
 
     public User editName(String name) {
         im.actor.model.api.User w = getWrapped();
-        User res = new User(new im.actor.model.api.User(
+        im.actor.model.api.User res = new im.actor.model.api.User(
                 w.getId(),
                 w.getAccessHash(),
                 name,
@@ -94,14 +94,14 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 w.getSex(),
                 w.getAvatar(),
                 w.getContactInfo(),
-                w.isBot()));
+                w.isBot());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return res;
+        return new User(res);
     }
 
     public User editLocalName(String localName) {
         im.actor.model.api.User w = getWrapped();
-        User res = new User(new im.actor.model.api.User(
+        im.actor.model.api.User res = new im.actor.model.api.User(
                 w.getId(),
                 w.getAccessHash(),
                 w.getName(),
@@ -109,14 +109,14 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 w.getSex(),
                 w.getAvatar(),
                 w.getContactInfo(),
-                w.isBot()));
+                w.isBot());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return res;
+        return new User(res);
     }
 
     public User editAvatar(im.actor.model.api.Avatar avatar) {
         im.actor.model.api.User w = getWrapped();
-        User res = new User(new im.actor.model.api.User(
+        im.actor.model.api.User res = new im.actor.model.api.User(
                 w.getId(),
                 w.getAccessHash(),
                 w.getName(),
@@ -124,9 +124,9 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 w.getSex(),
                 avatar,
                 w.getContactInfo(),
-                w.isBot()));
+                w.isBot());
         res.setUnmappedObjects(w.getUnmappedObjects());
-        return res;
+        return new User(res);
     }
 
     @Override
@@ -203,6 +203,9 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 rec = values.getRepeatedObj(7, rec);
                 for (ObsoleteContactRecord o : rec) {
                     if (o.getRecordType() == 0) {
+                        if (o.getRecordData().equals("0")) {
+                            continue;
+                        }
                         records.add(new im.actor.model.api.ContactRecord(ContactType.PHONE, null,
                                 Long.parseLong(o.getRecordData()), o.getRecordTitle(), null));
                     }
