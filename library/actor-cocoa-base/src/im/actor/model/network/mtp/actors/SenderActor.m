@@ -184,14 +184,6 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
     if ([((JavaUtilHashSet *) nil_chk(confirm_)) size] == 0) {
       return;
     }
-    NSString *acks = @"";
-    for (JavaLangLong * __strong l in confirm_) {
-      if (((jint) [acks length]) != 0) {
-        acks = JreStrcat("$C", acks, ',');
-      }
-      acks = JreStrcat("$$", acks, JreStrcat("C@", '#', l));
-    }
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Sending acks ", acks));
     MTMessageAck *messageAck = MTSenderActor_buildAck(self);
     [confirm_ clear];
     MTSenderActor_doSendWithMTProtoMessage_(self, new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [((MTMessageAck *) nil_chk(messageAck)) toByteArray]));
@@ -249,9 +241,15 @@ MTSenderActor *new_MTSenderActor_initWithMTMTProto_(MTMTProto *proto) {
 MTMessageAck *MTSenderActor_buildAck(MTSenderActor *self) {
   IOSLongArray *ids = [IOSLongArray newArrayWithLength:[((JavaUtilHashSet *) nil_chk(self->confirm_)) size]];
   IOSObjectArray *ids2 = [self->confirm_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[self->confirm_ size] type:JavaLangLong_class_()]];
+  NSString *acks = @"";
   for (jint i = 0; i < ids->size_; i++) {
     *IOSLongArray_GetRef(ids, i) = [((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(ids2), i))) longLongValue];
+    if (((jint) [acks length]) != 0) {
+      acks = JreStrcat("$C", acks, ',');
+    }
+    acks = JreStrcat("$$", acks, JreStrcat("C@", '#', IOSObjectArray_Get(ids2, i)));
   }
+  AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Sending acks ", acks));
   return new_MTMessageAck_initWithLongArray_(ids);
 }
 

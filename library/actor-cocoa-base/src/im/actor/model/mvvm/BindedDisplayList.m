@@ -15,10 +15,11 @@
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/mvvm/DisplayList.h"
-#include "im/actor/model/mvvm/DisplayModifications.h"
 #include "im/actor/model/mvvm/DisplayWindow.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/mvvm/alg/Modification.h"
+#include "im/actor/model/mvvm/alg/Modifications.h"
 #include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/Long.h"
@@ -81,7 +82,7 @@ __attribute__((unused)) static id<DKListEngineDisplayLoadCallback> AMBindedDispl
   AMBindedDisplayList *this$0_;
 }
 
-- (void)applyModificationWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification;
+- (void)applyModificationWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)modification;
 
 - (void)onItemRemovedWithLong:(jlong)id_;
 
@@ -103,7 +104,7 @@ J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_EngineListener)
 
 J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener, this$0_, AMBindedDisplayList *)
 
-__attribute__((unused)) static void AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *self, id<AMDisplayList_Modification> modification);
+__attribute__((unused)) static void AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(AMBindedDisplayList_EngineListener *self, id<ImActorModelMvvmAlgModification> modification);
 
 __attribute__((unused)) static void AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(AMBindedDisplayList_EngineListener *self, AMBindedDisplayList *outer$);
 
@@ -114,24 +115,24 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_EngineListener)
 @interface AMBindedDisplayList_EngineListener_$1 : NSObject < JavaLangRunnable > {
  @public
   AMBindedDisplayList_EngineListener *this$0_;
-  id<AMDisplayList_Modification> val$modification_;
+  id<ImActorModelMvvmAlgModification> val$modification_;
 }
 
 - (void)run;
 
 - (instancetype)initWithAMBindedDisplayList_EngineListener:(AMBindedDisplayList_EngineListener *)outer$
-                            withAMDisplayList_Modification:(id<AMDisplayList_Modification>)capture$0;
+                       withImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)capture$0;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList_EngineListener_$1)
 
 J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener_$1, this$0_, AMBindedDisplayList_EngineListener *)
-J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener_$1, val$modification_, id<AMDisplayList_Modification>)
+J2OBJC_FIELD_SETTER(AMBindedDisplayList_EngineListener_$1, val$modification_, id<ImActorModelMvvmAlgModification>)
 
-__attribute__((unused)) static void AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener_$1 *self, AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0);
+__attribute__((unused)) static void AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(AMBindedDisplayList_EngineListener_$1 *self, AMBindedDisplayList_EngineListener *outer$, id<ImActorModelMvvmAlgModification> capture$0);
 
-__attribute__((unused)) static AMBindedDisplayList_EngineListener_$1 *new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMBindedDisplayList_EngineListener_$1 *new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(AMBindedDisplayList_EngineListener *outer$, id<ImActorModelMvvmAlgModification> capture$0) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_EngineListener_$1)
 
@@ -466,7 +467,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   [((JavaUtilArrayList *) nil_chk(pendingModifications_)) clear];
   mode_ = AMBindedDisplayList_ListModeEnum_get_FORWARD();
   query_ = nil;
-  [self editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
+  [self editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_clear()];
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
   [((AMDisplayWindow *) nil_chk(window_)) emptyInit];
@@ -480,7 +481,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   mode_ = AMBindedDisplayList_ListModeEnum_get_FORWARD();
   query_ = nil;
   if (refresh) {
-    [self editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
+    [self editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_clear()];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   currentGeneration_++;
@@ -499,7 +500,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_BACKWARD();
   if (refresh) {
-    [self editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
+    [self editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_clear()];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
@@ -518,7 +519,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_CENTER();
   if (refresh) {
-    [self editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
+    [self editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_clear()];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
@@ -544,7 +545,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   self->mode_ = AMBindedDisplayList_ListModeEnum_get_SEARCH();
   self->query_ = query;
   if (refresh) {
-    [self editListWithAMDisplayList_Modification:AMDisplayModifications_clear()];
+    [self editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_clear()];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithId:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
@@ -649,38 +650,38 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList)
 
 @implementation AMBindedDisplayList_EngineListener
 
-- (void)applyModificationWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)modification {
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+- (void)applyModificationWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)modification {
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (void)onItemRemovedWithLong:(jlong)id_ {
-  id<AMDisplayList_Modification> modification = AMDisplayModifications_removeWithLong_(id_);
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+  id<ImActorModelMvvmAlgModification> modification = ImActorModelMvvmAlgModifications_removeWithLong_(id_);
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids {
-  id<AMDisplayList_Modification> modification = AMDisplayModifications_removeWithLongArray_(ids);
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+  id<ImActorModelMvvmAlgModification> modification = ImActorModelMvvmAlgModifications_removeWithLongArray_(ids);
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (void)addOrUpdateWithId:(BSBserObject<DKListEngineItem> *)item {
-  id<AMDisplayList_Modification> modification = AMDisplayModifications_addOrUpdateWithDKListEngineItem_(item);
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+  id<ImActorModelMvvmAlgModification> modification = ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_(item);
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
-  id<AMDisplayList_Modification> modification = AMDisplayModifications_addOrUpdateWithJavaUtilList_(items);
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+  id<ImActorModelMvvmAlgModification> modification = ImActorModelMvvmAlgModifications_addOrUpdateWithJavaUtilList_(items);
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (void)onItemsReplacedWithJavaUtilList:(id<JavaUtilList>)items {
-  id<AMDisplayList_Modification> modification = AMDisplayModifications_replaceWithJavaUtilList_(items);
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+  id<ImActorModelMvvmAlgModification> modification = ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items);
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (void)onListClear {
-  id<AMDisplayList_Modification> modification = AMDisplayModifications_clear();
-  AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(self, modification);
+  id<ImActorModelMvvmAlgModification> modification = ImActorModelMvvmAlgModifications_clear();
+  AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(self, modification);
 }
 
 - (instancetype)initWithAMBindedDisplayList:(AMBindedDisplayList *)outer$ {
@@ -690,8 +691,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList)
 
 @end
 
-void AMBindedDisplayList_EngineListener_applyModificationWithAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *self, id<AMDisplayList_Modification> modification) {
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(self, modification));
+void AMBindedDisplayList_EngineListener_applyModificationWithImActorModelMvvmAlgModification_(AMBindedDisplayList_EngineListener *self, id<ImActorModelMvvmAlgModification> modification) {
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(self, modification));
 }
 
 void AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(AMBindedDisplayList_EngineListener *self, AMBindedDisplayList *outer$) {
@@ -711,7 +712,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_EngineListener)
 
 - (void)run {
   if ([((AMDisplayWindow *) nil_chk(this$0_->this$0_->window_)) isInited]) {
-    [this$0_->this$0_ editListWithAMDisplayList_Modification:val$modification_];
+    [this$0_->this$0_ editListWithImActorModelMvvmAlgModification:val$modification_];
   }
   else {
     [((JavaUtilArrayList *) nil_chk(this$0_->this$0_->pendingModifications_)) addWithId:val$modification_];
@@ -719,22 +720,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_EngineListener)
 }
 
 - (instancetype)initWithAMBindedDisplayList_EngineListener:(AMBindedDisplayList_EngineListener *)outer$
-                            withAMDisplayList_Modification:(id<AMDisplayList_Modification>)capture$0 {
-  AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(self, outer$, capture$0);
+                       withImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)capture$0 {
+  AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(self, outer$, capture$0);
   return self;
 }
 
 @end
 
-void AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener_$1 *self, AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0) {
+void AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(AMBindedDisplayList_EngineListener_$1 *self, AMBindedDisplayList_EngineListener *outer$, id<ImActorModelMvvmAlgModification> capture$0) {
   self->this$0_ = outer$;
   self->val$modification_ = capture$0;
   (void) NSObject_init(self);
 }
 
-AMBindedDisplayList_EngineListener_$1 *new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(AMBindedDisplayList_EngineListener *outer$, id<AMDisplayList_Modification> capture$0) {
+AMBindedDisplayList_EngineListener_$1 *new_AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(AMBindedDisplayList_EngineListener *outer$, id<ImActorModelMvvmAlgModification> capture$0) {
   AMBindedDisplayList_EngineListener_$1 *self = [AMBindedDisplayList_EngineListener_$1 alloc];
-  AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withAMDisplayList_Modification_(self, outer$, capture$0);
+  AMBindedDisplayList_EngineListener_$1_initWithAMBindedDisplayList_EngineListener_withImActorModelMvvmAlgModification_(self, outer$, capture$0);
   return self;
 }
 
@@ -879,13 +880,13 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMBindedDisplayList_BindHook)
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
+    [this$0_ editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items)];
   }
   else {
     [this$0_->window_ onForwardCompleted];
   }
-  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
-    [this$0_ editListWithAMDisplayList_Modification:m];
+  for (id<ImActorModelMvvmAlgModification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithImActorModelMvvmAlgModification:m];
   }
   [this$0_->pendingModifications_ clear];
 }
@@ -918,13 +919,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$1)
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitBackwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
+    [this$0_ editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items)];
   }
   else {
     [this$0_->window_ onBackwardCompleted];
   }
-  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
-    [this$0_ editListWithAMDisplayList_Modification:m];
+  for (id<ImActorModelMvvmAlgModification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithImActorModelMvvmAlgModification:m];
   }
   [this$0_->pendingModifications_ clear];
 }
@@ -957,14 +958,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$2)
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitCenterWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey) withJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOrUpdateWithJavaUtilList_(items)];
+    [this$0_ editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_addOrUpdateWithJavaUtilList_(items)];
   }
   else {
     [this$0_->window_ onForwardCompleted];
     [this$0_->window_ onBackwardCompleted];
   }
-  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
-    [this$0_ editListWithAMDisplayList_Modification:m];
+  for (id<ImActorModelMvvmAlgModification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithImActorModelMvvmAlgModification:m];
   }
   [this$0_->pendingModifications_ clear];
 }
@@ -996,12 +997,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$3)
                         withLong:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-  [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_replaceWithJavaUtilList_(items)];
+  [this$0_ editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
   }
-  for (id<AMDisplayList_Modification> __strong m in nil_chk(this$0_->pendingModifications_)) {
-    [this$0_ editListWithAMDisplayList_Modification:m];
+  for (id<ImActorModelMvvmAlgModification> __strong m in nil_chk(this$0_->pendingModifications_)) {
+    [this$0_ editListWithImActorModelMvvmAlgModification:m];
   }
   [this$0_->pendingModifications_ clear];
 }
@@ -1040,7 +1041,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$4)
   }
   else {
     [this$0_->window_ onForwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self)];
+    [this$0_ editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self)];
   }
 }
 
@@ -1109,7 +1110,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5_$1)
   }
   else {
     [this$0_->window_ onBackwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-    [this$0_ editListWithAMDisplayList_Modification:AMDisplayModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$6_$1_initWithAMBindedDisplayList_$6_(self)];
+    [this$0_ editListWithImActorModelMvvmAlgModification:ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(items) withJavaLangRunnable:new_AMBindedDisplayList_$6_$1_initWithAMBindedDisplayList_$6_(self)];
   }
 }
 

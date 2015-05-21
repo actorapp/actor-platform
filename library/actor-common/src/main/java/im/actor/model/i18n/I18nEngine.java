@@ -325,7 +325,7 @@ public class I18nEngine {
 
     public String formatFullServiceMessage(int senderId, ServiceContent content) {
         if (content instanceof ServiceUserRegistered) {
-            return getTemplate(senderId, "ServiceRegisteredFull");
+            return getTemplateNamed(senderId, "ServiceRegisteredFull");
         } else if (content instanceof ServiceGroupCreated) {
             return getTemplateNamed(senderId, "ServiceGroupCreatedFull")
                     .replace("{title}",

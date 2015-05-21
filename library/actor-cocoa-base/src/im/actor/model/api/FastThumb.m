@@ -12,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/Utils.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiFastThumb () {
@@ -55,6 +56,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->thumb_ = [values getBytesWithInt:3];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,6 +68,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
     @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:3 withByteArray:self->thumb_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {

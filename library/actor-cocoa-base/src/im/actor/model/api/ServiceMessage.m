@@ -10,8 +10,10 @@
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceMessage.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiServiceMessage () {
@@ -55,6 +57,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
   if ([values optBytesWithInt:3] != nil) {
     self->ext_ = ImActorModelApiServiceEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
   }
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,6 +69,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
   if (self->ext_ != nil) {
     [writer writeBytesWithInt:3 withByteArray:[self->ext_ buildContainer]];
+  }
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
   }
 }
 

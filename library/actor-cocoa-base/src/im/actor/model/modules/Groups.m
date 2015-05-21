@@ -865,7 +865,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3)
   if (this$0_->val$avatarDescriptor_ != nil) {
     [this$0_->this$0_ changeAvatarWithInt:[group getId] withNSString:this$0_->val$avatarDescriptor_];
   }
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_([response getSeq], [response getState], ImActorModelApiUpdatesUpdateGroupInvite_HEADER, [new_ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_([((ImActorModelApiGroupOutPeer *) nil_chk([response getGroupPeer])) getGroupId], val$rid_, [this$0_->this$0_ myUid], [response getDate]) toByteArray], new_JavaUtilArrayList_init(), groups, new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init())];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_([response getSeq], [response getState], ImActorModelApiUpdatesUpdateGroupInvite_HEADER, [new_ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_([((ImActorModelApiGroupOutPeer *) nil_chk([response getGroupPeer])) getGroupId], val$rid_, [this$0_->this$0_ myUid], [response getDate]) toByteArray], new_JavaUtilArrayList_init(), groups)];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(group, val$callback_)];
 }
 

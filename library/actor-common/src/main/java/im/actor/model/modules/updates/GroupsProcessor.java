@@ -186,7 +186,7 @@ public class GroupsProcessor extends BaseModule {
     }
 
     @Verified
-    public void onAvatarChanged(int groupId, long rid, int uid, Avatar avatar, long date,
+    public void onAvatarChanged(int groupId, long rid, int uid, im.actor.model.api.Avatar avatar, long date,
                                 boolean isSilent) {
         Group group = groups().getValue(groupId);
         if (group != null) {
@@ -195,22 +195,26 @@ public class GroupsProcessor extends BaseModule {
             // because we need to make message in conversation
             // about avatar change
 
-            if (!equalsE(group.getAvatar(), avatar)) {
-                // Change group avatar
-                Group upd = group.editAvatar(avatar);
+            // Check is disabled because it is unable to compare
+            // without losing future compatibility
+            // if (!equalsE(group.getRawAvatar(), avatar)) {
 
-                // Update group
-                groups().addOrUpdateItem(upd);
+            // Change group avatar
+            Group upd = group.editAvatar(avatar);
 
-                // Notify about group change
-                onGroupDescChanged(upd);
-            }
+            // Update group
+            groups().addOrUpdateItem(upd);
+
+            // Notify about group change
+            onGroupDescChanged(upd);
+            
+            // }
 
             // Create message if needed
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupAvatarChanged(avatar));
+                        new ServiceGroupAvatarChanged(new Avatar(avatar)));
                 conversationActor(group.peer()).send(message);
             }
         }

@@ -182,7 +182,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
     hook = new_ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(self, peer);
   }
   AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
-  [chatList initTopWithBoolean:NO];
+  jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
+  if (lastRead != 0) [chatList initCenterWithLong:lastRead withBoolean:NO];
+  else [chatList initTopWithBoolean:NO];
   return chatList;
 }
 

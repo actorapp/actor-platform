@@ -9,6 +9,7 @@
 #include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/ContactRecord.h"
+#include "im/actor/model/entity/ContactRecordType.h"
 #include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Contacts.h"
@@ -30,6 +31,7 @@
  @public
   jint id__;
   jlong hash__;
+  jboolean isBot__;
   AMValueModel *name_;
   AMValueModel *avatar_;
   AMSexEnum *sex_;
@@ -104,6 +106,10 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   return hash__;
 }
 
+- (jboolean)isBot {
+  return isBot__;
+}
+
 - (AMValueModel *)getName {
   return name_;
 }
@@ -158,6 +164,7 @@ void AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUserVM *self, AMU
   self->id__ = [((AMUser *) nil_chk(user)) getUid];
   self->hash__ = [user getAccessHash];
   self->sex_ = [user getSex];
+  self->isBot__ = [user isBot];
   self->name_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".name"), [user getName]);
   self->avatar_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".avatar"), [user getAvatar]);
   self->isContact__ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".contact"), JavaLangBoolean_valueOfWithBoolean_([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getContactsModule])) isUserContactWithInt:self->id__]));
@@ -174,7 +181,7 @@ AMUserVM *new_AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUser *us
 JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<JavaUtilList> records) {
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   for (AMContactRecord * __strong r in nil_chk(records)) {
-    if ([((AMContactRecord *) nil_chk(r)) getRecordType] == AMContactRecord_get_TYPE_PHONE_()) {
+    if ([((AMContactRecord *) nil_chk(r)) getRecordType] == AMContactRecordTypeEnum_get_PHONE()) {
       [res addWithId:new_AMUserPhone_initWithLong_withNSString_(JavaLangLong_parseLongWithNSString_([r getRecordData]), [r getRecordTitle])];
     }
   }

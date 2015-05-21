@@ -462,7 +462,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsBookImportActor_$1)
   for (ImActorModelApiUser * __strong u in nil_chk([response getUsers])) {
     [uids addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUser *) nil_chk(u)) getId])];
   }
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_([response getSeq], [response getState], ImActorModelApiUpdatesUpdateContactsAdded_HEADER, [new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(uids) toByteArray], [response getUsers], new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init(), new_JavaUtilArrayList_init())];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_([response getSeq], [response getState], ImActorModelApiUpdatesUpdateContactsAdded_HEADER, [new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(uids) toByteArray], [response getUsers], new_JavaUtilArrayList_init())];
 }
 
 - (void)onErrorWithAMRpcException:(AMRpcException *)e {
