@@ -4,6 +4,6 @@
 
 package im.actor.model.entity;
 
-public enum GroupState {
-    JOINED, KICKED, DELETED_PENDING, DELETED
+public enum ContactRecordType {
+    PHONE, EMAIL
 }

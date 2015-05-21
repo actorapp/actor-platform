@@ -10,6 +10,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -48,6 +49,9 @@ public class ServiceMessage extends Message {
         if (values.optBytes(3) != null) {
             this.ext = ServiceEx.fromBytes(values.getBytes(3));
         }
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -58,6 +62,13 @@ public class ServiceMessage extends Message {
         writer.writeString(1, this.text);
         if (this.ext != null) {
             writer.writeBytes(3, this.ext.buildContainer());
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 
