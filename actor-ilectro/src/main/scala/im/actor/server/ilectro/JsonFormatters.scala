@@ -7,9 +7,9 @@ import im.actor.server.models.ilectro._
 
 trait JsonReads {
   implicit val interestReads: Reads[Interest] = (
-    (JsPath \ "id").read[String].map(_.toInt) and
+    (JsPath \ "id").read[Int] and
     (JsPath \ "name").read[String] and
-    (JsPath \ "parent_id").read[String].map(_.toInt) and
+    (JsPath \ "parent_id").read[Int] and
     (JsPath \ "full_path").read[String] and
     (JsPath \ "level").read[Int]
   )(Interest)
