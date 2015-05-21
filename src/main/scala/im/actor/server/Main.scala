@@ -1,5 +1,7 @@
 package im.actor.server
 
+import scala.util.{ Success, Failure }
+
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
@@ -93,7 +95,10 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val ilectro = new ILectro
-    ilectro.getAndPersistInterests()
+    ilectro.getAndPersistInterests() onComplete {
+      case Success(i) ⇒ system.log.debug("Loaded {} interests", i)
+      case Failure(e) ⇒ system.log.error(e, "Failed to load interests")
+    }
 
     val mediator = DistributedPubSubExtension(system).mediator
 
