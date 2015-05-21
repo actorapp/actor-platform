@@ -4,11 +4,15 @@
 
 import Foundation
 
-class AABubbleMediaCell : AABubbleCell {
+class AABubbleMediaCell : AABubbleBaseFileCell {
     
     // Views
     let preview = UIImageView()
+
+    let progressBg = UIImageView()
     let circullarNode = CircullarNode()
+    let fileStatusIcon = UIImageView()
+    
     let timeBg = UIImageView()
     let timeLabel = UILabel()
     let statusView = UIImageView()
@@ -22,14 +26,6 @@ class AABubbleMediaCell : AABubbleCell {
     var thumb : AMFastThumb? = nil
     var thumbLoaded = false
     var contentLoaded = false
-    var generation = 0;
-    
-    // File state callbacks
-    var bindedDownloadFile: jlong? = nil
-    var bindedDownloadCallback: CocoaDownloadCallback? = nil
-    
-    var bindedUploadFile: jlong? = nil
-    var bindedUploadCallback: CocoaUploadCallback? = nil
     
     // MARK: -
     // MARK: Constructors
@@ -42,10 +38,16 @@ class AABubbleMediaCell : AABubbleCell {
         timeLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
         timeLabel.textColor = MainAppTheme.bubbles.mediaDate
         
-        statusView.contentMode = UIViewContentMode.Center        
+        statusView.contentMode = UIViewContentMode.Center
+        fileStatusIcon.contentMode = UIViewContentMode.Center
+        progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
         
         contentView.addSubview(preview)
+        
+        contentView.addSubview(progressBg)
+        contentView.addSubview(fileStatusIcon)
         contentView.addSubview(circullarNode.view)
+        
         contentView.addSubview(timeBg)
         contentView.addSubview(timeLabel)
         contentView.addSubview(statusView)
@@ -67,12 +69,14 @@ class AABubbleMediaCell : AABubbleCell {
     override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
         if (!reuse) {
             
+            // Bind bubble
             if (self.isOut) {
                 bindBubbleType(BubbleType.MediaOut, isCompact: false)
             } else {
                 bindBubbleType(BubbleType.MediaIn, isCompact: false)
             }
             
+            // Build bubble size
             if (message.getContent() is AMPhotoContent) {
                 var photo = message.getContent() as! AMPhotoContent;
                 thumb = photo.getFastThumb()
@@ -86,76 +90,30 @@ class AABubbleMediaCell : AABubbleCell {
             } else {
                 fatalError("Unsupported content")
             }
+            contentViewSize = AABubbleMediaCell.measureMedia(contentWidth, h: contentHeight)
             
+            // Reset loaded thumbs and contents
             preview.image = nil
             thumbLoaded = false
             contentLoaded = false
-            contentViewSize = AABubbleMediaCell.measureMedia(contentWidth, h: contentHeight)
             
+            // Reset progress
+            circullarNode.hidden = true
             circullarNode.setProgress(0, animated: false)
             UIView.animateWithDuration(0, animations: { () -> Void in
                 self.circullarNode.alpha = 0
                 self.preview.alpha = 0
+                self.progressBg.alpha = 0
             })
+            
+            // Bind file
+            fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
         }
+        
+        // Update time
         timeLabel.text = formatDate(message.getDate())
         
-        var document = message.getContent() as! AMDocumentContent;
-        
-        var rebindRequired = !reuse;
-        if (!rebindRequired) {
-            // Force rebind if source is changed from local to remote
-            if (document.getSource() is AMFileRemoteSource) {
-                // TODO: check rebind need
-            }
-        }
-        
-        if (rebindRequired) {
-            // Increase cell generation for any new bind
-            generation++;
-            
-            clearBindings()
-            
-            var selfGeneration = generation;
-            
-            if (document.getSource() is AMFileRemoteSource) {
-                var fileReference = (document.getSource() as! AMFileRemoteSource).getFileReference();
-                
-                bindedDownloadFile = fileReference.getFileId()
-                bindedDownloadCallback = CocoaDownloadCallback(notDownloaded: { () -> () in
-                        self.loadThumb(selfGeneration)
-                        self.hideProgress(selfGeneration)
-                    }, onDownloading: { (progress) -> () in
-                        self.loadThumb(selfGeneration)
-                        self.showProgress(progress, selfGeneration: selfGeneration)
-                    }, onDownloaded: { (reference) -> () in
-                        self.loadReference(reference, selfGeneration: selfGeneration)
-                        self.hideProgress(selfGeneration)
-                    })
-                
-                // TODO: Better logic for autodownload
-                MSG.bindRawFileWith(fileReference, withAutoStart: true, withCallback: bindedDownloadCallback)
-            } else if (document.getSource() is AMFileLocalSource) {
-                var fileReference = (document.getSource() as! AMFileLocalSource).getFileDescriptor();
-                
-                bindedUploadFile = message.getRid();
-                bindedUploadCallback = CocoaUploadCallback(notUploaded: { () -> () in
-                    self.loadReference(fileReference, selfGeneration: selfGeneration)
-                    self.hideProgress(selfGeneration)
-                }, onUploading: { (progress) -> () in
-                    self.loadReference(fileReference, selfGeneration: selfGeneration)
-                    self.showProgress(progress, selfGeneration: selfGeneration)
-                }, onUploadedClosure: { () -> () in
-                    self.loadReference(fileReference, selfGeneration: selfGeneration)
-                    self.hideProgress(selfGeneration)
-                });
-                
-                MSG.bindRawUploadFile(message.getRid(), withCallback: bindedUploadCallback)
-            } else {
-                 fatalError("Unsupported file source")
-            }
-        }
-        
+        // Update status
         if (isOut) {
             statusView.hidden = false
             switch(UInt(message.getMessageState().ordinal())) {
@@ -189,15 +147,50 @@ class AABubbleMediaCell : AABubbleCell {
         }
     }
     
-    func loadThumb(selfGeneration: Int) {
-        if (selfGeneration != generation) {
-            return
-        }
+    override func fileUploadPaused(reference: String, selfGeneration: Int) {
+        bgLoadReference(reference, selfGeneration: selfGeneration)
         
+        bgShowState(selfGeneration)
+        bgShowIcon("ic_upload", selfGeneration: selfGeneration)
+        bgHideProgress(selfGeneration)
+    }
+    
+    override func fileUploading(reference: String, progress: Double, selfGeneration: Int) {
+        bgLoadReference(reference, selfGeneration: selfGeneration)
+        
+        bgShowState(selfGeneration)
+        bgHideIcon(selfGeneration)
+        bgShowProgress(progress, selfGeneration: selfGeneration)
+    }
+    
+    override func fileDownloadPaused(selfGeneration: Int) {
+        bgLoadThumb(selfGeneration)
+        
+        bgShowState(selfGeneration)
+        bgShowIcon("ic_download", selfGeneration: selfGeneration)
+        bgHideProgress(selfGeneration)
+    }
+    
+    override func fileDownloading(progress: Double, selfGeneration: Int) {
+        bgLoadThumb(selfGeneration)
+        
+        bgShowState(selfGeneration)
+        bgHideIcon(selfGeneration)
+        bgShowProgress(progress, selfGeneration: selfGeneration)
+    }
+    
+    override func fileReady(reference: String, selfGeneration: Int) {
+        bgLoadReference(reference, selfGeneration: selfGeneration)
+        
+        bgHideState(selfGeneration)
+        bgHideIcon(selfGeneration)
+        bgHideProgress(selfGeneration)
+    }
+    
+    func bgLoadThumb(selfGeneration: Int) {
         if (thumbLoaded) {
             return
         }
-        
         thumbLoaded = true
         
         if (thumb != nil) {
@@ -209,11 +202,7 @@ class AABubbleMediaCell : AABubbleCell {
         }
     }
     
-    func loadReference(reference: String, selfGeneration: Int) {
-        if (selfGeneration != generation) {
-            return
-        }
-        
+    func bgLoadReference(reference: String, selfGeneration: Int) {
         if (contentLoaded) {
             return
         }
@@ -230,16 +219,8 @@ class AABubbleMediaCell : AABubbleCell {
         })
     }
     
-    func setPreviewImage(img: UIImage, fast: Bool){
-        if ((fast && self.preview.image == nil) || !fast) {
-            self.preview.image = img;
-            UIView.animateWithDuration(0.2, animations: { () -> Void in
-                self.preview.alpha = 1
-            })
-        }
-    }
-    
-    func hideProgress(selfGeneration: Int) {
+    // Progress show/hide
+    func bgHideProgress(selfGeneration: Int) {
         self.runOnUiThread(selfGeneration, closure: { () -> () in
             UIView.animateWithDuration(0.4, animations: { () -> Void in
                 self.circullarNode.alpha = 0
@@ -250,38 +231,51 @@ class AABubbleMediaCell : AABubbleCell {
             })
         })
     }
-    
-    func showProgress(value: Double, selfGeneration: Int) {
-        self.circullarNode.postProgress(value, animated: true)
+    func bgShowProgress(value: Double, selfGeneration: Int) {
         self.runOnUiThread(selfGeneration, closure: { () -> () in
-            self.circullarNode.hidden = false
+            if (self.circullarNode.hidden) {
+                self.circullarNode.hidden = false
+                self.circullarNode.alpha = 0
+            }
+            self.circullarNode.postProgress(value, animated: true)
             UIView.animateWithDuration(0.3, animations: { () -> Void in
                 self.circullarNode.alpha = 1
             })
         })
     }
     
-    func clearBindings() {
-        if (bindedDownloadFile != nil && bindedDownloadCallback != nil) {
-            MSG.unbindRawFile(bindedDownloadFile!, withAutoCancel: false, withCallback: bindedDownloadCallback!)
-            bindedDownloadFile = nil
-            bindedDownloadCallback = nil
-        }
-        if (bindedUploadFile != nil && bindedUploadCallback != nil) {
-            MSG.unbindRawUploadFile(bindedUploadFile!, withCallback: bindedUploadCallback!)
-            bindedUploadFile = nil
-            bindedUploadCallback = nil
-        }
+    // State show/hide
+    func bgHideState(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.progressBg.hideView()
+        })
     }
     
-    func runOnUiThread(selfGeneration: Int, closure: ()->()){
-         dispatch_async(dispatch_get_main_queue(), {
-            if (selfGeneration != self.generation) {
-                return
-            }
-        
-            closure()
+    func bgShowState(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.progressBg.showView()
         })
+    }
+    
+    // Icon show/hide
+    func bgShowIcon(name: String, selfGeneration: Int) {
+        var img = UIImage(named: name)?.tintImage(UIColor.whiteColor())
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.fileStatusIcon.image = img
+            self.fileStatusIcon.showView()
+        })
+    }
+    func bgHideIcon(selfGeneration: Int) {
+        self.runOnUiThread(selfGeneration, closure: { () -> () in
+            self.fileStatusIcon.hideView()
+        })
+    }
+    
+    func setPreviewImage(img: UIImage, fast: Bool){
+        if ((fast && self.preview.image == nil) || !fast) {
+            self.preview.image = img;
+            self.preview.showView()
+        }
     }
     
     // MARK: -
@@ -326,6 +320,8 @@ class AABubbleMediaCell : AABubbleCell {
             preview.frame = CGRectMake(insets.left, insets.top, bubbleWidth, bubbleHeight)
         }
         circullarNode.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 32, preview.frame.origin.y + preview.frame.height/2 - 32, 64, 64)
+        progressBg.frame = circullarNode.frame
+        fileStatusIcon.frame = CGRectMake(preview.frame.origin.x + preview.frame.width/2 - 24, preview.frame.origin.y + preview.frame.height/2 - 24, 48, 48)
         
         timeLabel.frame = CGRectMake(0, 0, 1000, 1000)
         timeLabel.sizeToFit()

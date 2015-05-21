@@ -38,6 +38,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         }
         
         self.tableView.beginUpdates()
+        var hasUpdates = false
         for i in 0..<modification.getChanges().size() {
             var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
             switch(UInt(change.getOperationType().ordinal())) {
@@ -50,7 +51,8 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
                 self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
                 break
             case AMChangeDescription_OperationType.UPDATE.rawValue:
-                // Ignore in separate batch
+                // Execute in separate batch
+                hasUpdates = true
                 break
             case AMChangeDescription_OperationType.REMOVE.rawValue:
                 var startIndex = Int(change.getIndex())
@@ -68,19 +70,27 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         }
         self.tableView.endUpdates()
         
-        for i in 0..<modification.getChanges().size() {
-            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
-            switch(UInt(change.getOperationType().ordinal())) {
-            case AMChangeDescription_OperationType.UPDATE.rawValue:
-                var startIndex = Int(change.getIndex())
-                var rows: NSMutableArray = []
-                for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+        if (hasUpdates) {
+            var visibleIndexes = self.tableView.indexPathsForVisibleRows() as! [NSIndexPath]
+            for i in 0..<modification.getChanges().size() {
+                var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+                switch(UInt(change.getOperationType().ordinal())) {
+                case AMChangeDescription_OperationType.UPDATE.rawValue:
+                    var startIndex = Int(change.getIndex())
+                    var rows: NSMutableArray = []
+                    for ind in 0..<change.getLength() {
+                        for visibleIndex in visibleIndexes {
+                            if (visibleIndex.row == Int(startIndex + ind)) {
+                                var item: AnyObject? = objectAtIndexPath(visibleIndex)
+                                var cell = self.tableView.cellForRowAtIndexPath(visibleIndex)
+                                bindCell(self.tableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
+                            }
+                        }
+                    }
+                    break
+                default:
+                    break
                 }
-                self.tableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
-                break
-            default:
-                break
             }
         }
     }
