@@ -1,6 +1,5 @@
 package im.actor.server.api.rpc.service.llectro
 
-import scala.annotation.tailrec
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
