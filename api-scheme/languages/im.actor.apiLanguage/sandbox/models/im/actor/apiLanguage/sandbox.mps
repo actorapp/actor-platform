@@ -4810,8 +4810,8 @@
       </node>
     </node>
     <node concept="2m5mJO" id="2tyCW$U3Rwz" role="2m5lHt">
-      <property role="TrG5h" value="Llectro" />
-      <property role="3XOG$Z" value="llectro" />
+      <property role="TrG5h" value="ilectro" />
+      <property role="3XOG$Z" value="ilectro" />
       <node concept="2m5naR" id="2tyCW$U3TcM" role="2m5mJr">
         <property role="TrG5h" value="Interest" />
         <node concept="NXeRC" id="2tyCW$U3U3I" role="NXodf">
@@ -5087,7 +5087,7 @@
         </node>
       </node>
       <node concept="1Dx9M1" id="2tyCW$U3RVs" role="1Dx9rD">
-        <property role="1Dx9K7" value="Llectro Advertisment API" />
+        <property role="1Dx9K7" value="iLectro Advertisment API" />
       </node>
     </node>
     <node concept="2m5mJO" id="3MpuFr6x9eS" role="2m5lHt">
