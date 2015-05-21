@@ -1,5 +1,7 @@
 package im.actor.server.ilectro
 
+import java.util.UUID
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -8,7 +10,6 @@ import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model.HttpMethods.{ DELETE, GET, POST }
 import akka.http.scaladsl.model._
 import akka.stream.ActorFlowMaterializer
-import com.eaio.uuid.UUID
 import play.api.libs.json._
 
 import im.actor.server.ilectro.Common._
@@ -31,7 +32,7 @@ private[ilectro] class Users(
   private val resourceName = "users"
 
   def create(dbUserId: Int, name: String): Future[Either[Errors, ILectroUser]] = {
-    val user = ILectroUser(dbUserId, (new UUID).toString, name)
+    val user = ILectroUser(dbUserId, UUID.randomUUID(), name)
     processRequest(
       HttpRequest(
         method = POST,

@@ -1,3 +1,5 @@
 package im.actor.server.models.ilectro
 
-case class ILectroUser(userId: Int, uuid: String, name: String)
+import java.util.UUID
+
+case class ILectroUser(userId: Int, uuid: UUID, name: String)
