@@ -1,5 +1,7 @@
 package im.actor.server.ilectro
 
+import java.util.UUID
+
 import scala.concurrent.Future
 
 import akka.actor.ActorSystem
@@ -20,6 +22,13 @@ class ILectro(implicit system: ActorSystem) {
 
   val users = new Users()
   val lists = new Lists()
+
+  def getBanners(userUuid: UUID) = {
+    users.getBanners(userUuid) map {
+      case Right(banners) ⇒ banners
+      case Left(e)        ⇒ throw new Exception(s"Failed to get banners: $e")
+    }
+  }
 
   def getAndPersistInterests()(implicit db: Database): Future[Int] = {
     lists.getInterests() flatMap {
