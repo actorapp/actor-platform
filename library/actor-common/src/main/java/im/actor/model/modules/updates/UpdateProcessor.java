@@ -43,7 +43,6 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
-import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.updates.internal.ContactsLoaded;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.GroupCreated;
@@ -205,7 +204,7 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateGroupAvatarChanged) {
             UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
             groupsProcessor.onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
-                    avatarChanged.getUid(), EntityConverter.convert(avatarChanged.getAvatar()),
+                    avatarChanged.getUid(), avatarChanged.getAvatar(),
                     avatarChanged.getDate(), false);
         } else if (update instanceof UpdateGroupInvite) {
             UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
