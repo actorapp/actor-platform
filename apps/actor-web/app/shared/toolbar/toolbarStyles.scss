@@ -1,0 +1,34 @@
+@import '../../styles/variables';
+
+.toolbar {
+  font-size: 14px;
+
+  box-sizing: border-box;
+  height: $toolbarHeight;
+  margin: 0;
+  padding: 0 16px;
+
+  color: $toolbarTextColor;
+  &__peer {
+    display: inline-block;
+    &__avatar {
+      margin: 14px 8px 14px 0;
+    }
+    &__body {
+      display: inline-block;
+
+      vertical-align: middle;
+      span {
+        display: block;
+      }
+    }
+    &__title {
+      font-weight: 500;
+      line-height: 20px;
+    }
+    &__presence {
+      font-size: 11px;
+      line-height: 12px;
+    }
+  }
+}

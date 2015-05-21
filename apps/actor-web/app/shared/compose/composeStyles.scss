@@ -1,17 +1,24 @@
 @import '../../styles/variables';
 
 .compose {
-  padding: 12px 16px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 
-  border-top: 1px solid rgb(237, 236, 236);
-  background-color: rgb(249, 249, 249);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 16px;
   &__message {
     font-size: 13px;
 
+    box-sizing: border-box;
     width: 100%;
+    max-width: 100%;
     min-height: 64px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     padding: 8px;
+
+    resize: none;
 
     border: 1px solid rgb(216, 216, 216);
     border-radius: 4px;
@@ -19,73 +26,12 @@
     box-shadow: none !important;
   }
   &__footer {
-    color: rgb(144, 144, 144);
-    .md-icon-button {
+    margin: 0;
+    .button {
       margin-right: 4px;
-      margin-left: 6px;
-      font-size: 13px;
-      &:first-child {
-        margin-left: 0;
+      &:last-child {
+        margin-right: 0;
       }
     }
-    .md-button {
-      &.md-primary {
-        margin-left: 10px;
-      }
-
-      &.md-big {
-        line-height: 36px;
-        min-width: 100px;
-        padding: 0 16px;
-      }
-    }
-    md-checkbox {
-      margin: 0;
-      padding: 6px 0;
-      &.md-primary {
-        .md-icon {
-          width: 16px;
-          height: 16px;
-        }
-        .md-container {
-          width: 16px;
-          height: 16px;
-        }
-        .md-label {
-          display: none;
-          line-height: 16px;
-          border: none;
-          font-size: 13px;
-          font-weight: 500;
-          width: 100px;
-        }
-        &.md-checked {
-          .md-icon {
-            background-color: $baseColor !important;
-            &:after {
-              left: 5px;
-              top: 1px;
-              width: 6px;
-              height: 12px;
-            }
-          }
-        }
-      }
-      &.selected {
-        .md-label {
-          display: inline-block;
-        }
-      }
-    }
-  }
-  &__hidden {
-    position: absolute;
-    top: 0;
-    left: -5000px;
-
-    visibility: hidden;
-
-    width: 0;
-    height: 0;
   }
 }
