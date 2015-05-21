@@ -193,14 +193,17 @@ public class ChatActivity extends BaseActivity{
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
+                /*
                 isEarse = after<count;
 
                 mentionEarse = (isEarse && s.charAt(start) == '\u200b');
                 if(mentionEarse)mentionEarseStart = start;
+                */
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                /*
                 String str = s.toString();
                 String firstPeace  = str.substring(0, start + count);
 
@@ -233,7 +236,7 @@ public class ChatActivity extends BaseActivity{
 
                     }
                 }
-
+                */
 
             }
 
@@ -247,6 +250,7 @@ public class ChatActivity extends BaseActivity{
                     sendButton.setEnabled(false);
                 }
 
+                /*
                 if(!mentionEarse){
                     int mentionEscape = s.toString().indexOf(" \u200b");
                     if(mentionEscape!=-1){
@@ -259,7 +263,7 @@ public class ChatActivity extends BaseActivity{
                 }else{
                     s.replace(mentionEarseStart-1, mentionEarseStart-1, "");
                 }
-
+                */
             }
         });
         messageBody.setOnKeyListener(new View.OnKeyListener() {
@@ -474,7 +478,8 @@ public class ChatActivity extends BaseActivity{
         isTypingDisabled = true;
         String text = messenger().loadDraft(peer);
         if (text != null) {
-            messageBody.setText((emoji().processEmojiCompatMutable(bypass.markdownToSpannable(text), SmileProcessor.CONFIGURATION_BUBBLES)));
+            //messageBody.setText((emoji().processEmojiCompatMutable(bypass.markdownToSpannable(text), SmileProcessor.CONFIGURATION_BUBBLES)));
+            messageBody.setText((emoji().processEmojiCompatMutable(text, SmileProcessor.CONFIGURATION_BUBBLES)));
         } else {
             messageBody.setText("");
         }
@@ -485,7 +490,7 @@ public class ChatActivity extends BaseActivity{
     private void sendMessage() {
 
         Editable text = messageBody.getText();
-        convertUrlspansToMarkdownLinks(text);
+        //convertUrlspansToMarkdownLinks(text);
         final String textString = text.toString().replace("\u200b", "").trim();
         messageBody.setText("");
         mentionSearchString = "";
@@ -627,7 +632,7 @@ public class ChatActivity extends BaseActivity{
             }
         }.execute();
     }
-
+/*
     private void showMentions(boolean initEmpty) {
         if (isMentionsVisible) {
             return;
@@ -691,7 +696,7 @@ public class ChatActivity extends BaseActivity{
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);
             }
      }
-
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
@@ -723,9 +728,9 @@ public class ChatActivity extends BaseActivity{
 
     @Override
     public void onBackPressed() {
-        if (isMentionsVisible) {
+        /*if (isMentionsVisible) {
             hideMentions();
-        } else if (emojiKeyboard.isShowing()) {
+        } else*/ if (emojiKeyboard.isShowing()) {
             emojiKeyboard.dismiss();
         } else {
             super.onBackPressed();
@@ -801,7 +806,7 @@ public class ChatActivity extends BaseActivity{
         emojiKeyboard.destroy();
         Editable text = (Editable) messageBody.getText().subSequence(0, messageBody.getText().length());
 
-        convertUrlspansToMarkdownLinks(text);
+        //convertUrlspansToMarkdownLinks(text);
         messenger.saveDraft(peer, text.toString());
     }
 }
