@@ -10,6 +10,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -17,24 +18,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestGetAdBatters extends Request<ResponseGetAdBatters> {
+public class RequestGetAdBanners extends Request<ResponseGetAdBanners> {
 
     public static final int HEADER = 0x9f;
-    public static RequestGetAdBatters fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestGetAdBatters(), data);
+    public static RequestGetAdBanners fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetAdBanners(), data);
     }
 
     private int maxBannerWidth;
     private int maxBannerHeight;
     private double screenDensity;
 
-    public RequestGetAdBatters(int maxBannerWidth, int maxBannerHeight, double screenDensity) {
+    public RequestGetAdBanners(int maxBannerWidth, int maxBannerHeight, double screenDensity) {
         this.maxBannerWidth = maxBannerWidth;
         this.maxBannerHeight = maxBannerHeight;
         this.screenDensity = screenDensity;
     }
 
-    public RequestGetAdBatters() {
+    public RequestGetAdBanners() {
 
     }
 
@@ -66,7 +67,7 @@ public class RequestGetAdBatters extends Request<ResponseGetAdBatters> {
 
     @Override
     public String toString() {
-        String res = "rpc GetAdBatters{";
+        String res = "rpc GetAdBanners{";
         res += "}";
         return res;
     }

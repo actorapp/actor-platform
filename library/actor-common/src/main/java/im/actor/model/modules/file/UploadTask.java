@@ -21,7 +21,6 @@ import im.actor.model.files.OutputFile;
 import im.actor.model.http.FileUploadCallback;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -196,7 +195,8 @@ public class UploadTask extends ModuleActor {
                         Log.d(TAG, "Upload completed...");
                     }
 
-                    FileReference location = EntityConverter.convert(response.getUploadedFileLocation(), fileName, srcReference.getSize());
+                    FileReference location = new FileReference(response.getUploadedFileLocation(),
+                            fileName, srcReference.getSize());
 
                     if (isWriteToDestProvider) {
                         FileSystemReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);

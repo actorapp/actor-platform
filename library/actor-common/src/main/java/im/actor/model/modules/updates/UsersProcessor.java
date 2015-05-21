@@ -95,8 +95,7 @@ public class UsersProcessor extends BaseModule {
     }
 
     @Verified
-    public void onUserAvatarChanged(int uid, Avatar _avatar) {
-        im.actor.model.entity.Avatar avatar = EntityConverter.convert(_avatar);
+    public void onUserAvatarChanged(int uid, Avatar avatar) {
         User u = users().getValue(uid);
         if (u != null) {
 
