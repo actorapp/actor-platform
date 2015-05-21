@@ -58,7 +58,8 @@ class ILectro(implicit system: ActorSystem) {
 
   def getAndPersistInterests()(implicit db: Database): Future[Int] = {
     lists.getInterests() flatMap {
-      case Right(interests) ⇒ persistInterests(interests)
+      case Right(interests) ⇒
+        persistInterests(interests)
       case Left(e) ⇒
         throw new Exception(s"Failed to load interests: ${e}")
     }
