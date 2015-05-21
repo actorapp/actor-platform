@@ -77,7 +77,7 @@ private[ilectro] class Users(
     onFailure = defaultFailure
   )
 
-  def addInterest(userUuid: UUID, interestIds: List[Int]): Future[Either[Errors, Unit]] = {
+  def addInterests(userUuid: UUID, interestIds: List[Int]): Future[Either[Errors, Unit]] = {
     val interests = s"{${interestIds mkString ","}}"
     processRequest(
       HttpRequest(

@@ -14,7 +14,7 @@ class ILectroUserTable(tag: Tag) extends Table[models.ilectro.ILectroUser](tag, 
   def * = (userId, uuid, name) <> (models.ilectro.ILectroUser.tupled, models.ilectro.ILectroUser.unapply)
 }
 
-object IlectroUser {
+object ILectroUser {
   val users = TableQuery[ILectroUserTable]
 
   def findByUserId(userId: Int) =

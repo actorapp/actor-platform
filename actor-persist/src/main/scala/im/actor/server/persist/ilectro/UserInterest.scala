@@ -4,7 +4,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
 
-class UserInterestTable(tag: Tag) extends Table[models.ilectro.UserInterest](tag, "users_interests") {
+class UserInterestTable(tag: Tag) extends Table[models.ilectro.UserInterest](tag, "ilectro_users_interests") {
   def userId = column[Int]("user_id", O.PrimaryKey)
   def interestId = column[Int]("interest_id", O.PrimaryKey)
 
@@ -12,5 +12,11 @@ class UserInterestTable(tag: Tag) extends Table[models.ilectro.UserInterest](tag
 }
 
 object UserInterest {
-  val usersInterests = TableQuery[UserInterestTable]
+  val interests = TableQuery[UserInterestTable]
+
+  def create(userId: Int, interestId: Int) =
+    interests += models.ilectro.UserInterest(userId, interestId)
+
+  def delete(userId: Int, interestId: Int) =
+    interests.filter(ui ⇒ ui.interestId === interestId && ui.userId === userId).delete
 }
