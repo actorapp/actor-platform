@@ -21,4 +21,7 @@ object Interest {
     DBIO.sequence(newInterests map { interest ⇒
       interests.insertOrUpdate(interest)
     })
+
+  def find(level: Int, parentId: Int) =
+    interests.filter(i ⇒ i.level === level && i.parentId === parentId).result
 }
