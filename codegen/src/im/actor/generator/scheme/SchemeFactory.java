@@ -35,7 +35,9 @@ public class SchemeFactory {
                 String type = item.get("type").textValue();
                 if (type.equals("struct")) {
                     JsonNode content = item.get("content");
-                    SchemeStruct entity = new SchemeStruct(content.get("name").textValue());
+                    boolean isExpandable = content.has("expandable") && content.get("expandable").textValue().equals("true");
+                    SchemeStruct entity = new SchemeStruct(content.get("name").textValue(),
+                            isExpandable);
                     sect.getRecords().add(entity);
                     JsonNode attributes = content.get("attributes");
                     for (JsonNode attr : attributes) {

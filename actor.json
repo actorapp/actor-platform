@@ -752,6 +752,7 @@
                 "description": "  Subtitle of record"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -857,6 +858,7 @@
                 "description": "  Is user actually bot. By default is false."
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -1809,7 +1811,7 @@
               {
                 "type": "reference",
                 "argument": "text",
-                "category": "full",
+                "category": "danger",
                 "description": "  the text"
               },
               {
@@ -1829,6 +1831,7 @@
               "name": "Message",
               "key": 1
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -1878,6 +1881,7 @@
                 "description": "  Markdown text"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -1910,6 +1914,7 @@
               "name": "Message",
               "key": 2
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -1955,6 +1960,7 @@
               "name": "ServiceEx",
               "key": 1
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -1981,6 +1987,7 @@
               "name": "ServiceEx",
               "key": 2
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2001,6 +2008,7 @@
               "name": "ServiceEx",
               "key": 3
             },
+            "expandable": "true",
             "attributes": []
           }
         },
@@ -2015,6 +2023,7 @@
               "name": "ServiceEx",
               "key": 4
             },
+            "expandable": "true",
             "attributes": []
           }
         },
@@ -2035,6 +2044,7 @@
               "name": "ServiceEx",
               "key": 5
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -2061,6 +2071,7 @@
               "name": "ServiceEx",
               "key": 6
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -2093,6 +2104,7 @@
               "name": "ServiceEx",
               "key": 8
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2113,6 +2125,7 @@
               "name": "ServiceEx",
               "key": 9
             },
+            "expandable": "true",
             "attributes": []
           }
         },
@@ -2127,6 +2140,7 @@
               "name": "ServiceEx",
               "key": 16
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2189,6 +2203,7 @@
               "name": "Message",
               "key": 3
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int64",
@@ -2271,6 +2286,7 @@
               "name": "DocumentEx",
               "key": 1
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2314,6 +2330,7 @@
               "name": "DocumentEx",
               "key": 2
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2350,6 +2367,7 @@
               "name": "DocumentEx",
               "key": 3
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -3455,6 +3473,7 @@
                 "description": "  Date of creation"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -3539,6 +3558,7 @@
                 "description": "  Adding date"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -4836,6 +4856,7 @@
                 "description": "  Access hash of file"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int64",
@@ -4881,6 +4902,7 @@
                 "description": "  Size of file"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -4933,6 +4955,7 @@
                 "description": "  Optional full screen image of avatar"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -4995,6 +5018,7 @@
                 "description": "  compressed image data"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -5605,7 +5629,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "GetAdBatters",
+            "name": "GetAdBanners",
             "header": 159,
             "response": {
               "type": "anonymous",
