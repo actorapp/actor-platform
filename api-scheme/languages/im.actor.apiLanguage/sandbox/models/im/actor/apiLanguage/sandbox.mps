@@ -32,6 +32,7 @@
         <child id="2861239048481128232" name="docs" index="1Dx9rD" />
       </concept>
       <concept id="2348480312264231121" name="im.actor.apiLanguage.structure.Struct" flags="ng" index="2m5naR">
+        <property id="2838010799854839786" name="isExpandable" index="tsOgz" />
         <property id="5312209286555312009" name="hasInterface" index="w4tQU" />
         <reference id="5312209286555405644" name="interface" index="w4$XZ" />
         <child id="773119248390105235" name="docs" index="NXodf" />
@@ -825,6 +826,7 @@
       </node>
       <node concept="2m5naR" id="2tyCW$TVx2J" role="2m5mJr">
         <property role="TrG5h" value="ContactRecord" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="2tyCW$TVyXd" role="NXodf">
           <property role="NXePf" value="Contact information record" />
         </node>
@@ -890,6 +892,7 @@
       </node>
       <node concept="2m5naR" id="GBscvBAzbH" role="2m5mJr">
         <property role="TrG5h" value="User" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="EUEXKTmbn1" role="NXodf">
           <property role="NXePf" value="Main user object" />
         </node>
@@ -1842,13 +1845,14 @@
       <node concept="2m5naR" id="GBscvBBkCg" role="2m5mJr">
         <property role="TrG5h" value="TextMessage" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
         <node concept="NXeRC" id="EUEXKTmoqy" role="NXodf">
           <property role="NXePf" value="Text message" />
         </node>
         <node concept="NX1gA" id="EUEXKTmoqC" role="NXodf">
           <property role="NX6R2" value="the text" />
-          <property role="1GSvIU" value="full" />
+          <property role="1GSvIU" value="danger" />
           <ref role="NX6Kv" node="GBscvBBkKA" resolve="text" />
         </node>
         <node concept="NX1gA" id="2tyCW$U1eS_" role="NXodf">
@@ -1892,6 +1896,7 @@
       </node>
       <node concept="2m5naR" id="2tyCW$TVtRM" role="2m5mJr">
         <property role="TrG5h" value="TextExMarkdown" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="2tyCW$TVtXD" role="NXodf">
           <property role="NXePf" value="Markdown extension" />
         </node>
@@ -1909,6 +1914,7 @@
       <node concept="2m5naR" id="GBscvBBkLN" role="2m5mJr">
         <property role="TrG5h" value="ServiceMessage" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
         <node concept="NXeRC" id="EUEXKTmqwO" role="NXodf">
           <property role="NXePf" value="Service message" />
@@ -1948,6 +1954,7 @@
       <node concept="2m5naR" id="GBscvBBkVP" role="2m5mJr">
         <property role="TrG5h" value="ServiceExUserAdded" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="EUEXKTmu$H" role="NXodf">
           <property role="NXePf" value="Service message about adding user to group" />
@@ -1969,6 +1976,7 @@
       <node concept="2m5naR" id="GBscvBBkXC" role="2m5mJr">
         <property role="TrG5h" value="ServiceExUserKicked" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="EUEXKTmvhF" role="NXodf">
           <property role="NXePf" value="Service message about kicking user from group" />
@@ -1990,6 +1998,7 @@
       <node concept="2m5naR" id="GBscvBBkZx" role="2m5mJr">
         <property role="TrG5h" value="ServiceExUserLeft" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="EUEXKTmvhR" role="NXodf">
           <property role="NXePf" value="Service message about user left group" />
@@ -2001,6 +2010,7 @@
       <node concept="2m5naR" id="GBscvBBl1n" role="2m5mJr">
         <property role="TrG5h" value="ServiceExGroupCreated" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="EUEXKTmvhW" role="NXodf">
           <property role="NXePf" value="Service message about group creating" />
@@ -2012,6 +2022,7 @@
       <node concept="2m5naR" id="GBscvBBlbn" role="2m5mJr">
         <property role="TrG5h" value="ServiceExChangedTitle" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="EUEXKTmvi1" role="NXodf">
           <property role="NXePf" value="Service message about group title change" />
@@ -2033,6 +2044,7 @@
       <node concept="2m5naR" id="GBscvBBldq" role="2m5mJr">
         <property role="TrG5h" value="ServiceExChangedAvatar" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="EUEXKTmvi6" role="NXodf">
           <property role="NXePf" value="Service message about avatar change" />
@@ -2058,6 +2070,7 @@
       <node concept="2m5naR" id="2tyCW$TVsJo" role="2m5mJr">
         <property role="TrG5h" value="ServiceExContactRegistered" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="2m7Kf5" id="2tyCW$TVsP8" role="2m0hLx">
           <property role="2m7DUN" value="1" />
@@ -2079,6 +2092,7 @@
       <node concept="2m5naR" id="2tyCW$TWrIZ" role="2m5mJr">
         <property role="TrG5h" value="ServiceExPhoneMissed" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="2tyCW$TWrOH" role="NXodf">
           <property role="NXePf" value="Update about missing phone call" />
@@ -2090,6 +2104,7 @@
       <node concept="2m5naR" id="2tyCW$TWski" role="2m5mJr">
         <property role="TrG5h" value="ServiceExPhoneCall" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9med" resolve="ServiceEx" />
         <node concept="NXeRC" id="2tyCW$TWsO4" role="NXodf">
           <property role="NXePf" value="Update about phone call" />
@@ -2106,6 +2121,7 @@
       <node concept="2m5naR" id="GBscvBBlnT" role="2m5mJr">
         <property role="TrG5h" value="DocumentMessage" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
         <node concept="NXeRC" id="EUEXKTmvEb" role="NXodf">
           <property role="NXePf" value="File message" />
@@ -2199,6 +2215,7 @@
       <node concept="2m5naR" id="GBscvBBl$N" role="2m5mJr">
         <property role="TrG5h" value="DocumentExPhoto" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="DocumentEx" />
         <node concept="NXeRC" id="EUEXKTmCyv" role="NXodf">
           <property role="NXePf" value="File photo extension" />
@@ -2230,6 +2247,7 @@
       <node concept="2m5naR" id="GBscvBBlBP" role="2m5mJr">
         <property role="TrG5h" value="DocumentExVideo" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="DocumentEx" />
         <node concept="NXeRC" id="EUEXKTmDg6" role="NXodf">
           <property role="NXePf" value="File video extension" />
@@ -2271,6 +2289,7 @@
       <node concept="2m5naR" id="GBscvBBlFe" role="2m5mJr">
         <property role="TrG5h" value="DocumentExVoice" />
         <property role="w4tQU" value="true" />
+        <property role="tsOgz" value="true" />
         <ref role="w4$XZ" node="55bmeIQ9FSf" resolve="DocumentEx" />
         <node concept="NXeRC" id="EUEXKTmDBk" role="NXodf">
           <property role="NXePf" value="File voice extension" />
@@ -3146,6 +3165,7 @@
       <property role="3XOG$Z" value="groups" />
       <node concept="2m5naR" id="GBscvBB6pR" role="2m5mJr">
         <property role="TrG5h" value="Group" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="4zDDY4ER8j4" role="NXodf">
           <property role="NXePf" value="Group information" />
         </node>
@@ -3240,6 +3260,7 @@
       </node>
       <node concept="2m5naR" id="7d$A0Kt1Y2M" role="2m5mJr">
         <property role="TrG5h" value="Member" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="4zDDY4ER9le" role="NXodf">
           <property role="NXePf" value="Member information" />
         </node>
@@ -4331,6 +4352,7 @@
       <property role="3XOG$Z" value="files" />
       <node concept="2m5naR" id="GBscvB$$Hy" role="2m5mJr">
         <property role="TrG5h" value="FileLocation" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="EUEXKTmYot" role="NXodf">
           <property role="NXePf" value="Location of file on server" />
         </node>
@@ -4357,6 +4379,7 @@
       </node>
       <node concept="2m5naR" id="GBscvB$$Hk" role="2m5mJr">
         <property role="TrG5h" value="AvatarImage" />
+        <property role="tsOgz" value="true" />
         <node concept="2m7Kf5" id="GBscvB$$Kn" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="fileLocation" />
@@ -4405,6 +4428,7 @@
       </node>
       <node concept="2m5naR" id="GBscvB$$LB" role="2m5mJr">
         <property role="TrG5h" value="Avatar" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="7UKSaUukm0L" role="NXodf">
           <property role="NXePf" value="Avatar of User or Group" />
         </node>
@@ -4453,6 +4477,7 @@
       </node>
       <node concept="2m5naR" id="GBscvBB67s" role="2m5mJr">
         <property role="TrG5h" value="FastThumb" />
+        <property role="tsOgz" value="true" />
         <node concept="NXeRC" id="7UKSaUukm1h" role="NXodf">
           <property role="NXePf" value="Fast thumb of media messages. Less than 90x90 and compressed by JPEG with low quality" />
         </node>
@@ -4975,7 +5000,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="2tyCW$U4aZj" role="2m5mJr">
-        <property role="TrG5h" value="GetAdBatters" />
+        <property role="TrG5h" value="GetAdBanners" />
         <node concept="NXeRC" id="2tyCW$U4bRK" role="1GBnQ6">
           <property role="NXePf" value="Requesting AD banners" />
         </node>

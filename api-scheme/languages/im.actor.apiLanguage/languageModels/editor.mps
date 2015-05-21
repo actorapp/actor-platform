@@ -408,6 +408,24 @@
       <node concept="3F0A7n" id="22nuAqQxhv2" role="3EZMnx">
         <ref role="1NtTu8" to="tpck:h0TrG11" resolve="name" />
       </node>
+      <node concept="3F0ifn" id="2tyCW$U4uWk" role="3EZMnx">
+        <property role="3F0ifm" value="expandable" />
+        <node concept="pkWqt" id="2tyCW$U4va1" role="pqm2j">
+          <node concept="3clFbS" id="2tyCW$U4va2" role="2VODD2">
+            <node concept="3clFbF" id="2tyCW$U4vfg" role="3cqZAp">
+              <node concept="2OqwBi" id="2tyCW$U4vm3" role="3clFbG">
+                <node concept="pncrf" id="2tyCW$U4vff" role="2Oq$k0" />
+                <node concept="3TrcHB" id="2tyCW$U4vJx" role="2OqNvi">
+                  <ref role="3TsBF5" to="tsp6:2tyCW$U4uvE" resolve="isExpandable" />
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+        <node concept="VechU" id="2tyCW$U4vY0" role="3F10Kt">
+          <property role="Vb096" value="DARK_BLUE" />
+        </node>
+      </node>
       <node concept="1QoScp" id="4ASKzdDCnuM" role="3EZMnx">
         <property role="1QpmdY" value="true" />
         <node concept="pkWqt" id="4ASKzdDCnuP" role="3e4ffs">

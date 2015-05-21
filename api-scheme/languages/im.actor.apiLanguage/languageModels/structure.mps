@@ -68,6 +68,10 @@
       <property role="TrG5h" value="hasInterface" />
       <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
     </node>
+    <node concept="1TJgyi" id="2tyCW$U4uvE" role="1TKVEl">
+      <property role="TrG5h" value="isExpandable" />
+      <ref role="AX2Wp" to="tpck:fKAQMTB" resolve="boolean" />
+    </node>
     <node concept="PrWs8" id="22nuAqQ_AH3" role="PzmwI">
       <ref role="PrY4T" node="22nuAqQ_Ani" resolve="IStruct" />
     </node>

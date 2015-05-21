@@ -52,8 +52,8 @@ public class UpdateGenerator {
 
             ContainerGenerator.generateGetters(generator, definition, u);
 
-            ContainerGenerator.generateSerialization(generator, u, definition);
             ContainerGenerator.generateDeserialization(generator, u, definition);
+            ContainerGenerator.generateSerialization(generator, u, definition);
             ContainerGenerator.generateToString(generator, u, definition);
 
             generator.appendLn("@Override");

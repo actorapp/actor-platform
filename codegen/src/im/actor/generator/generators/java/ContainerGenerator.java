@@ -4,7 +4,6 @@ import im.actor.generator.FileGenerator;
 import im.actor.generator.scheme.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by ex3ndr on 15.11.14.
@@ -211,21 +210,33 @@ public class ContainerGenerator {
         }
     }
 
-    public static void generateSerialization(FileGenerator generator, SchemeContainer container,
-                                             SchemeDefinition definition) throws IOException {
+    public static void generateDeserialization(FileGenerator generator, SchemeContainer container,
+                                               SchemeDefinition definition) throws IOException {
+        generateDeserialization(generator, container, definition, false);
+    }
+
+    public static void generateDeserialization(FileGenerator generator, SchemeContainer container,
+                                               SchemeDefinition definition, boolean isExpandable) throws IOException {
         generator.appendLn("@Override");
         generator.appendLn("public void parse(BserValues values) throws IOException {");
         generator.increaseDepth();
         for (SchemeAttribute attribute : container.getFilteredAttributes()) {
-            generateSerialization(generator, attribute.getId(), attribute.getName(), attribute.getType(), definition);
+            generateDeserialization(generator, attribute.getId(), attribute.getName(), attribute.getType(), definition);
+        }
+        if (isExpandable) {
+            generator.appendLn("if (values.hasRemaining()) {");
+            generator.increaseDepth();
+            generator.appendLn("setUnmappedObjects(values.buildRemaining());");
+            generator.decreaseDepth();
+            generator.appendLn("}");
         }
         generator.decreaseDepth();
         generator.appendLn("}");
         generator.appendLn();
     }
 
-    private static void generateSerialization(FileGenerator generator, int attributeId, String attributeName, SchemeType type,
-                                              SchemeDefinition definition) throws IOException {
+    private static void generateDeserialization(FileGenerator generator, int attributeId, String attributeName, SchemeType type,
+                                                SchemeDefinition definition) throws IOException {
         type = JavaConfig.reduceAlias(type, definition);
         if (type instanceof SchemePrimitiveType) {
             SchemePrimitiveType primitiveType = (SchemePrimitiveType) type;
@@ -345,21 +356,45 @@ public class ContainerGenerator {
         }
     }
 
-    public static void generateDeserialization(FileGenerator generator, SchemeContainer container,
-                                               SchemeDefinition definition) throws IOException {
+    public static void generateSerialization(FileGenerator generator, SchemeContainer container,
+                                             SchemeDefinition definition) throws IOException {
+        generateSerialization(generator, container, definition, false);
+    }
+
+    public static void generateSerialization(FileGenerator generator, SchemeContainer container,
+                                             SchemeDefinition definition, boolean isExpandable) throws IOException {
         generator.appendLn("@Override");
         generator.appendLn("public void serialize(BserWriter writer) throws IOException {");
         generator.increaseDepth();
         for (SchemeAttribute attribute : container.getFilteredAttributes()) {
-            generateDeserialization(generator, attribute.getId(), attribute.getName(), attribute.getType(), definition);
+            generateSerialization(generator, attribute.getId(), attribute.getName(), attribute.getType(), definition);
         }
+
+        if (isExpandable) {
+            generator.appendLn("if (this.getUnmappedObjects() != null) {");
+            generator.increaseDepth();
+            generator.appendLn("SparseArray<Object> unmapped = this.getUnmappedObjects();");
+            generator.appendLn("for (int i = 0; i < unmapped.size(); i++) {");
+            generator.increaseDepth();
+            generator.appendLn("int key = unmapped.keyAt(i);");
+            generator.appendLn("writer.writeUnmapped(key, unmapped.get(key));");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+            generator.decreaseDepth();
+            generator.appendLn("}");
+        }
+
+//        if (isExpandable) {
+//            generator.appendLn("if (w");
+//        }
+
         generator.decreaseDepth();
         generator.appendLn("}");
         generator.appendLn();
     }
 
-    private static void generateDeserialization(FileGenerator generator, int attributeId, String attributeName, SchemeType type,
-                                                SchemeDefinition definition) throws IOException {
+    private static void generateSerialization(FileGenerator generator, int attributeId, String attributeName, SchemeType type,
+                                              SchemeDefinition definition) throws IOException {
         type = JavaConfig.reduceAlias(type, definition);
         if (type instanceof SchemePrimitiveType) {
             SchemePrimitiveType primitiveType = (SchemePrimitiveType) type;

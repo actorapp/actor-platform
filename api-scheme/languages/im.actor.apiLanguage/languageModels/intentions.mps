@@ -511,5 +511,59 @@
       </node>
     </node>
   </node>
+  <node concept="2S6QgY" id="2tyCW$U4wc5">
+    <property role="TrG5h" value="ToggleExpandable" />
+    <ref role="2ZfgGC" to="tsp6:22nuAqQwwzh" resolve="Struct" />
+    <node concept="2Sbjvc" id="2tyCW$U4wc6" role="2ZfgGD">
+      <node concept="3clFbS" id="2tyCW$U4wc7" role="2VODD2">
+        <node concept="3clFbF" id="2tyCW$U4_k2" role="3cqZAp">
+          <node concept="37vLTI" id="2tyCW$U4A6q" role="3clFbG">
+            <node concept="3fqX7Q" id="2tyCW$U4A6I" role="37vLTx">
+              <node concept="2OqwBi" id="2tyCW$U4Ama" role="3fr31v">
+                <node concept="2Sf5sV" id="2tyCW$U4AhI" role="2Oq$k0" />
+                <node concept="3TrcHB" id="2tyCW$U4ADi" role="2OqNvi">
+                  <ref role="3TsBF5" to="tsp6:2tyCW$U4uvE" resolve="isExpandable" />
+                </node>
+              </node>
+            </node>
+            <node concept="2OqwBi" id="2tyCW$U4_no" role="37vLTJ">
+              <node concept="2Sf5sV" id="2tyCW$U4_k1" role="2Oq$k0" />
+              <node concept="3TrcHB" id="2tyCW$U4_DU" role="2OqNvi">
+                <ref role="3TsBF5" to="tsp6:2tyCW$U4uvE" resolve="isExpandable" />
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+    <node concept="2S6ZIM" id="2tyCW$U4wc8" role="2ZfVej">
+      <node concept="3clFbS" id="2tyCW$U4wc9" role="2VODD2">
+        <node concept="3clFbJ" id="2tyCW$U4x70" role="3cqZAp">
+          <node concept="3clFbS" id="2tyCW$U4x71" role="3clFbx">
+            <node concept="3cpWs6" id="2tyCW$U4ysK" role="3cqZAp">
+              <node concept="Xl_RD" id="2tyCW$U4yQM" role="3cqZAk">
+                <property role="Xl_RC" value="Disable Expandable" />
+              </node>
+            </node>
+          </node>
+          <node concept="2OqwBi" id="2tyCW$U4xou" role="3clFbw">
+            <node concept="2Sf5sV" id="2tyCW$U4xhG" role="2Oq$k0" />
+            <node concept="3TrcHB" id="2tyCW$U4xPs" role="2OqNvi">
+              <ref role="3TsBF5" to="tsp6:2tyCW$U4uvE" resolve="isExpandable" />
+            </node>
+          </node>
+          <node concept="9aQIb" id="2tyCW$U4z4a" role="9aQIa">
+            <node concept="3clFbS" id="2tyCW$U4z4b" role="9aQI4">
+              <node concept="3cpWs6" id="2tyCW$U4za6" role="3cqZAp">
+                <node concept="Xl_RD" id="2tyCW$U4zt$" role="3cqZAk">
+                  <property role="Xl_RC" value="Enable Expandable" />
+                </node>
+              </node>
+            </node>
+          </node>
+        </node>
+      </node>
+    </node>
+  </node>
 </model>
 
