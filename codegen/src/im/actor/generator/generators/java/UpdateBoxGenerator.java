@@ -2,7 +2,6 @@ package im.actor.generator.generators.java;
 
 import im.actor.generator.FileGenerator;
 import im.actor.generator.scheme.SchemeDefinition;
-import im.actor.generator.scheme.SchemeUpdate;
 import im.actor.generator.scheme.SchemeUpdateBox;
 
 import java.io.File;
@@ -53,8 +52,8 @@ public class UpdateBoxGenerator {
 
             ContainerGenerator.generateGetters(generator, definition, u);
 
-            ContainerGenerator.generateSerialization(generator, u, definition);
             ContainerGenerator.generateDeserialization(generator, u, definition);
+            ContainerGenerator.generateSerialization(generator, u, definition);
             ContainerGenerator.generateToString(generator, u, definition);
 
             generator.appendLn("@Override");
