@@ -2582,6 +2582,51 @@
           <property role="Nu42W" value="37" />
         </node>
       </node>
+      <node concept="NpBTk" id="2tyCW$U5Q8T" role="2m5mJr">
+        <property role="TrG5h" value="MessageContentChanged" />
+        <node concept="NXeRC" id="2tyCW$U5R6n" role="NXp_2">
+          <property role="NXePf" value="Update about message change" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5Ry4" role="NXp_2">
+          <property role="NX6R2" value="Destination peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2tyCW$U5QeK" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5Ryc" role="NXp_2">
+          <property role="NX6R2" value="Rid of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2tyCW$U5QeR" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5RXZ" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Message content" />
+          <ref role="NX6Kv" node="2tyCW$U5QE$" resolve="message" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U5QeK" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="2tyCW$U5QeO" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U5QeR" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2tyCW$U5QeX" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U5QE$" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="message" />
+          <node concept="3BlaRf" id="2tyCW$U5QEG" role="2m7DVh">
+            <ref role="3BrLez" node="55bmeIQey3W" resolve="Message" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2tyCW$U5Q8U" role="NuuwV">
+          <property role="Nu42W" value="A2" />
+        </node>
+      </node>
       <node concept="NpBTk" id="GBscvBBm97" role="2m5mJr">
         <property role="TrG5h" value="MessageSent" />
         <node concept="NXeRC" id="4zDDY4ER3kt" role="NXp_2">
