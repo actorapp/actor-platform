@@ -57,12 +57,17 @@ public class ProfileActivity extends BaseFragmentActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
         UserVM userVM = users().get(uid);
-        if (userVM.isContact().get()) {
-            menu.findItem(R.id.remove).setVisible(true);
+        if (userVM.isBot()) {
+            menu.findItem(R.id.remove).setVisible(false);
             menu.findItem(R.id.add).setVisible(false);
         } else {
-            menu.findItem(R.id.remove).setVisible(false);
-            menu.findItem(R.id.add).setVisible(true);
+            if (userVM.isContact().get()) {
+                menu.findItem(R.id.remove).setVisible(true);
+                menu.findItem(R.id.add).setVisible(false);
+            } else {
+                menu.findItem(R.id.remove).setVisible(false);
+                menu.findItem(R.id.add).setVisible(true);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
