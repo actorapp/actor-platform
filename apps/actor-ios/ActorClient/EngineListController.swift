@@ -76,6 +76,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         
         // Apply other changes
         self.engineTableView.beginUpdates()
+        var hasUpdates = false
         for i in 0..<modification.getChanges().size() {
             var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
             switch(UInt(change.getOperationType().ordinal())) {
@@ -88,7 +89,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                 self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
                 break
             case AMChangeDescription_OperationType.UPDATE.rawValue:
-                // Ignore
+                // Execute in separate batch
+                hasUpdates = true
                 break
             case AMChangeDescription_OperationType.REMOVE.rawValue:
                 var startIndex = Int(change.getIndex())
@@ -107,6 +109,32 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         self.engineTableView.endUpdates()
         
         // Apply cell change
+        if (hasUpdates) {
+            var visibleIndexes = self.engineTableView.indexPathsForVisibleRows() as! [NSIndexPath]
+            for i in 0..<modification.getChanges().size() {
+                var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+                switch(UInt(change.getOperationType().ordinal())) {
+                case AMChangeDescription_OperationType.UPDATE.rawValue:
+                    var startIndex = Int(change.getIndex())
+                    var rows: NSMutableArray = []
+                    for ind in 0..<change.getLength() {
+                        for visibleIndex in visibleIndexes {
+                            if (visibleIndex.row == Int(startIndex + ind)) {
+                                // Need to rebuild manually because we need to keep cell reference same
+                                var item: AnyObject? = objectAtIndexPath(visibleIndex)
+                                var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
+                                bindCell(self.engineTableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
+                            }
+                        }
+                    }
+                    break
+                default:
+                    break
+                }
+            }
+        }
+        
+        
         for i in 0..<modification.getChanges().size() {
             var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
             switch(UInt(change.getOperationType().ordinal())) {

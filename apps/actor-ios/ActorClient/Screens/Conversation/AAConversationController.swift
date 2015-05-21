@@ -268,13 +268,13 @@ class AAConversationController: EngineSlackListController {
                     
                     var item = objectAtIndexPath(indexPath!) as! AMMessage
                     if let content = item.getContent() as? AMPhotoContent {
-                        if let fileSource = content.getSource() as? AMFileRemoteSource {
-                            if let photoCell = cell as? AABubbleMediaCell {
-                                let frame = photoCell.preview.frame
-                                
-                                MSG.requestStateWithLong(fileSource.getFileReference().getFileId(),
-                                    withAMFileCallback: CocoaDownloadCallback(
-                                        notDownloaded: { () -> () in
+                        if let photoCell = cell as? AABubbleMediaCell {
+                            var frame = photoCell.preview.frame
+                            var touchFrame = tableView.convertRect(frame, fromView: cell.bubble.superview)
+                            if CGRectContainsPoint(touchFrame, point) {
+                                if let fileSource = content.getSource() as? AMFileRemoteSource {
+                                    MSG.requestStateWithLong(fileSource.getFileReference().getFileId(), withAMFileCallback: CocoaDownloadCallback(
+                                    notDownloaded: { () -> () in
                                         MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
                                     }, onDownloading: { (progress) -> () in
                                         MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
@@ -287,6 +287,52 @@ class AAConversationController: EngineSlackListController {
                                         var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
                                         previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
                                     }))
+                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
+                                    MSG.requestUploadStateWithLong(item.getRid(), withAMUploadFileCallback: CocoaUploadCallback(
+                                    notUploaded: { () -> () in
+                                        MSG.resumeUploadWithLong(item.getRid())
+                                    }, onUploading: { (progress) -> () in
+                                        MSG.pauseUploadWithLong(item.getRid())
+                                    }, onUploadedClosure: { () -> () in
+                                        var imageInfo = JTSImageInfo()
+                                        imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                                        imageInfo.referenceRect = frame
+                                        imageInfo.referenceView = photoCell
+                                        
+                                        var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                                        previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+                                    }))
+                                }
+                            }
+                        }
+                    } else if let content = item.getContent() as? AMDocumentContent {
+                        if let documentCell = cell as? AABubbleDocumentCell {
+                            var frame = documentCell.bubble.frame
+                            frame = tableView.convertRect(frame, fromView: cell.bubble.superview)
+                            if CGRectContainsPoint(frame, point) {
+                                if let fileSource = content.getSource() as? AMFileRemoteSource {
+                                    MSG.requestStateWithLong(fileSource.getFileReference().getFileId(), withAMFileCallback: CocoaDownloadCallback(
+                                    notDownloaded: { () -> () in
+                                        MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
+                                    }, onDownloading: { (progress) -> () in
+                                        MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
+                                    }, onDownloaded: { (reference) -> () in
+                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+                                        controller.delegate = self
+                                        controller.presentPreviewAnimated(true)
+                                    }))
+                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
+                                    MSG.requestUploadStateWithLong(item.getRid(), withAMUploadFileCallback: CocoaUploadCallback(
+                                    notUploaded: { () -> () in
+                                        MSG.resumeUploadWithLong(item.getRid())
+                                    }, onUploading: { (progress) -> () in
+                                        MSG.pauseUploadWithLong(item.getRid())
+                                    }, onUploadedClosure: { () -> () in
+                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                                        controller.delegate = self
+                                        controller.presentPreviewAnimated(true)
+                                    }))
+                                }
                             }
                         }
                     }
@@ -326,7 +372,10 @@ class AAConversationController: EngineSlackListController {
         super.didPressLeftButton(sender)
         
         var actionShit = ABActionShit()
-        actionShit.buttonTitles = [NSLocalizedString("PhotoCamera",comment: "Take Photo"), NSLocalizedString("PhotoLibrary",comment: "Choose Photo")]
+        actionShit.buttonTitles = [
+            NSLocalizedString("PhotoCamera",comment: "Take Photo"),
+            NSLocalizedString("PhotoLibrary",comment: "Choose Photo"),
+            NSLocalizedString("SendDocument",comment: "Document")]
         actionShit.cancelButtonTitle = NSLocalizedString("AlertCancel",comment: "Cancel")
         actionShit.delegate = self
         actionShit.showWithCompletion(nil)
@@ -352,7 +401,12 @@ class AAConversationController: EngineSlackListController {
                 cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier, peer: peer)
             }
             return cell!
-            
+        } else if (message.getContent() is AMDocumentContent) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
+            if (cell == nil) {
+                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier, peer: peer)
+            }
+            return cell!
         } else if (message.getContent() is AMServiceContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! AABubbleServiceCell?
             if (cell == nil) {
@@ -463,15 +517,24 @@ class AAConversationController: EngineSlackListController {
     }
 }
 
+extension AAConversationController: UIDocumentInteractionControllerDelegate {
+    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
+        return self
+    }
+}
+
 // MARK: -
 // MARK: UIDocumentPicker Delegate
 
 extension AAConversationController: UIDocumentPickerDelegate {
     
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
-        var path = url.path;
-        
-        // TODO: Implement
+        var path = url.path!;
+        var fileName = url.lastPathComponent
+        var range = path.rangeOfString("/tmp", options: NSStringCompareOptions.allZeros, range: nil, locale: nil)
+        var descriptor = path.substringFromIndex(range!.startIndex)
+        NSLog("Picked file: \(descriptor)")
+        MSG.sendDocumentWithAMPeer(peer, withNSString: fileName, withNSString: "application/octet-stream", withAMFileSystemReference: CocoaFile(path: descriptor))
     }
     
 }
@@ -502,6 +565,17 @@ extension AAConversationController: UIImagePickerControllerDelegate, UINavigatio
     
 }
 
+extension AAConversationController: UIDocumentMenuDelegate {
+    func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
+        documentPicker.delegate = self
+        self.presentViewController(documentPicker, animated: true, completion: nil)
+    }
+}
+
+//extension AAConversationController: UIDocumentPickerDelegate {
+//    
+//}
+
 // MARK: -
 // MARK: ABActionShit Delegate
 
@@ -517,6 +591,11 @@ extension AAConversationController: ABActionShitDelegate {
             pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
             pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.presentViewController(pickerController, animated: true, completion: nil)
+        } else if (buttonIndex == 2) {
+            var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
+            documentPicker.view.backgroundColor = UIColor.clearColor()
+            documentPicker.delegate = self
+            self.presentViewController(documentPicker, animated: true, completion: nil)
         }
     }
 }

@@ -1,7 +1,6 @@
 package im.actor.messenger.app.fragment;
 
 import android.app.Activity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.CustomLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import im.actor.android.view.BindedListAdapter;
 import im.actor.android.view.BindedViewHolder;
 import im.actor.messenger.R;
+import im.actor.messenger.app.recycler.DefaultItemAnimator;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
