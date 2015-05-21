@@ -29,6 +29,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
     private String localName;
     private Avatar avatar;
     private Sex sex;
+    private boolean isBot;
     private List<ContactRecord> records;
 
     public User(im.actor.model.api.User wrappedUser) {
@@ -77,6 +78,10 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
 
     public List<ContactRecord> getRecords() {
         return records;
+    }
+
+    public boolean isBot() {
+        return isBot;
     }
 
     public User editName(String name) {
@@ -130,6 +135,10 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         this.accessHash = wrapped.getAccessHash();
         this.name = wrapped.getName();
         this.localName = wrapped.getLocalName();
+        this.isBot = false;
+        if (wrapped.isBot() != null) {
+            this.isBot = wrapped.isBot();
+        }
         this.sex = Sex.UNKNOWN;
         if (wrapped.getSex() != null) {
             switch (wrapped.getSex()) {
