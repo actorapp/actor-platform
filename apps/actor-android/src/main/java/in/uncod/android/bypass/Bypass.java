@@ -102,9 +102,9 @@ public class Bypass {
 			builder.setSpan(monoSpan, 0, builder.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.LINK) {
-//			URLSpan urlSpan = new URLSpan(element.getAttribute("link"));
-//			builder.setSpan(urlSpan, 0, builder.length(),
-//					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			URLSpan urlSpan = new URLSpan(element.getAttribute("link"));
+			builder.setSpan(urlSpan, 0, builder.length(),
+					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
 			QuoteSpan quoteSpan = new QuoteSpan();
 			builder.setSpan(quoteSpan, 0, builder.length(),
