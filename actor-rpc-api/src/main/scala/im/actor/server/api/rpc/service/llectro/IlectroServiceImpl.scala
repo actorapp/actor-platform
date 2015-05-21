@@ -24,13 +24,34 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
     Future.successful(Error(CommonErrors.UnsupportedRequest))
   }
 
-  override def jhandleDisableInterests(interests: Vector[Int], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = ???
+  override def jhandleDisableInterests(interests: Vector[Int], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val action =
+      requireAuth(clientData).map { client ⇒
+        persist.ilectro.ILectroUser.findByUserId(client.userId).flatMap {
+          case Some(user) ⇒
+            for (result ← ilectro.deleteInterest(user, interests)) yield result.collectFirst {
+              case Left(e) ⇒ throw new Exception(e.errors)
+            }.getOrElse(Ok(ResponseVoid))
+          case None ⇒ DBIO.successful(Error(Errors.IlectroNotInitialized))
+        }
+      }
+    db.run(toDBIOAction(action))
+  }
 
-  override def jhandleEnableInterests(interests: Vector[Int], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = ???
+  override def jhandleEnableInterests(interests: Vector[Int], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val action =
+      requireAuth(clientData).map { client ⇒
+        persist.ilectro.ILectroUser.findByUserId(client.userId).flatMap {
+          case Some(user) ⇒ for (_ ← ilectro.addInterests(user, interests)) yield Ok(ResponseVoid)
+          case None       ⇒ DBIO.successful(Error(Errors.IlectroNotInitialized))
+        }
+      }
+    db.run(toDBIOAction(action))
+  }
 
   override def jhandleGetAdBanners(maxBannerWidth: Int, maxBannerHeight: Int, screenDensity: Double, clientData: ClientData): Future[HandlerResult[ResponseGetAdBanners]] = {
     val authorizedAction = requireAuth(clientData) map { client ⇒
-      persist.ilectro.IlectroUser.findByUserId(client.userId) flatMap {
+      persist.ilectro.ILectroUser.findByUserId(client.userId) flatMap {
         case Some(user) ⇒
           for (banner ← DBIO.from(ilectro.getBanners(user.uuid))) yield {
             Ok(ResponseGetAdBanners(Vector(Banner(0, 0, 0, banner.imageUrl, banner.advertUrl, 0))))
