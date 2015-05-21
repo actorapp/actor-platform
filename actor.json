@@ -2715,6 +2715,60 @@
         {
           "type": "update",
           "content": {
+            "name": "MessageContentChanged",
+            "header": 162,
+            "doc": [
+              "Update about message change",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Message content"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "MessageSent",
             "header": 4,
             "doc": [
