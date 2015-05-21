@@ -17,7 +17,7 @@ object Errors {
   val IlectroNotInitialized = RpcError(400, "ILECTRO_USER_NOT_INITIALIZED", "", false, None)
 }
 
-class LlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: ActorSystem) extends IlectroService {
+class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: ActorSystem) extends IlectroService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleNotifyAddView(bannerId: Int, viewDuration: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
