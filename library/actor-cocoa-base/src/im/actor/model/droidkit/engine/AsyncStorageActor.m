@@ -124,6 +124,18 @@ J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadBackward, query_, NSString *)
 J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadBackward, topSortKey_, JavaLangLong *)
 J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadBackward, callback_, id<DKListEngineDisplayLoadCallback>)
 
+@interface DKAsyncStorageActor_LoadCenter () {
+ @public
+  JavaLangLong *centerSortKey_;
+  jint limit_;
+  id<DKListEngineDisplayLoadCallback> callback_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadCenter, centerSortKey_, JavaLangLong *)
+J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadCenter, callback_, id<DKListEngineDisplayLoadCallback>)
+
 @implementation DKAsyncStorageActor
 
 - (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)storage
@@ -234,6 +246,14 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
   DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(self, callback, res);
 }
 
+- (void)loadCenterWithJavaLangLong:(JavaLangLong *)centerSortKey
+                           withInt:(jint)limit
+withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
+  JavaUtilArrayList *res;
+  res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadCenterWithJavaLangLong:centerSortKey withInt:limit]);
+  DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(self, callback, res);
+}
+
 - (void)callCallbackWithDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback
                                        withJavaUtilList:(id<JavaUtilList>)res {
   DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(self, callback, res);
@@ -270,6 +290,9 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
   }
   else if ([message isKindOfClass:[DKAsyncStorageActor_LoadBackward class]]) {
     [self loadBackwardWithNSString:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getQuery] withJavaLangLong:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getTopSortKey] withInt:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getLimit] withDKListEngineDisplayLoadCallback:[((DKAsyncStorageActor_LoadBackward *) nil_chk(((DKAsyncStorageActor_LoadBackward *) check_class_cast(message, [DKAsyncStorageActor_LoadBackward class])))) getCallback]];
+  }
+  else if ([message isKindOfClass:[DKAsyncStorageActor_LoadCenter class]]) {
+    [self loadCenterWithJavaLangLong:[((DKAsyncStorageActor_LoadCenter *) nil_chk(((DKAsyncStorageActor_LoadCenter *) check_class_cast(message, [DKAsyncStorageActor_LoadCenter class])))) getCenterSortKey] withInt:[((DKAsyncStorageActor_LoadCenter *) nil_chk(((DKAsyncStorageActor_LoadCenter *) check_class_cast(message, [DKAsyncStorageActor_LoadCenter class])))) getLimit] withDKListEngineDisplayLoadCallback:[((DKAsyncStorageActor_LoadCenter *) nil_chk(((DKAsyncStorageActor_LoadCenter *) check_class_cast(message, [DKAsyncStorageActor_LoadCenter class])))) getCallback]];
   }
   else {
     [self dropWithId:message];
@@ -596,6 +619,44 @@ DKAsyncStorageActor_LoadBackward *new_DKAsyncStorageActor_LoadBackward_initWithN
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadBackward)
+
+@implementation DKAsyncStorageActor_LoadCenter
+
+- (instancetype)initWithJavaLangLong:(JavaLangLong *)centerSortKey
+                             withInt:(jint)limit
+ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
+  DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(self, centerSortKey, limit, callback);
+  return self;
+}
+
+- (JavaLangLong *)getCenterSortKey {
+  return centerSortKey_;
+}
+
+- (jint)getLimit {
+  return limit_;
+}
+
+- (id<DKListEngineDisplayLoadCallback>)getCallback {
+  return callback_;
+}
+
+@end
+
+void DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(DKAsyncStorageActor_LoadCenter *self, JavaLangLong *centerSortKey, jint limit, id<DKListEngineDisplayLoadCallback> callback) {
+  (void) NSObject_init(self);
+  self->centerSortKey_ = centerSortKey;
+  self->limit_ = limit;
+  self->callback_ = callback;
+}
+
+DKAsyncStorageActor_LoadCenter *new_DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(JavaLangLong *centerSortKey, jint limit, id<DKListEngineDisplayLoadCallback> callback) {
+  DKAsyncStorageActor_LoadCenter *self = [DKAsyncStorageActor_LoadCenter alloc];
+  DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(self, centerSortKey, limit, callback);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadCenter)
 
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(DKAsyncStorageActor_LoadItemCallback)
 

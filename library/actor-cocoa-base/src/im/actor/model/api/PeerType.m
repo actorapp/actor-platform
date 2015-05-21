@@ -24,7 +24,7 @@ __attribute__((unused)) static ImActorModelApiPeerTypeEnum *new_ImActorModelApiP
 
 J2OBJC_INITIALIZED_DEFN(ImActorModelApiPeerTypeEnum)
 
-ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[4];
+ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[3];
 
 @implementation ImActorModelApiPeerTypeEnum
 
@@ -45,7 +45,7 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[4];
 
 IOSObjectArray *ImActorModelApiPeerTypeEnum_values() {
   ImActorModelApiPeerTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiPeerTypeEnum_values_ count:4 type:ImActorModelApiPeerTypeEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:ImActorModelApiPeerTypeEnum_values_ count:3 type:ImActorModelApiPeerTypeEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
@@ -58,7 +58,7 @@ IOSObjectArray *ImActorModelApiPeerTypeEnum_values() {
 
 ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NSString *name) {
   ImActorModelApiPeerTypeEnum_initialize();
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 3; i++) {
     ImActorModelApiPeerTypeEnum *e = ImActorModelApiPeerTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -76,8 +76,7 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NS
   if (self == [ImActorModelApiPeerTypeEnum class]) {
     ImActorModelApiPeerTypeEnum_PRIVATE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(1, @"PRIVATE", 0);
     ImActorModelApiPeerTypeEnum_GROUP = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(2, @"GROUP", 1);
-    ImActorModelApiPeerTypeEnum_EMAIL = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(3, @"EMAIL", 2);
-    ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 3);
+    ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
     J2OBJC_SET_INITIALIZED(ImActorModelApiPeerTypeEnum)
   }
 }
@@ -102,8 +101,6 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint valu
     return ImActorModelApiPeerTypeEnum_PRIVATE;
     case 2:
     return ImActorModelApiPeerTypeEnum_GROUP;
-    case 3:
-    return ImActorModelApiPeerTypeEnum_EMAIL;
     default:
     return ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE;
   }

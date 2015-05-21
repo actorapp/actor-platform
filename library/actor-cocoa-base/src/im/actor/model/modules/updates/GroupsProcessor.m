@@ -5,6 +5,7 @@
 
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Member.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -169,18 +170,16 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 - (void)onAvatarChangedWithInt:(jint)groupId
                       withLong:(jlong)rid
                        withInt:(jint)uid
-                  withAMAvatar:(AMAvatar *)avatar
+     withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                       withLong:(jlong)date
                    withBoolean:(jboolean)isSilent {
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
   if (group != nil) {
-    if (!AMJavaUtil_equalsEWithId_withId_([group getAvatar], avatar)) {
-      AMGroup *upd = [group editAvatarWithAMAvatar:avatar];
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:upd];
-      ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
-    }
+    AMGroup *upd = [group editAvatarWithImActorModelApiAvatar:avatar];
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:upd];
+    ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     if (!isSilent) {
-      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(avatar));
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(new_AMAvatar_initWithImActorModelApiAvatar_(avatar)));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }

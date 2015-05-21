@@ -70,9 +70,6 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
     case AMPeerType_GROUP:
     type = 1;
     break;
-    case AMPeerType_EMAIL:
-    type = 2;
-    break;
   }
   return ((jlong) peerId_ & (jlong) 0xFFFFFFFFLL) + (LShift64(((jlong) type & (jlong) 0xFFFFFFFFLL), 32));
 }
@@ -107,9 +104,6 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
     case 1:
     peerType_ = AMPeerTypeEnum_get_PRIVATE();
     break;
-    case 2:
-    peerType_ = AMPeerTypeEnum_get_EMAIL();
-    break;
     case 3:
     peerType_ = AMPeerTypeEnum_get_GROUP();
     break;
@@ -122,9 +116,6 @@ __attribute__((unused)) static AMPeer *new_AMPeer_init() NS_RETURNS_RETAINED;
     default:
     case AMPeerType_PRIVATE:
     [writer writeIntWithInt:2 withInt:1];
-    break;
-    case AMPeerType_EMAIL:
-    [writer writeIntWithInt:2 withInt:2];
     break;
     case AMPeerType_GROUP:
     [writer writeIntWithInt:2 withInt:3];
@@ -153,8 +144,6 @@ AMPeer *AMPeer_fromUniqueIdWithLong_(jlong uid) {
     return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_PRIVATE(), id_);
     case 1:
     return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_GROUP(), id_);
-    case 2:
-    return new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_EMAIL(), id_);
   }
 }
 

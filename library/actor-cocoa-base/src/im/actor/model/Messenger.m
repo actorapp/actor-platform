@@ -98,6 +98,9 @@
   [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) resetAuth];
 }
 
+- (void)onLoggedIn {
+}
+
 - (AMAppStateVM *)getAppState {
   return [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAppStateModule])) getAppStateVM];
 }

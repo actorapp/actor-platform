@@ -6,6 +6,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
+#include "im/actor/model/api/ApiVersion.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/ActorApiCallback.h"
