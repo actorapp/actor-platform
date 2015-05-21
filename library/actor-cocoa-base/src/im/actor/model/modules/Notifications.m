@@ -103,6 +103,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
   [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_OnAppHidden_init()];
 }
 
+- (void)pauseNotifications {
+  [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_PauseNotifications_init()];
+}
+
+- (void)resumeNotifications {
+  [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init()];
+}
+
 @end
 
 void ImActorModelModulesNotifications_initWithImActorModelModulesModules_(ImActorModelModulesNotifications *self, ImActorModelModulesModules *modules) {

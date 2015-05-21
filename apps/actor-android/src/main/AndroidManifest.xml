@@ -18,7 +18,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -190,8 +193,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/PictureFullscreenTheme"
             android:windowSoftInputMode="adjustResize" />
-        <!-- Actions -->
 
+        <!-- Actions -->
         <activity
             android:name=".app.fragment.settings.EditNameActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -204,8 +207,14 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
-        <!-- Misc -->
+        <!-- Phone Calls -->
+        <activity
+            android:name=".app.fragment.call.CallActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
 
+        <!-- Misc -->
         <activity
             android:name=".app.activity.TakePhotoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

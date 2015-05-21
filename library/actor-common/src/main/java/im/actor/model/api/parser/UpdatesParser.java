@@ -10,6 +10,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -24,15 +25,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 16: return UpdateUserAvatarChanged.fromBytes(payload);
             case 32: return UpdateUserNameChanged.fromBytes(payload);
             case 51: return UpdateUserLocalNameChanged.fromBytes(payload);
-            case 87: return UpdateUserPhoneAdded.fromBytes(payload);
-            case 88: return UpdateUserPhoneRemoved.fromBytes(payload);
-            case 89: return UpdatePhoneTitleChanged.fromBytes(payload);
-            case 101: return UpdatePhoneMoved.fromBytes(payload);
-            case 96: return UpdateUserEmailAdded.fromBytes(payload);
-            case 97: return UpdateUserEmailRemoved.fromBytes(payload);
-            case 98: return UpdateEmailTitleChanged.fromBytes(payload);
-            case 102: return UpdateEmailMoved.fromBytes(payload);
-            case 86: return UpdateUserContactsChanged.fromBytes(payload);
+            case 134: return UpdateUserContactsChanged.fromBytes(payload);
             case 5: return UpdateContactRegistered.fromBytes(payload);
             case 40: return UpdateContactsAdded.fromBytes(payload);
             case 41: return UpdateContactsRemoved.fromBytes(payload);
@@ -56,6 +49,8 @@ public class UpdatesParser extends BaseParser<Update> {
             case 8: return UpdateUserOffline.fromBytes(payload);
             case 9: return UpdateUserLastSeen.fromBytes(payload);
             case 33: return UpdateGroupOnline.fromBytes(payload);
+            case 49: return UpdateCallRing.fromBytes(payload);
+            case 83: return UpdateCallEnd.fromBytes(payload);
             case 131: return UpdateParameterChanged.fromBytes(payload);
             case 42: return UpdateConfig.fromBytes(payload);
         }

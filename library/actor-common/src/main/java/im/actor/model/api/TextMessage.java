@@ -10,6 +10,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -19,10 +20,12 @@ import java.util.ArrayList;
 public class TextMessage extends Message {
 
     private String text;
+    private List<Integer> mentions;
     private TextMessageEx ext;
 
-    public TextMessage(String text, TextMessageEx ext) {
+    public TextMessage(String text, List<Integer> mentions, TextMessageEx ext) {
         this.text = text;
+        this.mentions = mentions;
         this.ext = ext;
     }
 
@@ -38,6 +41,10 @@ public class TextMessage extends Message {
         return this.text;
     }
 
+    public List<Integer> getMentions() {
+        return this.mentions;
+    }
+
     public TextMessageEx getExt() {
         return this.ext;
     }
@@ -45,8 +52,12 @@ public class TextMessage extends Message {
     @Override
     public void parse(BserValues values) throws IOException {
         this.text = values.getString(1);
+        this.mentions = values.getRepeatedInt(2);
         if (values.optBytes(3) != null) {
             this.ext = TextMessageEx.fromBytes(values.getBytes(3));
+        }
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
         }
     }
 
@@ -56,15 +67,23 @@ public class TextMessage extends Message {
             throw new IOException();
         }
         writer.writeString(1, this.text);
+        writer.writeRepeatedInt(2, this.mentions);
         if (this.ext != null) {
             writer.writeBytes(3, this.ext.buildContainer());
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 
     @Override
     public String toString() {
         String res = "struct TextMessage{";
-        res += "text=" + this.text;
+        res += "mentions=" + this.mentions;
         res += ", ext=" + this.ext;
         res += "}";
         return res;

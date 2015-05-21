@@ -10,6 +10,7 @@ import java.util.List;
 import im.actor.model.annotation.MainThread;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContactRecord;
+import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
 import im.actor.model.modules.Modules;
@@ -24,6 +25,7 @@ import im.actor.model.mvvm.ValueModel;
 public class UserVM extends BaseValueModel<User> {
     private int id;
     private long hash;
+    private boolean isBot;
     private ValueModel<String> name;
     private ValueModel<Avatar> avatar;
     private Sex sex;
@@ -45,6 +47,7 @@ public class UserVM extends BaseValueModel<User> {
         id = user.getUid();
         hash = user.getAccessHash();
         sex = user.getSex();
+        isBot = user.isBot();
         name = new ValueModel<String>("user." + id + ".name", user.getName());
         avatar = new ValueModel<Avatar>("user." + id + ".avatar", user.getAvatar());
         isContact = new ValueModel<Boolean>("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
@@ -80,6 +83,15 @@ public class UserVM extends BaseValueModel<User> {
      */
     public long getHash() {
         return hash;
+    }
+
+    /**
+     * Is User actually bot
+     *
+     * @return is User bot
+     */
+    public boolean isBot() {
+        return isBot;
     }
 
     /**
@@ -139,7 +151,7 @@ public class UserVM extends BaseValueModel<User> {
     private ArrayList<UserPhone> buildPhones(List<ContactRecord> records) {
         ArrayList<UserPhone> res = new ArrayList<UserPhone>();
         for (ContactRecord r : records) {
-            if (r.getRecordType() == ContactRecord.TYPE_PHONE) {
+            if (r.getRecordType() == ContactRecordType.PHONE) {
                 res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
             }
         }

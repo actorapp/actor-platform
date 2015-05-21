@@ -4,7 +4,10 @@
 
 package im.actor.android;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -40,7 +43,14 @@ public class AndroidBaseMessenger extends BaseMessenger {
                                 onPhoneBookChanged();
                             }
                         });
-        // TODO: Catch all network changes
+
+        // Catch network change
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                onNetworkChanged();
+            }
+        }, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     public Context getContext() {

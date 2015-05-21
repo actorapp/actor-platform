@@ -8,28 +8,27 @@ package im.actor.model.entity;
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-public class AvatarImage extends BserObject {
+public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
 
     public static AvatarImage fromBytes(byte[] data) throws IOException {
         return Bser.parse(new AvatarImage(), data);
     }
 
+    private static final int RECORD_ID = 10;
+
     private int width;
     private int height;
     private FileReference fileReference;
 
-    public AvatarImage(int width, int height, FileReference fileReference) {
-        this.width = width;
-        this.height = height;
-        this.fileReference = fileReference;
+    public AvatarImage(im.actor.model.api.AvatarImage wrapped) {
+        super(RECORD_ID, wrapped);
     }
 
     private AvatarImage() {
-
+        super(RECORD_ID);
     }
 
     public int getWidth() {
@@ -42,6 +41,35 @@ public class AvatarImage extends BserObject {
 
     public FileReference getFileReference() {
         return fileReference;
+    }
+
+    @Override
+    public void parse(BserValues values) throws IOException {
+
+        // If Old Layout used
+        if (!values.getBool(5, false)) {
+            int width = values.getInt(1);
+            int height = values.getInt(2);
+            FileReference fileReference = FileReference.fromBytes(values.getBytes(3));
+            setWrapped(new im.actor.model.api.AvatarImage(fileReference.getFileLocation(),
+                    width, height, fileReference.getFileSize()));
+        }
+
+        super.parse(values);
+    }
+
+    @Override
+    public void serialize(BserWriter writer) throws IOException {
+        writer.writeBool(5, true);
+        super.serialize(writer);
+    }
+
+    @Override
+    protected void applyWrapped(im.actor.model.api.AvatarImage wrapped) {
+        this.width = wrapped.getWidth();
+        this.height = wrapped.getHeight();
+        this.fileReference = new FileReference(wrapped.getFileLocation(),
+                "avatar.jpg", wrapped.getFileSize());
     }
 
     @Override
@@ -67,16 +95,7 @@ public class AvatarImage extends BserObject {
     }
 
     @Override
-    public void parse(BserValues values) throws IOException {
-        width = values.getInt(1);
-        height = values.getInt(2);
-        fileReference = FileReference.fromBytes(values.getBytes(3));
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, width);
-        writer.writeInt(2, height);
-        writer.writeObject(3, fileReference);
+    protected im.actor.model.api.AvatarImage createInstance() {
+        return new im.actor.model.api.AvatarImage();
     }
 }

@@ -14,7 +14,7 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER 86
+#define ImActorModelApiUpdatesUpdateUserContactsChanged_HEADER 134
 
 @interface ImActorModelApiUpdatesUpdateUserContactsChanged : ImActorModelNetworkParserUpdate
 
@@ -23,16 +23,13 @@
 - (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails;
+           withJavaUtilList:(id<JavaUtilList>)contactRecords;
 
 + (ImActorModelApiUpdatesUpdateUserContactsChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (id<JavaUtilList>)getEmails;
+- (id<JavaUtilList>)getContactRecords;
 
 - (jint)getHeaderKey;
-
-- (id<JavaUtilList>)getPhones;
 
 - (jint)getUid;
 
@@ -50,9 +47,9 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserContactsChanged, HEAD
 
 FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserContactsChanged *ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_withJavaUtilList_(ImActorModelApiUpdatesUpdateUserContactsChanged *self, jint uid, id<JavaUtilList> phones, id<JavaUtilList> emails);
+FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_(ImActorModelApiUpdatesUpdateUserContactsChanged *self, jint uid, id<JavaUtilList> contactRecords);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserContactsChanged *new_ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_withJavaUtilList_(jint uid, id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserContactsChanged *new_ImActorModelApiUpdatesUpdateUserContactsChanged_initWithInt_withJavaUtilList_(jint uid, id<JavaUtilList> contactRecords) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserContactsChanged_init(ImActorModelApiUpdatesUpdateUserContactsChanged *self);
 

@@ -68,6 +68,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, value_, NSStri
 
 - (NSString *)description {
   NSString *res = @"update ParameterChanged{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"key=", self->key_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", value=", self->value_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

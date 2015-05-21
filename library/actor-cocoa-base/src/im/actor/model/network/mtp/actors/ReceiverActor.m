@@ -132,14 +132,10 @@ MTReceiverActor *new_MTReceiverActor_initWithMTMTProto_(MTMTProto *proto) {
 void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProtoMessage *message) {
   jboolean disableConfirm = NO;
   @try {
-    if ([((JavaUtilArrayList *) nil_chk(self->receivedMessages_)) containsWithId:JavaLangLong_valueOfWithLong_([((MTProtoMessage *) nil_chk(message)) getMessageId])]) {
-      AMLog_wWithNSString_withNSString_(MTReceiverActor_TAG_, JreStrcat("$J$", @"Already received message #", [message getMessageId], @": ignoring"));
-      return;
-    }
-    if ([self->receivedMessages_ size] >= MTReceiverActor_MAX_RECEIVED_BUFFER) {
+    if ([((JavaUtilArrayList *) nil_chk(self->receivedMessages_)) size] >= MTReceiverActor_MAX_RECEIVED_BUFFER) {
       (void) [self->receivedMessages_ removeWithInt:0];
     }
-    [self->receivedMessages_ addWithId:JavaLangLong_valueOfWithLong_([message getMessageId])];
+    [self->receivedMessages_ addWithId:JavaLangLong_valueOfWithLong_([((MTProtoMessage *) nil_chk(message)) getMessageId])];
     MTProtoStruct *obj;
     @try {
       obj = MTProtoSerializer_readMessagePayloadWithByteArray_([message getPayload]);

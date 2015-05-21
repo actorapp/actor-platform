@@ -104,6 +104,14 @@ public class ApiBroker extends Actor {
             forceResend(((ForceResend) message).id);
         } else if (message instanceof ProtoUpdate) {
             processUpdate(((ProtoUpdate) message).getData());
+        } else if (message instanceof NetworkChanged) {
+            onNetworkChanged();
+        }
+    }
+
+    private void onNetworkChanged() {
+        if (proto != null) {
+            proto.onNetworkChanged();
         }
     }
 
@@ -131,27 +139,28 @@ public class ApiBroker extends Actor {
     private void createMtProto(long key) {
         Log.d(TAG, "Creating proto");
         keyStorage.saveAuthKey(key);
-        proto = new MTProto(key, new Random().nextLong(), endpoints, new MTProtoCallback() {
-            @Override
-            public void onRpcResponse(long mid, byte[] content) {
-                self().send(new ProtoResponse(mid, content));
-            }
+        proto = new MTProto(key, new Random().nextLong(), endpoints,
+                new MTProtoCallback() {
+                    @Override
+                    public void onRpcResponse(long mid, byte[] content) {
+                        self().send(new ProtoResponse(mid, content));
+                    }
 
-            @Override
-            public void onUpdate(byte[] content) {
-                self().send(new ProtoUpdate(content));
-            }
+                    @Override
+                    public void onUpdate(byte[] content) {
+                        self().send(new ProtoUpdate(content));
+                    }
 
-            @Override
-            public void onAuthKeyInvalidated(long authKey) {
-                callback.onAuthIdInvalidated(authKey);
-            }
+                    @Override
+                    public void onAuthKeyInvalidated(long authKey) {
+                        callback.onAuthIdInvalidated(authKey);
+                    }
 
-            @Override
-            public void onSessionCreated() {
-                callback.onNewSessionCreated();
-            }
-        }, networkProvider);
+                    @Override
+                    public void onSessionCreated() {
+                        callback.onNewSessionCreated();
+                    }
+                }, networkProvider);
 
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);
@@ -337,6 +346,10 @@ public class ApiBroker extends Actor {
         }
     }
 
+    public static class NetworkChanged {
+
+    }
+
     private class RequestAuthId {
 
     }
@@ -408,4 +421,6 @@ public class ApiBroker extends Actor {
             this.callback = callback;
         }
     }
+
+
 }
