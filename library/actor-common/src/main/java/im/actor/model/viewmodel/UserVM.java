@@ -25,6 +25,7 @@ import im.actor.model.mvvm.ValueModel;
 public class UserVM extends BaseValueModel<User> {
     private int id;
     private long hash;
+    private boolean isBot;
     private ValueModel<String> name;
     private ValueModel<Avatar> avatar;
     private Sex sex;
@@ -46,6 +47,7 @@ public class UserVM extends BaseValueModel<User> {
         id = user.getUid();
         hash = user.getAccessHash();
         sex = user.getSex();
+        isBot = user.isBot();
         name = new ValueModel<String>("user." + id + ".name", user.getName());
         avatar = new ValueModel<Avatar>("user." + id + ".avatar", user.getAvatar());
         isContact = new ValueModel<Boolean>("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
@@ -81,6 +83,15 @@ public class UserVM extends BaseValueModel<User> {
      */
     public long getHash() {
         return hash;
+    }
+
+    /**
+     * Is User actually bot
+     *
+     * @return is User bot
+     */
+    public boolean isBot() {
+        return isBot;
     }
 
     /**
