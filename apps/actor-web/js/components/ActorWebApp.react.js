@@ -13,7 +13,7 @@ var ActorWebApp = React.createClass({
     if (this.props.messenger.getUid()) {
       body =
         <div className="app row">
-          <SidebarSection></SidebarSection>
+          <SidebarSection messenger={this.props.messenger}></SidebarSection>
           <MessageSection></MessageSection>
         </div>
     } else {
