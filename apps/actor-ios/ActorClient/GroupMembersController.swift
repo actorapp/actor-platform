@@ -48,7 +48,7 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         for i in 0..<selectedNames.count {
             res.replaceIntAtIndex(UInt(i), withInt: selectedNames[i].getUid())
         }
-        execute(MSG.createGroupWithNSString(groupTitle, withNSString: nil, withIntArray: res), successBlock: { (val) -> Void in
+        execute(MSG.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res), successBlock: { (val) -> Void in
             var gid = val as! JavaLangInteger
             self.navigateNext(AAConversationController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
         }) { (val) -> Void in

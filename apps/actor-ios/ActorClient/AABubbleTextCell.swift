@@ -98,9 +98,9 @@ class AABubbleTextCell : AABubbleCell {
             }
             
             if isGroup && !isOut {
-                if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
+                if let user = MSG.getUserWithUid(message.getSenderId()) {
                     var username = ""
-                    if let uname = user.getName().get() as? String {
+                    if let uname = user.getNameModel().get() as? String {
                         username = uname
                     }
                     senderNameLabel.text = username

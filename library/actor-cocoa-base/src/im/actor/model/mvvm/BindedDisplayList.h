@@ -25,23 +25,23 @@
 
 - (void)dispose;
 
-- (void)initBottomWithBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initBottomWithRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
-- (void)initCenterWithLong:(jlong)centerSortKey
-               withBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initCenterWithKey:(jlong)centerSortKey
+              withRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
 - (void)initEmpty OBJC_METHOD_FAMILY_NONE;
 
-- (void)initSearchWithNSString:(NSString *)query
-                   withBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initSearchWithQuery:(NSString *)query
+                withRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
-- (void)initTopWithBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initTopWithRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
 - (jboolean)isGlobalList;
 
 - (jboolean)isInSearchState;
 
-- (void)touchWithInt:(jint)index;
+- (void)touchWithIndex:(jint)index;
 
 @end
 

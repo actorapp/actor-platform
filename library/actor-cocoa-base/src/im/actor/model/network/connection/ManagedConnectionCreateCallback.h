@@ -12,9 +12,9 @@
 
 @protocol AMManagedConnectionCreateCallback < NSObject, JavaObject >
 
-- (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection;
+- (void)onConnectionCreated:(AMManagedConnection *)connection;
 
-- (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection;
+- (void)onConnectionCreateError:(AMManagedConnection *)connection;
 
 @end
 

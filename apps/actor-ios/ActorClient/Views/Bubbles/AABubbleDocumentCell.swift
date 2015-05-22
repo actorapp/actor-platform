@@ -88,7 +88,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
             
             titleLabel.text = document.getName()
             bindedExt = document.getExt().lowercaseString
-            sizeLabel.text = MSG.getFormatter().formatFileSizeWithInt(document.getSource().getSize())
+            sizeLabel.text = MSG.getFormatter().formatFileSize(document.getSource().getSize())
             
             // Reset progress
             circullarNode.hidden = true

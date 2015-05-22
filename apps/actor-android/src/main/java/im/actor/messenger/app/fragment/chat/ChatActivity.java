@@ -12,12 +12,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,6 +28,8 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,9 +65,7 @@ import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
-
 import static im.actor.messenger.app.view.ViewUtils.expandMentions;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
 
 
 public class ChatActivity extends BaseActivity{
@@ -747,7 +743,7 @@ public class ChatActivity extends BaseActivity{
 
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         fileName = savedInstanceState.getString("pending_file_name", null);
     }

@@ -5,30 +5,29 @@
 package im.actor.model.entity;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
 public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
 
-    public static AvatarImage fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new AvatarImage(), data);
-    }
-
     private static final int RECORD_ID = 10;
 
     private int width;
     private int height;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private FileReference fileReference;
 
-    public AvatarImage(im.actor.model.api.AvatarImage wrapped) {
+    public AvatarImage(@NotNull im.actor.model.api.AvatarImage wrapped) {
         super(RECORD_ID, wrapped);
     }
 
-    private AvatarImage() {
-        super(RECORD_ID);
+    public AvatarImage(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
     public int getWidth() {
@@ -39,6 +38,7 @@ public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
         return height;
     }
 
+    @NotNull
     public FileReference getFileReference() {
         return fileReference;
     }
@@ -50,7 +50,7 @@ public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
         if (!values.getBool(5, false)) {
             int width = values.getInt(1);
             int height = values.getInt(2);
-            FileReference fileReference = FileReference.fromBytes(values.getBytes(3));
+            FileReference fileReference = new FileReference(values.getBytes(3));
             setWrapped(new im.actor.model.api.AvatarImage(fileReference.getFileLocation(),
                     width, height, fileReference.getFileSize()));
         }
@@ -65,7 +65,7 @@ public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
     }
 
     @Override
-    protected void applyWrapped(im.actor.model.api.AvatarImage wrapped) {
+    protected void applyWrapped(@NotNull im.actor.model.api.AvatarImage wrapped) {
         this.width = wrapped.getWidth();
         this.height = wrapped.getHeight();
         this.fileReference = new FileReference(wrapped.getFileLocation(),
@@ -95,6 +95,7 @@ public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
     }
 
     @Override
+    @NotNull
     protected im.actor.model.api.AvatarImage createInstance() {
         return new im.actor.model.api.AvatarImage();
     }

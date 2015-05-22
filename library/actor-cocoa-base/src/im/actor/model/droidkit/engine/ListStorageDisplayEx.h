@@ -14,22 +14,22 @@
 
 @protocol DKListStorageDisplayEx < DKListStorage, NSObject, JavaObject >
 
-- (id<JavaUtilList>)loadBackwardWithJavaLangLong:(JavaLangLong *)sortingKey
-                                         withInt:(jint)limit;
+- (id<JavaUtilList>)loadBackwardWithSortKey:(JavaLangLong *)sortingKey
+                                  withLimit:(jint)limit;
 
-- (id<JavaUtilList>)loadForwardWithJavaLangLong:(JavaLangLong *)sortingKey
-                                        withInt:(jint)limit;
+- (id<JavaUtilList>)loadForwardWithSortKey:(JavaLangLong *)sortingKey
+                                 withLimit:(jint)limit;
 
-- (id<JavaUtilList>)loadBackwardWithNSString:(NSString *)query
-                            withJavaLangLong:(JavaLangLong *)sortingKey
-                                     withInt:(jint)limit;
+- (id<JavaUtilList>)loadBackwardWithQuery:(NSString *)query
+                              withSortKey:(JavaLangLong *)sortingKey
+                                withLimit:(jint)limit;
 
-- (id<JavaUtilList>)loadForwardWithNSString:(NSString *)query
-                           withJavaLangLong:(JavaLangLong *)sortingKey
-                                    withInt:(jint)limit;
+- (id<JavaUtilList>)loadForwardWithQuery:(NSString *)query
+                             withSortKey:(JavaLangLong *)sortingKey
+                               withLimit:(jint)limit;
 
-- (id<JavaUtilList>)loadCenterWithJavaLangLong:(JavaLangLong *)centerSortKey
-                                       withInt:(jint)limit;
+- (id<JavaUtilList>)loadCenterWithSortKey:(JavaLangLong *)centerSortKey
+                                withLimit:(jint)limit;
 
 @end
 

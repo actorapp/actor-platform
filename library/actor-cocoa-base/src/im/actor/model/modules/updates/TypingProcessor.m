@@ -39,8 +39,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKA
   else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withImActorModelApiTypingTypeEnum_([peer getId], uid, type)];
   }
-  else {
-  }
 }
 
 - (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
@@ -50,8 +48,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKA
   }
   else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_StopGroupTyping_initWithInt_withInt_([peer getId], uid)];
-  }
-  else {
   }
 }
 
