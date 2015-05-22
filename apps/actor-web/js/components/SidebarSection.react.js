@@ -3,11 +3,17 @@ var UserSection = require('./sidebar/UserSection.react');
 var RecentSection = require('./sidebar/RecentSection.react');
 
 var SidebarSection = React.createClass({
+  propTypes: {
+    messenger: React.PropTypes.object.isRequired
+  },
+
   render: function() {
+    var messenger = this.props.messenger;
+
     return(
       <aside className="sidebar">
         <header className="sidebar__header sidebar__header--clickable">
-          <UserSection/>
+          <UserSection messenger={messenger}/>
           <ul className="sidebar__header__menu">
             <li className="sidebar__header__menu__item"><span>Profile</span></li>
             <li className="sidebar__header__menu__item"><span>Integrations</span></li>
