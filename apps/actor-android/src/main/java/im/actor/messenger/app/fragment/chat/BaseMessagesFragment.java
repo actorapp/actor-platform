@@ -204,7 +204,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                                 .setCanceledOnTouchOutside(true);
                         return true;
                     } else if (menuItem.getItemId() == R.id.copy) {
-                        String text = messenger().getFormatter().formatMessages(messagesAdapter.getSelected());
+                        String text = messenger().getFormatter().formatMessagesExport(messagesAdapter.getSelected());
                         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                         android.content.ClipData clip = android.content.ClipData.newPlainText("Messages", text);
                         clipboard.setPrimaryClip(clip);

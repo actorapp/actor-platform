@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -66,8 +69,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 152: return RequestGetAvailableInterests.fromBytes(payload);
             case 157: return RequestEnableInterests.fromBytes(payload);
             case 158: return RequestDisableInterests.fromBytes(payload);
-            case 159: return RequestGetAdBanners.fromBytes(payload);
-            case 162: return RequestNotifyAddView.fromBytes(payload);
+            case 162: return RequestNotifyAdView.fromBytes(payload);
             case 134: return RequestGetParameters.fromBytes(payload);
             case 128: return RequestEditParameter.fromBytes(payload);
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
@@ -97,7 +99,6 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 129: return ResponseInitVoxSupport.fromBytes(payload);
             case 132: return ResponseGetVoxUser.fromBytes(payload);
             case 153: return ResponseGetAvailableInterests.fromBytes(payload);
-            case 161: return ResponseGetAdBanners.fromBytes(payload);
             case 135: return ResponseGetParameters.fromBytes(payload);
             case 12: return ResponseGetDifference.fromBytes(payload);
             case 50: return ResponseVoid.fromBytes(payload);

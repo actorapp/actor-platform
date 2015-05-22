@@ -72,7 +72,7 @@ public class OwnReadActor extends ModuleActor {
 
         long maxPlainReadDate = sortingDate;
         boolean removed = false;
-        for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
+        for (UnreadMessage u : unread.toArray(new UnreadMessage[unread.size()])) {
             if (u.getSortDate() <= sortingDate) {
                 maxPlainReadDate = Math.max(u.getSortDate(), maxPlainReadDate);
                 removed = true;
@@ -104,7 +104,7 @@ public class OwnReadActor extends ModuleActor {
 
         // Finding suitable message
         Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
-        for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
+        for (UnreadMessage u : unread.toArray(new UnreadMessage[unread.size()])) {
             if (u.getSortDate() <= sortingDate && u.getSortDate() > msgSortingDate) {
                 msgSortingDate = u.getSortDate();
             }
@@ -118,7 +118,7 @@ public class OwnReadActor extends ModuleActor {
     public void onMessageDelete(Peer peer, List<Long> rids) {
         Set<UnreadMessage> unread = messagesStorage.getUnread(peer);
         boolean isRemoved = false;
-        for (UnreadMessage u : unread.toArray(new UnreadMessage[0])) {
+        for (UnreadMessage u : unread.toArray(new UnreadMessage[unread.size()])) {
             if (rids.contains(u.getRid())) {
                 unread.remove(u);
                 isRemoved = true;

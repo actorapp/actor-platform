@@ -9,7 +9,10 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/mvvm/BaseValueModel.h"
 
+@class AMAvatarValueModel;
+@class AMBooleanValueModel;
 @class AMGroup;
+@class AMStringValueModel;
 @class AMValueModel;
 @protocol AMModelChangedListener;
 
@@ -19,27 +22,25 @@
 
 - (instancetype)initWithAMGroup:(AMGroup *)rawObj;
 
-- (AMValueModel *)getAvatar;
+- (AMAvatarValueModel *)getAvatarModel;
 
 - (jint)getCreatorId;
 
-- (jlong)getHash;
-
 - (jint)getId;
 
-- (AMValueModel *)getMembers;
+- (AMValueModel *)getMembersModel;
 
 - (jint)getMembersCount;
 
-- (AMValueModel *)getName;
+- (AMStringValueModel *)getNameModel;
 
-- (AMValueModel *)getPresence;
+- (AMValueModel *)getPresenceModel;
 
-- (AMValueModel *)isMember;
+- (AMBooleanValueModel *)isMemberModel;
 
-- (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
+- (void)subscribeWithListener:(id<AMModelChangedListener>)listener;
 
-- (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener;
+- (void)unsubscribeWithListener:(id<AMModelChangedListener>)listener;
 
 #pragma mark Protected
 

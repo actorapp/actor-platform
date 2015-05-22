@@ -8,8 +8,6 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/FileLocation.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/FileReference.h"
@@ -24,23 +22,13 @@
   NSString *fileName_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMFileReference, fileName_, NSString *)
 
 J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
 
-__attribute__((unused)) static void AMFileReference_init(AMFileReference *self);
-
-__attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RETURNS_RETAINED;
-
 @implementation AMFileReference
-
-+ (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMFileReference_fromBytesWithByteArray_(data);
-}
 
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
                                        withNSString:(NSString *)fileName
@@ -49,8 +37,8 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
   return self;
 }
 
-- (instancetype)init {
-  AMFileReference_init(self);
+- (instancetype)initWithByteArray:(IOSByteArray *)data {
+  AMFileReference_initWithByteArray_(self, data);
   return self;
 }
 
@@ -110,11 +98,6 @@ __attribute__((unused)) static AMFileReference *new_AMFileReference_init() NS_RE
 
 @end
 
-AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMFileReference_initialize();
-  return ((AMFileReference *) BSBser_parseWithBSBserObject_withByteArray_(new_AMFileReference_init(), data));
-}
-
 void AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(AMFileReference *self, ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) {
   (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMFileReference_RECORD_ID, fileLocation);
   self->fileSize_ = fileSize;
@@ -127,13 +110,13 @@ AMFileReference *new_AMFileReference_initWithImActorModelApiFileLocation_withNSS
   return self;
 }
 
-void AMFileReference_init(AMFileReference *self) {
-  (void) AMWrapperEntity_initWithInt_(self, AMFileReference_RECORD_ID);
+void AMFileReference_initWithByteArray_(AMFileReference *self, IOSByteArray *data) {
+  (void) AMWrapperEntity_initWithInt_withByteArray_(self, AMFileReference_RECORD_ID, data);
 }
 
-AMFileReference *new_AMFileReference_init() {
+AMFileReference *new_AMFileReference_initWithByteArray_(IOSByteArray *data) {
   AMFileReference *self = [AMFileReference alloc];
-  AMFileReference_init(self);
+  AMFileReference_initWithByteArray_(self, data);
   return self;
 }
 

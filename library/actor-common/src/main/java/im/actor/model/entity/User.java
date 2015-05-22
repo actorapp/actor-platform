@@ -4,12 +4,14 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.ContactType;
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
@@ -17,29 +19,34 @@ import im.actor.model.droidkit.engine.KeyValueItem;
 
 public class User extends WrapperEntity<im.actor.model.api.User> implements KeyValueItem {
 
-    public static User fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new User(), data);
-    }
-
     private static final int RECORD_ID = 10;
 
     private int uid;
     private long accessHash;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private String name;
+    @Nullable
     private String localName;
+    @Nullable
     private Avatar avatar;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private Sex sex;
     private boolean isBot;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private List<ContactRecord> records;
 
-    public User(im.actor.model.api.User wrappedUser) {
+    public User(@NotNull im.actor.model.api.User wrappedUser) {
         super(RECORD_ID, wrappedUser);
     }
 
-    private User() {
-        super(RECORD_ID);
+    public User(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
+    @NotNull
     public Peer peer() {
         return new Peer(PeerType.PRIVATE, uid);
     }
@@ -52,14 +59,17 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         return accessHash;
     }
 
+    @NotNull
     public String getServerName() {
         return name;
     }
 
+    @Nullable
     public String getLocalName() {
         return localName;
     }
 
+    @NotNull
     public String getName() {
         if (localName == null) {
             return name;
@@ -68,14 +78,17 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         }
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
+    @NotNull
     public Sex getSex() {
         return sex;
     }
 
+    @NotNull
     public List<ContactRecord> getRecords() {
         return records;
     }
@@ -84,7 +97,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         return isBot;
     }
 
-    public User editName(String name) {
+    public User editName(@NotNull String name) {
         im.actor.model.api.User w = getWrapped();
         im.actor.model.api.User res = new im.actor.model.api.User(
                 w.getId(),
@@ -99,7 +112,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         return new User(res);
     }
 
-    public User editLocalName(String localName) {
+    public User editLocalName(@NotNull String localName) {
         im.actor.model.api.User w = getWrapped();
         im.actor.model.api.User res = new im.actor.model.api.User(
                 w.getId(),
@@ -114,7 +127,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         return new User(res);
     }
 
-    public User editAvatar(im.actor.model.api.Avatar avatar) {
+    public User editAvatar(@Nullable im.actor.model.api.Avatar avatar) {
         im.actor.model.api.User w = getWrapped();
         im.actor.model.api.User res = new im.actor.model.api.User(
                 w.getId(),
@@ -130,7 +143,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
     }
 
     @Override
-    protected void applyWrapped(im.actor.model.api.User wrapped) {
+    protected void applyWrapped(@NotNull im.actor.model.api.User wrapped) {
         this.uid = wrapped.getId();
         this.accessHash = wrapped.getAccessHash();
         this.name = wrapped.getName();
@@ -164,8 +177,6 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
 
         if (wrapped.getAvatar() != null) {
             this.avatar = new Avatar(wrapped.getAvatar());
-        } else {
-            this.avatar = new Avatar();
         }
     }
 
@@ -190,7 +201,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
             im.actor.model.api.Avatar avatar = new im.actor.model.api.Avatar();
             byte[] a = values.optBytes(5);
             if (a != null) {
-                avatar = Avatar.fromBytes(a).toWrapped();
+                avatar = new Avatar(a).toWrapped();
             }
 
             List<im.actor.model.api.ContactRecord> records = new ArrayList<im.actor.model.api.ContactRecord>();
@@ -233,6 +244,7 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
     }
 
     @Override
+    @NotNull
     protected im.actor.model.api.User createInstance() {
         return new im.actor.model.api.User();
     }

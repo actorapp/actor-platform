@@ -4,6 +4,8 @@
 
 package im.actor.model.droidkit.bser;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class BserWriter {
         this.stream = stream;
     }
 
-    public void writeBytes(int fieldNumber, byte[] value) throws IOException {
+    public void writeBytes(int fieldNumber, @NotNull byte[] value) throws IOException {
         if (value == null) {
             throw new IllegalArgumentException("Value can not be null");
         }
@@ -34,7 +36,7 @@ public class BserWriter {
         writeBytesField(fieldNumber, value);
     }
 
-    public void writeString(int fieldNumber, String value) throws IOException {
+    public void writeString(int fieldNumber, @NotNull String value) throws IOException {
         if (value == null) {
             throw new IllegalArgumentException("Value can not be null");
         }
@@ -66,7 +68,7 @@ public class BserWriter {
         writeVarIntField(fieldNumber, value);
     }
 
-    public void writeRepeatedLong(int fieldNumber, List<Long> values) throws IOException {
+    public void writeRepeatedLong(int fieldNumber, @NotNull List<Long> values) throws IOException {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
@@ -82,7 +84,7 @@ public class BserWriter {
         }
     }
 
-    public void writeRepeatedInt(int fieldNumber, List<Integer> values) throws IOException {
+    public void writeRepeatedInt(int fieldNumber, @NotNull List<Integer> values) throws IOException {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
@@ -98,7 +100,7 @@ public class BserWriter {
         }
     }
 
-    public void writeRepeatedBool(int fieldNumber, List<Boolean> values) throws IOException {
+    public void writeRepeatedBool(int fieldNumber, @NotNull List<Boolean> values) throws IOException {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
@@ -114,7 +116,7 @@ public class BserWriter {
         }
     }
 
-    public <T extends BserObject> void writeRepeatedObj(int fieldNumber, List<T> values) throws IOException {
+    public <T extends BserObject> void writeRepeatedObj(int fieldNumber, @NotNull List<T> values) throws IOException {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");
         }
@@ -130,7 +132,7 @@ public class BserWriter {
         }
     }
 
-    public void writeObject(int fieldNumber, BserObject value) throws IOException {
+    public void writeObject(int fieldNumber, @NotNull BserObject value) throws IOException {
         if (value == null) {
             throw new IllegalArgumentException("Value can not be null");
         }
@@ -142,7 +144,7 @@ public class BserWriter {
         writeBytes(outputStream.toByteArray());
     }
 
-    public void writeUnmapped(int fieldNumber, Object value) throws IOException {
+    public void writeUnmapped(int fieldNumber, @NotNull Object value) throws IOException {
         if (writtenFields.get(fieldNumber, false)) {
             return;
         }
@@ -161,7 +163,7 @@ public class BserWriter {
                     throw new IOException("Incorrect unmapped value in List");
                 }
             }
-        }else {
+        } else {
             throw new IOException("Incorrect unmapped value");
         }
     }
@@ -189,7 +191,7 @@ public class BserWriter {
         writeVarInt(value);
     }
 
-    private void writeBytesField(int fieldNumber, byte[] value) throws IOException {
+    private void writeBytesField(int fieldNumber, @NotNull byte[] value) throws IOException {
         writeTag(fieldNumber, WireTypes.TYPE_LENGTH_DELIMITED);
         writeBytes(value);
     }
@@ -217,7 +219,7 @@ public class BserWriter {
         stream.writeInt((int) (v & 0xFFFF));
     }
 
-    private void writeBytes(byte[] data) throws IOException {
+    private void writeBytes(@NotNull byte[] data) throws IOException {
         stream.writeProtoBytes(data, 0, data.length);
     }
 }

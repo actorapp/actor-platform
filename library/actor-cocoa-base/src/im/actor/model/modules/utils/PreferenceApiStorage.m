@@ -25,11 +25,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsPreferenceApiStorage, preferencesSto
 }
 
 - (jlong)getAuthKey {
-  return [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) getLong:@"auth_id" withDefault:0];
+  return [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) getLongWithKey:@"auth_id" withDefault:0];
 }
 
-- (void)saveAuthKeyWithLong:(jlong)key {
-  [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) putLong:@"auth_id" withValue:key];
+- (void)saveAuthKey:(jlong)key {
+  [((id<DKPreferencesStorage>) nil_chk(preferencesStorage_)) putLongWithKey:@"auth_id" withValue:key];
 }
 
 @end

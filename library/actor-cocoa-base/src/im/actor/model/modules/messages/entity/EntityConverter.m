@@ -55,10 +55,6 @@
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(state);
 }
 
-+ (AMAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
-  return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(avatar);
-}
-
 + (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group {
   return ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group);
 }
@@ -103,14 +99,6 @@ AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWith
   }
 }
 
-AMAvatar *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) {
-  ImActorModelModulesMessagesEntityEntityConverter_initialize();
-  if (avatar == nil) {
-    return nil;
-  }
-  return new_AMAvatar_initWithImActorModelApiAvatar_(avatar);
-}
-
 AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group) {
   ImActorModelModulesMessagesEntityEntityConverter_initialize();
   return new_AMGroup_initWithImActorModelApiGroup_(group);
@@ -143,7 +131,7 @@ AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActo
     ImActorModelApiServiceEx *ex = [((ImActorModelApiServiceMessage *) nil_chk(message)) getExt];
     if ([ex isKindOfClass:[ImActorModelApiServiceExChangedAvatar class]]) {
       ImActorModelApiServiceExChangedAvatar *avatar = (ImActorModelApiServiceExChangedAvatar *) check_class_cast(ex, [ImActorModelApiServiceExChangedAvatar class]);
-      return new_AMServiceGroupAvatarChanged_initWithAMAvatar_(ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_([((ImActorModelApiServiceExChangedAvatar *) nil_chk(avatar)) getAvatar]));
+      return new_AMServiceGroupAvatarChanged_initWithAMAvatar_([((ImActorModelApiServiceExChangedAvatar *) nil_chk(avatar)) getAvatar] != nil ? new_AMAvatar_initWithImActorModelApiAvatar_([avatar getAvatar]) : nil);
     }
     else if ([ex isKindOfClass:[ImActorModelApiServiceExChangedTitle class]]) {
       ImActorModelApiServiceExChangedTitle *title = (ImActorModelApiServiceExChangedTitle *) check_class_cast(ex, [ImActorModelApiServiceExChangedTitle class]);

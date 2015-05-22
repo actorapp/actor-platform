@@ -111,16 +111,16 @@ void ImActorModelModulesSearchSearchActor_onDialogsUpdatedWithJavaUtilList_(ImAc
   for (AMDialog * __strong d in nil_chk(dialogs)) {
     [updated addWithId:new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_([((AMDialog *) nil_chk(d)) getPeer], [d getSortDate], [d getDialogAvatar], [d getDialogTitle])];
   }
-  [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItemsWithJavaUtilList:updated];
+  [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItems:updated];
 }
 
 void ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(ImActorModelModulesSearchSearchActor *self, IOSIntArray *contactsList) {
   id<JavaUtilList> updated = new_JavaUtilArrayList_init();
   for (jint i = 0; i < ((IOSIntArray *) nil_chk(contactsList))->size_; i++) {
-    AMUser *user = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:IOSIntArray_Get(contactsList, i)];
+    AMUser *user = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:IOSIntArray_Get(contactsList, i)];
     [updated addWithId:new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMPeer_userWithInt_([((AMUser *) nil_chk(user)) getUid]), ImActorModelModulesSearchSearchActor_CONTACTS_PREFIX + i, [user getAvatar], [user getName])];
   }
-  [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItemsWithJavaUtilList:updated];
+  [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItems:updated];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor)

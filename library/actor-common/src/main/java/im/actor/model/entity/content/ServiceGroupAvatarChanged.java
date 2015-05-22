@@ -4,6 +4,8 @@
 
 package im.actor.model.entity.content;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
@@ -17,17 +19,20 @@ public class ServiceGroupAvatarChanged extends ServiceContent {
         return Bser.parse(new ServiceGroupAvatarChanged(), data);
     }
 
+    @Nullable
     private Avatar newAvatar;
 
-    public ServiceGroupAvatarChanged(Avatar newAvatar) {
+    public ServiceGroupAvatarChanged(@Nullable Avatar newAvatar) {
         super("Group avatar changed");
+
         this.newAvatar = newAvatar;
     }
 
-    private ServiceGroupAvatarChanged(){
+    private ServiceGroupAvatarChanged() {
 
     }
 
+    @Nullable
     public Avatar getNewAvatar() {
         return newAvatar;
     }
@@ -42,7 +47,7 @@ public class ServiceGroupAvatarChanged extends ServiceContent {
         super.parse(values);
         byte[] data = values.optBytes(10);
         if (data != null) {
-            newAvatar = Avatar.fromBytes(data);
+            newAvatar = new Avatar(data);
         }
     }
 

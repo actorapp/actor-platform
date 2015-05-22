@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.CreateConnectionCallback;
@@ -24,6 +26,7 @@ public interface NetworkProvider {
      * @param callback        callback for connection
      * @param createCallback  callback for connection creation
      */
+    @ObjectiveCName("createConnectionWithId:withMTVersion:withApiMajor:withApiMinor:withEndpoint:withCallback:withCreateCallback:")
     void createConnection(int connectionId,
                           int mtprotoVersion,
                           int apiMajorVersion,

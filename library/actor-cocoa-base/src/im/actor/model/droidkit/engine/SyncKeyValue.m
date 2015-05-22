@@ -28,19 +28,19 @@ J2OBJC_FIELD_SETTER(DKSyncKeyValue, storage_, id<DKKeyValueStorage>)
 - (void)putWithLong:(jlong)key
       withByteArray:(IOSByteArray *)data {
   @synchronized(self) {
-    [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithLong:key withByteArray:data];
+    [((id<DKKeyValueStorage>) nil_chk(storage_)) addOrUpdateItemWithKey:key withData:data];
   }
 }
 
 - (void)delete__WithLong:(jlong)key {
   @synchronized(self) {
-    [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithLong:key];
+    [((id<DKKeyValueStorage>) nil_chk(storage_)) removeItemWithKey:key];
   }
 }
 
 - (IOSByteArray *)getWithLong:(jlong)key {
   @synchronized(self) {
-    return [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithLong:key];
+    return [((id<DKKeyValueStorage>) nil_chk(storage_)) getValueWithKey:key];
   }
 }
 

@@ -13,9 +13,9 @@
 
 @protocol AMRpcCallback < NSObject, JavaObject >
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
+- (void)onResult:(ImActorModelNetworkParserResponse *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 @end
 
