@@ -273,13 +273,13 @@ public class ChatActivity extends BaseActivity{
 
                 if(mentionErase && eraseCount==1){
                     //Delete mention bounds
-                    if(s.charAt(mentionEraseStart -1) == MENTION_BOUNDS_CHR){
+                    if(mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == MENTION_BOUNDS_CHR){
                         s.replace(mentionEraseStart-2, mentionEraseStart, "");
-                    }else if (s.charAt(mentionEraseStart -1) == '@'){
-                        s.replace(mentionEraseStart-1, mentionEraseStart + 1, "");
+                    }else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == '@'){
+                        s.replace(mentionEraseStart-1, mentionEraseStart - 1, "");
 
                     //Return in mention bounds
-                    }else{
+                    }else if (mentionEraseStart > 0 ){
                         s.replace(mentionEraseStart-1, mentionEraseStart, MENTION_BOUNDS_STR);
                         if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
 
@@ -290,6 +290,11 @@ public class ChatActivity extends BaseActivity{
                 int emptyBoundsIndex = s.toString().indexOf(MENTION_BOUNDS_STR.concat(MENTION_BOUNDS_STR));
                 if(emptyBoundsIndex!=-1){
                     s.replace(emptyBoundsIndex, emptyBoundsIndex+2, "");
+                }
+
+                //Delete useless bound
+                if(s.length()==1 && s.charAt(0) == MENTION_BOUNDS_CHR){
+                    s.clear();
                 }
 
             }
@@ -548,10 +553,11 @@ public class ChatActivity extends BaseActivity{
             end = text.getSpanEnd(span);
             if(start!=-1 && end<=text.length()){
                 url =span.getURL();
-                urlTitle = text.toString().substring(start, end);
-                if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
+                urlTitle = text.toString().substring(start, end).trim();
+                //if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
                 mdUrl = new String("[").concat(urlTitle).concat("](").concat(url).concat(")");
                 if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@") || urlTitle.equals("@ "))mdUrl = "@";
+                if(!urlTitle.contains("@"))mdUrl = urlTitle;
                 text.replace(start, end, mdUrl);
             }
         }
