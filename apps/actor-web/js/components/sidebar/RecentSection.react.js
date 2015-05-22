@@ -1,38 +1,50 @@
 var React = require('react');
+var _ = require('lodash');
+
+var AvatarItem = require('../common/AvatarItem.react');
 
 var RecentSection = React.createClass({
+  propTypes: {
+    messenger: React.PropTypes.object.isRequired
+  },
+
+  getInitialState: function() {
+    return({dialogs: []});
+  },
+
+  componentWillMount: function() {
+    var messenger = this.props.messenger;
+
+    messenger.bindDialogs(this._setDialogs);
+  },
+
   render: function() {
+    var dialogs = _.map(this.state.dialogs, function(dialog, index) {
+      return(
+        <li key={index} className="sidebar__list__item">
+          <div className="avatar avatar--tiny">
+            <AvatarItem title={dialog.peer.title} image={dialog.peer.avatar} placeholder={dialog.peer.placeholder}/>
+          </div>
+          <span>
+            {dialog.peer.title}
+          </span>
+        </li>
+      )
+    });
+
     return(
       <ul className="sidebar__list">
         <li className="sidebar__list__title">
           Recent
         </li>
-        <li className="sidebar__list__item">
-          <div className="avatar avatar--tiny">
-            <span className="avatar__placeholder avatar__placeholder--blue">R</span>
-          </div>
-        <span>
-          Recent conversation 1
-        </span>
-        </li>
-        <li className="sidebar__list__item">
-          <div className="avatar avatar--tiny">
-            <span className="avatar__placeholder avatar__placeholder--lblue">С</span>
-          </div>
-        <span>
-          Recent conversation 2
-        </span>
-        </li>
-        <li className="sidebar__list__item sidebar__list__item--active2">
-          <div className="avatar avatar--tiny">
-            <span className="avatar__placeholder avatar__placeholder--red">W</span>
-          </div>
-        <span>
-          Recent 3
-        </span>
-        </li>
+        {dialogs}
       </ul>
     );
+  },
+
+  _setDialogs: function(dialogs) {
+    window.di = dialogs;
+    this.setState({dialogs: dialogs})
   }
 });
 
