@@ -3,7 +3,6 @@ package im.actor.server.api.rpc.service.messaging
 import scala.concurrent._
 import scala.concurrent.duration._
 
-import akka.contrib.pattern.{ DistributedPubSubMediator, DistributedPubSubExtension }
 import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.dbio
@@ -89,7 +88,9 @@ private[messaging] trait MessagingHandlers {
         }
 
         for (seqstate ← seqstateAction) yield {
-          onMessage(Events.PeerMessage(outPeer.asPeer, client.userId, randomId, message))
+          val fromPeer = Peer(PeerType.Private, client.userId)
+          val toPeer = outPeer.asPeer
+          onMessage(Events.PeerMessage(fromPeer, toPeer, randomId, message))
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
         }
       }
