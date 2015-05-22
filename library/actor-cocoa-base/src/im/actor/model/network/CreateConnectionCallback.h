@@ -12,7 +12,7 @@
 
 @protocol AMCreateConnectionCallback < NSObject, JavaObject >
 
-- (void)onConnectionCreated:(id<AMConnection>)connection;
+- (void)onConnectionCreatedWithConnection:(id<AMConnection>)connection;
 
 - (void)onConnectionCreateError;
 

@@ -22,7 +22,7 @@
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules
        withAMBindedDisplayList:(AMBindedDisplayList *)displayList;
 
-- (void)release__;
+- (void)releaseVM;
 
 @end
 

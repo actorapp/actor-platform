@@ -199,7 +199,7 @@ extension MainTabController: UIAlertViewDelegate {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                self.execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> Void in
+                self.execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
                     var user: AMUserVM?
                     user = val as? AMUserVM
                     if user == nil {
@@ -212,7 +212,7 @@ extension MainTabController: UIAlertViewDelegate {
                         }
                     }
                     if user != nil {
-                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(MSG.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
                                 // DO Nothing
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation(textField.text)

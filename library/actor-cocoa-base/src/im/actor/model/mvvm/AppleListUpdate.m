@@ -6,6 +6,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/mvvm/AppleListUpdate.h"
+#include "im/actor/model/mvvm/ChangeDescription.h"
 #include "java/util/ArrayList.h"
 
 @interface AMAppleListUpdate () {
@@ -19,25 +20,33 @@ J2OBJC_FIELD_SETTER(AMAppleListUpdate, changes_, JavaUtilArrayList *)
 
 @implementation AMAppleListUpdate
 
-- (instancetype)initWithJavaUtilArrayList:(JavaUtilArrayList *)changes {
-  AMAppleListUpdate_initWithJavaUtilArrayList_(self, changes);
+- (instancetype)initWithChanges:(JavaUtilArrayList *)changes {
+  AMAppleListUpdate_initWithChanges_(self, changes);
   return self;
 }
 
-- (JavaUtilArrayList *)getChanges {
+- (JavaUtilArrayList *)changes {
   return changes_;
+}
+
+- (jint)size {
+  return [((JavaUtilArrayList *) nil_chk(changes_)) size];
+}
+
+- (AMChangeDescription *)changeAt:(jint)index {
+  return [((JavaUtilArrayList *) nil_chk(changes_)) getWithInt:index];
 }
 
 @end
 
-void AMAppleListUpdate_initWithJavaUtilArrayList_(AMAppleListUpdate *self, JavaUtilArrayList *changes) {
+void AMAppleListUpdate_initWithChanges_(AMAppleListUpdate *self, JavaUtilArrayList *changes) {
   (void) NSObject_init(self);
   self->changes_ = changes;
 }
 
-AMAppleListUpdate *new_AMAppleListUpdate_initWithJavaUtilArrayList_(JavaUtilArrayList *changes) {
+AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_(JavaUtilArrayList *changes) {
   AMAppleListUpdate *self = [AMAppleListUpdate alloc];
-  AMAppleListUpdate_initWithJavaUtilArrayList_(self, changes);
+  AMAppleListUpdate_initWithChanges_(self, changes);
   return self;
 }
 

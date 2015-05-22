@@ -12,7 +12,7 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
         self.searchDisplay = searchDisplay;
         super.init()
         self.displayList = buildDisplayList()
-        self.displayList.addListenerWithAMDisplayList_Listener(self)
+        self.displayList.addListener(self)
         
         searchDisplay.searchBar.delegate = self
         searchDisplay.searchResultsDataSource = self
@@ -20,7 +20,7 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
     }
     
     func close() {
-        self.displayList.removeListenerWithAMDisplayList_Listener(self)
+        self.displayList.removeListener(self)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -28,7 +28,7 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
             return 0;
         }
         
-        return Int(displayList.getSize());
+        return Int(displayList.size());
     }
     
     func onCollectionChanged() {
@@ -39,7 +39,6 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
         var item: AnyObject? = objectAtIndexPath(indexPath)
         var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
         bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
-        displayList.touchWithInt(jint(indexPath.row))
         return cell;
     }
     
@@ -56,13 +55,13 @@ class SearchSource: NSObject, UISearchBarDelegate, UISearchDisplayDelegate, UITa
     }
     
     func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
-        return displayList.getItemWithInt(jint(indexPath.row));
+        return displayList.itemWithIndex(jint(indexPath.row));
     }
     
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         var normalized = searchText.trim().lowercaseString
         if (normalized.size() > 0) {
-            displayList.initSearchWithNSString(normalized, withBoolean: false)
+            displayList.initSearchWithQuery(normalized, withRefresh: false)
         } else {
             displayList.initEmpty()
         }

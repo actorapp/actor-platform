@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +30,7 @@ public class DocumentMessage extends Message {
     private FastThumb thumb;
     private DocumentEx ext;
 
-    public DocumentMessage(long fileId, long accessHash, int fileSize, String name, String mimeType, FastThumb thumb, DocumentEx ext) {
+    public DocumentMessage(long fileId, long accessHash, int fileSize, @NotNull String name, @NotNull String mimeType, @Nullable FastThumb thumb, @Nullable DocumentEx ext) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
@@ -57,18 +60,22 @@ public class DocumentMessage extends Message {
         return this.fileSize;
     }
 
+    @NotNull
     public String getName() {
         return this.name;
     }
 
+    @NotNull
     public String getMimeType() {
         return this.mimeType;
     }
 
+    @Nullable
     public FastThumb getThumb() {
         return this.thumb;
     }
 
+    @Nullable
     public DocumentEx getExt() {
         return this.ext;
     }

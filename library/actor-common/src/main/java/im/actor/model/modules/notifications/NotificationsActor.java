@@ -97,7 +97,8 @@ public class NotificationsActor extends ModuleActor {
 
     public void onMessagesRead(Peer peer, long fromDate) {
         boolean isChanged = false;
-        for (PendingNotification p : pendingStorage.getNotifications().toArray(new PendingNotification[0])) {
+        List<PendingNotification> notifications = pendingStorage.getNotifications();
+        for (PendingNotification p : notifications.toArray(new PendingNotification[notifications.size()])) {
             if (p.getPeer().equals(peer) && p.getDate() <= fromDate) {
                 pendingStorage.getNotifications().remove(p);
                 isChanged = true;

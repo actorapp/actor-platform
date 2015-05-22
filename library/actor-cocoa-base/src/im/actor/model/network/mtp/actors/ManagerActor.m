@@ -224,13 +224,13 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$1)
   jint val$id_;
 }
 
-- (void)onConnectionRedirect:(NSString *)host
-                    withPort:(jint)port
-                 withTimeout:(jint)timeout;
+- (void)onConnectionRedirectWithHost:(NSString *)host
+                            withPort:(jint)port
+                         withTimeout:(jint)timeout;
 
-- (void)onMessage:(IOSByteArray *)data
-       withOffset:(jint)offset
-          withLen:(jint)len;
+- (void)onMessageWithData:(IOSByteArray *)data
+               withOffset:(jint)offset
+               withLength:(jint)len;
 
 - (void)onConnectionDie;
 
@@ -255,7 +255,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_$2)
   jint val$id_;
 }
 
-- (void)onConnectionCreated:(id<AMConnection>)connection;
+- (void)onConnectionCreatedWithConnection:(id<AMConnection>)connection;
 
 - (void)onConnectionCreateError;
 
@@ -423,8 +423,6 @@ void MTManagerActor_onConnectionDieWithInt_(MTManagerActor *self, jint id_) {
     self->currentConnection_ = nil;
     MTManagerActor_requestCheckConnection(self);
   }
-  else {
-  }
 }
 
 void MTManagerActor_onNetworkChanged(MTManagerActor *self) {
@@ -459,7 +457,7 @@ void MTManagerActor_checkConnection(MTManagerActor *self) {
     AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, @"Trying to create connection...");
     self->isCheckingConnections_ = YES;
     jint id_ = [((AMAtomicIntegerCompat *) nil_chk(MTManagerActor_NEXT_CONNECTION_)) getAndIncrement];
-    [((id<AMNetworkProvider>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworkProvider])) createConnection:id_ withMTProtoVersion:AMActorApi_MTPROTO_VERSION withApiMajorVersion:AMActorApi_API_MAJOR_VERSION withApiMinorVersion:AMActorApi_API_MINOR_VERSION withEndpoint:[((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint] withCallback:new_MTManagerActor_$2_initWithMTManagerActor_withInt_(self, id_) withCreateCallback:new_MTManagerActor_$3_initWithMTManagerActor_withInt_(self, id_)];
+    [((id<AMNetworkProvider>) nil_chk([((MTMTProto *) nil_chk(self->mtProto_)) getNetworkProvider])) createConnectionWithId:id_ withMTVersion:AMActorApi_MTPROTO_VERSION withApiMajor:AMActorApi_API_MAJOR_VERSION withApiMinor:AMActorApi_API_MINOR_VERSION withEndpoint:[((AMEndpoints *) nil_chk(self->endpoints_)) fetchEndpoint] withCallback:new_MTManagerActor_$2_initWithMTManagerActor_withInt_(self, id_) withCreateCallback:new_MTManagerActor_$3_initWithMTManagerActor_withInt_(self, id_)];
   }
 }
 
@@ -499,9 +497,7 @@ void MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(MTManagerActor *s
     [bos writeLongWithLong:self->sessionId_];
     [bos writeBytesWithByteArray:data withInt:offset withInt:len];
     IOSByteArray *pkg = [bos toByteArray];
-    [self->currentConnection_ post:pkg withOffset:0 withLen:((IOSByteArray *) nil_chk(pkg))->size_];
-  }
-  else {
+    [self->currentConnection_ postWithData:pkg withOffset:0 withLength:((IOSByteArray *) nil_chk(pkg))->size_];
   }
 }
 
@@ -732,15 +728,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$1)
 
 @implementation MTManagerActor_$2
 
-- (void)onConnectionRedirect:(NSString *)host
-                    withPort:(jint)port
-                 withTimeout:(jint)timeout {
+- (void)onConnectionRedirectWithHost:(NSString *)host
+                            withPort:(jint)port
+                         withTimeout:(jint)timeout {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_ConnectionDie_initWithInt_(val$id_)];
 }
 
-- (void)onMessage:(IOSByteArray *)data
-       withOffset:(jint)offset
-          withLen:(jint)len {
+- (void)onMessageWithData:(IOSByteArray *)data
+               withOffset:(jint)offset
+               withLength:(jint)len {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_InMessage_initWithByteArray_withInt_withInt_(data, offset, len)];
 }
 
@@ -772,7 +768,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_$2)
 
 @implementation MTManagerActor_$3
 
-- (void)onConnectionCreated:(id<AMConnection>)connection {
+- (void)onConnectionCreatedWithConnection:(id<AMConnection>)connection {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_MTManagerActor_ConnectionCreated_initWithInt_withAMConnection_(val$id_, connection)];
 }
 

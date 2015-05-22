@@ -27,6 +27,7 @@
 #include "im/actor/model/modules/presence/PresenceActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/mvvm/generics/UserPresenceValueModel.h"
 #include "im/actor/model/viewmodel/GroupVM.h"
 #include "im/actor/model/viewmodel/UserPresence.h"
 #include "im/actor/model/viewmodel/UserVM.h"
@@ -256,7 +257,7 @@ ImActorModelModulesPresencePresenceActor *new_ImActorModelModulesPresencePresenc
 void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_ONLINE())];
+    [((AMUserPresenceValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_ONLINE())];
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(uid) withLong:ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT];
 }
@@ -264,21 +265,21 @@ void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelM
 void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_OFFLINE())];
+    [((AMUserPresenceValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_OFFLINE())];
   }
 }
 
 void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date) {
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum_get_OFFLINE(), date)];
+    [((AMUserPresenceValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum_get_OFFLINE(), date)];
   }
 }
 
 void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count) {
   AMGroupVM *vm = [self getGroupVMWithInt:gid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:JavaLangInteger_valueOfWithInt_(count)];
+    [((AMValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:JavaLangInteger_valueOfWithInt_(count)];
   }
 }
 

@@ -4,6 +4,9 @@
 
 package im.actor.model.mvvm;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface ModelChangedListener<T> {
+    @ObjectiveCName("onChanged:")
     void onChanged(T model);
 }

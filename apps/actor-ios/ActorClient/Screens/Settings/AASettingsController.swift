@@ -39,7 +39,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
+        user = MSG.getUserWithUid(jint(uid))
         
         navigationItem.title = NSLocalizedString("TabSettings", comment: "Settings Title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -59,7 +59,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         tableView.clipsToBounds = false
         tableView.tableFooterView = UIView()
         
-        binder.bind(user!.getName()!, closure: { (value: String?) -> () in
+        binder.bind(user!.getNameModel()!, closure: { (value: String?) -> () in
             if value == nil {
                 return
             }
@@ -69,14 +69,14 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             }
         })
         
-        binder.bind(user!.getAvatar(), closure: { (value: AMAvatar?) -> () in
+        binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
-                cell.userAvatarView.bind(self.user!.getName().get() as! String, id: jint(self.uid), avatar: value)
+                cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
             }
         })
         
-        binder.bind(user!.getPresence(), closure: { (presence: AMUserPresence?) -> () in
-            var presenceText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: self.user!.getSex())
+        binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
+            var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                     cell.setPresence(presenceText)
@@ -84,7 +84,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             }
         })
         
-        binder.bind(user!.getPhones(), closure: { (phones: JavaUtilArrayList?) -> () in
+        binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
             if phones != nil {
                 self.phones = phones
                 self.tableView.reloadData()
@@ -110,14 +110,14 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        MSG.onProfileOpen(jint(uid))
+        MSG.onProfileOpenWithUid(jint(uid))
         
         MainAppTheme.navigation.applyStatusBar()
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        MSG.onProfileClosed(jint(uid))
+        MSG.onProfileClosedWithUid(jint(uid))
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -138,7 +138,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
             otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
-        if (user!.getAvatar().get() != nil) {
+        if (user!.getAvatarModel().get() != nil) {
             actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
             actionSheet.destructiveButtonIndex = 3
         }
@@ -156,7 +156,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-        alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.text = user!.getNameModel().get()
         alertView.textFieldAtIndex(0)?.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
@@ -168,11 +168,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
         cell.contentView.superview?.clipsToBounds = false
         if user != nil {
-            
-            if let username = user!.getName().get() as? String {
-                cell.setUsername(username)
-            }
-            
+            cell.setUsername(user!.getNameModel().get())
         }
         cell.setLeftInset(15.0)
         
@@ -351,7 +347,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         } else if indexPath.section == 3 && indexPath.row == 1 {
             navigateToPrivacySettings()
         } else if (indexPath.section == 4 && indexPath.row == 0) {
-            execute(MSG.findUsersWithNSString("75551234567"), successBlock: { (val) -> Void in
+            execute(MSG.findUsersCommandWithQuery("75551234567"), successBlock: { (val) -> Void in
                 var user:AMUserVM!
                 if let users = val as? IOSObjectArray {
                     if Int(users.length()) > 0 {
@@ -440,7 +436,7 @@ extension AASettingsController: UIActionSheetDelegate {
             picker.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
         } else if (buttonIndex == 3) {
-            MSG.removeAvatar()
+            MSG.removeMyAvatar()
         }
     }
 }
@@ -499,7 +495,7 @@ extension AASettingsController: UIAlertViewDelegate {
         if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                execute(MSG.editMyNameWithNSString(textField.text))
+                execute(MSG.editMyNameCommandWithName(textField.text))
             }
         }
     }

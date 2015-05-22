@@ -4,11 +4,14 @@
 
 package im.actor.model.viewmodel;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.MainThread;
-import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.Sex;
@@ -17,22 +20,34 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.BaseValueModel;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ModelChangedListener;
-import im.actor.model.mvvm.ValueModel;
+import im.actor.model.mvvm.generics.ArrayListUserPhone;
+import im.actor.model.mvvm.generics.AvatarValueModel;
+import im.actor.model.mvvm.generics.BooleanValueModel;
+import im.actor.model.mvvm.generics.StringValueModel;
+import im.actor.model.mvvm.generics.UserPhoneValueModel;
+import im.actor.model.mvvm.generics.UserPresenceValueModel;
 
 /**
  * User View Model
  */
 public class UserVM extends BaseValueModel<User> {
     private int id;
-    private long hash;
     private boolean isBot;
-    private ValueModel<String> name;
-    private ValueModel<Avatar> avatar;
+    @NotNull
+    private StringValueModel name;
+    @NotNull
+    private AvatarValueModel avatar;
+    @NotNull
     private Sex sex;
-    private ValueModel<Boolean> isContact;
-    private ValueModel<UserPresence> presence;
+    @NotNull
+    private BooleanValueModel isContact;
+    @NotNull
+    private UserPresenceValueModel presence;
+    @NotNull
+    private UserPhoneValueModel phones;
+
+    @NotNull
     private ArrayList<ModelChangedListener<UserVM>> listeners = new ArrayList<ModelChangedListener<UserVM>>();
-    private ValueModel<ArrayList<UserPhone>> phones;
 
     /**
      * <p>INTERNAL API</p>
@@ -41,24 +56,22 @@ public class UserVM extends BaseValueModel<User> {
      * @param user    Initial User value
      * @param modules modules reference
      */
-    public UserVM(User user, Modules modules) {
+    public UserVM(@NotNull User user, @NotNull Modules modules) {
         super(user);
 
         id = user.getUid();
-        hash = user.getAccessHash();
         sex = user.getSex();
         isBot = user.isBot();
-        name = new ValueModel<String>("user." + id + ".name", user.getName());
-        avatar = new ValueModel<Avatar>("user." + id + ".avatar", user.getAvatar());
-        isContact = new ValueModel<Boolean>("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
-        presence = new ValueModel<UserPresence>("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
-        phones = new ValueModel<ArrayList<UserPhone>>("user." + id + ".phones", buildPhones(user.getRecords()));
+        name = new StringValueModel("user." + id + ".name", user.getName());
+        avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
+        isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
+        presence = new UserPresenceValueModel("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
+        phones = new UserPhoneValueModel("user." + id + ".phones", buildPhones(user.getRecords()));
     }
 
     @Override
-    protected void updateValues(User rawObj) {
-        boolean isChanged = false;
-        isChanged |= name.change(rawObj.getName());
+    protected void updateValues(@NotNull User rawObj) {
+        boolean isChanged = name.change(rawObj.getName());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
 
@@ -72,17 +85,9 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return user Id
      */
+    @ObjectiveCName("getId")
     public int getId() {
         return id;
-    }
-
-    /**
-     * Get User Access Hash
-     *
-     * @return User Access Hash
-     */
-    public long getHash() {
-        return hash;
     }
 
     /**
@@ -90,6 +95,7 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return is User bot
      */
+    @ObjectiveCName("isBot")
     public boolean isBot() {
         return isBot;
     }
@@ -99,7 +105,9 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return ValueModel of String
      */
-    public ValueModel<String> getName() {
+    @NotNull
+    @ObjectiveCName("getNameModel")
+    public StringValueModel getName() {
         return name;
     }
 
@@ -108,7 +116,9 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return ValueModel of Avatar
      */
-    public ValueModel<Avatar> getAvatar() {
+    @NotNull
+    @ObjectiveCName("getAvatarModel")
+    public AvatarValueModel getAvatar() {
         return avatar;
     }
 
@@ -117,6 +127,8 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return User Sex
      */
+    @NotNull
+    @ObjectiveCName("getSex")
     public Sex getSex() {
         return sex;
     }
@@ -126,7 +138,9 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return ValueModel of Boolean
      */
-    public ValueModel<Boolean> isContact() {
+    @NotNull
+    @ObjectiveCName("isContactModel")
+    public BooleanValueModel isContact() {
         return isContact;
     }
 
@@ -135,7 +149,9 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return ValueModel of UserPresence
      */
-    public ValueModel<UserPresence> getPresence() {
+    @NotNull
+    @ObjectiveCName("getPresenceModel")
+    public UserPresenceValueModel getPresence() {
         return presence;
     }
 
@@ -144,12 +160,15 @@ public class UserVM extends BaseValueModel<User> {
      *
      * @return ValueModel of ArrayList of UserPhone
      */
-    public ValueModel<ArrayList<UserPhone>> getPhones() {
+    @NotNull
+    @ObjectiveCName("getPhonesModel")
+    public UserPhoneValueModel getPhones() {
         return phones;
     }
 
-    private ArrayList<UserPhone> buildPhones(List<ContactRecord> records) {
-        ArrayList<UserPhone> res = new ArrayList<UserPhone>();
+    @NotNull
+    private ArrayListUserPhone buildPhones(@NotNull List<ContactRecord> records) {
+        ArrayListUserPhone res = new ArrayListUserPhone();
         for (ContactRecord r : records) {
             if (r.getRecordType() == ContactRecordType.PHONE) {
                 res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
@@ -164,7 +183,8 @@ public class UserVM extends BaseValueModel<User> {
      * @param listener UserVM changed listener
      */
     @MainThread
-    public void subscribe(ModelChangedListener<UserVM> listener) {
+    @ObjectiveCName("subscribeWithListener:")
+    public void subscribe(@NotNull ModelChangedListener<UserVM> listener) {
         MVVMEngine.checkMainThread();
         if (listeners.contains(listener)) {
             return;
@@ -179,7 +199,8 @@ public class UserVM extends BaseValueModel<User> {
      * @param listener UserVM changed listener
      */
     @MainThread
-    public void unsubscribe(ModelChangedListener<UserVM> listener) {
+    @ObjectiveCName("unsubscribeWithListener:")
+    public void unsubscribe(@NotNull ModelChangedListener<UserVM> listener) {
         MVVMEngine.checkMainThread();
         listeners.remove(listener);
     }
@@ -188,7 +209,7 @@ public class UserVM extends BaseValueModel<User> {
         MVVMEngine.getMainThreadProvider().postToMainThread(new Runnable() {
             @Override
             public void run() {
-                for (ModelChangedListener<UserVM> l : listeners.toArray(new ModelChangedListener[0])) {
+                for (ModelChangedListener<UserVM> l : listeners.toArray(new ModelChangedListener[listeners.size()])) {
                     l.onChanged(UserVM.this);
                 }
             }
