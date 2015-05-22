@@ -49,6 +49,8 @@ class AABubbleCell: UITableViewCell {
     private let dateText = UILabel()
     private let dateBg = UIImageView()
     
+    private let newMessage = UILabel()
+    
     // Layout
     var contentInsets : UIEdgeInsets = UIEdgeInsets()
     var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
@@ -93,10 +95,18 @@ class AABubbleCell: UITableViewCell {
         dateText.contentMode = UIViewContentMode.Center
         dateText.textAlignment = NSTextAlignment.Center
         
+        newMessage.font = UIFont(name: "HelveticaNeue-Medium", size: 14)!
+        newMessage.textColor = UIColor.whiteColor()
+        newMessage.contentMode = UIViewContentMode.Center
+        newMessage.textAlignment = NSTextAlignment.Center
+        newMessage.backgroundColor = UIColor.alphaBlack(0.3)
+        newMessage.text = "New Messages"
+        
         bubble.userInteractionEnabled = true
         
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
+        contentView.addSubview(newMessage)
         contentView.addSubview(dateBg)
         contentView.addSubview(dateText)
         
@@ -324,6 +334,17 @@ class AABubbleCell: UITableViewCell {
         } else {
             dateText.hidden = true
             dateBg.hidden = true
+        }
+        
+        if (isShowNewMessages) {
+            var top = CGFloat(0)
+            if (isShowDate) {
+                top += AABubbleCell.dateSize
+            }
+            newMessage.hidden = false
+            newMessage.frame = CGRectMake(0, top + CGFloat(2), self.contentView.frame.width, AABubbleCell.newMessageSize - CGFloat(4))
+        } else {
+            newMessage.hidden = true
         }
     }
     
