@@ -26,7 +26,7 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  override def jhandleNotifyAddView(bannerId: Int, viewDuration: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+  override def jhandleNotifyAdView(bannerId: Int, viewDuration: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     Future.successful(Error(CommonErrors.UnsupportedRequest))
   }
 
@@ -53,20 +53,6 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
         }
       }
     db.run(toDBIOAction(action))
-  }
-
-  override def jhandleGetAdBanners(maxBannerWidth: Int, maxBannerHeight: Int, screenDensity: Double, clientData: ClientData): Future[HandlerResult[ResponseGetAdBanners]] = {
-    val authorizedAction = requireAuth(clientData) map { client ⇒
-      persist.ilectro.ILectroUser.findByUserId(client.userId) flatMap {
-        case Some(user) ⇒
-          for (banner ← DBIO.from(ilectro.getBanners(user.uuid))) yield {
-            Ok(ResponseGetAdBanners(Vector(Banner(0, 0, 0, banner.imageUrl, banner.advertUrl, 0))))
-          }
-        case None ⇒ DBIO.successful(Error(Errors.IlectroNotInitialized))
-      }
-    }
-
-    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleGetAvailableInterests(clientData: ClientData): Future[HandlerResult[ResponseGetAvailableInterests]] = {
