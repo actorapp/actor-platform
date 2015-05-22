@@ -11,6 +11,7 @@
 #include "im/actor/model/MessengerEnvironment.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/DisplayLists.h"
+#include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/viewmodel/ConversationVM.h"
@@ -71,6 +72,10 @@ J2OBJC_FIELD_SETTER(AMBaseMessenger, environment_, AMMessengerEnvironmentEnum *)
 
 - (AMBindedDisplayList *)buildSearchList {
   return [((ImActorModelModulesDisplayLists *) nil_chk(displayLists_)) buildNewSearchListWithBoolean:NO];
+}
+
+- (jlong)loadLastReadState:(AMPeer *)peer {
+  return [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) loadReadStateWithAMPeer:peer];
 }
 
 @end

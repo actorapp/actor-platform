@@ -78,4 +78,9 @@ public class BaseMessenger extends Messenger {
     public BindedDisplayList<SearchEntity> buildSearchList() {
         return displayLists.buildNewSearchList(false);
     }
+
+    @ObjectiveCName("loadLastReadState:")
+    public long loadLastReadState(Peer peer){
+        return modules.getMessagesModule().loadReadState(peer);
+    }
 }

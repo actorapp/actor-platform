@@ -18,6 +18,7 @@ class AABubbleCell: UITableViewCell {
     static let bubbleBottomCompact: CGFloat = 0
     static let avatarPadding: CGFloat = 39
     static let dateSize: CGFloat = 30
+    static let newMessageSize: CGFloat = 30
     
     // Cached bubble images
     private static var cacnedOutTextBg:UIImage? = nil;
@@ -54,7 +55,7 @@ class AABubbleCell: UITableViewCell {
     var fullContentInsets : UIEdgeInsets {
         get {
             return UIEdgeInsets(
-                top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0),
+                top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0) + (isShowNewMessages ? AABubbleCell.newMessageSize : 0),
                 left: contentInsets.left + bubbleInsets.left + (isGroup && !isOut ? AABubbleCell.avatarPadding : 0),
                 bottom: contentInsets.bottom + bubbleInsets.bottom,
                 right: contentInsets.right + bubbleInsets.right)
@@ -76,6 +77,7 @@ class AABubbleCell: UITableViewCell {
     var bubbleType:BubbleType? = nil
     var isOut: Bool = false
     var isShowDate: Bool = false
+    var isShowNewMessages: Bool = false
     
     // MARK: -
     // MARK: Constructors
@@ -116,7 +118,7 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Getters
 
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) -> CGFloat {
         var content = message.getContent()!;
         
         // TODO: Add Docs and Media
@@ -143,6 +145,10 @@ class AABubbleCell: UITableViewCell {
             height += AABubbleCell.dateSize
         }
         
+        if (isShowNewMessages) {
+            height += AABubbleCell.newMessageSize
+        }
+        
         return height
     }
     
@@ -166,13 +172,14 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Bind
     
-    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool) {
+    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) {
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
             reuse = true
         }
         isOut = message.getSenderId() == MSG.myUid();
         bindedMessage = message
+        self.isShowNewMessages = isShowNewMessages
         if (!reuse) {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
@@ -338,7 +345,10 @@ class AABubbleCell: UITableViewCell {
         let bubbleH = contentHeight + contentInsets.top + contentInsets.bottom
         var topOffset = CGFloat(0)
         if (isShowDate) {
-            topOffset = AABubbleCell.dateSize
+            topOffset += AABubbleCell.dateSize
+        }
+        if (isShowNewMessages) {
+            topOffset += AABubbleCell.newMessageSize
         }
         var bubbleFrame : CGRect!
         if (!isFullSize) {
