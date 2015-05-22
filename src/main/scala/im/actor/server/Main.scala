@@ -1,6 +1,7 @@
 package im.actor.server
 
 import akka.actor._
+import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorFlowMaterializer
 import com.amazonaws.auth.BasicAWSCredentials
@@ -81,7 +82,9 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
-    val messagingService = new MessagingServiceImpl
+    val mediator = DistributedPubSubExtension(system).mediator
+
+    val messagingService = new MessagingServiceImpl(mediator)
 
     val services = Seq(
       new AuthServiceImpl(activationContext),
