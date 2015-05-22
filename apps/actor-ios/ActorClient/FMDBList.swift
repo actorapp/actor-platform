@@ -29,6 +29,11 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     let queryForwardFilterFirst: String;
     let queryForwardFilterMore: String;
     
+    let queryBackwardFirst: String;
+    let queryBackwardMore: String;
+    let queryBackwardFilterFirst: String;
+    let queryBackwardFilterMore: String;
+    
     init (databasePath: String, tableName: String){
         self.databasePath = databasePath
         self.tableName = tableName;
@@ -52,8 +57,14 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         self.queryForwardFirst = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " ORDER BY SORT_KEY DESC LIMIT ?";
         self.queryForwardMore = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " WHERE \"SORT_KEY\" < ? ORDER BY SORT_KEY DESC LIMIT ?";
         
+        self.queryBackwardFirst = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " ORDER BY SORT_KEY ASC LIMIT ?";
+        self.queryBackwardMore = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " WHERE \"SORT_KEY\" >= ? ORDER BY SORT_KEY ASC LIMIT ?";
+        
         self.queryForwardFilterFirst = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " WHERE \"QUERY\" LIKE ? OR \"QUERY\" LIKE ? ORDER BY SORT_KEY DESC LIMIT ?";
         self.queryForwardFilterMore = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " WHERE (\"QUERY\" LIKE ? OR \"QUERY\" LIKE ?) AND \"SORT_KEY\" < ? ORDER BY SORT_KEY DESC LIMIT ?";
+
+        self.queryBackwardFilterFirst = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " WHERE \"QUERY\" LIKE ? OR \"QUERY\" LIKE ? ORDER BY SORT_KEY ASC LIMIT ?";
+        self.queryBackwardFilterMore = "SELECT \"ID\", \"QUERY\",\"SORT_KEY\", \"BYTES\" FROM " + tableName + " WHERE (\"QUERY\" LIKE ? OR \"QUERY\" LIKE ?) AND \"SORT_KEY\" > ? ORDER BY SORT_KEY ASC LIMIT ?";
     }
     
     func checkTable() {
@@ -221,17 +232,69 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     
     func loadBackwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
+        var result : FMResultSet? = nil;
+        if (sortingKey == nil) {
+            result = db!.executeQuery(queryBackwardFirst, limit.toNSNumber());
+        } else {
+            result = db!.executeQuery(queryBackwardMore, sortingKey!.toNSNumber(), limit.toNSNumber());
+        }
+        if (result == nil) {
+            NSLog(db!.lastErrorMessage())
+            return nil
+        }
         
-        fatalError("Not implemented")
+        var res: JavaUtilArrayList = JavaUtilArrayList();
+        
+        while(result!.next()) {
+            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            if (query is NSNull) {
+                query = nil
+            }
+            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            res.addWithId(record)
+        }
+        result!.close()
+        return res;
     }
     
     func loadBackwardWithQuery(query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
-        fatalError("Not implemented")
+        var result : FMResultSet? = nil;
+        if (sortingKey == nil) {
+            result = db!.executeQuery(queryBackwardFilterFirst, query + "%", "% " + query + "%", limit.toNSNumber());
+        } else {
+            result = db!.executeQuery(queryBackwardFilterMore, query + "%", "% " + query + "%", sortingKey!.toNSNumber(), limit.toNSNumber());
+        }
+        if (result == nil) {
+            NSLog(db!.lastErrorMessage())
+            return nil
+        }
+        
+        var res: JavaUtilArrayList = JavaUtilArrayList();
+        
+        while(result!.next()) {
+            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            if (query is NSNull) {
+                query = nil
+            }
+            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            res.addWithId(record)
+        }
+        result!.close()
+        
+        return res;
+
     }
     
     func loadCenterWithSortKey(centerSortKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
-        fatalError("Not implemented")
+        checkTable();
+        
+        NSLog("loadCenterWithSortKey:\(centerSortKey)")
+        
+        var res: JavaUtilArrayList = JavaUtilArrayList();
+        res.addAllWithJavaUtilCollection(loadBackwardWithSortKey(centerSortKey, withLimit: limit))
+        res.addAllWithJavaUtilCollection(loadForwardWithSortKey(centerSortKey, withLimit: limit))
+        return res
     }
 }

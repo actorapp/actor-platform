@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_AppleChangeListener {
+class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_AppleChangeListener, AMDisplayList_Listener {
 
     private var displayList: AMBindedDisplayList!;
     private var emptyLock: Bool = true;
@@ -22,14 +22,117 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
     
     override func viewDidLoad() {
         if (self.displayList == nil) {
-            self.displayList = getDisplayList()
-            self.displayList.addAppleListener(self)
+            self.displayList = buildDisplayList()
         }
+    }
+    
+    // List binding lifecycle
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
+        // Lock to avoid layouting before animation started
+        emptyLock = true
+        
+        // Schedulling table view init
         dispatch_async(dispatch_get_main_queue(),{
             self.emptyLock = false
             self.tableView.reloadData()
+            
+            // Suppose it is not loaded
+            if (self.displayList.size() == 0) {
+                self.displayList.addListener(self)
+            } else {
+                self.afterLoaded();
+                self.displayList.addAppleListener(self)
+            }
         });
+    }
+    
+    func onCollectionChanged() {
+        // After first collection change expecting that list is loaded
+        self.tableView.reloadData()
+        self.afterLoaded();
+        
+        // Replace listeners
+        self.displayList.removeListener(self)
+        self.displayList.addAppleListener(self)
+    }
+    
+    func afterLoaded() {
+
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Remove all listeners on exit
+        self.displayList.removeListener(self)
+        self.displayList.removeAppleListener(self)
+    }
+    
+    
+    
+    // Working with list
+    
+    func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
+        if (displayList == nil) {
+            return nil
+        }
+        
+        return displayList.itemWithIndex(jint(indexPath.row));
+    }
+    
+    func objectAtIndex(index: Int) -> AnyObject? {
+        if (displayList == nil) {
+            return nil
+        }
+        
+        return displayList.itemWithIndex(jint(index));
+    }
+    
+    func getCount() -> Int {
+        if (displayList == nil) {
+            return 0
+        }
+        
+        return Int(displayList.size())
+    }
+    
+    // Abstract methods
+    
+    func buildDisplayList() -> AMBindedDisplayList {
+        fatalError("Not implemented");
+    }
+    
+    func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?)  -> UITableViewCell {
+        fatalError("Not implemented");
+    }
+    
+    func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
+        fatalError("Not implemented");
+    }
+    
+    // Table View updates
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (section != 0 || emptyLock || displayList == nil) {
+            return 0
+        }
+        return Int(displayList.size());
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var item: AnyObject? = objectAtIndexPath(indexPath)
+        var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
+        bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
+        displayList.touchWithIndex(jint(indexPath.row))
+        cell.transform = tableView.transform
+        return cell;
+    }
+    
+    func getAddAnimation(item: AnyObject?) -> UITableViewRowAnimation {
+        return UITableViewRowAnimation.Automatic
     }
     
     func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
@@ -44,11 +147,11 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             switch(UInt(change.getOperationType().ordinal())) {
             case AMChangeDescription_OperationType.ADD.rawValue:
                 var startIndex = Int(change.getIndex())
-                var rows: NSMutableArray = []
                 for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                    var rows = [NSIndexPath(forRow: Int(startIndex + ind), inSection: 0)]
+                    self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: getAddAnimation(change.getItems().getWithInt(ind)))
                 }
-                self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                
                 break
             case AMChangeDescription_OperationType.UPDATE.rawValue:
                 // Execute in separate batch
@@ -95,66 +198,5 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         }
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (emptyLock) {
-            return 0
-        }
-        
-        if (displayList == nil) {
-            return 0;
-        }
-        
-        if (section != 0) {
-            return 0;
-        }
-        
-        return Int(displayList.size());
-    }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var item: AnyObject? = objectAtIndexPath(indexPath)
-        var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
-        bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
-        displayList.touchWithIndex(jint(indexPath.row))
-        cell.transform = tableView.transform
-        return cell;
-    }
-    
-    func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
-        if (displayList == nil) {
-            return nil
-        }
-        
-        return displayList.itemWithIndex(jint(indexPath.row));
-    }
-    
-    func objectAtIndex(index: Int) -> AnyObject? {
-        if (displayList == nil) {
-            return nil
-        }
-        
-        return displayList.itemWithIndex(jint(index));
-    }
-    
-    func getCount() -> Int {
-        if (displayList == nil) {
-            return 0
-        }
-        
-        return Int(displayList.size())
-    }
-    
-    // Abstract methods
-    
-    func getDisplayList() -> AMBindedDisplayList {
-        fatalError("Not implemented");
-    }
-    
-    func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?)  -> UITableViewCell {
-        fatalError("Not implemented");
-    }
-    
-    func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
-        fatalError("Not implemented");
-    }
 }
