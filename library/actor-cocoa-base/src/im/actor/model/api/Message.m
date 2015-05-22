@@ -8,6 +8,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentMessage.h"
+#include "im/actor/model/api/JsonMessage.h"
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/MessageUnsupported.h"
 #include "im/actor/model/api/ServiceMessage.h"
@@ -58,6 +59,8 @@ ImActorModelApiMessage *ImActorModelApiMessage_fromBytesWithByteArray_(IOSByteAr
     return ((ImActorModelApiServiceMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceMessage_init(), content));
     case 3:
     return ((ImActorModelApiDocumentMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentMessage_init(), content));
+    case 4:
+    return ((ImActorModelApiJsonMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiJsonMessage_init(), content));
     default:
     return new_ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(key, content);
   }
