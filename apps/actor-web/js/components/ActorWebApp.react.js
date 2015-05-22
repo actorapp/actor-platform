@@ -1,5 +1,6 @@
 var React = require('react');
 var SidebarSection = require('./SidebarSection.react');
+var ToolbarSection = require('./ToolbarSection.react');
 var MessageSection = require('./MessageSection.react');
 
 var ActorWebApp = React.createClass({
@@ -9,12 +10,16 @@ var ActorWebApp = React.createClass({
 
   render: function() {
     var body;
+    var messenger = this.props.messenger;
 
-    if (this.props.messenger.getUid()) {
+    if (messenger.getUid()) {
       body =
         <div className="app row">
-          <SidebarSection messenger={this.props.messenger}></SidebarSection>
-          <MessageSection></MessageSection>
+          <SidebarSection messenger={messenger}></SidebarSection>
+          <section className="main col-xs">
+            <ToolbarSection></ToolbarSection>
+            <MessageSection></MessageSection>
+          </section>
         </div>
     } else {
       body = <div className="app row">login form</div>
