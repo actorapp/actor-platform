@@ -14,7 +14,7 @@ import im.actor.server.social.SocialManagerRegion
 sealed trait Event
 
 object Events {
-  final case class PeerMessage(peer: Peer, senderUserId: Int, randomId: Long, message: Message) extends Event
+  final case class PeerMessage(fromPeer: Peer, toPeer: Peer, randomId: Long, message: Message) extends Event
 }
 
 object MessagingService {
@@ -31,15 +31,15 @@ object MessagingService {
     messagesTopic(peer.asModel)
 
   def publish(mediator: ActorRef, message: Events.PeerMessage): Unit = {
-    message.peer.`type` match {
+    message.toPeer.`type` match {
       case PeerType.Private ⇒
-        val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, message.senderUserId))
-        val receiverTopic = messagesTopic(message.peer)
+        val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, message.fromPeer.id))
+        val receiverTopic = messagesTopic(message.toPeer)
 
         mediator ! DistributedPubSubMediator.Publish(senderTopic, message)
         mediator ! DistributedPubSubMediator.Publish(receiverTopic, message)
       case PeerType.Group ⇒
-        val topic = messagesTopic(message.peer)
+        val topic = messagesTopic(message.toPeer)
         mediator ! DistributedPubSubMediator.Publish(topic, message)
     }
   }
