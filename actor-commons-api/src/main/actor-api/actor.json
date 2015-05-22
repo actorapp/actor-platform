@@ -752,6 +752,7 @@
                 "description": "  Subtitle of record"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -857,6 +858,7 @@
                 "description": "  Is user actually bot. By default is false."
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -1809,7 +1811,7 @@
               {
                 "type": "reference",
                 "argument": "text",
-                "category": "full",
+                "category": "danger",
                 "description": "  the text"
               },
               {
@@ -1829,6 +1831,7 @@
               "name": "Message",
               "key": 1
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -1878,6 +1881,7 @@
                 "description": "  Markdown text"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -1910,6 +1914,7 @@
               "name": "Message",
               "key": 2
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -1955,6 +1960,7 @@
               "name": "ServiceEx",
               "key": 1
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -1981,6 +1987,7 @@
               "name": "ServiceEx",
               "key": 2
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2001,6 +2008,7 @@
               "name": "ServiceEx",
               "key": 3
             },
+            "expandable": "true",
             "attributes": []
           }
         },
@@ -2015,6 +2023,7 @@
               "name": "ServiceEx",
               "key": 4
             },
+            "expandable": "true",
             "attributes": []
           }
         },
@@ -2035,6 +2044,7 @@
               "name": "ServiceEx",
               "key": 5
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "string",
@@ -2061,6 +2071,7 @@
               "name": "ServiceEx",
               "key": 6
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -2093,6 +2104,7 @@
               "name": "ServiceEx",
               "key": 8
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2113,6 +2125,7 @@
               "name": "ServiceEx",
               "key": 9
             },
+            "expandable": "true",
             "attributes": []
           }
         },
@@ -2127,6 +2140,7 @@
               "name": "ServiceEx",
               "key": 16
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2189,6 +2203,7 @@
               "name": "Message",
               "key": 3
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int64",
@@ -2271,6 +2286,7 @@
               "name": "DocumentEx",
               "key": 1
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2314,6 +2330,7 @@
               "name": "DocumentEx",
               "key": 2
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2350,6 +2367,7 @@
               "name": "DocumentEx",
               "key": 3
             },
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -2360,7 +2378,31 @@
           }
         },
         {
-          "type": "empty"
+          "type": "struct",
+          "content": {
+            "name": "JsonMessage",
+            "doc": [
+              "Custom-data JsonMessage",
+              {
+                "type": "reference",
+                "argument": "rawJson",
+                "category": "full",
+                "description": "  JSON object"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 4
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "rawJson"
+              }
+            ]
+          }
         },
         {
           "type": "rpc",
@@ -2690,6 +2732,114 @@
                 },
                 "id": 5,
                 "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageContentChanged",
+            "header": 162,
+            "doc": [
+              "Update about message change",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "message",
+                "category": "full",
+                "description": "  Message content"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "trait",
+                  "childType": "Message"
+                },
+                "id": 3,
+                "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageDateChanged",
+            "header": 163,
+            "doc": [
+              "Update about message date changed",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "hidden",
+                "description": "  Date of message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
               }
             ]
           }
@@ -3181,9 +3331,6 @@
           }
         },
         {
-          "type": "empty"
-        },
-        {
           "type": "struct",
           "content": {
             "name": "Dialog",
@@ -3455,6 +3602,7 @@
                 "description": "  Date of creation"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -3539,6 +3687,7 @@
                 "description": "  Adding date"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -3557,9 +3706,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "rpc",
@@ -4836,6 +4982,7 @@
                 "description": "  Access hash of file"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int64",
@@ -4881,6 +5028,7 @@
                 "description": "  Size of file"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -4933,6 +5081,7 @@
                 "description": "  Optional full screen image of avatar"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": {
@@ -4995,6 +5144,7 @@
                 "description": "  compressed image data"
               }
             ],
+            "expandable": "true",
             "attributes": [
               {
                 "type": "int32",
@@ -5368,10 +5518,10 @@
       ]
     },
     {
-      "title": "Llectro",
-      "package": "llectro",
+      "title": "ilectro",
+      "package": "ilectro",
       "doc": [
-        "Llectro Advertisment API"
+        "iLectro Advertisment API"
       ],
       "items": [
         {
@@ -5526,156 +5676,9 @@
           }
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "Banner",
-            "doc": [
-              "Advertisment banner",
-              {
-                "type": "reference",
-                "argument": "id",
-                "category": "full",
-                "description": "  Unique ID of banner"
-              },
-              {
-                "type": "reference",
-                "argument": "width",
-                "category": "full",
-                "description": "  width of banner"
-              },
-              {
-                "type": "reference",
-                "argument": "height",
-                "category": "full",
-                "description": "  height of banner"
-              },
-              {
-                "type": "reference",
-                "argument": "bannerUrl",
-                "category": "full",
-                "description": "  banner url"
-              },
-              {
-                "type": "reference",
-                "argument": "adUrl",
-                "category": "full",
-                "description": "  Ad Url"
-              },
-              {
-                "type": "reference",
-                "argument": "adCost",
-                "category": "full",
-                "description": "  Ad Cost"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "id"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "width"
-              },
-              {
-                "type": "int32",
-                "id": 3,
-                "name": "height"
-              },
-              {
-                "type": "string",
-                "id": 4,
-                "name": "bannerUrl"
-              },
-              {
-                "type": "string",
-                "id": 5,
-                "name": "adUrl"
-              },
-              {
-                "type": "int32",
-                "id": 6,
-                "name": "adCost"
-              }
-            ]
-          }
-        },
-        {
           "type": "rpc",
           "content": {
-            "name": "GetAdBatters",
-            "header": 159,
-            "response": {
-              "type": "anonymous",
-              "header": 161,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "banners",
-                  "category": "full",
-                  "description": "  Available banners"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Banner"
-                    }
-                  },
-                  "id": 1,
-                  "name": "banners"
-                }
-              ]
-            },
-            "doc": [
-              "Requesting AD banners",
-              {
-                "type": "reference",
-                "argument": "maxBannerWidth",
-                "category": "hidden",
-                "description": "maximum banner width"
-              },
-              {
-                "type": "reference",
-                "argument": "maxBannerHeight",
-                "category": "hidden",
-                "description": "maximum banner height"
-              },
-              {
-                "type": "reference",
-                "argument": "screenDensity",
-                "category": "hidden",
-                "description": "Screen Density of destination device"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "maxBannerWidth"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "maxBannerHeight"
-              },
-              {
-                "type": "double",
-                "id": 3,
-                "name": "screenDensity"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "NotifyAddView",
+            "name": "NotifyAdView",
             "header": 162,
             "response": {
               "type": "reference",
@@ -6363,9 +6366,6 @@
             ],
             "attributes": []
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "rpc",
