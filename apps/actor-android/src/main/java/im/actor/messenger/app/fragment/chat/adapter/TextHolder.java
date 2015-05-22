@@ -117,14 +117,15 @@ public class TextHolder extends MessageHolder {
         if(urlSpans.length>0){
             int start;
             int end;
-            int prevEnd = -1;
+            int prevEnd = 0;
             Spannable toLinkyfy;
             for (int i = 0; i < urlSpans.length; i++) {
                 start = spannedTextEditable.getSpanStart(urlSpans[i]);
                 end = spannedTextEditable.getSpanEnd(urlSpans[i]);
-                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd + 1, start);
+                if(start>spannedText.length()-1)continue;
+                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd , start);
                 Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-                spannedTextEditable.replace(prevEnd + 1, start, toLinkyfy);
+                spannedTextEditable.replace(prevEnd, start, toLinkyfy);
                 prevEnd = end;
             }
             toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
