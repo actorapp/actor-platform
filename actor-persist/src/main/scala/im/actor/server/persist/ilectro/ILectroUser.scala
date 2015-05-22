@@ -17,6 +17,9 @@ class ILectroUserTable(tag: Tag) extends Table[models.ilectro.ILectroUser](tag, 
 object ILectroUser {
   val users = TableQuery[ILectroUserTable]
 
+  def create(user: models.ilectro.ILectroUser) =
+    users += user
+
   def findByUserId(userId: Int) =
     users.filter(_.userId === userId).result.headOption
 

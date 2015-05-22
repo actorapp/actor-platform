@@ -14,6 +14,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.ilectro.results.{ Banner, Errors }
 import im.actor.server.models.ilectro.{ ILectroUser, Interest }
+import im.actor.server.models
 import im.actor.server.persist
 
 class ILectro(implicit system: ActorSystem) {
@@ -25,6 +26,15 @@ class ILectro(implicit system: ActorSystem) {
 
   private val users = new Users()
   private val lists = new Lists()
+
+  def createUser(userId: Int, name: String): dbio.DBIOAction[ILectroUser, NoStream, Write with Effect with Transactional] = {
+    val ilectroUser = models.ilectro.ILectroUser(userId, UUID.randomUUID(), name)
+
+    (for {
+      _ ← persist.ilectro.ILectroUser.create(ilectroUser)
+      _ ← DBIO.from(users.create(ilectroUser))
+    } yield ilectroUser).transactionally
+  }
 
   def deleteInterest(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Vector[Either[Errors, Unit]], NoStream, Write with Effect with Transactional] = {
     DBIO.sequence(
