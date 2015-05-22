@@ -1,10 +1,13 @@
 package im.actor.server.api.rpc.service.llectro
 
+import java.util.UUID
+
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
 import slick.dbio
-import slick.dbio.Effect.Read
+import slick.dbio.Effect.{ Transactional, Write, Read }
+import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
@@ -12,12 +15,15 @@ import im.actor.api.rpc.ilectro._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.server.ilectro.ILectro
 import im.actor.server.persist
+import im.actor.server.util.UserUtils
 
 object Errors {
   val IlectroNotInitialized = RpcError(400, "ILECTRO_USER_NOT_INITIALIZED", "", false, None)
 }
 
 class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: ActorSystem) extends IlectroService {
+  import UserUtils._
+
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleNotifyAddView(bannerId: Int, viewDuration: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -64,9 +70,11 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
   }
 
   override def jhandleGetAvailableInterests(clientData: ClientData): Future[HandlerResult[ResponseGetAvailableInterests]] = {
-    val authorizedAction = requireAuth(clientData) map { client ⇒
-      for (tree ← getInterestsTree(0, 0))
-        yield Ok(ResponseGetAvailableInterests(tree))
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      for {
+        _ ← createIlectroUser
+        tree ← getInterestsTree(0, 0)
+      } yield Ok(ResponseGetAvailableInterests(tree))
     }
 
     db.run(toDBIOAction(authorizedAction))
@@ -79,6 +87,17 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
           children ← getInterestsTree(interest.level + 1, interest.id)
         } yield Interest(interest.id, interest.name, children, false)
       })
+    }
+  }
+
+  private def createIlectroUser(implicit clientData: AuthorizedClientData): dbio.DBIOAction[UUID, NoStream, Read with Read with Write with PostgresDriver.api.Effect with Transactional] = {
+    persist.ilectro.ILectroUser.findByUserId(clientData.userId) flatMap {
+      case Some(user) ⇒ DBIO.successful(user.uuid)
+      case None ⇒
+        for {
+          user ← getClientUserUnsafe
+          ilectroUser ← ilectro.createUser(user.id, user.name)
+        } yield ilectroUser.uuid
     }
   }
 }
