@@ -2,7 +2,6 @@ package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -103,16 +102,16 @@ public class TextHolder extends MessageHolder {
             builder.append(name);
             builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             builder.append("\n");
-            //builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText()));
-            builder.append(((TextContent) message.getContent()).getText());
+            builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
+            //builder.append(((TextContent) message.getContent()).getText());
             spannedText = builder;
         } else {
-            //spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText());
-            spannedText = ((TextContent) message.getContent()).getText();
+            spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false);
+            //spannedText = ((TextContent) message.getContent()).getText();
         }
 
-        spannedText = new SpannableStringBuilder(spannedText);
-/*
+
+
         Editable spannedTextEditable = (Editable) spannedText;
         URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
         if(urlSpans.length>0){
@@ -133,9 +132,8 @@ public class TextHolder extends MessageHolder {
             spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
             spannedText = spannedTextEditable;
         }else{
-*/
             Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//        }
+        }
 
         if (emoji().containsEmoji(spannedText)) {
             if (emoji().isLoaded()) {
