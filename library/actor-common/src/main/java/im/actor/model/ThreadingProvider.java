@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
@@ -21,6 +23,7 @@ public interface ThreadingProvider {
      *
      * @return time in ms
      */
+    @ObjectiveCName("getActorTime")
     long getActorTime();
 
     /**
@@ -28,6 +31,7 @@ public interface ThreadingProvider {
      *
      * @return time in ms
      */
+    @ObjectiveCName("getCurrentTime")
     long getCurrentTime();
 
     /**
@@ -36,6 +40,7 @@ public interface ThreadingProvider {
      *
      * @return time in ms
      */
+    @ObjectiveCName("getSyncedCurrentTime")
     long getSyncedCurrentTime();
 
     /**
@@ -43,6 +48,7 @@ public interface ThreadingProvider {
      *
      * @return cores count
      */
+    @ObjectiveCName("getCoresCount")
     int getCoresCount();
 
     /**
@@ -51,6 +57,7 @@ public interface ThreadingProvider {
      * @param value initial value of AtomicInteger
      * @return the AtomicInteger
      */
+    @ObjectiveCName("createAtomicIntWithInitValue:")
     AtomicIntegerCompat createAtomicInt(int value);
 
     /**
@@ -59,6 +66,7 @@ public interface ThreadingProvider {
      * @param value initial value of AtomicLong
      * @return the AtomicLong
      */
+    @ObjectiveCName("createAtomicLongWithInitValue:")
     AtomicLongCompat createAtomicLong(long value);
 
     /**
@@ -67,6 +75,7 @@ public interface ThreadingProvider {
      * @param <T> type of container
      * @return the ThreadLocal object
      */
+    @ObjectiveCName("createThreadLocal")
     <T> ThreadLocalCompat<T> createThreadLocal();
 
     /**
@@ -78,6 +87,7 @@ public interface ThreadingProvider {
      * @param actorSystem  ActorSystem for dispatcher
      * @return created dispatcher
      */
+    @ObjectiveCName("createDispatcherWithName:withThreadsCount:withPriority:withActorSystem:")
     ActorDispatcher createDispatcher(String name, int threadsCount, ThreadPriority priority, ActorSystem actorSystem);
 
     /**
@@ -88,5 +98,6 @@ public interface ThreadingProvider {
      * @param system   ActorSystem of dispatcher
      * @return created dispatcher
      */
+    @ObjectiveCName("createDefaultDispatcherWithName:withPriority:withActorSystem:")
     ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem system);
 }

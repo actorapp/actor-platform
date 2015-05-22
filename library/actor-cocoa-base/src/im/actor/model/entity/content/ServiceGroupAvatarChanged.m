@@ -60,7 +60,7 @@ __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAv
   [super parseWithBSBserValues:values];
   IOSByteArray *data = [((BSBserValues *) nil_chk(values)) optBytesWithInt:10];
   if (data != nil) {
-    newAvatar_ = AMAvatar_fromBytesWithByteArray_(data);
+    newAvatar_ = new_AMAvatar_initWithByteArray_(data);
   }
 }
 

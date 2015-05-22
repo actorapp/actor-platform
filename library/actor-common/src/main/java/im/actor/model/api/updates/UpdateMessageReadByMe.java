@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class UpdateMessageReadByMe extends Update {
     private Peer peer;
     private long startDate;
 
-    public UpdateMessageReadByMe(Peer peer, long startDate) {
+    public UpdateMessageReadByMe(@NotNull Peer peer, long startDate) {
         this.peer = peer;
         this.startDate = startDate;
     }
@@ -37,6 +40,7 @@ public class UpdateMessageReadByMe extends Update {
 
     }
 
+    @NotNull
     public Peer getPeer() {
         return this.peer;
     }

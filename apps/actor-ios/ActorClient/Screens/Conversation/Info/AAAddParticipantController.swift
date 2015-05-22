@@ -62,7 +62,7 @@ class AAAddParticipantController: ContactsBaseController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         var contact = objectAtIndexPath(indexPath) as! AMContact;
         
-        execute(MSG.addMemberToGroupWithInt(jint(gid), withInt: contact.getUid()), successBlock: { (val) -> () in
+        execute(MSG.inviteMemberCommandWithGid(jint(gid), withUid: contact.getUid()), successBlock: { (val) -> () in
             self.dismiss()
             }, failureBlock: { (val) -> () in
                 self.dismiss()

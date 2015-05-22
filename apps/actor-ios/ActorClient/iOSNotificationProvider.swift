@@ -17,31 +17,32 @@ import AudioToolbox.AudioServices
         AudioServicesCreateSystemSoundID(path, &internalMessage)
     }
     
-    func onMessageArriveInAppWithAMMessenger(messenger: AMMessenger!) {
+    func onMessageArriveInAppWithMessenger(messenger: AMMessenger!) {
         AudioServicesPlaySystemSound(internalMessage)
     }
     
-    func onNotificationWithAMMessenger(messenger: AMMessenger!, withJavaUtilList topNotifications: JavaUtilList!, withInt messagesCount: jint, withInt conversationsCount: jint, withBoolean silentUpdate: Bool, withBoolean isInApp: Bool) {
+    func onNotificationWithMessenger(messenger: AMMessenger!, withTopNotifications topNotifications: JavaUtilList!, withMessagesCount messagesCount: jint, withConversationsCount conversationsCount: jint, withSilentUpdate silentUpdate: Bool, withIsInApp isInApp: Bool) {
         if (silentUpdate) {
             return
         }
         
         var n = topNotifications.getWithInt(0) as! AMNotification
         
-        var message = messenger.getFormatter().formatContentDialogTextWithInt(n.getSender(), withAMContentTypeEnum: n.getContentDescription().getContentType(), withNSString: n.getContentDescription().getText(), withInt: n.getContentDescription().getRelatedUser())
+        messenger.getFormatter().formatNotificationText(n)
+        
+        var message = messenger.getFormatter().formatNotificationText(n)
         if (!messenger.isShowNotificationsText()) {
             message = NSLocalizedString("NotificationSecretMessage", comment: "New Message")
         }
-        var senderUser = messenger.getUsers().getWithLong(jlong(n.getSender())) as! AMUserVM
-        var sender = senderUser.getName().get() as! String
+        var senderUser = messenger.getUserWithUid(n.getSender())
+        var sender = senderUser.getNameModel().get()
         
         if (UInt(n.getPeer().getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            var group = messenger.getGroups().getWithLong(jlong(n.getPeer().getPeerId())) as! AMGroupVM
-            sender = "\(sender)@\(group.getName().get() as! String)"
+            var group = messenger.getGroupWithGid(n.getPeer().getPeerId())
+            sender = "\(sender)@\(group.getNameModel().get())"
         }
         
         if (isInApp) {
-            
             if (messenger.isInAppNotificationSoundEnabled()) {
                 var path = getNotificationSound(messenger)
                 if (sounds[path] == nil) {
@@ -56,7 +57,7 @@ import AudioToolbox.AudioServices
             if (messenger.isInAppNotificationVibrationEnabled()) {
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             }
-
+            
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 TWMessageBarManager.sharedInstance()
                     .showMessageWithTitle(sender, description: message, type: TWMessageBarMessageType.Info)

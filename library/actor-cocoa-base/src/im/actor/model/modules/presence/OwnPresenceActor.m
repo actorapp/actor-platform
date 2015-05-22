@@ -43,9 +43,9 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 
 @interface ImActorModelModulesPresenceOwnPresenceActor_$1 : NSObject < AMRpcCallback >
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)init;
 
@@ -190,10 +190,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_Per
 
 @implementation ImActorModelModulesPresenceOwnPresenceActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
 }
 
 - (instancetype)init {

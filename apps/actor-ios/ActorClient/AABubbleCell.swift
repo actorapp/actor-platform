@@ -176,9 +176,9 @@ class AABubbleCell: UITableViewCell {
         if (!reuse) {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
-                    if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
-                        let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
-                        let name = user.getName().get() as! String;
+                    if let user = MSG.getUserWithUid(message.getSenderId()) {
+                        let avatar: AMAvatar? = user.getAvatarModel().get()
+                        let name = user.getNameModel().get()
                         avatarView.bind(name, id: user.getId(), avatar: avatar)
                     }
                     contentView.addSubview(avatarView)
@@ -190,7 +190,7 @@ class AABubbleCell: UITableViewCell {
         
         self.isShowDate = isShowDate
         if (isShowDate) {
-            self.dateText.text = MSG.getFormatter().formatDateWithLong(message.getDate())
+            self.dateText.text = MSG.getFormatter().formatDate(message.getDate())
         }
         
         bind(message, reuse: reuse, isPreferCompact: isPreferCompact)

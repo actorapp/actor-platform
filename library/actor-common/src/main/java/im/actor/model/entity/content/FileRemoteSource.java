@@ -45,7 +45,7 @@ public class FileRemoteSource extends FileSource {
     @Override
     public void parse(BserValues values) throws IOException {
         super.parse(values);
-        fileReference = FileReference.fromBytes(values.getBytes(2));
+        fileReference = new FileReference(values.getBytes(2));
     }
 
     @Override

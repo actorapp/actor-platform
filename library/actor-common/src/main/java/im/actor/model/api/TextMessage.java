@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -23,7 +26,7 @@ public class TextMessage extends Message {
     private List<Integer> mentions;
     private TextMessageEx ext;
 
-    public TextMessage(String text, List<Integer> mentions, TextMessageEx ext) {
+    public TextMessage(@NotNull String text, @NotNull List<Integer> mentions, @Nullable TextMessageEx ext) {
         this.text = text;
         this.mentions = mentions;
         this.ext = ext;
@@ -37,14 +40,17 @@ public class TextMessage extends Message {
         return 1;
     }
 
+    @NotNull
     public String getText() {
         return this.text;
     }
 
+    @NotNull
     public List<Integer> getMentions() {
         return this.mentions;
     }
 
+    @Nullable
     public TextMessageEx getExt() {
         return this.ext;
     }

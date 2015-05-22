@@ -4,6 +4,8 @@
 
 package im.actor.model.viewmodel;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Modules;
@@ -15,7 +17,8 @@ public class ConversationVM {
     private BindedDisplayList.Listener listener;
     private boolean isLoaded = false;
 
-    public ConversationVM(final Peer peer, final ConversationVMCallback callback, final Modules modules, final BindedDisplayList<Message> displayList) {
+    public ConversationVM(final Peer peer, final ConversationVMCallback callback,
+                          final Modules modules, final BindedDisplayList<Message> displayList) {
         this.displayList = displayList;
         this.listener = new DisplayList.Listener() {
             @Override
@@ -61,6 +64,7 @@ public class ConversationVM {
         listener.onCollectionChanged();
     }
 
+    @ObjectiveCName("releaseVM")
     public void release() {
         displayList.removeListener(listener);
     }
