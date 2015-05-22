@@ -1,5 +1,7 @@
 var React = require('react');
 
+var AvatarItem = require('../common/AvatarItem.react');
+
 var UserSection = React.createClass({
   propTypes: {
     messenger: React.PropTypes.object.isRequired
@@ -12,21 +14,13 @@ var UserSection = React.createClass({
 
   render: function() {
     var user = this.state.user;
-    var name = user.name;
-    var avatar;
-
-    if (user.avatar !== null) {
-      avatar = <img className="avatar__image" src={user.avatar}/>
-    } else {
-      avatar = <span className="avatar__placeholder avatar__placeholder--yellow">O</span>
-    }
 
     return(
       <div className="sidebar__header__user row">
         <div className="sidebar__header__user__avatar avatar avatar--small">
-          {avatar}
+          <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder}/>
         </div>
-        <span className="sidebar__header__user__name">{name}</span>
+        <span className="sidebar__header__user__name">{user.name}</span>
         <span className="col-xs"></span>
         <img className="sidebar__header__user__expand" src="assets/img/icons/png/ic_expand_more_2x_white.png" alt=""/>
       </div>
