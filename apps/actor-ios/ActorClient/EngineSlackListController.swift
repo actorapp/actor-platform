@@ -149,7 +149,14 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
                 var startIndex = Int(change.getIndex())
                 for ind in 0..<change.getLength() {
                     var rows = [NSIndexPath(forRow: Int(startIndex + ind), inSection: 0)]
-                    self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: getAddAnimation(change.getItems().getWithInt(ind)))
+                    var animation = getAddAnimation(change.getItems().getWithInt(ind))
+                    if (animation == UITableViewRowAnimation.None) {
+                        CATransaction.setDisableActions(true)
+                    }
+                    self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: animation)
+                    if (animation == UITableViewRowAnimation.None) {
+                        CATransaction.setDisableActions(true)
+                    }
                 }
                 
                 break
