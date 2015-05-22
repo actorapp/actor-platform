@@ -18,22 +18,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestNotifyAddView extends Request<ResponseVoid> {
+public class RequestNotifyAdView extends Request<ResponseVoid> {
 
     public static final int HEADER = 0xa2;
-    public static RequestNotifyAddView fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestNotifyAddView(), data);
+    public static RequestNotifyAdView fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestNotifyAdView(), data);
     }
 
     private int bannerId;
     private int viewDuration;
 
-    public RequestNotifyAddView(int bannerId, int viewDuration) {
+    public RequestNotifyAdView(int bannerId, int viewDuration) {
         this.bannerId = bannerId;
         this.viewDuration = viewDuration;
     }
 
-    public RequestNotifyAddView() {
+    public RequestNotifyAdView() {
 
     }
 
@@ -59,7 +59,7 @@ public class RequestNotifyAddView extends Request<ResponseVoid> {
 
     @Override
     public String toString() {
-        String res = "rpc NotifyAddView{";
+        String res = "rpc NotifyAdView{";
         res += "bannerId=" + this.bannerId;
         res += ", viewDuration=" + this.viewDuration;
         res += "}";

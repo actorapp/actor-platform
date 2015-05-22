@@ -207,14 +207,14 @@ public class GroupsProcessor extends BaseModule {
 
             // Notify about group change
             onGroupDescChanged(upd);
-            
+
             // }
 
             // Create message if needed
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupAvatarChanged(new Avatar(avatar)));
+                        new ServiceGroupAvatarChanged(avatar != null ? new Avatar(avatar) : new Avatar()));
                 conversationActor(group.peer()).send(message);
             }
         }
