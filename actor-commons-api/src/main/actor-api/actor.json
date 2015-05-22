@@ -5933,77 +5933,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "GetAdBanners",
-            "header": 159,
-            "response": {
-              "type": "anonymous",
-              "header": 161,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "banners",
-                  "category": "full",
-                  "description": "  Available banners"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Banner"
-                    }
-                  },
-                  "id": 1,
-                  "name": "banners"
-                }
-              ]
-            },
-            "doc": [
-              "Requesting AD banners",
-              {
-                "type": "reference",
-                "argument": "maxBannerWidth",
-                "category": "hidden",
-                "description": "maximum banner width"
-              },
-              {
-                "type": "reference",
-                "argument": "maxBannerHeight",
-                "category": "hidden",
-                "description": "maximum banner height"
-              },
-              {
-                "type": "reference",
-                "argument": "screenDensity",
-                "category": "hidden",
-                "description": "Screen Density of destination device"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "maxBannerWidth"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "maxBannerHeight"
-              },
-              {
-                "type": "double",
-                "id": 3,
-                "name": "screenDensity"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "NotifyAddView",
+            "name": "NotifyAdView",
             "header": 162,
             "response": {
               "type": "reference",
