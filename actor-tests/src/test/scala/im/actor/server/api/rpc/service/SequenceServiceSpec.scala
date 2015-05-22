@@ -27,7 +27,7 @@ class SequenceServiceSpec extends BaseServiceSuite {
   implicit val socialManagerRegion = SocialManager.startRegion()
 
   implicit val service = new sequence.SequenceServiceImpl
-  implicit val msgService = new messaging.MessagingServiceImpl
+  implicit val msgService = new messaging.MessagingServiceImpl(mediator)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 

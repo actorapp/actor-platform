@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import akka.contrib.pattern.DistributedPubSubMediator
+import akka.testkit.TestProbe
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 
@@ -10,6 +12,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -24,6 +27,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   it should "not send messages when user is not in group" in s.group.restrictAlienUser
 
+  it should "publish messages in PubSub" in s.pubsub.publish
+
   object s {
     implicit val sessionRegion = buildSessionRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -35,7 +40,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
 
-    implicit val service = new messaging.MessagingServiceImpl
+    implicit val service = new messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(bucketName)
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
@@ -112,6 +117,38 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           resp should matchNotAuthorized
         }
 
+      }
+    }
+
+    object pubsub {
+      import DistributedPubSubMediator._
+
+      val (user, authId, _) = createUser()
+      val sessionId = createSessionId()
+      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+
+      val (user2, _, _) = createUser()
+      val user2Model = getUserModel(user2.id)
+      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
+      val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
+
+      def publish() = {
+        val probe = TestProbe()
+
+        val topics = Seq(
+          s"messaging.messages.private.${user.id}",
+          s"messaging.messages.private.${user2.id}"
+        )
+
+        topics foreach { topic ⇒
+          mediator.tell(Subscribe(topic, probe.ref), probe.ref)
+          probe.expectMsg(SubscribeAck(Subscribe(topic, None, probe.ref)))
+        }
+
+        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi PubSub", Vector.empty, None))) { resp ⇒
+          probe.expectMsgClass(classOf[Events.PeerMessage])
+          probe.expectMsgClass(classOf[Events.PeerMessage])
+        }
       }
     }
   }

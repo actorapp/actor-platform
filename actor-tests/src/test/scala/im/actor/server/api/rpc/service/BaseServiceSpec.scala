@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service
 
+import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorFlowMaterializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
@@ -21,6 +22,7 @@ trait BaseServiceSuite
   with ActorSpecHelpers {
   implicit lazy val (ds, db) = migrateAndInitDb()
   implicit val flowMaterializer = ActorFlowMaterializer()
+  lazy val mediator = DistributedPubSubExtension(system).mediator
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(10, Seconds))

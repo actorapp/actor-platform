@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service.messaging
 import scala.concurrent._
 import scala.concurrent.duration._
 
+import akka.contrib.pattern.{ DistributedPubSubMediator, DistributedPubSubExtension }
 import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.dbio
@@ -39,7 +40,7 @@ private[messaging] trait MessagingHandlers {
         val dateTime = new DateTime
         val dateMillis = dateTime.getMillis
 
-        outPeer.`type` match {
+        val seqstateAction = outPeer.`type` match {
           case PeerType.Private ⇒
             val ownUpdate = UpdateMessage(
               peer = outPeer.asPeer,
@@ -68,9 +69,7 @@ private[messaging] trait MessagingHandlers {
               _ ← DBIO.from(recordRelation(client.userId, outPeer.id))
               _ ← notifyClientUpdate(ownUpdate, None)
               seqstate ← persistAndPushUpdate(client.authId, update, None)
-            } yield {
-              Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
-            }
+            } yield seqstate
           case PeerType.Group ⇒
             val outUpdate = UpdateMessage(
               peer = Peer(PeerType.Group, outPeer.id),
@@ -86,9 +85,25 @@ private[messaging] trait MessagingHandlers {
               _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.group(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
               _ ← broadcastGroupMessage(outPeer.id, outUpdate)
               seqstate ← persistAndPushUpdate(client.authId, update, None)
-            } yield {
-              Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
-            }
+            } yield seqstate
+        }
+
+        for (seqstate ← seqstateAction) yield {
+          val event = Events.PeerMessage(outPeer.asPeer, client.userId, randomId, message)
+
+          outPeer.`type` match {
+            case PeerType.Private ⇒
+              val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, client.userId))
+              val receiverTopic = MessagingService.messagesTopic(outPeer.asPeer)
+
+              mediator ! DistributedPubSubMediator.Publish(senderTopic, event)
+              mediator ! DistributedPubSubMediator.Publish(receiverTopic, event)
+            case PeerType.Group ⇒
+              val topic = MessagingService.messagesTopic(outPeer.asPeer)
+              mediator ! DistributedPubSubMediator.Publish(topic, event)
+          }
+
+          Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
         }
       }
     }
