@@ -18,13 +18,13 @@
 
 #pragma mark Public
 
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
+
 - (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
                                        withNSString:(NSString *)fileName
                                             withInt:(jint)fileSize;
 
 - (jboolean)isEqual:(id)o;
-
-+ (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -50,11 +50,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileReference)
 
-FOUNDATION_EXPORT AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data);
-
 FOUNDATION_EXPORT void AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(AMFileReference *self, ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize);
 
 FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMFileReference_initWithByteArray_(AMFileReference *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileReference)
 

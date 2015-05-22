@@ -25,9 +25,9 @@
 - (instancetype)initWithDKListStorageDisplayEx:(id<DKListStorageDisplayEx>)storage
                              withBSBserCreator:(id<BSBserCreator>)creator;
 
-- (void)addOrUpdateItemWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
+- (void)addOrUpdateItem:(BSBserObject<DKListEngineItem> *)item;
 
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)addOrUpdateItems:(id<JavaUtilList>)items;
 
 - (void)clear;
 
@@ -35,55 +35,55 @@
 
 - (id)getHeadValue;
 
-- (id)getValueWithLong:(jlong)key;
+- (id)getValueWithKey:(jlong)key;
 
 - (jboolean)isEmpty;
 
-- (void)loadBackwardWithInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadBackwardWithLimit:(jint)limit
+                 withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadBackwardWithLong:(jlong)beforeSortKey
-                     withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadBackwardBeforeSortKey:(jlong)beforeSortKey
+                        withLimit:(jint)limit
+                     withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadBackwardWithNSString:(NSString *)query
-                         withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadBackwardWithQuery:(NSString *)query
+                    withLimit:(jint)limit
+                 withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadBackwardWithNSString:(NSString *)query
-                        withLong:(jlong)beforeSortKey
-                         withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadBackwardWithQuery:(NSString *)query
+                beforeSortKey:(jlong)beforeSortKey
+                    withLimit:(jint)limit
+                 withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadCenterWithLong:(jlong)centerSortKey
-                   withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadCenterWithSortKey:(jlong)centerSortKey
+                    withLimit:(jint)limit
+                 withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadForwardWithInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadForwardWithLimit:(jint)limit
+                withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadForwardWithLong:(jlong)afterSortKey
-                    withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadForwardAfterSortKey:(jlong)afterSortKey
+                      withLimit:(jint)limit
+                   withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadForwardWithNSString:(NSString *)query
-                        withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadForwardWithQuery:(NSString *)query
+                   withLimit:(jint)limit
+                withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)loadForwardWithNSString:(NSString *)query
-                       withLong:(jlong)afterSortKey
-                        withInt:(jint)limit
-withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+- (void)loadForwardWithQuery:(NSString *)query
+                afterSortKey:(jlong)afterSortKey
+                   withLimit:(jint)limit
+                withCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
-- (void)removeItemWithLong:(jlong)key;
+- (void)removeItemWithKey:(jlong)key;
 
-- (void)removeItemsWithLongArray:(IOSLongArray *)keys;
+- (void)removeItemsWithKeys:(IOSLongArray *)keys;
 
-- (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)replaceItems:(id<JavaUtilList>)items;
 
-- (void)subscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
+- (void)subscribeWithListener:(id<DKListEngineDisplayListener>)listener;
 
-- (void)unsubscribeWithDKListEngineDisplayListener:(id<DKListEngineDisplayListener>)listener;
+- (void)unsubscribeWithListener:(id<DKListEngineDisplayListener>)listener;
 
 @end
 

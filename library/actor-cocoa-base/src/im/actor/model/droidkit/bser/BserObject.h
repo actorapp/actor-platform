@@ -29,6 +29,10 @@
 
 - (IOSByteArray *)toByteArray;
 
+#pragma mark Protected
+
+- (void)load__WithByteArray:(IOSByteArray *)data;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserObject)

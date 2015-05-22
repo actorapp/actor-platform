@@ -24,12 +24,13 @@
 
 #pragma mark Public
 
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
+
 - (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
 
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
-                     withLong:(jlong)inviteDate
-                  withBoolean:(jboolean)isAdmin;
+                     withLong:(jlong)inviteDate;
 
 - (AMGroup *)changeMemberWithBoolean:(jboolean)isMember;
 
@@ -38,8 +39,6 @@
 - (AMGroup *)editAvatarWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
 - (AMGroup *)editTitleWithNSString:(NSString *)title;
-
-+ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -65,6 +64,8 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (AMGroup *)updateMembersWithJavaUtilList:(id<JavaUtilList>)nMembers;
+
 #pragma mark Protected
 
 - (void)applyWrappedWithBSBserObject:(ImActorModelApiGroup *)wrapped;
@@ -75,11 +76,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroup)
 
-FOUNDATION_EXPORT AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data);
-
 FOUNDATION_EXPORT void AMGroup_initWithImActorModelApiGroup_(AMGroup *self, ImActorModelApiGroup *group);
 
 FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithImActorModelApiGroup_(ImActorModelApiGroup *group) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMGroup_initWithByteArray_(AMGroup *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroup)
 

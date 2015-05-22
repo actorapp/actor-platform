@@ -10,7 +10,6 @@
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Member.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -38,8 +37,6 @@
   id<JavaUtilList> members_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMGroup, title_, NSString *)
@@ -47,10 +44,6 @@ J2OBJC_FIELD_SETTER(AMGroup, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
 
 J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
-
-__attribute__((unused)) static void AMGroup_init(AMGroup *self);
-
-__attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 
 @interface AMGroup_ObsoleteGroupMember () {
  @public
@@ -64,17 +57,13 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 
 @implementation AMGroup
 
-+ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMGroup_fromBytesWithByteArray_(data);
-}
-
 - (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group {
   AMGroup_initWithImActorModelApiGroup_(self, group);
   return self;
 }
 
-- (instancetype)init {
-  AMGroup_init(self);
+- (instancetype)initWithByteArray:(IOSByteArray *)data {
+  AMGroup_initWithByteArray_(self, data);
   return self;
 }
 
@@ -139,8 +128,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
-                     withLong:(jlong)inviteDate
-                  withBoolean:(jboolean)isAdmin {
+                     withLong:(jlong)inviteDate {
   ImActorModelApiGroup *w = [self getWrapped];
   JavaUtilArrayList *nMembers = new_JavaUtilArrayList_init();
   for (ImActorModelApiMember * __strong member in nil_chk([((ImActorModelApiGroup *) nil_chk(w)) getMembers])) {
@@ -150,6 +138,13 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
   }
   [nMembers addWithId:new_ImActorModelApiMember_initWithInt_withInt_withLong_(uid, inviterUid, inviteDate)];
   ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
+  return new_AMGroup_initWithImActorModelApiGroup_(res);
+}
+
+- (AMGroup *)updateMembersWithJavaUtilList:(id<JavaUtilList>)nMembers {
+  ImActorModelApiGroup *w = [self getWrapped];
+  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((ImActorModelApiGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithImActorModelApiGroup_(res);
 }
@@ -172,12 +167,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
   self->groupId_ = [((ImActorModelApiGroup *) nil_chk(wrapped)) getId];
   self->accessHash_ = [wrapped getAccessHash];
   self->title_ = [wrapped getTitle];
-  if ([wrapped getAvatar] != nil) {
-    self->avatar_ = new_AMAvatar_initWithImActorModelApiAvatar_([wrapped getAvatar]);
-  }
-  else {
-    avatar_ = new_AMAvatar_init();
-  }
+  self->avatar_ = [wrapped getAvatar] != nil ? new_AMAvatar_initWithImActorModelApiAvatar_([wrapped getAvatar]) : nil;
   self->adminId_ = [wrapped getCreatorUid];
   self->members_ = new_JavaUtilArrayList_init();
   for (ImActorModelApiMember * __strong m in nil_chk([wrapped getMembers])) {
@@ -193,7 +183,7 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
     NSString *title = [values getStringWithInt:3];
     ImActorModelApiAvatar *avatar = new_ImActorModelApiAvatar_init();
     if ([values optBytesWithInt:4] != nil) {
-      avatar = [((AMAvatar *) nil_chk(AMAvatar_fromBytesWithByteArray_([values getBytesWithInt:4]))) toWrapped];
+      avatar = [new_AMAvatar_initWithByteArray_([values getBytesWithInt:4]) toWrapped];
     }
     jint adminId = [values getIntWithInt:5];
     jint count = [values getRepeatedCountWithInt:6];
@@ -229,11 +219,6 @@ __attribute__((unused)) static AMGroup *new_AMGroup_init() NS_RETURNS_RETAINED;
 
 @end
 
-AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMGroup_initialize();
-  return ((AMGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_AMGroup_init(), data));
-}
-
 void AMGroup_initWithImActorModelApiGroup_(AMGroup *self, ImActorModelApiGroup *group) {
   (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMGroup_RECORD_ID, group);
 }
@@ -244,13 +229,13 @@ AMGroup *new_AMGroup_initWithImActorModelApiGroup_(ImActorModelApiGroup *group) 
   return self;
 }
 
-void AMGroup_init(AMGroup *self) {
-  (void) AMWrapperEntity_initWithInt_(self, AMGroup_RECORD_ID);
+void AMGroup_initWithByteArray_(AMGroup *self, IOSByteArray *data) {
+  (void) AMWrapperEntity_initWithInt_withByteArray_(self, AMGroup_RECORD_ID, data);
 }
 
-AMGroup *new_AMGroup_init() {
+AMGroup *new_AMGroup_initWithByteArray_(IOSByteArray *data) {
   AMGroup *self = [AMGroup alloc];
-  AMGroup_init(self);
+  AMGroup_initWithByteArray_(self, data);
   return self;
 }
 

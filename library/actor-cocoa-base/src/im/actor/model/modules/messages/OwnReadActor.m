@@ -86,7 +86,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   jlong maxPlainReadDate = sortingDate;
   jboolean removed = NO;
   {
-    IOSObjectArray *a__ = [((JavaUtilHashSet *) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [unread toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilHashSet *) nil_chk(unread)) size] type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -114,7 +114,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   jlong msgSortingDate = 0;
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   {
-    IOSObjectArray *a__ = [((id<JavaUtilSet>) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [unread toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((id<JavaUtilSet>) nil_chk(unread)) size] type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -134,7 +134,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   jboolean isRemoved = NO;
   {
-    IOSObjectArray *a__ = [((id<JavaUtilSet>) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [unread toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((id<JavaUtilSet>) nil_chk(unread)) size] type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {

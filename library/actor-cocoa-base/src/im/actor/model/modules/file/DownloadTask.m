@@ -98,9 +98,9 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_reportCo
   ImActorModelModulesFileDownloadTask *this$0_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUrl *)response;
+- (void)onResult:(ImActorModelApiRpcResponseGetFileUrl *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesFileDownloadTask:(ImActorModelModulesFileDownloadTask *)outer$;
 
@@ -357,7 +357,7 @@ void ImActorModelModulesFileDownloadTask_checkQueue(ImActorModelModulesFileDownl
 }
 
 void ImActorModelModulesFileDownloadTask_downloadPartWithInt_withInt_(ImActorModelModulesFileDownloadTask *self, jint blockIndex, jint fileOffset) {
-  [((id<AMHttpProvider>) nil_chk(self->downloaderProvider_)) getMethodWithNSString:self->fileUrl_ withInt:fileOffset withInt:self->blockSize_ withInt:[((AMFileReference *) nil_chk(self->fileReference_)) getFileSize] withImActorModelHttpFileDownloadCallback:new_ImActorModelModulesFileDownloadTask_$2_initWithImActorModelModulesFileDownloadTask_withInt_withInt_(self, blockIndex, fileOffset)];
+  [((id<AMHttpProvider>) nil_chk(self->downloaderProvider_)) getMethodWithUrl:self->fileUrl_ withStartOffset:fileOffset withSize:self->blockSize_ withTotalSize:[((AMFileReference *) nil_chk(self->fileReference_)) getFileSize] withCallback:new_ImActorModelModulesFileDownloadTask_$2_initWithImActorModelModulesFileDownloadTask_withInt_withInt_(self, blockIndex, fileOffset)];
 }
 
 void ImActorModelModulesFileDownloadTask_reportError(ImActorModelModulesFileDownloadTask *self) {
@@ -387,7 +387,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
 
 @implementation ImActorModelModulesFileDownloadTask_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetFileUrl *)response {
+- (void)onResult:(ImActorModelApiRpcResponseGetFileUrl *)response {
   this$0_->fileUrl_ = [((ImActorModelApiRpcResponseGetFileUrl *) nil_chk(response)) getUrl];
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$$", @"Loaded file url: ", this$0_->fileUrl_));
@@ -395,7 +395,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
   ImActorModelModulesFileDownloadTask_startDownload(this$0_);
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, @"Unable to load file url");
   }
@@ -463,7 +463,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_$2)
   if (this$0_->this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->this$0_->TAG_, JreStrcat("$I$", @"Download part #", this$0_->val$blockIndex_, @" completed"));
   }
-  if (![((id<AMOutputFile>) nil_chk(this$0_->this$0_->outputFile_)) writeWithOffset:this$0_->val$fileOffset_ withData:val$data_ withDataOffset:0 withDataLen:((IOSByteArray *) nil_chk(val$data_))->size_]) {
+  if (![((id<AMOutputFile>) nil_chk(this$0_->this$0_->outputFile_)) writeWithOffset:this$0_->val$fileOffset_ withData:val$data_ withDataOffset:0 withLength:((IOSByteArray *) nil_chk(val$data_))->size_]) {
     ImActorModelModulesFileDownloadTask_reportError(this$0_->this$0_);
     return;
   }

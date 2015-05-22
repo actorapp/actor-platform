@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -32,7 +35,7 @@ public class ResponseGetDifference extends Response {
     private List<DifferenceUpdate> updates;
     private boolean needMore;
 
-    public ResponseGetDifference(int seq, byte[] state, List<User> users, List<Group> groups, List<DifferenceUpdate> updates, boolean needMore) {
+    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<User> users, @NotNull List<Group> groups, @NotNull List<DifferenceUpdate> updates, boolean needMore) {
         this.seq = seq;
         this.state = state;
         this.users = users;
@@ -49,18 +52,22 @@ public class ResponseGetDifference extends Response {
         return this.seq;
     }
 
+    @NotNull
     public byte[] getState() {
         return this.state;
     }
 
+    @NotNull
     public List<User> getUsers() {
         return this.users;
     }
 
+    @NotNull
     public List<Group> getGroups() {
         return this.groups;
     }
 
+    @NotNull
     public List<DifferenceUpdate> getUpdates() {
         return this.updates;
     }

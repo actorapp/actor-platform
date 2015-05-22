@@ -21,9 +21,9 @@
 
 - (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)wrapped;
 
-- (jboolean)isEqual:(id)o;
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
 
-+ (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data;
+- (jboolean)isEqual:(id)o;
 
 - (AMFileReference *)getFileReference;
 
@@ -47,11 +47,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatarImage)
 
-FOUNDATION_EXPORT AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data);
-
 FOUNDATION_EXPORT void AMAvatarImage_initWithImActorModelApiAvatarImage_(AMAvatarImage *self, ImActorModelApiAvatarImage *wrapped);
 
 FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *wrapped) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMAvatarImage_initWithByteArray_(AMAvatarImage *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAvatarImage)
 
