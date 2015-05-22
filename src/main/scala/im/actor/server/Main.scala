@@ -84,7 +84,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val mediator = DistributedPubSubExtension(system).mediator
 
-    val messagingService = new MessagingServiceImpl(mediator)
+    val messagingService = MessagingServiceImpl(mediator)
 
     val services = Seq(
       new AuthServiceImpl(activationContext),

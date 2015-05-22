@@ -78,7 +78,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     val services = Seq(
       new AuthServiceImpl(new DummyActivationContext),
       new ContactsServiceImpl,
-      new MessagingServiceImpl(mediator),
+      MessagingServiceImpl(mediator),
       new SequenceServiceImpl
     )
 

@@ -43,7 +43,7 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
 
-  implicit val service = new messaging.MessagingServiceImpl(mediator)
+  implicit val service = messaging.MessagingServiceImpl(mediator)
   implicit val groupsService = new GroupsServiceImpl(bucketName)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher

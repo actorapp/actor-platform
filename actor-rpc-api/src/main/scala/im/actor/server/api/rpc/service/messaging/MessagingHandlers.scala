@@ -89,20 +89,7 @@ private[messaging] trait MessagingHandlers {
         }
 
         for (seqstate ← seqstateAction) yield {
-          val event = Events.PeerMessage(outPeer.asPeer, client.userId, randomId, message)
-
-          outPeer.`type` match {
-            case PeerType.Private ⇒
-              val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, client.userId))
-              val receiverTopic = MessagingService.messagesTopic(outPeer.asPeer)
-
-              mediator ! DistributedPubSubMediator.Publish(senderTopic, event)
-              mediator ! DistributedPubSubMediator.Publish(receiverTopic, event)
-            case PeerType.Group ⇒
-              val topic = MessagingService.messagesTopic(outPeer.asPeer)
-              mediator ! DistributedPubSubMediator.Publish(topic, event)
-          }
-
+          onMessage(Events.PeerMessage(outPeer.asPeer, client.userId, randomId, message))
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
         }
       }
