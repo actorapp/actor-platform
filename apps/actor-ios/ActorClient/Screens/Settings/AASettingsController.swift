@@ -123,7 +123,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
             var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
-            var topOffset = getNavigationBarHeight() + getStatusBarHeight()
+            var topOffset = scrollView.contentInset.top
             var maxOffset = scrollView.frame.width - 200 + topOffset
             var offset = min(scrollView.contentOffset.y + topOffset, 200)
             userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
@@ -171,6 +171,11 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             cell.setUsername(user!.getNameModel().get())
         }
         cell.setLeftInset(15.0)
+        
+        var topOffset = tableView.contentInset.top
+        var maxOffset = tableView.frame.width - 200 + topOffset
+        var offset = min(tableView.contentOffset.y + topOffset, 200)
+        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
         
         return cell
     }
