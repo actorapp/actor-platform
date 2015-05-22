@@ -1,6 +1,6 @@
 var React = require('react');
 
-var ChatSection = React.createClass({
+var MessageSection = React.createClass({
   render: function() {
     return(
       <section className="main col-xs">
@@ -38,4 +38,4 @@ var ChatSection = React.createClass({
   }
 });
 
-module.exports = ChatSection;
+module.exports = MessageSection;
