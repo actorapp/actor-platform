@@ -27,6 +27,21 @@ public class ContainerGenerator {
             } else {
                 generator.append(", ");
             }
+
+            SchemeType schemeType = JavaConfig.reduceAlias(attribute.getType(), definition);
+            if (schemeType instanceof SchemeOptionalType) {
+                generator.append("@Nullable ");
+            } else {
+                if (!(schemeType instanceof SchemePrimitiveType)) {
+                    generator.append("@NotNull ");
+                } else {
+                    String name = ((SchemePrimitiveType) schemeType).getName();
+                    if (name.equals("string") || name.equals("bytes")) {
+                        generator.append("@NotNull ");
+                    }
+                }
+            }
+
             generator.append(JavaConfig.convertType(definition, attribute.getType()));
             generator.append(" " + attribute.getName());
         }
@@ -64,6 +79,20 @@ public class ContainerGenerator {
             String type = JavaConfig.convertType(definition, attribute.getType());
             String getter = type.equals("boolean") || type.equals("Boolean") ? JavaConfig.getBoolGetterName(attribute.getName()) :
                     JavaConfig.getGetterName(attribute.getName());
+
+            SchemeType schemeType = JavaConfig.reduceAlias(attribute.getType(), definition);
+            if (schemeType instanceof SchemeOptionalType) {
+                generator.appendLn("@Nullable");
+            } else {
+                if (!(schemeType instanceof SchemePrimitiveType)) {
+                    generator.appendLn("@NotNull");
+                } else {
+                    String name = ((SchemePrimitiveType) schemeType).getName();
+                    if (name.equals("string") || name.equals("bytes")) {
+                        generator.appendLn("@NotNull");
+                    }
+                }
+            }
 
             generator.appendLn("public " + type + " " + getter + "() {");
             generator.increaseDepth();

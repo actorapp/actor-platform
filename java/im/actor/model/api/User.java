@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class User extends BserObject {
     private List<ContactRecord> contactInfo;
     private Boolean isBot;
 
-    public User(int id, long accessHash, String name, String localName, Sex sex, Avatar avatar, List<ContactRecord> contactInfo, Boolean isBot) {
+    public User(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable Sex sex, @Nullable Avatar avatar, @NotNull List<ContactRecord> contactInfo, @Nullable Boolean isBot) {
         this.id = id;
         this.accessHash = accessHash;
         this.name = name;
@@ -51,26 +54,32 @@ public class User extends BserObject {
         return this.accessHash;
     }
 
+    @NotNull
     public String getName() {
         return this.name;
     }
 
+    @Nullable
     public String getLocalName() {
         return this.localName;
     }
 
+    @Nullable
     public Sex getSex() {
         return this.sex;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return this.avatar;
     }
 
+    @NotNull
     public List<ContactRecord> getContactInfo() {
         return this.contactInfo;
     }
 
+    @Nullable
     public Boolean isBot() {
         return this.isBot;
     }
