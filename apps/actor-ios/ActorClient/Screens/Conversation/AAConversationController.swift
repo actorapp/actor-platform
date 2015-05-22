@@ -30,6 +30,8 @@ class AAConversationController: EngineSlackListController {
     var peer: AMPeer!;
     let binder: Binder = Binder();
     
+    var unreadMessageId: jlong = 0
+    
     // MARK: -
     // MARK: Constructors
     
@@ -119,6 +121,8 @@ class AAConversationController: EngineSlackListController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+//        MSG.buildConversationVMWithPeer(peer, withDisplayList: getDisplayList(), withCallback: )
+        
         textView.text = MSG.loadDraftWithPeer(peer)
         
         // Installing bindings
@@ -202,6 +206,7 @@ class AAConversationController: EngineSlackListController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // unreadMessageId = MSG.loadLastReadState(peer)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
@@ -218,6 +223,49 @@ class AAConversationController: EngineSlackListController {
                 let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? AAConversationController {
                     navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
+        }
+    }
+    
+    override func getAddAnimation(item: AnyObject?) -> UITableViewRowAnimation {
+        var message = item as! AMMessage
+        if (message.getSenderId() == MSG.myUid()) {
+            return UITableViewRowAnimation.Right
+        } else {
+            return UITableViewRowAnimation.Left
+        }
+    }
+    
+    override func afterLoaded() {
+        NSLog("afterLoaded")
+        var sortState = MSG.loadLastReadState(peer)
+
+        if (sortState == 0) {
+            NSLog("lastReadMessage == 0")
+            return
+        }
+        
+        if (getCount() == 0) {
+            NSLog("getCount() == 0")
+            return
+        }
+        
+        var index = -1
+        unreadMessageId = 0
+        for var i = getCount() - 1; i >= 0; --i {
+            var item = objectAtIndex(i) as! AMMessage
+            if (item.getSortDate() > sortState && item.getSenderId() != MSG.myUid()) {
+                index = i
+                unreadMessageId = item.getRid()
+                break
+            }
+        }
+        
+        if (index < 0) {
+            NSLog("Not found")
+        } else {
+            NSLog("Founded @\(index)")
+            self.tableView.reloadData()
+            self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
         }
     }
     
@@ -354,6 +402,7 @@ class AAConversationController: EngineSlackListController {
     
     override func textWillUpdate() {
         super.textWillUpdate();
+
         MSG.onTypingWithPeer(peer);
     }
     
@@ -433,7 +482,7 @@ class AAConversationController: EngineSlackListController {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
         }
-        if (indexPath.row + 1 < getDisplayList().size()) {
+        if (indexPath.row + 1 < getCount()) {
             var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
             isShowDate = showDate(message, prev: prev)
         }
@@ -442,7 +491,7 @@ class AAConversationController: EngineSlackListController {
             preferCompact = false
         }
 
-        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate)
+        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()))
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {
@@ -468,7 +517,7 @@ class AAConversationController: EngineSlackListController {
         return currentDate != nextDate
     }
     
-    override func getDisplayList() -> AMBindedDisplayList {
+    override func buildDisplayList() -> AMBindedDisplayList {
         return MSG.getMessagesGlobalListWithPeer(peer)
     }
     
@@ -492,7 +541,7 @@ class AAConversationController: EngineSlackListController {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
         }
-        if (indexPath.row + 1 < getDisplayList().size()) {
+        if (indexPath.row + 1 < getCount()) {
             var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
             isShowDate = showDate(message, prev: prev)
         }
@@ -502,7 +551,7 @@ class AAConversationController: EngineSlackListController {
         }
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
-        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate);
+        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()));
     }
     
     // MARK: -

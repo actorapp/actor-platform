@@ -81,3 +81,16 @@ class CocoaUploadCallback : NSObject, AMUploadFileCallback {
         self.onUploading?(progress: Double(progress))
     }
 }
+
+class CocoaConversationVMCallback: NSObject, AMConversationVMCallback {
+    
+    let closure: ((unreadId: jlong, index: jint)->())?
+    
+    init(loadClosure: ((unreadId: jlong, index: jint)->())) {
+        self.closure = loadClosure
+    }
+    
+    func onLoadedWithLong(unreadId: jlong, withInt index: jint) {
+        
+    }
+}
