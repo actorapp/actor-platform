@@ -160,7 +160,7 @@ public class Auth extends BaseModule {
                                 preferences().getString(KEY_SMS_HASH),
                                 code + "",
                                 deviceHash,
-                                apiConfiguration.getAppTitle(),
+                                apiConfiguration.getDeviceTitle(),
                                 apiConfiguration.getAppId(), apiConfiguration.getAppKey()),
                         new RpcCallback<ResponseAuth>() {
 
@@ -200,7 +200,7 @@ public class Auth extends BaseModule {
                         preferences().getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
                         deviceHash,
-                        apiConfiguration.getAppTitle(),
+                        apiConfiguration.getDeviceTitle(),
                         apiConfiguration.getAppId(), apiConfiguration.getAppKey(),
                         isSilent), new RpcCallback<ResponseAuth>() {
                     @Override
