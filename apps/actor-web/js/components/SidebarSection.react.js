@@ -1,5 +1,5 @@
 var React = require('react');
-var UserSection = require('./sidebar/UserSection.react');
+var HeaderSection = require('./sidebar/HeaderSection.react');
 var RecentSection = require('./sidebar/RecentSection.react');
 
 var SidebarSection = React.createClass({
@@ -10,18 +10,9 @@ var SidebarSection = React.createClass({
   render: function() {
     var messenger = this.props.messenger;
 
-    return(
+    return (
       <aside className="sidebar">
-        <header className="sidebar__header sidebar__header--clickable">
-          <UserSection messenger={messenger}/>
-          <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item"><span>Profile</span></li>
-            <li className="sidebar__header__menu__item"><span>Integrations</span></li>
-            <li className="sidebar__header__menu__item"><span>Settings</span></li>
-            <li className="sidebar__header__menu__item"><span>Help</span></li>
-            <li className="sidebar__header__menu__item"><span>Log out</span></li>
-          </ul>
-        </header>
+        <HeaderSection messenger={messenger}/>
         <ul className="sidebar__list">
           <li className="sidebar__list__title">
             Starred
