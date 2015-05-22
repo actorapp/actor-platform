@@ -51,7 +51,7 @@ var SidebarSection = React.createClass({
         </span>
           </li>
         </ul>
-        <RecentSection/>
+        <RecentSection messenger={messenger}/>
       </aside>
     )
   }
