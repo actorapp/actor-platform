@@ -83,7 +83,7 @@ public class ChatActivity extends BaseActivity{
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
 
-    private static final Character MENTION_BOUNDS_CHR = '\u2205';
+    private static final Character MENTION_BOUNDS_CHR = '\u200b';
     private static final String MENTION_BOUNDS_STR = MENTION_BOUNDS_CHR.toString();
 
 
