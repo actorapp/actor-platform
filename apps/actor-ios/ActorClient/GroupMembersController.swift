@@ -24,7 +24,6 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         
         tokenFieldView = VENTokenField(frame: CGRectMake(0, 66, tokenField.frame.width, 48))
         tokenFieldView.delegate = self
@@ -40,6 +39,8 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         view.backgroundColor = MainAppTheme.list.backyardColor
         
         bindTable(contactsTable, fade: true)
+        
+        super.viewDidLoad()
     }
     
     func doNext() {
