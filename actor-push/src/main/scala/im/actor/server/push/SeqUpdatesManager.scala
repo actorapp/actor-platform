@@ -322,6 +322,8 @@ object SeqUpdatesManager {
       case api.messaging.UpdateMessageReadByMe(peer, _)                          ⇒ peerRefs(peer)
       case api.messaging.UpdateMessageReceived(peer, _, _)                       ⇒ peerRefs(peer)
       case api.messaging.UpdateMessageSent(peer, _, _)                           ⇒ peerRefs(peer)
+      case api.messaging.UpdateMessageContentChanged(peer, _, _)                 ⇒ peerRefs(peer)
+      case api.messaging.UpdateMessageDateChanged(peer, _, _)                    ⇒ peerRefs(peer)
       case api.groups.UpdateGroupAvatarChanged(groupId, userId, _, _, _)         ⇒ (Set(userId), Set(groupId))
       case api.groups.UpdateGroupInvite(groupId, inviteUserId, _, _)             ⇒ (Set(inviteUserId), Set(groupId))
       case api.groups.UpdateGroupMembersUpdate(groupId, members)                 ⇒ (members.map(_.userId).toSet ++ members.map(_.inviterUserId).toSet, Set(groupId)) // TODO: #perf use foldLeft
