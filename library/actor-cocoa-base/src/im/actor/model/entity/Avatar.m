@@ -96,14 +96,30 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatar, RECORD_ID, jint)
 }
 
 - (void)applyWrappedWithBSBserObject:(ImActorModelApiAvatar *)wrapped {
-  if ([((ImActorModelApiAvatar *) nil_chk(wrapped)) getSmallImage] != nil) {
-    smallImage_ = new_AMAvatarImage_initWithImActorModelApiAvatarImage_([wrapped getSmallImage]);
+  if (wrapped == nil) {
+    smallImage_ = nil;
+    largeImage_ = nil;
+    fullImage_ = nil;
   }
-  if ([wrapped getLargeImage] != nil) {
-    largeImage_ = new_AMAvatarImage_initWithImActorModelApiAvatarImage_([wrapped getLargeImage]);
-  }
-  if ([wrapped getFullImage] != nil) {
-    fullImage_ = new_AMAvatarImage_initWithImActorModelApiAvatarImage_([wrapped getFullImage]);
+  else {
+    if ([wrapped getSmallImage] != nil) {
+      smallImage_ = new_AMAvatarImage_initWithImActorModelApiAvatarImage_([wrapped getSmallImage]);
+    }
+    else {
+      smallImage_ = nil;
+    }
+    if ([wrapped getLargeImage] != nil) {
+      largeImage_ = new_AMAvatarImage_initWithImActorModelApiAvatarImage_([wrapped getLargeImage]);
+    }
+    else {
+      largeImage_ = nil;
+    }
+    if ([wrapped getFullImage] != nil) {
+      fullImage_ = new_AMAvatarImage_initWithImActorModelApiAvatarImage_([wrapped getFullImage]);
+    }
+    else {
+      fullImage_ = nil;
+    }
   }
 }
 

@@ -97,14 +97,26 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
     @Override
     protected void applyWrapped(im.actor.model.api.Avatar wrapped) {
-        if (wrapped.getSmallImage() != null) {
-            smallImage = new AvatarImage(wrapped.getSmallImage());
-        }
-        if (wrapped.getLargeImage() != null) {
-            largeImage = new AvatarImage(wrapped.getLargeImage());
-        }
-        if (wrapped.getFullImage() != null) {
-            fullImage = new AvatarImage(wrapped.getFullImage());
+        if (wrapped == null) {
+            smallImage = null;
+            largeImage = null;
+            fullImage = null;
+        } else {
+            if (wrapped.getSmallImage() != null) {
+                smallImage = new AvatarImage(wrapped.getSmallImage());
+            } else {
+                smallImage = null;
+            }
+            if (wrapped.getLargeImage() != null) {
+                largeImage = new AvatarImage(wrapped.getLargeImage());
+            } else {
+                largeImage = null;
+            }
+            if (wrapped.getFullImage() != null) {
+                fullImage = new AvatarImage(wrapped.getFullImage());
+            } else {
+                fullImage = null;
+            }
         }
     }
 
