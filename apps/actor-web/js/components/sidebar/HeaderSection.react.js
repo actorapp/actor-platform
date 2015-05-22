@@ -28,9 +28,7 @@ var HeaderSection = React.createClass({
     return (
       <header className={headerClass}>
         <div className="sidebar__header__user row" onClick={this._toggleHeaderMenu}>
-          <div className="avatar avatar--small">
-            <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder}/>
-          </div>
+          <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder} size="small"/>
           <span className="sidebar__header__user__name">{user.name}</span>
           <span className="col-xs"></span>
           <img className="sidebar__header__user__expand" src="assets/img/icons/png/ic_expand_more_2x_white.png" alt=""/>
