@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -21,7 +24,7 @@ public class ServiceExChangedTitle extends ServiceEx {
 
     private String title;
 
-    public ServiceExChangedTitle(String title) {
+    public ServiceExChangedTitle(@NotNull String title) {
         this.title = title;
     }
 
@@ -33,6 +36,7 @@ public class ServiceExChangedTitle extends ServiceEx {
         return 5;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }
