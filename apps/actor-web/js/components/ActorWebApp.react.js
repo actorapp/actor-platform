@@ -1,4 +1,6 @@
 var React = require('react');
+var SidebarSection = require('./SidebarSection.react');
+var ChatSection = require('./ChatSection.react');
 
 var ActorWebApp = React.createClass({
   propTypes: {
@@ -9,16 +11,16 @@ var ActorWebApp = React.createClass({
     var body;
 
     if (this.props.messenger.getUid()) {
-      body = <div>the app</div>
+      body =
+        <div className="app row">
+          <SidebarSection></SidebarSection>
+          <ChatSection></ChatSection>
+        </div>
     } else {
-      body = <div>login form</div>
+      body = <div className="app row">login form</div>
     }
 
-    return(
-      <div>
-        {body}
-      </div>
-    )
+    return(body);
   }
 });
 
