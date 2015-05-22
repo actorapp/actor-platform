@@ -62,6 +62,13 @@ trait SessionHello extends ProtoMessage with IncomingProtoMessage {
 @SerialVersionUID(1L)
 case object SessionHello extends SessionHello
 
+trait SessionLost extends ProtoMessage with OutgoingProtoMessage {
+  val header = 0x10
+}
+
+@SerialVersionUID(1L)
+case object SessionLost extends SessionLost
+
 @SerialVersionUID(1L)
 case class RequestAuthId() extends ProtoMessage {
   val header = RequestAuthId.header

@@ -3,11 +3,13 @@ package im.actor.server.api.frontend
 import scala.annotation.tailrec
 import scala.collection.immutable
 
-import akka.actor.{ Actor, ActorLogging, Props }
+import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
 import scodec.bits.BitVector
 
+import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
+import im.actor.server.mtproto.protocol.{ SessionLost, MessageBox }
 import im.actor.server.mtproto.{ transport ⇒ T }
 import im.actor.server.session.{ SessionMessage, SessionRegion }
 
@@ -23,20 +25,42 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
 
   private[this] var packageQueue = immutable.Queue.empty[T.MTProto]
 
-  def receive = {
+  def receive: Receive = watchForSession
+
+  def watchForSession: Receive = publisher orElse {
+    case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) ⇒
+      sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
+    case p: T.MTPackage ⇒
+      context.watch(sender())
+      enqueuePackage(p)
+      context.become(working(p.authId, p.sessionId))
+  }
+
+  def working(authId: Long, sessionId: Long): Receive = publisher orElse {
     case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) ⇒
       sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
     case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) ⇒
-      if (packageQueue.isEmpty && totalDemand > 0) {
-        onNext(p)
-      } else {
-        packageQueue = packageQueue.enqueue(p)
-        deliverBuf()
-      }
+      enqueuePackage(p)
+    case Terminated(sessionRef) ⇒
+      val p = T.MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, SessionLost)).require)
+      enqueuePackage(p)
+      context.become(watchForSession.orElse(publisher))
+  }
+
+  def publisher: Receive = {
     case Request(_) ⇒
       deliverBuf()
     case Cancel ⇒
       context.stop(self)
+  }
+
+  private def enqueuePackage(p: T.MTPackage): Unit = {
+    if (packageQueue.isEmpty && totalDemand > 0) {
+      onNext(p)
+    } else {
+      packageQueue = packageQueue.enqueue(p)
+      deliverBuf()
+    }
   }
 
   @tailrec
