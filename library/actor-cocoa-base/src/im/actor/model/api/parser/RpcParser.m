@@ -26,7 +26,6 @@
 #include "im/actor/model/api/rpc/RequestEditParameter.h"
 #include "im/actor/model/api/rpc/RequestEditUserLocalName.h"
 #include "im/actor/model/api/rpc/RequestEnableInterests.h"
-#include "im/actor/model/api/rpc/RequestGetAdBanners.h"
 #include "im/actor/model/api/rpc/RequestGetAuthSessions.h"
 #include "im/actor/model/api/rpc/RequestGetAvailableInterests.h"
 #include "im/actor/model/api/rpc/RequestGetContacts.h"
@@ -46,7 +45,7 @@
 #include "im/actor/model/api/rpc/RequestLoadHistory.h"
 #include "im/actor/model/api/rpc/RequestMessageRead.h"
 #include "im/actor/model/api/rpc/RequestMessageReceived.h"
-#include "im/actor/model/api/rpc/RequestNotifyAddView.h"
+#include "im/actor/model/api/rpc/RequestNotifyAdView.h"
 #include "im/actor/model/api/rpc/RequestRegisterApplePush.h"
 #include "im/actor/model/api/rpc/RequestRegisterGooglePush.h"
 #include "im/actor/model/api/rpc/RequestRemoveAvatar.h"
@@ -73,7 +72,6 @@
 #include "im/actor/model/api/rpc/ResponseCreateGroup.h"
 #include "im/actor/model/api/rpc/ResponseEditAvatar.h"
 #include "im/actor/model/api/rpc/ResponseEditGroupAvatar.h"
-#include "im/actor/model/api/rpc/ResponseGetAdBanners.h"
 #include "im/actor/model/api/rpc/ResponseGetAuthSessions.h"
 #include "im/actor/model/api/rpc/ResponseGetAvailableInterests.h"
 #include "im/actor/model/api/rpc/ResponseGetContacts.h"
@@ -187,10 +185,8 @@
     return ImActorModelApiRpcRequestEnableInterests_fromBytesWithByteArray_(payload);
     case 158:
     return ImActorModelApiRpcRequestDisableInterests_fromBytesWithByteArray_(payload);
-    case 159:
-    return ImActorModelApiRpcRequestGetAdBanners_fromBytesWithByteArray_(payload);
     case 162:
-    return ImActorModelApiRpcRequestNotifyAddView_fromBytesWithByteArray_(payload);
+    return ImActorModelApiRpcRequestNotifyAdView_fromBytesWithByteArray_(payload);
     case 134:
     return ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(payload);
     case 128:
@@ -249,8 +245,6 @@
     return ImActorModelApiRpcResponseGetVoxUser_fromBytesWithByteArray_(payload);
     case 153:
     return ImActorModelApiRpcResponseGetAvailableInterests_fromBytesWithByteArray_(payload);
-    case 161:
-    return ImActorModelApiRpcResponseGetAdBanners_fromBytesWithByteArray_(payload);
     case 135:
     return ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(payload);
     case 12:

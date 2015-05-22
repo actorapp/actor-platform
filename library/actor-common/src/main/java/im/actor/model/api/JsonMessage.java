@@ -17,32 +17,29 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FileLocation extends BserObject {
+public class JsonMessage extends Message {
 
-    private long fileId;
-    private long accessHash;
+    private String rawJson;
 
-    public FileLocation(long fileId, long accessHash) {
-        this.fileId = fileId;
-        this.accessHash = accessHash;
+    public JsonMessage(String rawJson) {
+        this.rawJson = rawJson;
     }
 
-    public FileLocation() {
+    public JsonMessage() {
 
     }
 
-    public long getFileId() {
-        return this.fileId;
+    public int getHeader() {
+        return 4;
     }
 
-    public long getAccessHash() {
-        return this.accessHash;
+    public String getRawJson() {
+        return this.rawJson;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.fileId = values.getLong(1);
-        this.accessHash = values.getLong(2);
+        this.rawJson = values.getString(1);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -50,8 +47,10 @@ public class FileLocation extends BserObject {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.fileId);
-        writer.writeLong(2, this.accessHash);
+        if (this.rawJson == null) {
+            throw new IOException();
+        }
+        writer.writeString(1, this.rawJson);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -63,8 +62,8 @@ public class FileLocation extends BserObject {
 
     @Override
     public String toString() {
-        String res = "struct FileLocation{";
-        res += "fileId=" + this.fileId;
+        String res = "struct JsonMessage{";
+        res += "rawJson=" + this.rawJson;
         res += "}";
         return res;
     }
