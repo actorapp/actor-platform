@@ -31,8 +31,7 @@ private[ilectro] class Users(
 
   private val resourceName = "users"
 
-  def create(dbUserId: Int, name: String): Future[Either[Errors, ILectroUser]] = {
-    val user = ILectroUser(dbUserId, UUID.randomUUID(), name)
+  def create(user: ILectroUser): Future[Either[Errors, ILectroUser]] = {
     processRequest(
       HttpRequest(
         method = POST,
