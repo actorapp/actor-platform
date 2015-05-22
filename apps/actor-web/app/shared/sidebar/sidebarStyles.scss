@@ -3,6 +3,8 @@
 .sidebar {
   position: relative;
 
+  overflow: auto;
+
   width: $sidebarWidth;
 
   color: $sidebarTextColor;
@@ -89,7 +91,7 @@
         background-color: $sidebarHeaderHoverColor;
       }
     }
-    &--collapsed {
+    &--opened {
       background-color: $sidebarHeaderHoverColor;
       .sidebar__header__user__expand {
         transform: scale(1, -1);
@@ -117,7 +119,7 @@
       text-transform: uppercase;
     }
     &__item {
-      font-size: 13px;
+      font-size: 14px;
 
       display: block;
 
