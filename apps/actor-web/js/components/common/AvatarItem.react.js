@@ -1,28 +1,37 @@
 var React = require('react');
+var classNames = require('classnames');
 
 var AvatarItem = React.createClass({
   propTypes: {
     title: React.PropTypes.string.isRequired,
     image: React.PropTypes.string,
-    placeholder: React.PropTypes.string
+    placeholder: React.PropTypes.string,
+    size: React.PropTypes.string
   },
 
   render: function() {
     var title = this.props.title;
     var image = this.props.image;
-    var placeholder = this.props.placeholder;
+    var size = this.props.size;
+    var placeholderClassName = "avatar__placeholder avatar__placeholder--" + this.props.placeholder;
+    var avatarClassName = classNames('avatar', {
+      'avatar--small': size == 'small',
+      'avatar--tiny': size == 'tiny'
+    });
+
+    var placeholder = <span className={placeholderClassName}>{title[0]}</span>
 
     var avatar;
-
     if (image) {
       avatar = <img class="avatar__image" src={image} alt={title}/>
-    } else {
-      var char = title[0];
-      var className = "avatar__placeholder avatar__placeholder--" + placeholder
-      avatar = <span className={className}>{char}</span>
     }
 
-    return(avatar);
+    return(
+      <div className={avatarClassName}>
+        {avatar}
+        {placeholder}
+      </div>
+    );
   }
 });
 
