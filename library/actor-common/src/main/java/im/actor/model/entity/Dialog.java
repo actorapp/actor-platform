@@ -4,6 +4,9 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
@@ -26,23 +29,40 @@ public class Dialog extends BserObject implements ListEngineItem {
         }
     };
 
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private Peer peer;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private String dialogTitle;
     private int unreadCount;
     private long rid;
     private long sortDate;
     private int senderId;
     private long date;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private ContentType messageType;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private String text;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private MessageState status;
+    @Nullable
     private Avatar dialogAvatar;
     private int relatedUid;
 
-    public Dialog(Peer peer,
-                  long sortKey, String dialogTitle, Avatar dialogAvatar,
-                  int unreadCount, long rid, ContentType messageType, String text,
-                  MessageState status, int senderId,
+    public Dialog(@NotNull Peer peer,
+                  long sortKey,
+                  @NotNull String dialogTitle,
+                  @Nullable Avatar dialogAvatar,
+                  int unreadCount,
+                  long rid,
+                  @NotNull ContentType messageType,
+                  @NotNull String text,
+                  @NotNull MessageState status,
+                  int senderId,
                   long date,
                   int relatedUid) {
         this.peer = peer;
@@ -63,10 +83,12 @@ public class Dialog extends BserObject implements ListEngineItem {
 
     }
 
+    @NotNull
     public Peer getPeer() {
         return peer;
     }
 
+    @NotNull
     public String getDialogTitle() {
         return dialogTitle;
     }
@@ -91,14 +113,17 @@ public class Dialog extends BserObject implements ListEngineItem {
         return date;
     }
 
+    @NotNull
     public ContentType getMessageType() {
         return messageType;
     }
 
+    @NotNull
     public String getText() {
         return text;
     }
 
+    @NotNull
     public MessageState getStatus() {
         return status;
     }
@@ -107,6 +132,7 @@ public class Dialog extends BserObject implements ListEngineItem {
         return relatedUid;
     }
 
+    @Nullable
     public Avatar getDialogAvatar() {
         return dialogAvatar;
     }
@@ -123,7 +149,7 @@ public class Dialog extends BserObject implements ListEngineItem {
         dialogTitle = values.getString(2);
         byte[] av = values.optBytes(3);
         if (av != null) {
-            dialogAvatar = Avatar.fromBytes(av);
+            dialogAvatar = new Avatar(av);
         }
 
         unreadCount = values.getInt(4);

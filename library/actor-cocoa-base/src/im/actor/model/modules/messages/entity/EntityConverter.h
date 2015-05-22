@@ -9,13 +9,11 @@
 #include "J2ObjC_header.h"
 
 @class AMAbsContent;
-@class AMAvatar;
 @class AMFastThumb;
 @class AMGroup;
 @class AMMessageStateEnum;
 @class AMPeer;
 @class AMPeerTypeEnum;
-@class ImActorModelApiAvatar;
 @class ImActorModelApiFastThumb;
 @class ImActorModelApiGroup;
 @class ImActorModelApiMessage;
@@ -28,8 +26,6 @@
 #pragma mark Public
 
 - (instancetype)init;
-
-+ (AMAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
 + (AMFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
 
@@ -48,8 +44,6 @@
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityEntityConverter)
 
 FOUNDATION_EXPORT AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state);
-
-FOUNDATION_EXPORT AMAvatar *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar);
 
 FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group);
 

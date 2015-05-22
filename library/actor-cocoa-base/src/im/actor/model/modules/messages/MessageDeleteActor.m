@@ -61,9 +61,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage,
   ImActorModelApiPeer *val$apiPeer_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessagesMessageDeleteActor:(ImActorModelModulesMessagesMessageDeleteActor *)outer$
                                                            withAMPeer:(AMPeer *)capture$0
@@ -205,7 +205,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesMessageDeleteActor_D
 
 @implementation ImActorModelModulesMessagesMessageDeleteActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
+- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
   if ([((JavaUtilHashMap *) nil_chk([((ImActorModelModulesMessagesEntityDeleteStorage *) nil_chk(this$0_->deleteStorage_)) getPendingDeletions])) containsKeyWithId:val$peer_]) {
     [((id<JavaUtilList>) nil_chk([((ImActorModelModulesMessagesEntityDelete *) nil_chk([((JavaUtilHashMap *) nil_chk([this$0_->deleteStorage_ getPendingDeletions])) getWithId:val$peer_])) getRids])) removeAllWithJavaUtilCollection:val$rids_];
     [this$0_ saveStorage];
@@ -213,7 +213,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesMessageDeleteActor_D
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateMessageDelete_HEADER, [new_ImActorModelApiUpdatesUpdateMessageDelete_initWithImActorModelApiPeer_withJavaUtilList_(val$apiPeer_, val$rids_) toByteArray])];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
 }
 
 - (instancetype)initWithImActorModelModulesMessagesMessageDeleteActor:(ImActorModelModulesMessagesMessageDeleteActor *)outer$
