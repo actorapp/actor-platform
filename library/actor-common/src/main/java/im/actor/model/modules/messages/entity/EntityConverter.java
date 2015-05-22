@@ -56,12 +56,12 @@ public class EntityConverter {
         }
     }
 
-    public static Avatar convert(im.actor.model.api.Avatar avatar) {
-        if (avatar == null) {
-            return null;
-        }
-        return new Avatar(avatar);
-    }
+//    public static Avatar convert(im.actor.model.api.Avatar avatar) {
+//        if (avatar == null) {
+//            return null;
+//        }
+//        return new Avatar(avatar);
+//    }
 
     public static Group convert(im.actor.model.api.Group group) {
         return new Group(group);
@@ -90,7 +90,7 @@ public class EntityConverter {
             ServiceEx ex = message.getExt();
             if (ex instanceof ServiceExChangedAvatar) {
                 ServiceExChangedAvatar avatar = (ServiceExChangedAvatar) ex;
-                return new ServiceGroupAvatarChanged(convert(avatar.getAvatar()));
+                return new ServiceGroupAvatarChanged(avatar.getAvatar() != null ? new Avatar(avatar.getAvatar()) : null);
             } else if (ex instanceof ServiceExChangedTitle) {
                 ServiceExChangedTitle title = (ServiceExChangedTitle) ex;
                 return new ServiceGroupTitleChanged(title.getTitle());

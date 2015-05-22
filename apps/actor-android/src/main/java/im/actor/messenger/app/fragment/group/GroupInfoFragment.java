@@ -391,7 +391,7 @@ public class GroupInfoFragment extends BaseFragment {
                     .setPositiveButton(R.string.alert_group_add_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
-                            execute(messenger().addMemberToGroup(chatId, userModel.getId()),
+                            execute(messenger().inviteMember(chatId, userModel.getId()),
                                     R.string.progress_common, new CommandCallback<Boolean>() {
                                         @Override
                                         public void onResult(Boolean res) {

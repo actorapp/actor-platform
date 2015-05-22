@@ -25,6 +25,8 @@
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
+#include "im/actor/model/api/updates/UpdateMessageContentChanged.h"
+#include "im/actor/model/api/updates/UpdateMessageDateChanged.h"
 #include "im/actor/model/api/updates/UpdateMessageDelete.h"
 #include "im/actor/model/api/updates/UpdateMessageRead.h"
 #include "im/actor/model/api/updates/UpdateMessageReadByMe.h"
@@ -64,6 +66,10 @@
     return ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(payload);
     case 55:
     return ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(payload);
+    case 162:
+    return ImActorModelApiUpdatesUpdateMessageContentChanged_fromBytesWithByteArray_(payload);
+    case 163:
+    return ImActorModelApiUpdatesUpdateMessageDateChanged_fromBytesWithByteArray_(payload);
     case 4:
     return ImActorModelApiUpdatesUpdateMessageSent_fromBytesWithByteArray_(payload);
     case 54:

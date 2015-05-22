@@ -12,7 +12,6 @@
 #include "im/actor/model/api/ContactType.h"
 #include "im/actor/model/api/Sex.h"
 #include "im/actor/model/api/User.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -45,8 +44,6 @@
   id<JavaUtilList> records_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMUser, name_, NSString *)
@@ -56,10 +53,6 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
 J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
 
 J2OBJC_STATIC_FIELD_GETTER(AMUser, RECORD_ID, jint)
-
-__attribute__((unused)) static void AMUser_init(AMUser *self);
-
-__attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
 
 @interface AMUser_ObsoleteContactRecord : BSBserObject {
  @public
@@ -101,17 +94,13 @@ J2OBJC_TYPE_LITERAL_HEADER(AMUser_ObsoleteContactRecord)
 
 @implementation AMUser
 
-+ (AMUser *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMUser_fromBytesWithByteArray_(data);
-}
-
 - (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)wrappedUser {
   AMUser_initWithImActorModelApiUser_(self, wrappedUser);
   return self;
 }
 
-- (instancetype)init {
-  AMUser_init(self);
+- (instancetype)initWithByteArray:(IOSByteArray *)data {
+  AMUser_initWithByteArray_(self, data);
   return self;
 }
 
@@ -213,9 +202,6 @@ J2OBJC_TYPE_LITERAL_HEADER(AMUser_ObsoleteContactRecord)
   if ([wrapped getAvatar] != nil) {
     self->avatar_ = new_AMAvatar_initWithImActorModelApiAvatar_([wrapped getAvatar]);
   }
-  else {
-    self->avatar_ = new_AMAvatar_init();
-  }
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -236,7 +222,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMUser_ObsoleteContactRecord)
     ImActorModelApiAvatar *avatar = new_ImActorModelApiAvatar_init();
     IOSByteArray *a = [values optBytesWithInt:5];
     if (a != nil) {
-      avatar = [((AMAvatar *) nil_chk(AMAvatar_fromBytesWithByteArray_(a))) toWrapped];
+      avatar = [new_AMAvatar_initWithByteArray_(a) toWrapped];
     }
     id<JavaUtilList> records = new_JavaUtilArrayList_init();
     jint count = [values getRepeatedCountWithInt:7];
@@ -275,11 +261,6 @@ J2OBJC_TYPE_LITERAL_HEADER(AMUser_ObsoleteContactRecord)
 
 @end
 
-AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMUser_initialize();
-  return ((AMUser *) BSBser_parseWithBSBserObject_withByteArray_(new_AMUser_init(), data));
-}
-
 void AMUser_initWithImActorModelApiUser_(AMUser *self, ImActorModelApiUser *wrappedUser) {
   (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMUser_RECORD_ID, wrappedUser);
 }
@@ -290,13 +271,13 @@ AMUser *new_AMUser_initWithImActorModelApiUser_(ImActorModelApiUser *wrappedUser
   return self;
 }
 
-void AMUser_init(AMUser *self) {
-  (void) AMWrapperEntity_initWithInt_(self, AMUser_RECORD_ID);
+void AMUser_initWithByteArray_(AMUser *self, IOSByteArray *data) {
+  (void) AMWrapperEntity_initWithInt_withByteArray_(self, AMUser_RECORD_ID, data);
 }
 
-AMUser *new_AMUser_init() {
+AMUser *new_AMUser_initWithByteArray_(IOSByteArray *data) {
   AMUser *self = [AMUser alloc];
-  AMUser_init(self);
+  AMUser_initWithByteArray_(self, data);
   return self;
 }
 

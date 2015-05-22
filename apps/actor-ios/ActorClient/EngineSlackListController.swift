@@ -23,7 +23,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
     override func viewDidLoad() {
         if (self.displayList == nil) {
             self.displayList = getDisplayList()
-            self.displayList.addAppleListenerWithAMDisplayList_AppleChangeListener(self)
+            self.displayList.addAppleListener(self)
         }
         
         dispatch_async(dispatch_get_main_queue(),{
@@ -32,15 +32,15 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         });
     }
     
-    func onCollectionChangedWithAMAppleListUpdate(modification: AMAppleListUpdate!) {
+    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
         if (self.emptyLock) {
             return
         }
         
         self.tableView.beginUpdates()
         var hasUpdates = false
-        for i in 0..<modification.getChanges().size() {
-            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+        for i in 0..<modification.size() {
+            var change = modification.changeAt(i)
             switch(UInt(change.getOperationType().ordinal())) {
             case AMChangeDescription_OperationType.ADD.rawValue:
                 var startIndex = Int(change.getIndex())
@@ -72,8 +72,8 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         
         if (hasUpdates) {
             var visibleIndexes = self.tableView.indexPathsForVisibleRows() as! [NSIndexPath]
-            for i in 0..<modification.getChanges().size() {
-                var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            for i in 0..<modification.size() {
+                var change = modification.changeAt(i)
                 switch(UInt(change.getOperationType().ordinal())) {
                 case AMChangeDescription_OperationType.UPDATE.rawValue:
                     var startIndex = Int(change.getIndex())
@@ -108,14 +108,14 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             return 0;
         }
         
-        return Int(displayList.getSize());
+        return Int(displayList.size());
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var item: AnyObject? = objectAtIndexPath(indexPath)
         var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
         bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
-        displayList.touchWithInt(jint(indexPath.row))
+        displayList.touchWithIndex(jint(indexPath.row))
         cell.transform = tableView.transform
         return cell;
     }
@@ -125,7 +125,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             return nil
         }
         
-        return displayList.getItemWithInt(jint(indexPath.row));
+        return displayList.itemWithIndex(jint(indexPath.row));
     }
     
     func objectAtIndex(index: Int) -> AnyObject? {
@@ -133,7 +133,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             return nil
         }
         
-        return displayList.getItemWithInt(jint(index));
+        return displayList.itemWithIndex(jint(index));
     }
     
     func getCount() -> Int {
@@ -141,7 +141,7 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             return 0
         }
         
-        return Int(displayList.getSize())
+        return Int(displayList.size())
     }
     
     // Abstract methods

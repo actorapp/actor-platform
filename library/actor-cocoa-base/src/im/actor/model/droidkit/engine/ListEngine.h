@@ -15,19 +15,19 @@
 
 @protocol DKListEngine < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithBSBserObject:(BSBserObject<DKListEngineItem> *)item;
+- (void)addOrUpdateItem:(BSBserObject<DKListEngineItem> *)item;
 
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)addOrUpdateItems:(id<JavaUtilList>)items;
 
-- (void)replaceItemsWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)replaceItems:(id<JavaUtilList>)items;
 
-- (void)removeItemWithLong:(jlong)key;
+- (void)removeItemWithKey:(jlong)key;
 
-- (void)removeItemsWithLongArray:(IOSLongArray *)keys;
+- (void)removeItemsWithKeys:(IOSLongArray *)keys;
 
 - (void)clear;
 
-- (id)getValueWithLong:(jlong)key;
+- (id)getValueWithKey:(jlong)key;
 
 - (id)getHeadValue;
 

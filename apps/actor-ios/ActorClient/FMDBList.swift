@@ -71,7 +71,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         }
     }
     
-    func updateOrAddWithDKListEngineRecord(valueContainer: DKListEngineRecord!) {
+    func updateOrAddWithValue(valueContainer: DKListEngineRecord!) {
         checkTable();
         
         db!.beginTransaction()
@@ -80,33 +80,33 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         db!.commit()
     }
     
-    func updateOrAddWithJavaUtilList(items: JavaUtilList!) {
+    func updateOrAddWithList(items: JavaUtilList!) {
         checkTable();
         
         db!.beginTransaction()
         for i in 0..<items.size() {
             let record = items.getWithInt(i) as! DKListEngineRecord;
             db!.executeUpdate(queryAdd, record.getKey().toNSNumber(), record.dbQuery(), record.getOrder().toNSNumber(),
-                            record.getData().toNSData())
+                record.getData().toNSData())
         }
         db!.commit()
     }
     
-    func delete__WithLong(key: jlong) {
+    func deleteWithKey(key: jlong) {
         checkTable();
         
         db!.beginTransaction()
         db!.executeUpdate(queryDelete, key.toNSNumber());
         db!.commit()
     }
-    
-    func delete__WithLongArray(keys: IOSLongArray!) {
+
+    func deleteWithKeys(keys: IOSLongArray!) {
         checkTable();
         
         db!.beginTransaction()
         for i in 0..<keys.length() {
-        var k = keys.longAtIndex(UInt(i));
-           db!.executeUpdate(queryDelete, k.toNSNumber());
+            var k = keys.longAtIndex(UInt(i));
+            db!.executeUpdate(queryDelete, k.toNSNumber());
         }
         db!.commit()
     }
@@ -141,7 +141,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         db!.commit()
     }
     
-    func loadItemWithLong(key: jlong) -> DKListEngineRecord! {
+    func loadItemWithKey(key: jlong) -> DKListEngineRecord! {
         checkTable();
         
         var result = db!.executeQuery(queryItem, key.toNSNumber());
@@ -153,7 +153,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull){
                 query = nil
             }
-            var res = DKListEngineRecord(long: jlong(result!.longLongIntForColumn("ID")), withLong: jlong(result!.longLongIntForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
+            var res = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             result?.close()
             return res;
         } else {
@@ -162,7 +162,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         }
     }
     
-    func loadForwardWithJavaLangLong(sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
+    func loadForwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         var result : FMResultSet? = nil;
         if (sortingKey == nil) {
@@ -182,14 +182,14 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(long: jlong(result!.longLongIntForColumn("ID")), withLong: jlong(result!.longLongIntForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
+            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             res.addWithId(record)
         }
         result!.close()
         return res;
     }
     
-    func loadForwardWithNSString(query: String!, withJavaLangLong sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
+    func loadForwardWithQuery(query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
         var result : FMResultSet? = nil;
@@ -210,32 +210,28 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(long: jlong(result!.longLongIntForColumn("ID")), withLong: jlong(result!.longLongIntForColumn("SORT_KEY")), withNSString: query as! String?, withByteArray: result!.dataForColumn("BYTES").toJavaBytes())
+            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
             res.addWithId(record)
         }
         result!.close()
         
         return res;
+
     }
     
-    
-    func loadBackwardWithJavaLangLong(sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
-        checkTable();
-        
-        return JavaUtilArrayList()
-//         fatalError("Not implemented")
-    }
-    
-    func loadBackwardWithNSString(query: String!, withJavaLangLong sortingKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
+    func loadBackwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
         fatalError("Not implemented")
     }
     
-    func loadCenterWithJavaLangLong(centerSortKey: JavaLangLong!, withInt limit: jint) -> JavaUtilList! {
+    func loadBackwardWithQuery(query: String!, withSortKey sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
         checkTable();
         
-        var forward = loadForwardWithJavaLangLong(centerSortKey, withInt: limit)
-        return forward
+        fatalError("Not implemented")
+    }
+    
+    func loadCenterWithSortKey(centerSortKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+        fatalError("Not implemented")
     }
 }

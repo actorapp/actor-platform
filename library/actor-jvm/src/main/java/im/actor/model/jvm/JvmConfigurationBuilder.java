@@ -9,8 +9,8 @@ import im.actor.model.BaseConfigurationBuilder;
 public class JvmConfigurationBuilder extends BaseConfigurationBuilder {
 
     public JvmConfigurationBuilder(String locale) {
-        setLog(new JavaLog());
+        setLogProvider(new JavaLog());
         setNetworkProvider(new JavaNetworkProvider());
-        setLocale(new JavaLocale(locale));
+        setLocaleProvider(new JavaLocale(locale));
     }
 }
