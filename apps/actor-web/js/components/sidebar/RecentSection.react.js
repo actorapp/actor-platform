@@ -2,6 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 
 var AvatarItem = require('../common/AvatarItem.react');
+var ConversationActionCreators = require('../../actions/ConversationActionCreators');
 
 var RecentSection = React.createClass({
   propTypes: {
@@ -21,14 +22,17 @@ var RecentSection = React.createClass({
   render: function() {
     var dialogs = _.map(this.state.dialogs, function(dialog, index) {
       return(
-        <li key={index} className="sidebar__list__item">
-          <AvatarItem title={dialog.peer.title} image={dialog.peer.avatar} placeholder={dialog.peer.placeholder} size="tiny"/>
-          <span>
-            {dialog.peer.title}
-          </span>
+        <li key={index}
+            className="sidebar__list__item"
+            onClick={this._selectPeer}>
+          <AvatarItem title={dialog.peer.title}
+                      image={dialog.peer.avatar}
+                      placeholder={dialog.peer.placeholder}
+                      size="tiny"/>
+          <span>{dialog.peer.title}</span>
         </li>
       )
-    });
+    }, this);
 
     return(
       <ul className="sidebar__list">
@@ -43,6 +47,10 @@ var RecentSection = React.createClass({
   _setDialogs: function(dialogs) {
     window.di = dialogs;
     this.setState({dialogs: dialogs})
+  },
+
+  _selectPeer: function() {
+    ConversationActionCreators.selectPeer();
   }
 });
 
