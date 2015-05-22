@@ -2378,7 +2378,31 @@
           }
         },
         {
-          "type": "empty"
+          "type": "struct",
+          "content": {
+            "name": "JsonMessage",
+            "doc": [
+              "Custom-data JsonMessage",
+              {
+                "type": "reference",
+                "argument": "rawJson",
+                "category": "full",
+                "description": "  JSON object"
+              }
+            ],
+            "trait": {
+              "name": "Message",
+              "key": 4
+            },
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "rawJson"
+              }
+            ]
+          }
         },
         {
           "type": "rpc",
@@ -2762,6 +2786,60 @@
                 },
                 "id": 3,
                 "name": "message"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "MessageDateChanged",
+            "header": 163,
+            "doc": [
+              "Update about message date changed",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "full",
+                "description": "  Destination peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Rid of message"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "hidden",
+                "description": "  Date of message"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "Peer"
+                },
+                "id": 1,
+                "name": "peer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 3,
+                "name": "date"
               }
             ]
           }
@@ -3253,9 +3331,6 @@
           }
         },
         {
-          "type": "empty"
-        },
-        {
           "type": "struct",
           "content": {
             "name": "Dialog",
@@ -3631,9 +3706,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "rpc",
@@ -5604,156 +5676,9 @@
           }
         },
         {
-          "type": "struct",
-          "content": {
-            "name": "Banner",
-            "doc": [
-              "Advertisment banner",
-              {
-                "type": "reference",
-                "argument": "id",
-                "category": "full",
-                "description": "  Unique ID of banner"
-              },
-              {
-                "type": "reference",
-                "argument": "width",
-                "category": "full",
-                "description": "  width of banner"
-              },
-              {
-                "type": "reference",
-                "argument": "height",
-                "category": "full",
-                "description": "  height of banner"
-              },
-              {
-                "type": "reference",
-                "argument": "bannerUrl",
-                "category": "full",
-                "description": "  banner url"
-              },
-              {
-                "type": "reference",
-                "argument": "adUrl",
-                "category": "full",
-                "description": "  Ad Url"
-              },
-              {
-                "type": "reference",
-                "argument": "adCost",
-                "category": "full",
-                "description": "  Ad Cost"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "id"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "width"
-              },
-              {
-                "type": "int32",
-                "id": 3,
-                "name": "height"
-              },
-              {
-                "type": "string",
-                "id": 4,
-                "name": "bannerUrl"
-              },
-              {
-                "type": "string",
-                "id": 5,
-                "name": "adUrl"
-              },
-              {
-                "type": "int32",
-                "id": 6,
-                "name": "adCost"
-              }
-            ]
-          }
-        },
-        {
           "type": "rpc",
           "content": {
-            "name": "GetAdBanners",
-            "header": 159,
-            "response": {
-              "type": "anonymous",
-              "header": 161,
-              "doc": [
-                {
-                  "type": "reference",
-                  "argument": "banners",
-                  "category": "full",
-                  "description": "  Available banners"
-                }
-              ],
-              "attributes": [
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "Banner"
-                    }
-                  },
-                  "id": 1,
-                  "name": "banners"
-                }
-              ]
-            },
-            "doc": [
-              "Requesting AD banners",
-              {
-                "type": "reference",
-                "argument": "maxBannerWidth",
-                "category": "hidden",
-                "description": "maximum banner width"
-              },
-              {
-                "type": "reference",
-                "argument": "maxBannerHeight",
-                "category": "hidden",
-                "description": "maximum banner height"
-              },
-              {
-                "type": "reference",
-                "argument": "screenDensity",
-                "category": "hidden",
-                "description": "Screen Density of destination device"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int32",
-                "id": 1,
-                "name": "maxBannerWidth"
-              },
-              {
-                "type": "int32",
-                "id": 2,
-                "name": "maxBannerHeight"
-              },
-              {
-                "type": "double",
-                "id": 3,
-                "name": "screenDensity"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "NotifyAddView",
+            "name": "NotifyAdView",
             "header": 162,
             "response": {
               "type": "reference",
@@ -6441,9 +6366,6 @@
             ],
             "attributes": []
           }
-        },
-        {
-          "type": "empty"
         },
         {
           "type": "rpc",
