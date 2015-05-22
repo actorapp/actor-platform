@@ -4,10 +4,12 @@ import java.net.InetSocketAddress
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorFlowMaterializer
 import com.google.android.gcm.server.Sender
+import com.typesafe.config.ConfigFactory
 
 import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignUp, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs.RequestCodec
@@ -30,12 +32,22 @@ import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.util.testing._
 
-class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with SqlSpecHelpers {
+class SimpleServerE2eSpec extends ActorFlatSuite(
+  ActorSpecification.createSystem(ConfigFactory.parseString(
+    """
+    |session {
+    |  idle-timeout = 5 seconds
+    |}
+  """.stripMargin
+  ))
+) with DbInit with KafkaSpec with SqlSpecHelpers {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
 
   it should "respond to RPC requests" in Server.e2
+
+  it should "notify about lost session" in Server.e3
 
   implicit lazy val (ds, db) = migrateAndInitDb()
 
@@ -160,6 +172,38 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with
       client.close()
     }
 
+    def e3() = {
+      implicit val client = MTProtoClient()
+
+      client.connectAndHandshake(remote)
+
+      val authId = Random.nextLong()
+      val sessionId = Random.nextLong()
+
+      Await.result(db.run(persist.AuthId.create(authId, None, None)), 5.seconds)
+
+      {
+        val helloMessageId = Random.nextLong()
+        val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
+        client.send(helloMtPackage)
+        expectNewSession(sessionId, helloMessageId)
+        expectMessageAck(helloMessageId)
+      }
+
+      Thread.sleep(3000)
+      expectSessionLost()
+
+      {
+        val helloMessageId = Random.nextLong()
+        val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
+        client.send(helloMtPackage)
+        expectNewSession(sessionId, helloMessageId)
+        expectMessageAck(helloMessageId)
+      }
+    }
+
     private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {
       val mb = receiveMessageBox()
       mb.body shouldBe a[MessageAck]
@@ -170,6 +214,13 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with
       ack should ===(expectedAck)
 
       ack
+    }
+
+    private def expectSessionLost()(implicit client: MTProtoClient): SessionLost = {
+      val mb = receiveMessageBox()
+      mb.body shouldBe a[SessionLost]
+
+      mb.body.asInstanceOf[SessionLost]
     }
 
     private def receiveRpcResult(messageId: Long)(implicit client: MTProtoClient): RpcResult = {
