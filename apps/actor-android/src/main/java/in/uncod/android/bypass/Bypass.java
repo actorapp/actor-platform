@@ -1,10 +1,14 @@
 package in.uncod.android.bypass;
 
+import im.actor.messenger.app.fragment.chat.ChatActivity;
 import in.uncod.android.bypass.Element.Type;
+
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
 import android.text.style.LeadingMarginSpan;
@@ -13,6 +17,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
+import android.view.View;
 
 public class Bypass {
 	static {
@@ -21,8 +26,10 @@ public class Bypass {
 
 	private static final float[] HEADER_SIZES = { 1.5f, 1.4f, 1.3f, 1.2f, 1.1f,
 			1f, };
+	private boolean useMentionSpan;
 
-	public CharSequence markdownToSpannable(String markdown) {
+	public CharSequence markdownToSpannable(String markdown, boolean useMentionSpan) {
+		this.useMentionSpan = useMentionSpan;
 		Document document = processMarkdown(markdown);
 
 		CharSequence[] spans = new CharSequence[document.getElementCount()];
@@ -102,7 +109,7 @@ public class Bypass {
 			builder.setSpan(monoSpan, 0, builder.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.LINK) {
-			URLSpan urlSpan = new URLSpan(element.getAttribute("link"));
+			URLSpan urlSpan = useMentionSpan?new MentionSpan(element.getAttribute("link")):new URLSpan(element.getAttribute("link"));
 			builder.setSpan(urlSpan, 0, builder.length(),
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
@@ -120,4 +127,6 @@ public class Bypass {
 		}
 		return builder;
 	}
+
+
 }

@@ -2,7 +2,6 @@ package im.actor.messenger.app.fragment.chat.adapter;
 
 import android.text.Editable;
 import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -103,11 +102,11 @@ public class TextHolder extends MessageHolder {
             builder.append(name);
             builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             builder.append("\n");
-            builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText()));
+            builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
             //builder.append(((TextContent) message.getContent()).getText());
             spannedText = builder;
         } else {
-            spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText());
+            spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false);
             //spannedText = ((TextContent) message.getContent()).getText();
         }
 
