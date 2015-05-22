@@ -22,7 +22,7 @@ var RecentSection = React.createClass({
     var dialogs = _.map(this.state.dialogs, function(dialog, index) {
       return(
         <li key={index} className="sidebar__list__item">
-          <AvatarItem title={dialog.peer.title} image={dialog.peer.avatar} placeholder={dialog.peer.placeholder}  size="tiny"/>
+          <AvatarItem title={dialog.peer.title} image={dialog.peer.avatar} placeholder={dialog.peer.placeholder} size="tiny"/>
           <span>
             {dialog.peer.title}
           </span>
