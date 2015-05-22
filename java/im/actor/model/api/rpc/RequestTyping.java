@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class RequestTyping extends Request<ResponseVoid> {
     private OutPeer peer;
     private TypingType typingType;
 
-    public RequestTyping(OutPeer peer, TypingType typingType) {
+    public RequestTyping(@NotNull OutPeer peer, @NotNull TypingType typingType) {
         this.peer = peer;
         this.typingType = typingType;
     }
@@ -37,10 +40,12 @@ public class RequestTyping extends Request<ResponseVoid> {
 
     }
 
+    @NotNull
     public OutPeer getPeer() {
         return this.peer;
     }
 
+    @NotNull
     public TypingType getTypingType() {
         return this.typingType;
     }

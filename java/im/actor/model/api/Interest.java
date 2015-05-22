@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -24,7 +27,7 @@ public class Interest extends BserObject {
     private boolean isSelected;
     private List<Interest> childInterests;
 
-    public Interest(int id, String title, boolean isSelected, List<Interest> childInterests) {
+    public Interest(int id, @NotNull String title, boolean isSelected, @NotNull List<Interest> childInterests) {
         this.id = id;
         this.title = title;
         this.isSelected = isSelected;
@@ -39,6 +42,7 @@ public class Interest extends BserObject {
         return this.id;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }
@@ -47,6 +51,7 @@ public class Interest extends BserObject {
         return this.isSelected;
     }
 
+    @NotNull
     public List<Interest> getChildInterests() {
         return this.childInterests;
     }
