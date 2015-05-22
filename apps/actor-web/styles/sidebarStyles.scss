@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@import 'variables';
 
 .sidebar {
   position: relative;
@@ -17,7 +17,7 @@
       height: $toolbarHeight;
       padding: 0 16px;
 
-      &__avatar {
+      .avatar {
         margin: 14px 8px 14px 0;
       }
 
