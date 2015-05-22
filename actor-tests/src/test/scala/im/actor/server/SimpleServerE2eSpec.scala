@@ -5,6 +5,7 @@ import java.net.InetSocketAddress
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorFlowMaterializer
 import com.google.android.gcm.server.Sender
 
@@ -60,10 +61,12 @@ class SimpleServerE2eSpec extends ActorFlatSuite with DbInit with KafkaSpec with
     Session.startRegion(Some(Session.props))
     implicit val sessionRegion = Session.startRegionProxy()
 
+    val mediator = DistributedPubSubExtension(system).mediator
+
     val services = Seq(
       new AuthServiceImpl(new DummyActivationContext),
       new ContactsServiceImpl,
-      new MessagingServiceImpl,
+      new MessagingServiceImpl(mediator),
       new SequenceServiceImpl
     )
 

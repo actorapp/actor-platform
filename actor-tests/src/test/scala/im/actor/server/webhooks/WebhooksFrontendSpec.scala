@@ -32,7 +32,7 @@ class WebhooksFrontendSpec extends BaseServiceSuite with GroupsServiceHelpers {
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
 
-  implicit val service = new messaging.MessagingServiceImpl
+  implicit val service = new messaging.MessagingServiceImpl(mediator)
   implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl("")
 
