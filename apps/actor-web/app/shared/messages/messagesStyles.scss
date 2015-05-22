@@ -1,140 +1,144 @@
 @import '../../styles/variables';
 
-.messages-list {
+.messages {
+  position: absolute;
+  top: $toolbarHeight;
+  bottom: 135px;
+
   overflow: auto;
-  padding: 8px 0 25px;
-  flex: 1;
-  [class*="col"] {
+
+  width: 100%;
+  padding: 8px 0;
+
+  &__list {
+    margin: 0;
     padding: 0;
-  }
-  &__typing {
-    text-align: center;
-    background-color: rgba(0, 0, 0, .02);
-    color: rgba(0, 0, 0, .5);
-    //border-radius: 4px;
-    line-height: 16px;
-    font-size: 12px;
-    display: block;
-    padding: 4px 8px;
-    margin-bottom: -25px;
-    img {
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-      vertical-align: middle;
-    }
+
+    list-style: none;
   }
 }
 
 .message {
-  margin: 0;
   padding: 0 16px;
   .avatar {
     margin: 8px 16px 16px 0;
   }
-  &__body {
+
+  &__header {
+    font-weight: 500;
+    line-height: 14px;
+
+    margin: 8px 0 6px;
+  }
+  &__sender {
+    font-size: 14px;
+
     margin: 0;
-    font-size: 13px;
-    font-weight: 400;
-    &__title {
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 14px;
-
-      height: 12px;
-      margin: 8px 0 4px;
-
-      color: rgb(22, 22, 22);
-    }
-    &__timestamp {
-      font-size: 12px;
-
-      text-transform: lowercase;
-
-      color: rgb(190, 190, 190);
-    }
+    padding: 0;
   }
   &__status {
-    margin-top: -2px;
-    margin-right: 4px;
+    //status
+  }
+  &__timestamp {
+    font-size: 12px;
+
+    text-transform: lowercase;
+
+    color: $serviceMessageTextColor;
   }
 
-  &__text {
-    word-wrap: break-word;
-    word-break: keep-all;
-    color: rgb(37, 37, 37);
-    margin-top: 4px;
-    line-height: 22px;
-
-    // Styles for markdown
-    p {
-      margin: 4px 0 0;
-    }
-    ul, ol {
-      margin: 6px 0;
-      padding-left: 24px;
-    }
-    h1, h2, h3, h4, h5 {
-      padding: 6px 0;
-      margin: 0;
-    }
-    blockquote {
-      border-left: 3px solid $baseColor;
-      margin: 0 24px 0 6px;
-      padding-left: 15px;
-    }
+  &__body {
+    //message types
   }
-  &__photo {
-    position: relative;
+  &__content {
+    margin: 6px 0;
+    &--service {
+      font-size: 14px;
 
-    display: inline-block;
+      margin: 8px 0;
 
-    background-color: rgba($baseColor, .05);
-    margin-top: 6px;
-    img {
-      max-width: 300px;
-      height: auto;
-      @media (max-width: 396px) {
-        max-width: 100%;
+      text-align: center;
+
+      color: $serviceMessageTextColor;
+    }
+    &--unsupported {
+      color: rgba(red, .3);
+    }
+    &--text {
+      font-size: 15px;
+      // Styles for markdown
+      p {
+        margin: 6px 0;
+      }
+      ul,
+      ol {
+        margin: 6px 0;
+        padding-left: 24px;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        margin: 6px 0;
+      }
+      blockquote {
+        margin: 6px 24px 6px 6px;
+        padding-left: 15px;
+
+        border-left: 3px solid $baseColor;
       }
     }
-    &__original {
-      position: absolute;
-    }
-  }
-  &__document {
-    margin: 6px 0 4px;
-    display: inline-block;
+    &--photo {
+      position: relative;
+      .photo {
+        line-height: 0;
 
-    padding: 6px;
-    border-radius: 2px;
-    background-color: transparent;
-    line-height: 18px;
-    color: $baseColor;
-    transition: background-color 400ms cubic-bezier(.25,.8,.25,1);
-    &__icon {
-      width: 24px;
-      height: 24px;
-      vertical-align: middle;
+        max-width: 300px;
+        height: auto;
+        &--original {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
     }
-    span {
-      font-size: 13px;
-      padding-right: 4px;
-      line-height: 24px;
-      text-decoration: none;
-      display: inline-block;
-      vertical-align: middle;
+    &--document {
+      .document {
+        line-height: 18px;
+
+        display: inline-block;
+
+        padding: 6px;
+
+        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        text-decoration: none;
+
+        color: $baseColor;
+        border-radius: 2px;
+        background-color: transparent;
+        &__icon {
+          width: 24px;
+          height: 24px;
+
+          vertical-align: middle;
+        }
+        &__filename {
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 24px;
+
+          display: inline-block;
+
+          padding-right: 4px;
+
+          vertical-align: middle;
+          text-decoration: none;
+        }
+        &:hover {
+          background-color: rgba(darken($baseColor, 10), .07);
+        }
+      }
     }
-    &:hover {
-      background-color: rgba(darken($baseColor,10), .07);
-      text-decoration: none;
-    }
-  }
-  &__service {
-    text-align: center;
-    color: rgba(black, .3);
-  }
-  &__unsupported {
-    color: rgba(red, .3);
   }
 }
