@@ -2308,7 +2308,28 @@
           <property role="Nu42W" value="03" />
         </node>
       </node>
-      <node concept="NvyAe" id="GBscvBBoyd" role="2m5mJr" />
+      <node concept="2m5naR" id="2tyCW$U5XZ6" role="2m5mJr">
+        <property role="TrG5h" value="JsonMessage" />
+        <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="55bmeIQey3W" resolve="Message" />
+        <node concept="2m7Kf5" id="2tyCW$U5Y5z" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="rawJson" />
+          <node concept="2m5ndX" id="2tyCW$U5Y5B" role="2m7DVh" />
+        </node>
+        <node concept="NXeRC" id="2tyCW$U5Y5n" role="NXodf">
+          <property role="NXePf" value="Custom-data JsonMessage" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5YxA" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="JSON object" />
+          <ref role="NX6Kv" node="2tyCW$U5Y5z" resolve="rawJson" />
+        </node>
+        <node concept="Nu42z" id="2tyCW$U5Y5j" role="3BtCOu">
+          <property role="Nu42W" value="04" />
+        </node>
+      </node>
       <node concept="2m6fVq" id="GBscvBBqzL" role="2m5mJr">
         <property role="TrG5h" value="SendMessage" />
         <node concept="2m7Kf5" id="GBscvBBqBa" role="2m0hLx">
@@ -2625,6 +2646,50 @@
         </node>
         <node concept="Nu42z" id="2tyCW$U5Q8U" role="NuuwV">
           <property role="Nu42W" value="A2" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="2tyCW$U5TMH" role="2m5mJr">
+        <property role="TrG5h" value="MessageDateChanged" />
+        <node concept="NXeRC" id="2tyCW$U5UkM" role="NXp_2">
+          <property role="NXePf" value="Update about message date changed" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5UKW" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Destination peer" />
+          <ref role="NX6Kv" node="2tyCW$U5TSK" resolve="peer" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5UL4" role="NXp_2">
+          <property role="NX6R2" value="Rid of message" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2tyCW$U5TSR" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="2tyCW$U5ULe" role="NXp_2">
+          <property role="NX6R2" value="Date of message" />
+          <ref role="NX6Kv" node="2tyCW$U5UKD" resolve="date" />
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U5TSK" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="2tyCW$U5TSO" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6fx" resolve="Peer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U5TSR" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="2tyCW$U5TSX" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="2tyCW$U5UKD" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="2tyCW$U5UKL" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2tyCW$U5TMI" role="NuuwV">
+          <property role="Nu42W" value="A3" />
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBm97" role="2m5mJr">
@@ -3027,7 +3092,6 @@
           <ref role="NX6Kv" node="gbd4oSj4vS" resolve="limit" />
         </node>
       </node>
-      <node concept="NvyAe" id="gbd4oSj4wa" role="2m5mJr" />
       <node concept="2m5naR" id="gbd4oSj4wb" role="2m5mJr">
         <property role="TrG5h" value="Dialog" />
         <node concept="NXeRC" id="gbd4oSj4wc" role="NXodf">
@@ -3340,7 +3404,6 @@
           <node concept="2m5ndQ" id="7d$A0Kt1Y6X" role="2m7DVh" />
         </node>
       </node>
-      <node concept="NvyAe" id="GBscvBBwdP" role="2m5mJr" />
       <node concept="2m6fVq" id="GBscvBBsbt" role="2m5mJr">
         <property role="TrG5h" value="CreateGroup" />
         <node concept="2m7Kf5" id="GBscvBBsbN" role="2m0hLx">
@@ -4978,129 +5041,8 @@
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
-      <node concept="2m5naR" id="2tyCW$U4ddU" role="2m5mJr">
-        <property role="TrG5h" value="Banner" />
-        <node concept="NXeRC" id="2tyCW$U4fuk" role="NXodf">
-          <property role="NXePf" value="Advertisment banner" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4fUu" role="NXodf">
-          <property role="NX6R2" value="Unique ID of banner" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="2tyCW$U4dEw" resolve="id" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4gMK" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="width of banner" />
-          <ref role="NX6Kv" node="2tyCW$U4dEB" resolve="width" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4hf0" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="height of banner" />
-          <ref role="NX6Kv" node="2tyCW$U4e6A" resolve="height" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4j09" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="banner url" />
-          <ref role="NX6Kv" node="2tyCW$U4e6L" resolve="bannerUrl" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4jsy" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Ad Url" />
-          <ref role="NX6Kv" node="2tyCW$U4e6Y" resolve="adUrl" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4jsM" role="NXodf">
-          <property role="1GSvIU" value="full" />
-          <property role="NX6R2" value="Ad Cost" />
-          <ref role="NX6Kv" node="2tyCW$U4e7D" resolve="adCost" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4dEw" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="id" />
-          <node concept="2m5ndE" id="2tyCW$U4dE$" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4dEB" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="width" />
-          <node concept="2m5ndE" id="2tyCW$U4dEH" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4e6A" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="height" />
-          <node concept="2m5ndE" id="2tyCW$U4e6I" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4e6L" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="bannerUrl" />
-          <node concept="2m5ndX" id="2tyCW$U4e6V" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4e6Y" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="adUrl" />
-          <node concept="2m5ndX" id="2tyCW$U4e7A" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4e7D" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="adCost" />
-          <node concept="2m5ndE" id="2tyCW$U4e7R" role="2m7DVh" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="2tyCW$U4aZj" role="2m5mJr">
-        <property role="TrG5h" value="GetAdBanners" />
-        <node concept="NXeRC" id="2tyCW$U4bRK" role="1GBnQ6">
-          <property role="NXePf" value="Requesting AD banners" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4cJk" role="1GBnQ6">
-          <property role="NX6R2" value="maximum banner width" />
-          <ref role="NX6Kv" node="2tyCW$U4brK" resolve="maxBannerWidth" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4cJs" role="1GBnQ6">
-          <property role="NX6R2" value="maximum banner height" />
-          <ref role="NX6Kv" node="2tyCW$U4brR" resolve="maxBannerHeight" />
-        </node>
-        <node concept="NX1gA" id="2tyCW$U4hFv" role="1GBnQ6">
-          <property role="NX6R2" value="Screen Density of destination device" />
-          <ref role="NX6Kv" node="2tyCW$U4hf6" resolve="screenDensity" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4brK" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="maxBannerWidth" />
-          <node concept="2m5ndE" id="2tyCW$U4brO" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4brR" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="maxBannerHeight" />
-          <node concept="2m5ndE" id="2tyCW$U4brX" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="2tyCW$U4hf6" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="screenDensity" />
-          <node concept="3GIWu7" id="2tyCW$U4hfe" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="2tyCW$U4aZk" role="NuuwV">
-          <property role="Nu42W" value="9F" />
-        </node>
-        <node concept="2m1R6W" id="2tyCW$U4e_Q" role="2m6efq">
-          <node concept="NX1gA" id="2tyCW$U4f2c" role="1y2DgH">
-            <property role="1GSvIU" value="full" />
-            <property role="NX6R2" value="Available banners" />
-            <ref role="NX6Kv" node="2tyCW$U4e_V" resolve="banners" />
-          </node>
-          <node concept="2m7Kf5" id="2tyCW$U4e_V" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="banners" />
-            <node concept="2m5nlk" id="2tyCW$U4e_Z" role="2m7DVh">
-              <node concept="2m5mGg" id="2tyCW$U4eA5" role="3GJlyp">
-                <ref role="2m5mJy" node="2tyCW$U4ddU" resolve="Banner" />
-              </node>
-            </node>
-          </node>
-          <node concept="Nu42z" id="2tyCW$U4e_R" role="NuuwV">
-            <property role="Nu42W" value="A1" />
-          </node>
-        </node>
-      </node>
       <node concept="2m6fVq" id="2tyCW$U4km$" role="2m5mJr">
-        <property role="TrG5h" value="NotifyAddView" />
+        <property role="TrG5h" value="NotifyAdView" />
         <node concept="NXeRC" id="2tyCW$U4lHh" role="1GBnQ6">
           <property role="NXePf" value="Notify about banner view" />
         </node>
@@ -5691,7 +5633,6 @@
           <property role="Nu42W" value="19" />
         </node>
       </node>
-      <node concept="NvyAe" id="GBscvBBQmv" role="2m5mJr" />
       <node concept="2m6fVq" id="GBscvBBAdf" role="2m5mJr">
         <property role="TrG5h" value="GetState" />
         <node concept="Nu42z" id="GBscvBBAdg" role="NuuwV">

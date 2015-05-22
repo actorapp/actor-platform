@@ -26,6 +26,7 @@ public abstract class Message extends BserObject {
             case 1: return Bser.parse(new TextMessage(), content);
             case 2: return Bser.parse(new ServiceMessage(), content);
             case 3: return Bser.parse(new DocumentMessage(), content);
+            case 4: return Bser.parse(new JsonMessage(), content);
             default: return new MessageUnsupported(key, content);
         }
     }
