@@ -6,6 +6,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
 
 import akka.actor.ActorSystem
+import akka.event.Logging
 import akka.util.Timeout
 import org.joda.time.DateTime
 import shapeless._
@@ -23,7 +24,7 @@ import im.actor.server.session._
 import im.actor.server.sms.ActivationContext
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.PhoneNumber.normalizeWithCountry
-import im.actor.server.util.{ UserUtils, ACLUtils, IdUtils, PhoneNumber }
+import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
 class AuthServiceImpl(activationContext: ActivationContext)(
@@ -35,6 +36,7 @@ class AuthServiceImpl(activationContext: ActivationContext)(
   val db:                      Database
 ) extends AuthService with Helpers {
 
+  import AnyRefLogSource._
   import IdUtils._
   import SeqUpdatesManager._
   import SocialManager._
@@ -47,7 +49,9 @@ class AuthServiceImpl(activationContext: ActivationContext)(
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  implicit val timeout = Timeout(5.seconds) // TODO: configurable
+  implicit private val timeout = Timeout(5.seconds) // TODO: configurable
+
+  private val log = Logging(actorSystem, this)
 
   object Errors {
     val AuthSessionNotFound = RpcError(404, "AUTH_SESSION_NOT_FOUND", "Auth session not found.", false, None)
@@ -370,7 +374,10 @@ class AuthServiceImpl(activationContext: ActivationContext)(
   }
 
   private def sendSmsCode(authId: Long, phoneNumber: Long, code: String): Unit = {
-    activationContext.send(authId, phoneNumber, code)
+    if (!phoneNumber.toString.startsWith("7555")) {
+      log.info("Sending code {} to {}", code, phoneNumber)
+      activationContext.send(authId, phoneNumber, code)
+    }
   }
 
   private def genSmsCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(6)
