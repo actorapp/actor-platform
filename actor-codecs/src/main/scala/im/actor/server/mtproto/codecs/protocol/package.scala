@@ -7,6 +7,7 @@ package object protocol {
   val MessageAckCodec = longs.as[MessageAck]
   val NewSessionCodec = (int64 :: int64).as[NewSession]
   val SessionHelloCodec = provide[SessionHello](SessionHello)
+  val SessionLostCodec = provide[SessionLost](SessionLost)
   val RequestAuthIdCodec = provide(RequestAuthId())
   val RequestResendCodec = int64.as[RequestResend]
   val ResponseAuthIdCodec = int64.as[ResponseAuthId]
