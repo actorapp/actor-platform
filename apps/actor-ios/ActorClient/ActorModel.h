@@ -160,6 +160,8 @@
 #import "im/actor/model/viewmodel/FileCallback.h"
 #import "im/actor/model/viewmodel/UploadFileCallback.h"
 #import "im/actor/model/viewmodel/AppStateVM.h"
+#import "im/actor/model/viewmodel/ConversationVM.h"
+#import "im/actor/model/viewmodel/ConversationVMCallback.h"
 
 // Misc
 

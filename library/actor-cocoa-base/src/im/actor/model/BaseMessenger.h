@@ -43,6 +43,8 @@
 
 - (AMBindedDisplayList *)getMessagesGlobalListWithPeer:(AMPeer *)peer;
 
+- (jlong)loadLastReadState:(AMPeer *)peer;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseMessenger)
