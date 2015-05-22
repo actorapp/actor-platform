@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "flexboxgrid": "^6.2.0",
+    "flux": "^2.0.3",
     "highlight.js": "^8.5.0",
     "lodash": "^3.8.0",
     "marked": "^0.3.3",
