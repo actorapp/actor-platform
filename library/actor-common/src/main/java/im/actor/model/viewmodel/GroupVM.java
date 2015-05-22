@@ -4,17 +4,23 @@
 
 package im.actor.model.viewmodel;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import im.actor.model.annotation.MainThread;
-import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.mvvm.BaseValueModel;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ModelChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.mvvm.generics.AvatarValueModel;
+import im.actor.model.mvvm.generics.BooleanValueModel;
+import im.actor.model.mvvm.generics.StringValueModel;
 
 /**
  * Group View Model
@@ -22,14 +28,18 @@ import im.actor.model.mvvm.ValueModel;
 public class GroupVM extends BaseValueModel<Group> {
 
     private int id;
-    private long hash;
     private int creatorId;
-    private ValueModel<Avatar> avatar;
-    private ValueModel<String> name;
-    private ValueModel<Boolean> isMember;
+    @NotNull
+    private AvatarValueModel avatar;
+    @NotNull
+    private StringValueModel name;
+    @NotNull
+    private BooleanValueModel isMember;
+    @NotNull
     private ValueModel<HashSet<GroupMember>> members;
+    @NotNull
     private ValueModel<Integer> presence;
-
+    @NotNull
     private ArrayList<ModelChangedListener<GroupVM>> listeners = new ArrayList<ModelChangedListener<GroupVM>>();
 
     /**
@@ -38,14 +48,13 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @param rawObj initial value of Group
      */
-    public GroupVM(Group rawObj) {
+    public GroupVM(@NotNull Group rawObj) {
         super(rawObj);
         this.id = rawObj.getGroupId();
-        this.hash = rawObj.getAccessHash();
         this.creatorId = rawObj.getAdminId();
-        this.name = new ValueModel<String>("group." + id + ".title", rawObj.getTitle());
-        this.avatar = new ValueModel<Avatar>("group." + id + ".avatar", rawObj.getAvatar());
-        this.isMember = new ValueModel<Boolean>("group." + id + ".isMember", rawObj.isMember());
+        this.name = new StringValueModel("group." + id + ".title", rawObj.getTitle());
+        this.avatar = new AvatarValueModel("group." + id + ".avatar", rawObj.getAvatar());
+        this.isMember = new BooleanValueModel("group." + id + ".isMember", rawObj.isMember());
         this.members = new ValueModel<HashSet<GroupMember>>("group." + id + ".members", new HashSet<GroupMember>(rawObj.getMembers()));
         this.presence = new ValueModel<Integer>("group." + id + ".presence", 0);
     }
@@ -55,17 +64,9 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return Group Id
      */
+    @ObjectiveCName("getId")
     public int getId() {
         return id;
-    }
-
-    /**
-     * Get Group Access Hash
-     *
-     * @return Group Access Hash
-     */
-    public long getHash() {
-        return hash;
     }
 
     /**
@@ -73,6 +74,7 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return creator user id
      */
+    @ObjectiveCName("getCreatorId")
     public int getCreatorId() {
         return creatorId;
     }
@@ -82,6 +84,7 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return members count
      */
+    @ObjectiveCName("getMembersCount")
     public int getMembersCount() {
         return members.get().size();
     }
@@ -91,7 +94,9 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return Value Model of String
      */
-    public ValueModel<String> getName() {
+    @NotNull
+    @ObjectiveCName("getNameModel")
+    public StringValueModel getName() {
         return name;
     }
 
@@ -100,7 +105,9 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return Value Model of Avatar
      */
-    public ValueModel<Avatar> getAvatar() {
+    @NotNull
+    @ObjectiveCName("getAvatarModel")
+    public AvatarValueModel getAvatar() {
         return avatar;
     }
 
@@ -109,7 +116,9 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return Value Model of Boolean
      */
-    public ValueModel<Boolean> isMember() {
+    @NotNull
+    @ObjectiveCName("isMemberModel")
+    public BooleanValueModel isMember() {
         return isMember;
     }
 
@@ -118,6 +127,8 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return Value Model of HashSet of GroupMember
      */
+    @NotNull
+    @ObjectiveCName("getMembersModel")
     public ValueModel<HashSet<GroupMember>> getMembers() {
         return members;
     }
@@ -127,14 +138,15 @@ public class GroupVM extends BaseValueModel<Group> {
      *
      * @return Value Model of Integer
      */
+    @NotNull
+    @ObjectiveCName("getPresenceModel")
     public ValueModel<Integer> getPresence() {
         return presence;
     }
 
     @Override
-    protected void updateValues(Group rawObj) {
-        boolean isChanged = false;
-        isChanged |= name.change(rawObj.getTitle());
+    protected void updateValues(@NotNull Group rawObj) {
+        boolean isChanged = name.change(rawObj.getTitle());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= isMember.change(rawObj.isMember());
         isChanged |= members.change(new HashSet<GroupMember>(rawObj.getMembers()));
@@ -150,7 +162,8 @@ public class GroupVM extends BaseValueModel<Group> {
      * @param listener Listener for updates
      */
     @MainThread
-    public void subscribe(ModelChangedListener<GroupVM> listener) {
+    @ObjectiveCName("subscribeWithListener:")
+    public void subscribe(@NotNull ModelChangedListener<GroupVM> listener) {
         MVVMEngine.checkMainThread();
         if (listeners.contains(listener)) {
             return;
@@ -165,7 +178,8 @@ public class GroupVM extends BaseValueModel<Group> {
      * @param listener Listener for updates
      */
     @MainThread
-    public void unsubscribe(ModelChangedListener<GroupVM> listener) {
+    @ObjectiveCName("unsubscribeWithListener:")
+    public void unsubscribe(@NotNull ModelChangedListener<GroupVM> listener) {
         MVVMEngine.checkMainThread();
         listeners.remove(listener);
     }
@@ -174,7 +188,7 @@ public class GroupVM extends BaseValueModel<Group> {
         MVVMEngine.getMainThreadProvider().postToMainThread(new Runnable() {
             @Override
             public void run() {
-                for (ModelChangedListener<GroupVM> l : listeners.toArray(new ModelChangedListener[0])) {
+                for (ModelChangedListener<GroupVM> l : listeners.toArray(new ModelChangedListener[listeners.size()])) {
                     l.onChanged(GroupVM.this);
                 }
             }

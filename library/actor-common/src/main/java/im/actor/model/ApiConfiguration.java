@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 /**
  * API Configuration for accessing Actor Platform servers
  */
@@ -26,6 +28,7 @@ public class ApiConfiguration {
      * @param deviceTitle  device title
      * @param deviceString device unique key
      */
+    @ObjectiveCName("initWithAppTitle:withAppId:withAppKey:withDeviceTitle:withDeviceId:")
     public ApiConfiguration(String appTitle, int appId, String appKey, String deviceTitle, String deviceString) {
         this.appTitle = appTitle;
         this.appId = appId;
@@ -39,6 +42,7 @@ public class ApiConfiguration {
      *
      * @return the App Title
      */
+    @ObjectiveCName("getAppTitle")
     public String getAppTitle() {
         return appTitle;
     }
@@ -48,6 +52,7 @@ public class ApiConfiguration {
      *
      * @return the App Id
      */
+    @ObjectiveCName("getAppId")
     public int getAppId() {
         return appId;
     }
@@ -57,6 +62,7 @@ public class ApiConfiguration {
      *
      * @return the App Key
      */
+    @ObjectiveCName("getAppKey")
     public String getAppKey() {
         return appKey;
     }
@@ -66,6 +72,7 @@ public class ApiConfiguration {
      *
      * @return the Device Title
      */
+    @ObjectiveCName("getDeviceTitle")
     public String getDeviceTitle() {
         return deviceTitle;
     }
@@ -75,6 +82,7 @@ public class ApiConfiguration {
      *
      * @return the Unique String
      */
+    @ObjectiveCName("getDeviceString")
     public String getDeviceString() {
         return deviceString;
     }

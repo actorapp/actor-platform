@@ -63,7 +63,8 @@ public class SenderActor extends ModuleActor {
         }
 
         boolean isChanged = false;
-        for (PendingMessage pending : pendingMessages.getPendingMessages().toArray(new PendingMessage[0])) {
+        ArrayList<PendingMessage> messages = pendingMessages.getPendingMessages();
+        for (PendingMessage pending : messages.toArray(new PendingMessage[messages.size()])) {
             if (pending.getContent() instanceof TextContent) {
                 performSendContent(pending.getPeer(), pending.getRid(), pending.getContent());
             } else if (pending.getContent() instanceof DocumentContent) {

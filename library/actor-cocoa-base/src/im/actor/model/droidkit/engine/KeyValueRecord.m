@@ -20,9 +20,9 @@ J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 
 @implementation DKKeyValueRecord
 
-- (instancetype)initWithLong:(jlong)id_
-               withByteArray:(IOSByteArray *)data {
-  DKKeyValueRecord_initWithLong_withByteArray_(self, id_, data);
+- (instancetype)initWithKey:(jlong)id_
+                   withData:(IOSByteArray *)data {
+  DKKeyValueRecord_initWithKey_withData_(self, id_, data);
   return self;
 }
 
@@ -36,15 +36,15 @@ J2OBJC_FIELD_SETTER(DKKeyValueRecord, data_, IOSByteArray *)
 
 @end
 
-void DKKeyValueRecord_initWithLong_withByteArray_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data) {
+void DKKeyValueRecord_initWithKey_withData_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data) {
   (void) NSObject_init(self);
   self->id__ = id_;
   self->data_ = data;
 }
 
-DKKeyValueRecord *new_DKKeyValueRecord_initWithLong_withByteArray_(jlong id_, IOSByteArray *data) {
+DKKeyValueRecord *new_DKKeyValueRecord_initWithKey_withData_(jlong id_, IOSByteArray *data) {
   DKKeyValueRecord *self = [DKKeyValueRecord alloc];
-  DKKeyValueRecord_initWithLong_withByteArray_(self, id_, data);
+  DKKeyValueRecord_initWithKey_withData_(self, id_, data);
   return self;
 }
 

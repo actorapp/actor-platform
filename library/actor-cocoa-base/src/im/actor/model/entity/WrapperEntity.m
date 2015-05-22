@@ -29,8 +29,9 @@ J2OBJC_FIELD_SETTER(AMWrapperEntity, wrapped_, id)
 
 @implementation AMWrapperEntity
 
-- (instancetype)initWithInt:(jint)recordField {
-  AMWrapperEntity_initWithInt_(self, recordField);
+- (instancetype)initWithInt:(jint)recordField
+              withByteArray:(IOSByteArray *)data {
+  AMWrapperEntity_initWithInt_withByteArray_(self, recordField, data);
   return self;
 }
 
@@ -65,20 +66,23 @@ J2OBJC_FIELD_SETTER(AMWrapperEntity, wrapped_, id)
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  if (wrapped_ != nil) {
-    [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:recordField_ withByteArray:[wrapped_ toByteArray]];
-  }
+  [((BSBserWriter *) nil_chk(writer)) writeBytesWithInt:recordField_ withByteArray:[((BSBserObject *) nil_chk(wrapped_)) toByteArray]];
 }
 
 @end
 
-void AMWrapperEntity_initWithInt_(AMWrapperEntity *self, jint recordField) {
+void AMWrapperEntity_initWithInt_withByteArray_(AMWrapperEntity *self, jint recordField, IOSByteArray *data) {
   (void) BSBserObject_init(self);
   self->recordField_ = recordField;
+  [self load__WithByteArray:data];
+  if (self->wrapped_ == nil) {
+    @throw new_JavaIoIOException_initWithNSString_(@"Unable to deserialize wrapped object");
+  }
 }
 
 void AMWrapperEntity_initWithInt_withBSBserObject_(AMWrapperEntity *self, jint recordField, BSBserObject *wrapped) {
-  (void) AMWrapperEntity_initWithInt_(self, recordField);
+  (void) BSBserObject_init(self);
+  self->recordField_ = recordField;
   self->wrapped_ = wrapped;
   [self applyWrappedWithBSBserObject:wrapped];
 }

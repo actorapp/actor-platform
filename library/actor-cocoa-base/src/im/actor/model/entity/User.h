@@ -24,6 +24,8 @@
 
 #pragma mark Public
 
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
+
 - (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)wrappedUser;
 
 - (AMUser *)editAvatarWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
@@ -31,8 +33,6 @@
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName;
 
 - (AMUser *)editNameWithNSString:(NSString *)name;
-
-+ (AMUser *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -70,11 +70,13 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMUser)
 
-FOUNDATION_EXPORT AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data);
-
 FOUNDATION_EXPORT void AMUser_initWithImActorModelApiUser_(AMUser *self, ImActorModelApiUser *wrappedUser);
 
 FOUNDATION_EXPORT AMUser *new_AMUser_initWithImActorModelApiUser_(ImActorModelApiUser *wrappedUser) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMUser_initWithByteArray_(AMUser *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMUser *new_AMUser_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUser)
 

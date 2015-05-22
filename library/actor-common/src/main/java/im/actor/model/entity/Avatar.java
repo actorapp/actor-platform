@@ -4,40 +4,48 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
 public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
-    public static Avatar fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new Avatar(), data);
-    }
-
     private static final int RECORD_ID = 10;
 
+    @Nullable
     private AvatarImage smallImage;
+    @Nullable
     private AvatarImage largeImage;
+    @Nullable
     private AvatarImage fullImage;
 
-    public Avatar(im.actor.model.api.Avatar wrapped) {
+    public Avatar(@NotNull im.actor.model.api.Avatar wrapped) {
         super(RECORD_ID, wrapped);
     }
 
-    public Avatar() {
-        super(RECORD_ID);
+    public Avatar(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
+    public Avatar() {
+        super(RECORD_ID, new im.actor.model.api.Avatar());
+    }
+
+    @Nullable
     public AvatarImage getSmallImage() {
         return smallImage;
     }
 
+    @Nullable
     public AvatarImage getLargeImage() {
         return largeImage;
     }
 
+    @Nullable
     public AvatarImage getFullImage() {
         return fullImage;
     }
@@ -52,7 +60,7 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
             byte[] small = values.optBytes(1);
             if (small != null) {
-                AvatarImage oldSmallImage = AvatarImage.fromBytes(small);
+                AvatarImage oldSmallImage = new AvatarImage(small);
                 smallImage = new im.actor.model.api.AvatarImage(
                         oldSmallImage.getFileReference().getFileLocation(),
                         oldSmallImage.getWidth(),
@@ -62,7 +70,7 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
             byte[] large = values.optBytes(2);
             if (large != null) {
-                AvatarImage oldLargeImage = AvatarImage.fromBytes(large);
+                AvatarImage oldLargeImage = new AvatarImage(large);
                 largeImage = new im.actor.model.api.AvatarImage(
                         oldLargeImage.getFileReference().getFileLocation(),
                         oldLargeImage.getWidth(),
@@ -72,7 +80,7 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
             byte[] full = values.optBytes(3);
             if (full != null) {
-                AvatarImage oldFullImage = AvatarImage.fromBytes(full);
+                AvatarImage oldFullImage = new AvatarImage(full);
                 fullImage = new im.actor.model.api.AvatarImage(
                         oldFullImage.getFileReference().getFileLocation(),
                         oldFullImage.getWidth(),
@@ -96,27 +104,21 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
     }
 
     @Override
-    protected void applyWrapped(im.actor.model.api.Avatar wrapped) {
-        if (wrapped == null) {
-            smallImage = null;
-            largeImage = null;
-            fullImage = null;
+    protected void applyWrapped(@NotNull im.actor.model.api.Avatar wrapped) {
+        if (wrapped.getSmallImage() != null) {
+            smallImage = new AvatarImage(wrapped.getSmallImage());
         } else {
-            if (wrapped.getSmallImage() != null) {
-                smallImage = new AvatarImage(wrapped.getSmallImage());
-            } else {
-                smallImage = null;
-            }
-            if (wrapped.getLargeImage() != null) {
-                largeImage = new AvatarImage(wrapped.getLargeImage());
-            } else {
-                largeImage = null;
-            }
-            if (wrapped.getFullImage() != null) {
-                fullImage = new AvatarImage(wrapped.getFullImage());
-            } else {
-                fullImage = null;
-            }
+            smallImage = null;
+        }
+        if (wrapped.getLargeImage() != null) {
+            largeImage = new AvatarImage(wrapped.getLargeImage());
+        } else {
+            largeImage = null;
+        }
+        if (wrapped.getFullImage() != null) {
+            fullImage = new AvatarImage(wrapped.getFullImage());
+        } else {
+            fullImage = null;
         }
     }
 
@@ -146,6 +148,7 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
     }
 
     @Override
+    @NotNull
     protected im.actor.model.api.Avatar createInstance() {
         return new im.actor.model.api.Avatar();
     }

@@ -59,7 +59,7 @@ __attribute__((unused)) static AMFileRemoteSource *new_AMFileRemoteSource_init()
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   [super parseWithBSBserValues:values];
-  fileReference_ = AMFileReference_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
+  fileReference_ = new_AMFileReference_initWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {

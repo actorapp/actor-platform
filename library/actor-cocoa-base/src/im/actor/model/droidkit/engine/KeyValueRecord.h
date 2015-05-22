@@ -14,8 +14,8 @@
 
 #pragma mark Public
 
-- (instancetype)initWithLong:(jlong)id_
-               withByteArray:(IOSByteArray *)data;
+- (instancetype)initWithKey:(jlong)id_
+                   withData:(IOSByteArray *)data;
 
 - (IOSByteArray *)getData;
 
@@ -25,9 +25,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKKeyValueRecord)
 
-FOUNDATION_EXPORT void DKKeyValueRecord_initWithLong_withByteArray_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data);
+FOUNDATION_EXPORT void DKKeyValueRecord_initWithKey_withData_(DKKeyValueRecord *self, jlong id_, IOSByteArray *data);
 
-FOUNDATION_EXPORT DKKeyValueRecord *new_DKKeyValueRecord_initWithLong_withByteArray_(jlong id_, IOSByteArray *data) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT DKKeyValueRecord *new_DKKeyValueRecord_initWithKey_withData_(jlong id_, IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKKeyValueRecord)
 

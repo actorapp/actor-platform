@@ -145,8 +145,6 @@ public class ManagerActor extends Actor {
             currentConnectionId = 0;
             currentConnection = null;
             requestCheckConnection();
-        } else {
-            // Log.w(TAG, "Unable to unregister connection #" + id + ": connection not found, expected: #"+currentConnectionId);
         }
     }
 
@@ -270,8 +268,6 @@ public class ManagerActor extends Actor {
             byte[] pkg = bos.toByteArray();
             currentConnection.post(pkg, 0, pkg.length);
             // Log.d(TAG, "Posted message to connection #" + currentConnectionId);
-        } else {
-            // Log.d(TAG, "Unable to send message: no connections");
         }
     }
 
