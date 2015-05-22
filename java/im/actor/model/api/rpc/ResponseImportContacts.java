@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -29,7 +32,7 @@ public class ResponseImportContacts extends Response {
     private int seq;
     private byte[] state;
 
-    public ResponseImportContacts(List<User> users, int seq, byte[] state) {
+    public ResponseImportContacts(@NotNull List<User> users, int seq, @NotNull byte[] state) {
         this.users = users;
         this.seq = seq;
         this.state = state;
@@ -39,6 +42,7 @@ public class ResponseImportContacts extends Response {
 
     }
 
+    @NotNull
     public List<User> getUsers() {
         return this.users;
     }
@@ -47,6 +51,7 @@ public class ResponseImportContacts extends Response {
         return this.seq;
     }
 
+    @NotNull
     public byte[] getState() {
         return this.state;
     }
