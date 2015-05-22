@@ -1,4 +1,5 @@
 var React = require('react');
+var classNames = require('classnames');
 
 var AvatarItem = require('../common/AvatarItem.react');
 
@@ -19,11 +20,9 @@ var HeaderSection = React.createClass({
   render: function() {
     var user = this.state.user;
 
-    var headerClass = 'sidebar__header sidebar__header--clickable';
-
-    if (this.state.isOpened) {
-      headerClass += ' sidebar__header--opened';
-    }
+    var headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
+      'sidebar__header--opened': this.state.isOpened
+    });
 
     return (
       <header className={headerClass}>
