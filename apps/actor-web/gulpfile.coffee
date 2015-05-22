@@ -64,7 +64,7 @@ gulp.task 'browserify:watchify', ->
 
 
 gulp.task 'sass', ->
-  gulp.src ['./app/**/*.scss']
+  gulp.src ['./styles/**/*.scss']
     .pipe sourcemaps.init()
       .pipe sass().on('error', gutil.log)
       .pipe autoprefixer()
@@ -82,7 +82,7 @@ gulp.task 'html', ->
 
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
-  gulp.watch ['./app/**/*.scss'], ['sass']
+  gulp.watch ['./styles/**/*.scss'], ['sass']
   gulp.watch ['./index2.html', './app/**/*.html'], ['html']
 
 gulp.task 'assets', ->
