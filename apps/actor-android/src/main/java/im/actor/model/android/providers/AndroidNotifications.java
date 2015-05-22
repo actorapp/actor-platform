@@ -130,7 +130,7 @@ public class AndroidNotifications implements NotificationProvider {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
                 @Override
                 public void onNotDownloaded() {
@@ -194,7 +194,7 @@ public class AndroidNotifications implements NotificationProvider {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
                 @Override
                 public void onNotDownloaded() {
