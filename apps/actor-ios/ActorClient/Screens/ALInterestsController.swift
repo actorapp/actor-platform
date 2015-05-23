@@ -71,6 +71,7 @@ class ALInterestsController: AATableViewController {
         cell.switchBlock = { (value: Bool) -> () in
             var list = JavaUtilArrayList()
             list.addWithId(JavaLangInteger(int: interest.getId()))
+            var serialized = APRequestEnableInterests(javaUtilList: list).toByteArray().toNSData();
             if (value) {
                 self.execute(MSG.executeExternalCommand(APRequestEnableInterests(javaUtilList: list)), successBlock: { (val) -> Void in
                     
