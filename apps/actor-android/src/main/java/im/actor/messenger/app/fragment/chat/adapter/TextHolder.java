@@ -4,6 +4,7 @@ import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.SpannedString;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
@@ -111,8 +112,7 @@ public class TextHolder extends MessageHolder {
         }
 
 
-
-        Editable spannedTextEditable = (Editable) spannedText;
+        Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
         URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
         if(urlSpans.length>0){
             int start;
@@ -133,6 +133,7 @@ public class TextHolder extends MessageHolder {
             spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
             spannedText = spannedTextEditable;
         }else{
+            spannedText = spannedTextEditable;
             Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
         }
 

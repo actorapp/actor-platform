@@ -544,6 +544,7 @@ public class ChatActivity extends BaseActivity{
     private void convertUrlspansToMarkdownLinks(Editable text) {
         int start;
         int end;
+        boolean urlTitleEndsSpace;
         String url;
         String urlTitle;
         String mdUrl;
@@ -553,10 +554,13 @@ public class ChatActivity extends BaseActivity{
             end = text.getSpanEnd(span);
             if(start!=-1 && end<=text.length()){
                 url =span.getURL();
-                urlTitle = text.toString().substring(start, end).trim();
+                urlTitle = text.toString().substring(start, end);
+                urlTitleEndsSpace = urlTitle.endsWith(" ");
+                urlTitle = urlTitle.trim();
                 //if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
-                mdUrl = new String("[").concat(urlTitle).concat("](").concat(url).concat(")");
-                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@") || urlTitle.equals("@ "))mdUrl = "@";
+                mdUrl = "[".concat(urlTitle).concat("](").concat(url).concat(")");
+                if(urlTitleEndsSpace)mdUrl = mdUrl.concat(" ");
+                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@"))mdUrl = "@";
                 if(!urlTitle.contains("@"))mdUrl = urlTitle;
                 text.replace(start, end, mdUrl);
             }
