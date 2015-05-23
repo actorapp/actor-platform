@@ -55,7 +55,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesPushPushRegisterActor_RegisterApplePush, 
   ImActorModelModulesPushPushRegisterActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(APResponseVoid *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -78,7 +78,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_$1)
   ImActorModelModulesPushPushRegisterActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(APResponseVoid *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -161,7 +161,7 @@ void ImActorModelModulesPushPushRegisterActor_registerGooglePushWithLong_withNSS
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:@"push.google.registered" withValue:NO];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithKey:@"push.google.id" withValue:projectId];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:@"push.google.token" withValue:token];
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(projectId, token) withAMRpcCallback:new_ImActorModelModulesPushPushRegisterActor_$1_initWithImActorModelModulesPushPushRegisterActor_(self)];
+  [self requestWithAPRequest:new_APRequestRegisterGooglePush_initWithLong_withNSString_(projectId, token) withAMRpcCallback:new_ImActorModelModulesPushPushRegisterActor_$1_initWithImActorModelModulesPushPushRegisterActor_(self)];
 }
 
 void ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSString_(ImActorModelModulesPushPushRegisterActor *self, jint apnsId, NSString *token) {
@@ -169,7 +169,7 @@ void ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSStr
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:@"push.apple.registered" withValue:NO];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putIntWithKey:@"push.apple.id" withValue:apnsId];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:@"push.apple.token" withValue:token];
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(apnsId, token) withAMRpcCallback:new_ImActorModelModulesPushPushRegisterActor_$2_initWithImActorModelModulesPushPushRegisterActor_(self)];
+  [self requestWithAPRequest:new_APRequestRegisterApplePush_initWithInt_withNSString_(apnsId, token) withAMRpcCallback:new_ImActorModelModulesPushPushRegisterActor_$2_initWithImActorModelModulesPushPushRegisterActor_(self)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushPushRegisterActor)
@@ -240,7 +240,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushPushRegisterActor_Regist
 
 @implementation ImActorModelModulesPushPushRegisterActor_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(APResponseVoid *)response {
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) putBoolWithKey:@"push.google.registered" withValue:YES];
 }
 
@@ -269,7 +269,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushPushRegisterActor_$1)
 
 @implementation ImActorModelModulesPushPushRegisterActor_$2
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(APResponseVoid *)response {
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) putBoolWithKey:@"push.apple.registered" withValue:YES];
 }
 

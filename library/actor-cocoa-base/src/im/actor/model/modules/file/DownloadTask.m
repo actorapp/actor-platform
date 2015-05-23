@@ -98,7 +98,7 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_reportCo
   ImActorModelModulesFileDownloadTask *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseGetFileUrl *)response;
+- (void)onResult:(APResponseGetFileUrl *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -293,7 +293,7 @@ void ImActorModelModulesFileDownloadTask_requestUrl(ImActorModelModulesFileDownl
   if (self->LOG_) {
     AMLog_dWithNSString_withNSString_(self->TAG_, @"Loading url...");
   }
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(new_ImActorModelApiFileLocation_initWithLong_withLong_([((AMFileReference *) nil_chk(self->fileReference_)) getFileId], [self->fileReference_ getAccessHash])) withAMRpcCallback:new_ImActorModelModulesFileDownloadTask_$1_initWithImActorModelModulesFileDownloadTask_(self)];
+  [self requestWithAPRequest:new_APRequestGetFileUrl_initWithAPFileLocation_(new_APFileLocation_initWithLong_withLong_([((AMFileReference *) nil_chk(self->fileReference_)) getFileId], [self->fileReference_ getAccessHash])) withAMRpcCallback:new_ImActorModelModulesFileDownloadTask_$1_initWithImActorModelModulesFileDownloadTask_(self)];
 }
 
 void ImActorModelModulesFileDownloadTask_startDownload(ImActorModelModulesFileDownloadTask *self) {
@@ -387,8 +387,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
 
 @implementation ImActorModelModulesFileDownloadTask_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseGetFileUrl *)response {
-  this$0_->fileUrl_ = [((ImActorModelApiRpcResponseGetFileUrl *) nil_chk(response)) getUrl];
+- (void)onResult:(APResponseGetFileUrl *)response {
+  this$0_->fileUrl_ = [((APResponseGetFileUrl *) nil_chk(response)) getUrl];
   if (this$0_->LOG_) {
     AMLog_dWithNSString_withNSString_(this$0_->TAG_, JreStrcat("$$", @"Loaded file url: ", this$0_->fileUrl_));
   }

@@ -41,13 +41,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 - (void)applyUsersWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                              withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = new_JavaUtilArrayList_init();
-  for (ImActorModelApiUser * __strong u in nil_chk(updated)) {
-    AMUser *saved = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:[((ImActorModelApiUser *) nil_chk(u)) getId]];
+  for (APUser * __strong u in nil_chk(updated)) {
+    AMUser *saved = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:[((APUser *) nil_chk(u)) getId]];
     if (saved == nil) {
-      [batch addWithId:new_AMUser_initWithImActorModelApiUser_(u)];
+      [batch addWithId:new_AMUser_initWithAPUser_(u)];
     }
     else if (forced) {
-      AMUser *upd = new_AMUser_initWithImActorModelApiUser_(u);
+      AMUser *upd = new_AMUser_initWithAPUser_(u);
       [batch addWithId:upd];
       if (![((NSString *) nil_chk([upd getName])) isEqual:[saved getName]] || !AMJavaUtil_equalsEWithId_withId_([upd getAvatar], [saved getAvatar])) {
         ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, upd);
@@ -88,10 +88,10 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
 }
 
 - (void)onUserAvatarChangedWithInt:(jint)uid
-         withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
+                      withAPAvatar:(APAvatar *)avatar {
   AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:uid];
   if (u != nil) {
-    u = [u editAvatarWithImActorModelApiAvatar:avatar];
+    u = [u editAvatarWithAPAvatar:avatar];
     [((id<DKKeyValueEngine>) nil_chk([self users])) addOrUpdateItem:u];
     ImActorModelModulesUpdatesUsersProcessor_onUserDescChangedWithAMUser_(self, u);
   }

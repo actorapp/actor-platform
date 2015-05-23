@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestDeleteChat () {
+@interface APRequestDeleteChat () {
  @public
-  ImActorModelApiOutPeer *peer_;
+  APOutPeer *peer_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestDeleteChat, peer_, APOutPeer *)
 
-@implementation ImActorModelApiRpcRequestDeleteChat
+@implementation APRequestDeleteChat
 
-+ (ImActorModelApiRpcRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(data);
++ (APRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestDeleteChat_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer {
-  ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(self, peer);
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer {
+  APRequestDeleteChat_initWithAPOutPeer_(self, peer);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestDeleteChat_init(self);
+  APRequestDeleteChat_init(self);
   return self;
 }
 
-- (ImActorModelApiOutPeer *)getPeer {
+- (APOutPeer *)getPeer {
   return self->peer_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APOutPeer_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,35 +64,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDeleteChat, peer_, ImActorModelApiO
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestDeleteChat_HEADER;
+  return APRequestDeleteChat_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestDeleteChat *ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestDeleteChat_initialize();
-  return ((ImActorModelApiRpcRequestDeleteChat *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestDeleteChat_init(), data));
+APRequestDeleteChat *APRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestDeleteChat_initialize();
+  return ((APRequestDeleteChat *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestDeleteChat_init(), data));
 }
 
-void ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestDeleteChat *self, ImActorModelApiOutPeer *peer) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestDeleteChat_initWithAPOutPeer_(APRequestDeleteChat *self, APOutPeer *peer) {
+  (void) APRequest_init(self);
   self->peer_ = peer;
 }
 
-ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) {
-  ImActorModelApiRpcRequestDeleteChat *self = [ImActorModelApiRpcRequestDeleteChat alloc];
-  ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(self, peer);
+APRequestDeleteChat *new_APRequestDeleteChat_initWithAPOutPeer_(APOutPeer *peer) {
+  APRequestDeleteChat *self = [APRequestDeleteChat alloc];
+  APRequestDeleteChat_initWithAPOutPeer_(self, peer);
   return self;
 }
 
-void ImActorModelApiRpcRequestDeleteChat_init(ImActorModelApiRpcRequestDeleteChat *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestDeleteChat_init(APRequestDeleteChat *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_init() {
-  ImActorModelApiRpcRequestDeleteChat *self = [ImActorModelApiRpcRequestDeleteChat alloc];
-  ImActorModelApiRpcRequestDeleteChat_init(self);
+APRequestDeleteChat *new_APRequestDeleteChat_init() {
+  APRequestDeleteChat *self = [APRequestDeleteChat alloc];
+  APRequestDeleteChat_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDeleteChat)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestDeleteChat)

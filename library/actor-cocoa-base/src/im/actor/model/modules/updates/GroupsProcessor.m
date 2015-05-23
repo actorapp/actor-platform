@@ -50,13 +50,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 - (void)applyGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)updated
                               withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = new_JavaUtilArrayList_init();
-  for (ImActorModelApiGroup * __strong group in nil_chk(updated)) {
-    AMGroup *saved = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
+  for (APGroup * __strong group in nil_chk(updated)) {
+    AMGroup *saved = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:[((APGroup *) nil_chk(group)) getId]];
     if (saved == nil) {
-      [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group)];
+      [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithAPGroup_(group)];
     }
     else if (forced) {
-      AMGroup *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group);
+      AMGroup *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPGroup_(group);
       [batch addWithId:upd];
       if (!AMJavaUtil_equalsEWithId_withId_([((AMGroup *) nil_chk(upd)) getAvatar], [saved getAvatar]) || ![((NSString *) nil_chk([upd getTitle])) isEqual:[saved getTitle]]) {
         ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
@@ -169,16 +169,16 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 - (void)onAvatarChangedWithInt:(jint)groupId
                       withLong:(jlong)rid
                        withInt:(jint)uid
-     withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
+                  withAPAvatar:(APAvatar *)avatar
                       withLong:(jlong)date
                    withBoolean:(jboolean)isSilent {
   AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
-    AMGroup *upd = [group editAvatarWithImActorModelApiAvatar:avatar];
+    AMGroup *upd = [group editAvatarWithAPAvatar:avatar];
     [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:upd];
     ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     if (!isSilent) {
-      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(avatar != nil ? new_AMAvatar_initWithImActorModelApiAvatar_(avatar) : nil));
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(avatar != nil ? new_AMAvatar_initWithAPAvatar_(avatar) : nil));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }

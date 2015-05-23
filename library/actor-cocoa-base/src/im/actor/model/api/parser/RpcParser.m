@@ -96,165 +96,165 @@
 
 @implementation ImActorModelApiParserRpcParser
 
-- (ImActorModelNetworkParserRpcScope *)readWithInt:(jint)type
-                                     withByteArray:(IOSByteArray *)payload {
+- (APRpcScope *)readWithInt:(jint)type
+              withByteArray:(IOSByteArray *)payload {
   switch (type) {
     case 1:
-    return ImActorModelApiRpcRequestSendAuthCode_fromBytesWithByteArray_(payload);
+    return APRequestSendAuthCode_fromBytesWithByteArray_(payload);
     case 90:
-    return ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(payload);
+    return APRequestSendAuthCall_fromBytesWithByteArray_(payload);
     case 3:
-    return ImActorModelApiRpcRequestSignIn_fromBytesWithByteArray_(payload);
+    return APRequestSignIn_fromBytesWithByteArray_(payload);
     case 4:
-    return ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(payload);
+    return APRequestSignUp_fromBytesWithByteArray_(payload);
     case 80:
-    return ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(payload);
+    return APRequestGetAuthSessions_fromBytesWithByteArray_(payload);
     case 82:
-    return ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(payload);
+    return APRequestTerminateSession_fromBytesWithByteArray_(payload);
     case 83:
-    return ImActorModelApiRpcRequestTerminateAllSessions_fromBytesWithByteArray_(payload);
+    return APRequestTerminateAllSessions_fromBytesWithByteArray_(payload);
     case 84:
-    return ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(payload);
+    return APRequestSignOut_fromBytesWithByteArray_(payload);
     case 96:
-    return ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(payload);
+    return APRequestEditUserLocalName_fromBytesWithByteArray_(payload);
     case 53:
-    return ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(payload);
+    return APRequestEditName_fromBytesWithByteArray_(payload);
     case 31:
-    return ImActorModelApiRpcRequestEditAvatar_fromBytesWithByteArray_(payload);
+    return APRequestEditAvatar_fromBytesWithByteArray_(payload);
     case 91:
-    return ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(payload);
+    return APRequestRemoveAvatar_fromBytesWithByteArray_(payload);
     case 7:
-    return ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(payload);
+    return APRequestImportContacts_fromBytesWithByteArray_(payload);
     case 87:
-    return ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(payload);
+    return APRequestGetContacts_fromBytesWithByteArray_(payload);
     case 89:
-    return ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(payload);
+    return APRequestRemoveContact_fromBytesWithByteArray_(payload);
     case 114:
-    return ImActorModelApiRpcRequestAddContact_fromBytesWithByteArray_(payload);
+    return APRequestAddContact_fromBytesWithByteArray_(payload);
     case 112:
-    return ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(payload);
+    return APRequestSearchContacts_fromBytesWithByteArray_(payload);
     case 92:
-    return ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(payload);
+    return APRequestSendMessage_fromBytesWithByteArray_(payload);
     case 55:
-    return ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(payload);
+    return APRequestMessageReceived_fromBytesWithByteArray_(payload);
     case 57:
-    return ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(payload);
+    return APRequestMessageRead_fromBytesWithByteArray_(payload);
     case 98:
-    return ImActorModelApiRpcRequestDeleteMessage_fromBytesWithByteArray_(payload);
+    return APRequestDeleteMessage_fromBytesWithByteArray_(payload);
     case 99:
-    return ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(payload);
+    return APRequestClearChat_fromBytesWithByteArray_(payload);
     case 100:
-    return ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(payload);
+    return APRequestDeleteChat_fromBytesWithByteArray_(payload);
     case 118:
-    return ImActorModelApiRpcRequestLoadHistory_fromBytesWithByteArray_(payload);
+    return APRequestLoadHistory_fromBytesWithByteArray_(payload);
     case 104:
-    return ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(payload);
+    return APRequestLoadDialogs_fromBytesWithByteArray_(payload);
     case 65:
-    return ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(payload);
+    return APRequestCreateGroup_fromBytesWithByteArray_(payload);
     case 85:
-    return ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(payload);
+    return APRequestEditGroupTitle_fromBytesWithByteArray_(payload);
     case 86:
-    return ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(payload);
+    return APRequestEditGroupAvatar_fromBytesWithByteArray_(payload);
     case 101:
-    return ImActorModelApiRpcRequestRemoveGroupAvatar_fromBytesWithByteArray_(payload);
+    return APRequestRemoveGroupAvatar_fromBytesWithByteArray_(payload);
     case 69:
-    return ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(payload);
+    return APRequestInviteUser_fromBytesWithByteArray_(payload);
     case 70:
-    return ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(payload);
+    return APRequestLeaveGroup_fromBytesWithByteArray_(payload);
     case 71:
-    return ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(payload);
+    return APRequestKickUser_fromBytesWithByteArray_(payload);
     case 27:
-    return ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(payload);
+    return APRequestTyping_fromBytesWithByteArray_(payload);
     case 29:
-    return ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(payload);
+    return APRequestSetOnline_fromBytesWithByteArray_(payload);
     case 77:
-    return ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(payload);
+    return APRequestGetFileUrl_fromBytesWithByteArray_(payload);
     case 97:
-    return ImActorModelApiRpcRequestGetFileUploadUrl_fromBytesWithByteArray_(payload);
+    return APRequestGetFileUploadUrl_fromBytesWithByteArray_(payload);
     case 122:
-    return ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(payload);
+    return APRequestCommitFileUpload_fromBytesWithByteArray_(payload);
     case 142:
-    return ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(payload);
+    return APRequestGetFileUploadPartUrl_fromBytesWithByteArray_(payload);
     case 130:
-    return ImActorModelApiRpcRequestInitVoxSupport_fromBytesWithByteArray_(payload);
+    return APRequestInitVoxSupport_fromBytesWithByteArray_(payload);
     case 131:
-    return ImActorModelApiRpcRequestGetVoxUser_fromBytesWithByteArray_(payload);
+    return APRequestGetVoxUser_fromBytesWithByteArray_(payload);
     case 152:
-    return ImActorModelApiRpcRequestGetAvailableInterests_fromBytesWithByteArray_(payload);
+    return APRequestGetAvailableInterests_fromBytesWithByteArray_(payload);
     case 157:
-    return ImActorModelApiRpcRequestEnableInterests_fromBytesWithByteArray_(payload);
+    return APRequestEnableInterests_fromBytesWithByteArray_(payload);
     case 158:
-    return ImActorModelApiRpcRequestDisableInterests_fromBytesWithByteArray_(payload);
+    return APRequestDisableInterests_fromBytesWithByteArray_(payload);
     case 162:
-    return ImActorModelApiRpcRequestNotifyAdView_fromBytesWithByteArray_(payload);
+    return APRequestNotifyAdView_fromBytesWithByteArray_(payload);
     case 134:
-    return ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(payload);
+    return APRequestGetParameters_fromBytesWithByteArray_(payload);
     case 128:
-    return ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(payload);
+    return APRequestEditParameter_fromBytesWithByteArray_(payload);
     case 51:
-    return ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(payload);
+    return APRequestRegisterGooglePush_fromBytesWithByteArray_(payload);
     case 76:
-    return ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(payload);
+    return APRequestRegisterApplePush_fromBytesWithByteArray_(payload);
     case 52:
-    return ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(payload);
+    return APRequestUnregisterPush_fromBytesWithByteArray_(payload);
     case 9:
-    return ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(payload);
+    return APRequestGetState_fromBytesWithByteArray_(payload);
     case 11:
-    return ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(payload);
+    return APRequestGetDifference_fromBytesWithByteArray_(payload);
     case 32:
-    return ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(payload);
+    return APRequestSubscribeToOnline_fromBytesWithByteArray_(payload);
     case 33:
-    return ImActorModelApiRpcRequestSubscribeFromOnline_fromBytesWithByteArray_(payload);
+    return APRequestSubscribeFromOnline_fromBytesWithByteArray_(payload);
     case 74:
-    return ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(payload);
+    return APRequestSubscribeToGroupOnline_fromBytesWithByteArray_(payload);
     case 75:
-    return ImActorModelApiRpcRequestSubscribeFromGroupOnline_fromBytesWithByteArray_(payload);
+    return APRequestSubscribeFromGroupOnline_fromBytesWithByteArray_(payload);
     case 2:
-    return ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(payload);
+    return APResponseSendAuthCode_fromBytesWithByteArray_(payload);
     case 5:
-    return ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(payload);
+    return APResponseAuth_fromBytesWithByteArray_(payload);
     case 81:
-    return ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(payload);
+    return APResponseGetAuthSessions_fromBytesWithByteArray_(payload);
     case 103:
-    return ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(payload);
+    return APResponseEditAvatar_fromBytesWithByteArray_(payload);
     case 8:
-    return ImActorModelApiRpcResponseImportContacts_fromBytesWithByteArray_(payload);
+    return APResponseImportContacts_fromBytesWithByteArray_(payload);
     case 88:
-    return ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(payload);
+    return APResponseGetContacts_fromBytesWithByteArray_(payload);
     case 113:
-    return ImActorModelApiRpcResponseSearchContacts_fromBytesWithByteArray_(payload);
+    return APResponseSearchContacts_fromBytesWithByteArray_(payload);
     case 119:
-    return ImActorModelApiRpcResponseLoadHistory_fromBytesWithByteArray_(payload);
+    return APResponseLoadHistory_fromBytesWithByteArray_(payload);
     case 105:
-    return ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(payload);
+    return APResponseLoadDialogs_fromBytesWithByteArray_(payload);
     case 66:
-    return ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(payload);
+    return APResponseCreateGroup_fromBytesWithByteArray_(payload);
     case 115:
-    return ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(payload);
+    return APResponseEditGroupAvatar_fromBytesWithByteArray_(payload);
     case 78:
-    return ImActorModelApiRpcResponseGetFileUrl_fromBytesWithByteArray_(payload);
+    return APResponseGetFileUrl_fromBytesWithByteArray_(payload);
     case 121:
-    return ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(payload);
+    return APResponseGetFileUploadUrl_fromBytesWithByteArray_(payload);
     case 138:
-    return ImActorModelApiRpcResponseCommitFileUpload_fromBytesWithByteArray_(payload);
+    return APResponseCommitFileUpload_fromBytesWithByteArray_(payload);
     case 141:
-    return ImActorModelApiRpcResponseGetFileUploadPartUrl_fromBytesWithByteArray_(payload);
+    return APResponseGetFileUploadPartUrl_fromBytesWithByteArray_(payload);
     case 129:
-    return ImActorModelApiRpcResponseInitVoxSupport_fromBytesWithByteArray_(payload);
+    return APResponseInitVoxSupport_fromBytesWithByteArray_(payload);
     case 132:
-    return ImActorModelApiRpcResponseGetVoxUser_fromBytesWithByteArray_(payload);
+    return APResponseGetVoxUser_fromBytesWithByteArray_(payload);
     case 153:
-    return ImActorModelApiRpcResponseGetAvailableInterests_fromBytesWithByteArray_(payload);
+    return APResponseGetAvailableInterests_fromBytesWithByteArray_(payload);
     case 135:
-    return ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(payload);
+    return APResponseGetParameters_fromBytesWithByteArray_(payload);
     case 12:
-    return ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(payload);
+    return APResponseGetDifference_fromBytesWithByteArray_(payload);
     case 50:
-    return ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(payload);
+    return APResponseVoid_fromBytesWithByteArray_(payload);
     case 72:
-    return ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(payload);
+    return APResponseSeq_fromBytesWithByteArray_(payload);
     case 102:
-    return ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(payload);
+    return APResponseSeqDate_fromBytesWithByteArray_(payload);
     case 13:
     return ImActorModelApiBaseSeqUpdate_fromBytesWithByteArray_(payload);
     case 73:
@@ -275,7 +275,7 @@
 @end
 
 void ImActorModelApiParserRpcParser_init(ImActorModelApiParserRpcParser *self) {
-  (void) ImActorModelNetworkParserBaseParser_init(self);
+  (void) APBaseParser_init(self);
 }
 
 ImActorModelApiParserRpcParser *new_ImActorModelApiParserRpcParser_init() {

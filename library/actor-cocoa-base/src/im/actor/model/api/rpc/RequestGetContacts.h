@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetContacts.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetContacts_H_
-#define _ImActorModelApiRpcRequestGetContacts_H_
+#ifndef _APRequestGetContacts_H_
+#define _APRequestGetContacts_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetContacts_HEADER 87
+#define APRequestGetContacts_HEADER 87
 
-@interface ImActorModelApiRpcRequestGetContacts : ImActorModelNetworkParserRequest
+@interface APRequestGetContacts : APRequest
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithNSString:(NSString *)contactsHash;
 
-+ (ImActorModelApiRpcRequestGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (NSString *)getContactsHash;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetContacts)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetContacts)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetContacts, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetContacts, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetContacts *ImActorModelApiRpcRequestGetContacts_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetContacts *APRequestGetContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetContacts_initWithNSString_(ImActorModelApiRpcRequestGetContacts *self, NSString *contactsHash);
+FOUNDATION_EXPORT void APRequestGetContacts_initWithNSString_(APRequestGetContacts *self, NSString *contactsHash);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_initWithNSString_(NSString *contactsHash) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetContacts *new_APRequestGetContacts_initWithNSString_(NSString *contactsHash) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetContacts_init(ImActorModelApiRpcRequestGetContacts *self);
+FOUNDATION_EXPORT void APRequestGetContacts_init(APRequestGetContacts *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetContacts *new_ImActorModelApiRpcRequestGetContacts_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetContacts *new_APRequestGetContacts_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetContacts)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetContacts)
 
-#endif // _ImActorModelApiRpcRequestGetContacts_H_
+typedef APRequestGetContacts ImActorModelApiRpcRequestGetContacts;
+
+#endif // _APRequestGetContacts_H_

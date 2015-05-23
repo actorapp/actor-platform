@@ -195,6 +195,20 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         return cell
     }
     
+    private func interestsCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell: AATableViewCell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        
+        cell.style = AATableViewCellStyle.Blue
+        cell.selectionStyle = UITableViewCellSelectionStyle.Default
+        cell.setContent("My Interests")
+        cell.setLeftInset(15.0)
+        
+//        cell.showTopSeparator()
+        cell.showBottomSeparator()
+        
+        return cell
+    }
+    
     private func phoneCell(indexPath: NSIndexPath) -> AATitledCell {
         var cell: AATitledCell = tableView.dequeueReusableCellWithIdentifier(TitledCellIdentifier, forIndexPath: indexPath) as! AATitledCell
         
@@ -298,7 +312,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         case 0:
             return 1
         case 1:
-            return 1
+            return 2
         case 2:
             if phones == nil {
                 return 0
@@ -319,6 +333,8 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             return userInfoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
             return setProfilePhotoCell(indexPath)
+        } else if indexPath.section == 1 && indexPath.row == 1 {
+            return interestsCell(indexPath)
         } else if indexPath.section == 2 {
             return phoneCell(indexPath)
         } else if (indexPath.section == 3 && indexPath.row == 0) {
@@ -348,6 +364,8 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         
         if indexPath.section == 1 && indexPath.row == 0 {
             askSetPhoto(tableView.cellForRowAtIndexPath(indexPath)!)
+        } else if indexPath.section == 1 && indexPath.row == 1 {
+            navigateToInterestsSettings()
         } else if indexPath.section == 3 && indexPath.row == 0 {
             navigateToNotificationsSettings()
         } else if indexPath.section == 3 && indexPath.row == 1 {
@@ -409,6 +427,10 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         let notificationsSettingsController = AASettingsNotificationsController()
         notificationsSettingsController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(notificationsSettingsController, animated: true)
+    }
+    
+    private func navigateToInterestsSettings() {
+        navigateNext(ALInterestsController(), removeCurrent: false)
     }
     
     private func navigateToPrivacySettings() {

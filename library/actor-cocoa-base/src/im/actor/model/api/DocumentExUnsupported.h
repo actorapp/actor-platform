@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExUnsupported.java
 //
 
-#ifndef _ImActorModelApiDocumentExUnsupported_H_
-#define _ImActorModelApiDocumentExUnsupported_H_
+#ifndef _APDocumentExUnsupported_H_
+#define _APDocumentExUnsupported_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/DocumentEx.h"
@@ -13,7 +13,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface ImActorModelApiDocumentExUnsupported : ImActorModelApiDocumentEx
+@interface APDocumentExUnsupported : APDocumentEx
 
 #pragma mark Public
 
@@ -28,12 +28,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentExUnsupported)
+J2OBJC_EMPTY_STATIC_INIT(APDocumentExUnsupported)
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentExUnsupported_initWithInt_withByteArray_(ImActorModelApiDocumentExUnsupported *self, jint key, IOSByteArray *content);
+FOUNDATION_EXPORT void APDocumentExUnsupported_initWithInt_withByteArray_(APDocumentExUnsupported *self, jint key, IOSByteArray *content);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentExUnsupported *new_ImActorModelApiDocumentExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentExUnsupported *new_APDocumentExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentExUnsupported)
+J2OBJC_TYPE_LITERAL_HEADER(APDocumentExUnsupported)
 
-#endif // _ImActorModelApiDocumentExUnsupported_H_
+typedef APDocumentExUnsupported ImActorModelApiDocumentExUnsupported;
+
+#endif // _APDocumentExUnsupported_H_

@@ -38,6 +38,7 @@
 #include "java/util/List.h"
 
 #define ImActorModelModulesUpdatesSequenceActor_INVALIDATE_GAP 2000
+#define ImActorModelModulesUpdatesSequenceActor_INVALIDATE_MAX_SEC_HOLE 10
 
 @interface ImActorModelModulesUpdatesSequenceActor () {
  @public
@@ -74,6 +75,8 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, TAG_, NSStri
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, INVALIDATE_GAP, jint)
 
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, INVALIDATE_MAX_SEC_HOLE, jint)
+
 static NSString *ImActorModelModulesUpdatesSequenceActor_KEY_SEQ_ = @"updates_seq";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesUpdatesSequenceActor, KEY_SEQ_, NSString *)
 
@@ -102,7 +105,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesSequenceActor_chec
   ImActorModelModulesUpdatesSequenceActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -125,7 +128,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesSequenceActor_$1)
   ImActorModelModulesUpdatesSequenceActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseGetDifference *)response;
+- (void)onResult:(APResponseGetDifference *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -242,7 +245,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     ImActorModelApiBaseWeakUpdate *w = (ImActorModelApiBaseWeakUpdate *) check_class_cast(u, [ImActorModelApiBaseWeakUpdate class]);
     AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Received weak update");
     @try {
-      [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processUpdateWithImActorModelNetworkParserUpdate:[((ImActorModelApiParserUpdatesParser *) nil_chk(self->parser_)) readWithInt:[((ImActorModelApiBaseWeakUpdate *) nil_chk(w)) getUpdateHeader] withByteArray:[w getUpdate]]];
+      [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processUpdateWithAPUpdate:[((ImActorModelApiParserUpdatesParser *) nil_chk(self->parser_)) readWithInt:[((ImActorModelApiBaseWeakUpdate *) nil_chk(w)) getUpdateHeader] withByteArray:[w getUpdate]]];
     }
     @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
@@ -291,6 +294,11 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   }
   if (!ImActorModelModulesUpdatesSequenceActor_isValidSeqWithInt_(self, seq)) {
     (void) [((JavaUtilHashMap *) nil_chk(self->further_)) putWithId:JavaLangInteger_valueOfWithInt_(seq) withId:u];
+    if (seq - self->seq_ > ImActorModelModulesUpdatesSequenceActor_INVALIDATE_MAX_SEC_HOLE) {
+      AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Out of sequence: Too big hole. Force invalidate immediately");
+      [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesUpdatesSequenceActor_ForceInvalidate_init()];
+      return;
+    }
     if (self->isTimerStarted_) {
       AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Out of sequence: timer already started");
     }
@@ -301,7 +309,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     }
     return;
   }
-  ImActorModelNetworkParserUpdate *update;
+  APUpdate *update;
   @try {
     update = [new_ImActorModelApiParserUpdatesParser_init() readWithInt:type withByteArray:body];
   }
@@ -310,7 +318,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
     return;
   }
-  if ([((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) isCausesInvalidationWithImActorModelNetworkParserUpdate:update]) {
+  if ([((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) isCausesInvalidationWithAPUpdate:update]) {
     AMLog_wWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Message causes invalidation");
     ImActorModelModulesUpdatesSequenceActor_invalidate(self);
     return;
@@ -320,7 +328,7 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
     ImActorModelApiBaseFatSeqUpdate *fatSeqUpdate = (ImActorModelApiBaseFatSeqUpdate *) check_class_cast(u, [ImActorModelApiBaseFatSeqUpdate class]);
     [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withBoolean:NO];
   }
-  [self->processor_ processUpdateWithImActorModelNetworkParserUpdate:update];
+  [self->processor_ processUpdateWithAPUpdate:update];
   if ([u isKindOfClass:[ImActorModelApiBaseFatSeqUpdate class]]) {
     ImActorModelApiBaseFatSeqUpdate *fatSeqUpdate = (ImActorModelApiBaseFatSeqUpdate *) check_class_cast(u, [ImActorModelApiBaseFatSeqUpdate class]);
     [self->processor_ applyRelatedWithJavaUtilList:[((ImActorModelApiBaseFatSeqUpdate *) nil_chk(fatSeqUpdate)) getUsers] withJavaUtilList:[fatSeqUpdate getGroups] withBoolean:YES];
@@ -346,11 +354,11 @@ void ImActorModelModulesUpdatesSequenceActor_invalidate(ImActorModelModulesUpdat
   self->isValidated_ = NO;
   if (self->seq_ < 0) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Loading fresh state...");
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetState_init() withAMRpcCallback:new_ImActorModelModulesUpdatesSequenceActor_$1_initWithImActorModelModulesUpdatesSequenceActor_(self)];
+    [self requestWithAPRequest:new_APRequestGetState_init() withAMRpcCallback:new_ImActorModelModulesUpdatesSequenceActor_$1_initWithImActorModelModulesUpdatesSequenceActor_(self)];
   }
   else {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Loading difference...");
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(self->seq_, self->state_) withAMRpcCallback:new_ImActorModelModulesUpdatesSequenceActor_$2_initWithImActorModelModulesUpdatesSequenceActor_(self)];
+    [self requestWithAPRequest:new_APRequestGetDifference_initWithInt_withByteArray_(self->seq_, self->state_) withAMRpcCallback:new_ImActorModelModulesUpdatesSequenceActor_$2_initWithImActorModelModulesUpdatesSequenceActor_(self)];
   }
 }
 
@@ -451,11 +459,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_PushSeq
 
 @implementation ImActorModelModulesUpdatesSequenceActor_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
+- (void)onResult:(APResponseSeq *)response {
   if (this$0_->isValidated_) {
     return;
   }
-  this$0_->seq_ = [((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq];
+  this$0_->seq_ = [((APResponseSeq *) nil_chk(response)) getSeq];
   this$0_->state_ = [response getState];
   this$0_->isValidated_ = YES;
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) putIntWithKey:ImActorModelModulesUpdatesSequenceActor_get_KEY_SEQ_() withValue:this$0_->seq_];
@@ -497,19 +505,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesSequenceActor_$1)
 
 @implementation ImActorModelModulesUpdatesSequenceActor_$2
 
-- (void)onResult:(ImActorModelApiRpcResponseGetDifference *)response {
+- (void)onResult:(APResponseGetDifference *)response {
   if (this$0_->isValidated_) {
     return;
   }
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"Difference loaded {seq=", [((ImActorModelApiRpcResponseGetDifference *) nil_chk(response)) getSeq], '}'));
+  AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$IC", @"Difference loaded {seq=", [((APResponseGetDifference *) nil_chk(response)) getSeq], '}'));
   JavaUtilArrayList *updates = new_JavaUtilArrayList_init();
-  for (ImActorModelApiDifferenceUpdate * __strong u in nil_chk([response getUpdates])) {
+  for (APDifferenceUpdate * __strong u in nil_chk([response getUpdates])) {
     @try {
-      [updates addWithId:[((ImActorModelApiParserUpdatesParser *) nil_chk(this$0_->parser_)) readWithInt:[((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader] withByteArray:[u getUpdate]]];
+      [updates addWithId:[((ImActorModelApiParserUpdatesParser *) nil_chk(this$0_->parser_)) readWithInt:[((APDifferenceUpdate *) nil_chk(u)) getUpdateHeader] withByteArray:[u getUpdate]]];
     }
     @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
-      AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$I$", @"Broken update #", [((ImActorModelApiDifferenceUpdate *) nil_chk(u)) getUpdateHeader], @": ignoring"));
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_get_TAG_(), JreStrcat("$I$", @"Broken update #", [((APDifferenceUpdate *) nil_chk(u)) getUpdateHeader], @": ignoring"));
     }
   }
   [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(this$0_->processor_)) applyDifferenceUpdateWithJavaUtilList:[response getUsers] withJavaUtilList:[response getGroups] withJavaUtilList:updates];

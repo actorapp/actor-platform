@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestNotifyAdView () {
+@interface APRequestNotifyAdView () {
  @public
   jint bannerId_;
   jint viewDuration_;
@@ -23,20 +23,20 @@
 
 @end
 
-@implementation ImActorModelApiRpcRequestNotifyAdView
+@implementation APRequestNotifyAdView
 
-+ (ImActorModelApiRpcRequestNotifyAdView *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestNotifyAdView_fromBytesWithByteArray_(data);
++ (APRequestNotifyAdView *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestNotifyAdView_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)bannerId
                     withInt:(jint)viewDuration {
-  ImActorModelApiRpcRequestNotifyAdView_initWithInt_withInt_(self, bannerId, viewDuration);
+  APRequestNotifyAdView_initWithInt_withInt_(self, bannerId, viewDuration);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestNotifyAdView_init(self);
+  APRequestNotifyAdView_init(self);
   return self;
 }
 
@@ -67,36 +67,36 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestNotifyAdView_HEADER;
+  return APRequestNotifyAdView_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestNotifyAdView *ImActorModelApiRpcRequestNotifyAdView_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestNotifyAdView_initialize();
-  return ((ImActorModelApiRpcRequestNotifyAdView *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestNotifyAdView_init(), data));
+APRequestNotifyAdView *APRequestNotifyAdView_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestNotifyAdView_initialize();
+  return ((APRequestNotifyAdView *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestNotifyAdView_init(), data));
 }
 
-void ImActorModelApiRpcRequestNotifyAdView_initWithInt_withInt_(ImActorModelApiRpcRequestNotifyAdView *self, jint bannerId, jint viewDuration) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestNotifyAdView_initWithInt_withInt_(APRequestNotifyAdView *self, jint bannerId, jint viewDuration) {
+  (void) APRequest_init(self);
   self->bannerId_ = bannerId;
   self->viewDuration_ = viewDuration;
 }
 
-ImActorModelApiRpcRequestNotifyAdView *new_ImActorModelApiRpcRequestNotifyAdView_initWithInt_withInt_(jint bannerId, jint viewDuration) {
-  ImActorModelApiRpcRequestNotifyAdView *self = [ImActorModelApiRpcRequestNotifyAdView alloc];
-  ImActorModelApiRpcRequestNotifyAdView_initWithInt_withInt_(self, bannerId, viewDuration);
+APRequestNotifyAdView *new_APRequestNotifyAdView_initWithInt_withInt_(jint bannerId, jint viewDuration) {
+  APRequestNotifyAdView *self = [APRequestNotifyAdView alloc];
+  APRequestNotifyAdView_initWithInt_withInt_(self, bannerId, viewDuration);
   return self;
 }
 
-void ImActorModelApiRpcRequestNotifyAdView_init(ImActorModelApiRpcRequestNotifyAdView *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestNotifyAdView_init(APRequestNotifyAdView *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestNotifyAdView *new_ImActorModelApiRpcRequestNotifyAdView_init() {
-  ImActorModelApiRpcRequestNotifyAdView *self = [ImActorModelApiRpcRequestNotifyAdView alloc];
-  ImActorModelApiRpcRequestNotifyAdView_init(self);
+APRequestNotifyAdView *new_APRequestNotifyAdView_init() {
+  APRequestNotifyAdView *self = [APRequestNotifyAdView alloc];
+  APRequestNotifyAdView_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestNotifyAdView)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestNotifyAdView)

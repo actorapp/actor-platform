@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExVoice.java
 //
 
-#ifndef _ImActorModelApiDocumentExVoice_H_
-#define _ImActorModelApiDocumentExVoice_H_
+#ifndef _APDocumentExVoice_H_
+#define _APDocumentExVoice_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/DocumentEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiDocumentExVoice : ImActorModelApiDocumentEx
+@interface APDocumentExVoice : APDocumentEx
 
 #pragma mark Public
 
@@ -32,16 +32,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentExVoice)
+J2OBJC_EMPTY_STATIC_INIT(APDocumentExVoice)
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentExVoice_initWithInt_(ImActorModelApiDocumentExVoice *self, jint duration);
+FOUNDATION_EXPORT void APDocumentExVoice_initWithInt_(APDocumentExVoice *self, jint duration);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_initWithInt_(jint duration) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentExVoice *new_APDocumentExVoice_initWithInt_(jint duration) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentExVoice_init(ImActorModelApiDocumentExVoice *self);
+FOUNDATION_EXPORT void APDocumentExVoice_init(APDocumentExVoice *self);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentExVoice *new_APDocumentExVoice_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentExVoice)
+J2OBJC_TYPE_LITERAL_HEADER(APDocumentExVoice)
 
-#endif // _ImActorModelApiDocumentExVoice_H_
+typedef APDocumentExVoice ImActorModelApiDocumentExVoice;
+
+#endif // _APDocumentExVoice_H_

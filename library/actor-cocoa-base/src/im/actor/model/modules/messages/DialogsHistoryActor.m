@@ -67,7 +67,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsHistoryAct
   ImActorModelModulesMessagesDialogsHistoryActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseLoadDialogs *)response;
+- (void)onResult:(APResponseLoadDialogs *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -144,7 +144,7 @@ void ImActorModelModulesMessagesDialogsHistoryActor_onLoadMore(ImActorModelModul
   }
   self->isLoading_ = YES;
   AMLog_dWithNSString_withNSString_(ImActorModelModulesMessagesDialogsHistoryActor_TAG_, JreStrcat("$J", @"Loading history... after ", self->historyMaxDate_));
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self->historyMaxDate_, ImActorModelModulesMessagesDialogsHistoryActor_LIMIT) withAMRpcCallback:new_ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(self)];
+  [self requestWithAPRequest:new_APRequestLoadDialogs_initWithLong_withInt_(self->historyMaxDate_, ImActorModelModulesMessagesDialogsHistoryActor_LIMIT) withAMRpcCallback:new_ImActorModelModulesMessagesDialogsHistoryActor_$1_initWithImActorModelModulesMessagesDialogsHistoryActor_(self)];
 }
 
 void ImActorModelModulesMessagesDialogsHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesDialogsHistoryActor *self, jint loaded, jlong maxLoadedDate) {
@@ -211,8 +211,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsHistoryActor_
 
 @implementation ImActorModelModulesMessagesDialogsHistoryActor_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseLoadDialogs *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithImActorModelApiRpcResponseLoadDialogs_(response)];
+- (void)onResult:(APResponseLoadDialogs *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalDialogHistoryLoaded_initWithAPResponseLoadDialogs_(response)];
 }
 
 - (void)onError:(AMRpcException *)e {

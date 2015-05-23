@@ -8,7 +8,7 @@
 
 #include "J2ObjC_header.h"
 
-@class ImActorModelApiMessage;
+@class APMessage;
 @class JavaUtilArrayList;
 
 @interface ImActorModelModulesUpdatesInternalCombinedMessageUpdate : NSObject
@@ -44,11 +44,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalCombinedMessageUpda
 - (instancetype)initWithLong:(jlong)rid
                      withInt:(jint)sender
                     withLong:(jlong)date
-  withImActorModelApiMessage:(ImActorModelApiMessage *)message;
+               withAPMessage:(APMessage *)message;
 
 - (jlong)getDate;
 
-- (ImActorModelApiMessage *)getMessage;
+- (APMessage *)getMessage;
 
 - (jlong)getRid;
 
@@ -58,9 +58,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalCombinedMessageUpda
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage)
 
-FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withImActorModelApiMessage_(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *self, jlong rid, jint sender, jlong date, ImActorModelApiMessage *message);
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withAPMessage_(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *self, jlong rid, jint sender, jlong date, APMessage *message);
 
-FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *new_ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withImActorModelApiMessage_(jlong rid, jint sender, jlong date, ImActorModelApiMessage *message) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *new_ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withAPMessage_(jlong rid, jint sender, jlong date, APMessage *message) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage)
 

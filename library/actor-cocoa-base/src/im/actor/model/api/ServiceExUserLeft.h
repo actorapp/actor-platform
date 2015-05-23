@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserLeft.java
 //
 
-#ifndef _ImActorModelApiServiceExUserLeft_H_
-#define _ImActorModelApiServiceExUserLeft_H_
+#ifndef _APServiceExUserLeft_H_
+#define _APServiceExUserLeft_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExUserLeft : ImActorModelApiServiceEx
+@interface APServiceExUserLeft : APServiceEx
 
 #pragma mark Public
 
@@ -28,12 +28,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExUserLeft)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExUserLeft)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExUserLeft_init(ImActorModelApiServiceExUserLeft *self);
+FOUNDATION_EXPORT void APServiceExUserLeft_init(APServiceExUserLeft *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExUserLeft *new_ImActorModelApiServiceExUserLeft_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExUserLeft *new_APServiceExUserLeft_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExUserLeft)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExUserLeft)
 
-#endif // _ImActorModelApiServiceExUserLeft_H_
+typedef APServiceExUserLeft ImActorModelApiServiceExUserLeft;
+
+#endif // _APServiceExUserLeft_H_

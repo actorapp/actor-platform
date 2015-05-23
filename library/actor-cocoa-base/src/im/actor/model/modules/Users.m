@@ -99,7 +99,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$2)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -217,7 +217,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$3_$1)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -363,7 +363,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$1)
 @implementation ImActorModelModulesUsers_$2
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestEditName_initWithNSString_(val$newName_) withAMRpcCallback:new_ImActorModelModulesUsers_$2_$1_initWithImActorModelModulesUsers_$2_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestEditName_initWithNSString_(val$newName_) withAMRpcCallback:new_ImActorModelModulesUsers_$2_$1_initWithImActorModelModulesUsers_$2_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
@@ -390,8 +390,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
 
 @implementation ImActorModelModulesUsers_$2_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
-  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateUserNameChanged_HEADER, [new_ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_([this$0_->this$0_ myUid], this$0_->val$newName_) toByteArray]);
+- (void)onResult:(APResponseSeq *)response {
+  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateUserNameChanged_HEADER, [new_APUpdateUserNameChanged_initWithInt_withNSString_([this$0_->this$0_ myUid], this$0_->val$newName_) toByteArray]);
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUsers_$2_$1_$1_initWithImActorModelModulesUsers_$2_$1_(self)];
 }
@@ -484,7 +484,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2_$1_$2)
     [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUsers_$3_$1_initWithAMCommandCallback_(callback)];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_([((AMUser *) nil_chk(user)) getUid], [user getAccessHash], val$name_) withAMRpcCallback:new_ImActorModelModulesUsers_$3_$2_initWithImActorModelModulesUsers_$3_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestEditUserLocalName_initWithInt_withLong_withNSString_([((AMUser *) nil_chk(user)) getUid], [user getAccessHash], val$name_) withAMRpcCallback:new_ImActorModelModulesUsers_$3_$2_initWithImActorModelModulesUsers_$3_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
@@ -539,8 +539,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$3_$1)
 
 @implementation ImActorModelModulesUsers_$3_$2
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
-  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER, [new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(this$0_->val$uid_, this$0_->val$name_) toByteArray]);
+- (void)onResult:(APResponseSeq *)response {
+  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateUserLocalNameChanged_HEADER, [new_APUpdateUserLocalNameChanged_initWithInt_withNSString_(this$0_->val$uid_, this$0_->val$name_) toByteArray]);
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUsers_$3_$2_$1_initWithImActorModelModulesUsers_$3_$2_(self)];
 }

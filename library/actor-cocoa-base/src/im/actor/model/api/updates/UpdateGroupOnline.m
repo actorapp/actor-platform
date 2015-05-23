@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupOnline () {
+@interface APUpdateGroupOnline () {
  @public
   jint groupId_;
   jint count_;
@@ -23,20 +23,20 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateGroupOnline
+@implementation APUpdateGroupOnline
 
-+ (ImActorModelApiUpdatesUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(data);
++ (APUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupOnline_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
                     withInt:(jint)count {
-  ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(self, groupId, count);
+  APUpdateGroupOnline_initWithInt_withInt_(self, groupId, count);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupOnline_init(self);
+  APUpdateGroupOnline_init(self);
   return self;
 }
 
@@ -67,36 +67,36 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupOnline_HEADER;
+  return APUpdateGroupOnline_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupOnline *ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupOnline_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupOnline_init(), data));
+APUpdateGroupOnline *APUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupOnline_initialize();
+  return ((APUpdateGroupOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupOnline_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(ImActorModelApiUpdatesUpdateGroupOnline *self, jint groupId, jint count) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupOnline_initWithInt_withInt_(APUpdateGroupOnline *self, jint groupId, jint count) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->count_ = count;
 }
 
-ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(jint groupId, jint count) {
-  ImActorModelApiUpdatesUpdateGroupOnline *self = [ImActorModelApiUpdatesUpdateGroupOnline alloc];
-  ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(self, groupId, count);
+APUpdateGroupOnline *new_APUpdateGroupOnline_initWithInt_withInt_(jint groupId, jint count) {
+  APUpdateGroupOnline *self = [APUpdateGroupOnline alloc];
+  APUpdateGroupOnline_initWithInt_withInt_(self, groupId, count);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupOnline_init(ImActorModelApiUpdatesUpdateGroupOnline *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupOnline_init(APUpdateGroupOnline *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_init() {
-  ImActorModelApiUpdatesUpdateGroupOnline *self = [ImActorModelApiUpdatesUpdateGroupOnline alloc];
-  ImActorModelApiUpdatesUpdateGroupOnline_init(self);
+APUpdateGroupOnline *new_APUpdateGroupOnline_init() {
+  APUpdateGroupOnline *self = [APUpdateGroupOnline alloc];
+  APUpdateGroupOnline_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupOnline)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupOnline)

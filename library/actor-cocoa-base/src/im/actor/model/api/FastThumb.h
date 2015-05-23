@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FastThumb.java
 //
 
-#ifndef _ImActorModelApiFastThumb_H_
-#define _ImActorModelApiFastThumb_H_
+#ifndef _APFastThumb_H_
+#define _APFastThumb_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -13,7 +13,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface ImActorModelApiFastThumb : BSBserObject
+@interface APFastThumb : BSBserObject
 
 #pragma mark Public
 
@@ -37,16 +37,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiFastThumb)
+J2OBJC_EMPTY_STATIC_INIT(APFastThumb)
 
-FOUNDATION_EXPORT void ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(ImActorModelApiFastThumb *self, jint w, jint h, IOSByteArray *thumb);
+FOUNDATION_EXPORT void APFastThumb_initWithInt_withInt_withByteArray_(APFastThumb *self, jint w, jint h, IOSByteArray *thumb);
 
-FOUNDATION_EXPORT ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APFastThumb *new_APFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiFastThumb_init(ImActorModelApiFastThumb *self);
+FOUNDATION_EXPORT void APFastThumb_init(APFastThumb *self);
 
-FOUNDATION_EXPORT ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APFastThumb *new_APFastThumb_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiFastThumb)
+J2OBJC_TYPE_LITERAL_HEADER(APFastThumb)
 
-#endif // _ImActorModelApiFastThumb_H_
+typedef APFastThumb ImActorModelApiFastThumb;
+
+#endif // _APFastThumb_H_

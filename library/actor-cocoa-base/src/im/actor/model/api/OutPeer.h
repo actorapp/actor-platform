@@ -3,31 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/OutPeer.java
 //
 
-#ifndef _ImActorModelApiOutPeer_H_
-#define _ImActorModelApiOutPeer_H_
+#ifndef _APOutPeer_H_
+#define _APOutPeer_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APPeerTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiPeerTypeEnum;
 
-@interface ImActorModelApiOutPeer : BSBserObject
+@interface APOutPeer : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
-                                            withInt:(jint)id_
-                                           withLong:(jlong)accessHash;
+- (instancetype)initWithAPPeerTypeEnum:(APPeerTypeEnum *)type
+                               withInt:(jint)id_
+                              withLong:(jlong)accessHash;
 
 - (jlong)getAccessHash;
 
 - (jint)getId;
 
-- (ImActorModelApiPeerTypeEnum *)getType;
+- (APPeerTypeEnum *)getType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -37,16 +37,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiOutPeer)
+J2OBJC_EMPTY_STATIC_INIT(APOutPeer)
 
-FOUNDATION_EXPORT void ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiOutPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash);
+FOUNDATION_EXPORT void APOutPeer_initWithAPPeerTypeEnum_withInt_withLong_(APOutPeer *self, APPeerTypeEnum *type, jint id_, jlong accessHash);
 
-FOUNDATION_EXPORT ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum *type, jint id_, jlong accessHash) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APOutPeer *new_APOutPeer_initWithAPPeerTypeEnum_withInt_withLong_(APPeerTypeEnum *type, jint id_, jlong accessHash) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiOutPeer_init(ImActorModelApiOutPeer *self);
+FOUNDATION_EXPORT void APOutPeer_init(APOutPeer *self);
 
-FOUNDATION_EXPORT ImActorModelApiOutPeer *new_ImActorModelApiOutPeer_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APOutPeer *new_APOutPeer_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiOutPeer)
+J2OBJC_TYPE_LITERAL_HEADER(APOutPeer)
 
-#endif // _ImActorModelApiOutPeer_H_
+typedef APOutPeer ImActorModelApiOutPeer;
+
+#endif // _APOutPeer_H_

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/FileLocation.java
 //
 
-#ifndef _ImActorModelApiFileLocation_H_
-#define _ImActorModelApiFileLocation_H_
+#ifndef _APFileLocation_H_
+#define _APFileLocation_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiFileLocation : BSBserObject
+@interface APFileLocation : BSBserObject
 
 #pragma mark Public
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiFileLocation)
+J2OBJC_EMPTY_STATIC_INIT(APFileLocation)
 
-FOUNDATION_EXPORT void ImActorModelApiFileLocation_initWithLong_withLong_(ImActorModelApiFileLocation *self, jlong fileId, jlong accessHash);
+FOUNDATION_EXPORT void APFileLocation_initWithLong_withLong_(APFileLocation *self, jlong fileId, jlong accessHash);
 
-FOUNDATION_EXPORT ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APFileLocation *new_APFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiFileLocation_init(ImActorModelApiFileLocation *self);
+FOUNDATION_EXPORT void APFileLocation_init(APFileLocation *self);
 
-FOUNDATION_EXPORT ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APFileLocation *new_APFileLocation_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiFileLocation)
+J2OBJC_TYPE_LITERAL_HEADER(APFileLocation)
 
-#endif // _ImActorModelApiFileLocation_H_
+typedef APFileLocation ImActorModelApiFileLocation;
+
+#endif // _APFileLocation_H_

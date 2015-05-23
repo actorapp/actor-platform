@@ -16,7 +16,7 @@
 
 #define ImActorModelApiBaseFatSeqUpdate_HEADER 73
 
-@interface ImActorModelApiBaseFatSeqUpdate : ImActorModelNetworkParserRpcScope
+@interface ImActorModelApiBaseFatSeqUpdate : APRpcScope
 
 #pragma mark Public
 

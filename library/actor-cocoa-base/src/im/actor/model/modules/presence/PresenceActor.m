@@ -294,8 +294,8 @@ void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelM
     }
     [self->uids_ addWithId:JavaLangInteger_valueOfWithInt_([((AMUser *) nil_chk(user)) getUid])];
     id<JavaUtilList> peers = new_JavaUtilArrayList_init();
-    [peers addWithId:new_ImActorModelApiUserOutPeer_initWithInt_withLong_([user getUid], [user getAccessHash])];
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(peers)];
+    [peers addWithId:new_APUserOutPeer_initWithInt_withLong_([user getUid], [user getAccessHash])];
+    [self requestWithAPRequest:new_APRequestSubscribeToOnline_initWithJavaUtilList_(peers)];
   }
   else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     if ([((JavaUtilHashSet *) nil_chk(self->gids_)) containsWithId:JavaLangInteger_valueOfWithInt_([peer getPeerId])]) {
@@ -307,8 +307,8 @@ void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelM
     }
     [self->gids_ addWithId:JavaLangInteger_valueOfWithInt_([peer getPeerId])];
     id<JavaUtilList> peers = new_JavaUtilArrayList_init();
-    [peers addWithId:new_ImActorModelApiGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(peers)];
+    [peers addWithId:new_APGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
+    [self requestWithAPRequest:new_APRequestSubscribeToGroupOnline_initWithJavaUtilList_(peers)];
   }
 }
 
@@ -320,10 +320,10 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
     if (user == nil) {
       continue;
     }
-    [userPeers addWithId:new_ImActorModelApiUserOutPeer_initWithInt_withLong_(uid, [((AMUser *) nil_chk(user)) getAccessHash])];
+    [userPeers addWithId:new_APUserOutPeer_initWithInt_withLong_(uid, [((AMUser *) nil_chk(user)) getAccessHash])];
   }
   if ([userPeers size] > 0) {
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(userPeers)];
+    [self requestWithAPRequest:new_APRequestSubscribeToOnline_initWithJavaUtilList_(userPeers)];
   }
   id<JavaUtilList> groupPeers = new_JavaUtilArrayList_init();
   for (JavaLangInteger *boxed__ in nil_chk(self->gids_)) {
@@ -332,10 +332,10 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
     if (group == nil) {
       continue;
     }
-    [groupPeers addWithId:new_ImActorModelApiGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
+    [groupPeers addWithId:new_APGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
   }
   if ([groupPeers size] > 0) {
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(groupPeers)];
+    [self requestWithAPRequest:new_APRequestSubscribeToGroupOnline_initWithJavaUtilList_(groupPeers)];
   }
 }
 

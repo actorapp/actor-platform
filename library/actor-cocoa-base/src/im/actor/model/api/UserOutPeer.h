@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/UserOutPeer.java
 //
 
-#ifndef _ImActorModelApiUserOutPeer_H_
-#define _ImActorModelApiUserOutPeer_H_
+#ifndef _APUserOutPeer_H_
+#define _APUserOutPeer_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiUserOutPeer : BSBserObject
+@interface APUserOutPeer : BSBserObject
 
 #pragma mark Public
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUserOutPeer)
+J2OBJC_EMPTY_STATIC_INIT(APUserOutPeer)
 
-FOUNDATION_EXPORT void ImActorModelApiUserOutPeer_initWithInt_withLong_(ImActorModelApiUserOutPeer *self, jint uid, jlong accessHash);
+FOUNDATION_EXPORT void APUserOutPeer_initWithInt_withLong_(APUserOutPeer *self, jint uid, jlong accessHash);
 
-FOUNDATION_EXPORT ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUserOutPeer *new_APUserOutPeer_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUserOutPeer_init(ImActorModelApiUserOutPeer *self);
+FOUNDATION_EXPORT void APUserOutPeer_init(APUserOutPeer *self);
 
-FOUNDATION_EXPORT ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUserOutPeer *new_APUserOutPeer_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUserOutPeer)
+J2OBJC_TYPE_LITERAL_HEADER(APUserOutPeer)
 
-#endif // _ImActorModelApiUserOutPeer_H_
+typedef APUserOutPeer ImActorModelApiUserOutPeer;
+
+#endif // _APUserOutPeer_H_
