@@ -709,7 +709,7 @@ public class ChatActivity extends BaseActivity{
                     }
                     text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
 
-                    messageBody.setSelection(mentionStart + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
+                    messageBody.setSelection(mentionStart + (mentionsAdapter.getCount()==1?mentionSearchString.length():0) + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
                 }
                 hideMentions();
             }
