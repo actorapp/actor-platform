@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.Member;
-import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
+import im.actor.model.entity.compat.ObsoleteGroup;
 
 public class Group extends WrapperEntity<im.actor.model.api.Group> implements KeyValueItem {
 
@@ -211,44 +211,21 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
 
     @Override
     public void parse(BserValues values) throws IOException {
-        if (!values.getBool(9, false)) {
-            int groupId = values.getInt(1);
-            long accessHash = values.getLong(2);
-            String title = values.getString(3);
-            im.actor.model.api.Avatar avatar = new im.actor.model.api.Avatar();
-            if (values.optBytes(4) != null) {
-                avatar = new Avatar(values.getBytes(4)).toWrapped();
-            }
-            int adminId = values.getInt(5);
-
-            int count = values.getRepeatedCount(6);
-            List<Member> members = new ArrayList<Member>();
-            if (count > 0) {
-                List<ObsoleteGroupMember> res = new ArrayList<ObsoleteGroupMember>();
-                for (int i = 0; i < count; i++) {
-                    res.add(new ObsoleteGroupMember());
-                }
-                res = values.getRepeatedObj(6, res);
-
-                for (ObsoleteGroupMember o : res) {
-                    members.add(new Member(o.getUid(), o.getInviterUid(), o.getInviteDate()));
-                }
-            }
-
-            boolean isMember = values.getBool(7);
-
-            setWrapped(new im.actor.model.api.Group(groupId, accessHash,
-                    title, avatar, isMember, adminId, members, 0/*In old Layout doesn't contain group creation date*/));
+        // Is Wrapper Layout
+        if (values.getBool(9, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            setWrapped(new ObsoleteGroup(values).toApiGroup());
         }
-
-        super.parse(values);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        // Mark as New Layout
+        // Mark as wrapper layout
         writer.writeBool(9, true);
-        // Serialize wrapper
+        // Serialize wrapper layout
         super.serialize(writer);
     }
 
@@ -263,45 +240,4 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
         return new im.actor.model.api.Group();
     }
 
-    public class ObsoleteGroupMember extends BserObject {
-        private int uid;
-
-        private int inviterUid;
-
-        private long inviteDate;
-
-        private boolean isAdministrator;
-
-        public int getUid() {
-            return uid;
-        }
-
-        public int getInviterUid() {
-            return inviterUid;
-        }
-
-        public long getInviteDate() {
-            return inviteDate;
-        }
-
-        public boolean isAdministrator() {
-            return isAdministrator;
-        }
-
-        @Override
-        public void parse(BserValues values) throws IOException {
-            uid = values.getInt(1);
-            inviterUid = values.getInt(2);
-            inviteDate = values.getLong(3);
-            isAdministrator = values.getBool(4);
-        }
-
-        @Override
-        public void serialize(BserWriter writer) throws IOException {
-            writer.writeInt(1, uid);
-            writer.writeInt(2, inviterUid);
-            writer.writeLong(3, inviteDate);
-            writer.writeBool(4, isAdministrator);
-        }
-    }
 }

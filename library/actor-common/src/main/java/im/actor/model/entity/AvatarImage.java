@@ -9,8 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import im.actor.model.api.FileLocation;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.entity.compat.ObsoleteAvatarImage;
 
 public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
 
@@ -45,22 +47,29 @@ public class AvatarImage extends WrapperEntity<im.actor.model.api.AvatarImage> {
 
     @Override
     public void parse(BserValues values) throws IOException {
+        // Is Wrapper layout
+        if (values.getBool(5, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            ObsoleteAvatarImage obsoleteAvatarImage = new ObsoleteAvatarImage(values);
 
-        // If Old Layout used
-        if (!values.getBool(5, false)) {
-            int width = values.getInt(1);
-            int height = values.getInt(2);
-            FileReference fileReference = new FileReference(values.getBytes(3));
-            setWrapped(new im.actor.model.api.AvatarImage(fileReference.getFileLocation(),
-                    width, height, fileReference.getFileSize()));
+            setWrapped(new im.actor.model.api.AvatarImage(
+                    new FileLocation(
+                            obsoleteAvatarImage.getFileReference().getFileId(),
+                            obsoleteAvatarImage.getFileReference().getAccessHash()),
+                    obsoleteAvatarImage.getWidth(),
+                    obsoleteAvatarImage.getHeight(),
+                    obsoleteAvatarImage.getFileReference().getFileSize()));
         }
-
-        super.parse(values);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
+        // Mark as wrapper layout
         writer.writeBool(5, true);
+        // Serialize wrapper layout
         super.serialize(writer);
     }
 
