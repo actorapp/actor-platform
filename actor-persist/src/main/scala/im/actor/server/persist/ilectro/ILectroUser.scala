@@ -25,4 +25,7 @@ object ILectroUser {
 
   def findByUuid(uuid: UUID) =
     users.filter(_.uuid === uuid).result.headOption
+
+  def findIds() =
+    users.map(_.userId).result
 }
