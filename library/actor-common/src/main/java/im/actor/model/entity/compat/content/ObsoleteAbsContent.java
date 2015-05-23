@@ -6,18 +6,19 @@ package im.actor.model.entity.compat.content;
 
 import java.io.IOException;
 
+import im.actor.model.api.Message;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.DataInput;
 
 public abstract class ObsoleteAbsContent extends BserObject {
-    public static ObsoleteAbsContent contentFromBytes(byte[] data) throws IOException {
+    public static Message contentFromBytes(byte[] data) throws IOException {
         BserValues reader = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
         ObsoleteContentType type = typeFromValue(reader.getInt(1));
         switch (type) {
             case TEXT:
-                // return TextContent.textFromBytes(data);
+                return new ObsoleteTextContent(data).toApiMessage();
             case DOCUMENT:
                 // return DocumentContent.docFromBytes(data);
             case DOCUMENT_PHOTO:
@@ -25,9 +26,9 @@ public abstract class ObsoleteAbsContent extends BserObject {
             case DOCUMENT_VIDEO:
                 // return VideoContent.videoFromBytes(data);
             case SERVICE:
-                // return ServiceContent.serviceFromBytes(data);
+                return new ObsoleteService(data).toApiMessage();
             case SERVICE_REGISTERED:
-                // return ServiceUserRegistered.fromBytes(data);
+                return new ObsoleteServiceRegistered().toApiMessage();
             case SERVICE_CREATED:
                 // return ServiceGroupCreated.fromBytes(data);
             case SERVICE_TITLE:
@@ -44,6 +45,8 @@ public abstract class ObsoleteAbsContent extends BserObject {
                 throw new IOException("Unknown type");
         }
     }
+
+    public abstract Message toApiMessage();
 
     protected static ObsoleteContentType typeFromValue(int val) {
         switch (val) {
