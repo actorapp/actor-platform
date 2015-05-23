@@ -34,14 +34,13 @@ object WebhooksFrontend {
     implicit val ec: ExecutionContext = system.dispatcher
 
     //TODO: replace to object, import in scope
-    implicit val toContent = new Unmarshaller[HttpRequest, Content] {
+    implicit val toContent = Unmarshaller.apply[HttpRequest, Content] { implicit ec ⇒ req ⇒
 
       import JsonImplicits._
 
-      def apply(req: HttpRequest) =
-        req.entity.dataBytes
-          .map { data ⇒ Json.parse(data.decodeString("utf-8")).as[Content] }
-          .runWith(Sink.head)
+      req.entity.dataBytes
+        .map { data ⇒ Json.parse(data.decodeString("utf-8")).as[Content] }
+        .runWith(Sink.head)
     }
 
     def routes: Route =
